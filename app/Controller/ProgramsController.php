@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+//App::uses('RequestHandler', 'Component');
 /**
  * Programs Controller
  *
@@ -7,6 +8,9 @@ App::uses('AppController', 'Controller');
  */
 class ProgramsController extends AppController {
 
+	var $components = array('RequestHandler');
+	public $helpers = array('Js' => array('Jquery'));
+	
 	var $uses = array('Program', 'Group');
 	
 	var $paginate = array(

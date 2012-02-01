@@ -87,6 +87,28 @@
 		);
 
 	Router::connect(
+		'/:program/:controller/:action/*',
+		array(
+			'controller' => 'home',
+			'action' => 'index'
+			),
+		array(
+			'program' => '[a-zA-Z0-9]+'
+			)
+		);
+	
+	Router::connect(
+		'/:program/:controller',
+		array(
+			'controller' => 'home',
+			'action' => 'index'
+			),
+		array(
+			'program' => '[a-zA-Z0-9]+'
+			)
+		);
+	
+	Router::connect(
 		'/:program',
 		array(
 			'controller' => 'home',
@@ -97,6 +119,8 @@
 			)
 		);
 
+	Router::parseExtensions('json');
+	
 /**
  * Load all plugin routes.  See the CakePlugin documentation on 
  * how to customize the loading of plugin routes.

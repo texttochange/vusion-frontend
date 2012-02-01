@@ -7,16 +7,19 @@ class HomeController extends AppController {
 
 	//var $uses = array('ProgramDocument');
 	
+	public $components = array('RequestHandler');
+	public $helpers = array('Js' => array('Jquery'));
+	
 	public function index() {
 		
 		//echo "Home Index -"; 
 		
-		$data = array(
+		/*$data = array(
 			'truc' => array('truky')
 			);
 		$this->ProgramDocument->recursive = -1;
 		$this->ProgramDocument->create();
-		$this->ProgramDocument->save($data);
+		$this->ProgramDocument->save($data);*/
 	}
 	
 	function constructClasses() {
