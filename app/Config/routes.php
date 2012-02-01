@@ -55,9 +55,25 @@
 		);
 */	
 	Router::connect(
+		'/programs/:action/*',
+		array(
+			'controller' => 'programs',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
 		'/programs',
 		array(
 			'controller' => 'programs',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/users/:action/*',
+		array(
+			'controller' => 'users',
 			'action' => 'index'
 			)
 		);
@@ -71,9 +87,25 @@
 		);
 
 	Router::connect(
+		'/programs_users/:action/*',
+		array(
+			'controller' => 'programs_users',
+			'action' => 'index'
+			)
+		);
+
+	Router::connect(
 		'/programs_users',
 		array(
 			'controller' => 'programs_users',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/groups/:action/*',
+		array(
+			'controller' => 'groups',
 			'action' => 'index'
 			)
 		);
@@ -85,7 +117,7 @@
 			'action' => 'index'
 			)
 		);
-
+	
 	Router::connect(
 		'/:program/:controller/:action/*',
 		array(
