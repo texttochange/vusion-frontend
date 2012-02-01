@@ -22,7 +22,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>
-		<?php echo "TextToChange" ?>:
+		<?php echo "Umoja" ?>:
 		<?php echo $title_for_layout; ?>
 		
 	</title>
@@ -35,6 +35,15 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->css(array('cake.generic', 'basic'));
 
 		echo $scripts_for_layout;
+		
+		echo $this->Html->script('jqueryui/js/jquery-1.6.2.min.js');
+		echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
+		echo $this->Html->script('dform/dform.js');
+		echo $this->Html->script('dform/dform.extensions.js');
+		echo $this->Html->script('dform/dform.subscribers.js');
+		echo $this->Html->script('dform/dform.converters.js');
+		echo $this->Html->script('form2js/form2js.js');
+		echo $this->Html->script('ttc-generic-program.js');
 	?>
 </head>
 <body>
@@ -43,7 +52,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 			<?php 
 				echo $this->Html->tag(
 					'h1',
-					'TextToChange',
+					'Umoja',
 					array('class' => 'ttc-title')
 					);
 				if ($this->Session->read('Auth.User.id')) {
