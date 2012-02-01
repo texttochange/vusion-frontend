@@ -4,8 +4,8 @@
 		<legend><?php echo __('Edit Programs User'); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('program_id');
-		echo $this->Form->input('user_id');
+		echo $this->Form->input('program_id', array('type' => 'select', 'options'=> $programs));
+		echo $this->Form->input('user_id', array('type' => 'select', 'options'=> $users));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>

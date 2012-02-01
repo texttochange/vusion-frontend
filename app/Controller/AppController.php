@@ -41,9 +41,11 @@ class AppController extends Controller{
 		parent::constructClasses();
 		
 		//echo "Contruct AppController -";
-		
+	
 		//Verify the access of user to this program
 		if (!empty($this->params['program'])) {
+			//echo "Url target a program -";
+
 			$this->Program->recursive = -1;
 			$data = $this->Program->find('authorized', array(
 				'specific_program_access' => $this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id')),

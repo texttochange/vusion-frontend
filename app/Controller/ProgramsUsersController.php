@@ -72,6 +72,8 @@ class ProgramsUsersController extends AppController {
 		} else {
 			$this->request->data = $this->ProgramsUser->read(null, $id);
 		}
+		$this->set('programs', $this->ProgramsUser->Program->find('list'));
+		$this->set('users', $this->ProgramsUser->User->find('list'));
 	}
 
 /**

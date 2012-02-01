@@ -32,7 +32,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css(array('cake.generic', 'basic'));
+		echo $this->Html->css(array('cake.generic', 'basic', 'jquery-ui-1.8.16.custom'));
 
 		echo $scripts_for_layout;
 		

@@ -18,26 +18,32 @@ class Program extends AppModel {
 	public function _findAuthorized($state, $query, $results = array()) {
 		//print_r($query);
 		if ($state == 'before') {
+			//print_r($query);
 			if ($query['specific_program_access']) {
-			$query['joins'] = array(
-				array(
-					'table' => 'programs_users',
-					'alias' => 'ProgramUser',
-					'type' => 'LEFT',
-					'conditions' => array(
-							'Program.id = ProgramUser.program_id'
+				$query['joins'] = array(
+					array(
+						'table' => 'programs_users',
+						'alias' => 'ProgramUser',
+						'type' => 'LEFT',
+						'conditions' => array(
+								'Program.id = ProgramUser.program_id'
+							)
 						)
-					)
-				);
-			$query['conditions'] = array(
-				'ProgramUser.user_id' => $query['user_id']
-				);
-			if (!empty($query['program_url'])) {
-				$query['conditions'] = array_merge(
-					$query['conditions'],
-					array('Program.url' => $query['program_url'])
-				); 
-			}
+					);
+				$query['conditions'] = array(
+					'ProgramUser.user_id' => $query['user_id']
+					);
+				if (!empty($query['program_url'])) {
+					$query['conditions'] = array_merge(
+						$query['conditions'],
+						array('Program.url' => $query['program_url'])
+					); 
+				}
+			} else {
+				//TODO DRY it!
+				if (!empty($query['program_url'])) {
+					$query['conditions'] = array('Program.url' => $query['program_url']);
+				}
 			}
 			return $query;
 		}
