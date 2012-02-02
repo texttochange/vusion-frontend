@@ -53,7 +53,27 @@
 			'program' => '[a-zA-Z0-9]+'
 			)
 		);
-*/	
+*/
+
+/**
+*  get the local language form the subdomain such as fre.domain.com
+*/
+	$subdomain = substr(env("HTTP_HOST"), 0, strpos(env("HTTP_HOST"),"."));
+	
+	if (strlen($subdomain)>0) {
+		Configure::write('Config.language', $subdomain);
+	}
+
+
+	Router::mapResources('Scripts', array('prefix' => '/:program/'));
+	//Router::parseExtensions('json');
+	Router::mapResources('Status', array('prefix' => '/:program/'));
+	Router::mapResources('Programs');
+	Router::parseExtensions('json');
+	
+/**
+*  route for static controllers
+*/
 	Router::connect(
 		'/programs/:action/*',
 		array(
@@ -118,6 +138,10 @@
 			)
 		);
 	
+/**
+*  route for program specific controllers
+*/
+
 	Router::connect(
 		'/:program/:controller/:action/*',
 		array(
@@ -127,8 +151,8 @@
 		array(
 			'program' => '[a-zA-Z0-9]+'
 			)
-		);
-	
+		);	
+
 	Router::connect(
 		'/:program/:controller',
 		array(
@@ -151,7 +175,8 @@
 			)
 		);
 
-	Router::parseExtensions('json');
+
+
 	
 /**
  * Load all plugin routes.  See the CakePlugin documentation on 
@@ -164,3 +189,6 @@
  * the built-in default routes.
  */
 	require CAKE . 'Config' . DS . 'routes.php';
+	
+
+	

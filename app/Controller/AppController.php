@@ -35,6 +35,9 @@ class AppController extends Controller{
 	public $helpers = array('Html', 'Form', 'Session');
 	
 	function beforeFilter(){
+		
+		//set language into Session and Cookies
+		$this->_setLanguage();
 	}
 	
 	function constructClasses(){
@@ -53,12 +56,23 @@ class AppController extends Controller{
 				'program_url' => $this->params['program']
 				));
 			if (count($data)==0) {
-				$this->Session->setFlash(__('This program does not exists'));
-				$this->redirect('/');
+				//$this->Session->setFlash(__('This program does not exists'));
+				//$this->redirect('/');
+				throw new NotFoundException('Could not find this page.');
 			} else {
 				$this->Session->write( $this->params['program'] . '_db', $data[0]['Program']['database']);
 				//echo "SessionValue:".$this->Session->read($this->params['program'] . '_db');
 			}
+		}
+	}
+	
+	function _setLanguage(){
+		if ($this->Cookie->read('lang') && !$this->Session->check('Config.language')) {
+			$this->Session->write('Config.language',$this->Cookie->read('lang'));
+		} else if (isset($this->params['language']) && 
+			($this->params['language'] != $this->Session->read('Config.language'))){
+			$this->Session->write('Config.language', $this->params['language']);
+			$this->Cookie->write('lang', $this->params['language'], false, '20 days');
 		}
 	}
 

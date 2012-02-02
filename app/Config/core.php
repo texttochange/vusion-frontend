@@ -82,6 +82,12 @@
 	Configure::write('App.encoding', 'UTF-8');
 
 /**
+* Application default language is english.
+*/
+	Configure::write('Config.language', 'eng');	
+
+
+/**
  * To configure CakePHP *not* to use mod_rewrite and to
  * use CakePHP pretty URLs, remove these .htaccess
  * files:
@@ -229,7 +235,7 @@
  * Uncomment this line and correct your server timezone to fix 
  * any date & time related errors.
  */
-	//date_default_timezone_set('UTC');
+	date_default_timezone_set('UTC');
 
 /**
  *

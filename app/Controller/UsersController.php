@@ -12,6 +12,7 @@ class UsersController extends AppController {
 		parent::beforeFilter();
 		//For initial creation of the admin users uncomment the line below
 		$this->Auth->allow('login', 'logout');
+		//$this->Auth->allow('*');
 	}
 /**
  * index method
@@ -139,18 +140,25 @@ class UsersController extends AppController {
 		$group->id = 3;
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Programs');		
-		$this->Acl->allow($group, 'controllers/Users/login');
-		$this->Acl->allow($group, 'controllers/Users/logout');
+		//$this->Acl->allow($group, 'controllers/Users/login');
+		//$this->Acl->allow($group, 'controllers/Users/logout');
 		$this->Acl->allow($group, 'controllers/Home');
+		$this->Acl->allow($group, 'controllers/Participants');
+		$this->Acl->allow($group, 'controllers/Scripts');
+		$this->Acl->allow($group, 'controllers/ParticipantsStates');
 		
 		//allow customer to 
 		$group->id = 4;
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Programs/index');
 		$this->Acl->allow($group, 'controllers/Programs/view');
-		$this->Acl->allow($group, 'controllers/Users/login');
-		$this->Acl->allow($group, 'controllers/Users/logout');
+		//$this->Acl->allow($group, 'controllers/Users/login');
+		//$this->Acl->allow($group, 'controllers/Users/logout');
 		$this->Acl->allow($group, 'controllers/Home');
+		$this->Acl->allow($group, 'controllers/ParticipantsStates');
+		$this->Acl->allow($group, 'controllers/Participants');
+		
+		
 		echo 'AllDone';
 		exit;
 	}

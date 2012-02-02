@@ -1,9 +1,9 @@
 var program = {"program": [ 
-		"name", 
-		"customer",  
-		"shortcode",
-		"country",
-		"participants",
+		//"name", 
+		//"customer",  
+		//"shortcode",
+		//"country",
+		//"participants",
 		"requests-responses",
 		"dialogues",
 		],
@@ -89,6 +89,42 @@ var program = {"program": [
 	"feedback":["content"]
 };
 
+(function($)
+{
+
+	function _addToObject(obj, data, fn)
+	{
+		if (typeof (data) == "string")
+		{
+			if (!$.isArray(obj[data])) {
+				obj[data] = [];
+			}
+			obj[data].push(fn);
+		} else if (typeof (data) == "object")
+		{
+			$.each(data, function(name, fn)
+			{
+				_addToObject(obj, name, fn);
+			});
+		}
+	}
+	
+	/**
+	 * @page plugin Plugin
+	 * @parent index
+	 *
+	 * Functions that will be used as jQuery plugins.
+	 */
+	$.fn.extend(
+	{
+
+		buildTtcForm : function() {
+			$(this).empty().buildForm(fromBackendToFrontEnd());
+			activeForm();	
+		},
+	});
+})(jQuery);
+
 function saveFormOnServer(){
 		
 	var formData = form2js('dynamic-generic-program-form', '.', true);
@@ -97,7 +133,7 @@ function saveFormOnServer(){
 		
 	$("#testArea").text(indata);
 		
-	$.get('ajax.php',"action=save&description="+indata, function(data) {
+	$.post('scripts.json',indata, function(data) {
 		var response = $.parseJSON(data);
 		updateFlash(response['msg']);
 		

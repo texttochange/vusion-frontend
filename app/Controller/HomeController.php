@@ -4,6 +4,8 @@ App::uses('AppController','Controller');
 App::uses('Script','Model');
 App::uses('Participant','Model');
 App::uses('ParticipantsState','Model');
+App::uses('VumiSupervisord','Lib');
+
 
 class HomeController extends AppController {
 
@@ -16,17 +18,16 @@ class HomeController extends AppController {
 	
 		//echo "Home Index -"; 
 		
-		/*$data = array(
-			'truc' => array('truky')
-			);
-		$this->ProgramDocument->recursive = -1;
-		$this->ProgramDocument->create();
-		$this->ProgramDocument->save($data);*/
 		//$participantCount = $this->Participant->find('count');
 		$this->set('programName', $this->params['program']);
 		$this->set('programActive', $this->Script->find('active'));
 		$this->set('programDraft', $this->Script->find('draft'));
 		$this->set('participantCount', $this->Participant->find('count'));
+	
+		//get the lib
+		//require_once('Lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//$f=new xmlrpcmsg('supervisor.getState');
+		//print_r($this->VumiSupervisord->getAllProcessInfo());
 	}
 	
 	function constructClasses() {
@@ -39,6 +40,9 @@ class HomeController extends AppController {
 		$this->Script = new Script($options);
 		$this->Participant = new Participant($options);
 		$this->ParticipantsState = new ParticipantsState($options);
+
+		$this->VumiSupervisord = new VumiSupervisord();
+
 	}
 	
 }

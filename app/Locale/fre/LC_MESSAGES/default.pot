@@ -1,0 +1,652 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2012-02-02 09:32+0000\n"
+"PO-Revision-Date: 2012-02-02 13:44+0300\n"
+"Last-Translator: Olivier Vernin <overnin@gmail.com>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: Controller/GroupsController.php:35;66;92
+msgid "Invalid group"
+msgstr ""
+
+#: Controller/GroupsController.php:49;70
+msgid "The group has been saved"
+msgstr ""
+
+#: Controller/GroupsController.php:52;73
+msgid "The group could not be saved. Please, try again."
+msgstr ""
+
+#: Controller/GroupsController.php:95
+msgid "Group deleted"
+msgstr ""
+
+#: Controller/GroupsController.php:98
+msgid "Group was not deleted"
+msgstr ""
+
+#: Controller/ProgramDocumentsController.php:30;61;87
+msgid "Invalid ProgramDocument"
+msgstr ""
+
+#: Controller/ProgramDocumentsController.php:44;65
+msgid "The ProgramDocument has been saved"
+msgstr ""
+
+#: Controller/ProgramDocumentsController.php:47;68
+msgid "The ProgramDocument could not be saved. Please, try again."
+msgstr ""
+
+#: Controller/ProgramDocumentsController.php:90
+msgid "ProgramDocument deleted"
+msgstr ""
+
+#: Controller/ProgramDocumentsController.php:93
+msgid "ProgramDocument was not deleted"
+msgstr ""
+
+#: Controller/ProgramsController.php:49;80;106
+msgid "Invalid program"
+msgstr ""
+
+#: Controller/ProgramsController.php:63;84
+msgid "The program has been saved"
+msgstr ""
+
+#: Controller/ProgramsController.php:66;87
+msgid "The program could not be saved. Please, try again."
+msgstr ""
+
+#: Controller/ProgramsController.php:109
+msgid "Program deleted"
+msgstr ""
+
+#: Controller/ProgramsController.php:112
+msgid "Program was not deleted"
+msgstr ""
+
+#: Controller/ProgramsUsersController.php:30;63;91
+msgid "Invalid programs user"
+msgstr ""
+
+#: Controller/ProgramsUsersController.php:44;67
+msgid "The programs user has been saved"
+msgstr ""
+
+#: Controller/ProgramsUsersController.php:47;70
+msgid "The programs user could not be saved. Please, try again."
+msgstr ""
+
+#: Controller/ProgramsUsersController.php:94
+msgid "Programs user deleted"
+msgstr ""
+
+#: Controller/ProgramsUsersController.php:97
+msgid "Programs user was not deleted"
+msgstr ""
+
+#: Controller/UsersController.php:36;70;99
+msgid "Invalid user"
+msgstr ""
+
+#: Controller/UsersController.php:50;74
+msgid "The user has been saved"
+msgstr ""
+
+#: Controller/UsersController.php:53;77
+msgid "The user could not be saved. Please, try again."
+msgstr ""
+
+#: Controller/UsersController.php:102
+msgid "User deleted"
+msgstr ""
+
+#: Controller/UsersController.php:105
+msgid "User was not deleted"
+msgstr ""
+
+#: Controller/UsersController.php:111
+msgid "Login successful."
+msgstr "Authentification réussie."
+
+#: Controller/UsersController.php:114
+msgid "Invalid username or password, try again"
+msgstr ""
+
+#: Controller/UsersController.php:120
+msgid "Good-Bye"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:111
+msgid "<success>Aco Update Complete</success>"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:156
+msgid "Deleted %s and all children"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:197
+msgid "Created Aco node: %s"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:232
+msgid "Deleted Aco node %s"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:242
+msgid "Better manage, and easily synchronize you application's ACO tree"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:244
+msgid "Add new ACOs for new controllers and actions. Does not remove nodes from the ACO table."
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:246
+msgid "Perform a full sync on the ACO table.Will create new ACOs or missing controllers and actions.Will also remove orphaned entries that no longer have a matching controller/action"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:250
+msgid "Verify the tree structure of either your Aco or Aro Trees"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:255
+msgid "The type of tree to verify"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:261
+msgid "Recover a corrupted Tree"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:266
+msgid "The type of tree to recover"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:285
+msgid "Tree is valid and strong"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:302
+msgid "Tree has been recovered, or tree did not need recovery."
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:304
+msgid "<error>Tree recovery failed.</error>"
+msgstr ""
+
+#: Plugin/Mongodb/Model/Datasource/MongodbSource.php:516
+msgid "Invalid schema object"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/GeosController.php:78
+msgid "Geo saved."
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/GeosController.php:93
+msgid "Invalid Geo"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/GeosController.php:96
+msgid "Geo deleted"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/GeosController.php:98
+msgid "Geo deleted Fail"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:53
+msgid "Post saved."
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:68;91
+msgid "Invalid Post"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:72
+msgid "The Post has been saved."
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:94
+msgid "Post deleted"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:96
+msgid "Post deleted Fail"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:109
+msgid "Post deleteAll success"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:112
+msgid "Post deleteAll Fail"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:128
+msgid "Post updateAll success"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/PostsController.php:131
+msgid "Post updateAll Fail"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/SubdocumentsController.php:45
+msgid "Subdocument saved."
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/SubdocumentsController.php:60;82
+msgid "Invalid Subdocument"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/SubdocumentsController.php:64
+msgid "The Subdocument has been saved."
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/SubdocumentsController.php:85
+msgid "Subdocument deleted"
+msgstr ""
+
+#: Plugin/Mongodb/samples/Controller/SubdocumentsController.php:87
+msgid "Subdocument deleted Fail"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Geos/add.ctp:4
+msgid "Add Geo"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Geos/add.ctp:16;25
+msgid "List Geos"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Posts/add.ctp:4
+msgid "Add Post"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Posts/add.ctp:15
+#: Plugin/Mongodb/samples/View/Posts/edit.ctp:16
+msgid "List Posts"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Posts/edit.ctp:4
+msgid "Edit Post"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Subdocuments/add.ctp:4
+msgid "Add Subdocument"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Subdocuments/add.ctp:20;29
+#: Plugin/Mongodb/samples/View/Subdocuments/edit.ctp:19
+msgid "List Subdocuments"
+msgstr ""
+
+#: Plugin/Mongodb/samples/View/Subdocuments/edit.ctp:4
+msgid "Edit Subdocument"
+msgstr ""
+
+#: View/index.ctp:2
+msgid "Participant States"
+msgstr ""
+
+#: View/Groups/add.ctp:4
+msgid "Add Group"
+msgstr ""
+
+#: View/Groups/add.ctp:10
+#: View/Groups/edit.ctp:11
+#: View/Programs/add.ctp:12
+#: View/Programs/edit.ctp:13
+#: View/ProgramsUsers/add.ctp:10
+#: View/ProgramsUsers/edit.ctp:11
+#: View/Users/add.ctp:12
+#: View/Users/edit.ctp:13
+msgid "Submit"
+msgstr ""
+
+#: View/Groups/add.ctp:13
+#: View/Groups/edit.ctp:14
+#: View/Groups/index.ctp:10;44
+#: View/Groups/view.ctp:32
+#: View/Programs/add.ctp:15
+#: View/Programs/edit.ctp:16
+#: View/Programs/index.ctp:12;49
+#: View/Programs/view.ctp:42
+#: View/ProgramsUsers/add.ctp:13
+#: View/ProgramsUsers/edit.ctp:14
+#: View/ProgramsUsers/index.ctp:8;44
+#: View/ProgramsUsers/view.ctp:22
+#: View/Users/add.ctp:15
+#: View/Users/edit.ctp:16
+#: View/Users/index.ctp:11;48
+#: View/Users/view.ctp:38;62
+msgid "Actions"
+msgstr ""
+
+#: View/Groups/add.ctp:16
+#: View/Groups/edit.ctp:18
+#: View/Groups/view.ctp:36
+#: View/Users/add.ctp:19
+#: View/Users/edit.ctp:21
+#: View/Users/index.ctp:51
+#: View/Users/view.ctp:44
+msgid "List Groups"
+msgstr ""
+
+#: View/Groups/edit.ctp:4
+#: View/Groups/view.ctp:34
+msgid "Edit Group"
+msgstr ""
+
+#: View/Groups/edit.ctp:17
+#: View/Groups/index.ctp:23
+#: View/Programs/edit.ctp:19
+#: View/Programs/index.ctp:28
+#: View/ProgramsUsers/edit.ctp:17
+#: View/ProgramsUsers/index.ctp:23
+#: View/Users/edit.ctp:19
+#: View/Users/index.ctp:27
+#: View/Users/view.ctp:78
+msgid "Delete"
+msgstr ""
+
+#: View/Groups/edit.ctp:17
+#: View/Groups/index.ctp:23
+#: View/Groups/view.ctp:35
+#: View/Programs/edit.ctp:19
+#: View/Programs/index.ctp:28
+#: View/Programs/view.ctp:45
+#: View/ProgramsUsers/edit.ctp:17
+#: View/ProgramsUsers/index.ctp:23
+#: View/ProgramsUsers/view.ctp:25
+#: View/Users/edit.ctp:19
+#: View/Users/index.ctp:27
+#: View/Users/view.ctp:41;78
+msgid "Are you sure you want to delete # %s?"
+msgstr ""
+
+#: View/Groups/index.ctp:2
+msgid "Groups"
+msgstr ""
+
+#: View/Groups/index.ctp:21
+#: View/Programs/index.ctp:26
+#: View/ProgramsUsers/index.ctp:21
+#: View/Users/index.ctp:25
+#: View/Users/view.ctp:76
+msgid "View"
+msgstr ""
+
+#: View/Groups/index.ctp:22
+#: View/Programs/index.ctp:27
+#: View/ProgramsUsers/index.ctp:22
+#: View/Users/index.ctp:26
+#: View/Users/view.ctp:77
+msgid "Edit"
+msgstr ""
+
+#: View/Groups/index.ctp:31
+#: View/Programs/index.ctp:36
+#: View/ProgramsUsers/index.ctp:31
+#: View/Users/index.ctp:35
+msgid "Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}"
+msgstr ""
+
+#: View/Groups/index.ctp:37
+#: View/Programs/index.ctp:42
+#: View/ProgramsUsers/index.ctp:37
+#: View/Users/index.ctp:41
+msgid "previous"
+msgstr ""
+
+#: View/Groups/index.ctp:39
+#: View/Programs/index.ctp:44
+#: View/ProgramsUsers/index.ctp:39
+#: View/Users/index.ctp:43
+msgid "next"
+msgstr ""
+
+#: View/Groups/index.ctp:46
+#: View/Groups/view.ctp:37
+#: View/Users/add.ctp:20
+#: View/Users/edit.ctp:22
+#: View/Users/index.ctp:52
+#: View/Users/view.ctp:45
+msgid "New Group"
+msgstr ""
+
+#: View/Groups/view.ctp:2
+#: View/Users/view.ctp:19
+msgid "Group"
+msgstr ""
+
+#: View/Groups/view.ctp:4
+#: View/Programs/view.ctp:4
+#: View/ProgramsUsers/view.ctp:4
+#: View/Users/view.ctp:4;55
+msgid "Id"
+msgstr ""
+
+#: View/Groups/view.ctp:9
+#: View/Programs/view.ctp:9
+#: View/Users/view.ctp:56
+msgid "Name"
+msgstr ""
+
+#: View/Groups/view.ctp:14
+msgid "Specific Program Access"
+msgstr ""
+
+#: View/Groups/view.ctp:19
+#: View/Programs/view.ctp:29
+#: View/Users/view.ctp:25;60
+msgid "Created"
+msgstr ""
+
+#: View/Groups/view.ctp:24
+#: View/Programs/view.ctp:34
+#: View/Users/view.ctp:30;61
+msgid "Modified"
+msgstr ""
+
+#: View/Groups/view.ctp:35
+msgid "Delete Group"
+msgstr ""
+
+#: View/Home/index.ctp:2
+#: View/Programs/index.ctp:25
+msgid "Home"
+msgstr ""
+
+#: View/Participants/index.ctp:2
+msgid "Participants"
+msgstr ""
+
+#: View/ParticipantsStates/index.ctp:2
+msgid "Participant Status"
+msgstr ""
+
+#: View/Programs/add.ctp:4
+msgid "Add Program"
+msgstr ""
+
+#: View/Programs/add.ctp:18
+#: View/Programs/edit.ctp:20
+#: View/Programs/view.ctp:46
+#: View/ProgramsUsers/add.ctp:17
+#: View/ProgramsUsers/edit.ctp:19
+#: View/ProgramsUsers/index.ctp:47
+#: View/ProgramsUsers/view.ctp:28
+#: View/Users/add.ctp:21
+#: View/Users/edit.ctp:23
+#: View/Users/index.ctp:53
+#: View/Users/view.ctp:46
+msgid "List Programs"
+msgstr ""
+
+#: View/Programs/edit.ctp:4
+#: View/Programs/view.ctp:44
+msgid "Edit Program"
+msgstr ""
+
+#: View/Programs/index.ctp:2
+msgid "Programs"
+msgstr ""
+
+#: View/Programs/index.ctp:51
+#: View/Programs/view.ctp:47
+#: View/ProgramsUsers/add.ctp:18
+#: View/ProgramsUsers/edit.ctp:20
+#: View/ProgramsUsers/index.ctp:48
+#: View/ProgramsUsers/view.ctp:29
+#: View/Users/add.ctp:22
+#: View/Users/edit.ctp:24
+#: View/Users/index.ctp:54
+#: View/Users/view.ctp:47;87
+msgid "New Program"
+msgstr ""
+
+#: View/Programs/view.ctp:2
+#: View/ProgramsUsers/view.ctp:9
+msgid "Program"
+msgstr ""
+
+#: View/Programs/view.ctp:14
+#: View/Users/view.ctp:57
+msgid "Country"
+msgstr ""
+
+#: View/Programs/view.ctp:19
+#: View/Users/view.ctp:58
+msgid "Url"
+msgstr ""
+
+#: View/Programs/view.ctp:24
+#: View/Users/view.ctp:59
+msgid "Database"
+msgstr ""
+
+#: View/Programs/view.ctp:45
+msgid "Delete Program"
+msgstr ""
+
+#: View/ProgramsUsers/add.ctp:4
+msgid "Add Programs User"
+msgstr ""
+
+#: View/ProgramsUsers/add.ctp:16
+#: View/ProgramsUsers/edit.ctp:18
+#: View/ProgramsUsers/view.ctp:26
+msgid "List Programs Users"
+msgstr ""
+
+#: View/ProgramsUsers/add.ctp:19
+#: View/ProgramsUsers/edit.ctp:21
+#: View/ProgramsUsers/index.ctp:49
+#: View/ProgramsUsers/view.ctp:30
+#: View/Users/add.ctp:18
+#: View/Users/edit.ctp:20
+#: View/Users/view.ctp:42
+msgid "List Users"
+msgstr ""
+
+#: View/ProgramsUsers/add.ctp:20
+#: View/ProgramsUsers/edit.ctp:22
+#: View/ProgramsUsers/index.ctp:50
+#: View/ProgramsUsers/view.ctp:31
+#: View/Users/index.ctp:50
+#: View/Users/view.ctp:43
+msgid "New User"
+msgstr ""
+
+#: View/ProgramsUsers/edit.ctp:4
+#: View/ProgramsUsers/view.ctp:24
+msgid "Edit Programs User"
+msgstr ""
+
+#: View/ProgramsUsers/index.ctp:2
+msgid "Programs Users"
+msgstr ""
+
+#: View/ProgramsUsers/index.ctp:46
+#: View/ProgramsUsers/view.ctp:27
+msgid "New Programs User"
+msgstr ""
+
+#: View/ProgramsUsers/view.ctp:2
+msgid "Programs User"
+msgstr ""
+
+#: View/ProgramsUsers/view.ctp:14
+#: View/Users/view.ctp:2
+msgid "User"
+msgstr ""
+
+#: View/ProgramsUsers/view.ctp:25
+msgid "Delete Programs User"
+msgstr ""
+
+#: View/Scripts/index.ctp:2
+msgid "Script"
+msgstr ""
+
+#: View/Users/add.ctp:4
+msgid "Add User"
+msgstr ""
+
+#: View/Users/edit.ctp:4
+#: View/Users/view.ctp:40
+msgid "Edit User"
+msgstr ""
+
+#: View/Users/index.ctp:2
+msgid "Users"
+msgstr ""
+
+#: View/Users/login.ctp:7
+msgid "Login"
+msgstr "Connexion"
+
+#: View/Users/view.ctp:9
+msgid "Username"
+msgstr "Identifiant"
+
+#: View/Users/view.ctp:14
+msgid "Password"
+msgstr "Mot de passe"
+
+#: View/Users/view.ctp:41
+msgid "Delete User"
+msgstr ""
+
+#: View/Users/view.ctp:51
+msgid "Related Programs"
+msgstr ""
+
+#: Model/Group.php:validation
+#: for field name
+#: Model/ProgramsUser.php:validation
+#: for field program_id
+#: Model/User.php:validation
+#: for field username;validation for field password
+msgid "notempty"
+msgstr ""
+
+#: Model/ProgramsUser.php:validation
+#: for field user_id
+#: Model/User.php:validation
+#: for field group_id
+msgid "numeric"
+msgstr ""
+
+#: Model/User.php:validation
+#: for field limited_program_access
+msgid "boolean"
+msgstr ""
+
