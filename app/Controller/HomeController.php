@@ -11,8 +11,8 @@ class HomeController extends AppController {
 
 	//var $uses = array('ProgramDocument');
 	
-	public $components = array('RequestHandler');
-	public $helpers = array('Js' => array('Jquery'));
+	var $components = array('RequestHandler');
+	var $helpers = array('Js' => array('Jquery'));
 	
 	public function index() {
 	
@@ -22,6 +22,19 @@ class HomeController extends AppController {
 		$this->set('programName', $this->params['program']);
 		$this->set('programActive', $this->Script->find('active'));
 		$this->set('programDraft', $this->Script->find('draft'));
+		
+		$this->set('isScriptEdit', $this->Acl->check(array(
+			'User' => array(
+				'id' => $this->Session->read('Auth.User.id')
+				)
+			), 'controllers/Scripts'));
+		
+		$this->set('isParticipantAdd', $this->Acl->check(array(
+			'User' => array(
+				'id' => $this->Session->read('Auth.User.id')
+				),
+			), 'controllers/Participants/add'));
+		
 		$this->set('participantCount', $this->Participant->find('count'));
 	
 		//get the lib

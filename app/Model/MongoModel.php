@@ -1,4 +1,8 @@
-<?php class MongoModel extends Model {
+<?php 
+App::uses('Model', 'Model');
+App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
+
+class MongoModel extends Model {
     var $specific = false;
 
     public function __construct($id = false, $table = null, $ds = null) {
@@ -8,6 +12,8 @@
             // Get saved company/database name
             $dbName = $id['database'];
             // Get common company-specific config (default settings in database.php)
+            //$mongodb = new MongodbSource();
+            
             $config = ConnectionManager::getDataSource('mongo')->config;
 
             // Set correct database name

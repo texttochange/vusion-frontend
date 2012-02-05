@@ -13,7 +13,7 @@ class StatusController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		//For initial creation of the admin users uncomment the line below
-		$this->Auth->allow('*');
+		//$this->Auth->allow('*');
 	}
 	
 	public function index(){

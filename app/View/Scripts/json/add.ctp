@@ -1,3 +1,3 @@
 <?php 
-echo $this->Js->object(array('view' => 'add'));
+echo $this->Js->object($result);
 ?>	

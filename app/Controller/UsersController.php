@@ -145,7 +145,7 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/Home');
 		$this->Acl->allow($group, 'controllers/Participants');
 		$this->Acl->allow($group, 'controllers/Scripts');
-		$this->Acl->allow($group, 'controllers/ParticipantsStates');
+		$this->Acl->allow($group, 'controllers/Status');
 		
 		//allow customer to 
 		$group->id = 4;
@@ -155,8 +155,9 @@ class UsersController extends AppController {
 		//$this->Acl->allow($group, 'controllers/Users/login');
 		//$this->Acl->allow($group, 'controllers/Users/logout');
 		$this->Acl->allow($group, 'controllers/Home');
-		$this->Acl->allow($group, 'controllers/ParticipantsStates');
-		$this->Acl->allow($group, 'controllers/Participants');
+		$this->Acl->allow($group, 'controllers/Participants/index');
+		$this->Acl->allow($group, 'controllers/Participants/view');
+		$this->Acl->allow($group, 'controllers/Status');
 		
 		
 		echo 'AllDone';

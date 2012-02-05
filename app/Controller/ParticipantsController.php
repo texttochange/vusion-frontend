@@ -4,8 +4,22 @@ App::uses('Participant','Model');
 
 class ParticipantsController extends AppController {
 	
-	public function index(){
+	
+	
+	public function index() {
 		$this->set('programName', $this->params['program']);
+	}
+	
+	public function add() {	
+	}
+	
+	public function edit() {
+	}
+	
+	public function delete () {
+	}
+	
+	public function view() {
 	}
 	
 	function constructClasses() {
