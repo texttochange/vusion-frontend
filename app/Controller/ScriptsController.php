@@ -15,23 +15,17 @@ class ScriptsController extends AppController {
 	}
 	
 	public function index(){
-		$this->set('programName', $this->params['program']);	
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$draft = $this->Script->find('draft');
+		if (count($draft)){
+			$script = $draft[0]['Script'];
+		} else {
+			$script = null;
+		}
+		print("Hello");
+		$this->set(compact('programName', 'script'));
 	}
 	
-	/*
-	public function add(){
-		//print_r($this->request->data);
-		if ($this->request->is('post')) {
-			
-			$this->Script->create();
-			if ($this->Script->save($this->request->data)) {
-				$this->set('result', array('status' => '1'));
-			} else {
-				$this->set('result', array('status' => '0'));
-			}
-		}
-	}
-	*/
 	
 	/** TODO: move this logic into the Model 
 	* But when doing so the update didn't work due to duplicat entry on primary key.
@@ -46,7 +40,11 @@ class ScriptsController extends AppController {
 				//$this->Script->mongoNoSetOperator = true;
 				$this->Script->create();
 				$this->Script->id = $draft[0]['Script']['_id'];
-				$saveData['Script'] = get_object_vars($this->request->data);
+				if (is_object($this->request->data)) {
+					$saveData['Script'] = get_object_vars($this->request->data);
+				} else {
+					$saveData['Script'] = $this->request->data;
+				}
 				//echo 'type:'.gettype($saveData);
 				$saveData['Script']['_id'] = $draft[0]['Script']['_id'];
 				//print_r($saveData);
@@ -58,8 +56,11 @@ class ScriptsController extends AppController {
 			} else {
 				//echo 'save case';
 				$this->Script->create();
-				$saveData['Script'] = get_object_vars($this->request->data);
-				//print_r($saveData);
+				if (is_object($this->request->data)) {
+					$saveData['Script'] = get_object_vars($this->request->data);
+				} else {
+					$saveData['Script'] = $this->request->data;
+				}
 				if ($this->Script->save($saveData)) {
 					$this->set('result', array(
 						'status' => '1',

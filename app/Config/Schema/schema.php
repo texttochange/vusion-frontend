@@ -1,6 +1,8 @@
 <?php 
-/* generated on: 2012-01-30 16:06:04 : 1327928764 */
+/* generated on: 2012-01-30 18:38:30 : 1327937910 */
 class AppSchema extends CakeSchema {
+
+	public $file = 'schema_2.php';
 
 	public function before($event = array()) {
 		return true;
@@ -45,23 +47,26 @@ class AppSchema extends CakeSchema {
 	public $groups = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => false, 'length' => 100),
+		'specific_program_access' => array('type' => 'boolean', 'null' => false, 'default' => true),
 		'created' => array('type' => 'datetime', 'null' => true),
 		'modified' => array('type' => 'datetime', 'null' => true),
 		'indexes' => array(),
 		'tableParameters' => array()
 	);
 	public $programs = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
+		'id' => array('type' => 'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => true, 'length' => 50),
 		'country' => array('type' => 'string', 'null' => true, 'length' => 50),
+		'url' => array('type' => 'string', 'null' => true, 'length' => 50),
+		'database' => array('type' => 'string', 'null' => true, 'length' => 50),
 		'created' => array('type' => 'datetime', 'null' => true),
 		'modified' => array('type' => 'datetime', 'null' => true),
-		'indexes' => array(),
+		'indexes' => array('PRIMARY' => array('unique' => true, 'column' => 'id')),
 		'tableParameters' => array()
 	);
 	public $programs_users = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
-		'program_id' => array('type' => 'integer', 'null' => false),
+		'program_id' => array('type' => 'string', 'null' => false, 'length' => 36),
 		'user_id' => array('type' => 'integer', 'null' => false),
 		'indexes' => array(),
 		'tableParameters' => array()
@@ -71,7 +76,6 @@ class AppSchema extends CakeSchema {
 		'username' => array('type' => 'string', 'null' => false),
 		'password' => array('type' => 'string', 'null' => false, 'length' => 40),
 		'group_id' => array('type' => 'integer', 'null' => false),
-		'limited_program_access' => array('type' => 'boolean', 'null' => false),
 		'created' => array('type' => 'datetime', 'null' => true),
 		'modified' => array('type' => 'datetime', 'null' => true),
 		'indexes' => array('users_username_key' => array('unique' => true, 'column' => 'username')),

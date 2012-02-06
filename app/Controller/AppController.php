@@ -62,6 +62,7 @@ class AppController extends Controller{
 				//$this->redirect('/');
 				throw new NotFoundException('Could not find this page.');
 			} else {
+				$this->Session->write( $this->params['program'] . '_name', $data[0]['Program']['name']);
 				$this->Session->write( $this->params['program'] . '_db', $data[0]['Program']['database']);
 				//echo "SessionValue:".$this->Session->read($this->params['program'] . '_db');
 			}

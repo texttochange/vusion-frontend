@@ -1,6 +1,7 @@
 <?php
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ScriptsController', 'Controller');
+App::uses('Program', 'Model');
 
 
 /**
@@ -33,12 +34,20 @@ class TestScriptsController extends ScriptsController {
  */
 class ScriptsControllerTestCase extends ControllerTestCase {
 /**
- * Fixtures
+ * Data
  *
- * @var array
  */
-	//public $fixtures = array('app.ProgramDocument');
-
+	
+	var $programData = array(
+			0 => array( 
+				'Program' => array(
+					'name' => 'Test Name',
+					'country' => 'Test Country',
+					'url' => 'testurl',
+					'database' => 'testdbprogram'
+				)
+			));
+	
 /**
  * setUp method
  *
@@ -48,18 +57,43 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 		parent::setUp();
 
 		$this->Scripts = new TestScriptsController();
-		$this->Scripts->constructClasses();
+		//$this->Scripts->constructClasses();
+		ClassRegistry::config(array('ds' => 'test'));
+		//$this->Scripts->Program = ClassRegistry::init('TestProgram');
+		//$options = array('database' => 'test');
+		//$this->Scripts->Script = new Script($options);
 		
-		$options = array('database' => 'm4h');
-		$this->Scripts->Script = new Script($options);
+		$this->dropData();
+		
+		$this->Scripts->Program->create();
+		$this->Scripts->Program->save($this->programData[0]['Program']);
+		
+		
 	}
 
+	protected function dropData() {
+		$this->Scripts->Program->deleteAll(true, false);
+		$this->Scripts->Group->deleteAll(true, false);
+		
+		//As this model is created on the fly, need to instantiate again
+		$this->instanciateScriptModel();
+		$this->Scripts->Script->deleteAll(true, false);
+	}
+	
+	protected function instanciateScriptModel() {
+		$options = array('database' => $this->programData[0]['Program']['database']);
+		$this->Scripts->Script = new Script($options);
+	}
+	
 /**
  * tearDown method
  *
  * @return void
  */
 	public function tearDown() {
+		
+		$this->dropData();
+		
 		unset($this->Scripts);
 
 		parent::tearDown();
@@ -71,29 +105,20 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testIndex() {
-		/*$Scripts = $this->generate('Scripts', array(
-			'methods' => array(
-				'paginate'
-			),
-			'models' => array(
-				//'Program' => array('find'),
-				'Script' => array('recursive')
-				),
-			)
-			);
+		$this->testAction("/testurl/scripts", array('method' => 'get'));
+		//print_r($this->vars);
+		$this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
+	}
+	
+	
+	public function testIndex_returnDraft() {
+		$draft = array('somescript' => 'do something');
+		$this->instanciateScriptModel();
+		$this->Scripts->Script->create();
+		$this->Scripts->Script->save($draft);
 		
-		$Scripts
-			->expects($this->once())
-			->method('paginate')
-			->will($this->returnValue(array('one','two')));
-		*/
-		
-		
-		$this->testAction("/m4h/scripts", array('data' => '', 'method' => 'get'));
-		$this->assertEquals($this->vars['programName'], 'm4h');
-		//debug(array('toto' => 'tata'));
-		//throw new Exception(serialize($result));
-		//debug($result, true);
+		$this->testAction("/testurl/scripts", array('method' => 'get'));
+		$this->assertEquals($this->vars['script']['somescript'], $draft['somescript']);
 	}
 
 /**
@@ -139,6 +164,22 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 			);
 	}
 */
+
+
+	protected function array2object($arrGiven){
+		//create empty class
+		$objResult=new stdClass();
+		
+		foreach ($arrGiven as $key => $value){
+		//recursive call for multidimensional arrays
+		if(is_array($value)) $value=$this->array2object($value);
+		
+		
+		$objResult->{$key}=$value;
+		}
+		return $objResult;
+	}
+
 /**
  * testAdd method
  *
@@ -146,16 +187,21 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  */
 
  	public function testAdd() {
-		 $data = array(
-		 	 'script' => array(
-		 	 	 //'id' => '3',
-		 	 	 'name' => 'NewProgramDocument',
-		 	 	 'country' => 'Somewhere',
-		 	 	 )
-		 	 );
-		 	 
-    		 $this->testAction('/m4h/scripts/add', array('data' => $data, 'method' => 'post'));
-	}
+		$draft = array(
+				'somescript' => 'do something',
+			);
+ 		$this->testAction('/testurl/scripts.json', array('data' => $draft, 'method' => 'post'));
+    		 
+    		$updateDraft = array(
+				'somescript' => 'do something else',
+			);
+    		$this->testAction('/testurl/scripts.json', array('data' => $updateDraft, 'method' => 'post'));
+    		
+    		$this->instanciateScriptModel();
+		$currentDraft = $this->Scripts->Script->find('draft');
+		$this->assertEquals(count($draft), 1);
+    		$this->assertEquals($currentDraft[0]['Script']['somescript'], $updateDraft['somescript']);
+    	}
 
 
 /**

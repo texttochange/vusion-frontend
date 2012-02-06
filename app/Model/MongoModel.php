@@ -14,6 +14,8 @@ class MongoModel extends Model {
             // Get common company-specific config (default settings in database.php)
             //$mongodb = new MongodbSource();
             
+            //echo "Mongo Class is Construct ".$dbName;
+            
             $config = ConnectionManager::getDataSource('mongo')->config;
 
             // Set correct database name
