@@ -17,6 +17,9 @@ class Script extends MongoModel {
 	
 	public $findMethods = array(
 		'draft' => true,
+		'countDraft' => true,
+		'active' => true,
+		'countActive' => true,
 		'count' => true
 		);
 	
@@ -28,6 +31,25 @@ class Script extends MongoModel {
 		}
 		return $results;
 	}
+	
+	protected function _findCountActive($state, $query, $results = array()) {
+		if ($state == 'before') {
+			$query['fields'] = 'count';
+			$query['conditions']['Script.activated'] = 1;
+			return $query;
+		}
+		return $results;
+	}
+	
+	protected function _findCountDraft($state, $query, $results = array()) {
+		if ($state == 'before') {
+			$query['fields'] = 'count';
+			$query['conditions']['Script.activated'] = 0;
+			return $query;
+		}
+		return $results;
+	}
+	
 	
 	protected function _findDraft($state, $query, $results = array()) {
 		if ($state == 'before') {
@@ -52,7 +74,6 @@ class Script extends MongoModel {
 	* from saving to updating.
 	*/
 	public function beforeSave(){
-		
 		/*
 		$draft = $this->find('draft');
 		if ($draft){
@@ -63,16 +84,16 @@ class Script extends MongoModel {
 			//$this->updateAll(array(0 => $this->data));
 			//return false;
 		}
-		*/
-		
-		
+		*/	
 		return true;		
 	}
 	
-/*	public function afterSave() {
-		//echo "AFTER SAVE";
-		//print_r($this);
+	public function makeDraftActive() {
+		$result = $this->find('draft');
+		$result[0]['Script']['activated'] = 1;
+		$this->save($result);
 		return true;
-	}*/
+	}
+	
 	
 }

@@ -164,5 +164,4 @@ class UsersController extends AppController {
 		exit;
 	}
 
-
 }

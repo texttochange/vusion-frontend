@@ -19,24 +19,31 @@ class HomeController extends AppController {
 		//echo "Home Index -"; 
 		
 		//$participantCount = $this->Participant->find('count');
-		$this->set('programName', $this->params['program']);
-		$this->set('programActive', $this->Script->find('active'));
-		$this->set('programDraft', $this->Script->find('draft'));
+		$programName = $this->Session->read($this->params['program'].'_name');
 		
-		$this->set('isScriptEdit', $this->Acl->check(array(
-			'User' => array(
-				'id' => $this->Session->read('Auth.User.id')
-				)
-			), 'controllers/Scripts'));
+		$hasScriptActive = count($this->Script->find('countActive'));
+		$hasScriptDraft = count($this->Script->find('countDraft'));
 		
-		$this->set('isParticipantAdd', $this->Acl->check(array(
-			'User' => array(
-				'id' => $this->Session->read('Auth.User.id')
+		$isScriptEdit = $this->Acl->check(array(
+				'User' => array(
+					'id' => $this->Session->read('Auth.User.id')
 				),
-			), 'controllers/Participants/add'));
+			), 'controllers/Scripts');
 		
-		$this->set('participantCount', $this->Participant->find('count'));
+		$isParticipantAdd = $this->Acl->check(array(
+				'User' => array(
+					'id' => $this->Session->read('Auth.User.id')
+				),
+			), 'controllers/Participants/add');
+		
+		$participantCount = $this->Participant->find('count');
 	
+		$this->set(compact('programName',
+			'hasScriptActive', 
+			'hasScriptDraft',
+			'isScriptEdit', 
+			'isParticipantAdd', 
+			'participantCount'));
 		//get the lib
 		//require_once('Lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 		//$f=new xmlrpcmsg('supervisor.getState');

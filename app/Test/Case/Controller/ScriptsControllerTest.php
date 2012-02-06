@@ -126,59 +126,12 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  *
  * @return void
  */
- /*
 	public function testView() {
-		$data = array(
-			'Script' => array(
-				'id' => 1,
-				'name' => 'm4h',
-				'country' => 'uganda',
-				'created' => '2012-01-24 15:29:24',
-				'modified' => '2012-01-24 15:29:24'
-			)
-		);
 		
-		$Scripts = $this->generate('Scripts', array(
-			'models' => array(
-				//'Program' => array('find'),
-				'Script' => array('exists','read')
-				),
-			)
-			);
+		$this->testAction('/testurl/scripts/draft', array('method' => 'get'));
 		
-		$Scripts->Script
-			->expects($this->once())
-			->method('exists')
-			->will($this->returnValue(true));
-		
-		$Scripts->Script
-			->expects($this->once())
-			->method('read')
-			->will($this->returnValue($data));
-		
-		
-		$this->testAction("/Scripts/view/1");
-		//print_r($result);
-		$this->assertEquals($data, 
-			$this->vars['Script']
-			);
 	}
-*/
 
-
-	protected function array2object($arrGiven){
-		//create empty class
-		$objResult=new stdClass();
-		
-		foreach ($arrGiven as $key => $value){
-		//recursive call for multidimensional arrays
-		if(is_array($value)) $value=$this->array2object($value);
-		
-		
-		$objResult->{$key}=$value;
-		}
-		return $objResult;
-	}
 
 /**
  * testAdd method

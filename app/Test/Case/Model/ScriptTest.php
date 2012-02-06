@@ -61,6 +61,7 @@ class ScriptTestCase extends CakeTestCase {
 		
 	}
 	
+	/*
 	public function testUpdateDraft() {
 		$data['Script'] = array(
 			'something' => 1
@@ -80,6 +81,53 @@ class ScriptTestCase extends CakeTestCase {
 		$this->assertEqual(count($result), 1);
 		$record = $this->Script->find('draft');
 		$this->assertEquals($record[0]['Script']['something'],2);		
+	}
+	*/
+	
+	public function testFindCountDraft() {
+		
+		$result = $this->Script->find('countDraft');
+		//print_r($result);
+		$this->assertEquals(count($result), 0);
+	
+		
+		$data['Script'] = array(
+			'something' => 1
+			);
+		
+		$this->Script->recursive = -1;
+		$this->Script->create();
+		$this->Script->save($data);
+		
+		$result = $this->Script->find('countDraft');
+		//print_r($result);
+		$this->assertEquals(count($result), 1);
+	
+		$this->Script->create();
+		$this->Script->save($data);
+
+		$result = $this->Script->find('countDraft');		
+		$this->assertEquals(count($result), 2);
+	
+	}
+	
+	public function makeTurnDraftActive(){
+		$data['Script'] = array(
+			'something' => 1
+			);
+		$this->Script->recursive = -1;
+		$this->Script->create();
+		$id = $this->Script->save($data);
+		
+		$draft = $this->find('draft');
+		$this->assertEquals($draft[0]['Script']['activated'], '0');
+		
+		$this->Script->makeDraftActive($id);
+		
+		$draft = $this->find('draft');
+		$this->assertEquals($draft[0]['Script']['activated'], '1');
+		
+		
 	}
 	
 }

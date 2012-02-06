@@ -22,7 +22,6 @@ class ScriptsController extends AppController {
 		} else {
 			$script = null;
 		}
-		print("Hello");
 		$this->set(compact('programName', 'script'));
 	}
 	
@@ -71,6 +70,28 @@ class ScriptsController extends AppController {
 				}
 			}
 		}
+	}
+	
+	public function draft() {
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$draft = $this->Script->find('draft');
+		if (count($draft)){
+			$script = $draft[0]['Script'];
+		} else {
+			$script = null;
+		}
+		$this->set(compact('programName', 'script'));
+	}
+	
+	public function active(){
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$draft = $this->Script->find('active');
+		if (count($draft)){
+			$script = $draft[0]['Script'];
+		} else {
+			$script = null;
+		}
+		$this->set(compact('programName', 'script'));
 	}
 	
 	

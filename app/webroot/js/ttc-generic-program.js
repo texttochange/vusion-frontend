@@ -1,4 +1,4 @@
-var program = {"program": [ 
+var program = {"script": [ 
 		//"name", 
 		//"customer",  
 		//"shortcode",
@@ -118,8 +118,8 @@ var program = {"program": [
 	$.fn.extend(
 	{
 
-		buildTtcForm : function() {
-			$(this).empty().buildForm(fromBackendToFrontEnd());
+		buildTtcForm : function(script) {
+			$(this).empty().buildForm(fromBackendToFrontEnd(script['script'], script['_id']));
 			activeForm();	
 		},
 	});
@@ -133,10 +133,16 @@ function saveFormOnServer(){
 		
 	$("#testArea").text(indata);
 		
-	$.post('scripts.json',indata, function(data) {
-		var response = $.parseJSON(data);
-		updateFlash(response['msg']);
-		
+	$.ajax({
+		url:'../scripts.json',
+		type:'POST',
+		data: indata, 
+		contentType: 'application/json; charset=utf-8',
+		dataType: 'json', 
+		success: function(data) {
+			var response = $.parseJSON(data);
+			updateFlash(response['msg']);
+		}
 	});
 }
 	
@@ -481,12 +487,11 @@ function fromBackendToFrontEnd(configFile, id) {
                 	},
                 	{
                         "type": "p",
-                        "html": "Program"
                         }
                 ]
         };
         
-        configToForm("program",myform, "program", configFile);
+        configToForm("script",myform, "script", configFile);
         
           
         myform["elements"].push({
