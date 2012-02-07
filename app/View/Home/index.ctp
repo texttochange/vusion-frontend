@@ -1,7 +1,7 @@
 <div>
 	<h2><?php echo __('Home').' of '.$programName.' program';?></h2>
 	<div class='ttc-info-box'>
-	<?php if ($hasScriptActive && $hasScriptDraft) {
+	<?php if (!$hasScriptActive && !$hasScriptDraft) {
 		echo $this->Html->tag('div', 
 				'No script has been defined for this program',
 				array('class' => 'ttc-text')

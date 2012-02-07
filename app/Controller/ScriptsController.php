@@ -17,6 +17,7 @@ class ScriptsController extends AppController {
 	public function index(){
 		$programName = $this->Session->read($this->params['program'].'_name');
 		$draft = $this->Script->find('draft');
+		//print_r($draft);
 		if (count($draft)){
 			$script = $draft[0]['Script'];
 		} else {
@@ -31,20 +32,17 @@ class ScriptsController extends AppController {
 	*/
 	public function add(){
 		//print_r($this->request->data);
+				
 		if ($this->request->is('post')) {
+			$saveData['Script'] = (is_object($this->request->data) ? get_object_vars($this->request->data) : $this->request->data);
+			//below line in case need to remove the [script], however it create difficulties for the javascript rendering
+			//$saveData['Script'] = (is_object($data['script']) ? get_object_vars($data['script']) : $data['script']);
 			$draft = $this->Script->find('draft');
 			//print_r($draft);
 			if ($draft) {	
 				//echo 'Draft case';
-				//$this->Script->mongoNoSetOperator = true;
 				$this->Script->create();
 				$this->Script->id = $draft[0]['Script']['_id'];
-				if (is_object($this->request->data)) {
-					$saveData['Script'] = get_object_vars($this->request->data);
-				} else {
-					$saveData['Script'] = $this->request->data;
-				}
-				//echo 'type:'.gettype($saveData);
 				$saveData['Script']['_id'] = $draft[0]['Script']['_id'];
 				//print_r($saveData);
 				$this->Script->save($saveData);
@@ -55,11 +53,6 @@ class ScriptsController extends AppController {
 			} else {
 				//echo 'save case';
 				$this->Script->create();
-				if (is_object($this->request->data)) {
-					$saveData['Script'] = get_object_vars($this->request->data);
-				} else {
-					$saveData['Script'] = $this->request->data;
-				}
 				if ($this->Script->save($saveData)) {
 					$this->set('result', array(
 						'status' => '1',
@@ -81,6 +74,10 @@ class ScriptsController extends AppController {
 			$script = null;
 		}
 		$this->set(compact('programName', 'script'));
+	}
+	
+	public function activate_draft(){
+		$this->Script->makeDraftActive();
 	}
 	
 	public function active(){

@@ -141,19 +141,23 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 
  	public function testAdd() {
 		$draft = array(
-				'somescript' => 'do something',
+				'script' => array(
+					'do' => 'something',
+					)
 			);
  		$this->testAction('/testurl/scripts.json', array('data' => $draft, 'method' => 'post'));
     		 
     		$updateDraft = array(
-				'somescript' => 'do something else',
+				'script' => array(
+					'do' => 'something else',
+					)
 			);
     		$this->testAction('/testurl/scripts.json', array('data' => $updateDraft, 'method' => 'post'));
     		
     		$this->instanciateScriptModel();
 		$currentDraft = $this->Scripts->Script->find('draft');
 		$this->assertEquals(count($draft), 1);
-    		$this->assertEquals($currentDraft[0]['Script']['somescript'], $updateDraft['somescript']);
+    		$this->assertEquals($currentDraft[0]['Script']['script']['do'], $updateDraft['script']['do']);
     	}
 
 

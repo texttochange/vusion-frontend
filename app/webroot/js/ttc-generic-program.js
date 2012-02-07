@@ -126,7 +126,11 @@ var program = {"script": [
 	{
 
 		buildTtcForm : function(script) {
-			$(this).empty().buildForm(fromBackendToFrontEnd(script['script'], script['_id']));
+			if (script) {
+				$(this).empty().buildForm(fromBackendToFrontEnd(script['script'], script['_id']));
+			} else {
+				$(this).empty().buildForm(fromBackendToFrontEnd());
+			}
 			activeForm();	
 		},
 	});
