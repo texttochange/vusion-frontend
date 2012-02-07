@@ -161,6 +161,8 @@ class ScriptsControllerTestCase extends ControllerTestCase {
     	}
 
 
+    		
+    	
 /**
  * testEdit method
  *

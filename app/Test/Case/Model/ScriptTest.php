@@ -111,23 +111,32 @@ class ScriptTestCase extends CakeTestCase {
 	
 	}
 	
-	public function makeTurnDraftActive(){
+	public function testMakeTurnDraftActive(){
 		$data['Script'] = array(
-			'something' => 1
+			'script' => array(
+				'do' => 'something'
+				)
 			);
 		$this->Script->recursive = -1;
 		$this->Script->create();
 		$id = $this->Script->save($data);
 		
-		$draft = $this->find('draft');
-		$this->assertEquals($draft[0]['Script']['activated'], '0');
+		$draft = $this->Script->find('draft');
+		$this->assertEquals($draft[0]['Script']['activated'], 0);
 		
-		$this->Script->makeDraftActive($id);
+		$this->Script->makeDraftActive();
 		
-		$draft = $this->find('draft');
-		$this->assertEquals($draft[0]['Script']['activated'], '1');
+		$this->assertEquals(count($this->Script->find('draft')), 0);
 		
+		$active = $this->Script->find('active');
+		$this->assertEquals($active[0]['Script']['activated'], 1);
+		$this->assertEquals($active[0]['Script']['script'], $data['Script']['script']);
 		
+	}
+	
+	public function testMakeTurnDraftActive_noDraft(){
+		$result = $this->Script->makeDraftActive();
+		$this->assertEquals($result, false);
 	}
 	
 }

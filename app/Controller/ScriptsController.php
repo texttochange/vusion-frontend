@@ -77,7 +77,9 @@ class ScriptsController extends AppController {
 	}
 	
 	public function activate_draft(){
-		$this->Script->makeDraftActive();
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$result = $this->Script->makeDraftActive();
+		$this->set(compact('programName', 'result'));
 	}
 	
 	public function active(){

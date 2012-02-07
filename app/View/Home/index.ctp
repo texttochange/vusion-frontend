@@ -28,6 +28,13 @@
 				      ),
 				array('class' => 'ttc-button')
 				);
+			echo $this->Html->tag('span', 'Activate draft',
+				array('class' => 'ttc-button',
+					'id'=> 'activate-button')
+				);
+			$this->Js->get('#activate-button')->event('click','$.get(
+				"'.$programName.'/scripts/activate_draft"
+				);', true);
 			}
 		  };
 		  if ($hasScriptActive) {

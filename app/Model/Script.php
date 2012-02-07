@@ -60,11 +60,9 @@ class Script extends MongoModel {
 	}
 	
 	public function beforeValidate(){
-		//print_r($this->data);
-		if (!isset($this->data['Script']['activated'])) {
+		if (!(isset($this->data['Script']['activated']))) {
 			$this->data['Script']['activated'] = 0;
 		}
-		
 		return true;
 	}
 	
@@ -74,25 +72,20 @@ class Script extends MongoModel {
 	* from saving to updating.
 	*/
 	public function beforeSave(){
-		/*
-		$draft = $this->find('draft');
-		if ($draft){
-			//print_r($this->data);
-			$this->data['Script']['_id'] = $draft[0]['Script']['_id']; 
-			$this->id = $draft[0]['Script']['_id'];
-			//print_r($this);
-			//$this->updateAll(array(0 => $this->data));
-			//return false;
-		}
-		*/	
+			
 		return true;		
 	}
 	
 	public function makeDraftActive() {
-		$result = $this->find('draft');
-		$result[0]['Script']['activated'] = 1;
-		$this->save($result);
-		return true;
+		$draft = $this->find('draft');
+		if ($draft) {
+			$draft[0]['Script']['activated'] = 1;
+			$this->create();
+			$this->id = $draft[0]['Script']['_id'];
+			$this->save($draft[0]['Script']);
+			return true;
+		}
+		return false;
 	}
 	
 	
