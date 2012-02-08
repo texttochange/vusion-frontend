@@ -10,10 +10,12 @@
 
 .ttc-info-box {
 	padding : 10px;
+	margin-top : 20px;
 }
 
 .ttc-text {
 	padding-bottom : 10px;
+	font-size : 18px;
 }
 
 .ttc-button{
@@ -48,3 +50,24 @@
 	text-decoration: none;
 	cursor: pointer;
 }
+
+.ui-dform-legend {
+	color : black;
+	font-size : 18px;
+	font-weight : normal;
+}
+
+.ui-dform-fieldset {
+	border: 1px solid gray;
+	margin : 4px;
+}
+
+.ui-dform-label {
+}
+
+.ui-dform-text {
+}
+
+
+
+

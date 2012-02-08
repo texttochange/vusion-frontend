@@ -8,7 +8,7 @@ var participant = {"participants": ["add-participant"],
 var program = {"script": [ 
 		//"name", 
 		//"customer",  
-		//"shortcode",
+		"shortcode",
 		//"country",
 		//"participants",
 		"requests-responses",

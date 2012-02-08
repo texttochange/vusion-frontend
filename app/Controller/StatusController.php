@@ -6,6 +6,7 @@ class StatusController extends AppController {
 	
 	//public $name = 'Participantsstates';
 	
+	public $uses = array('ParticipantsState');
 	var $components = array('RequestHandler');
 	var $helpers = array('Js' => array('Jquery'));
 	
@@ -17,17 +18,17 @@ class StatusController extends AppController {
 	}
 	
 	public function index(){
-		$this->set('programName', $this->params['program']);
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$programUrl = $this->params['program'];
+		$statuses = $this->paginate();
+		$this->set(compact('programName', 'programUrl', 'statuses'));
 	}
 	
-	public function add(){
-	}
 	
 	function constructClasses() {
 		parent::constructClasses();
 		
 		$options = array('database' => ($this->Session->read($this->params['program']."_db")));
-		
 		$this->ParticipantsState = new ParticipantsState($options);
 	}
 	

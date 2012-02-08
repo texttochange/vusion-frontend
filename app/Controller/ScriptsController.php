@@ -1,6 +1,8 @@
 <?php
 App::uses('AppController','Controller');
 App::uses('Script','Model');
+App::uses('VumiSupervisord','Lib');
+App::uses('VumiRabbitMQ', 'Lib');
 
 class ScriptsController extends AppController {
 	
@@ -78,8 +80,15 @@ class ScriptsController extends AppController {
 	
 	public function activate_draft(){
 		$programName = $this->Session->read($this->params['program'].'_name');
-		$result = $this->Script->makeDraftActive();
-		$this->set(compact('programName', 'result'));
+		$result_db = $this->Script->makeDraftActive();
+		$result_supervisord = $this->VumiSupervisord->startWorker($this->params['program']);
+		$result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
+			$this->params['program'], 
+			$this->Session->read($this->params['program'].'_db'));
+		$this->VumiRabbitMQ->sendStartMessageToWorker(
+			$this->params['program']);
+		//$this->set(compact('programName', 'result_db', 'result_supervisord'));
+		$this->redirect(array('program'=>$this->params['program'], 'controller'=>'home'));
 	}
 	
 	public function active(){
@@ -98,8 +107,10 @@ class ScriptsController extends AppController {
 		parent::constructClasses();
 		
 		$options = array('database' => ($this->Session->read($this->params['program']."_db")));
-		
 		$this->Script = new Script($options);
+		
+		$this->VumiSupervisord = new VumiSupervisord();
+		$this->VumiRabbitMQ = new VumiRabbitMQ();
 	}
 
 	

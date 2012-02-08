@@ -126,7 +126,7 @@ class VumiSupervisord {
 	}
 	*/
 	
-	function startWorker($worker_name, $db_name){
+	function startWorker($worker_name){
 		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$c=new xmlrpc_client("/RPC2", "localhost",9010);
@@ -144,8 +144,7 @@ class VumiSupervisord {
 						--vhost=/develop 
 						--worker-class=vumi.workers.ttc.TtcGenericWorker 
 						--config=./config/ttc/ttc_generic_worker.yaml 
-						--set-option=control_name:".$worker_name).
-						" --set-option=db_name:".$db_name,
+						--set-option=control_name:".$worker_name),					
 					//'command' => new xmlrpcval("ls -l"),
 					'autostart' => new xmlrpcval("true"),
 					'autorestart' => new xmlrpcval("true"),

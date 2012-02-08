@@ -141,6 +141,16 @@
 /**
 *  route for program specific controllers
 */
+	Router::connect(
+		'/:program/:controller/:action/:id',
+		array(
+			'controller' => 'home',
+			'action' => 'index'
+			),
+		array(
+			'program' => '[a-zA-Z0-9]+'
+			)
+		);
 
 	Router::connect(
 		'/:program/:controller/:action/*',

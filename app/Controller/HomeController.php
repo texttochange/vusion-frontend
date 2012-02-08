@@ -20,7 +20,7 @@ class HomeController extends AppController {
 		
 		//$participantCount = $this->Participant->find('count');
 		$programName = $this->Session->read($this->params['program'].'_name');
-		
+		$programUrl = $this->params['program'];
 		$hasScriptActive = count($this->Script->find('countActive'));
 		$hasScriptDraft = count($this->Script->find('countDraft'));
 		
@@ -37,18 +37,23 @@ class HomeController extends AppController {
 			), 'controllers/Participants/add');
 		
 		$participantCount = $this->Participant->find('count');
+		
+		$statusCount = $this->ParticipantsState->find('count');
 	
 		$this->set(compact('programName',
+			'programUrl',
 			'hasScriptActive', 
 			'hasScriptDraft',
 			'isScriptEdit', 
 			'isParticipantAdd', 
-			'participantCount'));
+			'participantCount',
+			'statusCount'));
 		//get the lib
 		//require_once('Lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 		//$f=new xmlrpcmsg('supervisor.getState');
 		//print_r($this->VumiSupervisord->getAllProcessInfo());
 	}
+	
 	
 	function constructClasses() {
 		parent::constructClasses();

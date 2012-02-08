@@ -160,8 +160,11 @@ class ScriptsControllerTestCase extends ControllerTestCase {
     		$this->assertEquals($currentDraft[0]['Script']['script']['do'], $updateDraft['script']['do']);
     	}
 
-
-    		
+    	/*
+    	public function testActivateDraft(){
+    		$Scripts = $this->generate('Script', array)
+    	}
+    	*/
     	
 /**
  * testEdit method

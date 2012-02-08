@@ -1,42 +1,60 @@
 <div>
 	<h2><?php echo __('Home').' of '.$programName.' program';?></h2>
-	<div class='ttc-info-box'>
-	<?php if (!$hasScriptActive && !$hasScriptDraft) {
+	<?php if (!$hasScriptActive && !$hasScriptDraft) { ?>
+		<div class='ttc-info-box'>
+	<?php
 		echo $this->Html->tag('div', 
 				'No script has been defined for this program',
 				array('class' => 'ttc-text')
 				);
 		if ($isScriptEdit) {
 			echo $this->Html->link('Create script', 
-				array('program' => $programName,
+				array('program' => $programUrl,
 				      'controller' => 'scripts'
 				      ),
 				array('class' => 'ttc-button')
 				);
-		};
-	       } else {
-	       	  if ($hasScriptDraft) {
+		}; ?>
+		</div>
+		<?php } else { ?>
+	       
+	       <?php
+	       	  if ($hasScriptDraft) { ?>
+	       	 <div class='ttc-info-box'>
+	       	  <?php
 			echo $this->Html->tag('div', 
 				'A draft script has been defined for this program',
 				array('class' => 'ttc-text')
 				);
 			if ($isScriptEdit) {	
 			echo $this->Html->link('Edit draft', 
-				array('program' => $programName,
+				array('program' => $programUrl,
 				      'controller' => 'scripts',
 				      'action' => 'draft'
 				      ),
 				array('class' => 'ttc-button')
 				);
-			echo $this->Html->tag('span', 'Activate draft',
+			echo $this->Html->link('Activate draft', 
+				array('program' => $programUrl,
+				      'controller' => 'scripts',
+				      'action' => 'activate_draft'
+				      ),
+				array('class' => 'ttc-button')
+				);
+			/*echo $this->Html->tag('span', 'Activate draft',
 				array('class' => 'ttc-button',
 					'id'=> 'activate-button')
 				);
 			$this->Js->get('#activate-button')->event('click','$.get(
 				"'.$programName.'/scripts/activate_draft"
-				);', true);
-			}
-		  };
+				);', true);*/
+			} ?> 
+			</div>
+			<?php
+		  }; ?>
+		  
+		  <div class='ttc-info-box'>
+		  <?php
 		  if ($hasScriptActive) {
 			echo $this->Html->tag('div', 
 				'A script is already active for this program',
@@ -44,7 +62,7 @@
 				);
 			if ($isScriptEdit) {
 			echo $this->Html->link('Edit script', 
-				array('program' => $programName,
+				array('program' => $programUrl,
 				      'controller' => 'scripts',
 				      'action' => 'active'
 				      ),
@@ -53,16 +71,17 @@
 			}
 		  }; 
 	       } ?>
-	</div>
+	       </div>
+
 	<div class='ttc-info-box'>
 	<?php echo $this->Html->tag('div', 
-				'Number of participants: '.$participantCount,
+				'Participants: '.$participantCount,
 				array('class' => 'ttc-text')
 				); ?>
 	<?php if ($isParticipantAdd) { 
 		echo $this->Html->link('Add participant(s)',
 			array('program' => $programName,
-				'controller' => 'Participants',
+				'controller' => 'participants',
 				'action' => 'add'
 				),
 			array('class' => 'ttc-button')
@@ -76,6 +95,21 @@
 			array('class' => 'ttc-button')
 			);
 		}?>
+	</div>
+	<div class='ttc-info-box'>
+	<?php echo $this->Html->tag('div', 
+				'Program History: '.$statusCount.' item(s)',
+				array('class' => 'ttc-text')
+				); ?>
+	<?php if ($statusCount > 0) {
+		echo $this->Html->link('View Program History',
+			array('program' => $programName,
+				'controller' => 'status', 
+				),
+			array('class' => 'ttc-button')
+			);
+		}?>
+	</div>
 	</div>
 	
 </div>

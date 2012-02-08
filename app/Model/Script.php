@@ -25,7 +25,7 @@ class Script extends MongoModel {
 	
 	protected function _findActive($state, $query, $results = array()) {
 		if ($state == 'before') {
-			$query['order']['created'] = 'asc';
+			$query['order']['created'] = 'desc';
 			$query['conditions']['Script.activated'] = 1;
 			return $query;
 		}
@@ -83,7 +83,7 @@ class Script extends MongoModel {
 			$this->create();
 			$this->id = $draft[0]['Script']['_id'];
 			$this->save($draft[0]['Script']);
-			return true;
+			return $draft[0]['Script'];
 		}
 		return false;
 	}

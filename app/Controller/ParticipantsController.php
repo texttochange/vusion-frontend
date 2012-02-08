@@ -44,6 +44,24 @@ class ParticipantsController extends AppController {
 	}
 	
 	public function edit() {
+		$id = $this->params['id'];
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$programUrl = $this->params['program'];
+		$this->Participant->id = $id;
+		if (!$this->Participant->exists()) {
+			throw new NotFoundException(__('Invalid participant'));
+		}
+		if ($this->request->is('post') || $this->request->is('put')) {
+			if ($this->Participant->save($this->request->data)) {
+				$this->Session->setFlash(__('The user has been saved'));
+				$this->redirect(array('program' => $programUrl, 'controller'=>'participants', 'action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+			}
+		} else {
+			$this->request->data = $this->Participant->read(null, $id);
+		}
+		$this->set(compact('programName', 'programUrl')); 
 	}
 	
 	public function delete () {

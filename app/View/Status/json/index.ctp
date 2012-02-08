@@ -1,3 +1,3 @@
 <?php 
-echo $this->Js->object(array('view' => 'index'));
+echo $this->Js->object($statuses);
 ?>	

@@ -22,7 +22,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>
-		<?php echo "Umoja" ?>:
+		<?php echo "Vusion" ?>:
 		<?php echo $title_for_layout; ?>
 		
 	</title>
@@ -52,7 +52,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 			<?php 
 				echo $this->Html->tag(
 					'h1',
-					'Umoja',
+					'Vusion',
 					array('class' => 'ttc-title')
 					);
 				if ($this->Session->read('Auth.User.id')) {

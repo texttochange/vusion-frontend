@@ -7,6 +7,8 @@ App::uses('MongoModel', 'Model');
 class ParticipantsState extends MongoModel {
 
 	var $specific = true;	
+
+	
 /**
  * Display field
  *
@@ -14,5 +16,7 @@ class ParticipantsState extends MongoModel {
  */
  	//var $name = 'ParticipantStat';
 	var $useDbConfig = 'mongo';
+	
+	var $useTable = 'status';
 	
 }

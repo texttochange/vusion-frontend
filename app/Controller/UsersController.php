@@ -12,7 +12,7 @@ class UsersController extends AppController {
 		parent::beforeFilter();
 		//For initial creation of the admin users uncomment the line below
 		$this->Auth->allow('login', 'logout');
-		//$this->Auth->allow('*');
+		$this->Auth->allow('*');
 	}
 /**
  * index method
@@ -155,6 +155,7 @@ class UsersController extends AppController {
 		//$this->Acl->allow($group, 'controllers/Users/login');
 		//$this->Acl->allow($group, 'controllers/Users/logout');
 		$this->Acl->allow($group, 'controllers/Home');
+		$this->Acl->deny($group, 'controllers/Participants');
 		$this->Acl->allow($group, 'controllers/Participants/index');
 		$this->Acl->allow($group, 'controllers/Participants/view');
 		$this->Acl->allow($group, 'controllers/Status');
