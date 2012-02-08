@@ -69,13 +69,14 @@ class ScriptsController extends AppController {
 	
 	public function draft() {
 		$programName = $this->Session->read($this->params['program'].'_name');
+		$programUrl = $this->params['program'];
 		$draft = $this->Script->find('draft');
 		if (count($draft)){
 			$script = $draft[0]['Script'];
 		} else {
 			$script = null;
 		}
-		$this->set(compact('programName', 'script'));
+		$this->set(compact('programName', 'programUrl', 'script'));
 	}
 	
 	public function activate_draft(){
@@ -93,13 +94,14 @@ class ScriptsController extends AppController {
 	
 	public function active(){
 		$programName = $this->Session->read($this->params['program'].'_name');
+		$programUrl = $this->params['program'];
 		$draft = $this->Script->find('active');
 		if (count($draft)){
 			$script = $draft[0]['Script'];
 		} else {
 			$script = null;
 		}
-		$this->set(compact('programName', 'script'));
+		$this->set(compact('programName', 'programUrl', 'script'));
 	}
 	
 	

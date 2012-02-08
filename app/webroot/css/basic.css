@@ -52,22 +52,49 @@
 }
 
 .ui-dform-legend {
-	color : black;
+	color : gray;
 	font-size : 18px;
 	font-weight : normal;
+	margin-left: 10px;
 }
 
 .ui-dform-fieldset {
 	border: 1px solid gray;
-	margin : 4px;
+	margin : 4px 4px 4px 10px;
 }
 
 .ui-dform-label {
+	float : left;
+	margin-top : 5px;
+	margin-left : 10px;
+}
+
+.ui-dform-radiobuttons .ui-dform-label {
+	float : none;
+	margin-top: 5px;
 }
 
 .ui-dform-text {
+	margin-left : 20px;
+	height : 10px;
+	margin-bottom : 10px;
+	width : 92%;
 }
 
+.ui-dform-addElt {
+	margin :5px;	
+}
 
+.ttc-actions{
+    float: left;
+    padding: 10px 1.5%;
+    width: 40%;
+}
 
+.ttc-info{
+    border-left: 1px solid #666666;
+    float: right;
+    padding: 10px 2%;
+    width: 50%;
+}
 

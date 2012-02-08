@@ -34,7 +34,13 @@ class ProgramsController extends AppController {
 				'user_id' => $this->Session->read('Auth.User.id'),
 				);
 		}
-		$this->set('programs', $this->paginate());
+		$programs =  $this->paginate();
+		$isProgramEdit = $this->Acl->check(array(
+				'User' => array(
+					'id' => $this->Session->read('Auth.User.id')
+				),
+			), 'controllers/Programs/edit');
+		$this->set(compact('programs', 'isProgramEdit'));
 	}
 
 /**

@@ -4,6 +4,7 @@ App::uses('AppController','Controller');
 App::uses('Script','Model');
 App::uses('Participant','Model');
 App::uses('ParticipantsState','Model');
+App::uses('Schedule','Model');
 App::uses('VumiSupervisord','Lib');
 
 
@@ -40,6 +41,8 @@ class HomeController extends AppController {
 		
 		$statusCount = $this->ParticipantsState->find('count');
 	
+		$schedules = $this->Schedule->find('soon');
+		
 		$this->set(compact('programName',
 			'programUrl',
 			'hasScriptActive', 
@@ -47,7 +50,8 @@ class HomeController extends AppController {
 			'isScriptEdit', 
 			'isParticipantAdd', 
 			'participantCount',
-			'statusCount'));
+			'statusCount',
+			'schedules'));
 		//get the lib
 		//require_once('Lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 		//$f=new xmlrpcmsg('supervisor.getState');
@@ -65,6 +69,7 @@ class HomeController extends AppController {
 		$this->Script = new Script($options);
 		$this->Participant = new Participant($options);
 		$this->ParticipantsState = new ParticipantsState($options);
+		$this->Schedule = new Schedule($options);
 
 		$this->VumiSupervisord = new VumiSupervisord();
 

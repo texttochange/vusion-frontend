@@ -1,5 +1,7 @@
 <div>
 	<h2><?php echo __('Home').' of '.$programName.' program';?></h2>
+	<div class='ttc-actions'>
+	<h3><?php echo __('Status & Actions');?></h3>
 	<?php if (!$hasScriptActive && !$hasScriptDraft) { ?>
 		<div class='ttc-info-box'>
 	<?php
@@ -17,7 +19,6 @@
 		}; ?>
 		</div>
 		<?php } else { ?>
-	       
 	       <?php
 	       	  if ($hasScriptDraft) { ?>
 	       	 <div class='ttc-info-box'>
@@ -111,6 +112,21 @@
 		}?>
 	</div>
 	</div>
-	
+	<div class='ttc-info'>
+	<h3><?php echo __('Sending Next');?></h3>
+	<table cellpadding="0" cellspacing="0">
+		<tr>
+			<th><?php echo __('at');?></th>
+			<th><?php echo __('to');?></th>
+		</tr>
+	<?php
+	foreach ($schedules as $schedule): ?>
+	<tr>
+		<td><?php echo h($schedule['Schedule']['datetime']); ?>&nbsp;</td>
+		<td><?php echo h($schedule['Schedule']['participant-phone']); ?>&nbsp;</td>
+	</tr>
+	<?php endforeach; ?>
+	</table>
+	</div>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

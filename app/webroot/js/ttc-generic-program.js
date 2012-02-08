@@ -84,10 +84,12 @@ var program = {"script": [
 		"wait-answer": "Wait previous question to be answered"},
 	"content":"text",
 	"date": "text",
-	"fixed-time":["year","month","day","time"],
+	"fixed-time":["year","month","day","hour","minute"],
 	"year":"text",
 	"month":"text",
 	"day":"text",
+	"hour":"text",
+	"minute":"text",
 	"wait":["minutes"],
 	"wait-answer": ["minutes"],
 	"minutes":"text",
@@ -561,7 +563,7 @@ function fromDataToForm2(structure, lang, data, id) {
         
         myform["elements"].push({
                         "type": "submit",
-                        "value": "Save"
+                        "value": "Save as draft"
                 })
         
         return myform;
