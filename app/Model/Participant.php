@@ -15,4 +15,5 @@ class Participant extends MongoModel {
  	var $name = 'Participant';
 	var $useDbConfig = 'mongo';
 	
+	
 }

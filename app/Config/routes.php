@@ -148,7 +148,8 @@
 			'action' => 'index'
 			),
 		array(
-			'program' => '[a-zA-Z0-9]+'
+			'program' => '[a-zA-Z0-9]+',
+			'id' => '[a-zA-Z0-9]+'
 			)
 		);
 

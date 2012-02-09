@@ -144,8 +144,6 @@ function saveFormOnServer(){
 	//alert();
 	var indata= JSON.stringify(formData, null, '\t');
 		
-	$("#testArea").text(indata);
-		
 	$.ajax({
 		url:'../scripts.json',
 		type:'POST',
@@ -154,7 +152,9 @@ function saveFormOnServer(){
 		dataType: 'json', 
 		success: function(data) {
 			var response = $.parseJSON(data);
-			updateFlash(response['msg']);
+			$("#flashMessage").text('The script has been saved as draft, wait for redirection');
+			$("#flashMessage").attr('class', 'message');
+			setTimeout( function() { window.location.href = "draft"}, 3000);
 		}
 	});
 }

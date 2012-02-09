@@ -12,7 +12,7 @@ class UsersController extends AppController {
 		parent::beforeFilter();
 		//For initial creation of the admin users uncomment the line below
 		$this->Auth->allow('login', 'logout');
-		$this->Auth->allow('*');
+		//$this->Auth->allow('*');
 	}
 /**
  * index method
@@ -135,6 +135,9 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/Programs');
 		$this->Acl->allow($group, 'controllers/ProgramsUsers');
 		$this->Acl->allow($group, 'controllers/Home');
+		$this->Acl->allow($group, 'controllers/Participants');
+		$this->Acl->allow($group, 'controllers/Scripts');
+		$this->Acl->allow($group, 'controllers/Status');
 		
 		//allow program manager to programs
 		$group->id = 3;
@@ -155,7 +158,9 @@ class UsersController extends AppController {
 		//$this->Acl->allow($group, 'controllers/Users/login');
 		//$this->Acl->allow($group, 'controllers/Users/logout');
 		$this->Acl->allow($group, 'controllers/Home');
-		$this->Acl->deny($group, 'controllers/Participants');
+		//$this->Acl->deny($group, 'controllers/Participants');
+		$this->Acl->deny($group, 'controllers/Participants/edit');
+		$this->Acl->deny($group, 'controllers/Participants/add');
 		$this->Acl->allow($group, 'controllers/Participants/index');
 		$this->Acl->allow($group, 'controllers/Participants/view');
 		$this->Acl->allow($group, 'controllers/Status');

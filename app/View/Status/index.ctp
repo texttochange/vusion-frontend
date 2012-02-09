@@ -11,7 +11,11 @@
 	foreach ($statuses as $status): ?>
 	<tr>
 		<td><?php echo h($status['ParticipantsState']['participant-phone']); ?>&nbsp;</td>
+		<?php if (isset($status['ParticipantsState']['message']['content'])) { ?>
 		<td><?php echo h($status['ParticipantsState']['message']['content']); ?>&nbsp;</td>
+		<?php } else { ?>
+		<td><?php echo h($status['ParticipantsState']['type']); ?>&nbsp;</td>
+		<?php } ?>
 		<td><?php echo h($status['ParticipantsState']['datetime']); ?>&nbsp;</td>
 	</tr>
 	<?php endforeach; ?>

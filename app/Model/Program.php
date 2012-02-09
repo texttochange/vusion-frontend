@@ -13,7 +13,10 @@ class Program extends AppModel {
 	public $displayField = 'name';
 	var $hasAndBelongsToMany = 'User';
 	
-	public $findMethods = array('authorized' => true);
+	public $findMethods = array(
+		'authorized' => true,
+		'count' => true
+		);
 	
 	public function _findAuthorized($state, $query, $results = array()) {
 		//print_r($query);

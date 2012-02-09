@@ -12,7 +12,8 @@
 		if ($isScriptEdit) {
 			echo $this->Html->link('Create script', 
 				array('program' => $programUrl,
-				      'controller' => 'scripts'
+				      'controller' => 'scripts',
+				      'action' => 'draft'
 				      ),
 				array('class' => 'ttc-button')
 				);
@@ -52,11 +53,12 @@
 			} ?> 
 			</div>
 			<?php
-		  }; ?>
+		  }; 
+		  if ($hasScriptActive) {
+		  ?>
 		  
 		  <div class='ttc-info-box'>
 		  <?php
-		  if ($hasScriptActive) {
 			echo $this->Html->tag('div', 
 				'A script is already active for this program',
 				array('class' => 'ttc-text')
@@ -70,9 +72,12 @@
 				array('class' => 'ttc-button')
 				);
 			}
+			?>
+			</div>
+			<?php
 		  }; 
 	       } ?>
-	       </div>
+	       
 
 	<div class='ttc-info-box'>
 	<?php echo $this->Html->tag('div', 
