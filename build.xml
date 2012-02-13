@@ -143,6 +143,12 @@
  <target name="phpunit" description="Run unit tests with PHPUnit">
  <exec executable="./lib/Cake/Console/cake" failonerror="true">
   	 <arg value="testsuite" />
+  	 <arg value="--log-junit"/>
+         <arg path="${basedir}/build/log/junit.xml"/>
+         <arg value="--coverage-html"/>
+         <arg path="${basedir}/build/coverage"/>
+         <arg value="--coverage-clover"/>
+         <arg path="${basedir}/build/logs/clover.xml"/>
   	 <arg value="app" />
   	 <arg value="AllTests" />
   </exec>
