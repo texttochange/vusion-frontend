@@ -1,1 +1,6 @@
-Umoja Frontend is build with CakePHP2.0.5
+Vusion Frontend is build with CakePHP2.0.5.
+
+Installation:
+1) "$git clone <this repository>"
+2) "$git submodule init"
+3) "$git submodule update"
