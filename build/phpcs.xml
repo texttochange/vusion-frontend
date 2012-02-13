@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset name="Cake">
+ <description>CakePHP Coding standard.</description>
+
+ <!-- Include some sniffs from all around the place -->
+ <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+ <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+ <rule ref="PEAR.Functions.ValidDefaultValue"/>
+ <rule ref="PEAR.NamingConventions.ValidClassName"/>
+ <rule ref="Squiz.Functions.GlobalFunction"/>
+ <rule ref="Squiz.ControlStructures.InlineIfDeclaration"/>
+
+ <!-- Lines can be 120 chars long, warn after 110 chars -->
+ <rule ref="Generic.Files.LineLength">
+  <properties>
+   <property name="lineLimit" value="120"/>
+   <property name="absoluteLineLimit" value="150"/>
+  </properties>
+ </rule>
+
+ <!-- Use Unix newlines -->
+ <rule ref="Generic.Files.LineEndings">
+  <properties>
+   <property name="eolChar" value="\n"/>
+  </properties>
+ </rule>
+
+ <!-- Number of TABS code should be indented, don't indent doc blocks -->
+ <rule ref="Cake.WhiteSpace.ScopeIndent">
+  <properties>
+   <property name="indent" value="1"/>
+   <property name="exact" value="1"/>
+  </properties>
+ </rule>
+
+ <!-- warn on 3 level deep nesting, error on 5 -->
+ <rule ref="Generic.Metrics.NestingLevel">
+  <properties>
+   <property name="nestingLevel" value="3"/>
+   <property name="absolutenestingLevel" value="5"/>
+  </properties>
+ </rule>
+
+</ruleset>
