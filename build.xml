@@ -129,7 +129,7 @@
  </target>
 
  <target name="phpunit" description="Run unit tests with PHPUnit">
-  <exec executable=".{basedir}/lib/Cake/Console/cake" failonerror="true">
+  <exec executable="./lib/Cake/Console/cake" failonerror="true">
   	 <arg value="testsuite" />
   	 <arg value="--coverage-html ${basedir}/build/coverage" />
   	 <arg value="app AllTests" />
