@@ -2,7 +2,7 @@
 
 <project name="name-of-project" default="build">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpunit,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,removecache,phpunit,phpcb"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -67,7 +67,7 @@
    <arg path="${basedir}/app" />
   </exec>
  </target>
-
+ 
  <target name="phpmd"
          description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
   <exec executable="phpmd">
@@ -128,18 +128,21 @@
   </exec>
  </target>
 
- <target name="phpunit" description="Run unit tests with PHPUnit">
-  <delete>
+ <target name="removecache"
+         description="Remove Cake Cache files">
+ <delete>
   	<fileset dir="${basedir}/app/tmp/cache/models/" includes="*"/>
   </delete>
  <delete>
   	<fileset dir="${basedir}/app/tmp/cache/persistent/" includes="*"/>
   </delete>
-   
+         
+ </target>
+ 
+ 
+ <target name="phpunit" description="Run unit tests with PHPUnit">
  <exec executable="./lib/Cake/Console/cake" failonerror="true">
-  	 <arg value="testsuite" />
-  	<!-- <arg value="--coverage-html ${basedir}/build/coverage" /> -->
-  	 <arg value="app AllTests" />
+  	 <arg value="testsuite app AllTests" />
   </exec>
  </target>
 
