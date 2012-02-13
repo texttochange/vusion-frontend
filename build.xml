@@ -129,8 +129,12 @@
  </target>
 
  <target name="phpunit" description="Run unit tests with PHPUnit">
-  <delete file="${basedir}/app/tmp/cache/models/*.*"/>
-  <delete file="${basedir}/app/tmp/cache/persistent/*.*"/>
+  <delete>
+  	<fileset dir="${basedir}/app/tmp/cache/models/" includes="*"/>
+  </delete>
+ <delete>
+  	<fileset dir="${basedir}/app/tmp/cache/persistent/" includes="*"/>
+  </delete>
    
  <exec executable="./lib/Cake/Console/cake" failonerror="true">
   	 <arg value="testsuite" />
