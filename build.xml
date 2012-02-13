@@ -142,7 +142,9 @@
  
  <target name="phpunit" description="Run unit tests with PHPUnit">
  <exec executable="./lib/Cake/Console/cake" failonerror="true">
-  	 <arg value="testsuite app AllTests" />
+  	 <arg value="testsuite" />
+  	 <arg value="app" />
+  	 <arg value="AllTests" />
   </exec>
  </target>
 
