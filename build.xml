@@ -136,8 +136,8 @@
 <!--
  <target name="phpunit" description="Run unit tests with PHPUnit">
   <exec executable="cakerunner" failonerror="true">
-	<arg value="--cakephp-app-path=app"/>
-	<arg value="--log-junit=build/test-results/junit.xml"/>
+	<arg value="- -cakephp-app-path=app"/>
+	<arg value="- -log-junit=build/test-results/junit.xml"/>
 	<arg value="-R"/>
 	<arg value="app/tests"/>	
   </exec>
