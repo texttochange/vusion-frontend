@@ -138,7 +138,7 @@
    
  <exec executable="./lib/Cake/Console/cake" failonerror="true">
   	 <arg value="testsuite" />
-  	 <arg value="--coverage-html ${basedir}/build/coverage" />
+  	<!-- <arg value="--coverage-html ${basedir}/build/coverage" /> -->
   	 <arg value="app AllTests" />
   </exec>
  </target>
