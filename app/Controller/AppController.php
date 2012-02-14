@@ -45,8 +45,6 @@ class AppController extends Controller{
 	function constructClasses(){
 		parent::constructClasses();
 		
-		//echo "Contruct AppController -";
-	
 		//Verify the access of user to this program
 		if (!empty($this->params['program'])) {
 			//echo "Url target a program -";
