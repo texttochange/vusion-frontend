@@ -22,7 +22,7 @@
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @link      http://sanisoft.com/downloads/cakephp_sniffs/
  */
-class Cake_Sniffs_Metrics_NestingLevelSniff extends Generic_Sniffs_Metrics_NestingLevelSniff
+class build_Sniffs_Metrics_NestingLevelSniff extends Generic_Sniffs_Metrics_NestingLevelSniff
 {
 
     /**

@@ -28,7 +28,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff', true) === fa
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @link      http://sanisoft.com/downloads/cakephp_sniffs/
  */
-class Cake_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
+class build_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
 {
 
     /**

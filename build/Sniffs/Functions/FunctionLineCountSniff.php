@@ -24,7 +24,7 @@
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @link      http://sanisoft.com/downloads/cakephp_sniffs/
  */
-class Cake_Sniffs_Functions_FunctionLineCountSniff implements PHP_CodeSniffer_Sniff
+class build_Sniffs_Functions_FunctionLineCountSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

@@ -33,7 +33,7 @@ if (class_exists('Generic_Sniffs_Files_LineLengthSniff', true) === false) {
  * @version   Release: 1.0.1
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Cake_Sniffs_Files_LineLengthSniff extends Generic_Sniffs_Files_LineLengthSniff
+class build_Sniffs_Files_LineLengthSniff extends Generic_Sniffs_Files_LineLengthSniff
 {
 
     /**

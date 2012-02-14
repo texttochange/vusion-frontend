@@ -32,10 +32,11 @@ You can create the relational database schema from file app/Config/Schema/schema
 
 PHP Modules:
 Modules need to be install and configure in PHP 
-- (installation of MongoDB PHP Driver) http://php.net/manual/en/mongo.installation.php 
+- (installation of MongoDB PHP Driver) http://php.net/manual/en/mongo.installation.php
 - (php command line)
 
 PHP Modules (for development only) 
 - Pear
 - PHPUnit
 - XDebug
+- Mongo (in php.ini of cli tool if you want to run the test in command line)
