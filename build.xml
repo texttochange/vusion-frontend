@@ -87,6 +87,8 @@
    <arg value="unusedcode" />
    <arg value="--reportfile" />
    <arg value="${basedir}/build/logs/pmd.xml" />
+   <arg value="--exclude" />
+   <arg value="${basedir}/app/Plugin/" />
   </exec>
  </target>
 
