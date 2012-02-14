@@ -57,8 +57,22 @@ class ProgramTestCase extends CakeTestCase {
 					'created' => '2012-01-24 15:29:24',
 					'modified' => '2012-01-24 15:29:24'
 				),
-				'User' => array()
-					
+				'User' => array(
+					0 => array(
+						'id' => 1,
+						'username' => 'Lorem ipsum dolor sit amet',
+						'password' => 'Lorem ipsum dolor sit amet',
+						'group_id' => 1,
+						'limited_program_access' => true,
+						'created' => '2012-01-24 15:34:07',
+						'modified' => '2012-01-24 15:34:07',
+						'ProgramsUser' => array(
+								'id' => 1,
+								'program_id' => '1',
+								'user_id' => '1',
+							),
+					),
+				)
 		);
 		//Debugger::dump($result);
 		$this->assertEquals($expected, $result);
