@@ -61,13 +61,13 @@ class HomeControllerTestCase extends ControllerTestCase {
 		
 		$this->dropData();
 		
-		$this->Home->Program->create();
-		$this->Home->Program->save($this->programData[0]['Program']);
+		//$this->Home->Program->create();
+		//$this->Home->Program->save($this->programData[0]['Program']);
 	}
 
 	protected function dropData() {
-		$this->Home->Program->deleteAll(true, false);
-		$this->Home->Group->deleteAll(true, false);
+		//$this->Home->Program->deleteAll(true, false);
+		//$this->Home->Group->deleteAll(true, false);
 		
 		//As this model is created on the fly, need to instantiate again
 		$this->instanciateScriptModel();
@@ -103,6 +103,10 @@ class HomeControllerTestCase extends ControllerTestCase {
 			'components' => array(
 				'Acl' => array('check')
 			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
 		));
 		
 		$Home->Acl
@@ -110,6 +114,10 @@ class HomeControllerTestCase extends ControllerTestCase {
 			->method('check')
 			->will($this->returnValue('true'));
 		
+		$Home->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
 		
 		$this->testAction("/testurl/home", array('method' => 'get'));
 		//print_r($this->vars);
@@ -125,6 +133,10 @@ class HomeControllerTestCase extends ControllerTestCase {
 			'components' => array(
 				'Acl' => array('check')
 			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
 		));
 		
 		$Home->Acl
@@ -132,6 +144,12 @@ class HomeControllerTestCase extends ControllerTestCase {
 			->method('check')
 			->will($this->returnValue('true'));
 		
+		$Home->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+		
+			
 		$script = array('script' => 'do something');
 		$this->instanciateScriptModel();
 		$this->Home->Script->create();
@@ -151,6 +169,10 @@ class HomeControllerTestCase extends ControllerTestCase {
 			'components' => array(
 				'Acl' => array('check')
 			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
 		));
 		
 		$Home->Acl
@@ -158,6 +180,11 @@ class HomeControllerTestCase extends ControllerTestCase {
 			->method('check')
 			->will($this->returnValue('true'));
 		
+		$Home->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+			
 		$script = array('script' => 'do something');
 		$this->instanciateScriptModel();
 		$this->Home->Script->create();

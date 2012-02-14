@@ -57,23 +57,19 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 		parent::setUp();
 
 		$this->Scripts = new TestScriptsController();
-		//$this->Scripts->constructClasses();
 		ClassRegistry::config(array('ds' => 'test'));
-		//$this->Scripts->Program = ClassRegistry::init('TestProgram');
-		//$options = array('database' => 'test');
-		//$this->Scripts->Script = new Script($options);
 		
 		$this->dropData();
 		
-		$this->Scripts->Program->create();
-		$this->Scripts->Program->save($this->programData[0]['Program']);
+		//$this->Scripts->Program->create();
+		//$this->Scripts->Program->save($this->programData[0]['Program']);
 		
 		
 	}
 
 	protected function dropData() {
-		$this->Scripts->Program->deleteAll(true, false);
-		$this->Scripts->Group->deleteAll(true, false);
+		//$this->Scripts->Program->deleteAll(true, false);
+		//$this->Scripts->Group->deleteAll(true, false);
 		
 		//As this model is created on the fly, need to instantiate again
 		$this->instanciateScriptModel();
@@ -105,6 +101,26 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testIndex() {
+		$Scripts = $this->generate('Scripts', array(
+			'components' => array(
+				'Acl' => array('check')
+			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
+		));
+		
+		$Scripts->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Scripts->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+		
 		$this->testAction("/testurl/scripts", array('method' => 'get'));
 		//print_r($this->vars);
 		$this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
@@ -112,6 +128,26 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 	
 	
 	public function testIndex_returnDraft() {
+				$Scripts = $this->generate('Scripts', array(
+			'components' => array(
+				'Acl' => array('check')
+			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
+		));
+		
+		$Scripts->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Scripts->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+			
 		$draft = array('somescript' => 'do something');
 		$this->instanciateScriptModel();
 		$this->Scripts->Script->create();
@@ -127,32 +163,91 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testView() {
+		$Scripts = $this->generate('Scripts', array(
+			'components' => array(
+				'Acl' => array('check')
+			),
+			'models' => array(
+				'Program' => array('find'),
+				'Group' => array()
+			),
+		));
+		
+		$Scripts->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Scripts->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
 		
 		$this->testAction('/testurl/scripts/draft', array('method' => 'get'));
 		
 	}
 
 
-/**
- * testAdd method
- *
- * @return void
- */
 
  	public function testAdd() {
-		$draft = array(
+ 		
+ 		$Scripts = $this->generate('Scripts', array(
+			'components' => array(
+				'Acl' => array('check')
+			),
+			'models' => array(
+				'Program' => array('find'),
+				'Group' => array()
+			),
+		));
+		
+		$Scripts->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Scripts->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+		
+			
+ 		$draft = array(
 				'script' => array(
 					'do' => 'something',
 					)
-			);
- 		$this->testAction('/testurl/scripts.json', array('data' => $draft, 'method' => 'post'));
-    		 
+		);
+		
+ 		$this->testAction('/testurl/scripts/add', array('data' => $draft, 'method' => 'post'));
+    	
+ 		//For the second testAction, need to remock the models
+ 		$Scripts = $this->generate('Scripts', array(
+			'components' => array(
+				'Acl' => array('check')
+			),
+			'models' => array(
+				'Program' => array('find'),
+				'Group' => array()
+			),
+		));
+		
+		$Scripts->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Scripts->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+ 		
     		$updateDraft = array(
 				'script' => array(
 					'do' => 'something else',
 					)
 			);
-    		$this->testAction('/testurl/scripts.json', array('data' => $updateDraft, 'method' => 'post'));
+    		
+		$this->testAction('/testurl/scripts/add', array('data' => $updateDraft, 'method' => 'post'));
     		
     		$this->instanciateScriptModel();
 		$currentDraft = $this->Scripts->Script->find('draft');
@@ -172,6 +267,7 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEdit() {
+		
 
 	}
 

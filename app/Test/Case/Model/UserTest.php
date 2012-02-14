@@ -36,4 +36,8 @@ class UserTestCase extends CakeTestCase {
 		parent::tearDown();
 	}
 
+	public function testNothing(){
+		$this->assertTrue(true);
+	}
+	
 }

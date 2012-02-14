@@ -12,7 +12,7 @@ class ProgramTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.program');
+	public $fixtures = array('app.program', 'app.user');
 
 /**
  * setUp method
@@ -41,18 +41,23 @@ class ProgramTestCase extends CakeTestCase {
 		$expected = array(
 				'Program' => array(
 					'id' => 2,
-					'name' => 'm5h',
+					'name' => 'm6h',
 					'country' => 'congo',
+					'url' => 'm6h',
+					'database' => 'm6h',			
 					'created' => '2012-01-24 15:29:24',
 					'modified' => '2012-01-24 15:29:24'
 				),
 				'Program' => array(
 					'id' => 1,
-					'name' => 'm4h',
+					'name' => 'test',
 					'country' => 'uganda',
+					'url' => 'test',
+					'database' => 'test',
 					'created' => '2012-01-24 15:29:24',
 					'modified' => '2012-01-24 15:29:24'
 				),
+				'User' => array()
 					
 		);
 		//Debugger::dump($result);

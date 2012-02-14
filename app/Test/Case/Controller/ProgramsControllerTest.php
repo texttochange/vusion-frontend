@@ -36,7 +36,7 @@ class ProgramsControllerTestCase extends ControllerTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.program');
+	public $fixtures = array('app.program','app.group','app.user');
 
 /**
  * setUp method
@@ -67,11 +67,19 @@ class ProgramsControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testIndex() {
+		$Programs = $this->generate('Programs', array(
+			'components' => array(
+				'Acl' => array('check')
+			),
+		));
+		
+		$Programs->Acl
+			->expects($this->once())
+			->method('check')
+			->will($this->returnValue('true'));
+		
 		$this->testAction("/programs/index");
 		$this->assertEquals(2, count($this->vars['programs']));
-		//debug(array('toto' => 'tata'));
-		//throw new Exception(serialize($result));
-		//debug($result, true);
 	}
 
 /**
@@ -80,19 +88,22 @@ class ProgramsControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testView() {
-		$this->testAction("/programs/view/1");
-		//print_r($result);
-		$this->assertEquals(array(
-				'Program' => array(
+		$expected = array('Program' => array(
 					'id' => 1,
-					'name' => 'm4h',
+					'name' => 'test',
+					'url' => 'test',
+					'database' => 'test',
 					'country' => 'uganda',
 					'created' => '2012-01-24 15:29:24',
 					'modified' => '2012-01-24 15:29:24'
-				)
-			), 
-			$this->vars['program']
+					),
+				'User'=> array()
 			);
+		
+		
+		$this->testAction("/programs/view/1");
+		
+		$this->assertEquals($this->vars['program'], $expected);
 	}
 
 /**
