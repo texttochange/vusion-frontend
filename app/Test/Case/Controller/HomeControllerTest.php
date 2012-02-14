@@ -135,11 +135,12 @@ class HomeControllerTestCase extends ControllerTestCase {
 		$this->assertEquals($this->vars['hasScriptActive'], '0');
 		$this->assertEquals($this->vars['hasScriptDraft'], '0');
 	}
-	/*
+	
 	public function testIndex_existingDraftScript_asManager() {
 		$Home = $this->generate('Home', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 			'models' => array(
 				'Program' => array('find', 'count'),
@@ -157,7 +158,12 @@ class HomeControllerTestCase extends ControllerTestCase {
 			->method('find')
 			->will($this->returnValue($this->programData));
 		
-			
+		$Home->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
+
+				
 		$script = array('script' => 'do something');
 		$this->instanciateScriptModel();
 		$this->Home->Script->create();
@@ -175,7 +181,8 @@ class HomeControllerTestCase extends ControllerTestCase {
 	public function testIndex_existingScripts_asManager() {
 		$Home = $this->generate('Home', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 			'models' => array(
 				'Program' => array('find', 'count'),
@@ -193,6 +200,12 @@ class HomeControllerTestCase extends ControllerTestCase {
 			->method('find')
 			->will($this->returnValue($this->programData));
 			
+		$Home->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
+
+			
 		$script = array('script' => 'do something');
 		$this->instanciateScriptModel();
 		$this->Home->Script->create();
@@ -205,5 +218,5 @@ class HomeControllerTestCase extends ControllerTestCase {
 		$this->assertEquals($this->vars['isParticipantAdd'], 'true');
 		$this->assertEquals($this->vars['hasScriptActive'], '0');
 		$this->assertEquals($this->vars['hasScriptDraft'], '1');
-	}*/
+	}
 }

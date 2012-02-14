@@ -10,6 +10,7 @@ class GroupFixture extends CakeTestFixture {
 	
 	public $records = array(
 		array(
+			'id' => 1,
 			'name' => 'Admin Group',
 			'specific_program_access' => false
 		)

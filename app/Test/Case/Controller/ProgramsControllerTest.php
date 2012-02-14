@@ -36,7 +36,7 @@ class ProgramsControllerTestCase extends ControllerTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.program','app.group','app.user');
+	public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 
 /**
  * setUp method
@@ -69,7 +69,8 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 	public function testIndex() {
 		$Programs = $this->generate('Programs', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 		));
 		
@@ -78,6 +79,11 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 			->method('check')
 			->will($this->returnValue('true'));
 		
+		$Programs->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('1','1','1'));
+			
 		$this->testAction("/programs/index");
 		$this->assertEquals(2, count($this->vars['programs']));
 	}
@@ -97,7 +103,21 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 					'created' => '2012-01-24 15:29:24',
 					'modified' => '2012-01-24 15:29:24'
 					),
-				'User'=> array()
+				'User'=> array(
+					0 => array(
+						'id' => 1,
+						'username' => 'Lorem ipsum dolor sit amet',
+						'password' => 'Lorem ipsum dolor sit amet',
+						'group_id' => 1,
+						'limited_program_access' => true,
+						'created' => '2012-01-24 15:34:07',
+						'modified' => '2012-01-24 15:34:07',
+						'ProgramsUser' => array(
+								'id' => 1,
+								'program_id' => '1',
+								'user_id' => '1',
+							),
+						))
 			);
 		
 		

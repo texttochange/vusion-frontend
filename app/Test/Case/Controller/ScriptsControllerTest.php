@@ -103,7 +103,8 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 	public function testIndex() {
 		$Scripts = $this->generate('Scripts', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 			'models' => array(
 				'Program' => array('find', 'count'),
@@ -120,6 +121,12 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 			->expects($this->once())
 			->method('find')
 			->will($this->returnValue($this->programData));
+			
+		$Scripts->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
+
 		
 		$this->testAction("/testurl/scripts", array('method' => 'get'));
 		//print_r($this->vars);
@@ -128,9 +135,10 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 	
 	
 	public function testIndex_returnDraft() {
-				$Scripts = $this->generate('Scripts', array(
+			$Scripts = $this->generate('Scripts', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')	
 			),
 			'models' => array(
 				'Program' => array('find', 'count'),
@@ -147,6 +155,11 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 			->expects($this->once())
 			->method('find')
 			->will($this->returnValue($this->programData));
+		
+		$Scripts->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
 			
 		$draft = array('somescript' => 'do something');
 		$this->instanciateScriptModel();
@@ -165,7 +178,8 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 	public function testView() {
 		$Scripts = $this->generate('Scripts', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 			'models' => array(
 				'Program' => array('find'),
@@ -183,6 +197,12 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 			->method('find')
 			->will($this->returnValue($this->programData));
 		
+		$Scripts->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
+
+			
 		$this->testAction('/testurl/scripts/draft', array('method' => 'get'));
 		
 	}
@@ -193,7 +213,8 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  		
  		$Scripts = $this->generate('Scripts', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 			'models' => array(
 				'Program' => array('find'),
@@ -211,6 +232,11 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 			->method('find')
 			->will($this->returnValue($this->programData));
 		
+		$Scripts->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
+
 			
  		$draft = array(
 				'script' => array(
@@ -223,7 +249,8 @@ class ScriptsControllerTestCase extends ControllerTestCase {
  		//For the second testAction, need to remock the models
  		$Scripts = $this->generate('Scripts', array(
 			'components' => array(
-				'Acl' => array('check')
+				'Acl' => array('check'),
+				'Session' => array('read')
 			),
 			'models' => array(
 				'Program' => array('find'),
@@ -240,7 +267,12 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 			->expects($this->once())
 			->method('find')
 			->will($this->returnValue($this->programData));
- 		
+ 	
+		$Scripts->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));	
+			
     		$updateDraft = array(
 				'script' => array(
 					'do' => 'something else',

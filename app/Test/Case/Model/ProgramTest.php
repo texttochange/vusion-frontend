@@ -12,7 +12,7 @@ class ProgramTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.program', 'app.user');
+	public $fixtures = array('app.program', 'app.user', 'app.programsUser');
 
 /**
  * setUp method
