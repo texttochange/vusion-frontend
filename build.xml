@@ -2,7 +2,7 @@
 
 <project name="name-of-project" default="build">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,removecache,phpunit,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,removecache,phpunit,phpcb"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -129,7 +129,7 @@
    <arg value="--directory" />
    <arg path="${basedir}/app" />
    <arg value="--ignore" />
-   <arg path="*/vendors/*"/>
+   <arg path="lib/*,app/Plugin/**/*"/>
    <arg value="--target" />
    <arg path="${basedir}/build/api" />
   </exec>
