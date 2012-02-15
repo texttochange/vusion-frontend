@@ -16,6 +16,9 @@ app/
     	cache/
     		models/
     		persistent/
+        logs/
+	session/
+	tests/
 
 Then make those file writable by the webserver. 
 Under ubuntu: sudo chmod -R 777 app/tmp   
