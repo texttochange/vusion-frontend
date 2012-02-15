@@ -17,7 +17,6 @@ class UserFixture extends CakeTestFixture {
 		'username' => array('type' => 'string', 'null' => false),
 		'password' => array('type' => 'string', 'null' => false, 'length' => 40),
 		'group_id' => array('type' => 'integer', 'null' => false),
-		'limited_program_access' => array('type' => 'boolean', 'null' => false),
 		'created' => array('type' => 'datetime', 'null' => true),
 		'modified' => array('type' => 'datetime', 'null' => true),
 		'indexes' => array('users_username_key' => array('unique' => true, 'column' => 'username')),
@@ -32,10 +31,17 @@ class UserFixture extends CakeTestFixture {
 	public $records = array(
 		array(
 			'id' => 1,
-			'username' => 'Lorem ipsum dolor sit amet',
-			'password' => 'Lorem ipsum dolor sit amet',
+			'username' => 'gerald',
+			'password' => 'geraldpassword',
 			'group_id' => 1,
-			'limited_program_access' => true,
+			'created' => '2012-01-24 15:34:07',
+			'modified' => '2012-01-24 15:34:07'
+		),
+		array(
+			'id' => 2,
+			'username' => 'oliv',
+			'password' => 'olivpassword',
+			'group_id' => 2,
 			'created' => '2012-01-24 15:34:07',
 			'modified' => '2012-01-24 15:34:07'
 		),

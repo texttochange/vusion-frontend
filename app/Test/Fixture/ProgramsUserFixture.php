@@ -32,6 +32,11 @@ class ProgramsUserFixture extends CakeTestFixture {
 			'program_id' => '1',
 			'user_id' => '1',
 		),
+		array(
+			'id' => 2,
+			'program_id' => '2',
+			'user_id' => '2',
+		),
 	);
 
 }

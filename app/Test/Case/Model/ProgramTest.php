@@ -60,10 +60,9 @@ class ProgramTestCase extends CakeTestCase {
 				'User' => array(
 					0 => array(
 						'id' => 1,
-						'username' => 'Lorem ipsum dolor sit amet',
-						'password' => 'Lorem ipsum dolor sit amet',
+						'username' => 'gerald',
+						'password' => 'geraldpassword',
 						'group_id' => 1,
-						'limited_program_access' => true,
 						'created' => '2012-01-24 15:34:07',
 						'modified' => '2012-01-24 15:34:07',
 						'ProgramsUser' => array(

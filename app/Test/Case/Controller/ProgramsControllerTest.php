@@ -75,7 +75,7 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 		));
 		
 		$Programs->Acl
-			->expects($this->once())
+			->expects($this->any())
 			->method('check')
 			->will($this->returnValue('true'));
 		
@@ -88,6 +88,29 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 		$this->assertEquals(2, count($this->vars['programs']));
 	}
 
+	public function testIndex_hasSpecificProgramAccess_True() {
+		$Programs = $this->generate('Programs', array(
+			'components' => array(
+				'Acl' => array('check'),
+				'Session' => array('read')
+			),
+		));
+		
+		$Programs->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Programs->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls('2','2','2'));
+			
+		$this->testAction("/programs/index");
+		$this->assertEquals(1, count($this->vars['programs']));
+	}
+	
+	
 /**
  * testView method
  *
@@ -106,10 +129,9 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 				'User'=> array(
 					0 => array(
 						'id' => 1,
-						'username' => 'Lorem ipsum dolor sit amet',
-						'password' => 'Lorem ipsum dolor sit amet',
+						'username' => 'gerald',
+						'password' => 'geraldpassword',
 						'group_id' => 1,
-						'limited_program_access' => true,
 						'created' => '2012-01-24 15:34:07',
 						'modified' => '2012-01-24 15:34:07',
 						'ProgramsUser' => array(
