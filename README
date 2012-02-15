@@ -35,6 +35,11 @@ Modules need to be install and configure in PHP
 - (installation of MongoDB PHP Driver) http://php.net/manual/en/mongo.installation.php
 - (php command line)
 
+JAVA:
+To run the different build task from build.xml, you need to install
+- jdk6 or higher
+- ant
+
 PHP Modules (for development only) 
 - Pear
 - PHPUnit
