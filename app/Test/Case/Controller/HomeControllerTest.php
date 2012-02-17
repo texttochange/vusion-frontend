@@ -44,6 +44,7 @@ class HomeControllerTestCase extends ControllerTestCase {
 					'name' => 'Test Name',
 					'country' => 'Test Country',
 					'url' => 'testurl',
+					'timezone' => 'UTC',
 					'database' => 'testdbprogram'
 				)
 			));
