@@ -86,7 +86,7 @@
 				); ?>
 	<?php if ($isParticipantAdd) { 
 		echo $this->Html->link('Add participant(s)',
-			array('program' => $programName,
+			array('program' => $programUrl,
 				'controller' => 'participants',
 				'action' => 'add'
 				),
@@ -95,7 +95,7 @@
 		}?>
 	<?php if ($participantCount > 0) {
 		echo $this->Html->link('View participant(s)',
-			array('program' => $programName,
+			array('program' => $programUrl,
 				'controller' => 'Participants', 
 				),
 			array('class' => 'ttc-button')
