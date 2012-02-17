@@ -43,6 +43,7 @@ class ScriptsControllerTestCase extends ControllerTestCase {
 				'Program' => array(
 					'name' => 'Test Name',
 					'country' => 'Test Country',
+					'timezone' => 'UTC',
 					'url' => 'testurl',
 					'database' => 'testdbprogram'
 				)

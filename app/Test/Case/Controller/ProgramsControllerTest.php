@@ -123,6 +123,7 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 					'url' => 'test',
 					'database' => 'test',
 					'country' => 'uganda',
+					'timezone' => 'Africa/Kampala',
 					'created' => '2012-01-24 15:29:24',
 					'modified' => '2012-01-24 15:29:24'
 					),
