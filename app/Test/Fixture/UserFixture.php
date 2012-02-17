@@ -19,7 +19,7 @@ class UserFixture extends CakeTestFixture {
 		'group_id' => array('type' => 'integer', 'null' => false),
 		'created' => array('type' => 'datetime', 'null' => true),
 		'modified' => array('type' => 'datetime', 'null' => true),
-		'indexes' => array('users_username_key' => array('unique' => true, 'column' => 'username')),
+		'indexes' => array('users_username_key' => array('unique' => true, 'column' => 'id')),
 		'tableParameters' => array()
 	);
 
