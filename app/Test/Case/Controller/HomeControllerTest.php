@@ -131,6 +131,7 @@ class HomeControllerTestCase extends ControllerTestCase {
 		$this->testAction("/testurl/home", array('method' => 'get'));
 		//print_r($this->vars);
 		$this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
+		$this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
 		$this->assertEquals($this->vars['isScriptEdit'], 'true');
 		$this->assertEquals($this->vars['isParticipantAdd'], 'true');
 		$this->assertEquals($this->vars['hasScriptActive'], '0');
@@ -173,6 +174,7 @@ class HomeControllerTestCase extends ControllerTestCase {
 		$this->testAction("/testurl/home", array('method' => 'get'));
 		//print_r($this->vars);
 		$this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
+		$this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
 		$this->assertEquals($this->vars['isScriptEdit'], 'true');
 		$this->assertEquals($this->vars['isParticipantAdd'], 'true');
 		$this->assertEquals($this->vars['hasScriptActive'], '0');
@@ -215,6 +217,7 @@ class HomeControllerTestCase extends ControllerTestCase {
 		$this->testAction("/testurl/home", array('method' => 'get'));
 		//print_r($this->vars);
 		$this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
+		$this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
 		$this->assertEquals($this->vars['isScriptEdit'], 'true');
 		$this->assertEquals($this->vars['isParticipantAdd'], 'true');
 		$this->assertEquals($this->vars['hasScriptActive'], '0');

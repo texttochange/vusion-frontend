@@ -88,6 +88,15 @@ class ParticipantsController extends AppController {
 	
 	}
 	
+	public function import(){
+		if ($this->request->is('post')) {
+			print_r($this->request->data);
+		}
+		$programName = $this->Session->read($this->params['program'].'_name');
+		$programUrl = $this->params['program'];
+		$this->set(compact('programName','programUrl'));
+	}
+	
 
 	
 }
