@@ -57,6 +57,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => true, 'length' => 50),
 		'country' => array('type' => 'string', 'null' => true, 'length' => 50),
+		'timezone' => array('type' => 'string', 'null' => false, 'default' => 'UTC', 'length' => 40),
 		'url' => array('type' => 'string', 'null' => true, 'length' => 50),
 		'database' => array('type' => 'string', 'null' => true, 'length' => 50),
 		'created' => array('type' => 'datetime', 'null' => true),

@@ -55,7 +55,10 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 					'Vusion',
 					array('class' => 'ttc-title')
 					);
-				if ($this->Session->read('Auth.User.id')) {
+				?> 
+				<div class="ttc-status"> 
+				<?php
+				if ($this->Session->read('Auth.User.id')) {	
 					echo $this->Html->tag(
 						'span', 
 						'log as '.$this->Session->read('Auth.User.username').' ',
@@ -66,8 +69,16 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 						array('controller'=> 'users', 'action'=>'logout'), 
 						array('class' => 'ttc-link'));
 				}
-			?>
-		</div>
+				if (isset($programTimezone)) {
+					echo $this->Html->tag('br');
+					echo $this->Html->tag('span', 'program time: ');
+					$now = new DateTime('now');
+					date_timezone_set($now,timezone_open($programTimezone));
+					echo $this->Html->tag('span', $now->format('H:i:s')  );
+				}
+				?> 
+				</div> 
+		</div> 
 		<div id="content">
 
 			<?php echo $this->Session->flash(); ?>

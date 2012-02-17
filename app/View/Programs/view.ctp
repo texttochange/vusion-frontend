@@ -16,6 +16,11 @@
 			<?php echo h($program['Program']['country']); ?>
 			&nbsp;
 		</dd>
+		<dt><?php echo __('Timezone'); ?></dt>
+		<dd>
+			<?php echo h($program['Program']['timezone']); ?>
+			&nbsp;
+		</dd>
 		<dt><?php echo __('Url'); ?></dt>
 		<dd>
 			<?php echo h($program['Program']['url']); ?>

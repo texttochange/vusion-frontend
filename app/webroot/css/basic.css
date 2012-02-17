@@ -4,8 +4,11 @@
 
 #header .ttc-title {
 	background : url("../img/ttc-logo-2011.png") no-repeat scroll 0 0 transparent;
-	font-size : 24px;	
+	font-size : 30px;
+	font-weight : bold;	
 	line-height : 30px;
+	float : left;
+	width : 70%;
 }
 
 .ttc-info-box {
@@ -96,5 +99,11 @@
     float: right;
     padding: 10px 2%;
     width: 50%;
+}
+
+.ttc-status {
+	float : right;
+	width : 20%;
+	margin-bottom : 10px;
 }
 

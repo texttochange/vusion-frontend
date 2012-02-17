@@ -4,6 +4,7 @@
 	<tr>
 			<th><?php echo $this->Paginator->sort('name');?></th>
 			<th><?php echo $this->Paginator->sort('country');?></th>
+			<th><?php echo $this->Paginator->sort('timezone');?></th>
 			<th><?php echo $this->Paginator->sort('url');?></th>
 			<th><?php echo $this->Paginator->sort('database');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
@@ -13,6 +14,7 @@
 	<tr>
 		<td><?php echo h($program['Program']['name']); ?>&nbsp;</td>
 		<td><?php echo h($program['Program']['country']); ?>&nbsp;</td>
+		<td><?php echo h($program['Program']['timezone']); ?>&nbsp;</td>
 		<td><?php echo h($program['Program']['url']); ?>&nbsp;</td>
 		<td><?php echo h($program['Program']['database']); ?>&nbsp;</td>
 		<td class="actions">
