@@ -37,11 +37,13 @@ class AppController extends Controller
 
     public $helpers = array('Html', 'Form', 'Session');
 
+
     function beforeFilter()
     {    
         //set language into Session and Cookies
         $this->_setLanguage();
     }
+
 
     function constructClasses()
     {
@@ -51,7 +53,8 @@ class AppController extends Controller
         if (!empty($this->params['program'])) {
             $this->Program->recursive = -1;
             $data = $this->Program->find('authorized', array(
-                'specific_program_access' => $this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id')),
+                'specific_program_access' => $this->Group->hasSpecificProgramAccess(
+                	$this->Session->read('Auth.User.group_id')),
                 'user_id' => $this->Session->read('Auth.User.id'),
                 'program_url' => $this->params['program']
                 ));
@@ -60,12 +63,13 @@ class AppController extends Controller
                 //$this->redirect('/');
                 throw new NotFoundException('Could not find this page.');
             } else {
-                $this->Session->write( $this->params['program'] . '_name', $data[0]['Program']['name']);
-                $this->Session->write( $this->params['program'] . '_db', $data[0]['Program']['database']);
+                $this->Session->write($this->params['program'] . '_name', $data[0]['Program']['name']);
+                $this->Session->write($this->params['program'] . '_db', $data[0]['Program']['database']);
                 $this->set('programTimezone',$data[0]['Program']['timezone']);
             }
         }
     }
+
 
     function _setLanguage()
     {
