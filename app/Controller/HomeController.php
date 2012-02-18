@@ -58,7 +58,7 @@ class HomeController extends AppController
         $this->ParticipantsState = new ParticipantsState($options);
         $this->Schedule          = new Schedule($options);
 
-        $this->VumiSupervisord   = new VumiSupervisord();
+        $this->VumiSupervisord = new VumiSupervisord();
     }
 
 
