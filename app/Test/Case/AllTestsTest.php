@@ -33,24 +33,16 @@ class AllTests extends PHPUnit_Framework_TestSuite {
  *
  * @return void
  */
-	public static function suite() {
-		
-		$suite = new PHPUnit_Framework_TestSuite('All Tests');
-
-			
-		$path = TESTS . 'Case' . DS;
-		
-		$config['app'] = 1;
-	
-		$tests = CakeTestLoader::generateTestList($config); 
-		
-		foreach ($tests as $test) {
-			if ($test != 'AllTests') {
-				$suite->addTestFile($path . $test . 'Test.php');
-			}
-		}
-		
-		
-		return $suite;
-	}
+     public static function suite() {
+        $suite = new PHPUnit_Framework_TestSuite('All Tests');
+        $path = TESTS . 'Case' . DS;
+        $config['app'] = 1;
+        $tests = CakeTestLoader::generateTestList($config); 
+        foreach ($tests as $test) {
+            if ($test != 'AllTests') {
+                $suite->addTestFile($path . $test . 'Test.php');
+            }
+        }
+        return $suite;
+    }
 }

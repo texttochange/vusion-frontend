@@ -5,7 +5,7 @@
  <!-- Include some sniffs from all around the place -->
  <rule ref="Generic.PHP.DisallowShortOpenTag"/>
  <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
- <!--<rule ref="Generic.WhiteSpace.DisallowTabIndent"/>-->
+ <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
  <rule ref="Generic.WhiteSpace.ScopeIndent"/>
  <rule ref="Generic.Formatting.MultipleStatementAlignment"/>
  <rule ref="PEAR.Classes.ClassDeclaration"/>
@@ -20,7 +20,7 @@
  <rule ref="PEAR.Commenting.InlineComment"/>
  <rule ref="PEAR.NamingConventions.ValidClassName"/>
  <rule ref="Squiz.Functions.GlobalFunction"/>
- <rule ref="Squiz.ControlStructures.InlineIfDeclaration"/>
+ <!--<rule ref="Squiz.ControlStructures.InlineIfDeclaration"/>-->
  <rule ref="Squiz.WhiteSpace.FunctionSpacing"/>
  <!--<rule ref="Squiz.Commenting.ClosingDeclarationComment"/>
  <rule ref="Squiz.Commenting.VariableComment"/>-->
