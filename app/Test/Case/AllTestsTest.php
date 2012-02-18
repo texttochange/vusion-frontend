@@ -26,14 +26,14 @@ App::uses('CakeTestLoader', 'TestSuite');
  *
  * @package       Cake.Test.Case
  */
-class AllTests extends PHPUnit_Framework_TestSuite {
+class AllTests extends PHPUnit_Framework_TestSuite 
+{
 
-/**
- * Suite define the tests for this suite
- *
- * @return void
- */
-     public static function suite() {
+    /**
+    * Suite define the tests for this suite
+    */
+    public static function suite() 
+    {
         $suite = new PHPUnit_Framework_TestSuite('All Tests');
         $path = TESTS . 'Case' . DS;
         $config['app'] = 1;
@@ -45,4 +45,6 @@ class AllTests extends PHPUnit_Framework_TestSuite {
         }
         return $suite;
     }
+    
+    
 }
