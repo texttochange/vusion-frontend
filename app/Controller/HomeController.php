@@ -12,16 +12,16 @@ class HomeController extends AppController
 {
 
     var $components = array('RequestHandler');
-    var $helpers = array('Js' => array('Jquery'));
+    var $helpers    = array('Js' => array('Jquery'));
 
 
     public function index()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl = $this->params['program'];
-        $hasScriptActive = count($this->Script->find('countActive'));
-        $hasScriptDraft = count($this->Script->find('countDraft'));
-        $isScriptEdit = $this->Acl->check(array(
+        $programName      = $this->Session->read($this->params['program'].'_name');
+        $programUrl       = $this->params['program'];
+        $hasScriptActive  = count($this->Script->find('countActive'));
+        $hasScriptDraft   = count($this->Script->find('countDraft'));
+        $isScriptEdit     = $this->Acl->check(array(
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
                 ),
@@ -32,8 +32,8 @@ class HomeController extends AppController
                 ),
             ), 'controllers/Participants/add');
         $participantCount = $this->Participant->find('count');
-        $statusCount = $this->ParticipantsState->find('count');
-        $schedules = $this->Schedule->find('soon');
+        $statusCount      = $this->ParticipantsState->find('count');
+        $schedules        = $this->Schedule->find('soon');
 
         $this->set(compact('programName',
             'programUrl',
@@ -52,12 +52,13 @@ class HomeController extends AppController
         parent::constructClasses();
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Script = new Script($options);
-        $this->Participant = new Participant($options);
+        
+        $this->Script            = new Script($options);
+        $this->Participant       = new Participant($options);
         $this->ParticipantsState = new ParticipantsState($options);
-        $this->Schedule = new Schedule($options);
+        $this->Schedule          = new Schedule($options);
 
-        $this->VumiSupervisord = new VumiSupervisord();
+        $this->VumiSupervisord   = new VumiSupervisord();
     }
 
 
