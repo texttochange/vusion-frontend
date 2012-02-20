@@ -107,3 +107,18 @@
 	margin-bottom : 10px;
 }
 
+.ttc-left-header {
+	float: left;
+	width : 30%;
+}
+
+.ttc-central-header {
+	float : left;
+	width : 30%
+}
+
+.ttc-right-header {
+	float : right;
+	width : 20%
+}
+

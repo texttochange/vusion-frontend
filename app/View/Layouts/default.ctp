@@ -49,35 +49,49 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <body>
 	<div id="container">
 		<div id="header">
-			<?php 
+			<div class="ttc-left-header">
+		        <?php 
+			echo $this->Html->tag(
+				'h1',
+				'Vusion',
+				array('class' => 'ttc-title')
+				);
+			?> 
+			</div>
+			<div class="ttc-central-header">
+			<?php
+			if (isset($vumiStatus)) {
+				//print_r($vumiStatus);
+				if ($vumiStatus['running']) {
+					echo $this->Html->tag('div', 'In the backend, Vumi is ' . $vumiStatus['msg']);
+				} else {
+					echo $this->Html->tag('div', 'Cannot connect to Vumi / ' . $vumiStatus['msg']);
+				}
+			}
+			?>
+			</div>
+			<div class="ttc-right-header"> 
+			<?php
+			if ($this->Session->read('Auth.User.id')) {	
 				echo $this->Html->tag(
-					'h1',
-					'Vusion',
-					array('class' => 'ttc-title')
+					'span', 
+					'log as '.$this->Session->read('Auth.User.username').' ',
+					array('class' => 'ttc-text')
 					);
-				?> 
-				<div class="ttc-status"> 
-				<?php
-				if ($this->Session->read('Auth.User.id')) {	
-					echo $this->Html->tag(
-						'span', 
-						'log as '.$this->Session->read('Auth.User.username').' ',
-						array('class' => 'ttc-text')
-						);
-					echo $this->Html->link(
-						'Logout',
-						array('controller'=> 'users', 'action'=>'logout'), 
-						array('class' => 'ttc-link'));
-				}
-				if (isset($programTimezone)) {
-					echo $this->Html->tag('br');
-					echo $this->Html->tag('span', 'program time: ');
-					$now = new DateTime('now');
-					date_timezone_set($now,timezone_open($programTimezone));
-					echo $this->Html->tag('span', $now->format('H:i:s')  );
-				}
-				?> 
-				</div> 
+				echo $this->Html->link(
+					'Logout',
+					array('controller'=> 'users', 'action'=>'logout'), 
+					array('class' => 'ttc-link'));
+			}
+			if (isset($programTimezone)) {
+				echo $this->Html->tag('br');
+				echo $this->Html->tag('span', 'program time: ');
+				$now = new DateTime('now');
+				date_timezone_set($now,timezone_open($programTimezone));
+				echo $this->Html->tag('span', $now->format('H:i:s')  );
+			}
+			?> 
+			</div> 
 		</div> 
 		<div id="content">
 

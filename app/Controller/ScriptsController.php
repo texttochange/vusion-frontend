@@ -2,13 +2,13 @@
 
 App::uses('AppController','Controller');
 App::uses('Script','Model');
-App::uses('VumiSupervisord','Lib');
+//App::uses('VumiSupervisord','Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 
 class ScriptsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'Acl');
+    var $components = array('RequestHandler', 'Acl', 'VumiSupervisord');
     var $helpers = array('Js' => array('Jquery'));
 
 
@@ -123,7 +123,6 @@ class ScriptsController extends AppController
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Script = new Script($options);
         
-        $this->VumiSupervisord = new VumiSupervisord();
         $this->VumiRabbitMQ = new VumiRabbitMQ();
     }
 

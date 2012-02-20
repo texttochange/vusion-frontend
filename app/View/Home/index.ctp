@@ -1,26 +1,27 @@
 <div>
-	<h2><?php echo __('Home').' of '.$programName.' program';?></h2>
+	<h2><?php echo $programName . ' ' .  __('Home');?></h2>
 	<div class='ttc-actions'>
 	<h3><?php echo __('Status & Actions');?></h3>
 	<?php if (!$hasScriptActive && !$hasScriptDraft) { ?>
 		<div class='ttc-info-box'>
-	<?php
-		echo $this->Html->tag('div', 
-				'No script has been defined for this program',
-				array('class' => 'ttc-text')
-				);
-		if ($isScriptEdit) {
-			echo $this->Html->link('Create script', 
-				array('program' => $programUrl,
-				      'controller' => 'scripts',
-				      'action' => 'draft'
-				      ),
-				array('class' => 'ttc-button')
-				);
-		}; ?>
-		</div>
+		<?php
+		     echo $this->Html->tag('div', 
+			'No script has been defined for this program',
+			array('class' => 'ttc-text')
+			);
+		     if ($isScriptEdit) {
+		        echo $this->Html->link('Create script', 
+			    array('program' => $programUrl,
+			      'controller' => 'scripts',
+			      'action' => 'draft'
+			      ),
+			array('class' => 'ttc-button')
+			);
+			}; 
+		 ?>
+		 </div>
 		<?php } else { ?>
-	       <?php
+		<?php
 	       	  if ($hasScriptDraft) { ?>
 	       	 <div class='ttc-info-box'>
 	       	  <?php
@@ -74,10 +75,23 @@
 			}
 			?>
 			</div>
+			<div class='ttc-info-box'>
+			<?php 
+			if ($workerStatus['running']) {
+			     echo $this->Html->tag('div', 
+			         'Vumi has a worker for this script', 
+			         array('class'=>'ttc-text')
+			         );
+			} else {
+			     echo $this->Html->tag('div', 
+			         "WARNING Vumi DOESN'T have a worker for this script",
+			         array('class'=>'ttc-text'));
+			}
+			?>
+			</div>
 			<?php
 		  }; 
 	       } ?>
-	       
 
 	<div class='ttc-info-box'>
 	<?php echo $this->Html->tag('div', 

@@ -33,7 +33,8 @@ class AppController extends Controller
                 )
             ),
         'Acl',
-        'Cookie');
+        'Cookie',
+        'VumiSupervisord');
 
     public $helpers = array('Html', 'Form', 'Session');
 
@@ -42,6 +43,9 @@ class AppController extends Controller
     {    
         //set language into Session and Cookies
         $this->_setLanguage();
+        
+        //return the vumi status for the header
+        $this->set('vumiStatus', $this->VumiSupervisord->getState());
     }
 
 
