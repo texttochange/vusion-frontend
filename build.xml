@@ -2,7 +2,7 @@
 
 <project name="name-of-project" default="build">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,removecache,phpunit,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,clearCache,phpunit,phpcb"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -135,7 +135,7 @@
   </exec>
  </target>
 
- <target name="removecache"
+ <target name="clearCache"
          description="Remove Cake Cache files">
  <delete>
   	<fileset dir="${basedir}/app/tmp/cache/models/" includes="*"/>
@@ -161,16 +161,6 @@
   </exec>
  </target>
 
-<!--
- <target name="phpunit" description="Run unit tests with PHPUnit">
-  <exec executable="cakerunner" failonerror="true">
-	<arg value="- -cakephp-app-path=app"/>
-	<arg value="- -log-junit=build/test-results/junit.xml"/>
-	<arg value="-R"/>
-	<arg value="app/tests"/>	
-  </exec>
- </target>
--->
 
  <target name="phpcb"
          description="Aggregate tool output with PHP_CodeBrowser">
@@ -183,4 +173,13 @@
    <arg path="${basedir}/build/code-browser" />
   </exec>
  </target>
+
+<target name="deployTest"
+          description="import the necessary data in the database">
+  <exec executable="./lib/Cake/Console/cake" failonerror="true">
+  <arg value="schema"/>
+  <arg value="update"/>
+  </exec>
+</target>
+
 </project>

@@ -57,7 +57,7 @@ ALTER SEQUENCE acos_id_seq OWNED BY acos.id;
 -- Name: acos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: cake
 --
 
-SELECT pg_catalog.setval('acos_id_seq', 55, true);
+SELECT pg_catalog.setval('acos_id_seq', 56, true);
 
 
 --
@@ -204,7 +204,8 @@ CREATE TABLE programs (
     url character varying(50),
     database character varying(50),
     created timestamp without time zone,
-    modified timestamp without time zone
+    modified timestamp without time zone,
+    timezone character varying(40) DEFAULT 'UTC'::character varying NOT NULL
 );
 
 
@@ -354,18 +355,15 @@ COPY acos (id, parent_id, model, foreign_key, alias, lft, rght) FROM stdin;
 8	1	\N	\N	Home	14	17
 9	8	\N	\N	index	15	16
 34	28	\N	\N	login	65	66
-43	42	\N	\N	index	89	90
 11	10	\N	\N	index	19	20
 35	28	\N	\N	logout	67	68
 12	10	\N	\N	view	21	22
 13	10	\N	\N	add	23	24
-45	42	\N	\N	add	91	92
 14	10	\N	\N	edit	25	26
 10	1	\N	\N	ProgramDocuments	18	29
 15	10	\N	\N	delete	27	28
 17	16	\N	\N	index	31	32
 18	16	\N	\N	view	33	34
-38	1	\N	\N	Participants	76	87
 19	16	\N	\N	add	35	36
 52	38	\N	\N	view	85	86
 20	16	\N	\N	edit	37	38
@@ -374,25 +372,29 @@ COPY acos (id, parent_id, model, foreign_key, alias, lft, rght) FROM stdin;
 23	22	\N	\N	index	43	44
 24	22	\N	\N	view	45	46
 25	22	\N	\N	add	47	48
-53	42	\N	\N	draft	93	94
 26	22	\N	\N	edit	49	50
 22	1	\N	\N	ProgramsUsers	42	53
 27	22	\N	\N	delete	51	52
 29	28	\N	\N	index	55	56
 30	28	\N	\N	view	57	58
-54	42	\N	\N	active	95	96
 28	1	\N	\N	Users	54	71
 36	1	\N	\N	AclExtras	72	73
 37	1	\N	\N	Mongodb	74	75
 39	38	\N	\N	index	77	78
-42	1	\N	\N	Scripts	88	99
 44	28	\N	\N	initDB	69	70
-47	46	\N	\N	index	101	102
-55	42	\N	\N	activate_draft	97	98
-1	\N	\N	\N	controllers	1	104
-46	1	\N	\N	Status	100	103
 49	38	\N	\N	add	79	80
+38	1	\N	\N	Participants	76	89
+1	\N	\N	\N	controllers	1	106
+43	42	\N	\N	index	91	92
+45	42	\N	\N	add	93	94
+53	42	\N	\N	draft	95	96
+54	42	\N	\N	active	97	98
+42	1	\N	\N	Scripts	90	101
+47	46	\N	\N	index	103	104
+55	42	\N	\N	activate_draft	99	100
 50	38	\N	\N	edit	81	82
+46	1	\N	\N	Status	102	105
+56	38	\N	\N	import	87	88
 51	38	\N	\N	delete	83	84
 \.
 
@@ -462,10 +464,10 @@ COPY groups (id, name, created, modified, specific_program_access) FROM stdin;
 -- Data for Name: programs; Type: TABLE DATA; Schema: public; Owner: cake
 --
 
-COPY programs (id, name, country, url, database, created, modified) FROM stdin;
-4f26a3cd-8408-4c42-a98a-0ad83745968f	m4h	uganda	m4h	m4h	2012-01-30 15:06:05	2012-01-30 15:06:05
-4f26a450-f4f4-44fa-b391-0a123745968f	Mother Reminder System	congo	mrs	mrs	2012-01-30 15:08:16	2012-01-30 15:08:16
-4f337849-65d8-4849-9038-11963745968f	wikipedia	kenya	wiki	wiki	2012-02-09 07:39:53	2012-02-09 07:39:53
+COPY programs (id, name, country, url, database, created, modified, timezone) FROM stdin;
+4f26a450-f4f4-44fa-b391-0a123745968f	Mother Reminder System	congo	mrs	mrs	2012-01-30 15:08:16	2012-01-30 15:08:16	UTC
+4f26a3cd-8408-4c42-a98a-0ad83745968f	m4h	uganda	m4h	m4h	2012-01-30 15:06:05	2012-02-17 08:56:17	Pacific/Wake
+4f337849-65d8-4849-9038-11963745968f	wikipedia	kenya	wiki	wiki	2012-02-09 07:39:53	2012-02-17 09:24:08	Africa/Nairobi
 \.
 
 
