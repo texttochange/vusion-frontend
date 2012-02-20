@@ -11,6 +11,15 @@
 		echo $this->Form->end(__('Upload'));
 	?>
 
+	<div>
+	   <?php 
+	   foreach($entries as $entry){ 
+	   //print_r($importedParticipants);
+	   echo $entry."<br />";
+	   }
+	   ?>
+	</div>
+
 </div>
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>

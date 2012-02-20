@@ -67,6 +67,27 @@ class ParticipantsController extends AppController {
 	}
 	
 	public function delete () {
+		$id = $this->params['id'];
+		$programUrl = $this->params['program'];
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
+		$this->Participant->id = $id;
+		if (!$this->Participant->exists()) {
+			throw new NotFoundException(__('Invalid participant:') . $id);
+		}
+		if ($this->Participant->delete()) {
+			$this->Session->setFlash(__('Participant deleted'));
+			$this->redirect(array('program' => $programUrl,
+				'controller' => 'participants',
+				'action' => 'index'
+				));
+		}
+		$this->Session->setFlash(__('Participant was not deleted'));
+		$this->redirect(array('program' => $programUrl,
+				'controller' => 'participants',
+				'action' => 'index'
+				));
 	}
 	
 	public function view() {
@@ -89,12 +110,55 @@ class ParticipantsController extends AppController {
 	}
 	
 	public function import(){
-		if ($this->request->is('post')) {
-			print_r($this->request->data);
-		}
+
 		$programName = $this->Session->read($this->params['program'].'_name');
 		$programUrl = $this->params['program'];
-		$this->set(compact('programName','programUrl'));
+		if ($this->request->is('post')) {
+			if(!$this->request->data['Import']['file']['error']){
+				$fileName = $this->request->data['Import']['file']["name"];
+				$filePath = WWW_ROOT . "files/" . $programUrl; 
+
+				if (!file_exists(WWW_ROOT . "files/".$programUrl)){
+					echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
+					mkdir($filePath);
+					chmod($filePath, 0777);
+				}
+								
+				/** in case the file has already been created, 
+				* the chmod function should not be called.
+				*/
+				$wasFileAlreadyThere = false;
+				if(file_exists($filePath . DS . $fileName)){
+					$wasFileAlreadyThere = true;
+				}
+
+				copy($this->request->data['Import']["file"]["tmp_name"],
+					$filePath . DS . $fileName);
+				
+				if(!$wasFileAlreadyThere) {
+					chmod($filePath . DS . $fileName, 0777);
+				}
+				
+				$importedParticipants = fopen($filePath . DS . $fileName,"r");
+				$entries = array();
+				$participant = array();
+				$count = 0;
+				while(!feof($importedParticipants)){					
+					$entries[] = fgets($importedParticipants);
+					$this->Participant->create();
+					if($count > 0 && $entries[$count]){
+						$explodeLine = explode(",", $entries[$count]);
+						$participant['phone'] = $explodeLine[0];
+						$participant['name'] = $explodeLine[1];
+						//print_r($participant);
+						$this->Participant->save($participant);
+					}
+					$count++;
+				}
+			}
+		} 
+		
+		$this->set(compact('programName','programUrl','entries'));
 	}
 	
 
