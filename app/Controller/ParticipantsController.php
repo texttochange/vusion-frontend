@@ -111,11 +111,22 @@ class ParticipantsController extends AppController {
 	
 	public function import(){
 
+		require_once 'excel_reader2.php';
+		//$data = new Spreadsheet_Excel_Reader("example.xls");
+
 		$programName = $this->Session->read($this->params['program'].'_name');
 		$programUrl = $this->params['program'];
+		$this->set(compact('programName','programUrl'));
+
 		if ($this->request->is('post')) {
 			if(!$this->request->data['Import']['file']['error']){
 				$fileName = $this->request->data['Import']['file']["name"];
+				$ext = end(explode('.', $fileName));
+				if (!($ext == 'csv') and !($ext == 'xls')) {
+					$this->Session->setFlash('This file format is not supported');
+					return;
+				}
+
 				$filePath = WWW_ROOT . "files/" . $programUrl; 
 
 				if (!file_exists(WWW_ROOT . "files/".$programUrl)){
@@ -132,39 +143,57 @@ class ParticipantsController extends AppController {
 					$wasFileAlreadyThere = true;
 				}
 
-				copy($this->request->data['Import']["file"]["tmp_name"],
+				copy($this->request->data['Import']['file']['tmp_name'],
 					$filePath . DS . $fileName);
 				
 				if(!$wasFileAlreadyThere) {
 					chmod($filePath . DS . $fileName, 0777);
 				}
 				
-				$importedParticipants = fopen($filePath . DS . $fileName,"r");
-				$entries = array();
-				$participant = array();
-				$count = 0;
-				while(!feof($importedParticipants)){					
-					$entries[] = fgets($importedParticipants);
-					if($count > 0 && $entries[$count]){
-						$this->Participant->create();
-						$entries[$count] = str_replace("\n", "", $entries[$count]);
-						$explodeLine = explode(",", $entries[$count]);
-						$participant['phone'] = $explodeLine[0];
-						$participant['name'] = $explodeLine[1];
-						//print_r($participant);
-						if ($this->Participant->save($participant)) {
-							$entries[$count] .= " insert ok"; 
-						} else {
-							$entries[$count] .= " duplicated phone";
+				if ($ext == 'csv') {
+					$importedParticipants = fopen($filePath . DS . $fileName,"r");
+					$entries = array();
+					$participant = array();
+					$count = 0;
+					while(!feof($importedParticipants)){					
+						$entries[] = fgets($importedParticipants);
+						if($count > 0 && $entries[$count]){
+							$this->Participant->create();
+							$entries[$count] = str_replace("\n", "", $entries[$count]);
+							$explodeLine = explode(",", $entries[$count]);
+							$participant['phone'] = $explodeLine[0];
+							$participant['name'] = $explodeLine[1];
+							//print_r($participant);
+							if ($this->Participant->save($participant)) {
+								$entries[$count] .= " insert ok"; 
+							} else {
+								$entries[$count] .= " duplicated phone";
+							}
+							
 						}
-						
+						$count++;
 					}
-					$count++;
+				} else if ($ext == 'xls') {
+					$data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
+					for( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
+						//echo " iter:".$i;
+						$participant['phone'] = $data->val($i,'A');
+						$participant['name'] = $data->val($i,'B');
+						$this->Participant->create();
+						//for view report
+						$entries[$i] = $participant['phone'] . ','.$participant['name'];
+						if ($this->Participant->save($participant)) {
+							$entries[$i] .= ", insert ok"; 
+						} else {
+							$entries[$i] .= ", duplicated phone";
+						}
+					}
+					//$this->Session->setFlash('Import xls has to be written now');
 				}
 			}
 		} 
 		
-		$this->set(compact('programName','programUrl','entries'));
+		$this->set(compact('entries'));
 	}
 	
 

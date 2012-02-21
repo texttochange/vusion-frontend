@@ -87,7 +87,7 @@ class ParticipantsControllerTestCase extends ControllerTestCase {
  *
  * @return void
  */
-	public function testImport() 
+	public function testImport_csv() 
 	{
 		$Participants = $this->generate('Participants', array(
 			'components' => array(
@@ -136,7 +136,7 @@ class ParticipantsControllerTestCase extends ControllerTestCase {
 	}
 
 
-	public function testImport_duplicate() 
+	public function testImport_csv_duplicate() 
 	{
 		$Participants = $this->generate('Participants', array(
 			'components' => array(
@@ -195,5 +195,53 @@ class ParticipantsControllerTestCase extends ControllerTestCase {
 
 	}
 
+
+	public function testImport_xls() 
+	{
+		$Participants = $this->generate('Participants', array(
+			'components' => array(
+				'Acl' => array('check'),
+				'Session' => array('read')
+			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
+		));
+		
+		$Participants->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Participants->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+			
+		$Participants->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls(
+				'4', 
+				'2',
+				$this->programData[0]['Program']['database'],
+				$this->programData[0]['Program']['name']
+				));
+
+
+		$this->testAction("/testurl/participants/import", array(
+			'method' => 'post',
+			'data' => array(
+				'Import'=> array(
+					'file' => array(
+						'error' => 0,
+						'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
+						'name' => 'wellformattedparticipants.xls')))
+			));
+
+		$participantInDatabase = $this->Participants->Participant->find('count');
+		$this->assertEquals(2, $participantInDatabase);
+	}
 
 }
