@@ -145,13 +145,19 @@ class ParticipantsController extends AppController {
 				$count = 0;
 				while(!feof($importedParticipants)){					
 					$entries[] = fgets($importedParticipants);
-					$this->Participant->create();
 					if($count > 0 && $entries[$count]){
+						$this->Participant->create();
+						$entries[$count] = str_replace("\n", "", $entries[$count]);
 						$explodeLine = explode(",", $entries[$count]);
 						$participant['phone'] = $explodeLine[0];
 						$participant['name'] = $explodeLine[1];
 						//print_r($participant);
-						$this->Participant->save($participant);
+						if ($this->Participant->save($participant)) {
+							$entries[$count] .= " insert ok"; 
+						} else {
+							$entries[$count] .= " duplicated phone";
+						}
+						
 					}
 					$count++;
 				}

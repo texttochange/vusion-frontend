@@ -87,7 +87,8 @@ class ParticipantsControllerTestCase extends ControllerTestCase {
  *
  * @return void
  */
-	public function testImport() {
+	public function testImport() 
+	{
 		$Participants = $this->generate('Participants', array(
 			'components' => array(
 				'Acl' => array('check'),
@@ -122,16 +123,76 @@ class ParticipantsControllerTestCase extends ControllerTestCase {
 
 		$this->testAction("/testurl/participants/import", array(
 			'method' => 'post',
-			'data' => array('Import'=> array(
-				'file' => array(
-					'error' => 0,
-					'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-					//'tmp_name' => '/tmp/wellformattedparticipants',
-					'name' => 'wellformattedparticipants.csv')))
+			'data' => array(
+				'Import'=> array(
+					'file' => array(
+						'error' => 0,
+						'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+						'name' => 'wellformattedparticipants.csv')))
 			));
 
 		$participantInDatabase = $this->Participants->Participant->find('count');
 		$this->assertEquals(2, $participantInDatabase);
+	}
+
+
+	public function testImport_duplicate() 
+	{
+		$Participants = $this->generate('Participants', array(
+			'components' => array(
+				'Acl' => array('check'),
+				'Session' => array('read')
+			),
+			'models' => array(
+				'Program' => array('find', 'count'),
+				'Group' => array()
+			),
+		));
+		
+		$Participants->Acl
+			->expects($this->any())
+			->method('check')
+			->will($this->returnValue('true'));
+		
+		$Participants->Program
+			->expects($this->once())
+			->method('find')
+			->will($this->returnValue($this->programData));
+			
+		$Participants->Session
+			->expects($this->any())
+			->method('read')
+			->will($this->onConsecutiveCalls(
+				'4', 
+				'2',
+				$this->programData[0]['Program']['database'],
+				$this->programData[0]['Program']['name']
+				));
+
+		$this->instanciateParticipantModel();
+		$this->Participants->Participant->create();
+		$this->Participants->Participant->save(array(
+			'phone' => '256712747841',
+			'name' => 'Gerald'
+			));
+
+
+		$this->testAction("/testurl/participants/import", array(
+			'method' => 'post',
+			'data' => array(
+				'Import'=> array(
+					'file' => array(
+						'error' => 0,
+						'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+						'name' => 'wellformattedparticipants.csv')))
+			));
+
+		$participantInDatabase = $this->Participants->Participant->find('count');
+		$this->assertEquals(2, $participantInDatabase);
+
+		
+		$this->assertEquals('256788601462,"Olivier Vernin" insert ok', $this->vars['entries'][1]);
+
 	}
 
 

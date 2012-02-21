@@ -13,9 +13,10 @@
 
 	<div>
 	   <?php 
-	   foreach($entries as $entry){ 
-	   //print_r($importedParticipants);
-	   echo $entry."<br />";
+	   if (isset($entries)) {
+	       foreach($entries as $entry){ 
+	           echo $entry."<br />";
+	       }
 	   }
 	   ?>
 	</div>
