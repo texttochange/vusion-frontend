@@ -4,3 +4,12 @@
 #/app/tmp/cache
 /plugins
 /vendors
+/build/api
+/build/code-browser
+/build/coverage
+/build/logs
+/app/tmp/logs
+/app/tmp/session
+/app/tmp/tests/views
+/app/tmp/cache/models
+/app/tmp/cache/persistent
