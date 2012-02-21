@@ -156,6 +156,8 @@
          <arg path="${basedir}/build/coverage"/>
          <arg value="--coverage-clover"/>
          <arg path="${basedir}/build/logs/clover.xml"/>
+         <arg value="--include-path"/>
+         <arg path="${basedir}/lib"/>
   	 <arg value="app" />
   	 <arg value="AllTests" />
   </exec>

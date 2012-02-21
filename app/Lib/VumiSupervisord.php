@@ -14,16 +14,22 @@ class VumiSupervisord {
 		
 		$r=&$c->send($f);
 		
-		if(!$r->faultCode())
-		{
-			$arr = php_xmlrpc_decode($r->value());
-			return $arr['statename'];
-		}
-		else
-		{
-			return "An error occurred, Code: " . htmlspecialchars($r->faultCode())
-				. " Reason: '" . htmlspecialchars($r->faultString()) . "'";
-		}
+		 if(!$r->faultCode())
+		 {
+		 	 $arr = php_xmlrpc_decode($r->value());
+		 	 return array(
+		 	 	 'running' => true,
+		 	 	 'msg' => $arr['statename']
+		 	 	 );
+		 }
+		 else
+		 {
+		 	 return array(
+		 	 	 'running' => false,
+		 	 	 'code' => htmlspecialchars($r->faultCode()),
+		 	 	 'msg' => htmlspecialchars($r->faultString())
+		 	 	 );
+		 }
 	}
 	
 	function getAllProcessInfo() {
@@ -50,7 +56,7 @@ class VumiSupervisord {
 		
 	}
 	
-	function getProcessInfo($name) {
+	function getWorkerInfo($name) {
 		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$val = array(new xmlrpcval('echo_worker:'.$name));
@@ -63,15 +69,18 @@ class VumiSupervisord {
 		
 		$r=&$c->send($f);
 		
-		if(!$r->faultCode())
-		{
-			$arr = php_xmlrpc_decode($r->value());
-			return $arr['statename'];
-		}
-		else
-		{
-			return "Not registered";	
-		}
+		 if(!$r->faultCode()) {
+		 	 $arr = php_xmlrpc_decode($r->value());
+		 	 return array(
+		 	 	 'running' => true,
+		 	 	 'msg' => $arr['statename']
+		 	 	 );
+		 } else {
+		 	 return array(
+		 	 	 'running' => false,
+		 	 	 'msg' => 'Not registered'
+		 	 	 );    
+		 }   
 		
 	}
 	
@@ -160,16 +169,19 @@ class VumiSupervisord {
 		
 		$r=&$c->send($f);
 		
-		if(!$r->faultCode())
-		{
-			return "Worker process has started.";
-			//echo php_xmlrpc_decode($r->value());
-		}
-		else
-		{
-			return "An error occurred, Code: " . htmlspecialchars($r->faultCode())
-				. " Reason: '" . htmlspecialchars($r->faultString()) . "'";
-		}
+		 if(!$r->faultCode())
+		 {
+		 	 return array(
+		 	 	 'running' => true,
+		 	 	 );
+		 	 
+		 } else {
+		 	 return array(
+		 	 	 'running' => false,
+		 	 	 'error_code' => htmlspecialchars($r->faultCode()),
+		 	 	 'msg' => htmlspecialchars($r->faultString())
+		 	 	 );
+		 }
 	}
 	
 	
@@ -192,13 +204,17 @@ class VumiSupervisord {
 		
 		if(!$r->faultCode())
 		{
-			return "Worker removed";
-			//echo php_xmlrpc_decode($r->value());
+			return array(
+				'removed' => true
+				);
 		}
 		else
 		{
-			return "An error occurred, Code: " . htmlspecialchars($r->faultCode())
-				. " Reason: '" . htmlspecialchars($r->faultString()) . "'";
+			return array(
+				'removed' => false,
+				'error_code' => htmlspecialchars($r->faultCode()),
+				'msg' => htmlspecialchars($r->faultString())
+				);
 		}
 	}
 	

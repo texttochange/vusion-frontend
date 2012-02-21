@@ -75,6 +75,9 @@
 			}
 			?>
 			</div>
+			<?php
+			if (isset($workerStatus)) {
+			?>
 			<div class='ttc-info-box'>
 			<?php 
 			if ($workerStatus['running']) {
@@ -90,6 +93,7 @@
 			?>
 			</div>
 			<?php
+			};
 		  }; 
 	       } ?>
 

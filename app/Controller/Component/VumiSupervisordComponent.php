@@ -2,14 +2,24 @@
 
 App::uses('VumiSupervisord','Lib');
 
+
+
 class VumiSupervisordComponent extends Component
 {
 
+    public function __construct(ComponentCollection $collection, $settings = array()) {
+		//$this->_controller = $collection->getController();
+		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');    	
+		parent::__construct($collection, $settings);
+    }
 
+   
     function getState()
     {
-        require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
-        
+   
+    	
+        //require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');    	
+    
         $f=new xmlrpcmsg('supervisor.getState');
         $c=new xmlrpc_client("/RPC2", "localhost",9010);
         $r=&$c->send($f);

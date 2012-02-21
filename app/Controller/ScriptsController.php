@@ -2,13 +2,13 @@
 
 App::uses('AppController','Controller');
 App::uses('Script','Model');
-//App::uses('VumiSupervisord','Lib');
+App::uses('VumiSupervisord','Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 
 class ScriptsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'Acl', 'VumiSupervisord');
+    var $components = array('RequestHandler', 'Acl');
     var $helpers = array('Js' => array('Jquery'));
 
 

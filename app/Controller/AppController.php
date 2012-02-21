@@ -1,5 +1,6 @@
 <?php
 App::uses('Controller', 'Controller');
+App::uses('VumiSupervisord', 'Lib');
 
 class AppController extends Controller
 {
@@ -33,8 +34,7 @@ class AppController extends Controller
                 )
             ),
         'Acl',
-        'Cookie',
-        'VumiSupervisord');
+        'Cookie');
 
     public $helpers = array('Html', 'Form', 'Session');
 
@@ -45,7 +45,7 @@ class AppController extends Controller
         $this->_setLanguage();
         
         //return the vumi status for the header
-        $this->set('vumiStatus', $this->VumiSupervisord->getState());
+        //$this->set('vumiStatus', $this->VumiSupervisord->getState());
     }
 
 
@@ -72,6 +72,7 @@ class AppController extends Controller
                 $this->set('programTimezone',$data[0]['Program']['timezone']);
             }
         }
+        $this->VumiSupervisord = new VumiSupervisord();
     }
 
 

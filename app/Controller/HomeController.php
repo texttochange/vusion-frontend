@@ -11,7 +11,7 @@ App::uses('VumiSupervisord','Lib');
 class HomeController extends AppController 
 {
 
-    var $components = array('RequestHandler', 'VumiSupervisord');
+    var $components = array('RequestHandler');
     var $helpers    = array('Js' => array('Jquery'));
 
 
@@ -35,7 +35,7 @@ class HomeController extends AppController
         $statusCount      = $this->ParticipantsState->find('count');
         $schedules        = $this->Schedule->find('soon');
         
-        $workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
+        //$workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
 
         $this->set(compact('programName',
             'programUrl',
@@ -61,6 +61,7 @@ class HomeController extends AppController
         $this->ParticipantsState = new ParticipantsState($options);
         $this->Schedule          = new Schedule($options);
 
+        $this->VumiSupervisord = new VumiSupervisord();
     }
 
 
