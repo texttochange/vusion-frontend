@@ -169,47 +169,62 @@ class ParticipantsController extends AppController
                 }
                 
                 if ($ext == 'csv') {
-                    $importedParticipants = fopen($filePath . DS . $fileName,"r");
-                    $entries = array();
-                    $participant = array();
-                    $count = 0;
-                    while(!feof($importedParticipants)) {                    
-                        $entries[] = fgets($importedParticipants);
-                        if($count > 0 && $entries[$count]) {
-                            $this->Participant->create();
-                            $entries[$count]      = str_replace("\n", "", $entries[$count]);
-                            $explodeLine          = explode(",", $entries[$count]);
-                            $participant['phone'] = $explodeLine[0];
-                            $participant['name']  = $explodeLine[1];
-                            //print_r($participant);
-                            if ($this->Participant->save($participant)) {
-                                $entries[$count] .= " insert ok"; 
-                            } else {
-                                $entries[$count] .= " duplicated phone";
-                            }
-                            
-                        }
-                        $count++;
-                    }
+ 
+                    $entries = $this->processCsv($filePath, $fileName);
+
                 } else if ($ext == 'xls') {
-                    $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
-                    for( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
-                        //echo " iter:".$i;
-                        $participant['phone'] = $data->val($i,'A');
-                        $participant['name']  = $data->val($i,'B');
-                        $this->Participant->create();
-                        //for view report
-                        $entries[$i] = $participant['phone'] . ','.$participant['name'];
-                        if ($this->Participant->save($participant)) {
-                            $entries[$i] .= ", insert ok"; 
-                        } else {
-                            $entries[$i] .= ", duplicated phone";
-                        }
-                    }
+
+                    $entries = $this->processXls($filePath, $fileName);
+
                 }
             }
         } 
         $this->set(compact('entries'));
+    }
+
+    private function processCsv($filePath, $fileName)
+    {
+        $importedParticipants = fopen($filePath . DS . $fileName,"r");
+        $entries = array();
+        $participant = array();
+        $count = 0;
+        while(!feof($importedParticipants)) {                    
+            $entries[] = fgets($importedParticipants);
+            if($count > 0 && $entries[$count]) {
+                $this->Participant->create();
+                $entries[$count]      = str_replace("\n", "", $entries[$count]);
+                $explodeLine          = explode(",", $entries[$count]);
+                $participant['phone'] = $explodeLine[0];
+                $participant['name']  = $explodeLine[1];
+                //print_r($participant);
+                if ($this->Participant->save($participant)) {
+                    $entries[$count] .= " insert ok"; 
+                } else {
+                    $entries[$count] .= " duplicated phone";
+                }
+                
+            }
+            $count++; 
+        }
+        return $entries;
+    }
+
+    private function processXls($filePath, $fileName)
+    {
+        $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
+        for( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
+            $participant['phone'] = $data->val($i,'A');
+            $participant['name']  = $data->val($i,'B');
+            $this->Participant->create();
+            //for view report
+            $entries[$i] = $participant['phone'] . ','.$participant['name'];
+            if ($this->Participant->save($participant)) {
+                $entries[$i] .= ", insert ok"; 
+            } else {
+                $entries[$i] .= ", duplicated phone";
+            }
+        }
+        return $entries;
     }
     
     
