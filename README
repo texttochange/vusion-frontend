@@ -48,3 +48,8 @@ PHP Modules (for development only)
 - PHPUnit
 - XDebug
 - Mongo (in php.ini of cli tool if you want to run the test in command line)
+-phploc (https://github.com/sebastianbergmann/phploc)
+-pdepend (http://pear.pdepend.org/)
+-phpmd (http://pear.phpmd.org/)
+-phpcpd (https://github.com/sebastianbergmann/phpcpd)
+-phpdoc (http://sourceforge.net/projects/phpdocu/files/)
