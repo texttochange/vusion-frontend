@@ -41,7 +41,6 @@ class ProgramSettingsController extends AppController
                          'key' => $key,
                          'value' => $value
                          ));
-                 echo "result in the controller<br/>";
             }
         }
         return;
