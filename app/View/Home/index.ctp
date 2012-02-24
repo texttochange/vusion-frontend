@@ -134,6 +134,12 @@
 			);
 		}?>
 	</div>
+	<div class='ttc-info-box'>
+	    <?php echo $this->Html->link(__('Edit Program Settings'), array('program'=> $programUrl, 
+	                                                                    'controller' => 'programSettings', 
+                                                                            'action' => 'edit'),
+                                                                      array('class' => 'ttc-button')); ?>
+	</div>
 	</div>
 	<div class='ttc-info'>
 	<h3><?php echo __('Sending Next');?></h3>

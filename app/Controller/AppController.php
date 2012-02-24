@@ -69,7 +69,7 @@ class AppController extends Controller
             } else {
                 $this->Session->write($this->params['program'] . '_name', $data[0]['Program']['name']);
                 $this->Session->write($this->params['program'] . '_db', $data[0]['Program']['database']);
-                $this->set('programTimezone',$data[0]['Program']['timezone']);
+                //$this->set('programTimezone',$data[0]['Program']['timezone']);
             }
         }
         $this->VumiSupervisord = new VumiSupervisord();

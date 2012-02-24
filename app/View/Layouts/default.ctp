@@ -83,11 +83,11 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 					array('controller'=> 'users', 'action'=>'logout'), 
 					array('class' => 'ttc-link'));
 			}
-			if (isset($programTimezone)) {
+			if (isset($programTimezone[0]['ProgramSetting']['value']) && $programTimezone[0]['ProgramSetting']['value']) {
 				echo $this->Html->tag('br');
 				echo $this->Html->tag('span', 'program time: ');
 				$now = new DateTime('now');
-				date_timezone_set($now,timezone_open($programTimezone));
+				date_timezone_set($now,timezone_open($programTimezone[0]['ProgramSetting']['value']));
 				echo $this->Html->tag('span', $now->format('H:i:s')  );
 			}
 			?> 
@@ -96,7 +96,11 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<div id="content">
 
 			<?php echo $this->Session->flash(); ?>
-
+			<!-- To be refact with all the Controllers and views
+			<?php if (isset($programName)) {
+				?> <h1>Program Header</h1> <?php
+			} ?>-->
+			
 			<?php echo $content_for_layout; ?>
 
 		</div>

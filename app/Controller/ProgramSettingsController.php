@@ -26,6 +26,8 @@ class ProgramSettingsController extends AppController
 
     public function edit()
     {
+    	$programUrl = $this->params['program'];
+
         if ($this->request->is('post') || $this->request->is('put')) {
             foreach($this->request->data['ProgramSettings'] as $key => $value) {
                  //echo $key ." = " . $value;
@@ -37,13 +39,27 @@ class ProgramSettingsController extends AppController
                      //update
                      $this->ProgramSetting->id = $programSetting[0]['ProgramSetting']['_id'];
                  }
-                 $this->ProgramSetting->save(array(
+                 if ($this->ProgramSetting->save(array(
                          'key' => $key,
                          'value' => $value
-                         ));
+                         ))){
+                     $this->Session->setFlash("Program Settings saved");
+                 }
             }
         }
-        return;
+        $country = $this->ProgramSetting->find('programSetting', array( 'key' => 'country'));
+        $timezone = $this->ProgramSetting->find('programSetting', array( 'key' => 'timezone'));
+        //print_r($country);
+        if ($country) {
+            $programSettings = array(
+                'ProgramSettings' => array (
+                    'country' => $country[0]['ProgramSetting']['value'],
+        	    'timezone' => $timezone[0]['ProgramSetting']['value']
+        	    )
+        	);
+            $this->request->data = $programSettings;
+        }
+        $this->set(compact('programUrl'));
     }
 
 
