@@ -2,7 +2,7 @@
 
 <project name="name-of-project" default="build">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,clearCache,phpunit,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,clearCache,phpunit,phpcb,acl"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -163,6 +163,12 @@
   </exec>
  </target>
 
+ <target name="acl" description="Run AclExtras">
+ <exec executable="./lib/Cake/Console/cake" failonerror="true">
+  	 <arg value="AclExtras.AclExtras" />
+         <arg value="aco_sync" />
+  </exec>
+ </target>
 
  <target name="phpcb"
          description="Aggregate tool output with PHP_CodeBrowser">
