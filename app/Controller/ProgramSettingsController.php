@@ -51,6 +51,7 @@ class ProgramSettingsController extends AppController
         $timezone = $this->ProgramSetting->find('programSetting', array( 'key' => 'timezone'));
         //print_r($country);
         if ($country) {
+            //echo "there is a country";
             $programSettings = array(
                 'ProgramSettings' => array (
                     'country' => $country[0]['ProgramSetting']['value'],
@@ -58,8 +59,10 @@ class ProgramSettingsController extends AppController
         	    )
         	);
             $this->request->data = $programSettings;
+           
         }
         $this->set(compact('programUrl'));
+        return $programSettings;
     }
 
 
