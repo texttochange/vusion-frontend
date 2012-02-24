@@ -10,7 +10,13 @@ class MongoModel extends Model {
     	//print_r($id);
         if ($this->specific) {
             // Get saved company/database name
-            $dbName = $id['database'];
+            if (isset($id['database']) and $id['database']) {
+            	    $dbName = $id['database'];
+            } else {
+            	    $dbName = 'test';
+            }
+
+            	   
             // Get common company-specific config (default settings in database.php)
             //$mongodb = new MongodbSource();
             

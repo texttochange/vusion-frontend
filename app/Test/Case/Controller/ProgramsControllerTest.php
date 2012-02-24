@@ -72,6 +72,9 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 				'Acl' => array('check'),
 				'Session' => array('read')
 			),
+			'methods' => array(
+				'paginate'
+			)
 		));
 		
 		$Programs->Acl
@@ -83,7 +86,19 @@ class ProgramsControllerTestCase extends ControllerTestCase {
 			->expects($this->any())
 			->method('read')
 			->will($this->onConsecutiveCalls('1','1','1'));
-			
+		
+		$Programs
+		        ->expects($this->once())
+		        ->method('paginate')
+		        ->will($this->returnValue(array(
+		        	0 => array(
+		        		'Program' => array(
+		        			'database' => 'test1')),
+		        	1 => array(
+		        		'Program' => array(
+		        			'database' => 'test2'))
+		        	)));
+
 		$this->testAction("/programs/index");
 		$this->assertEquals(2, count($this->vars['programs']));
 	}

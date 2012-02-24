@@ -158,6 +158,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/Participants');
         $this->Acl->allow($group, 'controllers/Scripts');
         $this->Acl->allow($group, 'controllers/Status');
+        $this->Acl->allow($group, 'controllers/ProgramSettings');
         
         //allow program manager to programs
         $group->id = 3;
@@ -169,6 +170,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/Participants');
         $this->Acl->allow($group, 'controllers/Scripts');
         $this->Acl->allow($group, 'controllers/Status');
+        $this->Acl->allow($group, 'controllers/ProgramSettings');
         
         //allow customer to 
         $group->id = 4;
