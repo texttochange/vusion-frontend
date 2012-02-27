@@ -140,7 +140,7 @@ class ParticipantsController extends AppController
                 $fileName = $this->request->data['Import']['file']["name"];
                 $ext      = end(explode('.', $fileName));
 
-                if (!($ext == 'csv') and !($ext == 'xls')) {
+                if (!($ext == 'csv') and !($ext == 'xls') and !($ext == 'xlsx')) {
                     $this->Session->setFlash('This file format is not supported');
                     return;
                 }
@@ -172,7 +172,7 @@ class ParticipantsController extends AppController
  
                     $entries = $this->processCsv($filePath, $fileName);
 
-                } else if ($ext == 'xls') {
+                } else if ($ext == 'xls' || $ext == 'xlsx') {
 
                     $entries = $this->processXls($filePath, $fileName);
 
@@ -195,12 +195,13 @@ class ParticipantsController extends AppController
                 $entries[$count]      = str_replace("\n", "", $entries[$count]);
                 $explodeLine          = explode(",", $entries[$count]);
                 $participant['phone'] = $explodeLine[0];
+                $participant['phone'] = $this->checkPhoneNumber($participant['phone']);
                 $participant['name']  = $explodeLine[1];
                 //print_r($participant);
                 if ($this->Participant->save($participant)) {
                     $entries[$count] .= " insert ok"; 
                 } else {
-                    $entries[$count] .= " duplicated phone";
+                    $entries[$count] .= " duplicated phone line ".($count+1);
                 }
                 
             }
@@ -214,17 +215,26 @@ class ParticipantsController extends AppController
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
         for( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
             $participant['phone'] = $data->val($i,'A');
+            $participant['phone'] = $this->checkPhoneNumber($participant['phone']);
             $participant['name']  = $data->val($i,'B');
             $this->Participant->create();
             //for view report
             $entries[$i] = $participant['phone'] . ','.$participant['name'];
             if ($this->Participant->save($participant)) {
-                $entries[$i] .= ", insert ok"; 
+                $entries[$i] .= " insert ok"; 
             } else {
-                $entries[$i] .= ", duplicated phone";
+                $entries[$i] .= " duplicated phone line ".$i;
             }
         }
         return $entries;
+    }
+    
+   
+    public function checkPhoneNumber($phoneNumber) 
+    {
+        $newPhoneNumber = preg_replace("/[^0-9]/", "", $phoneNumber);
+        $newPhoneNumber = preg_replace("/^0/", "", $newPhoneNumber);
+        return $newPhoneNumber;
     }
     
     
