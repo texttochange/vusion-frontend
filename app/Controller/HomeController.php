@@ -18,8 +18,6 @@ class HomeController extends AppController
 
     public function index()
     {
-        $programName      = $this->Session->read($this->params['program'].'_name');
-        $programUrl       = $this->params['program'];
         $hasScriptActive  = count($this->Script->find('countActive'));
         $hasScriptDraft   = count($this->Script->find('countDraft'));
         $isScriptEdit     = $this->Acl->check(array(
@@ -39,8 +37,7 @@ class HomeController extends AppController
         //$workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         
-        $this->set(compact('programName',
-            'programUrl',
+        $this->set(compact(
             'hasScriptActive', 
             'hasScriptDraft',
             'isScriptEdit', 

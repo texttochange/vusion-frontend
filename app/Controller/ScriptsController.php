@@ -21,17 +21,27 @@ class ScriptsController extends AppController
     }
 
 
+    function constructClasses()
+    {
+        parent::constructClasses();
+        
+        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->Script = new Script($options);
+        
+        $this->VumiRabbitMQ = new VumiRabbitMQ();
+    }
+
+
     public function index()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
         $draft = $this->Script->find('draft');
-        //print_r($draft);
+        
         if (count($draft)){
             $script = $draft[0]['Script'];
         } else {
             $script = null;
         }
-        $this->set(compact('programName', 'script'));
+        $this->set(compact('script'));
     }
 
 
@@ -75,55 +85,41 @@ class ScriptsController extends AppController
 
     public function draft()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl = $this->params['program'];
         $draft = $this->Script->find('draft');
+        
         if (count($draft)){
             $script = $draft[0]['Script'];
         } else {
             $script = null;
         }
-        $this->set(compact('programName', 'programUrl', 'script'));
+        $this->set(compact('script'));
     }
 
 
     public function activate_draft()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
+        $programUrl  = $this->params['program'];
+
         $result_db = $this->Script->makeDraftActive();
-        $result_supervisord = $this->VumiSupervisord->startWorker($this->params['program']);
+        $result_supervisord = $this->VumiSupervisord->startWorker($programUrl);
         $result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
-            $this->params['program'], 
-            $this->Session->read($this->params['program'].'_db'));
-        $this->VumiRabbitMQ->sendStartMessageToWorker(
-            $this->params['program']);
+            $programUrl, 
+            $this->Session->read($programUrl.'_db'));
+        $this->VumiRabbitMQ->sendStartMessageToWorker($programUrl);
         //$this->set(compact('programName', 'result_db', 'result_supervisord'));
-        $this->redirect(array('program'=>$this->params['program'], 'controller'=>'home'));
+        $this->redirect(array('program'=>$programUrl, 'controller'=>'home'));
     }
 
 
     public function active()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl = $this->params['program'];
         $draft = $this->Script->find('active');
         if (count($draft)){
             $script = $draft[0]['Script'];
         } else {
             $script = null;
         }
-        $this->set(compact('programName', 'programUrl', 'script'));
-    }
-
-
-    function constructClasses()
-    {
-        parent::constructClasses();
-        
-        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Script = new Script($options);
-        
-        $this->VumiRabbitMQ = new VumiRabbitMQ();
+        $this->set(compact('script'));
     }
 
 

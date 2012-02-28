@@ -6,9 +6,9 @@ App::uses('ParticipantsState','Model');
 class StatusController extends AppController
 {
 
-    public $uses = array('ParticipantsState');
+    public $uses    = array('ParticipantsState');
     var $components = array('RequestHandler');
-    var $helpers = array('Js' => array('Jquery'));
+    var $helpers    = array('Js' => array('Jquery'));
 
 
     public function beforeFilter()
@@ -21,10 +21,8 @@ class StatusController extends AppController
 
     public function index()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl = $this->params['program'];
         $statuses = $this->paginate();
-        $this->set(compact('programName', 'programUrl', 'statuses'));
+        $this->set(compact('statuses'));
     }
 
 

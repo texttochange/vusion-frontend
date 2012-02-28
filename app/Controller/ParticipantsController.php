@@ -28,39 +28,36 @@ class ParticipantsController extends AppController
     
     public function index() 
     {
-        $programName  = $this->Session->read($this->params['program'].'_name');
-        $programUrl   = $this->params['program'];
         $participants = $this->paginate();
-        $this->set(compact('programName', 'programUrl', 'participants'));        
+        $this->set(compact('participants'));        
     }
 
     
     public function add() 
-    {    
+    {   
+        $programUrl = $this->params['program'];
+ 
         if ($this->request->is('post')) {
             $this->Participant->create();
             if ($this->Participant->save($this->request->data)) {
                 $this->Session->setFlash(__('The participant has been saved.'));
                 $this->redirect(array(
-                    'program' => $this->params['program'],  
+                    'program' => $programUrl,  
                     'controller' => 'participants',
                     'action' => 'index'
                     ));
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'));
             }
-        }
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl  = $this->params['program'];
-        $this->set(compact('programName', 'programUrl'));        
+        }        
     }
 
     
     public function edit() 
     {
-        $id          = $this->params['id'];
-        $programName = $this->Session->read($this->params['program'].'_name');
         $programUrl  = $this->params['program'];
+        $id          = $this->params['id'];
+        
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
@@ -74,15 +71,15 @@ class ParticipantsController extends AppController
             }
         } else {
             $this->request->data = $this->Participant->read(null, $id);
-        }
-        $this->set(compact('programName', 'programUrl')); 
+        } 
     }
 
     
     public function delete() 
     {
-        $id         = $this->params['id'];
         $programUrl = $this->params['program'];
+        $id         = $this->params['id'];
+        
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
@@ -107,8 +104,6 @@ class ParticipantsController extends AppController
     
     public function view() 
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl  = $this->params['program'];
         $id          = $this->params['id'];
 
         $this->Participant->id = $id;
@@ -119,8 +114,7 @@ class ParticipantsController extends AppController
         $histories   = $this->ParticipantsState->find('participant', array(
                 'phone' => $participant['Participant']['phone']
             ));
-        $this->set(compact('programName', 
-            'programUrl',
+        $this->set(compact(
             'participant',
             'histories'));
     }
@@ -133,7 +127,6 @@ class ParticipantsController extends AppController
 
         $programName = $this->Session->read($this->params['program'].'_name');
         $programUrl  = $this->params['program'];
-        $this->set(compact('programName','programUrl'));
 
         if ($this->request->is('post')) {
             if(!$this->request->data['Import']['file']['error']) {

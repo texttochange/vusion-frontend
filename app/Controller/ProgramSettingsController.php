@@ -26,8 +26,7 @@ class ProgramSettingsController extends AppController
 
     public function edit()
     {
-    	$programUrl = $this->params['program'];
-
+    	
         if ($this->request->is('post') || $this->request->is('put')) {
             foreach($this->request->data['ProgramSettings'] as $key => $value) {
                  //echo $key ." = " . $value;
@@ -61,7 +60,6 @@ class ProgramSettingsController extends AppController
             $this->request->data = $programSettings;
            
         }
-        $this->set(compact('programUrl'));
         return $programSettings;
     }
 
