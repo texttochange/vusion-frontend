@@ -3,8 +3,8 @@
 <div class="participants index">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('phone');?></th>
-			<th><?php echo $this->Paginator->sort('name');?></th>
+			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
@@ -29,9 +29,9 @@
 
 	<div class="paging">
 	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, 'controller' =>'participants')), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, 'controller' =>'participants')), null, array('class' => 'next disabled'));
+		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl)), null, array('class' => 'prev disabled'));
+		echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl)));
+		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl)), null, array('class' => 'next disabled'));
 	?>
 	</div>
 </div>
