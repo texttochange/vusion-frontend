@@ -3,9 +3,9 @@
 <div class="status index">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('phone');?></th>
-			<th><?php echo $this->Paginator->sort('message');?></th>
-			<th><?php echo $this->Paginator->sort('time');?></th>
+			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('message', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('time', null, array('url'=> array('program' => $programUrl)));?></th>
 	</tr>
 	<?php
 	foreach ($statuses as $status): ?>
@@ -29,9 +29,9 @@
 
 	<div class="paging">
 	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, 'controller' =>'status')), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, 'controller' =>'status')), null, array('class' => 'next disabled'));
+		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl)), null, array('class' => 'prev disabled'));
+		echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl)));
+		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl)), null, array('class' => 'next disabled'));
 	?>
 </div>
 	

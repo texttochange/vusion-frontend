@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppController', 'Controller');
+App::uses('ProgramSetting', 'Model');
 
 /**
  * Programs Controller
@@ -42,6 +43,16 @@ class ProgramsController extends AppController
                     'id' => $this->Session->read('Auth.User.id')
                 ),
             ), 'controllers/Programs/edit');
+        foreach($programs as &$program) {
+        	//print_r($program);
+        	$tempProgramSetting = new ProgramSetting(array('database' => $program['Program']['database']));
+        	$country = $tempProgramSetting->find('programSetting', array('key'=>'country'));
+        	if (isset($country[0]['ProgramSetting']['value'])) {
+        		$program['Program']['country'] = $country[0]['ProgramSetting']['value'];
+        	} else {
+        		$program['Program']['country'] = "Not defined";
+        	}
+        }
         $this->set(compact('programs', 'isProgramEdit'));
     }
 
