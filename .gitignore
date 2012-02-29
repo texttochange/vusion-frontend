@@ -1,6 +1,6 @@
 *.*~
 *~
-/app/Config
+#/app/Config
 #/app/tmp/cache
 /plugins
 /vendors

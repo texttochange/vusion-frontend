@@ -103,7 +103,7 @@
 				array('class' => 'ttc-text')
 				); ?>
 	<?php if ($isParticipantAdd) { 
-		echo $this->Html->link('Add participant(s)',
+		echo $this->Html->link('Add participant',
 			array('program' => $programUrl,
 				'controller' => 'participants',
 				'action' => 'add'
@@ -114,11 +114,19 @@
 	<?php if ($participantCount > 0) {
 		echo $this->Html->link('View participant(s)',
 			array('program' => $programUrl,
-				'controller' => 'Participants', 
+				'controller' => 'participants', 
 				),
 			array('class' => 'ttc-button')
 			);
 		}?>
+	<br /><br />
+	<?php echo $this->Html->link(__('Import Participant(s)'),
+			array('program'=> $programUrl, 
+	                'controller' => 'participants', 
+                        'action' => 'import'),
+                         array('class' => 'ttc-button')
+                         );
+                ?>
 	</div>
 	<div class='ttc-info-box'>
 	<?php echo $this->Html->tag('div', 
@@ -135,10 +143,19 @@
 		}?>
 	</div>
 	<div class='ttc-info-box'>
-	    <?php echo $this->Html->link(__('Edit Program Settings'), array('program'=> $programUrl, 
-	                                                                    'controller' => 'programSettings', 
-                                                                            'action' => 'edit'),
-                                                                      array('class' => 'ttc-button')); ?>
+	    <?php echo $this->Html->link(__('Edit Program Settings'),
+	                array('program'=> $programUrl, 
+	                'controller' => 'programSettings', 
+                        'action' => 'edit'),
+                         array('class' => 'ttc-button')
+                         );
+            ?>
+            <?php echo $this->Html->link(__('Back To Program List'),
+			array('controller' => 'programs', 
+                        'action' => 'index'),
+                         array('class' => 'ttc-button')
+                         );
+            ?>
 	</div>
 	</div>
 	<div class='ttc-info'>

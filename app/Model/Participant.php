@@ -14,13 +14,13 @@ class Participant extends MongoModel {
  */
     var $name = 'Participant';
     var $useDbConfig = 'mongo';
-	
+    	
     public $validate = array(
     	    'phone' => array(
     	    	    'rule' => 'isReallyUnique',
     	    	    'required' => true
     	    	    ));
-
+    
     public function isReallyUnique($check)
     {
     	    $result = $this->find('count', array(

@@ -38,8 +38,12 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Participant'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('Back To Program Home'),
+	                array('program'=> $programUrl,'controller' => 'home'));
+                ?></li>
+		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'add')); ?></li>
 		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'import')); ?></li>
+		
 	</ul>
 </div>
 </div>

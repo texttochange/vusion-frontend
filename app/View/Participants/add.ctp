@@ -14,7 +14,11 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('List Participants'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'index'));?></li>
+		<li><?php echo $this->Html->link(__('Back To Program Home'),
+	                array('program'=> $programUrl,'controller' => 'home'));
+                ?></li>
+                <li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'import')); ?></li>
+		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'index'));?></li>
 	</ul>
 </div>
 </div>
