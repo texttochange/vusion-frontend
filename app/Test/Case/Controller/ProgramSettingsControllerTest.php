@@ -1,7 +1,8 @@
 <?php
 App::uses('ProgramSettingsController', 'Controller');
 
-class TestProgramSettingsController extends ProgramSettingsController {
+class TestProgramSettingsController extends ProgramSettingsController
+{
 /**
  * Auto render
  *
@@ -20,6 +21,8 @@ class TestProgramSettingsController extends ProgramSettingsController {
     public function redirect($url, $status = null, $exit = true) {
         $this->redirectUrl = $url;
     }
+
+
 }
 
 
@@ -41,40 +44,46 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
      ));
 
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         $this->ProgramSettings = new TestProgramSettingsController();
         $this->dropData();
     }
 
-    protected function dropData() {
+
+    protected function dropData()
+    {
         $this->instanciateProgramSettingsModel();
         $this->ProgramSettings->ProgramSetting->deleteAll(true, false);
     }
-    
-    protected function instanciateProgramSettingsModel() {
+
+
+    protected function instanciateProgramSettingsModel() 
+    {
         $options = array('database' => $this->programData[0]['Program']['database']);
         $this->ProgramSettings->ProgramSetting = new ProgramSetting($options);
     }
     
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->dropData();
         unset($this->ProgramSettings);
         parent::tearDown();
     }
 
-    public function testEdit() 
-    {
 
+    protected function mockProgramAccess()
+    {
         $ProgramSettings = $this->generate('ProgramSettings', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
             ),
             'models' => array(
-            	'Program' => array('find', 'count'),
-            	'Group' => array()
+                'Program' => array('find', 'count'),
+                'Group' => array()
              )
          ));
         
@@ -96,23 +105,30 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 '2',
                 $this->programData[0]['Program']['database'],
                 $this->programData[0]['Program']['name']
-                ));
+                )); 
+    }
 
-            $programSettings = array(
-                    'ProgramSettings' => array(
-                            'country'=>'uganda',
-                            'timezone'=> 'EAT'
-                            )
-                    );
 
-            $this->testAction("/testurl/programSettings/edit", array(
-                    'method' => 'post',
-                    'data' => $programSettings
-                    ));
-            //print_r($this);
-            //print_r($this->vars);
+/**
+ * Test Methods
+ */
+    public function testEdit() 
+    {
+        $this->mockProgramAccess();
+
+        $programSettings = array(
+            'ProgramSettings' => array(
+                'country'=>'uganda',
+                'timezone'=> 'EAT'
+                )
+            );
             
-            $this->assertEquals($programSettings, $this->result);
+        $this->testAction("/testurl/programSettings/edit", array(
+            'method' => 'post',
+            'data' => $programSettings
+            ));
+            
+        $this->assertEquals($programSettings, $this->result);
     }
 
 

@@ -5,13 +5,15 @@ App::uses('UsersController', 'Controller');
 /**
  * TestUsersController *
  */
-class TestUsersController extends UsersController {
+class TestUsersController extends UsersController
+{
 /**
  * Auto render
  *
  * @var boolean
  */
-	public $autoRender = false;
+    public $autoRender = false;
+
 
 /**
  * Redirect action
@@ -21,89 +23,106 @@ class TestUsersController extends UsersController {
  * @param boolean $exit
  * @return void
  */
-	public function redirect($url, $status = null, $exit = true) {
-		$this->redirectUrl = $url;
-	}
+    public function redirect($url, $status = null, $exit = true) {
+        $this->redirectUrl = $url;
+    }
+
+
 }
 
 /**
  * UsersController Test Case
  *
  */
-class UsersControllerTestCase extends CakeTestCase {
+class UsersControllerTestCase extends CakeTestCase
+{
 /**
  * Fixtures
  *
  * @var array
  */
-	public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
+    public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
 
 /**
  * setUp method
  *
  * @return void
  */
-	public function setUp() {
-		parent::setUp();
+    public function setUp()
+    {
+        parent::setUp();
 
-		$this->Users = new TestUsersController();
-		$this->Users->constructClasses();
-	}
+        $this->Users = new TestUsersController();
+        $this->Users->constructClasses();
+    }
+
 
 /**
  * tearDown method
  *
  * @return void
  */
-	public function tearDown() {
-		unset($this->Users);
+    public function tearDown()
+    {
+        unset($this->Users);
 
-		parent::tearDown();
-	}
+        parent::tearDown();
+    }
+
 
 /**
  * testIndex method
  *
  * @return void
  */
-	public function testIndex() {
+    public function testIndex() 
+    {
 
-	}
+    }
+
 
 /**
  * testView method
  *
  * @return void
  */
-	public function testView() {
+    public function testView()
+    {
 
-	}
+    }
+
 
 /**
  * testAdd method
  *
  * @return void
  */
-	public function testAdd() {
+    public function testAdd() 
+    {
 
-	}
+    }
+
 
 /**
  * testEdit method
  *
  * @return void
  */
-	public function testEdit() {
+    public function testEdit() 
+    {
 
-	}
+    }
+
 
 /**
  * testDelete method
  *
  * @return void
  */
-	public function testDelete() {
+    public function testDelete() 
+    {
 
-	}
+    }
+
 
 }

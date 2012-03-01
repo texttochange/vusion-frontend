@@ -5,13 +5,14 @@ App::uses('ProgramsController', 'Controller');
 /**
  * TestProgramsController *
  */
-class TestProgramsController extends ProgramsController {
+class TestProgramsController extends ProgramsController 
+{
 /**
  * Auto render
  *
  * @var boolean
  */
-	public $autoRender = false;
+    public $autoRender = false;
 
 /**
  * Redirect action
@@ -21,181 +22,180 @@ class TestProgramsController extends ProgramsController {
  * @param boolean $exit
  * @return void
  */
-	public function redirect($url, $status = null, $exit = true) {
-		$this->redirectUrl = $url;
-	}
+    public function redirect($url, $status = null, $exit = true)
+    {
+        $this->redirectUrl = $url;
+    }
+
+
 }
 
 /**
  * ProgramsController Test Case
  *
  */
-class ProgramsControllerTestCase extends ControllerTestCase {
+class ProgramsControllerTestCase extends ControllerTestCase
+{
 /**
  * Fixtures
  *
  * @var array
  */
-	public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
+    public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 
 /**
- * setUp method
+ * setUp methods
  *
- * @return void
  */
-	public function setUp() {
-		parent::setUp();
+    public function setUp()
+    {
+        parent::setUp();
 
-		$this->Programs = new TestProgramsController();
-		$this->Programs->constructClasses();
-	}
+        $this->Programs = new TestProgramsController();
+        $this->Programs->constructClasses();
+    }
+
+    public function tearDown()
+    {
+        unset($this->Programs);
+
+        parent::tearDown();
+    }
+
+
+    protected function mockProgramAccess()
+    {
+        $Programs = $this->generate('Programs', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+            ),
+            'methods' => array(
+                'paginate'
+            )
+        ));
+        
+        $Programs->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+
+        return $Programs;
+    }
 
 /**
- * tearDown method
+ * test methods
  *
- * @return void
  */
-	public function tearDown() {
-		unset($this->Programs);
+    public function testIndex()
+    {
+    	$Programs = $this->mockProgramAccess();
 
-		parent::tearDown();
-	}
+        $Programs->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->onConsecutiveCalls('1','1','1'));
+        
+        $Programs
+                ->expects($this->once())
+                ->method('paginate')
+                ->will($this->returnValue(array(
+                    0 => array(
+                        'Program' => array(
+                            'database' => 'test1')),
+                    1 => array(
+                        'Program' => array(
+                            'database' => 'test2'))
+                    )));
 
-/**
- * testIndex method
- *
- * @return void
- */
-	public function testIndex() {
-		$Programs = $this->generate('Programs', array(
-			'components' => array(
-				'Acl' => array('check'),
-				'Session' => array('read')
-			),
-			'methods' => array(
-				'paginate'
-			)
-		));
-		
-		$Programs->Acl
-			->expects($this->any())
-			->method('check')
-			->will($this->returnValue('true'));
-		
-		$Programs->Session
-			->expects($this->any())
-			->method('read')
-			->will($this->onConsecutiveCalls('1','1','1'));
-		
-		$Programs
-		        ->expects($this->once())
-		        ->method('paginate')
-		        ->will($this->returnValue(array(
-		        	0 => array(
-		        		'Program' => array(
-		        			'database' => 'test1')),
-		        	1 => array(
-		        		'Program' => array(
-		        			'database' => 'test2'))
-		        	)));
+        $this->testAction("/programs/index");
+        $this->assertEquals(2, count($this->vars['programs']));
+    }
 
-		$this->testAction("/programs/index");
-		$this->assertEquals(2, count($this->vars['programs']));
-	}
 
-	public function testIndex_hasSpecificProgramAccess_True() {
-		$Programs = $this->generate('Programs', array(
-			'components' => array(
-				'Acl' => array('check'),
-				'Session' => array('read')
-			),
-		));
-		
-		$Programs->Acl
-			->expects($this->any())
-			->method('check')
-			->will($this->returnValue('true'));
-		
-		$Programs->Session
-			->expects($this->any())
-			->method('read')
-			->will($this->onConsecutiveCalls('2','2','2'));
-			
-		$this->testAction("/programs/index");
-		$this->assertEquals(1, count($this->vars['programs']));
-	}
-	
-	
-/**
- * testView method
- *
- * @return void
- */
-	public function testView() {
-		$expected = array('Program' => array(
-					'id' => 1,
-					'name' => 'test',
-					'url' => 'test',
-					'database' => 'test',
-					'country' => 'uganda',
-					'timezone' => 'Africa/Kampala',
-					'created' => '2012-01-24 15:29:24',
-					'modified' => '2012-01-24 15:29:24'
-					),
-				'User'=> array(
-					0 => array(
-						'id' => 1,
-						'username' => 'gerald',
-						'password' => 'geraldpassword',
-						'group_id' => 1,
-						'created' => '2012-01-24 15:34:07',
-						'modified' => '2012-01-24 15:34:07',
-						'ProgramsUser' => array(
-								'id' => 1,
-								'program_id' => '1',
-								'user_id' => '1',
-							),
-						))
-			);
-		
-		
-		$this->testAction("/programs/view/1");
-		
-		$this->assertEquals($this->vars['program'], $expected);
-	}
+    public function testIndex_hasSpecificProgramAccess_True()
+    {
+    	
+        $Programs = $this->generate('Programs', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+            ),
+        ));
+        
+        $Programs->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+        
 
-/**
- * testAdd method
- *
- * @return void
- */
-	public function testAdd() {
-		 $data = array(
-		 	 'Program' => array(
-		 	 	 //'id' => '3',
-		 	 	 'name' => 'Newprogram',
-		 	 	 'country' => 'Somewhere',
-		 	 	 )
-		 	 );
-    		 $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
-	}
+        $Programs->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->onConsecutiveCalls('2','2','2'));
+            
+        $this->testAction("/programs/index");
+        $this->assertEquals(1, count($this->vars['programs']));
+    }
 
-/**
- * testEdit method
- *
- * @return void
- */
-	public function testEdit() {
 
-	}
+    public function testView() 
+    {
+        $expected = array('Program' => array(
+                    'id' => 1,
+                    'name' => 'test',
+                    'url' => 'test',
+                    'database' => 'test',
+                    'country' => 'uganda',
+                    'timezone' => 'Africa/Kampala',
+                    'created' => '2012-01-24 15:29:24',
+                    'modified' => '2012-01-24 15:29:24'
+                    ),
+                'User'=> array(
+                    0 => array(
+                        'id' => 1,
+                        'username' => 'gerald',
+                        'password' => 'geraldpassword',
+                        'group_id' => 1,
+                        'created' => '2012-01-24 15:34:07',
+                        'modified' => '2012-01-24 15:34:07',
+                        'ProgramsUser' => array(
+                                'id' => 1,
+                                'program_id' => '1',
+                                'user_id' => '1',
+                            ),
+                        ))
+            );
+        
+        
+        $this->testAction("/programs/view/1");
+        
+        $this->assertEquals($this->vars['program'], $expected);
+    }
 
-/**
- * testDelete method
- *
- * @return void
- */
-	public function testDelete() {
 
-	}
+    public function testAdd() {
+         $data = array(
+              'Program' => array(
+                   //'id' => '3',
+                   'name' => 'Newprogram',
+                   'country' => 'Somewhere',
+                   )
+              );
+             $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+    }
+
+
+    public function testEdit() 
+    {
+
+    }
+
+
+    public function testDelete() 
+    {
+
+    }
+
 
 }
