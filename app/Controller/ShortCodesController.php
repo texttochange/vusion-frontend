@@ -17,11 +17,18 @@ class ShortCodesController extends AppController
 
     public function constructClasses()
     {
-        parent::constructClasses();
+        // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
+    	parent::constructClasses();
         
-        $options = array(
-            'database' => 'shortcodes'
-            );
+    	if(!Configure::read("mongo_db")){
+    	    $options = array(
+	        'database' => 'shortcodes'
+        	    );
+        } else {
+            $options = array(
+            	    'database' => Configure::read("mongo_db")
+        	    );
+        }
         $this->ShortCode = new ShortCode($options);
     }
     
@@ -62,7 +69,8 @@ class ShortCodesController extends AppController
         }
         if ($this->request->is('post') || $this->request->is('put')) {
 	    if ($this->ShortCode->save($this->request->data)) {
-	        $this->Session->setFlash(__('The shortcode has been saved'));
+	        $shortcode = $this->request->data;
+	    	$this->Session->setFlash(__('The shortcode has been saved'));
 	        $this->redirect(array('controller' => 'shortCodes',
 	 	    'action' => 'index'
 		    ));
@@ -72,7 +80,7 @@ class ShortCodesController extends AppController
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
-    	    
+    	return $shortcode;    
     }
     
     public function delete()

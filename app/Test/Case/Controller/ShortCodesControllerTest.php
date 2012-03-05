@@ -21,9 +21,12 @@ class TestShortCodesController extends ShortCodesController {
  * @param boolean $exit
  * @return void
  */
-	public function redirect($url, $status = null, $exit = true) {
-		$this->redirectUrl = $url;
-	}
+    public function redirect($url, $status = null, $exit = true)
+    {
+        $this->redirectUrl = $url;
+    }
+ 
+	
 }
 
 /**
@@ -32,6 +35,7 @@ class TestShortCodesController extends ShortCodesController {
  */
 class ShortCodesControllerTestCase extends ControllerTestCase 
 {
+	var $database_name = "testdbmongo";
 	
 /**
  * setUp method
@@ -40,23 +44,23 @@ class ShortCodesControllerTestCase extends ControllerTestCase
  */
 	public function setUp() 
 	{
+		Configure::write("mongo_db",$this->database_name);
 		parent::setUp();
 
 		$this->ShortCodes = new TestShortCodesController();
-		ClassRegistry::config(array('ds' => 'mongo_test'));
-		//$this->instanciateShortCodesModel();
+		//ClassRegistry::config(array('ds' => 'mongo_test'));
+		$this->instanciateShortCodesModel();
 		$this->dropData();
 	}
-
+	
 
  	protected function instanciateShortCodesModel() {
-	    $options = array('database' => 'test');
+	    $options = array('database' => $this->database_name);
 	    $this->ShortCodes->ShortCode = new ShortCode($options);
 	}	
   
   	protected function dropData() {
-		$this->instanciateShortCodesModel();
-  		$this->ShortCodes->ShortCode->deleteAll(true, false);
+		$this->ShortCodes->ShortCode->deleteAll(true, false);
 	}
 
 	public function tearDown() 
@@ -68,8 +72,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 		parent::tearDown();
 	}
 	
-	
-	public function testIndex() {
+	public function mock_program_access()
+	{
 	    $ShortCodes = $this->generate('ShortCodes', array(
 			'components' => array(
 				'Acl' => array('check'),
@@ -88,7 +92,15 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 	    $ShortCodes->Session
 			->expects($this->any())
 			->method('read')
-			->will($this->onConsecutiveCalls('1','1','1'));
+			->will($this->onConsecutiveCalls('1','1','1'));	    
+	 
+	}
+	
+	
+	public function testIndex()
+	{
+	    
+	    $this->mock_program_access();
 	    
 	    $this->instanciateShortCodesModel();
 	    $this->ShortCodes->ShortCode->create();
@@ -101,6 +113,75 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 	    $this->testAction("/shortCodes/index");
 		
 	    $this->assertEquals(1, count($this->vars['shortcodes']));		
+	}
+	
+	
+	public function testAdd()
+	{
+	    $this->mock_program_access();
+	    
+	    $shortcodes = array(
+	    	    'ShortCodes' => array(
+	    	    	    'country' => 'uganda',
+	    	    	    'shortcode' => 8282,
+	    	    	    'internationalprefix' => 256
+	    	    	)
+	    	    );
+	    $this->testAction("/shortCodes/add", array(
+	    	    'method' => 'post',
+	    	    'data' => $shortcodes
+	    	    ));
+	    $this->assertEquals(1, $this->ShortCodes->ShortCode->find('count'));
+	}
+	
+	
+	public function testEdit()
+	{
+	    $this->mock_program_access();
+	    
+	    $shortcodes = array(
+	    	    'ShortCodes' => array(
+	    	    	    'country' => 'uganda',
+	    	    	    'shortcode' => 8282,
+	    	    	    'internationalprefix' => 256
+	    	    	)
+	    	    );
+	    $this->ShortCodes->ShortCode->create();
+	    $data = $this->ShortCodes->ShortCode->save($shortcodes);	    
+	    
+	    $this->testAction("/shortCodes/edit/".$data['ShortCode']['_id'], array(
+	    	    'method' => 'post',
+	    	    'data' => array(
+			    'ShortCodes' => array(
+				    'country' => 'uganda',
+				    'shortcode' => 8383,
+				    'internationalprefix' => 256
+				)
+			    )
+	    	    ));
+	    print_r($this->result);
+	    $this->assertEquals(8383, $this->result['ShortCodes']['shortcode']);
+	    
+	}
+	
+	
+	public function testDelete()
+	{
+	    $this->mock_program_access();
+	    
+	    $shortcodes = array(
+	    	    'ShortCodes' => array(
+	    	    	    'country' => 'uganda',
+	    	    	    'shortcode' => 8282,
+	    	    	    'internationalprefix' => 256
+	    	    	)
+	    	    );
+	    $this->ShortCodes->ShortCode->create();
+	    $data = $this->ShortCodes->ShortCode->save($shortcodes);
+	    
+	    $this->testAction("/shortCodes/delete/".$data['ShortCode']['_id']);
+	    
+	    $this->assertEquals(0, $this->ShortCodes->ShortCode->find('count'));
 	}
 
 	
