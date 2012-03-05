@@ -148,7 +148,7 @@
  
  
  <target name="phpunit" description="Run unit tests with PHPUnit">
- <exec executable="./lib/Cake/Console/cake" failonerror="true">
+ <exec executable="./app/Console/cake" failonerror="true">
   	 <arg value="testsuite" />
   	 <arg value="--log-junit"/>
          <arg path="${basedir}/build/logs/junit.xml"/>

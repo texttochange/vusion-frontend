@@ -138,6 +138,30 @@
 			)
 		);
 	
+	Router::connect(
+		'/shortCodes/:action/:id',
+		array(
+			'controller' => 'shortCodes',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/shortCodes/:action/*',
+		array(
+			'controller' => 'shortCodes',
+			'action' => 'index'
+			)
+		);
+
+	Router::connect(
+		'/shortCodes',
+		array(
+			'controller' => 'shortCodes',
+			'action' => 'index'
+			)
+		);
+	
 /**
 *  route for program specific controllers
 */
