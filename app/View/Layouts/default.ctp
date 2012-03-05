@@ -44,6 +44,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->script('dform/dform.converters.js');
 		echo $this->Html->script('form2js/form2js.js');
 		echo $this->Html->script('ttc-generic-program.js');
+		echo $this->Html->script('ttc-utils.js');
 	?>
 </head>
 <body>
