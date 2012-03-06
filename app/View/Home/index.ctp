@@ -1,5 +1,5 @@
 <div>
-	<h2><?php echo $programName . ' ' .  __('Home');?></h2>
+	<!--<h2><?php echo $programName . ' ' .  __('Home');?></h2>-->
 	<div class='ttc-actions'>
 	<h3><?php echo __('Status & Actions');?></h3>
 	<?php if (!$hasScriptActive && !$hasScriptDraft) { ?>
