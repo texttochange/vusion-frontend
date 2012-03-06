@@ -135,7 +135,7 @@
 				); ?>
 	<?php if ($statusCount > 0) {
 		echo $this->Html->link('View Program History',
-			array('program' => $programName,
+			array('program' => $programUrl,
 				'controller' => 'status', 
 				),
 			array('class' => 'ttc-button')
