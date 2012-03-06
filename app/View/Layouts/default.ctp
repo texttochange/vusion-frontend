@@ -97,10 +97,32 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<div id="content">
 
 			<?php echo $this->Session->flash(); ?>
-			<!-- To be refact with all the Controllers and views
-			<?php if (isset($programName)) {
-				?> <h1>Program Header</h1> <?php
-			} ?>-->
+			<!-- To be refact with all the Controllers and views -->
+			<?php if (isset($programName)) { ?>
+				<h1>
+				<?php
+				    echo $this->Html->link($programName, 
+					array('program' => $programUrl,
+					      'controller' => 'home',
+					      'action' => 'index'
+					      ));
+				    echo " > ";
+				    echo $this->Html->link($this->params['controller'], 
+					array('program' => $programUrl,
+					      'controller' => $this->params['controller'],
+					      'action' => 'index'
+					      ));
+				    if(isset($this->params['action']) &&  $this->params['action'] != 'index') {
+				        echo " > ";
+					echo $this->Html->link($this->params['action'], 
+					    array('program' => $programUrl,
+						  'controller' => $this->params['controller'],
+						  'action' => $this->params['action']
+						  ));
+				    }
+				?>
+				</h1>
+			<?php } ?>
 			
 			<?php echo $content_for_layout; ?>
 
