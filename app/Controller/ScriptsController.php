@@ -101,11 +101,13 @@ class ScriptsController extends AppController
         $programUrl  = $this->params['program'];
 
         $result_db = $this->Script->makeDraftActive();
+        /*
         $result_supervisord = $this->VumiSupervisord->startWorker($programUrl);
         $result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
             $programUrl, 
             $this->Session->read($programUrl.'_db'));
         $this->VumiRabbitMQ->sendStartMessageToWorker($programUrl);
+        */
         //$this->set(compact('programName', 'result_db', 'result_supervisord'));
         $this->redirect(array('program'=>$programUrl, 'controller'=>'home'));
     }
