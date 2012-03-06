@@ -272,8 +272,6 @@ function duplicateKeywordValidation() {
         $(this).load("validate", 
         	{ keyword: $(this).val() }, 
 		function(responseText, textStatus){
-			//alert(textStatus)
-			//alert($(this).parent().attr('name'));
 			$(this).before("<p style='color:red'> " + textStatus + "</p>");
 			if (textStatus=="success") {
 				$(this).before("<p style='color:red'> " + responseText + "</p>");
