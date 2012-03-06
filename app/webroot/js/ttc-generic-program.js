@@ -8,7 +8,7 @@ var participant = {"participants": ["add-participant"],
 var program = {"script": [ 
 		//"name", 
 		//"customer",  
-		"shortcode",
+		//"shortcode",
 		//"country",
 		//"participants",
 		"requests-responses",
@@ -32,7 +32,7 @@ var program = {"script": [
 	"interaction-id":"hidden",
 	"add-interaction":"button",
 	"announcement": ["content"],
-	"question-answer": ["content","radio-type-reminder", "radio-type-question"],
+	"question-answer": ["content","keyword","radio-type-reminder", "radio-type-question"],
 	"radio-type-reminder":"radiobuttons",
 	"type-reminder":{"no-reminder":"No reminder","reminder":"Reminder"},
 	"reminder":["number","every"],
@@ -260,7 +260,25 @@ function activeForm(){
 				$(elt).change(updateRadioButtonSubmenu);
 			};
 	});
+	$.each($("input[name*='keyword']"), function (key,elt){
+			if (!$.data(elt,'events')){
+				$(elt).focusout(duplicateKeywordValidation);
+			};
+	});
 	populateSelectableGoTo();
+}
+
+function duplicateKeywordValidation() {
+        $(this).load("validate", 
+        	{ keyword: $(this).val() }, 
+		function(responseText, textStatus){
+			//alert(textStatus)
+			//alert($(this).parent().attr('name'));
+			$(this).before("<p style='color:red'> " + textStatus + "</p>");
+			if (textStatus=="success") {
+				$(this).before("<p style='color:red'> " + responseText + "</p>");
+			} 
+		});	
 }
 
 
