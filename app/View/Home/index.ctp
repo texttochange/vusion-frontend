@@ -40,7 +40,7 @@
 			echo $this->Html->link('Activate draft', 
 				array('program' => $programUrl,
 				      'controller' => 'scripts',
-				      'action' => 'activate_draft'
+				      'action' => 'activateDraft'
 				      ),
 				array('class' => 'ttc-button')
 				);
@@ -49,7 +49,7 @@
 					'id'=> 'activate-button')
 				);
 			$this->Js->get('#activate-button')->event('click','$.get(
-				"'.$programName.'/scripts/activate_draft"
+				"'.$programName.'/scripts/activateDraft"
 				);', true);*/
 			} ?> 
 			</div>

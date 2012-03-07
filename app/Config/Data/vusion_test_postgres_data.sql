@@ -45,7 +45,7 @@ COPY acos (id, parent_id, model, foreign_key, alias, lft, rght) FROM stdin;
 42	1	\N	\N	Scripts	88	99
 44	28	\N	\N	initDB	69	70
 47	46	\N	\N	index	101	102
-55	42	\N	\N	activate_draft	97	98
+55	42	\N	\N	activateDraft	97	98
 1	\N	\N	\N	controllers	1	104
 46	1	\N	\N	Status	100	103
 49	38	\N	\N	add	79	80

@@ -391,7 +391,7 @@ COPY acos (id, parent_id, model, foreign_key, alias, lft, rght) FROM stdin;
 54	42	\N	\N	active	97	98
 42	1	\N	\N	Scripts	90	101
 47	46	\N	\N	index	103	104
-55	42	\N	\N	activate_draft	99	100
+55	42	\N	\N	activateDraft	99	100
 50	38	\N	\N	edit	81	82
 46	1	\N	\N	Status	102	105
 56	38	\N	\N	import	87	88
