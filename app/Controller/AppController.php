@@ -26,7 +26,8 @@ class AppController extends Controller
             //'authError' => 'Authentication Failed',
             'authenticate' => array(
                 'Form' => array(
-                    'field' => array('username' => 'username')
+//                    'field' => array('username' => 'username'),
+                    'fields' => array('username' => 'email')
                     )
                 ),
             'authorize' => array(
