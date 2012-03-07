@@ -154,7 +154,7 @@ function saveFormOnServer(){
 			var response = $.parseJSON(data);
 			$("#flashMessage").text('The script has been saved as draft, wait for redirection');
 			$("#flashMessage").attr('class', 'message');
-			setTimeout( function() { window.location.href = "draft"}, 3000);
+			//setTimeout( function() { window.location.href = "draft"}, 3000);
 		}
 	});
 }
@@ -269,7 +269,7 @@ function activeForm(){
 }
 
 function duplicateKeywordValidation() {
-        $(this).load("validate", 
+        $(this).load("validateKeyword.json", 
         	{ keyword: $(this).val() }, 
 		function(responseText, textStatus){
 			$(this).before("<p style='color:red'> " + textStatus + "</p>");
