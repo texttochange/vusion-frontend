@@ -118,7 +118,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
 
         $programSettings = array(
             'ProgramSettings' => array(
-                'country'=>'uganda',
+                'shortcode'=>'8282',
                 'timezone'=> 'EAT'
                 )
             );

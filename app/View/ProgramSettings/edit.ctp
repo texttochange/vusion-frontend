@@ -3,8 +3,18 @@
     <fieldset>
         <legend><?php echo __('Edit Program Settings'); ?></legend>
         <?php
-            echo $this->Form->input('country');
+            //echo $this->Form->input('country');
         ?>
+        <div class='input text'>
+        <?php
+            echo $this->Html->tag('label',__('Shortcode'));    
+            $shortcode_options = array();
+            foreach($shortcodes as $shortcode) {
+                $shortcode_options[$shortcode['ShortCode']['shortcode']] = $shortcode['ShortCode']['country']." - ".$shortcode['ShortCode']['shortcode'];
+            }
+            echo $this->Form->select('shortcode', $shortcode_options);
+        ?>
+        </div>
         <div class='input text'>
         <?php
             echo $this->Html->tag('label',__('Timezone'));
