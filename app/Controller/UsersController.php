@@ -216,10 +216,13 @@ class UsersController extends AppController
             }
             else {
                 $user['User']['password'] = $this->request->data['newPassword'];
-                $this->redirect(array('action' => 'view', 'id' => $id));
+                $this->User->save($user);
+                $this->Session->setFlash(__('Password changed successfully.'));
+                $this->redirect(array('action' => 'view', $id));
             }
         } else {
-            $this->request->data = $user;
+            //$this->request->data = $user;
+            $this->User->id = $id;
         }
     }
 
