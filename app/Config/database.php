@@ -2,16 +2,16 @@
 class DATABASE_CONFIG {
 
 	public $test = array(
-		'datasource' => 'Database/Postgres',
+		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'cake',
+		'login' => 'caketest',
 		'password' => 'password',
 		'database' => 'cake_poc_test',
 		'encoding' => 'utf8'
 	);
 	public $default = array(
-		'datasource' => 'Database/Postgres',
+		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'cake',
