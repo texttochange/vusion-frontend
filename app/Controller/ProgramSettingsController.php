@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
+App::uses('ShortCode', 'Model');
 
 class ProgramSettingsController extends AppController
 {
@@ -21,6 +22,9 @@ class ProgramSettingsController extends AppController
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
         $this->ProgramSetting = new ProgramSetting($options);
+        
+        $optionsShortCode = array('database' => 'shortcodes');
+        $this->ShortCode = new ShortCode($optionsShortCode);
     }
 
 
@@ -46,21 +50,23 @@ class ProgramSettingsController extends AppController
                  }
             }
         }
-        $country = $this->ProgramSetting->find('programSetting', array( 'key' => 'country'));
+        $shortcodes = $this->ShortCode->find('all');
+        $this->set(compact('shortcodes'));
+        $shortcode = $this->ProgramSetting->find('programSetting', array( 'key' => 'shortcode'));
         $timezone = $this->ProgramSetting->find('programSetting', array( 'key' => 'timezone'));
-        //print_r($country);
-        if ($country) {
-            //echo "there is a country";
+        //print_r($shortcode);
+        if ($shortcode) {
+            //echo "there is a shortcode";
             $programSettings = array(
                 'ProgramSettings' => array (
-                    'country' => $country[0]['ProgramSetting']['value'],
+                    'shortcode' => $shortcode[0]['ProgramSetting']['value'],
         	    'timezone' => $timezone[0]['ProgramSetting']['value']
         	    )
         	);
             $this->request->data = $programSettings;
-           
+           return $programSettings;
         }
-        return $programSettings;
+        
     }
 
 

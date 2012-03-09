@@ -141,7 +141,7 @@ class ParticipantsController extends AppController
                 $filePath = WWW_ROOT . "files/" . $programUrl; 
 
                 if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
-                    echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
+                    //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                     mkdir($filePath);
                     chmod($filePath, 0777);
                 }
