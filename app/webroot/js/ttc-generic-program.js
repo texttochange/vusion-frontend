@@ -301,7 +301,7 @@ function duplicateKeywordValidation() {
 				if (responseMsg.status==1)  //not used
 					$(this).before("<p style='color:green'> ok </p>");
 				else    //already used in another Program
-					$(this).before("<p style='color:red'> already used by: " + responseMsg.program + "</p>");
+					$(this).before("<p style='color:red'>" + responseMsg.message + "</p>");
 			} else {  //HTTP error or Server error ,....
 				$(this).before("<p style='color:red'> " + responseText + "</p>");
 			}

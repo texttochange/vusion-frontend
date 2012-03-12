@@ -136,13 +136,21 @@ class ScriptsController extends AppController
         	'database'=>($this->Session->read($this->params['program']."_db"))
         	));
        $shortCode = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
-        
-        foreach ($programs as $program) {
+       
+       if (!$shortCode) {
+       	       $this->set('result', array(
+       	       	       'status'=>0, 
+       	       	       'message' => 'program shortcode not define, please go to program settings'
+       	       	       ));
+       	       return;
+       }
+ 
+       foreach ($programs as $program) {
             $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
             if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
                 $scriptModel = new Script(array('database'=>$program['Program']['database']));
                 if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))){
-                    $this->set('result', array('status'=>0, 'program'=>$program['Program']['name']));
+                	$this->set('result', array('status'=>0, 'message'=>'already used by: ' . $program['Program']['name']));
                     return;
                 }
             }

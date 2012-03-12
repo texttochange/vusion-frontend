@@ -41,11 +41,14 @@ class ProgramSetting extends MongoModel
 
     protected function _findGetProgramSetting($state, $query, $results = array())
     {
-    	    if ($state == 'before') {
+        if ($state == 'before') {
     	    	    $query['conditions']['ProgramSetting.key'] = $query['key'];
     	    	    return $query;
     	    }
-    	    return $results[0]['ProgramSetting']['value'];
+        if (isset($results[0]))
+            return $results[0]['ProgramSetting']['value'];
+    	else
+    	    return array();
     }
 
 
