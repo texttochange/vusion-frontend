@@ -291,7 +291,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
         	));
 
         $this->assertEquals(0, $this->vars['result']['status']);
-        $this->assertEquals('Test Name 2', $this->vars['result']['program']);
+        $this->assertEquals('already used by: Test Name 2', $this->vars['result']['message']);
 
     }
 
@@ -358,7 +358,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
         	));
 
         $this->assertEquals(0, $this->vars['result']['status']);
-        $this->assertEquals('Test Name', $this->vars['result']['program']);
+        $this->assertEquals('already used by: Test Name', $this->vars['result']['message']);
     }
 
 
