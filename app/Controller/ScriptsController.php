@@ -55,9 +55,9 @@ class ScriptsController extends AppController
     {                
         if ($this->request->is('post')) {
             $saveData['Script'] = (is_object($this->request->data) 
-            	    ? get_object_vars($this->request->data) 
-            	    : $this->request->data
-            	    );
+                    ? get_object_vars($this->request->data) 
+                    : $this->request->data
+                    );
             /**
             * Below line in case need to remove the [script], 
             * however it create difficulties for the javascript rendering
@@ -109,7 +109,7 @@ class ScriptsController extends AppController
     {
         $programUrl = $this->params['program'];
 
-        $result_db = $this->Script->makeDraftActive();
+        $this->Script->makeDraftActive();
         /*
         $result_supervisord = $this->VumiSupervisord->startWorker($programUrl);
         $result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
@@ -139,24 +139,28 @@ class ScriptsController extends AppController
         $keywordToValidate = $this->request->data['keyword'];
         $programs          = $this->Program->find('all');
         $programSetting    = new ProgramSetting(array(
-        	'database'=>($this->Session->read($this->params['program']."_db"))
-        	));
+                'database'=>($this->Session->read($this->params['program']."_db"))
+                ));
         $shortCode          = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
        
         if (!$shortCode) {
-        	$this->set('result', array(
-        		'status'=>0, 
-        		'message' => 'program shortcode not define, please go to program settings'
-        		));
-        	return;
+            $this->set('result', array(
+                    'status'=>0, 
+                    'message' => 'program shortcode not define, please go to program settings'
+                    ));
+            return;
         }
  
         foreach ($programs as $program) {
             $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
-            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
+            if ($programSettingModel->find('hasProgramSetting', array(
+                    'key'=>'shortcode', 
+                    'value'=> $shortCode))) {
                 $scriptModel = new Script(array('database'=>$program['Program']['database']));
-                if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))){
-                    $this->set('result', array('status'=>0, 'message'=>'already used by: ' . $program['Program']['name']));
+                if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))) {
+                    $this->set('result', array(
+                            'status'=>0, 
+                            'message'=>'already used by: ' . $program['Program']['name']));
                     return;
                 }
             }
