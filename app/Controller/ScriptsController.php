@@ -12,7 +12,7 @@ class ScriptsController extends AppController
 {
 
     var $components = array('RequestHandler', 'Acl');
-    var $helpers = array('Js' => array('Jquery'));
+    var $helpers    = array('Js' => array('Jquery'));
 
 
     public function beforeFilter()
@@ -28,7 +28,7 @@ class ScriptsController extends AppController
     {
         parent::constructClasses();
         
-        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $options      = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Script = new Script($options);
         
         $this->VumiRabbitMQ = new VumiRabbitMQ();
@@ -39,7 +39,7 @@ class ScriptsController extends AppController
     {
         $draft = $this->Script->find('draft');
         
-        if (count($draft)){
+        if (count($draft)) {
             $script = $draft[0]['Script'];
         } else {
             $script = null;
@@ -54,24 +54,30 @@ class ScriptsController extends AppController
     public function add()
     {                
         if ($this->request->is('post')) {
-            $saveData['Script'] = (is_object($this->request->data) ? get_object_vars($this->request->data) : $this->request->data);
-            //below line in case need to remove the [script], however it create difficulties for the javascript rendering
-            //$saveData['Script'] = (is_object($data['script']) ? get_object_vars($data['script']) : $data['script']);
+            $saveData['Script'] = (is_object($this->request->data) 
+            	    ? get_object_vars($this->request->data) 
+            	    : $this->request->data
+            	    );
+            /**
+            * Below line in case need to remove the [script], 
+            * however it create difficulties for the javascript rendering
+            */
+            /* $saveData['Script'] = (is_object($data['script']) 
+            *                       ? get_object_vars($data['script']) 
+            *                       : $data['script']);
+            */
+
             $draft = $this->Script->find('draft');
-            //print_r($draft);
             if ($draft) {    
-                //echo 'Draft case';
                 $this->Script->create();
-                $this->Script->id = $draft[0]['Script']['_id'];
+                $this->Script->id          = $draft[0]['Script']['_id'];
                 $saveData['Script']['_id'] = $draft[0]['Script']['_id'];
-                //print_r($saveData);
                 $this->Script->save($saveData);
                 $this->set('result', array(
                         'status' => '1',
                         'id' => $this->Script->id
                         ));
             } else {
-                //echo 'save case';
                 $this->Script->create();
                 if ($this->Script->save($saveData)) {
                     $this->set('result', array(
@@ -90,7 +96,7 @@ class ScriptsController extends AppController
     {
         $draft = $this->Script->find('draft');
         
-        if (count($draft)){
+        if (count($draft)) {
             $script = $draft[0]['Script'];
         } else {
             $script = null;
@@ -101,7 +107,7 @@ class ScriptsController extends AppController
 
     public function activateDraft()
     {
-        $programUrl  = $this->params['program'];
+        $programUrl = $this->params['program'];
 
         $result_db = $this->Script->makeDraftActive();
         /*
@@ -119,7 +125,7 @@ class ScriptsController extends AppController
     public function active()
     {
         $draft = $this->Script->find('active');
-        if (count($draft)){
+        if (count($draft)) {
             $script = $draft[0]['Script'];
         } else {
             $script = null;
@@ -127,35 +133,34 @@ class ScriptsController extends AppController
         $this->set(compact('script'));
     }
 
+
     public function validateKeyword()
-    {
-       
+    {       
         $keywordToValidate = $this->request->data['keyword'];
-        $programs = $this->Program->find('all');
-        $programSetting = new ProgramSetting(array(
+        $programs          = $this->Program->find('all');
+        $programSetting    = new ProgramSetting(array(
         	'database'=>($this->Session->read($this->params['program']."_db"))
         	));
-       $shortCode = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
+        $shortCode          = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
        
-       if (!$shortCode) {
-       	       $this->set('result', array(
-       	       	       'status'=>0, 
-       	       	       'message' => 'program shortcode not define, please go to program settings'
-       	       	       ));
-       	       return;
-       }
+        if (!$shortCode) {
+        	$this->set('result', array(
+        		'status'=>0, 
+        		'message' => 'program shortcode not define, please go to program settings'
+        		));
+        	return;
+        }
  
-       foreach ($programs as $program) {
+        foreach ($programs as $program) {
             $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
             if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
                 $scriptModel = new Script(array('database'=>$program['Program']['database']));
                 if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))){
-                	$this->set('result', array('status'=>0, 'message'=>'already used by: ' . $program['Program']['name']));
+                    $this->set('result', array('status'=>0, 'message'=>'already used by: ' . $program['Program']['name']));
                     return;
                 }
             }
         }
-//        echo "Not found any other program with this keyword";
         $this->set('result', array('status'=>1));
     }
 
