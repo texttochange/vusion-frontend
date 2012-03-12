@@ -6,25 +6,14 @@ App::uses('ProgramSetting', 'Model');
 /**
  * TestScriptsControllerController *
  */
-class TestScriptsController extends ScriptsController 
+class TestScriptsController extends ScriptsController
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
     public $autoRender = false;
 
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
-    public function redirect($url, $status = null, $exit = true) {
+    public function redirect($url, $status = null, $exit = true)
+    {
         $this->redirectUrl = $url;
     }
 
@@ -37,37 +26,35 @@ class TestScriptsController extends ScriptsController
  */
 class ScriptsControllerTestCase extends ControllerTestCase
 {
-/**
- * Data
- *
- */
-    
+    /**
+    * Data
+    *
+    */
+ 
     var $programData = array(
             0 => array( 
                 'Program' => array(
                     'name' => 'Test Name',
-//                    'country' => 'Test Country',
-//                    'timezone' => 'UTC',
                     'url' => 'testurl',
                     'database' => 'testdbprogram'
-                )
-            ));
+                    )
+                ));
 
     var $otherProgramData = array(
-    	    0 => array( 
+            0 => array( 
                 'Program' => array(
                     'name' => 'Test Name 2',
                     'url' => 'testurl2',
                     'database' => 'testdbprogram2'
-                )
-    	    ));
+                    )
+                ));
     
   
     
-/**
- * setUp methods
- *
- */
+    /**
+    * setUp methods
+    *
+    */
     public function setUp()
     {
         parent::setUp();
@@ -79,23 +66,28 @@ class ScriptsControllerTestCase extends ControllerTestCase
         
     }
 
+
     protected function dropData()
     {
         //As this model is created on the fly, need to instantiate again
         $this->instanciateScriptModel();
         $this->Scripts->Script->deleteAll(true, false);
     }
+
     
     protected function instanciateScriptModel()
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
+
         $this->Scripts->Script = new Script($options);
     }
+
 
     protected function instanciateScriptMultiModel($databaseName)
     {
         return new Script(array('database' => $databaseName));
     }
+
     
     public function tearDown()
     {
@@ -107,18 +99,19 @@ class ScriptsControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
 
+
     protected function mockProgramAccess()
     {
         $Scripts = $this->generate('Scripts', array(
-            'components' => array(
-                'Acl' => array('check'),
-                'Session' => array('read')
-            ),
-            'models' => array(
-                'Program' => array('find', 'count'),
-                'Group' => array()
-            ),
-        ));
+                'components' => array(
+                        'Acl' => array('check'),
+                        'Session' => array('read')
+                        ),
+                'models' => array(
+                        'Program' => array('find', 'count'),
+                        'Group' => array()
+                        ),
+                ));
         
         $Scripts->Acl
             ->expects($this->any())
@@ -126,55 +119,54 @@ class ScriptsControllerTestCase extends ControllerTestCase
             ->will($this->returnValue('true'));
         
         $Scripts->Program
-            //->expects($this->once())
             ->expects($this->any())
             ->method('find')
-            //->will($this->returnValue($this->programData));
             ->will($this->onConsecutiveCalls($this->programData, array(
-            	    $this->programData[0],
-            	    $this->otherProgramData[0])));
+                $this->programData[0],
+                $this->otherProgramData[0])));
             
         $Scripts->Session
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls(
-            	    '4',
-            	    '2',
-            	    $this->programData[0]['Program']['database'], 
-            	    $this->programData[0]['Program']['database'],
-            	    $this->programData[0]['Program']['name']
-            	    ));
+                '4',
+                '2',
+                $this->programData[0]['Program']['database'], 
+                $this->programData[0]['Program']['database'],
+                $this->programData[0]['Program']['name']
+                ));
     
         return $Scripts;
     }
 
+
     protected function getOneScript($keyword)
     {
-    	    $script['Script'] = array(
-    	    'script' => array(
-    	    	    'dialogues' => array(
-    	    	    	    array(
-    	    	    	    	    'dialogue-id'=> 'script.dialogues[0]',
-    	    	    	    	    'interactions'=> array(
-    	    	    	    	    	    array(
-    	    	    	    	    	    	    'type-interaction' => 'question-answer', 
-    	    	    	    	    	    	    'content' => 'how are you', 
-    	    	    	    	    	    	    'keyword' => $keyword, 
-    	    	    	    	    	    	    'interaction-id' => 'script.dialogues[0].interactions[0]'
-    	    	    	    	    	    	    )
-    	    	    	    	    	    )
-    	    	    	    	    )
-    	    	    	    )
+        $script['Script'] = array(
+            'script' => array(
+                'dialogues' => array(
+    	    	    array(
+    	    	        'dialogue-id'=> 'script.dialogues[0]',
+    	    	        'interactions'=> array(
+    	    	            array(
+    	    	                'type-interaction' => 'question-answer', 
+    	    	                'content' => 'how are you', 
+    	    	                'keyword' => $keyword, 
+    	    	                'interaction-id' => 'script.dialogues[0].interactions[0]'
+    	    	                )
+    	    	            )
+    	    	        )
     	    	    )
+    	    	)
     	    );
-    	    return $script;
+    	return $script;
     }
 
 
-/**
- * test methods
- *
- */
+    /**
+    * test methods
+    *
+    */
 
     public function testIndex()
     {
@@ -211,9 +203,8 @@ class ScriptsControllerTestCase extends ControllerTestCase
 
     public function testAdd()
     {
-            
         $this->mockProgramAccess();
-        
+   
         $draft = array(
         	'script' => array(
         		'do' => 'something',
@@ -226,15 +217,15 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();
         
         $updateDraft = array(
-        	'script' => array(
-        		'do' => 'something else',
-        		)
-        	);
+            'script' => array(
+                'do' => 'something else',
+                )
+            );
         
-        $this->testAction('/testurl/scripts/add', 
-        	array('data' => $updateDraft, 
-        		'method' => 'post'
-        		));
+        $this->testAction('/testurl/scripts/add', array(
+            'data' => $updateDraft, 
+            'method' => 'post'
+            ));
         
         $this->instanciateScriptModel();
         $currentDraft = $this->Scripts->Script->find('draft');
@@ -242,14 +233,14 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $this->assertEquals($currentDraft[0]['Script']['script']['do'], $updateDraft['script']['do']);
     }
 
-        
+    //TODO    
     public function testEdit() 
     {
-        
-
+    
     }
 
 
+    //TODO
     public function testDelete() 
     {
 
@@ -272,23 +263,23 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $otherProgramSettingModel->deleteAll(true,false);
         $otherProgramSettingModel->create();
         $otherProgramSettingModel->save(array(
-        	'key'=>'shortcode',
-        	'value'=>'8282'
-        	));
+            'key'=>'shortcode',
+            'value'=>'8282'
+            ));
         
         $programSettingModel = new ProgramSetting(array('database' => $this->programData[0]['Program']['database']));
         $programSettingModel->deleteAll(true,false);
         $programSettingModel->create();
         $programSettingModel->save(array(
-        	'key'=>'shortcode',
-        	'value'=>'8282'
-        	)); 
+            'key'=>'shortcode',
+            'value'=>'8282'
+            )); 
 
 
         $this->testAction('/testurl/scripts/validateKeyword', array(
-        	'method' => 'post',
-        	'data' => array('keyword' => 'usedKeyword')
-        	));
+            'method' => 'post',
+            'data' => array('keyword' => 'usedKeyword')
+            ));
 
         $this->assertEquals(0, $this->vars['result']['status']);
         $this->assertEquals('already used by: Test Name 2', $this->vars['result']['message']);
@@ -310,23 +301,23 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $otherProgramSettingModel->deleteAll(true,false);
         $otherProgramSettingModel->create();
         $otherProgramSettingModel->save(array(
-        	'key'=>'shortcode',
-        	'value'=>'8282'
-        	));
+            'key'=>'shortcode',
+            'value'=>'8282'
+            ));
         
         $programSettingModel = new ProgramSetting(array('database' => $this->programData[0]['Program']['database']));
         $programSettingModel->deleteAll(true,false);
         $programSettingModel->create();
         $programSettingModel->save(array(
-        	'key'=>'shortcode',
-        	'value'=>'8181'
-        	));        
+            'key'=>'shortcode',
+            'value'=>'8181'
+            ));        
 
 
         $this->testAction('/testurl/scripts/validateKeyword', array(
-        	'method' => 'post',
-        	'data' => array('keyword' => 'usedKeyword')
-        	));
+            'method' => 'post',
+            'data' => array('keyword' => 'usedKeyword')
+            ));
 
         $this->assertEquals(1, $this->vars['result']['status']);
     }
@@ -348,14 +339,14 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $programSettingModel->deleteAll(true,false);
         $programSettingModel->create();
         $programSettingModel->save(array(
-        	'key'=>'shortcode',
-        	'value'=>'8181'
-        	));      
+            'key'=>'shortcode',
+            'value'=>'8181'
+            ));      
 
         $this->testAction('/testurl/scripts/validateKeyword', array(
-        	'method' => 'post',
-        	'data' => array('keyword' => 'usedKeyword')
-        	));
+            'method' => 'post',
+            'data' => array('keyword' => 'usedKeyword')
+            ));
 
         $this->assertEquals(0, $this->vars['result']['status']);
         $this->assertEquals('already used by: Test Name', $this->vars['result']['message']);
@@ -374,12 +365,11 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $otherProgramScriptModel->makeDraftActive();
 
         $this->testAction('/testurl/scripts/validateKeyword', array(
-        	'method' => 'post',
-        	'data' => array('keyword' => 'usingAnOtherKeyword')
-        	));
+            'method' => 'post',
+            'data' => array('keyword' => 'usingAnOtherKeyword')
+            ));
 
         $this->assertEquals(1, $this->vars['result']['status']);
-       //$this->assertEquals('Test Name', $this->vars['result']['program']);
     }
 
 
@@ -399,12 +389,11 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $otherProgramScriptModel->makeDraftActive();
         
         $this->testAction('/testurl/scripts/validateKeyword', array(
-        	'method' => 'post',
-        	'data' => array('keyword' => 'usedKeyword')
-        	));
+            'method' => 'post',
+            'data' => array('keyword' => 'usedKeyword')
+            ));
 
         $this->assertEquals(1, $this->vars['result']['status']);
-       //$this->assertEquals('Test Name', $this->vars['result']['program']);
     }
 
 
