@@ -73,17 +73,21 @@ class ScriptsController extends AppController
                 $this->Script->id          = $draft[0]['Script']['_id'];
                 $saveData['Script']['_id'] = $draft[0]['Script']['_id'];
                 $this->Script->save($saveData);
-                $this->set('result', array(
+                $this->set(
+                    'result', array(
                         'status' => '1',
                         'id' => $this->Script->id
-                        ));
+                        )
+                    );
             } else {
                 $this->Script->create();
                 if ($this->Script->save($saveData)) {
-                    $this->set('result', array(
-                        'status' => '1',
-                        'id' => $this->Script->id
-                        ));
+                    $this->set(
+                        'result', array(
+                            'status' => '1',
+                            'id' => $this->Script->id
+                            )
+                        );
                 } else {
                     $this->set('result', array('status' => '0'));
                 }
@@ -138,10 +142,10 @@ class ScriptsController extends AppController
     {       
         $keywordToValidate = $this->request->data['keyword'];
         $programs          = $this->Program->find('all');
-        $programSetting    = new ProgramSetting(array(
-                'database'=>($this->Session->read($this->params['program']."_db"))
-                ));
-        $shortCode          = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
+        $programSetting    = new ProgramSetting(
+            array('database'=>($this->Session->read($this->params['program']."_db")))
+            );
+        $shortCode = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
        
         if (!$shortCode) {
             $this->set('result', array(
@@ -153,14 +157,18 @@ class ScriptsController extends AppController
  
         foreach ($programs as $program) {
             $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
-            if ($programSettingModel->find('hasProgramSetting', array(
+            if ($programSettingModel->find(
+                'hasProgramSetting', array(
                     'key'=>'shortcode', 
-                    'value'=> $shortCode))) {
+                    'value'=> $shortCode))
+                    ) {
                 $scriptModel = new Script(array('database'=>$program['Program']['database']));
                 if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))) {
-                    $this->set('result', array(
+                    $this->set(
+                        'result', array(
                             'status'=>0, 
-                            'message'=>'already used by: ' . $program['Program']['name']));
+                            'message'=>'already used by: ' . $program['Program']['name'])
+                        );
                     return;
                 }
             }
