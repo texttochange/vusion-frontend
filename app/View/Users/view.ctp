@@ -15,6 +15,7 @@
 		<dd>
 			<?php echo h($user['User']['password']); ?>
 			&nbsp;
+			<?php echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $user['User']['id'])); ?>
 		</dd>
 		<dt><?php echo __('Email'); ?></dt>
 		<dd>

@@ -194,6 +194,32 @@ class UsersController extends AppController
         echo 'AllDone';
         exit;
     }
+    
+    
+    private $hash = 'DYhG93b001JfIxfs2guVoUubWwvniR2G0FgaC9mi';
+    public function changePassword($id = null)
+    {
+        $this->User->id = $id;
+        if (!$this->User->exists()) {
+            throw new NotFoundException(__('Invalid user'));
+        }
+        $user = $this->User->read(null, $id);
+        $userId = $id;
+        $this->set(compact('userId'));
+        
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if(Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
+                $this->Session->setFlash(__('old password is incorrect. Please try again.'));
+            } else if($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
+                $this->Session->setFlash(__('new passwords do not match. Please try again.'));
+            } else {
+            	$user['User']['password'] = $this->request->data['newPassword'];
+                $this->User->save($user);
+                $this->Session->setFlash(__('Password changed successfully.'));
+                $this->redirect(array('action' => 'view', $id));
+            }
+        }
+    }
 
 
 }

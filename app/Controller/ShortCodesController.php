@@ -7,7 +7,8 @@ class ShortCodesController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'));
-	//var $uses = array('Program', 'Group');
+    //var $uses = array('Program', 'Group');
+    
     
     public function beforeFilter()
     {
@@ -18,9 +19,9 @@ class ShortCodesController extends AppController
     public function constructClasses()
     {
         // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
-    	parent::constructClasses();
+        parent::constructClasses();
         
-    	if(!Configure::read("mongo_db")){
+    	if (!Configure::read("mongo_db")) {
     	    $options = array(
 	        'database' => 'shortcodes'
         	    );
