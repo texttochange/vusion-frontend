@@ -44,7 +44,7 @@
 42,1,,,Scripts,88,99
 44,28,,,initDB,69,70
 47,46,,,index,101,102
-55,42,,,activate_draft,97,98
+55,42,,,activateDraft,97,98
 1,,,,controllers,1,104
 46,1,,,Status,100,103
 49,38,,,add,79,80

@@ -159,7 +159,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 				)
 			    )
 	    	    ));
-	    print_r($this->result);
+	    //print_r($this->result);
 	    $this->assertEquals(8383, $this->result['ShortCodes']['shortcode']);
 	    
 	}

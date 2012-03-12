@@ -122,3 +122,11 @@
 	width : 20%
 }
 
+.ajax-flash-message {
+	position: fixed;
+	top: 10px;
+	left: 30%;
+	background: yellow;
+	padding-left: 10px;
+	padding-right: 10px;
+}

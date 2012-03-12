@@ -8,7 +8,7 @@ var participant = {"participants": ["add-participant"],
 var program = {"script": [ 
 		//"name", 
 		//"customer",  
-		"shortcode",
+		//"shortcode",
 		//"country",
 		//"participants",
 		"requests-responses",
@@ -32,7 +32,7 @@ var program = {"script": [
 	"interaction-id":"hidden",
 	"add-interaction":"button",
 	"announcement": ["content"],
-	"question-answer": ["content","radio-type-reminder", "radio-type-question"],
+	"question-answer": ["content","keyword","radio-type-reminder", "radio-type-question"],
 	"radio-type-reminder":"radiobuttons",
 	"type-reminder":{"no-reminder":"No reminder","reminder":"Reminder"},
 	"reminder":["number","every"],
@@ -153,8 +153,8 @@ function saveFormOnServer(){
 		success: function(data) {
 			var response = $.parseJSON(data);
 			$("#flashMessage").text('The script has been saved as draft, wait for redirection');
-			$("#flashMessage").attr('class', 'message');
-			setTimeout( function() { window.location.href = "draft"}, 3000);
+			//$("#flashMessage").attr('class', 'message');
+			//setTimeout( function() { window.location.href = "draft"}, 3000);
 		}
 	});
 }
@@ -260,7 +260,52 @@ function activeForm(){
 				$(elt).change(updateRadioButtonSubmenu);
 			};
 	});
+	$.each($("input[name*='keyword']"), function (key,elt){
+			if (!$.data(elt,'events')){
+				$(elt).focusout(duplicateKeywordValidation);
+			};
+	});
 	populateSelectableGoTo();
+}
+
+function duplicateKeywordValidation() {
+	//alert(this.previousSibling);
+	if (this.previousSibling.tagName == 'P')
+		$(this.previousSibling).remove();
+	var keywordInput = this;
+	var isKeywordUsedInSameScript = false;
+	$.each($("input[name*='keyword']"), function(index, element){
+			//alert("$this:"+$(keywordInput).val()+" and elt:"+$(element).val())
+			if ((!$(keywordInput).is(element)) && ($(keywordInput).val() == $(element).val()))
+			{
+				$(keywordInput).before("<p style='color:red'> already used by the same script in another question</p>");
+				isKeywordUsedInSameScript = true;
+			}
+	});
+	
+	if (isKeywordUsedInSameScript)
+		return;
+
+	//Validation on other scripts
+	$('#flashMessage').ajaxError(function() {
+			$(this).empty();
+			$(this).append("http error");
+	});
+        $(this).load("validateKeyword.json", 
+        	{ keyword: $(this).val() }, 
+		function(responseText, textStatus){
+			// $(this).before("<p style='color:red'> " + textStatus + "</p>");
+			if (textStatus=="success") {  //HTTP success
+				$('#flashMessage').empty();
+				var responseMsg = $.parseJSON(responseText);
+				if (responseMsg.status==1)  //not used
+					$(this).before("<p style='color:green'> ok </p>");
+				else    //already used in another Program
+					$(this).before("<p style='color:red'>" + responseMsg.message + "</p>");
+			} else {  //HTTP error or Server error ,....
+				$(this).before("<p style='color:red'> " + responseText + "</p>");
+			}
+		});	
 }
 
 
