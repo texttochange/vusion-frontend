@@ -20,7 +20,8 @@ class Script extends MongoModel {
 		'countDraft' => true,
 		'active' => true,
 		'countActive' => true,
-		'count' => true
+		'count' => true,
+		'keyword' => true
 		);
 	
 	protected function _findActive($state, $query, $results = array()) {
@@ -57,6 +58,24 @@ class Script extends MongoModel {
 			return $query;
 		}
 		return $results;
+	}
+
+	protected function _findKeyword($state, $query, $results = array()) {
+		if ($state == 'before') {
+			$query['order']['created'] = 'desc';
+			$query['limit'] = 1;
+			$query['conditions']['Script.activated'] = 1;
+			return $query;
+		}
+		if (isset($results[0]) and isset($results[0]['Script']['script']['dialogues'])){
+			foreach ($results[0]['Script']['script']['dialogues'] as $dialogue) {
+				foreach ($dialogue['interactions'] as $interaction) {
+					if ($interaction['type-interaction']=='question-answer' and $interaction['keyword'] == $query['keyword'])
+						return $results;
+				}
+			}
+		}
+		return array();
 	}
 	
 	public function beforeValidate(){
