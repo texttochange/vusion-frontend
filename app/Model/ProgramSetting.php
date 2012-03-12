@@ -13,7 +13,9 @@ class ProgramSetting extends MongoModel
 
     public $findMethods =  array(
     	    'programSetting' => true,
-    	    'count' => true
+    	    'count' => true,
+    	    'hasProgramSetting' => true,
+    	    'getProgramSetting' => true,
     	    );
 
     
@@ -24,6 +26,26 @@ class ProgramSetting extends MongoModel
     	    	    return $query;
     	    }
     	    return $results;
+    }
+
+    
+    protected function _findHasProgramSetting($state, $query, $results = array())
+    {
+    	    if ($state == 'before') {
+    	    	    $query['conditions']['ProgramSetting.key'] = $query['key'];
+    	    	    $query['conditions']['ProgramSetting.value'] = $query['value'];
+    	    	    return $query;
+    	    }
+    	    return $results;
+    }
+
+    protected function _findGetProgramSetting($state, $query, $results = array())
+    {
+    	    if ($state == 'before') {
+    	    	    $query['conditions']['ProgramSetting.key'] = $query['key'];
+    	    	    return $query;
+    	    }
+    	    return $results[0]['ProgramSetting']['value'];
     }
 
 

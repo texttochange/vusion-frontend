@@ -130,13 +130,19 @@ class ScriptsController extends AppController
        
         $keywordToValidate = $this->request->data['keyword'];
         $programs = $this->Program->find('all');
-       
+        $programSetting = new ProgramSetting(array(
+        	'database'=>($this->Session->read($this->params['program']."_db"))
+        	));
+       $shortCode = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
+        
         foreach ($programs as $program) {
-            //print_r($program);
-            $scriptModel = new Script(array('database'=>$program['Program']['database']));
-            if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))){
-                $this->set('result', array('status'=>0, 'program'=>$program['Program']['name']));
-                return;
+            $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
+            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
+                $scriptModel = new Script(array('database'=>$program['Program']['database']));
+                if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))){
+                    $this->set('result', array('status'=>0, 'program'=>$program['Program']['name']));
+                    return;
+                }
             }
         }
 //        echo "Not found any other program with this keyword";

@@ -1,6 +1,7 @@
 <?php
 App::uses('ScriptsController', 'Controller');
 App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 /**
  * TestScriptsControllerController *
@@ -136,10 +137,39 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $Scripts->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls('4','2',$this->programData[0]['Program']['database'], $this->programData[0]['Program']['name']));
+            ->will($this->onConsecutiveCalls(
+            	    '4',
+            	    '2',
+            	    $this->programData[0]['Program']['database'], 
+            	    $this->programData[0]['Program']['database'],
+            	    $this->programData[0]['Program']['name']
+            	    ));
     
         return $Scripts;
     }
+
+    protected function getOneScript($keyword)
+    {
+    	    $script['Script'] = array(
+    	    'script' => array(
+    	    	    'dialogues' => array(
+    	    	    	    array(
+    	    	    	    	    'dialogue-id'=> 'script.dialogues[0]',
+    	    	    	    	    'interactions'=> array(
+    	    	    	    	    	    array(
+    	    	    	    	    	    	    'type-interaction' => 'question-answer', 
+    	    	    	    	    	    	    'content' => 'how are you', 
+    	    	    	    	    	    	    'keyword' => $keyword, 
+    	    	    	    	    	    	    'interaction-id' => 'script.dialogues[0].interactions[0]'
+    	    	    	    	    	    	    )
+    	    	    	    	    	    )
+    	    	    	    	    )
+    	    	    	    )
+    	    	    )
+    	    );
+    	    return $script;
+    }
+
 
 /**
  * test methods
@@ -224,31 +254,9 @@ class ScriptsControllerTestCase extends ControllerTestCase
     {
 
     }
-
-    protected function getOneScript($keyword)
-    {
-    	    $script['Script'] = array(
-    	    'script' => array(
-    	    	    'dialogues' => array(
-    	    	    	    array(
-    	    	    	    	    'dialogue-id'=> 'script.dialogues[0]',
-    	    	    	    	    'interactions'=> array(
-    	    	    	    	    	    array(
-    	    	    	    	    	    	    'type-interaction' => 'question-answer', 
-    	    	    	    	    	    	    'content' => 'how are you', 
-    	    	    	    	    	    	    'keyword' => $keyword, 
-    	    	    	    	    	    	    'interaction-id' => 'script.dialogues[0].interactions[0]'
-    	    	    	    	    	    	    )
-    	    	    	    	    	    )
-    	    	    	    	    )
-    	    	    	    )
-    	    	    )
-    	    );
-    	    return $script;
-    }
     
 
-    public function testValidateKeyword_UsedInOtherScript()
+    public function testValidateKeyword_UsedInOtherScriptWithSameShortcode()
     {
     	    
         $Scripts = $this->mockProgramAccess();
@@ -260,6 +268,23 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $otherProgramScriptModel->save($this->getOneScript('usedKeyword'));
         $otherProgramScriptModel->makeDraftActive();
 
+        $otherProgramSettingModel = new ProgramSetting(array('database' => 'testdbprogram2'));
+        $otherProgramSettingModel->deleteAll(true,false);
+        $otherProgramSettingModel->create();
+        $otherProgramSettingModel->save(array(
+        	'key'=>'shortcode',
+        	'value'=>'8282'
+        	));
+        
+        $programSettingModel = new ProgramSetting(array('database' => $this->programData[0]['Program']['database']));
+        $programSettingModel->deleteAll(true,false);
+        $programSettingModel->create();
+        $programSettingModel->save(array(
+        	'key'=>'shortcode',
+        	'value'=>'8282'
+        	)); 
+
+
         $this->testAction('/testurl/scripts/validateKeyword', array(
         	'method' => 'post',
         	'data' => array('keyword' => 'usedKeyword')
@@ -270,16 +295,62 @@ class ScriptsControllerTestCase extends ControllerTestCase
 
     }
 
+
+    public function testValidateKeyword_UsedInOtherScriptWithDifferentShortcode()
+    {
+        $Scripts = $this->mockProgramAccess();
+    	            
+        $otherProgramScriptModel = $this->instanciateScriptMultiModel('testdbprogram2');
+        $otherProgramScriptModel->deleteAll(true, false);
+        $otherProgramScriptModel->create();
+        $otherProgramScriptModel->save($this->getOneScript('usedKeyword'));
+        $otherProgramScriptModel->makeDraftActive();
+
+        $otherProgramSettingModel = new ProgramSetting(array('database' => 'testdbprogram2'));
+        $otherProgramSettingModel->deleteAll(true,false);
+        $otherProgramSettingModel->create();
+        $otherProgramSettingModel->save(array(
+        	'key'=>'shortcode',
+        	'value'=>'8282'
+        	));
+        
+        $programSettingModel = new ProgramSetting(array('database' => $this->programData[0]['Program']['database']));
+        $programSettingModel->deleteAll(true,false);
+        $programSettingModel->create();
+        $programSettingModel->save(array(
+        	'key'=>'shortcode',
+        	'value'=>'8181'
+        	));        
+
+
+        $this->testAction('/testurl/scripts/validateKeyword', array(
+        	'method' => 'post',
+        	'data' => array('keyword' => 'usedKeyword')
+        	));
+
+        $this->assertEquals(1, $this->vars['result']['status']);
+    }
+
+
     public function testValidateKeyword_UsedInSameScript()
     {
         $Scripts = $this->mockProgramAccess();
 
         $otherProgramScriptModel = $this->instanciateScriptMultiModel('testdbprogram');
         $otherProgramScriptModel->deleteAll(true, false);
+        $this->instanciateScriptMultiModel('testdbprogram2')->deleteAll(true, false);
         
         $otherProgramScriptModel->create();
         $otherProgramScriptModel->save($this->getOneScript('usedKeyword'));
         $otherProgramScriptModel->makeDraftActive();
+
+        $programSettingModel = new ProgramSetting(array('database' => $this->programData[0]['Program']['database']));
+        $programSettingModel->deleteAll(true,false);
+        $programSettingModel->create();
+        $programSettingModel->save(array(
+        	'key'=>'shortcode',
+        	'value'=>'8181'
+        	));      
 
         $this->testAction('/testurl/scripts/validateKeyword', array(
         	'method' => 'post',
@@ -289,6 +360,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $this->assertEquals(0, $this->vars['result']['status']);
         $this->assertEquals('Test Name', $this->vars['result']['program']);
     }
+
 
     public function testValidateKeyword_notUsed()
     {
@@ -309,6 +381,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, $this->vars['result']['status']);
        //$this->assertEquals('Test Name', $this->vars['result']['program']);
     }
+
 
     public function testValidateKeyword_usedInDeactivedScript()
     {
