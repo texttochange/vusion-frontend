@@ -5,6 +5,7 @@ App::uses('Script','Model');
 App::uses('VumiSupervisord','Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 class ScriptsController extends AppController
 {
