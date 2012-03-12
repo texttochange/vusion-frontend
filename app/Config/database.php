@@ -2,7 +2,7 @@
 class DATABASE_CONFIG {
 
 	public $test = array(
-		'datasource' => 'Database/Mysql',
+		'datasource' => 'Database/Postgres',
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'caketest',
@@ -11,7 +11,7 @@ class DATABASE_CONFIG {
 		'encoding' => 'utf8'
 	);
 	public $default = array(
-		'datasource' => 'Database/Mysql',
+		'datasource' => 'Database/Postgres',
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'cake',
