@@ -5,7 +5,7 @@ class DATABASE_CONFIG {
 		'datasource' => 'Database/Postgres',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'caketest',
+		'login' => 'cake',
 		'password' => 'password',
 		'database' => 'cake_poc_test',
 		'encoding' => 'utf8'
