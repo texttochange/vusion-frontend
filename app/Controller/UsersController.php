@@ -204,25 +204,20 @@ class UsersController extends AppController
             throw new NotFoundException(__('Invalid user'));
         }
         $user = $this->User->read(null, $id);
-        //print_r($user);
-        //echo Security::hash($this->hash.'jan');
+        $userId = $id;
+        $this->set(compact('userId'));
+        
         if ($this->request->is('post') || $this->request->is('put')) {
-            print_r($this->request->data);
             if(Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'));
-            }
-            if($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
+            } else if($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
                 $this->Session->setFlash(__('new passwords do not match. Please try again.'));
-            }
-            else {
-                $user['User']['password'] = $this->request->data['newPassword'];
+            } else {
+            	$user['User']['password'] = $this->request->data['newPassword'];
                 $this->User->save($user);
                 $this->Session->setFlash(__('Password changed successfully.'));
                 $this->redirect(array('action' => 'view', $id));
             }
-        } else {
-            //$this->request->data = $user;
-            $this->User->id = $id;
         }
     }
 

@@ -5,7 +5,7 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('username');
-		echo $this->Form->input('password');
+		echo $this->Html->tag('label',__('Password'));
 		echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $this->Form->value('User.id')));
 		echo $this->Form->input('email');
 		echo $this->Form->input('group_id');
