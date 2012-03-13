@@ -21,14 +21,14 @@ class ShortCodesController extends AppController
         // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
         parent::constructClasses();
         
-    	if (!Configure::read("mongo_db")) {
-    	    $options = array(
-	        'database' => 'shortcodes'
-        	    );
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'shortcodes'
+                );
         } else {
             $options = array(
-            	    'database' => Configure::read("mongo_db")
-        	    );
+                'database' => Configure::read("mongo_db")
+                );
         }
         $this->ShortCode = new ShortCode($options);
     }
@@ -45,16 +45,16 @@ class ShortCodesController extends AppController
     public function add()
     {
         if ($this->request->is('post')) {
-	    $this->ShortCode->create();
-	    if($this->ShortCode->save($this->request->data)) {
-	        $this->Session->setFlash(__('The shortcode has been saved.'));
-	        $this->redirect(array(
+            $this->ShortCode->create();
+            if ($this->ShortCode->save($this->request->data)) {
+                $this->Session->setFlash(__('The shortcode has been saved.'));
+                $this->redirect(array(
                     'controller' => 'shortCodes',
                     'action' => 'add'
                     ));
-	    } else {
-	        $this->Session->setFlash(__('The shortcode could not be saved.'));
-	    }
+            } else {
+                $this->Session->setFlash(__('The shortcode could not be saved.'));
+            }
         }
     }
     
@@ -62,32 +62,32 @@ class ShortCodesController extends AppController
     public function edit()
     {
         $shortcode = $this->params['shortCode'];
-        $id         = $this->params['id'];
+        $id        = $this->params['id'];
         
         $this->ShortCode->id = $id;
         if (!$this->ShortCode->exists()) {
             throw new NotFoundException(__('Invalid shortcode') . $id);
         }
         if ($this->request->is('post') || $this->request->is('put')) {
-	    if ($this->ShortCode->save($this->request->data)) {
-	        $shortcode = $this->request->data;
-	    	$this->Session->setFlash(__('The shortcode has been saved'));
-	        $this->redirect(array('controller' => 'shortCodes',
-	 	    'action' => 'index'
-		    ));
-	    } else {
+            if ($this->ShortCode->save($this->request->data)) {
+                $shortcode = $this->request->data;
+                $this->Session->setFlash(__('The shortcode has been saved'));
+                $this->redirect(array('controller' => 'shortCodes',
+                    'action' => 'index'
+                    ));
+            } else {
                 $this->Session->setFlash(__('The shortcode could not be saved. Please, try again.'));
             }
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
-    	return $shortcode;    
+        return $shortcode;    
     }
+    
     
     public function delete()
     {
-        $shortcode = $this->params['shortCode'];
-        $id         = $this->params['id'];
+        $id        = $this->params['id'];
         
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
@@ -106,7 +106,7 @@ class ShortCodesController extends AppController
         $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
-    	    
+        
     }
     
     
