@@ -65,7 +65,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 	
     public function mock_program_access()
     {
-        $ShortCodes = $this->generate('ShortCodes', array(
+        $shortCodes = $this->generate('ShortCodes', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
@@ -75,12 +75,12 @@ class ShortCodesControllerTestCase extends ControllerTestCase
                 )
             ));
     
-        $ShortCodes->Acl
+        $shortCodes->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->returnValue('true'));
 
-        $ShortCodes->Session
+        $shortCodes->Session
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls('1','1','1'));	    
