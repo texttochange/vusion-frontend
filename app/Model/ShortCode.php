@@ -7,13 +7,8 @@ App::uses('MongoModel', 'Model');
 class ShortCode extends MongoModel
 {
 
-    var $specific = true;	
-/**
- * Display field
- *
- * @var string
- */
-    var $name = 'ShortCode';
+    var $specific    = true;
+    var $name        = 'ShortCode';
     var $useDbConfig = 'mongo';
     /*
     public $findMethods = array(
@@ -30,5 +25,5 @@ class ShortCode extends MongoModel
     	    return $results;
     } 
     */
-    
+
 }

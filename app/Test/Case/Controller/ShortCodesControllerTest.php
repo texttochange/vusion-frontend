@@ -5,45 +5,29 @@ App::uses('ShortCodesController', 'Controller');
 /**
  * TestShortCodesController *
  */
-class TestShortCodesController extends ShortCodesController 
+class TestShortCodesController extends ShortCodesController
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
     public $autoRender = false;
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
- 
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
- 
-	
+
+    
 }
 
 /**
  * ShortCodesController Test Case
  *
  */
-class ShortCodesControllerTestCase extends ControllerTestCase 
+class ShortCodesControllerTestCase extends ControllerTestCase
 {
     var $databaseName = "testdbmongo";
-	
-/**
- * setUp method
- *
- * @return void
- */
+
+    
     public function setUp() 
     {
         Configure::write("mongo_db",$this->databaseName);
@@ -54,11 +38,11 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->instanciateShortCodesModel();
         $this->dropData();
     }
-	
+
 
     protected function instanciateShortCodesModel() 
     {
-        $options = array('database' => $this->databaseName);
+        $options                     = array('database' => $this->databaseName);
         $this->ShortCodes->ShortCode = new ShortCode($options);
     }	
   
@@ -72,7 +56,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     public function tearDown() 
     {
         $this->dropData();
-	
+
         unset($this->ShortCodes);
 
         parent::tearDown();
@@ -91,24 +75,24 @@ class ShortCodesControllerTestCase extends ControllerTestCase
                 )
             ));
     
-    $ShortCodes->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-	
-    $ShortCodes->Session
-        ->expects($this->any())
-        ->method('read')
-        ->will($this->onConsecutiveCalls('1','1','1'));	    
+        $ShortCodes->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+
+        $ShortCodes->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->onConsecutiveCalls('1','1','1'));	    
  
     }
-	
-	
+
+
     public function testIndex()
     {
-	    
+    
         $this->mock_program_access();
-	    
+   
         $this->instanciateShortCodesModel();
         $this->ShortCodes->ShortCode->create();
         $this->ShortCodes->ShortCode->save(array(
@@ -116,13 +100,13 @@ class ShortCodesControllerTestCase extends ControllerTestCase
                 'shortcode' => 8282,
                 'internationalprefix' => 256
             ));
-		
+
         $this->testAction("/shortCodes/index");
-		
+
         $this->assertEquals(1, count($this->vars['shortcodes']));		
     }
-	
-	
+
+
     public function testAdd()
     {
         $this->mock_program_access();
@@ -140,12 +124,12 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         ));
         $this->assertEquals(1, $this->ShortCodes->ShortCode->find('count'));
     }
-	
-	
+
+
     public function testEdit()
     {
         $this->mock_program_access();
-    
+
         $shortcodes = array(
             'ShortCodes' => array(
             'country' => 'uganda',
@@ -155,7 +139,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         );
         $this->ShortCodes->ShortCode->create();
         $data = $this->ShortCodes->ShortCode->save($shortcodes);	    
-    
+
         $this->testAction("/shortCodes/edit/".$data['ShortCode']['_id'], array(
             'method' => 'post',
             'data' => array(
@@ -168,10 +152,10 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         ));
         //print_r($this->result);
         $this->assertEquals(8383, $this->result['ShortCodes']['shortcode']);
-    
+        
     }
-	
-	
+
+
     public function testDelete()
     {
         $this->mock_program_access();
@@ -191,5 +175,5 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->assertEquals(0, $this->ShortCodes->ShortCode->find('count'));
     }
 
-	
+
 }
