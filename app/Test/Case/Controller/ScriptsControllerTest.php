@@ -125,9 +125,12 @@ class ScriptsControllerTestCase extends ControllerTestCase
             ->expects($this->any())
             ->method('find')
             ->will(
-                $this->onConsecutiveCalls($this->programData, array(
-                $this->programData[0],
-                $this->otherProgramData[0]))
+                $this->onConsecutiveCalls(
+                    $this->programData, 
+                    array(
+                        $this->programData[0],
+                        $this->otherProgramData[0])
+                    )
                 );
             
         $scripts->Session
@@ -152,22 +155,22 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $script['Script'] = array(
             'script' => array(
                 'dialogues' => array(
-    	            array(
-    	                'dialogue-id'=> 'script.dialogues[0]',
-    	                'interactions'=> array(
-    	                    array(
-    	                        'type-interaction' => 'question-answer', 
-    	    	                'content' => 'how are you', 
-    	    	                'keyword' => $keyword, 
-    	    	                'interaction-id' => 'script.dialogues[0].interactions[0]'
-    	    	                )
-    	    	            )
-    	    	        )
-    	    	    )
-    	    	)
-    	    );
+                    array(
+                        'dialogue-id'=> 'script.dialogues[0]',
+                        'interactions'=> array(
+                            array(
+                                'type-interaction' => 'question-answer', 
+                                'content' => 'how are you', 
+                                'keyword' => $keyword, 
+                                'interaction-id' => 'script.dialogues[0].interactions[0]'
+                                )
+                            )
+                        )
+                    )
+                )
+            );
 
-      return $script;
+        return $script;
     }
 
 
