@@ -1,8 +1,9 @@
 <div class="shortcodes form">
 
 <?php echo $this->Form->create('ShortCode');?>
+<h3><?php echo __('Add ShortCode'); ?></h3>
 	<fieldset>
-		<legend><?php echo __('Add ShortCode'); ?></legend>
+		
 		<div class='input text'>
 	<?php
 		$filePath = WWW_ROOT . "files";
@@ -17,7 +18,7 @@
 		   if($count > 0 && $countries[$count]){
 		   $countries[$count] = str_replace("\n", "", $countries[$count]);
 		   $explodedLine = explode(",", $countries[$count]);
-		   $options[$explodedLine[0]] = $explodedLine[0];
+		   $options[$explodedLine[0]] = trim($explodedLine[0]);
 		   $optionscode[$explodedLine[1]] = $explodedLine[0];
 		   }
 		   $count++;		   
