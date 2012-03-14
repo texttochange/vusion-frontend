@@ -1,6 +1,7 @@
 <div>
-	<h2><?php echo __('Program History').' of '.$programName.' program';?></h2>
+	
 <div class="status index">
+	<h3><?php echo __("Program History'); ?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
