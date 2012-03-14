@@ -41,7 +41,7 @@ class UsersControllerTestCase extends ControllerTestCase
  *
  * @var array
  */
-    public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
+   // public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
 
 /**
  * setUp method
@@ -54,23 +54,10 @@ class UsersControllerTestCase extends ControllerTestCase
 
         $this->Users = new TestUsersController();
         $this->Users->constructClasses();
-        
-        $this->instanciateUserModel();
-        $this->dropData();
+       
+       
     }
-    
-    
-    protected function instanciateUserModel()
-    {
-        //$options = array('database');
-        $this->Users->User = new User();
-    }
-    
-    
-    protected function dropData()
-    {
-        $this->Users->User->deleteAll(true,false);
-    }
+ 
 
 
 /**
@@ -80,38 +67,13 @@ class UsersControllerTestCase extends ControllerTestCase
  */
     public function tearDown()
     {
-        $this->dropData();
-        
         unset($this->Users);
 
         parent::tearDown();
     }
     
     
-    public function mockUserAccess()
-    {
-        $user = $this->generate('Users', array(
-            'components' => array(
-                'Acl' => array('check'),
-                'Session' => array('read')
-            ),
-            'models' => array(
-                'User' => array()
-                )
-            ));
-    
-        $user->Acl
-            ->expects($this->any())
-            ->method('check')
-            ->will($this->returnValue('true'));
-
-        $user->Session
-            ->expects($this->any())
-            ->method('read')
-            ->will($this->returnValue('User'));	    
- 
-    }
-
+   
 
 /**
  * testIndex method
