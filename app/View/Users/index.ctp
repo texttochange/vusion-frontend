@@ -1,5 +1,5 @@
 <div class="users index">
-	<h2><?php echo __('Users');?></h2>
+	<h3><?php echo __('Users');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>

@@ -1,5 +1,5 @@
 <div class="programs index">
-	<h2><?php echo __('Programs');?></h2>
+	<h3><?php echo __('Programs');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('name');?></th>

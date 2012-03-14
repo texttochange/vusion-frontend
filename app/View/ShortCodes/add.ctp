@@ -1,7 +1,7 @@
 <div class="shortcodes form">
-
-<?php echo $this->Form->create('ShortCode');?>
 <h3><?php echo __('Add ShortCode'); ?></h3>
+<?php echo $this->Form->create('ShortCode');?>
+
 	<fieldset>
 		
 		<div class='input text'>

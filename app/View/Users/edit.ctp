@@ -1,7 +1,8 @@
 <div class="users form">
+<h3><?php echo __('Edit User'); ?></h3>
 <?php echo $this->Form->create('User');?>
 	<fieldset>
-		<legend><?php echo __('Edit User'); ?></legend>
+		
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('username');

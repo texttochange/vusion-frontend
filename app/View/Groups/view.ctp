@@ -1,5 +1,5 @@
 <div class="groups view">
-<h2><?php  echo __('Group');?></h2>
+<h3><?php  echo __('Group');?></h3>
 	<dl>
 		<dt><?php echo __('Id'); ?></dt>
 		<dd>

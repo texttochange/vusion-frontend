@@ -1,8 +1,8 @@
 <div class="shortcodes form">
-
+<h3><?php echo __('Edit ShortCode'); ?></h3>
 <?php echo $this->Form->create('ShortCode');?>
 	<fieldset>
-		<legend><?php echo __('Edit ShortCode'); ?></legend>
+		
 		<div class='input text'>
 	<?php
 		$filePath = WWW_ROOT . "files";

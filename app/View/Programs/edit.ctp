@@ -1,7 +1,8 @@
 <div class="programs form">
+<h3><?php echo __('Edit Program'); ?></h3>
 <?php echo $this->Form->create('Program');?>
 	<fieldset>
-		<legend><?php echo __('Edit Program'); ?></legend>
+		
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('name');

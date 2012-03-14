@@ -36,10 +36,10 @@ echo "<br/>";
 */
 ?>
 
-
+<h3><?php echo __('Add Program'); ?></h3>
 <?php echo $this->Form->create('Program');?>
 	<fieldset>
-		<legend><?php echo __('Add Program'); ?></legend>
+		
 	<?php
 		echo $this->Form->input(__('name'));
 		echo $this->Form->input(__('country'));

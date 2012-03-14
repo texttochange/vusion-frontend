@@ -1,7 +1,8 @@
 <div class="groups form">
+<h3><?php echo __('Add Group'); ?></h3>
 <?php echo $this->Form->create('Group');?>
 	<fieldset>
-		<legend><?php echo __('Add Group'); ?></legend>
+		
 	<?php
 		echo $this->Form->input('name');
 		echo $this->Form->input('specific_program_access');
