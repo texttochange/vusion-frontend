@@ -1,6 +1,7 @@
 <div>
-	<h2><?php echo __('Participants').' of '.$programName.' program';?></h2>
+	
 <div class="participants index">
+    <h3>Import Participants</h3>
 	<?php
 	//echo $this->Form->create('Import', array('enctype' => 'multipart/form-data'));	
 	echo $this->Form->create('Import', array('type' => 'file'));

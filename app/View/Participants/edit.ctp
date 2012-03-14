@@ -1,9 +1,9 @@
 <div>
-	<h2><?php echo __('Participants').' of '.$programName.' program';?></h2>
+	
 <div class="participants form">
+<h3><?php echo __('Edit Participant'); ?></h3>
 <?php echo $this->Form->create('Participant');?>
 	<fieldset>
-		<legend><?php echo __('Edit Participant'); ?></legend>
 	<?php
 		echo $this->Form->input('phone');
 		echo $this->Form->input('name');

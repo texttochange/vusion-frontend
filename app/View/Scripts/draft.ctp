@@ -1,6 +1,6 @@
 <div id="flashMessage" class="ajax-flash-message"> </div>
 <div>
-	<h2><?php echo __('Draft Script').' of '.$programName.' program';?></h2>
+	
 <div class="index">
 	<h3><?php echo __('Script'); ?></h3>
 	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>

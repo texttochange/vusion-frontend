@@ -1,6 +1,6 @@
 <div>
 	<div id="flashMessage"> </div>
-	<h2><?php echo __('Active Script').' of '.$programName.' program';?></h2>
+	
 <div class="index">
 	<h3><?php echo __('Script'); ?></h3>
 	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>

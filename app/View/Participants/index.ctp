@@ -1,6 +1,7 @@
 <div>
-	<h2><?php echo __('Participants').' of '.$programName.' program';?></h2>
+	
 <div class="participants index">
+	<h3>Participants</h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>

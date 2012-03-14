@@ -1,5 +1,5 @@
 <div class="participant view">
-<h2><?php  echo __('User');?></h2>
+<h3>Participant</h3>
 	<dl>
 		<dt><?php echo __('phone'); ?></dt>
 		<dd>

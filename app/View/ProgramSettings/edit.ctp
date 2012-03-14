@@ -1,7 +1,7 @@
 <div class="programsettings form">
+<H3><?php echo __('Edit Program Settings'); ?></H3>
 <?php echo $this->Form->create('ProgramSettings'); ?>
-    <fieldset>
-        <legend><?php echo __('Edit Program Settings'); ?></legend>
+    <fieldset>        
         <?php
             //echo $this->Form->input('country');
         ?>
