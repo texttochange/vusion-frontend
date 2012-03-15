@@ -128,6 +128,9 @@ class UsersController extends AppController
     {
         if ($this->Auth->login()) {
             $this->Session->setFlash(__('Login successful.'));
+            if ($this->Session->read('Auth.User.group_id') == 1) {
+                $this->redirect(array('controller' => 'admin'));
+            }
             $this->redirect($this->Auth->redirect());
         } else {
             if($this->request->is('post')) {
