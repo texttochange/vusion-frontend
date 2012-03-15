@@ -4,74 +4,88 @@ App::uses('AppModel', 'Model');
  * Program Model
  *
  */
-class Program extends AppModel {
-/**
- * Display field
- *
- * @var string
- */
-	public $displayField = 'name';
-	var $hasAndBelongsToMany = 'User';
-	
-	public $findMethods = array(
-		'authorized' => true,
-		'count' => true
-		);
-	
-	public function _findAuthorized($state, $query, $results = array()) {
-		//print_r($query);
-		if ($state == 'before') {
-			//print_r($query);
-			if ($query['specific_program_access']) {
-				$query['joins'] = array(
-					array(
-						'table' => 'programs_users',
-						'alias' => 'ProgramUser',
-						'type' => 'LEFT',
-						'conditions' => array(
-								'Program.id = ProgramUser.program_id'
-							)
-						)
-					);
-				$query['conditions'] = array(
-					'ProgramUser.user_id' => $query['user_id']
-					);
-				if (!empty($query['program_url'])) {
-					$query['conditions'] = array_merge(
-						$query['conditions'],
-						array('Program.url' => $query['program_url'])
-					); 
-				}
-			} else {
-				//TODO DRY it!
-				if (!empty($query['program_url'])) {
-					$query['conditions'] = array('Program.url' => $query['program_url']);
-				}
-			}
-			return $query;
-		}
-		return $results;
-	}
-	
-	/*
-	public function beforeFind($query){
-		print_r($query);
-		if ($query['specific_program_access']) {
-			$query['joins'] = array(
-				array(
-					'table' => 'programs_users',
-					'alias' => 'ProgramUser',
-					'type' => 'LEFT',
-					'conditions' => array(
-							'Program.id = ProgramUser.program_id'
-						)
-					)
-				);
-			$query['conditions'] = array(
-				'ProgramUser.user_id' => $query['user_id']
-				);
-		}
-		return $query;
-	}
-	*/
+class Program extends AppModel
+{
+
+    public $displayField     = 'name';
+    var $hasAndBelongsToMany = 'User';
+    
+    public $findMethods = array(
+        'authorized' => true,
+        'count' => true
+        );
+    
+    
+    public function _findAuthorized($state, $query, $results = array())
+    {
+        //print_r($query);
+        if ($state == 'before') {
+            //print_r($query);
+            return $this->limitedAccessConditions($query);
+        }
+        return $results;
+    }
+    
+    
+    public function _findCount($state, $query, $results = array())
+    {
+        if ($state === 'before') {
+            $db = $this->getDataSource();
+            if (empty($query['fields'])) {
+                $query['fields'] = $db->calculate($this, 'count');
+            } elseif (is_string($query['fields'])  && !preg_match('/count/i', $query['fields'])) {
+                $query['fields'] = $db->calculate($this, 'count', array(
+                    $db->expression($query['fields']), 'count'
+                ));
+            }
+            $query['order'] = false;
+            
+            return $this->limitedAccessConditions($query);
+        } elseif ($state === 'after') {
+            foreach (array(0, $this->alias) as $key) {
+                if (isset($results[0][$key]['count'])) {
+                    if (($count = count($results)) > 1) {
+                        return $count;
+                    } else {
+                        return intval($results[0][$key]['count']);
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    
+    
+    protected function limitedAccessConditions($query)
+    {
+        if (isset($query['specific_program_access'])) {
+                $query['joins'] = array(
+                    array(
+                        'table' => 'programs_users',
+                        'alias' => 'ProgramUser',
+                        'type' => 'LEFT',
+                        'conditions' => array(
+                                'Program.id = ProgramUser.program_id'
+                            )
+                        )
+                    );
+                $query['conditions'] = array(
+                    'ProgramUser.user_id' => $query['user_id']
+                    );
+                if (!empty($query['program_url'])) {
+                    $query['conditions'] = array_merge(
+                        $query['conditions'],
+                        array('Program.url' => $query['program_url'])
+                    ); 
+                }
+            } else {
+                //TODO DRY it!
+                if (!empty($query['program_url'])) {
+                    $query['conditions'] = array('Program.url' => $query['program_url']);
+                }
+            }
+        return $query;
+    }
+    
+   
 }

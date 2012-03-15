@@ -2,26 +2,13 @@
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramsController', 'Controller');
 
-/**
- * TestProgramsController *
- */
+
 class TestProgramsController extends ProgramsController 
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
     public $autoRender = false;
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
@@ -30,23 +17,13 @@ class TestProgramsController extends ProgramsController
 
 }
 
-/**
- * ProgramsController Test Case
- *
- */
+
 class ProgramsControllerTestCase extends ControllerTestCase
 {
-/**
- * Fixtures
- *
- * @var array
- */
+
     public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 
-/**
- * setUp methods
- *
- */
+
     public function setUp()
     {
         parent::setUp();
@@ -55,6 +32,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->Programs->constructClasses();
     }
 
+    
     public function tearDown()
     {
         unset($this->Programs);
@@ -146,8 +124,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     'name' => 'test',
                     'url' => 'test',
                     'database' => 'test',
-                    'country' => 'uganda',
-                    'timezone' => 'Africa/Kampala',
                     'created' => '2012-01-24 15:29:24',
                     'modified' => '2012-01-24 15:29:24'
                     ),
@@ -156,6 +132,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
                         'id' => 1,
                         'username' => 'gerald',
                         'password' => 'geraldpassword',
+                        'email' => 'gerald@here.com',
                         'group_id' => 1,
                         'created' => '2012-01-24 15:34:07',
                         'modified' => '2012-01-24 15:34:07',
