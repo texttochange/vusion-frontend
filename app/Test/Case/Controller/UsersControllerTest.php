@@ -2,52 +2,53 @@
 /* Users Test cases generated on: 2012-01-24 15:40:09 : 1327408809*/
 App::uses('UsersController', 'Controller');
 
-/**
- * TestUsersController *
- */
+   /**
+    * TestUsersController *
+    */
 class TestUsersController extends UsersController
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+   /**
+    * Auto render
+    *
+    * @var boolean
+    */
     public $autoRender = false;
 
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
-    public function redirect($url, $status = null, $exit = true) {
+   /**
+    * Redirect action
+    *
+    * @param mixed $url
+    * @param mixed $status
+    * @param boolean $exit
+    * @return void
+    */
+    public function redirect($url, $status = null, $exit = true)
+    {
         $this->redirectUrl = $url;
     }
 
 
 }
 
-/**
- * UsersController Test Case
- *
- */
+   /**
+    * UsersController Test Case
+    *
+    */
 class UsersControllerTestCase extends ControllerTestCase
 {
-/**
- * Fixtures
- *
- * @var array
- */
-   // public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
+   /**
+    * Fixtures
+    *
+    * @var array
+    */
+    // public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
 
-/**
- * setUp method
- *
- * @return void
- */
+   /**
+    * setUp method
+    *
+    * @return void
+    */
     public function setUp()
     {
         parent::setUp();
@@ -60,11 +61,11 @@ class UsersControllerTestCase extends ControllerTestCase
  
 
 
-/**
- * tearDown method
- *
- * @return void
- */
+   /**
+    * tearDown method
+    *
+    * @return void
+    */
     public function tearDown()
     {
         unset($this->Users);
@@ -75,55 +76,55 @@ class UsersControllerTestCase extends ControllerTestCase
     
    
 
-/**
- * testIndex method
- *
- * @return void
- */
+   /**
+    * testIndex method
+    *
+    * @return void
+    */
     public function testIndex() 
     {
 
     }
 
 
-/**
- * testView method
- *
- * @return void
- */
+   /**
+    * testView method
+    *
+    * @return void
+    */
     public function testView()
     {
 
     }
 
 
-/**
- * testAdd method
- *
- * @return void
- */
+   /**
+    * testAdd method
+    *
+    * @return void
+    */
     public function testAdd() 
     {
 
     }
 
 
-/**
- * testEdit method
- *
- * @return void
- */
+   /**
+    * testEdit method
+    *
+    * @return void
+    */
     public function testEdit() 
     {
 
     }
 
 
-/**
- * testDelete method
- *
- * @return void
- */
+   /**
+    * testDelete method
+    *
+    * @return void
+    */
     public function testDelete() 
     {
 
@@ -159,11 +160,11 @@ class UsersControllerTestCase extends ControllerTestCase
             ->will($this->returnValue('true'));
             
          $user = array(
-        	'User'=> array(
-        		'id' => 1,
-        		'password' => Security::hash($this->hash.'gerald')
-        		)
-        	);
+       	            'User'=> array(
+                        'id' => 1,
+                        'password' => Security::hash($this->hash.'gerald')
+                        )
+                    );
                 
         $users->User
             ->expects($this->once())
@@ -181,18 +182,17 @@ class UsersControllerTestCase extends ControllerTestCase
             	    ))
             ->will($this->returnValue('true'));
         
-       
-        //print_r($user);
+
         
         $this->testAction("/users/changePassword/".$user['User']['id'],array(
-        	'method' => 'post',
-        	'data' => array(
-        		'id' => $user['User']['id'],
-        		'oldPassword' => 'gerald',
-        		'newPassword' => 'jared',
-        		'confirmNewPassword' => 'jared'
-        		)
-        	));
+                'method' => 'post',
+                'data' => array(
+                        'id' => $user['User']['id'],
+                        'oldPassword' => 'gerald',
+                        'newPassword' => 'jared',
+                        'confirmNewPassword' => 'jared'
+                        )
+                    ));
         
         $this->assertContains('/users/view/', $this->headers['Location']);
     }

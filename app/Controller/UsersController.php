@@ -3,11 +3,12 @@
 App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 
-/**
- * Users Controller
- *
- * @property User $User
- */
+    /**
+    *  Users Controller
+    *
+    *  @property User $User
+    */
+
 class UsersController extends AppController
 {
 
@@ -65,7 +66,7 @@ class UsersController extends AppController
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
             }
         }
-        $groups = $this->User->Group->find('list');
+        $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
         $this->set(compact('groups', 'programs'));
     }
@@ -93,7 +94,7 @@ class UsersController extends AppController
         } else {
             $this->request->data = $this->User->read(null, $id);
         }
-        $groups = $this->User->Group->find('list');
+        $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
         $this->set(compact('groups', 'programs'));
     }
@@ -150,19 +151,17 @@ class UsersController extends AppController
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user'));
         }
-        $user = $this->User->read(null, $id);
+        $user   = $this->User->read(null, $id);
         $userId = $id;
         $this->set(compact('userId'));
         
         if ($this->request->is('post') || $this->request->is('put')) {
             if(Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'));
-                echo "testing old password\n";
             } else if($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
                 $this->Session->setFlash(__('new passwords do not match. Please try again.'));
-                echo "testing new passwords<br />";
             } else {
-            	$user['User']['password'] = $this->request->data['newPassword'];
+                $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
                     $this->Session->setFlash(__('Password changed successfully.'));
                     $this->redirect(array('action' => 'view', $id));
