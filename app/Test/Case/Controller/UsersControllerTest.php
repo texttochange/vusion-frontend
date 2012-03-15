@@ -54,8 +54,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::setUp();
 
         $this->Users = new TestUsersController();
-        $this->Users->constructClasses();
-       
+        $this->Users->constructClasses();       
        
     }
  
@@ -72,9 +71,7 @@ class UsersControllerTestCase extends ControllerTestCase
 
         parent::tearDown();
     }
-    
-    
-   
+
 
    /**
     * testIndex method
@@ -132,6 +129,8 @@ class UsersControllerTestCase extends ControllerTestCase
     
     
     private $hash = 'DYhG93b001JfIxfs2guVoUubWwvniR2G0FgaC9mi';
+    
+    
     public function testChangePassword()
     {
         $users = $this->generate('Users', array(
@@ -160,7 +159,7 @@ class UsersControllerTestCase extends ControllerTestCase
             ->will($this->returnValue('true'));
             
          $user = array(
-       	            'User'=> array(
+                    'User'=> array(
                         'id' => 1,
                         'password' => Security::hash($this->hash.'gerald')
                         )
@@ -175,9 +174,9 @@ class UsersControllerTestCase extends ControllerTestCase
             ->expects($this->once())
             ->method('save')
             ->with(array(
-            	    'User' =>array(
-            	        'id' => 1,
-            	        'password' => 'jared'
+                    'User' =>array(
+                        'id' => 1,
+                        'password' => 'jared'
             	        )
             	    ))
             ->will($this->returnValue('true'));
