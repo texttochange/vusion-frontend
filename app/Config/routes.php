@@ -162,6 +162,14 @@
 			)
 		);
 	
+	Router::connect(
+		'/admin',
+		array(
+			'controller' => 'admin',
+			'action' => 'index'
+			)
+		);
+	
 /**
 *  route for program specific controllers
 */
