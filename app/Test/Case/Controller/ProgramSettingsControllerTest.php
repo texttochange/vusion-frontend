@@ -3,22 +3,12 @@ App::uses('ProgramSettingsController', 'Controller');
 
 class TestProgramSettingsController extends ProgramSettingsController
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
     public $autoRender = false;
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
-    public function redirect($url, $status = null, $exit = true) {
+
+    public function redirect($url, $status = null, $exit = true)
+    {
         $this->redirectUrl = $url;
     }
 
@@ -26,7 +16,7 @@ class TestProgramSettingsController extends ProgramSettingsController
 }
 
 
-class ProgramSettingsControllerTestCase extends ControllerTestCase 
+class ProgramSettingsControllerTestCase extends ControllerTestCase
 {
     /**
     * Data
@@ -62,6 +52,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     protected function instanciateProgramSettingsModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
+        
         $this->ProgramSettings->ProgramSetting = new ProgramSetting($options);
     }
     
@@ -76,7 +67,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
 
     protected function mockProgramAccess()
     {
-        $ProgramSettings = $this->generate('ProgramSettings', array(
+        $programSettings = $this->generate('ProgramSettings', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
@@ -87,17 +78,17 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
              )
          ));
         
-        $ProgramSettings->Acl
+        $programSettings->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->returnValue('true'));
             
-        $ProgramSettings->Program
+        $programSettings->Program
             ->expects($this->once())
             ->method('find')
             ->will($this->returnValue($this->programData));
 
-        $ProgramSettings->Session
+        $programSettings->Session
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls(
