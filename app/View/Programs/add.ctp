@@ -41,21 +41,7 @@ echo "<br/>";
 	<fieldset>
 		
 	<?php
-		echo $this->Form->input(__('name'));
-		echo $this->Form->input(__('country'));
-		?>
-		<div class='input text'>
-		<?php
-		echo $this->Html->tag('label',__('Timezone'));
-		$timezone_identifiers = DateTimeZone::listIdentifiers();
-		$timezone_options = array();
-		foreach($timezone_identifiers as $timezone_identifier) {
-			$timezone_options[$timezone_identifier] = $timezone_identifier; 
-		}
-		echo $this->Form->select('timezone', $timezone_options);
-		?>
-		</div>
-		<?php
+		echo $this->Form->input(__('name'));		
 		echo $this->Form->input('url');
 		echo $this->Form->input('database');
 	?>

@@ -58,7 +58,7 @@ class Program extends AppModel
     
     protected function limitedAccessConditions($query)
     {
-        if (isset($query['specific_program_access'])) {
+        if (isset($query['specific_program_access']) and $query['specific_program_access']) {
                 $query['joins'] = array(
                     array(
                         'table' => 'programs_users',

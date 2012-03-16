@@ -5,22 +5,7 @@
 		
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('name');
-		echo $this->Form->input('country');
-		?>
-		<div class='input text'>
-		<?php
-		echo $this->Html->tag('label',__('Timezone'));
-		$timezone_identifiers = DateTimeZone::listIdentifiers();
-		$timezone_options = array();
-		foreach($timezone_identifiers as $timezone_identifier) {
-			$timezone_options[$timezone_identifier] = $timezone_identifier; 
-		}
-		echo $this->Form->select('timezone', $timezone_options);
-		//echo $this->Form->select('timezone', $timezone_identifiers, array('value'=>'412'));
-		?>
-		</div>
-		<?php
+		echo $this->Form->input('name');		
 		echo $this->Form->input('url');
 		echo $this->Form->input('database');
 	?>
