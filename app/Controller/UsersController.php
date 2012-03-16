@@ -200,14 +200,17 @@ class UsersController extends AppController
         //allow program manager to programs
         $group->id = 3;
         $this->Acl->deny($group, 'controllers');
-        $this->Acl->allow($group, 'controllers/Programs');        
+        $this->Acl->deny($group, 'controllers/Programs');
+        $this->Acl->allow($group, 'controllers/Programs/index');        
         //$this->Acl->allow($group, 'controllers/Users/login');
         //$this->Acl->allow($group, 'controllers/Users/logout');
         $this->Acl->allow($group, 'controllers/Home');
         $this->Acl->allow($group, 'controllers/Participants');
         $this->Acl->allow($group, 'controllers/Scripts');
         $this->Acl->allow($group, 'controllers/Status');
-        $this->Acl->allow($group, 'controllers/ProgramSettings');
+        $this->Acl->deny($group, 'controllers/ProgramSettings');
+        $this->Acl->allow($group, 'controllers/ProgramSettings/index');
+        $this->Acl->allow($group, 'controllers/ProgramSettings/view');
         $this->Acl->allow($group, 'controllers/ShortCodes');
         
         //allow customer to 

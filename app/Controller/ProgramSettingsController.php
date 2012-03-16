@@ -31,6 +31,31 @@ class ProgramSettingsController extends AppController
     }
 
 
+    public function index()
+    {
+    	$programUrl = $this->params['program'];
+        $isEditor = $this->Acl->check(
+            array(
+                'User' => array('id' => $this->Session->read('Auth.User.id')),
+                ), 
+            'controllers/ProgramSettings/edit');
+        
+        if ($isEditor) {
+            $this->redirect(array('program'=>$programUrl, 'action'=>'edit'));	
+        } else {
+            $this->redirect(array('program'=>$programUrl, 'action'=>'view'));	
+        }
+    }
+
+
+    public function view()
+    {
+    	
+        $programSettings = $this->ProgramSetting->find('all');
+        $this->set(compact('programSettings'));
+    }
+
+
     public function edit()
     {
     	

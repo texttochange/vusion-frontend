@@ -143,10 +143,10 @@
 		}?>
 	</div>
 	<div class='ttc-info-box'>
-	    <?php echo $this->Html->link(__('Edit Program Settings'),
+	    <?php echo $this->Html->link(__('Program Settings'),
 	                array('program'=> $programUrl, 
 	                'controller' => 'programSettings', 
-                        'action' => 'edit'),
+                        'action' => 'index'),
                          array('class' => 'ttc-button')
                          );
             ?>
