@@ -7,8 +7,10 @@ App::uses('AppController', 'Controller');
  */
 class GroupsController extends AppController
 {
-   
-    public function beforeFilter() {
+ 
+
+    public function beforeFilter()
+    {
         parent::beforeFilter();
         //$this->Auth->allowedActions = array('*');
     }

@@ -26,7 +26,7 @@ class AppController extends Controller
             //'authError' => 'Authentication Failed',
             'authenticate' => array(
                 'Form' => array(
-//                    'field' => array('username' => 'username'),
+                    //'field' => array('username' => 'username'),
                     'fields' => array('username' => 'email')
                     )
                 ),
@@ -57,9 +57,10 @@ class AppController extends Controller
         //Verify the access of user to this program
         if (!empty($this->params['program'])) {
             $this->Program->recursive = -1;
+            
             $data = $this->Program->find('authorized', array(
                 'specific_program_access' => $this->Group->hasSpecificProgramAccess(
-                	$this->Session->read('Auth.User.group_id')),
+                    $this->Session->read('Auth.User.group_id')),
                 'user_id' => $this->Session->read('Auth.User.id'),
                 'program_url' => $this->params['program']
                 ));
@@ -83,7 +84,7 @@ class AppController extends Controller
         if ($this->Cookie->read('lang') && !$this->Session->check('Config.language')) {
             $this->Session->write('Config.language',$this->Cookie->read('lang'));
         } else if (isset($this->params['language']) && 
-            ($this->params['language'] != $this->Session->read('Config.language'))){
+            ($this->params['language'] != $this->Session->read('Config.language'))) {
             $this->Session->write('Config.language', $this->params['language']);
             $this->Cookie->write('lang', $this->params['language'], false, '20 days');
         }
