@@ -2,7 +2,7 @@
 
 <project name="vusion-frontend" default="build">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,clearCache,phpunit,phpcb,acl"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,clearCache,initDb,phpunit,phpcb"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -182,6 +182,17 @@
   <exec executable="./lib/Cake/Console/cake" failonerror="true">
   <arg value="schema"/>
   <arg value="update"/>
+  </exec>
+</target>
+
+<!--<input message="Password:" addproperty="password">
+</input>-->
+
+
+<target name="initDb"
+          description="init the relational and mongo dbs">
+  <exec executable="bash" inputstring="${password}" failonerror="true">
+  <arg value="./app/Test/data/restore_data.sh"/>
   </exec>
 </target>
 

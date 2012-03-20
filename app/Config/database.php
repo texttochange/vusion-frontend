@@ -2,21 +2,21 @@
 class DATABASE_CONFIG {
 
 	public $test = array(
-		'datasource' => 'Database/Postgres',
+		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'cake',
 		'password' => 'password',
-		'database' => 'cake_poc_test',
+		'database' => 'vusion_test',
 		'encoding' => 'utf8'
 	);
 	public $default = array(
-		'datasource' => 'Database/Postgres',
+		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'cake',
 		'password' => 'password',
-		'database' => 'cake_poc',
+		'database' => 'vusion',
 		'encoding' => 'utf8'
 	);
 	

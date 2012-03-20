@@ -1,0 +1,2 @@
+{ "_id" : { "$oid" : "4f63110d9fa4da8511000000" }, "phone" : "256788601462", "name" : "Oliv", "modified" : { "$date" : 1331892493465 }, "created" : { "$date" : 1331892493465 } }
+{ "_id" : { "$oid" : "4f63110d9fa4da8511000001" }, "phone" : "256712747841", "name" : "Gerald", "modified" : { "$date" : 1331892493465 }, "created" : { "$date" : 1331892493465 } }
