@@ -4,38 +4,22 @@ App::uses('ParticipantsController', 'Controller');
 
 class TestParticipantsController extends ParticipantsController 
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
     public $autoRender = false;
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
-    public function redirect($url, $status = null, $exit = true) {
+
+    public function redirect($url, $status = null, $exit = true)
+    {
         $this->redirectUrl = $url;
     }
 
 
 }
 
-/**
- * ScriptsController Test Case
- *
- */
+
 class ParticipantsControllerTestCase extends ControllerTestCase 
 {
-/**
- * Data
- *
- */
+
 
     var $programData = array(
         0 => array( 
@@ -47,10 +31,7 @@ class ParticipantsControllerTestCase extends ControllerTestCase
                 )
         ));
 
-/**
- * Initialization methods
- *
- */
+
     public function setUp()
     {
         parent::setUp();
@@ -72,6 +53,7 @@ class ParticipantsControllerTestCase extends ControllerTestCase
     protected function instanciateParticipantModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
+        
         $this->Participants->Participant = new Participant($options);
     }
 
@@ -124,10 +106,10 @@ class ParticipantsControllerTestCase extends ControllerTestCase
     }
 
 
-/**
- * Test methods
- *
- */
+    /**
+    * Test methods
+    *
+    */
     public function testImport_csv() 
     {
 
@@ -234,25 +216,25 @@ class ParticipantsControllerTestCase extends ControllerTestCase
     
     public function testCheckPhoneNumber() 
     {
-        $phoneNumber = '+712 747.841';
+        $phoneNumber    = '+712 747.841';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('712747841', $newPhoneNumber);
         //echo $newPhoneNumber."<br />";
         
-        $phoneNumber = '0774521459';
+        $phoneNumber    = '0774521459';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         //$this->assertTrue($phoneNumber == $newPhoneNumber);        
         $this->assertFalse(strpos($newPhoneNumber, '0'));
         
-        $phoneNumber ='(0)782123123';
+        $phoneNumber    ='(0)782123123';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('782123123', $newPhoneNumber);
         
-        $phoneNumber ='782123023';
+        $phoneNumber    ='782123023';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('782123023', $newPhoneNumber);
         
-        $phoneNumber ='782123044 ';
+        $phoneNumber    ='782123044 ';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('782123044', $newPhoneNumber);
     }

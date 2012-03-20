@@ -55,8 +55,8 @@ class ParticipantsController extends AppController
     
     public function edit() 
     {
-        $programUrl  = $this->params['program'];
-        $id          = $this->params['id'];
+        $programUrl = $this->params['program'];
+        $id         = $this->params['id'];
         
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
@@ -104,7 +104,7 @@ class ParticipantsController extends AppController
     
     public function view() 
     {
-        $id          = $this->params['id'];
+        $id = $this->params['id'];
 
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
@@ -129,7 +129,7 @@ class ParticipantsController extends AppController
         $programUrl  = $this->params['program'];
 
         if ($this->request->is('post')) {
-            if(!$this->request->data['Import']['file']['error']) {
+            if (!$this->request->data['Import']['file']['error']) {
                 $fileName = $this->request->data['Import']['file']["name"];
                 $ext      = end(explode('.', $fileName));
 
@@ -175,15 +175,16 @@ class ParticipantsController extends AppController
         $this->set(compact('entries'));
     }
 
+    
     private function processCsv($filePath, $fileName)
     {
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
-        $entries = array();
-        $participant = array();
+        $entries              = array();
+        $participant          = array();
         $count = 0;
-        while(!feof($importedParticipants)) {                    
+        while (!feof($importedParticipants)) {                    
             $entries[] = fgets($importedParticipants);
-            if($count > 0 && $entries[$count]) {
+            if ($count > 0 && $entries[$count]) {
                 $this->Participant->create();
                 $entries[$count]      = str_replace("\n", "", $entries[$count]);
                 $explodeLine          = explode(",", $entries[$count]);
@@ -203,10 +204,11 @@ class ParticipantsController extends AppController
         return $entries;
     }
 
+    
     private function processXls($filePath, $fileName)
     {
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
-        for( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
+        for ( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
             $participant['phone'] = $data->val($i,'A');
             $participant['phone'] = $this->checkPhoneNumber($participant['phone']);
             $participant['name']  = $data->val($i,'B');
