@@ -10,6 +10,7 @@ class ShortCode extends MongoModel
     var $specific    = true;
     var $name        = 'ShortCode';
     var $useDbConfig = 'mongo';
+    var $useTable    = 'shortcodes';
     /*
     public $findMethods = array(
     	    'ShortCode' => true,
