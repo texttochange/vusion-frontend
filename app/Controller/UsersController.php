@@ -127,7 +127,7 @@ class UsersController extends AppController
     public function login()
     {
         if ($this->Auth->login()) {
-            $this->Session->setFlash(__('Login successful.'));
+            $this->Session->setFlash(__('Login successful.'), 'default', array('class'=>'good-message'));
             if ($this->Session->read('Auth.User.group_id') == 1) {
                 $this->redirect(array('controller' => 'admin'));
             }
