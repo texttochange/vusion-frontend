@@ -3,7 +3,8 @@ App::uses('ProgramSetting', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 
 
-class ProgramSettingTestCase extends CakeTestCase {
+class ProgramSettingTestCase extends CakeTestCase
+{
     
     protected $_config = array(
         'datasource' => 'Mongodb.MongodbSource',
@@ -16,20 +17,22 @@ class ProgramSettingTestCase extends CakeTestCase {
         'persistent' => true,
     );
 
-    public function setUp(){
+    
+    public function setUp()
+    {
         parent::setUp();
         
         $connections = ConnectionManager::enumConnectionObjects();
         
         if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
-            $config = new DATABASE_CONFIG();
+            $config        = new DATABASE_CONFIG();
             $this->_config = $config->test;
         }
         
         ConnectionManager::create('mongo_test', $this->_config);
         $this->Mongo = new MongodbSource($this->_config);
         
-        $options = array('database' => 'test');
+        $options              = array('database' => 'test');
         $this->ProgramSetting = new ProgramSetting($options);
     
         $this->ProgramSetting->setDataSource('mongo_test');
@@ -41,46 +44,40 @@ class ProgramSettingTestCase extends CakeTestCase {
         
     }
     
-    public function tearDown() {
+    
+    public function tearDown()
+    {
         unset($this->ProgramSetting);
         
         parent::tearDown();
     }
 
-    
-/**
- * Drop database
- *
- * @return void
- * @access public
- */
-    public function dropData() {
-        
+
+    public function dropData()
+    {        
         $this->ProgramSetting->deleteAll(true,false);
-
     }
 
     
-    public function testGetProgramSetting_notInDatabase() {
-         
-    	$result = $this->ProgramSetting->find('getProgramSetting', array(
-        	'key'=>'shortcode', 
-        	'value' => '8282'
-        	));
+    public function testGetProgramSetting_notInDatabase()
+    {         
+        $result = $this->ProgramSetting->find('getProgramSetting', array(
+            'key'=>'shortcode', 
+            'value' => '8282'
+            ));
         
-        $this->assertEquals(array(), $result);
-    
+        $this->assertEquals(array(), $result);    
     }
-
-    public function testGetProgramSetting_searchNullInDatabase() {
-         
-    	$result = $this->ProgramSetting->find('getProgramSetting', array(
-        	'key'=>'shortcode', 
-        	'value' => null
-        	));
-        
-        $this->assertEquals(array(), $result);
     
+
+    public function testGetProgramSetting_searchNullInDatabase()
+    {         
+        $result = $this->ProgramSetting->find('getProgramSetting', array(
+            'key'=>'shortcode', 
+            'value' => null
+            ));
+        
+        $this->assertEquals(array(), $result);    
     }
 
     

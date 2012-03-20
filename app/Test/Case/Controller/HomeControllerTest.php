@@ -8,37 +8,23 @@ App::uses('HomeController', 'Controller');
  */
 class TestHomeController extends HomeController
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
+
     public $autoRender = false;
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
-    public function redirect($url, $status = null, $exit = true) {
+
+    public function redirect($url, $status = null, $exit = true)
+    {
         $this->redirectUrl = $url;
     }
+    
 
 }
 
-/**
- * HomeController Test Case
- *
- */
+
 class HomeControllerTestCase extends ControllerTestCase
 {
-/**
- * Data
- *
- */
+
     
     var $programData = array(
             0 => array( 
@@ -51,11 +37,7 @@ class HomeControllerTestCase extends ControllerTestCase
                 )
             ));
     
-/**
- * Initialization methods
- *
- * @return void
- */
+
     public function setUp() 
     {
         parent::setUp();
@@ -77,6 +59,7 @@ class HomeControllerTestCase extends ControllerTestCase
     protected function instanciateScriptModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
+        
         $this->Home->Script = new Script($options);
     }
 
@@ -91,6 +74,7 @@ class HomeControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
 
+    
     protected function mockProgramAccess()
     {
         $Home = $this->generate('Home', array(
@@ -118,18 +102,16 @@ class HomeControllerTestCase extends ControllerTestCase
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls(
-            	    '4',
-            	    '2',
-            	    $this->programData[0]['Program']['database'], 
-            	    $this->programData[0]['Program']['name']
-            	    ));
+                '4',
+                '2',
+                $this->programData[0]['Program']['database'], 
+                $this->programData[0]['Program']['name']
+                ));
     }
 
 
-/**
- * Test methods
- *
- */
+    /** Test methods */
+
     public function testIndex_emptyProgram_asManager()
     {
         $this->mockProgramAccess();

@@ -2,20 +2,21 @@
 App::uses('Participant', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 
-class ParticipantTestCase extends CakeTestCase 
+class ParticipantTestCase extends CakeTestCase
 {
 
     protected $_config = array(
-    	    'datasource' => 'Mongodb.MongodbSource',
-    	    'host' => 'localhost',
-    	    'login' => '',
-    	    'password' => '',
-    	    'database' => 'test',
-    	    'port' => 27017,
-    	    'prefix' => '',
-    	    'persistent' => true,
-    	    );
+        'datasource' => 'Mongodb.MongodbSource',
+        'host' => 'localhost',
+        'login' => '',
+        'password' => '',
+        'database' => 'test',
+        'port' => 27017,
+        'prefix' => '',
+        'persistent' => true,
+        );
 
+    
     public function setUp()
     {
         parent::setUp();
@@ -23,14 +24,14 @@ class ParticipantTestCase extends CakeTestCase
         $connections = ConnectionManager::enumConnectionObjects();
         
         if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
-        	$config = new DATABASE_CONFIG();
-        	$this->_config = $config->test;
+            $config = new DATABASE_CONFIG();
+            $this->_config = $config->test;
         }
         
         ConnectionManager::create('mongo_test', $this->_config);
         $this->Mongo = new MongodbSource($this->_config);
 
-        $option = array('database'=>'test');
+        $option            = array('database'=>'test');
         $this->Participant = new Participant($option);
 
         $this->Participant->setDataSource('mongo_test');
@@ -56,9 +57,9 @@ class ParticipantTestCase extends CakeTestCase
     {
         //1st assertion phone is already a string
         $participant = array(
-        	'phone' => '788601462',
-        	'name' => 'Oliv'
-        	);
+            'phone' => '788601462',
+            'name' => 'Oliv'
+            );
         $this->Participant->create();
 
         $savedParticipant = $this->Participant->save($participant);
@@ -67,17 +68,15 @@ class ParticipantTestCase extends CakeTestCase
 
         //2nd assertion phone is a number
         $participant = array(
-        	'phone' => 788601463,
-        	'name' => 'Oliv'
-        	);
+            'phone' => 788601463,
+            'name' => 'Oliv'
+            );
         $this->Participant->create();
 
         $savedParticipant = $this->Participant->save($participant);
 
         $this->assertTrue(is_string($savedParticipant['Participant']['phone']));
     }
-
-
 
 
 }

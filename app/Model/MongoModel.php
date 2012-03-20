@@ -2,21 +2,24 @@
 App::uses('Model', 'Model');
 App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
 
-class MongoModel extends Model {
+class MongoModel extends Model
+{
+    
     var $specific = false;
+    
 
-    public function __construct($id = false, $table = null, $ds = null) {
-    	//echo "Construct Model -";
-    	//print_r($id);
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        //echo "Construct Model -";
+        //print_r($id);
         if ($this->specific) {
             // Get saved company/database name
             if (isset($id['database']) and $id['database']) {
-            	    $dbName = $id['database'];
+                    $dbName = $id['database'];
             } else {
-            	    $dbName = 'test';
+                    $dbName = 'test';
             }
-
-            	   
+      
             // Get common company-specific config (default settings in database.php)
             //$mongodb = new MongodbSource();
             
@@ -33,5 +36,7 @@ class MongoModel extends Model {
         }
         parent::__construct($id, $table, $ds);
     }
+    
 
-}?> 
+}
+?> 
