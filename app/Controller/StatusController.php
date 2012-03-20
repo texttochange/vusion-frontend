@@ -41,8 +41,8 @@ class StatusController extends AppController
         //Configure::write('debug',0);
         
         $data = $this->ParticipantsState->find('all', array(
-        	'fields' => array('participant-phone','message-type','message-status','message-content','timestamp')
-        	));
+            'fields' => array('participant-phone','message-type','message-status','message-content','timestamp')
+            ));
         // Make the data available to the view (and the resulting CSV file)
         $this->set(compact('data'));
     }

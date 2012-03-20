@@ -4,28 +4,14 @@ App::uses('StatusController', 'Controller');
 App::uses('Program', 'Model');
 
 
-/**
- * TestStatusControllerController *
- */
 class TestStatusController extends StatusController
 {
-/**
- * Auto render
- *
- * @var boolean
- */
+
     public $autoRender = false;
 
 
-/**
- * Redirect action
- *
- * @param mixed $url
- * @param mixed $status
- * @param boolean $exit
- * @return void
- */
-    public function redirect($url, $status = null, $exit = true) {
+    public function redirect($url, $status = null, $exit = true)
+    {
         $this->redirectUrl = $url;
     }
 
@@ -33,17 +19,10 @@ class TestStatusController extends StatusController
 }
 
 
-/**
- * StatusController Test Case
- *
- */
 class StatusControllerTestCase extends ControllerTestCase
 {
 
-/**
- * Data
- *
- */    
+
     var $programData = array(
             0 => array( 
                 'Program' => array(
@@ -56,10 +35,6 @@ class StatusControllerTestCase extends ControllerTestCase
             ));
     
 
-/**
- * setUp methods
- *
- */
     public function setUp()
     {
         parent::setUp();
@@ -82,7 +57,7 @@ class StatusControllerTestCase extends ControllerTestCase
 
     protected function instanciateParticipantsStateModel()
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);
+        $options                         = array('database' => $this->programData[0]['Program']['database']);
         $this->Status->ParticipantsState = new ParticipantsState($options);
     }
 
