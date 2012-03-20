@@ -70,6 +70,7 @@
 	Router::mapResources('Status', array('prefix' => '/:program/'));
 	Router::mapResources('Programs');
 	Router::parseExtensions('json');
+	Router::parseExtensions('csv');
 	
 /**
 *  route for static controllers

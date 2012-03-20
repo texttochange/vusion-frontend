@@ -22,6 +22,9 @@
 	<?php endforeach; ?>
 	</table>
 	<p>
+	<?php echo $this->Html->link('Export Program History', array('program' => $programUrl, 'controller' => 'status', 'action' => 'export.csv'), array('class' => 'ttc-button')); ?>
+	</p>
+	<p>
 	<?php
 	echo $this->Paginator->counter(array(
 	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')

@@ -30,8 +30,21 @@ class StatusController extends AppController
     {
         parent::constructClasses();
         
-        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->ParticipantsState = new ParticipantsState($options);
+    }
+    
+    
+    public function export()
+    {        
+        // Stop Cake from displaying action's execution time
+        //Configure::write('debug',0);
+        
+        $data = $this->ParticipantsState->find('all', array(
+        	'fields' => array('participant-phone','message-type','message-status','message-content','timestamp')
+        	));
+        // Make the data available to the view (and the resulting CSV file)
+        $this->set(compact('data'));
     }
 
 
