@@ -1,17 +1,15 @@
 Vusion Frontend 
 ===============
 
-Introduction
-------------
-Vusion Frontend is build with CakePHP2.0.5. It doesn't work on his own but need the _Vusion Backend: https://github.com/texttochange/vusion-backend 
+Vusion Frontend is build with CakePHP2.0.5. It doesn't work on his own but need the Vusion Backend: https://github.com/texttochange/vusion-backend 
 
 Installation
 ------------
 ::
-       $ git clone <this repository>
-       //Vusion has a submodule for MongoDB connection
-       $ git submodule init
-       $git submodule update
+
+	$ git clone <this repository>
+	$ git submodule init
+	$git submodule update
 
 Web Server Configuration
 ------------------------
