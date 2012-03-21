@@ -84,9 +84,9 @@ class ProgramsController extends AppController
             $this->Program->create();
             if ($this->Program->save($this->request->data)) {
                 $this->Session->setFlash(__('The program has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
@@ -110,9 +110,9 @@ class ProgramsController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Program->save($this->request->data)) {
                 $this->Session->setFlash(__('The program has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
@@ -140,9 +140,9 @@ class ProgramsController extends AppController
         }
         if ($this->Program->delete()) {
             $this->Session->setFlash(__('Program deleted'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                'default',
+                array('class'=>'good-message')
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Program was not deleted'));

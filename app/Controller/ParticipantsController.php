@@ -41,9 +41,9 @@ class ParticipantsController extends AppController
             $this->Participant->create();
             if ($this->Participant->save($this->request->data)) {
                 $this->Session->setFlash(__('The participant has been saved.'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array(
                     'program' => $programUrl,  
                     'controller' => 'participants',
@@ -68,9 +68,9 @@ class ParticipantsController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Participant->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('program' => $programUrl, 'controller'=>'participants', 'action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
@@ -95,9 +95,9 @@ class ParticipantsController extends AppController
         }
         if ($this->Participant->delete()) {
             $this->Session->setFlash(__('Participant deleted'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                'default',
+                array('class'=>'good-message')
+                );
             $this->redirect(array('program' => $programUrl,
                 'controller' => 'participants',
                 'action' => 'index'

@@ -49,9 +49,9 @@ class ProgramsUsersController extends AppController
             $this->ProgramsUser->create();
             if ($this->ProgramsUser->save($this->request->data)) {
                 $this->Session->setFlash(__('The programs user has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The programs user could not be saved. Please, try again.'));
@@ -77,9 +77,9 @@ class ProgramsUsersController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->ProgramsUser->save($this->request->data)) {
                 $this->Session->setFlash(__('The programs user has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The programs user could not be saved. Please, try again.'));
@@ -109,9 +109,9 @@ class ProgramsUsersController extends AppController
         }
         if ($this->ProgramsUser->delete()) {
             $this->Session->setFlash(__('Programs user deleted'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                'default',
+                array('class'=>'good-message')
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Programs user was not deleted'));

@@ -53,9 +53,9 @@ class GroupsController extends AppController
             $this->Group->create();
             if ($this->Group->save($this->request->data)) {
                 $this->Session->setFlash(__('The group has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The group could not be saved. Please, try again.'));
@@ -79,9 +79,9 @@ class GroupsController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Group->save($this->request->data)) {
                 $this->Session->setFlash(__('The group has been saved'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                    'default',
+                    array('class'=>'good-message')
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The group could not be saved. Please, try again.'));
@@ -109,9 +109,9 @@ class GroupsController extends AppController
         }
         if ($this->Group->delete()) {
             $this->Session->setFlash(__('Group deleted'),
-                        'default',
-                        array('class'=>'good-message')
-                        );
+                'default',
+                array('class'=>'good-message')
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Group was not deleted'));
