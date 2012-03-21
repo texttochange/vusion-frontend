@@ -60,7 +60,7 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved'));
+                $this->Session->setFlash(__('The user has been saved'), 'default', array('class'=>'good-message'));
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
@@ -86,7 +86,7 @@ class UsersController extends AppController
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved'));
+                $this->Session->setFlash(__('The user has been saved'), 'default', array('class'=>'good-message'));
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
@@ -116,7 +116,7 @@ class UsersController extends AppController
             throw new NotFoundException(__('Invalid user'));
         }
         if ($this->User->delete()) {
-            $this->Session->setFlash(__('User deleted'));
+            $this->Session->setFlash(__('User deleted'), 'default', array('class'=>'good-message'));
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('User was not deleted'));
@@ -142,7 +142,7 @@ class UsersController extends AppController
 
     public function logout()
     {
-        $this->Session->setFlash(__('Good-Bye'));
+        $this->Session->setFlash(__('Good-Bye'), 'default', array('class'=>'good-message'));
         $this->redirect($this->Auth->logout());
     }
     
@@ -166,7 +166,7 @@ class UsersController extends AppController
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
-                    $this->Session->setFlash(__('Password changed successfully.'));
+                    $this->Session->setFlash(__('Password changed successfully.'), 'default', array('class'=>'good-message'));
                     $this->redirect(array('action' => 'view', $id));
                 } else {
                     $this->Session->setFlash(__('Password saving failed.'));
