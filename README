@@ -1,15 +1,18 @@
 Vusion Frontend is build with CakePHP2.0.5.
+======
 
-Installation:
-1) "$git clone <this repository>"
-//Vusion has a submodule for MongoDB connection
-2) "$git submodule init"
-3) "$git submodule update"
+Installation
+------------
+::
+       $ git clone <this repository>
+       //Vusion has a submodule for MongoDB connection
+       $ git submodule init
+       $git submodule update
 
-Web Server Configuration:
+Web Server Configuration
+------------------------
 You need to configure you webserver with the DocumentRoot pointing at the app/ folder.
 
-Cache files:
 Create the cache file as
 app/
     tmp/
@@ -23,7 +26,8 @@ app/
 Then make those file writable by the webserver. 
 Under ubuntu: sudo chmod -R 777 app/tmp   
 
-Databases:
+Databases
+---------
 Vusion is using 2 database engines. 
 The first one is the Relational Database for authentication, Access Control List, User management. The default relational database is PostGres, but anyother can be used by modifying app/config/database.php. 
 The second one is the Document Database MongoDB for the business data.
@@ -33,23 +37,26 @@ Relational Database Configuration:
 You can create the relational database schema from file app/Config/Schema/schema.php with the cake console 
 ./lib/Cake/Console/cake schema create
 
-PHP Modules:
+PHP Modules
+-----------
 Modules need to be install and configure in PHP 
 - (installation of MongoDB PHP Driver) http://php.net/manual/en/mongo.installation.php
 - (php command line)
 
-JAVA:
-To run the different build task from build.xml, you need to install
-- jdk6 or higher
-- ant
-
-PHP Modules (for development only) 
+Development PHP Modules
+----------------------- 
 - Pear
 - PHPUnit
 - XDebug
 - Mongo (in php.ini of cli tool if you want to run the test in command line)
--phploc (https://github.com/sebastianbergmann/phploc)
--pdepend (http://pear.pdepend.org/)
--phpmd (http://pear.phpmd.org/)
--phpcpd (https://github.com/sebastianbergmann/phpcpd)
--phpdoc (http://sourceforge.net/projects/phpdocu/files/)
+- phploc (https://github.com/sebastianbergmann/phploc)
+- pdepend (http://pear.pdepend.org/)
+- phpmd (http://pear.phpmd.org/)
+- phpcpd (https://github.com/sebastianbergmann/phpcpd)
+- phpdoc (http://sourceforge.net/projects/phpdocu/files/)
+
+Jenkins
+-------
+To run the different build task from build.xml, you need to install
+- jdk6 or higher
+- ant
