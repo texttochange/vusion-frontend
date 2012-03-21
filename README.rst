@@ -9,21 +9,21 @@ Installation
 
 	$ git clone <this repository>
 	$ git submodule init
-	$git submodule update
+	$ git submodule update
 
 Web Server Configuration
 ------------------------
 You need to configure you webserver with the DocumentRoot pointing at the app/ folder.
 
 Create the cache file as
-app/
-    tmp/
-    	cache/
-    		models/
-    		persistent/
-        logs/
-	session/
-	tests/
+	app/
+		tmp/
+		cache/
+    			models/
+    			persistent/
+    		logs/
+    		session/
+    		tests/
 
 Then make those file writable by the webserver. 
 Under ubuntu: sudo chmod -R 777 app/tmp   
