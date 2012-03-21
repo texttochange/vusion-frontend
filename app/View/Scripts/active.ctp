@@ -1,5 +1,5 @@
+<div id="flashMessage" class="ajax-flash-message"> </div>
 <div>
-	<div id="flashMessage"> </div>
 	
 <div class="index">
 	<h3><?php echo __('Script'); ?></h3>

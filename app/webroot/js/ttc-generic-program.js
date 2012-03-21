@@ -154,9 +154,14 @@ function saveFormOnServer(){
 		dataType: 'json', 
 		success: function(data) {
 			var response = $.parseJSON(data);
-			$("#flashMessage").text('The script has been saved as draft, wait for redirection');
-			//$("#flashMessage").attr('class', 'message');
-			setTimeout( function() { window.location.href = "draft"}, 3000);
+			if (location.href.indexOf("draft")<0){
+				$("#flashMessage").text('The script has been saved as draft, wait for redirection');
+				//$("#flashMessage").attr('class', 'message');
+				setTimeout( function() { window.location.replace("draft")}, 3000);
+			} else {
+				$("#flashMessage").text('The script has been saved');
+				setTimeout( function() { $("#flashMessage").text('')} , 3000)
+			}
 		}
 	});
 }
