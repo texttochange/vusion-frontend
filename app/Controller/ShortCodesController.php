@@ -47,7 +47,10 @@ class ShortCodesController extends AppController
         if ($this->request->is('post')) {
             $this->ShortCode->create();
             if ($this->ShortCode->save($this->request->data)) {
-                $this->Session->setFlash(__('The shortcode has been saved.'), 'default', array('class'=>'good-message'));
+                $this->Session->setFlash(__('The shortcode has been saved.'),
+                        'default',
+                        array('class'=>'good-message')
+                        );
                 $this->redirect(array(
                     'controller' => 'shortCodes',
                     'action' => 'add'
@@ -71,7 +74,10 @@ class ShortCodesController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->ShortCode->save($this->request->data)) {
                 $shortcode = $this->request->data;
-                $this->Session->setFlash(__('The shortcode has been saved'), 'default', array('class'=>'good-message'));
+                $this->Session->setFlash(__('The shortcode has been saved'),
+                        'default',
+                        array('class'=>'good-message')
+                        );
                 $this->redirect(array('controller' => 'shortCodes',
                     'action' => 'index'
                     ));
@@ -97,7 +103,10 @@ class ShortCodesController extends AppController
             throw new NotFoundException(__('Invalid shortcode') . $id);
         }
         if ($this->ShortCode->delete()) {
-            $this->Session->setFlash(__('ShortCode deleted'), 'default', array('class'=>'good-message'));
+            $this->Session->setFlash(__('ShortCode deleted'),
+                        'default',
+                        array('class'=>'good-message')
+                        );
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
