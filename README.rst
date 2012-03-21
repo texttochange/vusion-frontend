@@ -43,12 +43,13 @@ You can create the relational database schema from file app/Config/Schema/schema
 
 PHP Modules
 -----------
-Modules need to be install and configure in PHP 
-- (installation of MongoDB PHP Driver) http://php.net/manual/en/mongo.installation.php
-- (php command line)
+Modules need to be install and configure in PHP
+ 
+- MongoDB PHP Driver: http://php.net/manual/en/mongo.installation.php
 
 Development PHP Modules
 ----------------------- 
+
 - Pear
 - PHPUnit
 - XDebug
@@ -62,5 +63,6 @@ Development PHP Modules
 Jenkins
 -------
 To run the different build task from build.xml, you need to install
-- jdk6 or higher
-- ant
+
+- Jdk6 or higher
+- Ant
