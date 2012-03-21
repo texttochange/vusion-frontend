@@ -1,5 +1,9 @@
-Vusion Frontend is build with CakePHP2.0.5.
-======
+Vusion Frontend 
+===============
+
+Introduction
+------------
+Vusion Frontend is build with CakePHP2.0.5. It doesn't work on his own but need the _Vusion Backend: https://github.com/texttochange/vusion-backend 
 
 Installation
 ------------
