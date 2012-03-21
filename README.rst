@@ -16,6 +16,8 @@ Web Server Configuration
 You need to configure you webserver with the DocumentRoot pointing at the app/ folder.
 
 Create the cache file as
+::
+
 	app/
 		tmp/
 		cache/
