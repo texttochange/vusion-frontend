@@ -1,24 +1,20 @@
 <?php
-
 App::uses('VumiSupervisord','Lib');
-
 
 
 class VumiSupervisordComponent extends Component
 {
 
     public function __construct(ComponentCollection $collection, $settings = array()) {
-		//$this->_controller = $collection->getController();
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');    	
-		parent::__construct($collection, $settings);
+        //$this->_controller = $collection->getController();
+        require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');        
+        parent::__construct($collection, $settings);
     }
 
    
     function getState()
     {
-   
-    	
-        //require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');    	
+        //require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');        
     
         $f=new xmlrpcmsg('supervisor.getState');
         $c=new xmlrpc_client("/RPC2", "localhost",9010);
@@ -42,7 +38,8 @@ class VumiSupervisordComponent extends Component
     }
 
 
-    function getWorkerInfo($name) {
+    function getWorkerInfo($name)
+    {
         require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
    
         $val = array(new xmlrpcval('echo_worker:'.$name));     
@@ -66,7 +63,8 @@ class VumiSupervisordComponent extends Component
     }
 
 
-    function startWorker($worker_name){
+    function startWorker($worker_name)
+    {
         require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
         
         $c = new xmlrpc_client("/RPC2", "localhost",9010);
@@ -99,7 +97,7 @@ class VumiSupervisordComponent extends Component
         
         if(!$r->faultCode())
         {
-        	return array(
+            return array(
                     'running' => true,
                     );
                     
@@ -113,7 +111,8 @@ class VumiSupervisordComponent extends Component
     }
 
 
-    function removeWorker($name){
+    function removeWorker($name)
+    {
         require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
         
         $c=new xmlrpc_client("/RPC2", "localhost",9010);
@@ -130,16 +129,16 @@ class VumiSupervisordComponent extends Component
         if(!$r->faultCode())
         {
             return array(
-            	    'removed' => true
-            	    );
+                    'removed' => true
+                    );
         }
         else
         {
             return array(
-            	    'removed' => false,
-            	    'error_code' => htmlspecialchars($r->faultCode()),
-            	    'msg' => htmlspecialchars($r->faultString())
-            	    );
+                    'removed' => false,
+                    'error_code' => htmlspecialchars($r->faultCode()),
+                    'msg' => htmlspecialchars($r->faultString())
+                    );
         }
     }
 
