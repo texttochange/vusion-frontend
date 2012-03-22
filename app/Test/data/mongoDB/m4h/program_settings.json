@@ -1,0 +1,3 @@
+{ "_id" : { "$oid" : "4f6b218d9fa4da320e000000" }, "key" : "shortcode", "value" : "8282", "modified" : { "$date" : 1332421005637 }, "created" : { "$date" : 1332421005637 } }
+{ "_id" : { "$oid" : "4f6b218d9fa4da320e000001" }, "key" : "internationalprefix", "value" : "256", "modified" : { "$date" : 1332421005644 }, "created" : { "$date" : 1332421005645 } }
+{ "_id" : { "$oid" : "4f6b218d9fa4da320e000002" }, "key" : "timezone", "value" : "Africa/Kampala", "modified" : { "$date" : 1332421005649 }, "created" : { "$date" : 1332421005650 } }
