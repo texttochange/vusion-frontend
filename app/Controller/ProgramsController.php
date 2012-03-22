@@ -86,7 +86,7 @@ class ProgramsController extends AppController
                 $this->Session->setFlash(__('The program has been saved'),
                     'default',
                     array('class'=>'good-message')
-                    );
+                );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
@@ -112,7 +112,7 @@ class ProgramsController extends AppController
                 $this->Session->setFlash(__('The program has been saved'),
                     'default',
                     array('class'=>'good-message')
-                    );
+                );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
@@ -142,7 +142,7 @@ class ProgramsController extends AppController
             $this->Session->setFlash(__('Program deleted'),
                 'default',
                 array('class'=>'good-message')
-                );
+            );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Program was not deleted'));
