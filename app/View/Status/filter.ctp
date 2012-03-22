@@ -2,21 +2,7 @@
 	
 <div class="status index">
 	<h3><?php echo __('Program History'); ?></h3>
-	<table cellpadding="0" cellspacing="0">
-	<tr>
-                        <th>
-                        <?php echo $this->Form->create(null, array(
-                           'url' => array('program' => $programUrl, 'controller' => 'status', 'action' => 'filter'))
-                           ); ?>
-                        <?php echo $this->Html->tag('label',__('Filter')); ?>
-                        <?php
-                           $options = array(); 
-                           $options['non_matching_answers'] = "non_matching_answers";
-                        ?>
-	                <?php echo $this->Form->select('filter', $options, array('id'=> 'filter')); ?>
-	                <?php echo $this->Form->end(__('Submit'));?>
-	                </th>
-	</tr>
+	<table cellpadding="0" cellspacing="0">	
 	<tr>
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('type', null, array('url'=> array('program' => $programUrl)));?></th>
@@ -25,7 +11,7 @@
 			<th><?php echo $this->Paginator->sort('time', null, array('url'=> array('program' => $programUrl)));?></th>
 	</tr>
 	<?php
-	foreach ($statuses as $status): ?>
+	foreach ($newStatuses as $status): ?>
 	<tr>
 		<td><?php echo h($status['ParticipantsState']['participant-phone']); ?>&nbsp;</td>
 		<td><?php echo h($status['ParticipantsState']['message-type']); ?>&nbsp;</td>
