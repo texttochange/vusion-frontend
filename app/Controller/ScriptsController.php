@@ -141,7 +141,12 @@ class ScriptsController extends AppController
     public function validateKeyword()
     {       
         $keywordToValidate = $this->request->data['keyword'];
-        $programs          = $this->Program->find('all');
+        $programs          = $this->Program->find(
+        	'all', 
+        	array('conditions'=> 
+        		array('Program.url !='=> $this->params['program'])
+        		)
+        	);
         $programSetting    = new ProgramSetting(
             array('database'=>($this->Session->read($this->params['program']."_db")))
             );
