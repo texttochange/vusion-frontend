@@ -73,7 +73,7 @@ class Script extends MongoModel
             foreach ($results[0]['Script']['script']['dialogues'] as $dialogue) {
                 foreach ($dialogue['interactions'] as $interaction) {
                     if ($interaction['type-interaction']=='question-answer'
-                    	    and $interaction['keyword'] == $query['keyword'])
+                    	    and strtolower($interaction['keyword']) == strtolower($query['keyword']))
                         return $results;
                 }
             }
