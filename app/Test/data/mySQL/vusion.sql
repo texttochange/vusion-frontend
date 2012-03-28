@@ -19,7 +19,7 @@
 -- Current Database: `vusion`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `vusion` /*!40100 DEFAULT CHARACTER SET utf8 */;
+/*CREATE DATABASE IF NOT EXISTS `vusion` !40100 DEFAULT CHARACTER SET utf8 */
 
 USE `vusion`;
 
@@ -39,7 +39,7 @@ CREATE TABLE `acos` (
   `lft` int(11) DEFAULT NULL,
   `rght` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=94 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `acos` (
 
 LOCK TABLES `acos` WRITE;
 /*!40000 ALTER TABLE `acos` DISABLE KEYS */;
-INSERT INTO `acos` VALUES (31,28,'',0,'add',47,48),(3,2,'',0,'index',3,4),(4,2,'',0,'view',5,6),(32,28,'',0,'edit',49,50),(5,2,'',0,'add',7,8),(6,2,'',0,'edit',9,10),(2,1,'',0,'Groups',2,13),(7,2,'',0,'delete',11,12),(33,28,'',0,'delete',51,52),(8,1,'',0,'Home',14,17),(9,8,'',0,'index',15,16),(34,28,'',0,'login',53,54),(43,42,'',0,'index',83,84),(35,28,'',0,'logout',55,56),(45,42,'',0,'add',85,86),(17,16,'',0,'index',19,20),(18,16,'',0,'view',21,22),(38,1,'',0,'Participants',66,81),(19,16,'',0,'add',23,24),(52,38,'',0,'view',75,76),(20,16,'',0,'edit',25,26),(16,1,'',0,'Programs',18,29),(21,16,'',0,'delete',27,28),(23,22,'',0,'index',31,32),(24,22,'',0,'view',33,34),(25,22,'',0,'add',35,36),(53,42,'',0,'draft',87,88),(26,22,'',0,'edit',37,38),(22,1,'',0,'ProgramsUsers',30,41),(27,22,'',0,'delete',39,40),(29,28,'',0,'index',43,44),(30,28,'',0,'view',45,46),(54,42,'',0,'active',89,90),(28,1,'',0,'Users',42,61),(36,1,'',0,'AclExtras',62,63),(37,1,'',0,'Mongodb',64,65),(39,38,'',0,'index',67,68),(42,1,'',0,'Scripts',82,95),(44,28,'',0,'initDB',57,58),(47,46,'',0,'index',97,98),(1,0,'',0,'controllers',1,124),(46,1,'',0,'Status',96,101),(49,38,'',0,'add',69,70),(50,38,'',0,'edit',71,72),(51,38,'',0,'delete',73,74),(56,38,NULL,NULL,'import',77,78),(72,59,NULL,NULL,'index',105,106),(58,38,NULL,NULL,'checkPhoneNumber',79,80),(59,1,NULL,NULL,'ProgramSettings',102,109),(60,59,NULL,NULL,'edit',103,104),(61,1,NULL,NULL,'ShortCodes',110,119),(62,61,NULL,NULL,'index',111,112),(63,61,NULL,NULL,'add',113,114),(64,61,NULL,NULL,'edit',115,116),(65,61,NULL,NULL,'delete',117,118),(66,28,NULL,NULL,'changePassword',59,60),(67,42,NULL,NULL,'activateDraft',91,92),(68,42,NULL,NULL,'validateKeyword',93,94),(69,1,NULL,NULL,'Admin',120,123),(70,69,NULL,NULL,'index',121,122),(71,46,NULL,NULL,'export',99,100),(73,59,NULL,NULL,'view',107,108);
+INSERT INTO `acos` VALUES (31,28,'',0,'add',43,44),(3,2,'',0,'index',3,4),(4,2,'',0,'view',5,6),(32,28,'',0,'edit',45,46),(5,2,'',0,'add',7,8),(6,2,'',0,'edit',9,10),(2,1,'',0,'Groups',2,13),(7,2,'',0,'delete',11,12),(33,28,'',0,'delete',47,48),(34,28,'',0,'login',49,50),(35,28,'',0,'logout',51,52),(17,16,'',0,'index',15,16),(18,16,'',0,'view',17,18),(19,16,'',0,'add',19,20),(20,16,'',0,'edit',21,22),(16,1,'',0,'Programs',14,25),(21,16,'',0,'delete',23,24),(23,22,'',0,'index',27,28),(24,22,'',0,'view',29,30),(25,22,'',0,'add',31,32),(26,22,'',0,'edit',33,34),(22,1,'',0,'ProgramsUsers',26,37),(27,22,'',0,'delete',35,36),(29,28,'',0,'index',39,40),(30,28,'',0,'view',41,42),(28,1,'',0,'Users',38,57),(36,1,'',0,'AclExtras',58,59),(37,1,'',0,'Mongodb',60,61),(44,28,'',0,'initDB',53,54),(1,0,'',0,'controllers',1,124),(72,59,NULL,NULL,'index',65,66),(59,1,NULL,NULL,'ProgramSettings',62,69),(60,59,NULL,NULL,'edit',63,64),(61,1,NULL,NULL,'ShortCodes',70,79),(62,61,NULL,NULL,'index',71,72),(63,61,NULL,NULL,'add',73,74),(64,61,NULL,NULL,'edit',75,76),(65,61,NULL,NULL,'delete',77,78),(66,28,NULL,NULL,'changePassword',55,56),(69,1,NULL,NULL,'Admin',80,83),(70,69,NULL,NULL,'index',81,82),(73,59,NULL,NULL,'view',67,68),(74,1,NULL,NULL,'ProgramHistory',84,89),(75,74,NULL,NULL,'index',85,86),(76,74,NULL,NULL,'export',87,88),(77,1,NULL,NULL,'ProgramHome',90,93),(78,77,NULL,NULL,'index',91,92),(79,1,NULL,NULL,'ProgramParticipants',94,109),(80,79,NULL,NULL,'index',95,96),(81,79,NULL,NULL,'add',97,98),(82,79,NULL,NULL,'edit',99,100),(83,79,NULL,NULL,'delete',101,102),(84,79,NULL,NULL,'view',103,104),(85,79,NULL,NULL,'import',105,106),(86,79,NULL,NULL,'checkPhoneNumber',107,108),(87,1,NULL,NULL,'ProgramScripts',110,123),(88,87,NULL,NULL,'index',111,112),(89,87,NULL,NULL,'add',113,114),(90,87,NULL,NULL,'draft',115,116),(91,87,NULL,NULL,'activateDraft',117,118),(92,87,NULL,NULL,'active',119,120),(93,87,NULL,NULL,'validateKeyword',121,122);
 /*!40000 ALTER TABLE `acos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +98,7 @@ CREATE TABLE `aros_acos` (
   `_delete` varchar(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `aro_aco_key` (`aro_id`,`aco_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=96 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `aros_acos` (
 
 LOCK TABLES `aros_acos` WRITE;
 /*!40000 ALTER TABLE `aros_acos` DISABLE KEYS */;
-INSERT INTO `aros_acos` VALUES (34,1,1,'1','1','1','1'),(35,5,1,'-1','-1','-1','-1'),(36,5,28,'1','1','1','1'),(37,5,16,'1','1','1','1'),(38,5,22,'1','1','1','1'),(39,5,8,'1','1','1','1'),(40,5,38,'1','1','1','1'),(41,5,42,'1','1','1','1'),(42,5,46,'1','1','1','1'),(43,6,1,'-1','-1','-1','-1'),(44,6,16,'1','1','1','1'),(45,6,8,'1','1','1','1'),(46,6,38,'1','1','1','1'),(47,6,42,'1','1','1','1'),(48,6,46,'1','1','1','1'),(49,7,1,'-1','-1','-1','-1'),(50,7,17,'1','1','1','1'),(51,7,18,'1','1','1','1'),(52,7,8,'1','1','1','1'),(53,7,50,'-1','-1','-1','-1'),(54,7,49,'-1','-1','-1','-1'),(55,7,39,'1','1','1','1'),(56,7,52,'1','1','1','1'),(57,7,46,'1','1','1','1'),(58,5,59,'1','1','1','1'),(59,5,61,'1','1','1','1'),(60,6,59,'1','1','1','1'),(61,6,61,'1','1','1','1');
+INSERT INTO `aros_acos` VALUES (65,1,1,'1','1','1','1'),(66,5,1,'-1','-1','-1','-1'),(67,5,28,'1','1','1','1'),(68,5,16,'1','1','1','1'),(69,5,22,'1','1','1','1'),(70,5,77,'1','1','1','1'),(71,5,79,'1','1','1','1'),(72,5,87,'1','1','1','1'),(73,5,74,'1','1','1','1'),(74,5,59,'1','1','1','1'),(75,5,61,'1','1','1','1'),(76,6,1,'-1','-1','-1','-1'),(77,6,16,'-1','-1','-1','-1'),(78,6,17,'1','1','1','1'),(79,6,77,'1','1','1','1'),(80,6,79,'1','1','1','1'),(81,6,87,'1','1','1','1'),(82,6,74,'1','1','1','1'),(83,6,59,'-1','-1','-1','-1'),(84,6,72,'1','1','1','1'),(85,6,73,'1','1','1','1'),(86,6,61,'1','1','1','1'),(87,7,1,'-1','-1','-1','-1'),(88,7,17,'1','1','1','1'),(89,7,18,'1','1','1','1'),(90,7,77,'1','1','1','1'),(91,7,82,'-1','-1','-1','-1'),(92,7,81,'-1','-1','-1','-1'),(93,7,80,'1','1','1','1'),(94,7,84,'1','1','1','1'),(95,7,74,'1','1','1','1');
 /*!40000 ALTER TABLE `aros_acos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-22 15:55:09
+-- Dump completed on 2012-03-28 17:19:53
