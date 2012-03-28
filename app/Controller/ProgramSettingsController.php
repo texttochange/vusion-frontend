@@ -77,7 +77,7 @@ class ProgramSettingsController extends AppController
                     $this->Session->setFlash("Program Settings saved",
                         'default',
                         array('class'=>'good-message')
-                        );
+                    );
                 }
             }
         }

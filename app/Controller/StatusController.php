@@ -2,6 +2,7 @@
 
 App::uses('AppController','Controller');
 App::uses('ParticipantsState','Model');
+App::uses('Script','Model');
 
 class StatusController extends AppController
 {
@@ -21,6 +22,13 @@ class StatusController extends AppController
 
     public function index()
     {
+        if (isset($this->params['url']['non_matching_answers'])) {
+            $script = $this->Script->find('active');
+            $this->paginate = array(
+                'scriptFilter',
+                'script' => $script
+                );
+        }
         $statuses = $this->paginate();
         $this->set(compact('statuses'));
     }
@@ -32,6 +40,7 @@ class StatusController extends AppController
         
         $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->ParticipantsState = new ParticipantsState($options);
+        $this->Script = new Script($options);
     }
     
     
@@ -46,6 +55,6 @@ class StatusController extends AppController
         // Make the data available to the view (and the resulting CSV file)
         $this->set(compact('data'));
     }
-
+    
 
 }

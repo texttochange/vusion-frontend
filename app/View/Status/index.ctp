@@ -4,6 +4,25 @@
 	<h3><?php echo __('Program History'); ?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
+                        <th class="ttc-filter">
+                        <?php
+                           echo $this->Form->create(null); 
+                        ?>
+                        <?php
+                           $options = array(); 
+                           $options['non_matching_answers'] = "non_matching_answers";
+                        ?>
+	                <?php
+	                   echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => '...Filter results...'));
+	                   $this->Js->get('#filter')->event('change', '
+	                   var baseUrl = "/'.$programUrl.'/status/index";
+	                   window.location.replace(baseUrl+"?"+$("select option:selected").text());
+	                   ');
+	                ?>
+	                <?php echo $this->Form->end(); ?>
+	                </th>
+	</tr>
+	<tr>
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('type', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('status', null, array('url'=> array('program' => $programUrl)));?></th>
@@ -44,3 +63,4 @@
 		<li><?php echo $this->Html->link('Export Program History', array('program' => $programUrl, 'controller' => 'status', 'action' => 'export.csv')); ?></li>
 	</ul>
 </div>	
+<?php echo $this->Js->writeBuffer(); ?>

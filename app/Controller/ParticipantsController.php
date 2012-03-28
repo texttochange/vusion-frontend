@@ -43,7 +43,7 @@ class ParticipantsController extends AppController
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
                     array('class'=>'good-message')
-                    );
+                );
                 $this->redirect(array(
                     'program' => $programUrl,  
                     'controller' => 'participants',
@@ -70,7 +70,7 @@ class ParticipantsController extends AppController
                 $this->Session->setFlash(__('The user has been saved'),
                     'default',
                     array('class'=>'good-message')
-                    );
+                );
                 $this->redirect(array('program' => $programUrl, 'controller'=>'participants', 'action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
@@ -97,7 +97,7 @@ class ParticipantsController extends AppController
             $this->Session->setFlash(__('Participant deleted'),
                 'default',
                 array('class'=>'good-message')
-                );
+            );
             $this->redirect(array('program' => $programUrl,
                 'controller' => 'participants',
                 'action' => 'index'
