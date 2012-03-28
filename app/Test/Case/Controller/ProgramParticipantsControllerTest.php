@@ -1,8 +1,8 @@
 <?php
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
-App::uses('ParticipantsController', 'Controller');
+App::uses('ProgramParticipantsController', 'Controller');
 
-class TestParticipantsController extends ParticipantsController 
+class TestProgramParticipantsController extends ProgramParticipantsController 
 {
 
     public $autoRender = false;
@@ -17,7 +17,7 @@ class TestParticipantsController extends ParticipantsController
 }
 
 
-class ParticipantsControllerTestCase extends ControllerTestCase 
+class ProgramParticipantsControllerTestCase extends ControllerTestCase 
 {
 
 
@@ -36,7 +36,7 @@ class ParticipantsControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
 
-        $this->Participants = new TestParticipantsController();
+        $this->Participants = new TestProgramParticipantsController();
         ClassRegistry::config(array('ds' => 'test'));
         
         $this->dropData();
@@ -71,7 +71,7 @@ class ParticipantsControllerTestCase extends ControllerTestCase
 
     public function mock_program_access()
     {
-        $Participants = $this->generate('Participants', array(
+        $Participants = $this->generate('ProgramParticipants', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')

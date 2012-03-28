@@ -9,7 +9,7 @@ App::uses('ProgramSetting','Model');
 App::uses('VumiSupervisord','Lib');
 
 
-class HomeController extends AppController
+class ProgramHomeController extends AppController
 {
 
     var $components = array('RequestHandler');

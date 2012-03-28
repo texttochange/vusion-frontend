@@ -8,7 +8,7 @@ App::uses('Program', 'Model');
 
 App::uses('ProgramSetting', 'Model');
 
-class ScriptsController extends AppController
+class ProgramScriptsController extends AppController
 {
 
     var $components = array('RequestHandler', 'Acl');

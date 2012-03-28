@@ -1,12 +1,12 @@
 <?php
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
-App::uses('HomeController', 'Controller');
+App::uses('ProgramHomeController', 'Controller');
 
 
 /**
  * TestScriptsControllerController *
  */
-class TestHomeController extends HomeController
+class TestProgramHomeController extends ProgramHomeController
 {
 
 
@@ -22,7 +22,7 @@ class TestHomeController extends HomeController
 }
 
 
-class HomeControllerTestCase extends ControllerTestCase
+class ProgramHomeControllerTestCase extends ControllerTestCase
 {
 
     
@@ -42,7 +42,7 @@ class HomeControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
 
-        $this->Home = new TestHomeController();
+        $this->Home = new TestProgramHomeController();
         
         $this->dropData();        
     }
@@ -77,7 +77,7 @@ class HomeControllerTestCase extends ControllerTestCase
     
     protected function mockProgramAccess()
     {
-        $Home = $this->generate('Home', array(
+        $Home = $this->generate('ProgramHome', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')

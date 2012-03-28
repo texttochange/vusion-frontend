@@ -1,10 +1,10 @@
 <?php
 
-App::uses('StatusController', 'Controller');
+App::uses('ProgramHistoryController', 'Controller');
 App::uses('Program', 'Model');
 
 
-class TestStatusController extends StatusController
+class TestProgramHistoryController extends ProgramHistoryController
 {
 
     public $autoRender = false;
@@ -19,7 +19,7 @@ class TestStatusController extends StatusController
 }
 
 
-class StatusControllerTestCase extends ControllerTestCase
+class ProgramHistoryControllerTestCase extends ControllerTestCase
 {
 
 
@@ -39,7 +39,7 @@ class StatusControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
 
-        $this->Status = new TestStatusController();
+        $this->Status = new TestProgramHistoryController();
         ClassRegistry::config(array('ds' => 'test'));
         
         $this->dropData();        
@@ -75,7 +75,7 @@ class StatusControllerTestCase extends ControllerTestCase
 
     protected function mockProgramAccess()
     {
-        $Status = $this->generate('Status', array(
+        $Status = $this->generate('ProgramHistory', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')

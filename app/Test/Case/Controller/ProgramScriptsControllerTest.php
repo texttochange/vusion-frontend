@@ -1,12 +1,12 @@
 <?php
-App::uses('ScriptsController', 'Controller');
+App::uses('ProgramScriptsController', 'Controller');
 App::uses('Program', 'Model');
 App::uses('ProgramSetting', 'Model');
 
 /**
- * TestScriptsControllerController *
+ * TestProgramScriptsControllerController *
  */
-class TestScriptsController extends ScriptsController
+class TestProgramScriptsController extends ProgramScriptsController
 {
 
     public $autoRender = false;
@@ -21,10 +21,10 @@ class TestScriptsController extends ScriptsController
 }
 
 /**
- * ScriptsController Test Case
+ * ProgramScriptsController Test Case
  *
  */
-class ScriptsControllerTestCase extends ControllerTestCase
+class ProgramScriptsControllerTestCase extends ControllerTestCase
 {
     /**
     * Data
@@ -60,7 +60,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
 
-        $this->Scripts = new TestScriptsController();
+        $this->Scripts = new TestProgramScriptsController();
         ClassRegistry::config(array('ds' => 'test'));
         
         $this->dropData();
@@ -104,7 +104,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
     protected function mockProgramAccess()
     {
         $scripts = $this->generate(
-            'Scripts', array(
+            'ProgramScripts', array(
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read')
@@ -309,7 +309,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
     public function testValidateKeyword_UsedInActiveScriptAndDraft_SameProgram()
     {
         $scripts = $this->generate(
-            'Scripts', array(
+            'ProgramScripts', array(
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read')

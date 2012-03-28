@@ -4,7 +4,7 @@ App::uses('AppController','Controller');
 App::uses('ParticipantsState','Model');
 App::uses('Script','Model');
 
-class StatusController extends AppController
+class ProgramHistoryController extends AppController
 {
 
     public $uses    = array('ParticipantsState');

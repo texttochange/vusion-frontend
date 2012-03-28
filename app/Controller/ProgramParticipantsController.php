@@ -4,7 +4,7 @@ App::uses('Participant','Model');
 App::uses('ParticipantsState', 'Model');
 
 
-class ParticipantsController extends AppController
+class ProgramParticipantsController extends AppController
 {
 
     
