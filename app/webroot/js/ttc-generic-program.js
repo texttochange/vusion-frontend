@@ -288,7 +288,7 @@ function duplicateKeywordValidation() {
 	var isKeywordUsedInSameScript = false;
 	$.each($("input[name*='keyword']"), function(index, element){
 			//alert("$this:"+$(keywordInput).val()+" and elt:"+$(element).val())
-			if ((!$(keywordInput).is(element)) && ($(keywordInput).val() == $(element).val()))
+			if ((!$(keywordInput).is(element)) && ($(keywordInput).val().toLowerCase() == $(element).val().toLowerCase()))
 			{
 				$(keywordInput).before("<p style='color:red'> already used by the same script in another question</p>");
 				isKeywordUsedInSameScript = true;

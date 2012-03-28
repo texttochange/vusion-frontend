@@ -2,10 +2,7 @@
 
 <project name="vusion-frontend" default="build">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,clearCache,initDb,phpunit,phpcb"/>
-
- <target name="build-parallel"
-   depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,caketest,webtest,phpcb"/>
 
  <target name="tools-parallel"
          description="Run tools in parallel">
@@ -135,7 +132,7 @@
   </exec>
  </target>
 
- <target name="clearCache"
+ <target name="clear-cache"
          description="Remove Cake Cache files">
  <delete>
   	<fileset dir="${basedir}/app/tmp/cache/models/" includes="*"/>
@@ -147,19 +144,31 @@
  </target>
  
  
- <target name="phpunit" description="Run unit tests with PHPUnit">
+ <target name="caketest" description="Run cake tests with PHPUnit" depends='clear-cache'>
  <exec executable="./lib/Cake/Console/cake" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="testsuite" />
          <arg value="--include-path"/>
          <arg path="${basedir}/lib"/>
+         <arg value="--configuration" />
+  	 <arg value="phpunit-caketest.xml" />
   	 <arg value="app" />
   	 <arg value="AllTests" />
   </exec>
  </target>
 
+ <target name="webtest" description="Run web test with PHPUnit" depends='init-db,clear-cache'>
+ <exec executable="phpunit" failonerror="true">
+ <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
+  	 <arg value="-c" />
+  	 <arg value="phpunit-webtest.xml" />
+  	 <arg value="webTest/" />
+  </exec>
+ </target>
+
+
  <target name="acl" description="Run AclExtras">
- <exec executable="./lib/Cake/Console/cake" failonerror="true">
+ <exec executable="./app/Console/cake" failonerror="true">
   	 <arg value="AclExtras.AclExtras" />
          <arg value="aco_sync" />
   </exec>
@@ -189,7 +198,7 @@
 </input>-->
 
 
-<target name="initDb"
+<target name="init-db"
           description="init the relational and mongo dbs">
   <exec executable="bash" inputstring="${password}" failonerror="true">
   <arg value="./app/Test/data/restore_data.sh"/>

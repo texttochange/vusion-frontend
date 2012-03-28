@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<phpunit stopOnFailure="false">
+
+<filter>
+    <whitelist>
+            <directory suffix=".php">webTest/</directory>
+    </whitelist>
+</filter>
+
+<logging>
+        <log type="junit" target="build/logs/junit-webtest.xml"/>
+</logging>
+
+</phpunit> 

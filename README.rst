@@ -45,7 +45,7 @@ PHP Modules
 -----------
 Modules need to be install and configure in PHP
  
-- MongoDB PHP Driver: http://php.net/manual/en/mongo.installation.php
+- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags)
 
 Development PHP Modules
 ----------------------- 
@@ -53,7 +53,7 @@ Development PHP Modules
 - Pear
 - PHPUnit
 - XDebug
-- Mongo (in php.ini of cli tool if you want to run the test in command line)
+- Mongo (https://github.com/ichikaway/cakephp-mongodb/tree/cake2.0)
 - phploc (https://github.com/sebastianbergmann/phploc)
 - pdepend (http://pear.pdepend.org/)
 - phpmd (http://pear.phpmd.org/)

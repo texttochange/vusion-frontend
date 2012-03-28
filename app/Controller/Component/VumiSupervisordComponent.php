@@ -1,5 +1,6 @@
 <?php
 App::uses('VumiSupervisord','Lib');
+App::uses('Component', 'Controller');
 
 
 class VumiSupervisordComponent extends Component

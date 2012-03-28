@@ -259,7 +259,7 @@ class ScriptsControllerTestCase extends ControllerTestCase
     {
 
     }
-    
+
 
     public function testValidateKeyword_UsedInOtherScriptWithSameShortcode()
     {    
@@ -292,7 +292,6 @@ class ScriptsControllerTestCase extends ControllerTestCase
                 )
             ); 
 
-
         $this->testAction(
             '/testurl/scripts/validateKeyword', array(
                 'method' => 'post',
@@ -303,6 +302,80 @@ class ScriptsControllerTestCase extends ControllerTestCase
         $this->assertEquals(0, $this->vars['result']['status']);
         $this->assertEquals('already used by: Test Name 2', $this->vars['result']['message']);
 
+        $otherProgramScriptModel->deleteAll(true, false);
+    }
+
+
+    public function testValidateKeyword_UsedInActiveScriptAndDraft_SameProgram()
+    {
+        $scripts = $this->generate(
+            'Scripts', array(
+                'components' => array(
+                    'Acl' => array('check'),
+                    'Session' => array('read')
+                    ),
+                'models' => array(
+                    'Program' => array('find', 'count'),
+                    'Group' => array()
+                    ),
+                )
+            );
+        
+        $scripts->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+        
+        $scripts->Program
+            ->expects($this->any())
+            ->method('find')
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->programData, 
+                    array(
+                        $this->otherProgramData[0])
+                    )
+                );
+            
+        $scripts->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will(
+                $this->onConsecutiveCalls(
+                    '4',
+                    '2',
+                    $this->programData[0]['Program']['database'], 
+                    $this->programData[0]['Program']['database'],
+                    $this->programData[0]['Program']['name']
+                    )
+                );
+
+        $otherProgramScriptModel = $this->instanciateScriptMultiModel('testdbprogram');
+        $otherProgramScriptModel->deleteAll(true, false);
+
+        $otherProgramScriptModel->create();
+        $otherProgramScriptModel->save($this->getOneScript('usedKeyword'));
+        $otherProgramScriptModel->makeDraftActive();
+
+        $programSettingModel = new ProgramSetting(
+        	array('database' => $this->programData[0]['Program']['database']));
+        $programSettingModel->deleteAll(true,false);
+        $programSettingModel->create();
+        $programSettingModel->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282'
+                )
+            );
+
+        $this->testAction(
+            '/testurl/scripts/validateKeyword', array(
+                'method' => 'post',
+                'data' => array('keyword' => 'usedKeyword')
+                )
+            );
+
+        $this->assertEquals(1, $this->vars['result']['status']);
     }
 
 
