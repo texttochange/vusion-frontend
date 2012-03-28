@@ -14,9 +14,9 @@
 		<td><?php echo h($participant['Participant']['phone']); ?>&nbsp;</td>
 		<td><?php echo h($participant['Participant']['name']); ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'view', $participant['Participant']['_id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'edit', $participant['Participant']['_id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'delete', $participant['Participant']['_id']), null, __('Are you sure you want to delete # %s?', $participant['Participant']['_id'])); ?>
+			<?php echo $this->Html->link(__('View'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); ?>
+			<?php echo $this->Html->link(__('Edit'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'edit', $participant['Participant']['_id'])); ?>
+			<?php echo $this->Form->postLink(__('Delete'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'delete', $participant['Participant']['_id']), null, __('Are you sure you want to delete # %s?', $participant['Participant']['_id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -40,10 +40,10 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Back To Program Home'),
-	                array('program'=> $programUrl,'controller' => 'home'));
+	                array('program'=> $programUrl,'controller' => 'programHome'));
                 ?></li>
-		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'import')); ?></li>
+		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
 		
 	</ul>
 </div>

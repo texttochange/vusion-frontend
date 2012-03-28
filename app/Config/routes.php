@@ -25,7 +25,7 @@
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
-	//Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+	//Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'programHome'));
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
@@ -34,7 +34,7 @@
 	Router::connect(
 		'/:program/:controller/:action/*',
 		array(
-			'controller' => 'home',
+			'controller' => 'programHome',
 			'action' => 'index'
 			),
 		array(
@@ -46,7 +46,7 @@
 	Router::connect(
 		'/:program/:controller',
 		array(
-			'controller' => 'home',
+			'controller' => 'programHome',
 			'action' => 'index'
 			),
 		array(
@@ -65,9 +65,9 @@
 	}
 
 
-	Router::mapResources('Scripts', array('prefix' => '/:program/'));
+	Router::mapResources('programScripts', array('prefix' => '/:program/'));
 	//Router::parseExtensions('json');
-	Router::mapResources('Status', array('prefix' => '/:program/'));
+	Router::mapResources('programHistory', array('prefix' => '/:program/'));
 	Router::mapResources('Programs');
 	Router::parseExtensions('json', 'csv');
 	
@@ -176,7 +176,7 @@
 	Router::connect(
 		'/:program/:controller/:action/:id',
 		array(
-			'controller' => 'home',
+			'controller' => 'programHome',
 			'action' => 'index'
 			),
 		array(
@@ -188,7 +188,7 @@
 	Router::connect(
 		'/:program/:controller/:action/*',
 		array(
-			'controller' => 'home',
+			'controller' => 'programHome',
 			'action' => 'index'
 			),
 		array(
@@ -199,7 +199,7 @@
 	Router::connect(
 		'/:program/:controller',
 		array(
-			'controller' => 'home',
+			'controller' => 'programHome',
 			'action' => 'index'
 			),
 		array(
@@ -210,7 +210,7 @@
 	Router::connect(
 		'/:program',
 		array(
-			'controller' => 'home',
+			'controller' => 'programHome',
 			'action' => 'index'
 			),
 		array(

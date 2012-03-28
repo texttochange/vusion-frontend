@@ -24,12 +24,12 @@ class ProgramHomeController extends AppController
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
                 ),
-            ), 'controllers/Scripts');
+            ), 'controllers/ProgramScripts');
         $isParticipantAdd = $this->Acl->check(array(
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
                 ),
-            ), 'controllers/Participants/add');
+            ), 'controllers/ProgramParticipants/add');
         $participantCount = $this->Participant->find('count');
         $statusCount      = $this->ParticipantsState->find('count');
         $schedules        = $this->Schedule->find('soon');

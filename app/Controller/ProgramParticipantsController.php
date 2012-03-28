@@ -7,6 +7,7 @@ App::uses('ParticipantsState', 'Model');
 class ProgramParticipantsController extends AppController
 {
 
+    public $uses = array('Participant', 'ParticipantsState');
     
     function constructClasses() 
     {
@@ -46,7 +47,7 @@ class ProgramParticipantsController extends AppController
                 );
                 $this->redirect(array(
                     'program' => $programUrl,  
-                    'controller' => 'participants',
+                    'controller' => 'programParticipants',
                     'action' => 'index'
                     ));
             } else {
@@ -99,13 +100,11 @@ class ProgramParticipantsController extends AppController
                 array('class'=>'good-message')
             );
             $this->redirect(array('program' => $programUrl,
-                'controller' => 'participants',
                 'action' => 'index'
                 ));
         }
         $this->Session->setFlash(__('Participant was not deleted'));
         $this->redirect(array('program' => $programUrl,
-                'controller' => 'participants',
                 'action' => 'index'
                 ));
     }

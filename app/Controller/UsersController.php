@@ -208,10 +208,10 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/Users');
         $this->Acl->allow($group, 'controllers/Programs');
         $this->Acl->allow($group, 'controllers/ProgramsUsers');
-        $this->Acl->allow($group, 'controllers/Home');
-        $this->Acl->allow($group, 'controllers/Participants');
-        $this->Acl->allow($group, 'controllers/Scripts');
-        $this->Acl->allow($group, 'controllers/Status');
+        $this->Acl->allow($group, 'controllers/ProgramHome');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants');
+        $this->Acl->allow($group, 'controllers/ProgramScripts');
+        $this->Acl->allow($group, 'controllers/ProgramHistory');
         $this->Acl->allow($group, 'controllers/ProgramSettings');
         $this->Acl->allow($group, 'controllers/ShortCodes');
         
@@ -222,10 +222,10 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/Programs/index');        
         //$this->Acl->allow($group, 'controllers/Users/login');
         //$this->Acl->allow($group, 'controllers/Users/logout');
-        $this->Acl->allow($group, 'controllers/Home');
-        $this->Acl->allow($group, 'controllers/Participants');
-        $this->Acl->allow($group, 'controllers/Scripts');
-        $this->Acl->allow($group, 'controllers/Status');
+        $this->Acl->allow($group, 'controllers/ProgramHome');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants');
+        $this->Acl->allow($group, 'controllers/ProgramScripts');
+        $this->Acl->allow($group, 'controllers/ProgramHistory');
         $this->Acl->deny($group, 'controllers/ProgramSettings');
         $this->Acl->allow($group, 'controllers/ProgramSettings/index');
         $this->Acl->allow($group, 'controllers/ProgramSettings/view');
@@ -238,13 +238,13 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/Programs/view');
         //$this->Acl->allow($group, 'controllers/Users/login');
         //$this->Acl->allow($group, 'controllers/Users/logout');
-        $this->Acl->allow($group, 'controllers/Home');
-        //$this->Acl->deny($group, 'controllers/Participants');
-        $this->Acl->deny($group, 'controllers/Participants/edit');
-        $this->Acl->deny($group, 'controllers/Participants/add');
-        $this->Acl->allow($group, 'controllers/Participants/index');
-        $this->Acl->allow($group, 'controllers/Participants/view');
-        $this->Acl->allow($group, 'controllers/Status');
+        $this->Acl->allow($group, 'controllers/ProgramHome');
+        //$this->Acl->deny($group, 'controllers/ProgramParticipants');
+        $this->Acl->deny($group, 'controllers/ProgramParticipants/edit');
+        $this->Acl->deny($group, 'controllers/ProgramParticipants/add');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants/index');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants/view');
+        $this->Acl->allow($group, 'controllers/ProgramHistory');
 
         echo 'AllDone';
         exit;

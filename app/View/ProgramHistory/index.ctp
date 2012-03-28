@@ -15,8 +15,7 @@
 	                <?php
 	                   echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => '...Filter results...'));
 	                   $this->Js->get('#filter')->event('change', '
-	                   var baseUrl = "/'.$programUrl.'/status/index";
-	                   window.location.replace(baseUrl+"?"+$("select option:selected").text());
+	                     window.location.search = "?"+$("select option:selected").text();
 	                   ');
 	                ?>
 	                <?php echo $this->Form->end(); ?>
@@ -25,7 +24,7 @@
 	<tr>
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('type', null, array('url'=> array('program' => $programUrl)));?></th>
-			<th><?php echo $this->Paginator->sort('status', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('programHistory', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('message', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('time', null, array('url'=> array('program' => $programUrl)));?></th>
 	</tr>
@@ -59,8 +58,8 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Back Homepage'), array('program'=>$programUrl,'controller'=>'home')); ?></li>
-		<li><?php echo $this->Html->link('Export Program History', array('program' => $programUrl, 'controller' => 'status', 'action' => 'export.csv')); ?></li>
+		<li><?php echo $this->Html->link(__('Back Homepage'), array('program'=>$programUrl,'controller'=>'programHome')); ?></li>
+		<li><?php echo $this->Html->link('Export Program History', array('program' => $programUrl, 'controller' => 'programHistory', 'action' => 'export.csv')); ?></li>
 	</ul>
 </div>	
 <?php echo $this->Js->writeBuffer(); ?>

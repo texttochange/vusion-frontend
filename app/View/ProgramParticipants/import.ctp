@@ -27,10 +27,10 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Back To Program Home'),
-	                array('program'=> $programUrl,'controller' => 'home'));
+	                array('program'=> $programUrl,'controller' => 'programHome'));
                 ?></li>
-                <li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'participants', 'action' => 'index'));?></li>
+                <li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'));?></li>
 	</ul>
 	
 </div>

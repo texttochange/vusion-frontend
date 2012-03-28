@@ -12,7 +12,7 @@
 		     if ($isScriptEdit) {
 		        echo $this->Html->link('Create script', 
 			    array('program' => $programUrl,
-			      'controller' => 'scripts',
+			      'controller' => 'programScripts',
 			      'action' => 'draft'
 			      ),
 			array('class' => 'ttc-button')
@@ -32,14 +32,14 @@
 			if ($isScriptEdit) {	
 			echo $this->Html->link('Edit draft', 
 				array('program' => $programUrl,
-				      'controller' => 'scripts',
+				      'controller' => 'programScripts',
 				      'action' => 'draft'
 				      ),
 				array('class' => 'ttc-button')
 				);
 			echo $this->Html->link('Activate draft', 
 				array('program' => $programUrl,
-				      'controller' => 'scripts',
+				      'controller' => 'programScripts',
 				      'action' => 'activateDraft'
 				      ),
 				array('class' => 'ttc-button')
@@ -67,7 +67,7 @@
 			if ($isScriptEdit) {
 			echo $this->Html->link('Edit script', 
 				array('program' => $programUrl,
-				      'controller' => 'scripts',
+				      'controller' => 'programScripts',
 				      'action' => 'active'
 				      ),
 				array('class' => 'ttc-button')
@@ -105,7 +105,7 @@
 	<?php if ($isParticipantAdd) { 
 		echo $this->Html->link('Add participant',
 			array('program' => $programUrl,
-				'controller' => 'participants',
+				'controller' => 'programParticipants',
 				'action' => 'add'
 				),
 			array('class' => 'ttc-button')
@@ -114,7 +114,7 @@
 	<?php if ($participantCount > 0) {
 		echo $this->Html->link('View participant(s)',
 			array('program' => $programUrl,
-				'controller' => 'participants', 
+				'controller' => 'programParticipants', 
 				),
 			array('class' => 'ttc-button')
 			);
@@ -122,7 +122,7 @@
 	<br /><br />
 	<?php echo $this->Html->link(__('Import Participant(s)'),
 			array('program'=> $programUrl, 
-	                'controller' => 'participants', 
+	                'controller' => 'programParticipants', 
                         'action' => 'import'),
                          array('class' => 'ttc-button')
                          );
@@ -136,7 +136,7 @@
 	<?php if ($statusCount > 0) {
 		echo $this->Html->link('View Program History',
 			array('program' => $programUrl,
-				'controller' => 'status', 
+				'controller' => 'programHistory', 
 				),
 			array('class' => 'ttc-button')
 			);

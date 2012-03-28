@@ -4,7 +4,7 @@ App::uses('ProgramHomeController', 'Controller');
 
 
 /**
- * TestScriptsControllerController *
+ * TestProgramScriptsControllerController *
  */
 class TestProgramHomeController extends ProgramHomeController
 {

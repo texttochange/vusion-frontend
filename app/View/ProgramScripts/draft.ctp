@@ -12,7 +12,7 @@
 <div class='actions'>
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Program Homepage'), array('program'=>$programUrl,'controller'=>'home'), array('class'=>'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('Program Homepage'), array('program'=>$programUrl,'controller'=>'programHome'), array('class'=>'ttc-button')); ?></li>
 		<li><?php echo $this->Html->tag('div', __('Save as draft'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
 		<?php $this->Js->get('#button-save')->event('click', 'saveFormOnServer()' , true); ?>
 	</ul>

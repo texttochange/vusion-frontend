@@ -147,7 +147,7 @@ function saveFormOnServer(){
 	var indata= JSON.stringify(formData, null, '\t');
 		
 	$.ajax({
-		url:'../scripts.json',
+		url:'../programScripts/add.json',
 		type:'POST',
 		data: indata, 
 		contentType: 'application/json; charset=utf-8',

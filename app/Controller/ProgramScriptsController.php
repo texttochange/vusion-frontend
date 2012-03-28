@@ -5,11 +5,12 @@ App::uses('Script','Model');
 App::uses('VumiSupervisord','Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('Program', 'Model');
-
 App::uses('ProgramSetting', 'Model');
 
 class ProgramScriptsController extends AppController
 {
+
+    public $uses = array('Script');
 
     var $components = array('RequestHandler', 'Acl');
     var $helpers    = array('Js' => array('Jquery'));
@@ -99,7 +100,7 @@ class ProgramScriptsController extends AppController
     public function draft()
     {
         $draft = $this->Script->find('draft');
-        
+
         if (count($draft)) {
             $script = $draft[0]['Script'];
         } else {
@@ -122,7 +123,7 @@ class ProgramScriptsController extends AppController
         $this->VumiRabbitMQ->sendStartMessageToWorker($programUrl);
         */
         //$this->set(compact('programName', 'result_db', 'result_supervisord'));
-        $this->redirect(array('program'=>$programUrl, 'controller'=>'home'));
+        $this->redirect(array('program'=>$programUrl, 'controller'=>'programHome'));
     }
 
 
