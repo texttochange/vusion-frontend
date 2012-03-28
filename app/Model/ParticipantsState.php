@@ -21,7 +21,8 @@ class ParticipantsState extends MongoModel
     
     public $findMethods = array(
         'participant' => true,
-        'count' => true
+        'count' => true,
+        'scriptFilter' => true
         );
     
     
@@ -32,6 +33,139 @@ class ParticipantsState extends MongoModel
             return $query;
         }
         return $results;
+    }
+    
+    
+    public function _findCount($state, $query, $results = array())
+    {
+        if ($state === 'before') {
+            if (isset($query['type']) and $query['type'] == 'scriptFilter') {
+                return $this->_countFiltered($state,$query);
+            } else {
+                $db = $this->getDataSource();
+                if (empty($query['fields'])) {
+                    $query['fields'] = $db->calculate($this, 'count');
+                } elseif (is_string($query['fields'])  && !preg_match('/count/i', $query['fields'])) {
+                    $query['fields'] = $db->calculate($this, 'count', array(
+                        $db->expression($query['fields']), 'count'
+                    ));
+                }
+            }
+            $query['order'] = false;
+            return $query;
+        } elseif ($state === 'after') {
+            if (isset($query['type']) and $query['type'] == 'scriptFilter') {
+                return $this->_countFiltered($state,$query);
+            } else {
+                foreach (array(0, $this->alias) as $key) {
+                    if (isset($results[0][$key]['count'])) {
+                        if (($count = count($results)) > 1) {
+                            return $count;
+                        } else {
+                            return intval($results[0][$key]['count']);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    
+    
+    public function _findScriptFilter($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            $query['conditions'] = array('message-type' => 'received');
+            return $query;
+        }
+        $script = $query['script'];
+        $filteredResults = array();
+        
+        foreach ($results as $status) {
+            foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
+                    
+                    if ($status['ParticipantsState']['dialogue-id']
+                            and $status['ParticipantsState']['dialogue-id'] == $dialogue['dialogue-id']) {
+                    
+                        foreach ($dialogue['interactions'] as $interaction) {
+                            if ($status['ParticipantsState']['interaction-id']
+                                and $status['ParticipantsState']['interaction-id'] == $interaction['interaction-id']) {
+                            
+                                if ($interaction['type-interaction'] == 'question-answer'
+                                    and $interaction['type-question'] == 'close-question') {
+                                
+                                    foreach ($interaction['answers'] as $key => $value) {
+                                        $response    = $interaction['keyword']." ".$value['choice'];
+                                        $responseTwo = $interaction['keyword']." ".($key+1);
+                                        if ($status['ParticipantsState']['message-content'] == $response
+                                            or $status['ParticipantsState']['message-content'] == $responseTwo) {
+                                        
+                                            break;
+                                            
+                                        } else if ($status['ParticipantsState']['message-content'] != $response
+                                            and $status['ParticipantsState']['message-content'] != $responseTwo
+                                            and $key == (count($interaction['answers'])-1)){
+                                        
+                                            $filteredResults[] = $status;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }                
+        }
+        
+        return $filteredResults;
+    }
+        
+    
+    protected function _countFiltered($state, $query)
+    {
+        if ($state == 'before') {
+            $query['conditions'] = array('message-type' => 'received');
+            return $query;
+        }
+        $script = $query['script'];
+        $filteredResults = array();
+        $results = $this->find('all');
+        
+        foreach ($results as $status) {
+            foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
+                    
+                    if ($status['ParticipantsState']['dialogue-id']
+                            and $status['ParticipantsState']['dialogue-id'] == $dialogue['dialogue-id']) {
+                    
+                        foreach ($dialogue['interactions'] as $interaction) {
+                            if ($status['ParticipantsState']['interaction-id']
+                                and $status['ParticipantsState']['interaction-id'] == $interaction['interaction-id']) {
+                            
+                                if ($interaction['type-interaction'] == 'question-answer'
+                                    and $interaction['type-question'] == 'close-question') {
+                                
+                                    foreach ($interaction['answers'] as $key => $value) {
+                                        $response    = $interaction['keyword']." ".$value['choice'];
+                                        $responseTwo = $interaction['keyword']." ".($key+1);
+                                        if ($status['ParticipantsState']['message-content'] == $response
+                                            or $status['ParticipantsState']['message-content'] == $responseTwo) {
+                                        
+                                            break;
+                                            
+                                        } else if ($status['ParticipantsState']['message-content'] != $response
+                                            and $status['ParticipantsState']['message-content'] != $responseTwo
+                                            and $key == (count($interaction['answers'])-1)){
+                                        
+                                            $filteredResults[] = $status;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }                
+        }
+        
+        return count($filteredResults);
     }
     
     

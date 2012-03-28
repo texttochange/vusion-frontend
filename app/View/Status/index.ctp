@@ -4,17 +4,22 @@
 	<h3><?php echo __('Program History'); ?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-                        <th>
-                        <?php echo $this->Form->create(null, array(
-                           'url' => array('program' => $programUrl, 'controller' => 'status', 'action' => 'filter'))
-                           ); ?>
-                        <?php echo $this->Html->tag('label',__('Filter')); ?>
+                        <th class="ttc-filter">
+                        <?php
+                           echo $this->Form->create(null); 
+                        ?>
                         <?php
                            $options = array(); 
                            $options['non_matching_answers'] = "non_matching_answers";
                         ?>
-	                <?php echo $this->Form->select('filter', $options, array('id'=> 'filter')); ?>
-	                <?php echo $this->Form->end(__('Submit'));?>
+	                <?php
+	                   echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => '...Filter results...'));
+	                   $this->Js->get('#filter')->event('change', '
+	                   var baseUrl = "/'.$programUrl.'/status/index";
+	                   window.location.replace(baseUrl+"?"+$("select option:selected").text());
+	                   ');
+	                ?>
+	                <?php echo $this->Form->end(); ?>
 	                </th>
 	</tr>
 	<tr>
@@ -58,3 +63,4 @@
 		<li><?php echo $this->Html->link('Export Program History', array('program' => $programUrl, 'controller' => 'status', 'action' => 'export.csv')); ?></li>
 	</ul>
 </div>	
+<?php echo $this->Js->writeBuffer(); ?>

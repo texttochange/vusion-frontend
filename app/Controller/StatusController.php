@@ -22,6 +22,13 @@ class StatusController extends AppController
 
     public function index()
     {
+        if (isset($this->params['url']['non_matching_answers'])) {
+            $script = $this->Script->find('active');
+            $this->paginate = array(
+                'scriptFilter',
+                'script' => $script
+                );
+        }
         $statuses = $this->paginate();
         $this->set(compact('statuses'));
     }
@@ -49,54 +56,5 @@ class StatusController extends AppController
         $this->set(compact('data'));
     }
     
-    
-    public function filter()
-    {
-        $statuses = $this->paginate();
-        $scripts = $this->Script->find('all');
-        $newStatuses = array();
-        
-        foreach ($statuses as $status) {
-            foreach ($scripts as $script) {
-                foreach ($script['Script']['script']['dialogues'] as $dialogue) {
-                    if ($status['ParticipantsState']['dialogue-id']
-                            and $status['ParticipantsState']['dialogue-id'] == $dialogue['dialogue-id']) {
-                        foreach ($dialogue['interactions'] as $interaction) {
-                            if ($status['ParticipantsState']['interaction-id']
-                                    and $status['ParticipantsState']['interaction-id'] == $interaction['interaction-id']) {
-                                if ($interaction['type-interaction'] == 'question-answer'
-                                        and $interaction['type-question'] == 'close-question') {
-                                    //print_r($interaction['answers']);
-                                    //echo "<br />";
-                                    //print_r($status['ParticipantsState']);
-                                    //echo "<br /><br />";
-                                    foreach ($interaction['answers'] as $answer) {
-                                    	$response = $interaction['keyword']." ".$answer['choice'];
-                                        if ($status['ParticipantsState']['message-content'] == $response) {
-                                            //print_r($status['ParticipantsState']);
-                                            //echo "<br />";
-                                            $newStatuses[] = $status;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $this->set(compact('newStatuses'));
-        /*
-        $this->redirect(
-            array(
-                'program'=> $this->params['program'],
-                'controller' => 'status',
-                'action' => 'index',
-                '?' => $this->request->data['ParticipantsState']['filter']
-            )
-        );
-        */
-    }
-
 
 }
