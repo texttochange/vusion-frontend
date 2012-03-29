@@ -9,7 +9,7 @@ mongo $path/dropAll.js
 general_databases=('shortcodes')
 
 #program specific
-specific_databases=('m4h' 'mrs')
+specific_databases=('m4h' 'mrs' 'wiki')
 
 for database_name in ${general_databases[@]}
 do

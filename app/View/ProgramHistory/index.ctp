@@ -59,7 +59,9 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Back Homepage'), array('program'=>$programUrl,'controller'=>'programHome')); ?></li>
-		<li><?php echo $this->Html->link('Export Program History', array('program' => $programUrl, 'controller' => 'programHistory', 'action' => 'export.csv')); ?></li>
+		<li><?php echo $this->Html->link('Export CSV', array('program' => $programUrl, 'action' => 'export.csv')); ?></li>
+		<li><?php echo $this->Html->link('Export Raw CSV', array('program' => $programUrl, 'action' => 'index.csv')); ?></li>
+		<li><?php echo $this->Html->link('Export Json', array('program' => $programUrl, 'action' => 'index.json')); ?></li>
 	</ul>
 </div>	
 <?php echo $this->Js->writeBuffer(); ?>
