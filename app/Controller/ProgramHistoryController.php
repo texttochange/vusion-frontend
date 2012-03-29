@@ -3,6 +3,7 @@
 App::uses('AppController','Controller');
 App::uses('History','Model');
 App::uses('Script','Model');
+App::uses('ProgramSetting','Model');
 
 class ProgramHistoryController extends AppController
 {
@@ -22,6 +23,9 @@ class ProgramHistoryController extends AppController
 
     public function index()
     {
+        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+    	$this->set(compact('programTimezone'));
+    	
         if (isset($this->params['url']['non_matching_answers'])) {
             $script = $this->Script->find('active');
             $this->paginate = array(
@@ -38,9 +42,10 @@ class ProgramHistoryController extends AppController
     {
         parent::constructClasses();
         
-        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->History = new History($options);
-        $this->Script = new Script($options);
+        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->History        = new History($options);
+        $this->Script         = new Script($options);
+        $this->ProgramSetting = new ProgramSetting($options);
     }
     
     

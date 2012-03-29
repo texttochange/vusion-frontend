@@ -86,13 +86,6 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 					array('controller'=> 'users', 'action'=>'logout'), 
 					array('class' => 'ttc-link'));
 			}
-			if (isset($programTimezone[0]['ProgramSetting']['value']) && $programTimezone[0]['ProgramSetting']['value']) {
-				echo $this->Html->tag('br');
-				echo $this->Html->tag('span', 'program time: ');
-				$now = new DateTime('now');
-				date_timezone_set($now,timezone_open($programTimezone[0]['ProgramSetting']['value']));
-				echo $this->Html->tag('span', $now->format('H:i:s')  );
-			}
 			?> 
 			</div> 
 		</div> 
@@ -121,8 +114,19 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 						  'controller' => $this->params['controller'],
 						  'action' => $this->params['action']
 						  ));
+				    }				    
+				?>
+				<div class="ttc-program-time">
+				<?php
+				    if (isset($programTimezone[0]['ProgramSetting']['value']) && $programTimezone[0]['ProgramSetting']['value']) {
+				        //echo $this->Html->tag('br');
+				        echo $this->Html->tag('span', 'program time: ');
+				        $now = new DateTime('now');
+				        date_timezone_set($now,timezone_open($programTimezone[0]['ProgramSetting']['value']));
+				        echo $this->Html->tag('span', $now->format('H:i:s')  );
 				    }
 				?>
+				</div>
 				</h1>
 			<?php } ?>
 			

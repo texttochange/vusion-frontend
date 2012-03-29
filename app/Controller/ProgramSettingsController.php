@@ -58,6 +58,8 @@ class ProgramSettingsController extends AppController
 
     public function edit()
     {
+    	$programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+    	$this->set(compact('programTimezone'));
     	
         if ($this->request->is('post') || $this->request->is('put')) {
             foreach ($this->request->data['ProgramSettings'] as $key => $value) {

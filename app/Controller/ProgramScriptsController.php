@@ -31,6 +31,7 @@ class ProgramScriptsController extends AppController
         
         $options      = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Script = new Script($options);
+        $this->ProgramSetting = new ProgramSetting($options);
         
         $this->VumiRabbitMQ = new VumiRabbitMQ();
     }
@@ -100,6 +101,10 @@ class ProgramScriptsController extends AppController
     public function draft()
     {
         $draft = $this->Script->find('draft');
+        
+        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+    	$this->set(compact('programTimezone'));
+    	
 
         if (count($draft)) {
             $script = $draft[0]['Script'];
@@ -129,6 +134,9 @@ class ProgramScriptsController extends AppController
 
     public function active()
     {
+        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+    	$this->set(compact('programTimezone'));
+        
         $draft = $this->Script->find('active');
         if (count($draft)) {
             $script = $draft[0]['Script'];

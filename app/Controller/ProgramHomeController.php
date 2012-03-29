@@ -56,11 +56,11 @@ class ProgramHomeController extends AppController
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
         
-        $this->Script            = new Script($options);
-        $this->Participant       = new Participant($options);
-        $this->History = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
+        $this->Script         = new Script($options);
+        $this->Participant    = new Participant($options);
+        $this->History        = new History($options);
+        $this->Schedule       = new Schedule($options);
+        $this->ProgramSetting = new ProgramSetting($options);
 
         $this->VumiSupervisord = new VumiSupervisord();
     }
