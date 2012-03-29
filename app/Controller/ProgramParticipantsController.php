@@ -1,13 +1,13 @@
 <?php
 App::uses('AppController','Controller');
 App::uses('Participant','Model');
-App::uses('ParticipantsState', 'Model');
+App::uses('History', 'Model');
 
 
 class ProgramParticipantsController extends AppController
 {
 
-    public $uses = array('Participant', 'ParticipantsState');
+    public $uses = array('Participant', 'History');
     
     function constructClasses() 
     {
@@ -16,7 +16,7 @@ class ProgramParticipantsController extends AppController
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
 
         $this->Participant       = new Participant($options);
-        $this->ParticipantsState = new ParticipantsState($options);
+        $this->History = new History($options);
     }
 
 
@@ -119,7 +119,7 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read(null, $id);
-        $histories   = $this->ParticipantsState->find('participant', array(
+        $histories   = $this->History->find('participant', array(
                 'phone' => $participant['Participant']['phone']
             ));
         $this->set(compact(

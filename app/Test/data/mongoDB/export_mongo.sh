@@ -20,8 +20,8 @@ do
 	mongoexport -d $database_name -c scripts -o $database_name/scripts.json
 	echo /$database_name/schedules.json
 	mongoexport -d $database_name -c schedules -o $database_name/schedules.json
-	echo /$database_name/status.json
-	mongoexport -d $database_name -c status -o $database_name/status.json
+	echo /$database_name/history.json
+	mongoexport -d $database_name -c history -o $database_name/history.json
 	echo /$database_name/program_settings.json
 	mongoexport -d $database_name -c program_settings -o $database_name/program_settings.json
 done

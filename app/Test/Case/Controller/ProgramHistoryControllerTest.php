@@ -50,15 +50,15 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     protected function dropData()
     {
         //As this model is created on the fly, need to instantiate again
-        $this->instanciateParticipantsStateModel();
-        $this->Status->ParticipantsState->deleteAll(true, false);
+        $this->instanciateHistoryModel();
+        $this->Status->History->deleteAll(true, false);
     }
 
 
-    protected function instanciateParticipantsStateModel()
+    protected function instanciateHistoryModel()
     {
         $options                         = array('database' => $this->programData[0]['Program']['database']);
-        $this->Status->ParticipantsState = new ParticipantsState($options);
+        $this->Status->History = new History($options);
     }
 
 
@@ -113,28 +113,28 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
         $this->mockProgramAccess();
 
-        $this->instanciateParticipantsStateModel();
-        $this->Status->ParticipantsState->create();
-        $this->Status->ParticipantsState->save(array(
+        $this->instanciateHistoryModel();
+        $this->Status->History->create();
+        $this->Status->History->save(array(
             'phone' => '256712747841',
             'message' => 'Hello everyone!',
             'time' => '2012-02-08T12:20:43.882854'
             ));
-        $this->Status->ParticipantsState->create();
-        $this->Status->ParticipantsState->save(array(
+        $this->Status->History->create();
+        $this->Status->History->save(array(
             'phone' => '356774527841',
             'message' => 'Hello there!',
             'time' => '2013-02-08T12:20:43.882854'
             ));
         
         $this->testAction("/testurl/status/index/sort:phone/direction:desc");
-        $this->assertEquals('356774527841', $this->vars['statuses'][0]['ParticipantsState']['phone']);
+        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['phone']);
         
 
         $this->mockProgramAccess();
 
         $this->testAction("/testurl/status/index/sort:phone/direction:asc");
-        $this->assertEquals('256712747841', $this->vars['statuses'][0]['ParticipantsState']['phone']);
+        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['phone']);
 
     }
 

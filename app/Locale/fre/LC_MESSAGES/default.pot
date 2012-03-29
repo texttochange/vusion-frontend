@@ -468,7 +468,7 @@ msgstr ""
 msgid "Participants"
 msgstr ""
 
-#: View/ParticipantsStates/index.ctp:2
+#: View/Historys/index.ctp:2
 msgid "Participant Status"
 msgstr ""
 

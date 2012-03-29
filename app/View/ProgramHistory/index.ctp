@@ -31,11 +31,11 @@
 	<?php
 	foreach ($statuses as $status): ?>
 	<tr>
-		<td><?php echo h($status['ParticipantsState']['participant-phone']); ?>&nbsp;</td>
-		<td><?php echo h($status['ParticipantsState']['message-type']); ?>&nbsp;</td>
-		<td><?php echo h($status['ParticipantsState']['message-status']); ?>&nbsp;</td>
-		<td><?php echo h($status['ParticipantsState']['message-content']); ?>&nbsp;</td>
-		<td><?php echo h($status['ParticipantsState']['timestamp']); ?>&nbsp;</td>
+		<td><?php echo h($status['History']['participant-phone']); ?>&nbsp;</td>
+		<td><?php echo h($status['History']['message-type']); ?>&nbsp;</td>
+		<td><?php echo h($status['History']['message-status']); ?>&nbsp;</td>
+		<td><?php echo h($status['History']['message-content']); ?>&nbsp;</td>
+		<td><?php echo h($status['History']['timestamp']); ?>&nbsp;</td>
 	</tr>
 	<?php endforeach; ?>
 	</table>

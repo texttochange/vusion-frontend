@@ -25,8 +25,8 @@ do
 	mongoimport -drop -d $database_name -c scripts $path/$database_name/scripts.json
 	echo /$database_name/schedules.json
 	mongoimport -drop -d $database_name -c schedules $path/$database_name/schedules.json
-	echo /$database_name/status.json
-	mongoimport -drop -d $database_name -c status $path/$database_name/status.json
+	echo /$database_name/history.json
+	mongoimport -drop -d $database_name -c history $path/$database_name/history.json
 	echo /$database_name/program_settings.json
 	mongoimport -drop -d $database_name -c program_settings $path/$database_name/program_settings.json
 	

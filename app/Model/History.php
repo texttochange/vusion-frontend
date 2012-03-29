@@ -4,7 +4,7 @@ App::uses('MongoModel', 'Model');
  * Program Model
  *
  */
-class ParticipantsState extends MongoModel
+class History extends MongoModel
 {
 
     var $specific = true;    
@@ -17,7 +17,7 @@ class ParticipantsState extends MongoModel
  */
     //var $name = 'ParticipantStat';
     var $useDbConfig = 'mongo';    
-    var $useTable    = 'status';
+    var $useTable    = 'history';
     
     public $findMethods = array(
         'participant' => true,
@@ -84,12 +84,12 @@ class ParticipantsState extends MongoModel
         foreach ($results as $status) {
             foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
                     
-                    if ($status['ParticipantsState']['dialogue-id']
-                            and $status['ParticipantsState']['dialogue-id'] == $dialogue['dialogue-id']) {
+                    if ($status['History']['dialogue-id']
+                            and $status['History']['dialogue-id'] == $dialogue['dialogue-id']) {
                     
                         foreach ($dialogue['interactions'] as $interaction) {
-                            if ($status['ParticipantsState']['interaction-id']
-                                and $status['ParticipantsState']['interaction-id'] == $interaction['interaction-id']) {
+                            if ($status['History']['interaction-id']
+                                and $status['History']['interaction-id'] == $interaction['interaction-id']) {
                             
                                 if ($interaction['type-interaction'] == 'question-answer'
                                     and $interaction['type-question'] == 'close-question') {
@@ -97,13 +97,13 @@ class ParticipantsState extends MongoModel
                                     foreach ($interaction['answers'] as $key => $value) {
                                         $response    = $interaction['keyword']." ".$value['choice'];
                                         $responseTwo = $interaction['keyword']." ".($key+1);
-                                        if ($status['ParticipantsState']['message-content'] == $response
-                                            or $status['ParticipantsState']['message-content'] == $responseTwo) {
+                                        if ($status['History']['message-content'] == $response
+                                            or $status['History']['message-content'] == $responseTwo) {
                                         
                                             break;
                                             
-                                        } else if ($status['ParticipantsState']['message-content'] != $response
-                                            and $status['ParticipantsState']['message-content'] != $responseTwo
+                                        } else if ($status['History']['message-content'] != $response
+                                            and $status['History']['message-content'] != $responseTwo
                                             and $key == (count($interaction['answers'])-1)){
                                         
                                             $filteredResults[] = $status;
@@ -133,12 +133,12 @@ class ParticipantsState extends MongoModel
         foreach ($results as $status) {
             foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
                     
-                    if ($status['ParticipantsState']['dialogue-id']
-                            and $status['ParticipantsState']['dialogue-id'] == $dialogue['dialogue-id']) {
+                    if ($status['History']['dialogue-id']
+                            and $status['History']['dialogue-id'] == $dialogue['dialogue-id']) {
                     
                         foreach ($dialogue['interactions'] as $interaction) {
-                            if ($status['ParticipantsState']['interaction-id']
-                                and $status['ParticipantsState']['interaction-id'] == $interaction['interaction-id']) {
+                            if ($status['History']['interaction-id']
+                                and $status['History']['interaction-id'] == $interaction['interaction-id']) {
                             
                                 if ($interaction['type-interaction'] == 'question-answer'
                                     and $interaction['type-question'] == 'close-question') {
@@ -146,13 +146,13 @@ class ParticipantsState extends MongoModel
                                     foreach ($interaction['answers'] as $key => $value) {
                                         $response    = $interaction['keyword']." ".$value['choice'];
                                         $responseTwo = $interaction['keyword']." ".($key+1);
-                                        if ($status['ParticipantsState']['message-content'] == $response
-                                            or $status['ParticipantsState']['message-content'] == $responseTwo) {
+                                        if ($status['History']['message-content'] == $response
+                                            or $status['History']['message-content'] == $responseTwo) {
                                         
                                             break;
                                             
-                                        } else if ($status['ParticipantsState']['message-content'] != $response
-                                            and $status['ParticipantsState']['message-content'] != $responseTwo
+                                        } else if ($status['History']['message-content'] != $response
+                                            and $status['History']['message-content'] != $responseTwo
                                             and $key == (count($interaction['answers'])-1)){
                                         
                                             $filteredResults[] = $status;

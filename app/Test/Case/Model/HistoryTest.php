@@ -1,10 +1,10 @@
 <?php
-/* ParticipantsState Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
-App::uses('ParticipantsState', 'Model');
+/* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
+App::uses('History', 'Model');
 App::uses('Script', 'Model');
 
 
-class ParticipantsStateTestCase extends CakeTestCase
+class HistoryTestCase extends CakeTestCase
 {
 
     public $fixtures = array('app.program', 'app.user', 'app.programsUser');
@@ -14,10 +14,10 @@ class ParticipantsStateTestCase extends CakeTestCase
     {
         parent::setUp();
 
-        $this->ParticipantsState = ClassRegistry::init('ParticipantsState');
+        $this->History = ClassRegistry::init('History');
         
         $options                 = array('database' => 'testdbprogram');
-        $this->ParticipantsState = new ParticipantsState($options);
+        $this->History = new History($options);
         $this->Script = new Script($options);
         
         
@@ -29,7 +29,7 @@ class ParticipantsStateTestCase extends CakeTestCase
     {
         $this->dropData();
         
-        unset($this->ParticipantsState);
+        unset($this->History);
 
         parent::tearDown();
     }
@@ -37,7 +37,7 @@ class ParticipantsStateTestCase extends CakeTestCase
     
     public function dropData()
     {
-        $this->ParticipantsState->deleteAll(true, false);
+        $this->History->deleteAll(true, false);
     }
 
     
@@ -53,8 +53,8 @@ class ParticipantsStateTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->ParticipantsState->create();
-        $history = $this->ParticipantsState->save($participantsState);
+        $this->History->create();
+        $history = $this->History->save($participantsState);
         
         $script = array(
             0 => array(
@@ -88,7 +88,7 @@ class ParticipantsStateTestCase extends CakeTestCase
         $this->Script->save($script);
         $this->Script->makeDraftActive();
               
-        $result   = $this->ParticipantsState->find('scriptFilter',
+        $result   = $this->History->find('scriptFilter',
             array('script' => $script)
             );
         $this->assertEquals(1, count($result));
@@ -107,10 +107,10 @@ class ParticipantsStateTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->ParticipantsState->create();
-        $history = $this->ParticipantsState->save($participantsState);
+        $this->History->create();
+        $history = $this->History->save($participantsState);
         
-        $result   = $this->ParticipantsState->find('participant',array(
+        $result   = $this->History->find('participant',array(
             'phone'=>$participantsState['participant-phone']
             ));
         $this->assertEquals(1, count($result));
@@ -127,10 +127,10 @@ class ParticipantsStateTestCase extends CakeTestCase
             'message-type' => 'received' 
             );
         
-        $this->ParticipantsState->create();
-        $history = $this->ParticipantsState->save($participantsState);
+        $this->History->create();
+        $history = $this->History->save($participantsState);
               
-        $result   = $this->ParticipantsState->find(
+        $result   = $this->History->find(
             'count'
             );
         $this->assertEquals(1, $result);
@@ -181,12 +181,12 @@ class ParticipantsStateTestCase extends CakeTestCase
         $this->Script->save($script);
         $this->Script->makeDraftActive();
         
-        $this->ParticipantsState->create();
-        $history = $this->ParticipantsState->save($participantsState);
+        $this->History->create();
+        $history = $this->History->save($participantsState);
         
         $state = 'before';
               
-        $result = $this->ParticipantsState->find('count', array('type' => 'scriptFilter', 'script' => $script));
+        $result = $this->History->find('count', array('type' => 'scriptFilter', 'script' => $script));
         $this->assertEquals(1, $result);    
     }
 

@@ -1,13 +1,13 @@
 <?php
 
 App::uses('AppController','Controller');
-App::uses('ParticipantsState','Model');
+App::uses('History','Model');
 App::uses('Script','Model');
 
 class ProgramHistoryController extends AppController
 {
 
-    public $uses    = array('ParticipantsState');
+    public $uses    = array('History');
     var $components = array('RequestHandler');
     var $helpers    = array('Js' => array('Jquery'));
 
@@ -39,7 +39,7 @@ class ProgramHistoryController extends AppController
         parent::constructClasses();
         
         $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->ParticipantsState = new ParticipantsState($options);
+        $this->History = new History($options);
         $this->Script = new Script($options);
     }
     
@@ -49,7 +49,7 @@ class ProgramHistoryController extends AppController
         // Stop Cake from displaying action's execution time
         //Configure::write('debug',0);
         
-        $data = $this->ParticipantsState->find('all', array(
+        $data = $this->History->find('all', array(
             'fields' => array('participant-phone','message-type','message-status','message-content','timestamp')
             ));
         // Make the data available to the view (and the resulting CSV file)

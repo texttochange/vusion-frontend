@@ -3,7 +3,7 @@
 App::uses('AppController','Controller');
 App::uses('Script','Model');
 App::uses('Participant','Model');
-App::uses('ParticipantsState','Model');
+App::uses('History','Model');
 App::uses('Schedule','Model');
 App::uses('ProgramSetting','Model');
 App::uses('VumiSupervisord','Lib');
@@ -31,7 +31,7 @@ class ProgramHomeController extends AppController
                 ),
             ), 'controllers/ProgramParticipants/add');
         $participantCount = $this->Participant->find('count');
-        $statusCount      = $this->ParticipantsState->find('count');
+        $statusCount      = $this->History->find('count');
         $schedules        = $this->Schedule->find('soon');
         
         //$workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
@@ -58,7 +58,7 @@ class ProgramHomeController extends AppController
         
         $this->Script            = new Script($options);
         $this->Participant       = new Participant($options);
-        $this->ParticipantsState = new ParticipantsState($options);
+        $this->History = new History($options);
         $this->Schedule          = new Schedule($options);
         $this->ProgramSetting    = new ProgramSetting($options);
 
