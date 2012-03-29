@@ -1,23 +1,27 @@
 <?php
 
-    foreach ($statuses[0]['History'] as $key => &$value)
+    $headers = array();
+
+    foreach ($statuses as $row)
     {
-        // Generating Headers 
-        if($key != '_id') 
-            echo "\"".$key."\",";
+        foreach ($row['History'] as $key => $value){
+            if ( !in_array($key, $headers) ) {
+                array_push($headers, $key);
+                    echo "\"".$key."\",";
+            } 
+        } 
     }
     
     echo "\n";
     foreach ($statuses as $row)
     {
-        // Loop through every value in a row
-        foreach ($row['History'] as $key => &$value)
+        foreach ($headers as $key)
         {
-            // Apply opening and closing text delimiters to every value
-            $value = "\"".$value."\"";
+            if (isset($row['History'][$key])) {
+                echo "\"".$row['History'][$key]."\",";
+            } else { 
+                echo ",";
+            }
         }
-        //remove the id from the array
-        $id =array_shift($row['History']);
-        // Echo all values in a row comma separated
-        echo implode(",",$row['History'])."\n";
+        echo "\n";
     }
