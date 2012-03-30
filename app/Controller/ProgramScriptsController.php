@@ -54,33 +54,32 @@ class ProgramScriptsController extends AppController
     * But when doing so the update didn't work due to duplicat entry on primary key.
     */
     public function add()
-    {                
+    {      
         if ($this->request->is('post')) {
             $saveData['Script'] = (is_object($this->request->data) 
                     ? get_object_vars($this->request->data) 
                     : $this->request->data
                     );
-            /**
-            * Below line in case need to remove the [script], 
-            * however it create difficulties for the javascript rendering
-            */
-            /* $saveData['Script'] = (is_object($data['script']) 
-            *                       ? get_object_vars($data['script']) 
-            *                       : $data['script']);
-            */
-
             $draft = $this->Script->find('draft');
             if ($draft) {    
                 $this->Script->create();
                 $this->Script->id          = $draft[0]['Script']['_id'];
                 $saveData['Script']['_id'] = $draft[0]['Script']['_id'];
-                $this->Script->save($saveData);
-                $this->set(
-                    'result', array(
-                        'status' => '1',
-                        'id' => $this->Script->id
-                        )
-                    );
+                
+                if ($this->Script->save($saveData)) {
+                    $this->set(
+                        'result', array(
+                            'status' => '1',
+                            'id' => $this->Script->id
+                            )
+                        );
+                } else {
+                    $this->set(
+                        'result', array(
+                            'status' => '0'
+                            )
+                        );
+                }
             } else {
                 $this->Script->create();
                 if ($this->Script->save($saveData)) {

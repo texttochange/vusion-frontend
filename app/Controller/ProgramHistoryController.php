@@ -10,7 +10,10 @@ class ProgramHistoryController extends AppController
 
     public $uses    = array('History');
     var $components = array('RequestHandler');
-    var $helpers    = array('Js' => array('Jquery'));
+    var $helpers    = array(
+        'Js' => array('Jquery'),
+        'Time'
+        );
 
 
     public function beforeFilter()
