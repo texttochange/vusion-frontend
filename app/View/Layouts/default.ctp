@@ -47,6 +47,13 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->script('form2js/form2js.js');
 		echo $this->Html->script('ttc-generic-program.js');
 		echo $this->Html->script('ttc-utils.js');
+		
+		//disappear success flash messages
+		$this->Js->get('document')->event('ready', '
+			var className = $("#flashMessage").attr("class");
+			if($("#flashMessage").length > 0 && className == "good-message")
+			    $("#flashMessage").delay(5000).fadeOut(1000);
+			');
 	?>
 </head>
 <body>
@@ -142,6 +149,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 			?>
 		</div>
 	</div>
+	<?php echo $this->Js->writeBuffer(); ?>
 	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>
