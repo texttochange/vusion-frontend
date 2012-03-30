@@ -110,7 +110,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         $programSettings = array(
             'ProgramSettings' => array(
                 'shortcode'=>'8282',
-                'internationalprefix'=>'256',
+                'international-prefix'=>'256',
                 'timezone'=> 'EAT'
                 )
             );

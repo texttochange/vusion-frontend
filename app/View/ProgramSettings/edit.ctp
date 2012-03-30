@@ -14,13 +14,13 @@
             $this->Js->get('#shortcode')->event('change','
             			var countryShortcode = $("#shortcode option:selected").text();
             			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-2);            			
-            			$("#internationalprefix").val(getCountryCodes(countryname));
+            			$("#international-prefix").val(getCountryCodes(countryname));
             			');
         ?>
         </div>
         <?php
-            echo $this->Form->input(__('internationalprefix'),
-            		array('id' => 'internationalprefix',
+            echo $this->Form->input(__('international-prefix'),
+            		array('id' => 'international-prefix',
             		      'label' => 'International Prefix',
             		      'readonly' => true)
             		);

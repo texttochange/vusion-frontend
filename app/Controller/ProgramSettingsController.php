@@ -86,7 +86,7 @@ class ProgramSettingsController extends AppController
         $shortcodes = $this->ShortCode->find('all');
         $this->set(compact('shortcodes'));
         $shortcode           = $this->ProgramSetting->find('programSetting', array( 'key' => 'shortcode'));
-        $internationalprefix = $this->ProgramSetting->find('programSetting', array( 'key' => 'internationalprefix'));
+        $internationalprefix = $this->ProgramSetting->find('programSetting', array( 'key' => 'international-prefix'));
         $timezone            = $this->ProgramSetting->find('programSetting', array( 'key' => 'timezone'));
         //print_r($shortcode);
         if ($shortcode) {
@@ -94,7 +94,7 @@ class ProgramSettingsController extends AppController
             $programSettings = array(
                 'ProgramSettings' => array (
                     'shortcode' => $shortcode[0]['ProgramSetting']['value'],
-                    'internationalprefix' => $internationalprefix[0]['ProgramSetting']['value'],
+                    'international-prefix' => $internationalprefix[0]['ProgramSetting']['value'],
         	    'timezone' => $timezone[0]['ProgramSetting']['value']
         	    )
         	);
