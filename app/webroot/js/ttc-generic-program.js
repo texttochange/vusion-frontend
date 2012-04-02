@@ -165,7 +165,10 @@ function saveFormOnServer(){
 		}
 	});
 }
-	
+
+function convertDateToIso(data) {   
+    return data;
+}	
 
 function clickBasicButton(){
 					
@@ -478,6 +481,8 @@ function configToForm(item,elt,id_prefix,configTree){
 						var eltValue = "";
 						if (configTree) {
 							eltValue = configTree[sub_item];
+							if (sub_item == 'date-time')
+								eltValue = fromIsoDateToFormDate(eltValue);
 						}
 						var label = null;
 						if (program[sub_item]!="hidden"){
@@ -512,6 +517,11 @@ function configToForm(item,elt,id_prefix,configTree){
 		}
 	});
 };
+
+function fromIsoDateToFormDate(dateString) {
+	date = new Date(dateString);
+	return date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
+}
 
 
 function fromBackendToFrontEnd(configFile, id) {

@@ -58,10 +58,21 @@ class ScriptTestCase extends CakeTestCase
     }
 
 
-    public function testSave()
+    public function testValidate_date_ok()
     {
-        $data = array(
-            'script' => 1
+        $data['Script'] = array(
+            'script' => array(
+                'date-time' => '04/06/2012 10:30',
+                'sub-tree' => array( 
+            	   'date-time' => '04/06/2012 10:31',
+            	   ),
+            	'another-sub-tree' => array(
+            	    'date-time' => '2012-06-04T10:32:00',
+            	    ),
+            	'again-sub-tree' => array(
+            		'date-time' => '04/06/2012 10:33',
+            	   )
+            	)
             );    
         $this->Script->recursive = -1;
         $this->Script->create();
@@ -69,7 +80,24 @@ class ScriptTestCase extends CakeTestCase
         $this->assertTrue(!empty($saveResult) && is_array($saveResult));
     
         $result = $this->Script->find('all');
-        $this->assertEqual(count($result), 1);    
+        $this->assertEqual(count($result), 1);
+        $this->assertEqual($result[0]['Script']['script']['date-time'], '2012-06-04T10:30:00');
+        $this->assertEqual($result[0]['Script']['script']['sub-tree']['date-time'], '2012-06-04T10:31:00');
+        $this->assertEqual($result[0]['Script']['script']['another-sub-tree']['date-time'], '2012-06-04T10:32:00');
+        $this->assertEqual($result[0]['Script']['script']['again-sub-tree']['date-time'], '2012-06-04T10:33:00');
+    }
+
+    public function testValidate_date_fail()
+    {
+        $data['Script'] = array(
+            'script' => array(
+            	    'date-time' => '2012-06-04 10:30:00',
+            	    )
+            );    
+        $this->Script->recursive = -1;
+        $this->Script->create();
+        $saveResult = $this->Script->save($data);
+        $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
 
@@ -80,7 +108,7 @@ class ScriptTestCase extends CakeTestCase
         $this->assertEquals(count($result), 0);
    
         $data['Script'] = array(
-            'something' => 1
+            'script' => array()
             );
         
         $this->Script->recursive = -1;
@@ -177,7 +205,3 @@ class ScriptTestCase extends CakeTestCase
 
 
 }
-
-
-
-?>

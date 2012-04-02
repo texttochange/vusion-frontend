@@ -131,7 +131,11 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
                 
-        $script = array('script' => 'do something');
+        $script['Script'] = array(
+            'script' => array(
+                'do' => 'something'
+        	)
+            );
         $this->instanciateScriptModel();
         $this->Home->Script->create();
         $this->Home->Script->save($script);
