@@ -29,8 +29,8 @@ class ProgramScriptsController extends AppController
     {
         parent::constructClasses();
         
-        $options      = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Script = new Script($options);
+        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->Script         = new Script($options);
         $this->ProgramSetting = new ProgramSetting($options);
         
         $this->VumiRabbitMQ = new VumiRabbitMQ();
@@ -72,13 +72,13 @@ class ProgramScriptsController extends AppController
                             'status' => '1',
                             'id' => $this->Script->id
                             )
-                        );
+                    );
                 } else {
                     $this->set(
                         'result', array(
                             'status' => '0'
                             )
-                        );
+                    );
                 }
             } else {
                 $this->Script->create();
@@ -88,7 +88,7 @@ class ProgramScriptsController extends AppController
                             'status' => '1',
                             'id' => $this->Script->id
                             )
-                        );
+                    );
                 } else {
                     $this->set('result', array('status' => '0'));
                 }
@@ -102,7 +102,7 @@ class ProgramScriptsController extends AppController
         $draft = $this->Script->find('draft');
         
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-    	$this->set(compact('programTimezone'));
+        $this->set(compact('programTimezone'));
     	
 
         if (count($draft)) {
@@ -134,7 +134,7 @@ class ProgramScriptsController extends AppController
     public function active()
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-    	$this->set(compact('programTimezone'));
+        $this->set(compact('programTimezone'));
         
         $draft = $this->Script->find('active');
         if (count($draft)) {
@@ -150,14 +150,14 @@ class ProgramScriptsController extends AppController
     {       
         $keywordToValidate = $this->request->data['keyword'];
         $programs          = $this->Program->find(
-        	'all', 
-        	array('conditions'=> 
-        		array('Program.url !='=> $this->params['program'])
-        		)
-        	);
+            'all', 
+            array('conditions'=> 
+        	array('Program.url !='=> $this->params['program'])
+        	)
+        );
         $programSetting    = new ProgramSetting(
             array('database'=>($this->Session->read($this->params['program']."_db")))
-            );
+        );
         $shortCode = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
        
         if (!$shortCode) {
@@ -181,7 +181,7 @@ class ProgramScriptsController extends AppController
                         'result', array(
                             'status'=>0, 
                             'message'=>'already used by: ' . $program['Program']['name'])
-                        );
+                    );
                     return;
                 }
             }

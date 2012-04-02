@@ -174,9 +174,9 @@ class UsersController extends AppController
         $this->set(compact('userId'));
         
         if ($this->request->is('post') || $this->request->is('put')) {
-            if(Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
+            if (Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'));
-            } else if($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
+            } else if ($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
                 $this->Session->setFlash(__('new passwords do not match. Please try again.'));
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];

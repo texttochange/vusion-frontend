@@ -93,7 +93,7 @@ class ShortCodesController extends AppController
     
     public function delete()
     {
-        $id        = $this->params['id'];
+        $id = $this->params['id'];
         
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
