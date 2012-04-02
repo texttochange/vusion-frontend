@@ -2,25 +2,24 @@
 	
 <div class="status index">
 	<h3><?php echo __('Program History'); ?></h3>
+	<div class="ttc-filter">
+	<?php
+	   echo $this->Form->create(null); 
+	   $options = array(); 
+	   $options['non_matching_answers'] = "non_matching_answers";
+	   if (isset($this->params['url']['filter']))
+	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
+	   else 
+	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Filter...'));
+	   $this->Js->get('#filter')->event('change', '
+	     if ($("select option:selected").val())
+	         window.location.search = "?filter="+$("select option:selected").val();
+             else
+                 window.location.search = "?";
+	   ');
+	   echo $this->Form->end(); ?>
+	</div>
 	<table cellpadding="0" cellspacing="0">
-	<tr>
-                        <th class="ttc-filter">
-                        <?php
-                           echo $this->Form->create(null); 
-                        ?>
-                        <?php
-                           $options = array(); 
-                           $options['non_matching_answers'] = "non_matching_answers";
-                        ?>
-	                <?php
-	                   echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => '...Filter results...'));
-	                   $this->Js->get('#filter')->event('change', '
-	                     window.location.search = "?"+$("select option:selected").text();
-	                   ');
-	                ?>
-	                <?php echo $this->Form->end(); ?>
-	                </th>
-	</tr>
 	<tr>                                                                        
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('type', null, array('url'=> array('program' => $programUrl)));?></th>
