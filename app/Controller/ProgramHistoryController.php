@@ -29,7 +29,7 @@ class ProgramHistoryController extends AppController
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
     	$this->set(compact('programTimezone'));
     	
-        if (isset($this->params['url']['non_matching_answers'])) {
+        if (isset($this->params['url']['filter'])) {
             $script = $this->Script->find('active');
             $this->paginate = array(
                 'scriptFilter',

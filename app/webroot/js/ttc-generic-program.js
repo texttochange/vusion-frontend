@@ -277,7 +277,9 @@ function activeForm(){
 	});
 	$.each($("input[name*='date-time']"), function (key,elt){
 			if (!$.data(elt,'events')){
-				$(elt).datetimepicker();
+				$(elt).datetimepicker({
+				timeFormat: 'hh:mm',
+				dateFormat:'dd/mm/yy'});
 			};
 	});
 	populateSelectableGoTo();
@@ -519,8 +521,7 @@ function configToForm(item,elt,id_prefix,configTree){
 };
 
 function fromIsoDateToFormDate(dateString) {
-	date = new Date(dateString);
-	return date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
+	return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
 }
 
 
