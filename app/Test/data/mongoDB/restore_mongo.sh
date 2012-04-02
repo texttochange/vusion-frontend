@@ -6,7 +6,7 @@ path=./app/Test/data/mongoDB
 mongo $path/dropAll.js
 
 #general databases
-general_databases=('shortcodes')
+general_databases=('shortcodes' 'unmatchable_reply')
 
 #program specific
 specific_databases=('m4h' 'mrs' 'wiki')

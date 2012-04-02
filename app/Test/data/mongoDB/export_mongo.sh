@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #general databases
-general_databases=('shortcodes')
+general_databases=('shortcodes' 'unmatchable_reply')
 
 #program specific
-specific_databases=('m4h' 'mrs')
+specific_databases=('m4h' 'mrs' 'wiki')
 
 for database_name in ${general_databases[@]}
 do

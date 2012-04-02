@@ -170,6 +170,22 @@
 			)
 		);
 	
+	Router::connect(
+		'/unmatchableReply/:action/*',
+		array(
+			'controller' => 'unmatchableReply',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/unmatchableReply',
+		array(
+			'controller' => 'unmatchableReply',
+			'action' => 'index'
+			)
+		);
+	
 /**
 *  route for program specific controllers
 */

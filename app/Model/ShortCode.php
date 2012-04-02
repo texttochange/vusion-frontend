@@ -1,7 +1,7 @@
 <?php
 App::uses('MongoModel', 'Model');
 /**
- * Program Model
+ * Shortcode Model
  *
  */
 class ShortCode extends MongoModel
