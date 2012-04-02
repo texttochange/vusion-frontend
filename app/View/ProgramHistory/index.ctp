@@ -35,7 +35,7 @@
 		<td><?php echo h($status['History']['message-type']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-status']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-content']); ?>&nbsp;</td>
-		<td><?php echo $this->Time->format('d/m/Y h:i', $status['History']['timestamp']); ?>&nbsp;</td>
+		<td><?php echo $this->Time->format('d/m/Y h:i:s', $status['History']['timestamp']); ?>&nbsp;</td>
 	</tr>
 	<?php endforeach; ?>
 	</table>

@@ -47,6 +47,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->script('form2js/form2js.js');
 		echo $this->Html->script('ttc-generic-program.js');
 		echo $this->Html->script('ttc-utils.js');
+		echo $this->Html->script('datejs/date.js');
 		
 		//disappear success flash messages
 		$this->Js->get('document')->event('ready', '
