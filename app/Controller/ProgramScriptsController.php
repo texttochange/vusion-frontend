@@ -176,7 +176,7 @@ class ProgramScriptsController extends AppController
                     'value'=> $shortCode))
                     ) {
                 $scriptModel = new Script(array('database'=>$program['Program']['database']));
-                if ($scriptModel->find('keyword', array('keyword' => $keywordToValidate))) {
+                if ($scriptModel->find('hasKeyword', array('keyword' => $keywordToValidate))) {
                     $this->set(
                         'result', array(
                             'status'=>0, 

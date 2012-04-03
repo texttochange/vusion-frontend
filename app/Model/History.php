@@ -1,5 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('ScriptHelper', 'Lib');
 /**
  * Program Model
  *
@@ -24,6 +25,13 @@ class History extends MongoModel
         'count' => true,
         'scriptFilter' => true
         );
+    
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+    	    parent::__construct($id, $table, $ds);
+    	    
+    	    $this->scriptHelper = new ScriptHelper();
+    }
     
     
     public function _findParticipant($state, $query, $results = array())
@@ -82,38 +90,8 @@ class History extends MongoModel
         $filteredResults = array();
         
         foreach ($results as $status) {
-            foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
-                    
-                    if ($status['History']['dialogue-id']
-                            and $status['History']['dialogue-id'] == $dialogue['dialogue-id']) {
-                    
-                        foreach ($dialogue['interactions'] as $interaction) {
-                            if ($status['History']['interaction-id']
-                                and $status['History']['interaction-id'] == $interaction['interaction-id']) {
-                            
-                                if ($interaction['type-interaction'] == 'question-answer'
-                                    and $interaction['type-question'] == 'close-question') {
-                                
-                                    foreach ($interaction['answers'] as $key => $value) {
-                                        $response    = $interaction['keyword']." ".$value['choice'];
-                                        $responseTwo = $interaction['keyword']." ".($key+1);
-                                        if ($status['History']['message-content'] == $response
-                                            or $status['History']['message-content'] == $responseTwo) {
-                                        
-                                            break;
-                                            
-                                        } else if ($status['History']['message-content'] != $response
-                                            and $status['History']['message-content'] != $responseTwo
-                                            and $key == (count($interaction['answers'])-1)){
-                                        
-                                            $filteredResults[] = $status;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }                
+            if ($this->scriptHelper->hasNoMatchingAnswers($script, $status))
+                	$filteredResults[] = $status;
         }
         
         return $filteredResults;
@@ -131,38 +109,8 @@ class History extends MongoModel
         $results = $this->find('all');
         
         foreach ($results as $status) {
-            foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
-                    
-                    if ($status['History']['dialogue-id']
-                            and $status['History']['dialogue-id'] == $dialogue['dialogue-id']) {
-                    
-                        foreach ($dialogue['interactions'] as $interaction) {
-                            if ($status['History']['interaction-id']
-                                and $status['History']['interaction-id'] == $interaction['interaction-id']) {
-                            
-                                if ($interaction['type-interaction'] == 'question-answer'
-                                    and $interaction['type-question'] == 'close-question') {
-                                
-                                    foreach ($interaction['answers'] as $key => $value) {
-                                        $response    = $interaction['keyword']." ".$value['choice'];
-                                        $responseTwo = $interaction['keyword']." ".($key+1);
-                                        if ($status['History']['message-content'] == $response
-                                            or $status['History']['message-content'] == $responseTwo) {
-                                        
-                                            break;
-                                            
-                                        } else if ($status['History']['message-content'] != $response
-                                            and $status['History']['message-content'] != $responseTwo
-                                            and $key == (count($interaction['answers'])-1)){
-                                        
-                                            $filteredResults[] = $status;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }                
+            if ($this->scriptHelper->hasNoMatchingAnswers($script, $status))
+                	$filteredResults[] = $status;                
         }
         
         return count($filteredResults);
