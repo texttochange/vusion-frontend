@@ -186,6 +186,14 @@
 			)
 		);
 	
+	Router::connect(
+		'/',
+		array(
+			'controller' => 'programs',
+			'action' => 'index'
+			)
+		);
+	
 /**
 *  route for program specific controllers
 */
