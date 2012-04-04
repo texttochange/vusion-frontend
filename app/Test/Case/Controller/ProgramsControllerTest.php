@@ -153,6 +153,17 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     public function testAdd() 
     {
+        $Programs = $this->generate('Programs', array(
+            'methods' => array(
+                '_startBackendWorker'
+            )
+            ));
+
+        $Programs
+            ->expects($this->once())
+            ->method('_startBackendWorker')
+            ->will($this->returnValue(true));
+
         $data = array(
             'Program' => array(
                 'name' => 'programName',
