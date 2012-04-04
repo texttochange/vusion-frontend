@@ -2,8 +2,8 @@
 
 App::uses('AppController','Controller');
 App::uses('Script','Model');
-App::uses('VumiSupervisord','Lib');
-App::uses('VumiRabbitMQ', 'Lib');
+//App::uses('VumiSupervisord','Lib');
+//App::uses('VumiRabbitMQ', 'Lib');
 App::uses('Program', 'Model');
 App::uses('ProgramSetting', 'Model');
 
@@ -33,7 +33,7 @@ class ProgramScriptsController extends AppController
         $this->Script         = new Script($options);
         $this->ProgramSetting = new ProgramSetting($options);
         
-        $this->VumiRabbitMQ = new VumiRabbitMQ();
+        //$this->VumiRabbitMQ = new VumiRabbitMQ();
     }
 
 
@@ -119,6 +119,7 @@ class ProgramScriptsController extends AppController
         $programUrl = $this->params['program'];
 
         $this->Script->makeDraftActive();
+        
         /*
         $result_supervisord = $this->VumiSupervisord->startWorker($programUrl);
         $result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
