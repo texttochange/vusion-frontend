@@ -151,15 +151,28 @@ class ProgramsControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testAdd() {
-         $data = array(
-              'Program' => array(
-                   //'id' => '3',
-                   'name' => 'Newprogram',
-                   'country' => 'Somewhere',
-                   )
-              );
-             $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+    public function testAdd() 
+    {
+        $Programs = $this->generate('Programs', array(
+            'methods' => array(
+                '_startBackendWorker'
+            )
+            ));
+
+        $Programs
+            ->expects($this->once())
+            ->method('_startBackendWorker')
+            ->will($this->returnValue(true));
+
+        $data = array(
+            'Program' => array(
+                'name' => 'programName',
+                'url' => 'programUrl',
+                'database'=> 'programDatabase'
+                )
+            );
+
+        $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
     }
 
 

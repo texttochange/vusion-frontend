@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 
 /**
  * Programs Controller
@@ -20,6 +21,13 @@ class ProgramsController extends AppController
             'Program.created' => 'desc'
             )
         );
+
+    function constructClasses()
+    {
+        parent::constructClasses();
+
+        $this->VumiRabbitMQ = new VumiRabbitMQ();
+    }
 
 
     /**
@@ -87,11 +95,24 @@ class ProgramsController extends AppController
                     'default',
                     array('class'=>'good-message')
                 );
+                $this->_startBackendWorker(
+                    $this->request->data['Program']['url'],
+                    $this->request->data['Program']['database']
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
             }
         }
+    }
+
+
+    /** 
+    * function redirection to allow mocking in the testcases
+    */
+    protected function _startBackendWorker($worker_name, $database_name)
+    {
+        $this->VumiRabbitMQ->sendMessageToCreateWorker($worker_name,$database_name);    	 
     }
 
 
