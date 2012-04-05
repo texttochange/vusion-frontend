@@ -1,15 +1,18 @@
 #!/bin/bash
 
-#general databases
-general_databases=('shortcodes' 'unmatchable_reply')
+#main database
+main_database=('vusion')
+
+#general tables
+main_tables=('shortcodes' 'unmatchable_reply')
 
 #program specific
 specific_databases=('m4h' 'mrs' 'wiki')
 
-for database_name in ${general_databases[@]}
+for main_table in ${main_tables[@]}
 do
-	echo $database_name/$database_name.json
-	mongoexport -d $database_name -c $database_name -o $database_name/$database_name.json
+	echo $main_database/$main_table.json
+	mongoexport -d $main_database -c $main_table -o $main_database/$main_table.json
 done
 
 for database_name in ${specific_databases[@]}

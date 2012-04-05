@@ -156,6 +156,14 @@
                          array('class' => 'ttc-button')
                          );
             ?>
+            <br /><br />
+            <?php echo $this->Html->link(__('Unattached Messages'),
+	                array('program'=> $programUrl, 
+	                'controller' => 'programUnattachedMessages', 
+                        'action' => 'index'),
+                         array('class' => 'ttc-button')
+                         );
+            ?>
 	</div>
 	</div>
 	<div class='ttc-info'>

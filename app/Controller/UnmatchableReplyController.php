@@ -20,7 +20,7 @@ class UnmatchableReplyController extends AppController
         parent::constructClasses();
         
         $options = array(
-            'database' => 'unmatchable_reply'
+            'database' => 'vusion'
             );
         
         $this->UnmatchableReply = new UnmatchableReply($options);

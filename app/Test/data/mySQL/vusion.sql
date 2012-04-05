@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 02, 2012 at 02:50 PM
+-- Generation Time: Apr 04, 2012 at 02:39 PM
 -- Server version: 5.5.16
 -- PHP Version: 5.3.8
 
@@ -19,9 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `vusion`
 --
-
 USE 'vusion';
-
 -- --------------------------------------------------------
 
 --
@@ -37,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `acos` (
   `lft` int(11) DEFAULT NULL,
   `rght` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=96 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=106 ;
 
 --
 -- Dumping data for table `acos`
@@ -73,7 +71,7 @@ INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 (36, 1, '', 0, 'AclExtras', 58, 59),
 (37, 1, '', 0, 'Mongodb', 60, 61),
 (44, 28, '', 0, 'initDB', 53, 54),
-(1, 0, '', 0, 'controllers', 1, 128),
+(1, 0, '', 0, 'controllers', 1, 138),
 (72, 59, NULL, NULL, 'index', 65, 66),
 (59, 1, NULL, NULL, 'ProgramSettings', 62, 69),
 (60, 59, NULL, NULL, 'edit', 63, 64),
@@ -107,7 +105,12 @@ INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 (92, 87, NULL, NULL, 'active', 119, 120),
 (93, 87, NULL, NULL, 'validateKeyword', 121, 122),
 (94, 1, NULL, NULL, 'UnmatchableReply', 124, 127),
-(95, 94, NULL, NULL, 'index', 125, 126);
+(95, 94, NULL, NULL, 'index', 125, 126),
+(101, 1, NULL, NULL, 'ProgramUnattachedMessages', 128, 137),
+(102, 101, NULL, NULL, 'index', 129, 130),
+(103, 101, NULL, NULL, 'add', 131, 132),
+(104, 101, NULL, NULL, 'edit', 133, 134),
+(105, 101, NULL, NULL, 'delete', 135, 136);
 
 -- --------------------------------------------------------
 

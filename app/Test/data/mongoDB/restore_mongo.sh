@@ -5,16 +5,19 @@ path=./app/Test/data/mongoDB
 #Drop all databases
 mongo $path/dropAll.js
 
-#general databases
-general_databases=('shortcodes' 'unmatchable_reply')
+#main database
+main_database=('vusion')
+
+#general tables
+main_tables=('shortcodes' 'unmatchable_reply')
 
 #program specific
 specific_databases=('m4h' 'mrs' 'wiki')
 
-for database_name in ${general_databases[@]}
+for main_table in ${main_tables[@]}
 do
-	echo $path/$database_name/$database_name.json
-	mongoimport -drop -d $database_name -c $database_name $path/$database_name/$database_name.json
+	echo $path/$main_database/$main_table.json
+	mongoimport -drop -d $main_database -c $main_table $path/$main_database/$main_table.json
 done
 
 for database_name in ${specific_databases[@]}

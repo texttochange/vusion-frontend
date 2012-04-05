@@ -12,7 +12,7 @@
 	<tr>
 		<td><?php echo h($shortcode['ShortCode']['country']); ?>&nbsp;</td>
 		<td><?php echo h($shortcode['ShortCode']['shortcode']); ?>&nbsp;</td>
-		<td><?php echo h($shortcode['ShortCode']['internationalprefix']); ?>&nbsp;</td>
+		<td><?php echo h($shortcode['ShortCode']['international-prefix']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $shortcode['ShortCode']['_id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to delete # %s?', $shortcode['ShortCode']['_id'])); ?>

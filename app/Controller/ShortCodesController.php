@@ -23,7 +23,7 @@ class ShortCodesController extends AppController
         
         if (!Configure::read("mongo_db")) {
             $options = array(
-                'database' => 'shortcodes'
+                'database' => 'vusion'
                 );
         } else {
             $options = array(
