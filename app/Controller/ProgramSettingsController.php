@@ -26,7 +26,7 @@ class ProgramSettingsController extends AppController
         
         $this->ProgramSetting = new ProgramSetting($options);
         
-        $optionsShortCode = array('database' => 'shortcodes');
+        $optionsShortCode = array('database' => 'vusion');
         $this->ShortCode  = new ShortCode($optionsShortCode);
     }
 
