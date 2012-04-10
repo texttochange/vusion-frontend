@@ -80,18 +80,24 @@ class ScriptHelper
     }
     
     
-    public function hasKeyword($script, $keyword)
+    public function hasKeyword(&$currentLayer, $keyword)
     {
-        if (isset($script[0]) and isset($script[0]['Script']['script']['dialogues'])) {
-            foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
-                foreach ($dialogue['interactions'] as $interaction) {
-                    if ($interaction['type-interaction']=='question-answer'
-                    	    and strtolower($interaction['keyword']) == strtolower($keyword))
-                        return true;
-                }
-            }
-        }
-        return false;
+        if (!is_array($currentLayer)) {
+    	    return false;
+    	}
+    	
+    	foreach ($currentLayer as $key => &$value) {
+    	    if (!is_int($key) && ($key == 'keyword')) {
+    	        if (strtolower($value) == strtolower($keyword)) {
+    	            return true;
+    	        }
+    	        return false;
+    	    }
+    	    else if (is_array($value)) {
+    	        $result = $this->hasKeyword($value, $keyword);
+    	        return $result;
+    	    }
+    	}
     }
     
     
