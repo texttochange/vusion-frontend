@@ -43,9 +43,9 @@ class ScriptHelper
     public function recurseScriptDateConverter(&$currentLayer)
     {
 
-    	if (!is_array($currentLayer)) {
-    	    return true;
-    	}
+        if (!is_array($currentLayer)) {
+            return true;
+        }
 
         foreach ($currentLayer as $key => &$value) {
             if (!is_int($key) && ($key == 'date-time') && !$this->_validateDate($value)) {
@@ -83,60 +83,74 @@ class ScriptHelper
     public function hasKeyword(&$currentLayer, $keyword)
     {
         if (!is_array($currentLayer)) {
-    	    return false;
-    	}
-    	
-    	foreach ($currentLayer as $key => &$value) {
-    	    if (!is_int($key) && ($key == 'keyword')) {
-    	        if (strtolower($value) == strtolower($keyword)) {
-    	            return true;
-    	        }
-    	        return false;
-    	    }
-    	    else if (is_array($value)) {
-    	        $result = $this->hasKeyword($value, $keyword);
-    	        return $result;
-    	    }
-    	}
+            return false;
+        }
+        
+        foreach ($currentLayer as $key => &$value) {
+            if (!is_int($key) && ($key == 'keyword')) {
+                if (strtolower($value) == strtolower($keyword)) {
+                    return true;
+                }
+            }
+            else if (is_array($value)) {
+                if ($this->hasKeyword($value, $keyword))
+                    return true;
+            }
+        }
+        return false;
     }
     
     
-    public function hasNoMatchingAnswers($script, $status)
+    public function hasNoMatchingAnswers(&$currentLayer, $status)
     {
-    	    foreach ($script[0]['Script']['script']['dialogues'] as $dialogue) {
-                    
-                    if ($status['History']['dialogue-id']
-                            and $status['History']['dialogue-id'] == $dialogue['dialogue-id']) {
-                    
-                        foreach ($dialogue['interactions'] as $interaction) {
-                            if ($status['History']['interaction-id']
-                                and $status['History']['interaction-id'] == $interaction['interaction-id']) {
-                            
-                                if ($interaction['type-interaction'] == 'question-answer'
-                                    and $interaction['type-question'] == 'close-question') {
-                                
-                                    foreach ($interaction['answers'] as $key => $value) {
-                                        $response    = $interaction['keyword']." ".$value['choice'];
-                                        $responseTwo = $interaction['keyword']." ".($key+1);
-                                        if ($status['History']['message-content'] == $response
-                                            or $status['History']['message-content'] == $responseTwo) {
-                                        
-                                            break;
-                                            
-                                        } else if ($status['History']['message-content'] != $response
-                                            and $status['History']['message-content'] != $responseTwo
-                                            and $key == (count($interaction['answers'])-1)){
-                                                                                    
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+        if (!is_array($currentLayer)) {
+            return false;
+        }
+        
+        foreach ($currentLayer as $key => &$value) {
+            if (!is_int($key) && ($key == 'answers')) {
+                foreach($value as $answer => $choice) {
+		    $response    = $currentLayer['keyword']." ".$choice['choice'];
+		    $responseTwo = $currentLayer['keyword']." ".($answer+1);
+		    if ($this->_recurseStatus($status, $response, $responseTwo)) {
+		        if($answer==(count($value)-1))
+                            return true;
+                        else
+                            continue;
                     }
+                    return false;
+	        }
+            }
+            else if (is_array($value)) {
+                $result = $this->hasNoMatchingAnswers($value, $status);
+                return $result;
+            }
+        }
+        return false;
+    }
+    
+    
+    protected function _recurseStatus(&$newCurrentLayer, $response, $responseTwo)
+    {
+        if (!is_array($newCurrentLayer)) {
+            return false;
+        }
+        
+        foreach ($newCurrentLayer as $newKey => &$newValue) {
+            if (!is_int($newKey) && ($newKey == 'message-content')) {
+                if (strtolower($newValue) != strtolower($response)
+                	and strtolower($newValue) != strtolower($responseTwo)) {
+                    return true;
                 }
                 return false;
+            }
+            else if (is_array($newValue)) {
+                $newResult = $this->_recurseStatus($newValue, $response, $responseTwo);
+                return $newResult;
+            }
+        }
+        return false;
     }
-
-	
+    
+    
 }

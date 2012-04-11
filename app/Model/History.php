@@ -89,7 +89,7 @@ class History extends MongoModel
         $script = $query['script'];
         $filteredResults = array();
         
-        if (isset($csript)) {
+        if (isset($script)) {
             foreach ($results as $status) {
                 if ($this->scriptHelper->hasNoMatchingAnswers($script, $status))
                     $filteredResults[] = $status;
@@ -110,7 +110,7 @@ class History extends MongoModel
         $filteredResults = array();
         $results = $this->find('all');
         
-        if (isset($csript)) {
+        if (isset($script)) {
             foreach ($results as $status) {
                 if ($this->scriptHelper->hasNoMatchingAnswers($script, $status))
                     $filteredResults[] = $status;
