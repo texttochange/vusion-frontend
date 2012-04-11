@@ -131,7 +131,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->mock_program_access();
         
         $unattachedMessages = array(
-            'ProgramUnattachedMessages' => array(
+            'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
                 'schedule' => '05/04/2012 16:00'
@@ -153,7 +153,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->mock_program_access();
         
         $unattachedMessages = array(
-            'ProgramUnattachedMessages' => array(
+            'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
                 'schedule' => '05/04/2012 16:00'
@@ -166,7 +166,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             array(
             'method' => 'post',
             'data' => array(
-                'ProgramUnattachedMessages' => array(
+                'UnattachedMessage' => array(
                     'to' => 'all participants',
                     'content' => 'Bye!!!!',
                     'schedule' => '05/04/2012 16:00'
@@ -176,7 +176,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         );
         //print_r($this->result);
         $this->assertEquals('Bye!!!!',
-            $this->result['ProgramUnattachedMessages']['content']
+            $this->result['UnattachedMessage']['content']
         );            
     }
 
@@ -186,7 +186,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->mock_program_access();
         
         $unattachedMessages = array(
-            'ProgramUnattachedMessages' => array(
+            'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
                 'schedule' => '05/04/2012 16:00'
