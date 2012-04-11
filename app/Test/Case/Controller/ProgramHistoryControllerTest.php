@@ -57,7 +57,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     protected function instanciateHistoryModel()
     {
-        $options                         = array('database' => $this->programData[0]['Program']['database']);
+        $options               = array('database' => $this->programData[0]['Program']['database']);
         $this->Status->History = new History($options);
     }
 

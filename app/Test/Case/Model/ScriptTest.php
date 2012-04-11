@@ -193,13 +193,13 @@ class ScriptTestCase extends CakeTestCase
         $id = $this->Script->save($data);
         $this->Script->makeDraftActive();    
 
-        $result = $this->Script->find('keyword', array('keyword'=>'FEEL'));
+        $result = $this->Script->find('hasKeyword', array('keyword'=>'FEEL'));
         $this->assertEquals(1, count($result));
 
-        $result = $this->Script->find('keyword', array('keyword'=>'NAME'));
+        $result = $this->Script->find('hasKeyword', array('keyword'=>'NAME'));
         $this->assertEquals(1, count($result));      
 
-        $result = $this->Script->find('keyword', array('keyword'=>'BT'));
+        $result = $this->Script->find('hasKeyword', array('keyword'=>'BT'));
         $this->assertEquals(0, count($result));      
     }
 
