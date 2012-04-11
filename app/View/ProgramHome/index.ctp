@@ -176,7 +176,7 @@
 	<?php
 	foreach ($schedules as $schedule): ?>
 	<tr>
-		<td><?php echo $this->Time->format('d/m/Y h:i', $schedule['Schedule']['datetime']); ?>&nbsp;</td>
+		<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['Schedule']['datetime']); ?>&nbsp;</td>
 		<td><?php echo h($schedule['Schedule']['participant-phone']); ?>&nbsp;</td>
 	</tr>
 	<?php endforeach; ?>
