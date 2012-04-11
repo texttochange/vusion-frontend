@@ -3,7 +3,7 @@
 class ScriptHelper
 {
 
-    private function _validateDate($date)
+    public function validateDate($date)
     {
         if (preg_match('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $date, $parts) == true) {
             $time = gmmktime($parts[4], $parts[5], $parts[6], $parts[2], $parts[3], $parts[1]);
@@ -18,7 +18,7 @@ class ScriptHelper
     }
 
     //TODO to remove when client side javascrit is managing the format
-    private function _validateDateFromForm($date)
+    public function validateDateFromForm($date)
     {
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/', $date, $parts) == true) {
             /*$time = gmmktime($parts[4], $parts[5], 0, $parts[2], $parts[1], $parts[3]);
@@ -34,7 +34,7 @@ class ScriptHelper
     }
 
 
-    private function _convertDateFormat($date)
+    public function convertDateFormat($date)
     {
         return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
     }
@@ -47,9 +47,9 @@ class ScriptHelper
         }
 
         foreach ($currentLayer as $key => &$value) {
-            if (!is_int($key) && ($key == 'date-time') && !$this->_validateDate($value)) {
-                if ($this->_validateDateFromForm($value)) {
-                    $value = $this->_convertDateFormat($value);
+            if (!is_int($key) && ($key == 'date-time') && !$this->validateDate($value)) {
+                if ($this->validateDateFromForm($value)) {
+                    $value = $this->convertDateFormat($value);
                 } else {
                     return false;
                 }

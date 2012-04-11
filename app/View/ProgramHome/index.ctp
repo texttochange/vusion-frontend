@@ -2,6 +2,15 @@
 	<!--<h2><?php echo $programName . ' ' .  __('Home');?></h2>-->
 	<div class='ttc-actions'>
 	<h3><?php echo __('Status & Actions');?></h3>
+	<div class='ttc-info-box'>
+	<?php echo $this->Html->link(__('Unattached Messages'),
+	                array('program'=> $programUrl, 
+	                'controller' => 'programUnattachedMessages', 
+                        'action' => 'index'),
+                         array('class' => 'ttc-button')
+                         );
+            ?>
+            </div>
 	<?php if (!$hasScriptActive && !$hasScriptDraft) { ?>
 		<div class='ttc-info-box'>
 		<?php
@@ -157,13 +166,7 @@
                          );
             ?>
             <br /><br />
-            <?php echo $this->Html->link(__('Unattached Messages'),
-	                array('program'=> $programUrl, 
-	                'controller' => 'programUnattachedMessages', 
-                        'action' => 'index'),
-                         array('class' => 'ttc-button')
-                         );
-            ?>
+          
 	</div>
 	</div>
 	<div class='ttc-info'>
