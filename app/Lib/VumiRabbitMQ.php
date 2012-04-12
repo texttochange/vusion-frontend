@@ -49,36 +49,45 @@ class VumiRabbitMQ {
     //        return(false);
     //    }
     }
-    
+    /*
     public function sendInitMessageToWorker($to, $databaseName){
-        return $this->sendMessageTo('{"program":{"name":"'.$to.'","database-name":"'.$databaseName.'"}}' 
+    	    return $this->sendMessageTo('{"action": "init", "config": {"name":"'.$to.'","database-name":"'.$databaseName.'"}}' 
                 ,$to.'.control');
     }
     
+
     public function sendStartMessageToWorker($to, $msg){
         return $this->sendMessageTo($to.'.control', $msg);
-    }
+    }*/
 
     public function sendMessageToCreateWorker($application_name, $database_name){
         return $this->sendMessageTo(
-        	'vusion.control', 
-        	array(
-        		'message_type' => 'add_worker',
-        		'worker_name' => $database_name,
-        		'worker_class' => 'vusion.TtcGenericWorker',
-        		'config' => array(
-        			'application_name' =>  $database_name,
-        			'transport_name' => $database_name,
-        			'control_name' => $database_name,
-        			'database_name' => $database_name,
-        			'dispatcher_name' => 'dispatcher'
-        			)
-        		) 
-        	);
+            'vusion.control', 
+            array(
+                'message_type' => 'add_worker',
+                'worker_name' => $database_name,
+                'worker_class' => 'vusion.TtcGenericWorker',
+                'config' => array(
+                    'application_name' =>  $database_name,
+                    'transport_name' => $database_name,
+                    'control_name' => $database_name,
+                    'database_name' => $database_name,
+                    'dispatcher_name' => 'dispatcher'
+                    )
+                ) 
+            );
     }
+
+    public function sendMessageToUpdateSchedule($to){
+        return $this->sendMessageTo(
+            $to.'.control',
+            array('action' => 'update-schedule')
+            );
+    }
+
     
     public function sendMessageTo($to, $msg) {
-        echo "Send RabbitMQ message to:".$to;
+        //echo "Send RabbitMQ message to:".$to;
         //print_r($msg);
         require_once('php-amqplib/amqp.inc');
         

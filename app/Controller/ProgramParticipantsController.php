@@ -3,13 +3,15 @@ App::uses('AppController','Controller');
 App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 
 
 class ProgramParticipantsController extends AppController
 {
 
     public $uses = array('Participant', 'History');
-    
+
+
     function constructClasses() 
     {
         parent::constructClasses();
@@ -19,6 +21,7 @@ class ProgramParticipantsController extends AppController
         $this->Participant    = new Participant($options);
         $this->History        = new History($options);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->VumiRabbitMQ   = new VumiRabbitMQ();
     }
 
 
@@ -38,7 +41,13 @@ class ProgramParticipantsController extends AppController
         $this->set(compact('participants'));        
     }
 
+
+    protected function _notifyUpdateBackendWorker($worker_name)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($worker_name);
+    }
     
+
     public function add() 
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
@@ -49,15 +58,17 @@ class ProgramParticipantsController extends AppController
         if ($this->request->is('post')) {
             $this->Participant->create();
             if ($this->Participant->save($this->request->data)) {
+                $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
                     array('class'=>'success-message')
                 );
+                /*
                 $this->redirect(array(
                     'program' => $programUrl,  
                     'controller' => 'programParticipants',
                     'action' => 'index'
-                    ));
+                    ));*/
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'));
             }

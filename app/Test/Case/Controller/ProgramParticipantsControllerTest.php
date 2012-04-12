@@ -102,6 +102,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 $this->programData[0]['Program']['name']
                 ));
      
+        return $Participants;
 
     }
 
