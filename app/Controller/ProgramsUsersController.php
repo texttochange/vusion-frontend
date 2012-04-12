@@ -50,7 +50,7 @@ class ProgramsUsersController extends AppController
             if ($this->ProgramsUser->save($this->request->data)) {
                 $this->Session->setFlash(__('The programs user has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -78,7 +78,7 @@ class ProgramsUsersController extends AppController
             if ($this->ProgramsUser->save($this->request->data)) {
                 $this->Session->setFlash(__('The programs user has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -110,7 +110,7 @@ class ProgramsUsersController extends AppController
         if ($this->ProgramsUser->delete()) {
             $this->Session->setFlash(__('Programs user deleted'),
                 'default',
-                array('class'=>'good-message')
+                array('class'=>'success-message')
             );
             $this->redirect(array('action' => 'index'));
         }

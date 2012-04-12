@@ -49,7 +49,7 @@ class ShortCodesController extends AppController
             if ($this->ShortCode->save($this->request->data)) {
                 $this->Session->setFlash(__('The shortcode has been saved.'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array(
                     'controller' => 'shortCodes',
@@ -76,7 +76,7 @@ class ShortCodesController extends AppController
                 $shortcode = $this->request->data;
                 $this->Session->setFlash(__('The shortcode has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('controller' => 'shortCodes',
                     'action' => 'index'
@@ -105,7 +105,7 @@ class ShortCodesController extends AppController
         if ($this->ShortCode->delete()) {
             $this->Session->setFlash(__('ShortCode deleted'),
                 'default',
-                array('class'=>'good-message')
+                array('class'=>'success-message')
             );
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'

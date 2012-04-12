@@ -210,9 +210,18 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
     public function testView()
     {
         $this->mockProgramAccess();
-            
-        $this->testAction('/testurl/scripts/draft', array('method' => 'get'));
         
+        $draft = array(
+            'script' => array(
+                'do' => 'something'
+                )
+            );
+        $this->instanciateScriptModel();
+        $this->Scripts->Script->create();
+        $this->Scripts->Script->save($draft);
+        
+        $this->testAction('/testurl/scripts/draft', array('method' => 'get'));
+        $this->assertEquals($draft['script'], $this->vars['script']['script']);
     }
 
 
