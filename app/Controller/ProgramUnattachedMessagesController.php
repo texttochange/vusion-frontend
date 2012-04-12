@@ -45,7 +45,7 @@ class ProgramUnattachedMessagesController extends AppController
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array(
                     'program' => $programUrl,
@@ -75,7 +75,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $unattachedMessage = $this->request->data;
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array(
                     'program' => $programUrl,
@@ -110,7 +110,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->UnattachedMessage->delete()) {
             $this->Session->setFlash(__('Message deleted'),
                 'default',
-                array('class'=>'good-message')
+                array('class'=>'success-message')
             );
             $this->redirect(array(
                'program' => $programUrl,

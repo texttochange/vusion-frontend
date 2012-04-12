@@ -93,7 +93,7 @@ class ProgramsController extends AppController
             if ($this->Program->save($this->request->data)) {
                 $this->Session->setFlash(__('The program has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->_startBackendWorker(
                     $this->request->data['Program']['url'],
@@ -132,7 +132,7 @@ class ProgramsController extends AppController
             if ($this->Program->save($this->request->data)) {
                 $this->Session->setFlash(__('The program has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -162,7 +162,7 @@ class ProgramsController extends AppController
         if ($this->Program->delete()) {
             $this->Session->setFlash(__('Program deleted'),
                 'default',
-                array('class'=>'good-message')
+                array('class'=>'success-message')
             );
             $this->redirect(array('action' => 'index'));
         }

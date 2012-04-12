@@ -54,7 +54,7 @@ class GroupsController extends AppController
             if ($this->Group->save($this->request->data)) {
                 $this->Session->setFlash(__('The group has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -80,7 +80,7 @@ class GroupsController extends AppController
             if ($this->Group->save($this->request->data)) {
                 $this->Session->setFlash(__('The group has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -110,7 +110,7 @@ class GroupsController extends AppController
         if ($this->Group->delete()) {
             $this->Session->setFlash(__('Group deleted'),
                 'default',
-                array('class'=>'good-message')
+                array('class'=>'success-message')
             );
             $this->redirect(array('action' => 'index'));
         }

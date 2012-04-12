@@ -51,7 +51,7 @@ class ProgramParticipantsController extends AppController
             if ($this->Participant->save($this->request->data)) {
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array(
                     'program' => $programUrl,  
@@ -81,7 +81,7 @@ class ProgramParticipantsController extends AppController
             if ($this->Participant->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'),
                     'default',
-                    array('class'=>'good-message')
+                    array('class'=>'success-message')
                 );
                 $this->redirect(array('program' => $programUrl, 'controller'=>'participants', 'action' => 'index'));
             } else {
@@ -108,7 +108,7 @@ class ProgramParticipantsController extends AppController
         if ($this->Participant->delete()) {
             $this->Session->setFlash(__('Participant deleted'),
                 'default',
-                array('class'=>'good-message')
+                array('class'=>'success-message')
             );
             $this->redirect(array('program' => $programUrl,
                 'action' => 'index'
