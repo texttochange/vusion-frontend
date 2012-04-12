@@ -19,7 +19,7 @@ class Schedule extends MongoModel
      {
         if ($state == 'before') {
             $query['order']['datetime'] = 'asc';
-            $query['limit'] = 5;
+            $query['limit'] = 10;
             return $query;
         }
         return $results;
