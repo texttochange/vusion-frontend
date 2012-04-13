@@ -2,6 +2,8 @@
 
 App::uses('AppController', 'Controller');
 App::uses('UnattachedMessage', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramUnattachedMessagesController extends AppController
 {
@@ -26,6 +28,13 @@ class ProgramUnattachedMessagesController extends AppController
             );
         
         $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->Schedule          = new Schedule($options);
+        $this->VumiRabbitMQ      = new VumiRabbitMQ();
+    }
+
+    protected function _notifyUpdateBackendWorker($worker_name)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($worker_name);
     }
 
 
@@ -43,6 +52,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->UnattachedMessage->create();
             if ($this->UnattachedMessage->save($this->request->data)) {
+            	$this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
                     array('class'=>'success-message')
@@ -72,6 +82,7 @@ class ProgramUnattachedMessagesController extends AppController
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->UnattachedMessage->save($this->request->data)) {
+            	$this->_notifyUpdateBackendWorker($programUrl);
                 $unattachedMessage = $this->request->data;
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
@@ -108,6 +119,7 @@ class ProgramUnattachedMessagesController extends AppController
         }
         
         if ($this->UnattachedMessage->delete()) {
+            $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
             $this->Session->setFlash(__('Message deleted'),
                 'default',
                 array('class'=>'success-message')
@@ -119,11 +131,7 @@ class ProgramUnattachedMessagesController extends AppController
                ));
         }
         $this->Session->setFlash(__('Message was not deleted'));
-        /*$this->redirect(array(
-            'program' => $programUrl,
-	    'controller' => 'programUnattachedMessages',
-	    'action' => 'index'
-	    ));*/
+
     }
 
     

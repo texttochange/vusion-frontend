@@ -113,6 +113,9 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                     'Program' => array('find', 'count'),
                     'Group' => array()
                     ),
+                'methods' => array(
+                    '_notifyUpdateBackendWorker'
+                    )
                 )
             );
         
@@ -513,6 +516,18 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
             );
 
         $this->assertEquals(1, $this->vars['result']['status']);
+    }
+
+
+    public function testActivateDraft()
+    {
+        $Scripts = $this->mockProgramAccess();
+        $Scripts
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+
+        $this->testAction('/testurl/scripts/activateDraft');       
     }
 
 
