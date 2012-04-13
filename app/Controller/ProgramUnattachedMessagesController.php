@@ -4,6 +4,7 @@ App::uses('AppController', 'Controller');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('ProgramSetting', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
@@ -28,6 +29,7 @@ class ProgramUnattachedMessagesController extends AppController
             );
         
         $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
         $this->Schedule          = new Schedule($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ();
     }
@@ -40,6 +42,9 @@ class ProgramUnattachedMessagesController extends AppController
 
     public function index()
     {
+        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+        $this->set(compact('programTimezone'));
+    	    
         $unattachedMessages = $this->paginate();
         $this->set(compact('unattachedMessages'));
     }
@@ -47,6 +52,9 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function add()
     {
+        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+        $this->set(compact('programTimezone'));
+    	    
         $programUrl = $this->params['program'];
         
         if ($this->request->is('post')) {
@@ -71,6 +79,9 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function edit()
     {
+        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+        $this->set(compact('programTimezone'));
+    	    
         $unattachedMessage = $this->params['unattchedMessage'];
         $id         = $this->params['id'];
         $programUrl = $this->params['program'];
@@ -131,7 +142,6 @@ class ProgramUnattachedMessagesController extends AppController
                ));
         }
         $this->Session->setFlash(__('Message was not deleted'));
-
     }
 
     
