@@ -29,7 +29,8 @@ class Participant extends MongoModel
     public function beforeValidate()
     {
          $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
-         $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
+         if (isset($this->data['Participant']['name']))
+             $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
          return true;
     }
     

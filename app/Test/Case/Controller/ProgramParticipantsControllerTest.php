@@ -1,6 +1,7 @@
 <?php
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramParticipantsController', 'Controller');
+App::uses('Schedule', 'Model');
 
 class TestProgramParticipantsController extends ProgramParticipantsController 
 {
@@ -37,8 +38,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         parent::setUp();
 
         $this->Participants = new TestProgramParticipantsController();
-        ClassRegistry::config(array('ds' => 'test'));
-        
+        //ClassRegistry::config(array('ds' => 'test'));
+        $this->instanciateParticipantModel();
+        $this->instanciateScheduleModel();
         $this->dropData();
     }
 
@@ -47,14 +49,20 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         $this->instanciateParticipantModel();
         $this->Participants->Participant->deleteAll(true, false);
+        $this->Participants->Schedule->deleteAll(true,false);
     }
 
 
     protected function instanciateParticipantModel() 
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
+        $options = array('database' => $this->programData[0]['Program']['database']);   
         $this->Participants->Participant = new Participant($options);
+    }
+
+     protected function instanciateScheduleModel() 
+    {
+        $options = array('database' => $this->programData[0]['Program']['database']);   
+        $this->Participants->Schedule = new Schedule($options);
     }
 
 
@@ -75,12 +83,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
-            ),
+                ),
             'models' => array(
                 'Program' => array('find', 'count'),
                 'Group' => array()
-            ),
-        ));
+                ),
+            'methods' => array(
+                '_notifyUpdateBackendWorker'
+                )
+            ));
         
         $Participants->Acl
             ->expects($this->any())
@@ -134,7 +145,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testImport_csv_duplicate() 
     {
 
-        $this->mock_program_access();
+        $Participants = $this->mock_program_access();
+        $Participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+        
 
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
@@ -166,7 +182,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testImport_xls_duplicate() 
     {
-        $this->mock_program_access();
+        $Participants = $this->mock_program_access();
+        $Participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
 
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
@@ -198,8 +218,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
     public function testImport_xls() 
     {
-        $this->mock_program_access();
-
+        $Participants = $this->mock_program_access();
+        $Participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+        
         $this->testAction("/testurl/participants/import", array(
             'method' => 'post',
             'data' => array(
@@ -238,6 +262,101 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $phoneNumber    ='782123044 ';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('782123044', $newPhoneNumber);
+    }
+
+    public function testDeleteParticipant()
+    {
+        $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '06',
+                'name' => 'oliv',
+                )
+            );
+
+        $this->Participants->Participant->create();
+        $participantDB = $this->Participants->Participant->save($participant);
+
+        $scheduleToBeDeleted = array(
+            'Schedule' => array(
+                'participant-phone' => '06',
+                )
+            );
+
+        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->save($scheduleToBeDeleted);
+
+        $scheduleToStay = array(
+            'Schedule' => array(
+                'participant-phone' => '07',
+                )
+            );
+
+        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->save($scheduleToStay);
+
+        $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']);
+        
+        $this->assertEquals(
+            0,
+            $this->Participants->Participant->find('count')
+            );
+        $this->assertEquals(
+            1,
+            $this->Participants->Schedule->find('count')
+            );
+
+    }
+
+
+    public function testEditParticipant()
+    {
+        $Participants = $this->mock_program_access();
+        $Participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '06',
+             )
+        );
+
+        $this->Participants->Participant->create();
+        $participantDB = $this->Participants->Participant->save($participant);
+
+        $scheduleToBeDeleted = array(
+            'Schedule' => array(
+                'participant-phone' => '06',
+                )
+            );
+
+        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->save($scheduleToBeDeleted);
+
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '07'
+                        )
+                    )
+                ));
+        
+        $this->assertEquals(
+            1,
+            $this->Participants->Participant->find('count')
+            );
+        $this->assertEquals(
+            0,
+            $this->Participants->Schedule->find('count')
+            );
+        
+
     }
 
 

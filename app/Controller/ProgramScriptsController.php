@@ -2,10 +2,10 @@
 
 App::uses('AppController','Controller');
 App::uses('Script','Model');
-//App::uses('VumiSupervisord','Lib');
-//App::uses('VumiRabbitMQ', 'Lib');
 App::uses('Program', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
+
 
 class ProgramScriptsController extends AppController
 {
@@ -32,8 +32,7 @@ class ProgramScriptsController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Script         = new Script($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        
-        //$this->VumiRabbitMQ = new VumiRabbitMQ();
+        $this->VumiRabbitMQ   = new VumiRabbitMQ();
     }
 
 
@@ -114,20 +113,19 @@ class ProgramScriptsController extends AppController
     }
 
 
+    protected function _notifyUpdateBackendWorker($worker_name)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($worker_name);
+    }
+
+
     public function activateDraft()
     {
         $programUrl = $this->params['program'];
 
-        $this->Script->makeDraftActive();
-        
-        /*
-        $result_supervisord = $this->VumiSupervisord->startWorker($programUrl);
-        $result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
-            $programUrl, 
-            $this->Session->read($programUrl.'_db'));
-        $this->VumiRabbitMQ->sendStartMessageToWorker($programUrl);
-        */
-        //$this->set(compact('programName', 'result_db', 'result_supervisord'));
+        $this->Script->makeDraftActive(); 
+        $this->_notifyUpdateBackendWorker($programUrl);
+   
         $this->redirect(array('program'=>$programUrl, 'controller'=>'programHome'));
     }
 
