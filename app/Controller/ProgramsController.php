@@ -110,9 +110,9 @@ class ProgramsController extends AppController
     /** 
     * function redirection to allow mocking in the testcases
     */
-    protected function _startBackendWorker($worker_name, $database_name)
+    protected function _startBackendWorker($workerName, $databaseName)
     {
-        $this->VumiRabbitMQ->sendMessageToCreateWorker($worker_name,$database_name);    	 
+        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
     }
 
 

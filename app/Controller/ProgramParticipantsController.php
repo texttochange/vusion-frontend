@@ -38,15 +38,15 @@ class ProgramParticipantsController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	
+        
         $participants = $this->paginate();
         $this->set(compact('participants'));        
     }
 
 
-    protected function _notifyUpdateBackendWorker($worker_name)
+    protected function _notifyUpdateBackendWorker($workerName)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($worker_name);
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
     }
     
 
@@ -54,7 +54,7 @@ class ProgramParticipantsController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	
+        
         $programUrl = $this->params['program'];
  
         if ($this->request->is('post')) {
@@ -81,7 +81,7 @@ class ProgramParticipantsController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	
+        
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
         
@@ -92,12 +92,12 @@ class ProgramParticipantsController extends AppController
         $participant = $this->Participant->read();
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Participant->save($this->request->data)) {
-            	$this->Schedule->deleteAll(
+                $this->Schedule->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false
                     );
                 $this->_notifyUpdateBackendWorker($programUrl);
-            	$this->Session->setFlash(__('The participant has been saved.'),
+                $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
                     array('class'=>'success-message')
                 );
@@ -129,18 +129,24 @@ class ProgramParticipantsController extends AppController
                 array('participant-phone' => $participant['Participant']['phone']),
                 false
                 );
-            $this->Session->setFlash(__('Participant and related schedule deleted'),
+            $this->Session->setFlash(
+                __('Participant and related schedule deleted'),
                 'default',
                 array('class'=>'success-message')
             );
-            $this->redirect(array('program' => $programUrl,
-                'action' => 'index'
-                ));
+            $this->redirect(
+                array('program' => $programUrl,
+                    'action' => 'index'
+                    )
+                );
         }
         $this->Session->setFlash(__('Participant was not deleted'));
-        $this->redirect(array('program' => $programUrl,
+        $this->redirect(
+            array(
+                'program' => $programUrl,
                 'action' => 'index'
-                ));
+                )
+            );
     }
 
     
@@ -148,7 +154,7 @@ class ProgramParticipantsController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	
+        
         $id = $this->params['id'];
 
         $this->Participant->id = $id;
@@ -156,12 +162,13 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read(null, $id);
-        $histories   = $this->History->find('participant', array(
+        $histories   = $this->History->find(
+            'participant', 
+            array(
                 'phone' => $participant['Participant']['phone']
-            ));
-        $this->set(compact(
-            'participant',
-            'histories'));
+                )
+            );
+        $this->set(compact('participant','histories'));
     }
 
     
@@ -169,7 +176,7 @@ class ProgramParticipantsController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	
+        
         require_once 'excel_reader2.php';
         //$data = new Spreadsheet_Excel_Reader("example.xls");
 
@@ -226,7 +233,8 @@ class ProgramParticipantsController extends AppController
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
         $entries              = array();
         $participant          = array();
-        $count = 0;
+        $count                = 0;
+
         while (!feof($importedParticipants)) {                    
             $entries[] = fgets($importedParticipants);
             if ($count > 0 && $entries[$count]) {

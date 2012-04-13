@@ -148,7 +148,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                     $this->programData[0]['Program']['name']
                     )
                 );
-    
+            
         return $scripts;
     }
 
@@ -374,7 +374,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
         $otherProgramScriptModel->makeDraftActive();
 
         $programSettingModel = new ProgramSetting(
-        	array('database' => $this->programData[0]['Program']['database']));
+            array('database' => $this->programData[0]['Program']['database']));
         $programSettingModel->deleteAll(true,false);
         $programSettingModel->create();
         $programSettingModel->save(
@@ -398,7 +398,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
     public function testValidateKeyword_UsedInOtherScriptWithDifferentShortcode()
     {
         $this->mockProgramAccess();
-    	            
+
         $otherProgramScriptModel = $this->instanciateScriptMultiModel('testdbprogram2');
         $otherProgramScriptModel->deleteAll(true, false);
         $otherProgramScriptModel->create();
@@ -521,8 +521,8 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
 
     public function testActivateDraft()
     {
-        $Scripts = $this->mockProgramAccess();
-        $Scripts
+        $scripts = $this->mockProgramAccess();
+        $scripts
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
