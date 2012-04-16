@@ -2,10 +2,10 @@
 
 App::uses('AppController','Controller');
 App::uses('Script','Model');
-//App::uses('VumiSupervisord','Lib');
-//App::uses('VumiRabbitMQ', 'Lib');
 App::uses('Program', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
+
 
 class ProgramScriptsController extends AppController
 {
@@ -32,8 +32,7 @@ class ProgramScriptsController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Script         = new Script($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        
-        //$this->VumiRabbitMQ = new VumiRabbitMQ();
+        $this->VumiRabbitMQ   = new VumiRabbitMQ();
     }
 
 
@@ -103,7 +102,7 @@ class ProgramScriptsController extends AppController
         
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	
+        
 
         if (count($draft)) {
             $script = $draft[0]['Script'];
@@ -114,20 +113,19 @@ class ProgramScriptsController extends AppController
     }
 
 
+    protected function _notifyUpdateBackendWorker($workerName)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
+    }
+
+
     public function activateDraft()
     {
         $programUrl = $this->params['program'];
 
-        $this->Script->makeDraftActive();
-        
-        /*
-        $result_supervisord = $this->VumiSupervisord->startWorker($programUrl);
-        $result_rabbitmq = $this->VumiRabbitMQ->sendInitMessageToWorker(
-            $programUrl, 
-            $this->Session->read($programUrl.'_db'));
-        $this->VumiRabbitMQ->sendStartMessageToWorker($programUrl);
-        */
-        //$this->set(compact('programName', 'result_db', 'result_supervisord'));
+        $this->Script->makeDraftActive(); 
+        $this->_notifyUpdateBackendWorker($programUrl);
+   
         $this->redirect(array('program'=>$programUrl, 'controller'=>'programHome'));
     }
 
@@ -153,8 +151,8 @@ class ProgramScriptsController extends AppController
         $programs          = $this->Program->find(
             'all', 
             array('conditions'=> 
-        	array('Program.url !='=> $this->params['program'])
-        	)
+            array('Program.url !='=> $this->params['program'])
+            )
         );
         $programSetting    = new ProgramSetting(
             array('database'=>($this->Session->read($this->params['program']."_db")))

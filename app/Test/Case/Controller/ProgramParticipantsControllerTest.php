@@ -1,8 +1,9 @@
 <?php
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramParticipantsController', 'Controller');
+App::uses('Schedule', 'Model');
 
-class TestProgramParticipantsController extends ProgramParticipantsController 
+class TestProgramParticipantsController extends ProgramParticipantsController
 {
 
     public $autoRender = false;
@@ -17,9 +18,8 @@ class TestProgramParticipantsController extends ProgramParticipantsController
 }
 
 
-class ProgramParticipantsControllerTestCase extends ControllerTestCase 
+class ProgramParticipantsControllerTestCase extends ControllerTestCase
 {
-
 
     var $programData = array(
         0 => array( 
@@ -37,8 +37,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         parent::setUp();
 
         $this->Participants = new TestProgramParticipantsController();
-        ClassRegistry::config(array('ds' => 'test'));
-        
+        $this->instanciateParticipantModel();
+        $this->instanciateScheduleModel();
         $this->dropData();
     }
 
@@ -47,18 +47,26 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         $this->instanciateParticipantModel();
         $this->Participants->Participant->deleteAll(true, false);
+        $this->Participants->Schedule->deleteAll(true,false);
     }
 
 
     protected function instanciateParticipantModel() 
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
+        $options = array('database' => $this->programData[0]['Program']['database']);   
+
         $this->Participants->Participant = new Participant($options);
     }
 
+    protected function instanciateScheduleModel()
+    {
+        $options = array('database' => $this->programData[0]['Program']['database']);   
 
-    public function tearDown() 
+        $this->Participants->Schedule = new Schedule($options);
+    }
+
+
+    public function tearDown()
     {
         
         $this->dropData();
@@ -71,28 +79,33 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
     public function mock_program_access()
     {
-        $Participants = $this->generate('ProgramParticipants', array(
-            'components' => array(
-                'Acl' => array('check'),
-                'Session' => array('read')
-            ),
-            'models' => array(
-                'Program' => array('find', 'count'),
-                'Group' => array()
-            ),
-        ));
+        $participants = $this->generate(
+            'ProgramParticipants', array(
+                'components' => array(
+                    'Acl' => array('check'),
+                    'Session' => array('read')
+                    ),
+                'models' => array(
+                    'Program' => array('find', 'count'),
+                    'Group' => array()
+                    ),
+                'methods' => array(
+                    '_notifyUpdateBackendWorker'
+                    )
+                )
+            );
         
-        $Participants->Acl
+        $participants->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->returnValue('true'));
         
-        $Participants->Program
+        $participants->Program
             ->expects($this->once())
             ->method('find')
             ->will($this->returnValue($this->programData));
             
-        $Participants->Session
+        $participants->Session
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls(
@@ -102,7 +115,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 $this->programData[0]['Program']['name']
                 ));
      
-
+        return $participants;
     }
 
 
@@ -115,15 +128,21 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $this->mock_program_access();
 
-        $this->testAction("/testurl/participants/import", array(
-            'method' => 'post',
-            'data' => array(
-                'Import'=> array(
-                    'file' => array(
-                        'error' => 0,
-                        'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                        'name' => 'wellformattedparticipants.csv')))
-            ));
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+                            'name' => 'wellformattedparticipants.csv'
+                            )
+                        )
+                    )
+                )
+            );
 
         $participantInDatabase = $this->Participants->Participant->find('count');
         $this->assertEquals(2, $participantInDatabase);
@@ -133,81 +152,126 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testImport_csv_duplicate() 
     {
 
-        $this->mock_program_access();
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+        
 
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
-        $this->Participants->Participant->save(array(
-            'phone' => '256712747841',
-            'name' => 'Gerald'
-            ));
+        $this->Participants->Participant->save(
+            array(
+                'phone' => '256712747841',
+                'name' => 'Gerald'
+                )
+            );
 
 
-        $this->testAction("/testurl/participants/import", array(
-            'method' => 'post',
-            'data' => array(
-                'Import'=> array(
-                    'file' => array(
-                        'error' => 0,
-                        'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                        'name' => 'wellformattedparticipants.csv')))
-            ));
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+                            'name' => 'wellformattedparticipants.csv'
+                            )
+                        )
+                    )
+                )
+            );
 
         $participantInDatabase = $this->Participants->Participant->find('count');
         $this->assertEquals(2, $participantInDatabase);
 
         
-        $this->assertEquals('256788601462,"Olivier Vernin" insert ok', $this->vars['entries'][1]);
-        $this->assertEquals('256712747841,"Gerald Ankunda" duplicated phone line 3', $this->vars['entries'][2]);
-
+        $this->assertEquals(
+            '256788601462,"Olivier Vernin" insert ok',
+            $this->vars['entries'][1]
+            );
+        $this->assertEquals(
+            '256712747841,"Gerald Ankunda" duplicated phone line 3',
+            $this->vars['entries'][2]
+            );
     }
     
     
     public function testImport_xls_duplicate() 
     {
-        $this->mock_program_access();
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
 
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
-        $this->Participants->Participant->save(array(
-            'phone' => '256712747841',
-            'name' => 'Gerald'
-            ));
+        $this->Participants->Participant->save(
+            array(
+                'phone' => '256712747841',
+                'name' => 'Gerald'
+                )
+            );
 
 
-        $this->testAction("/testurl/participants/import", array(
-            'method' => 'post',
-            'data' => array(
-                'Import'=> array(
-                    'file' => array(
-                        'error' => 0,
-                        'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
-                        'name' => 'wellformattedparticipants.xls')))
-            ));
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
+                            'name' => 'wellformattedparticipants.xls'
+                            )
+                        )
+                    )
+                )
+            );
 
         $participantInDatabase = $this->Participants->Participant->find('count');
         $this->assertEquals(2, $participantInDatabase);
 
         
-        $this->assertEquals('256788601462,Olivier Vernin insert ok', $this->vars['entries'][2]);
-        $this->assertEquals('256712747841,Gerald Ankunda duplicated phone line 3', $this->vars['entries'][3]);
-
+        $this->assertEquals(
+            '256788601462,Olivier Vernin insert ok',
+            $this->vars['entries'][2]
+            );
+        $this->assertEquals(
+            '256712747841,Gerald Ankunda duplicated phone line 3',
+            $this->vars['entries'][3]
+            );
     }
 
 
     public function testImport_xls() 
     {
-        $this->mock_program_access();
-
-        $this->testAction("/testurl/participants/import", array(
-            'method' => 'post',
-            'data' => array(
-                'Import'=> array(
-                    'file' => array(
-                        'error' => 0,
-                        'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
-                        'name' => 'wellformattedparticipants.xls')))
-            ));
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
+                            'name' => 'wellformattedparticipants.xls'
+                            )
+                        )
+                    )
+                )
+            );
 
         $participantInDatabase = $this->Participants->Participant->find('count');
         $this->assertEquals(2, $participantInDatabase);
@@ -219,11 +283,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $phoneNumber    = '+712 747.841';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('712747841', $newPhoneNumber);
-        //echo $newPhoneNumber."<br />";
         
         $phoneNumber    = '0774521459';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        //$this->assertTrue($phoneNumber == $newPhoneNumber);        
         $this->assertFalse(strpos($newPhoneNumber, '0'));
         
         $phoneNumber    ='(0)782123123';
@@ -237,6 +299,99 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $phoneNumber    ='782123044 ';
         $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
         $this->assertEquals('782123044', $newPhoneNumber);
+    }
+
+    public function testDeleteParticipant()
+    {
+        $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '06',
+                'name' => 'oliv',
+                )
+            );
+
+        $this->Participants->Participant->create();
+        $participantDB = $this->Participants->Participant->save($participant);
+
+        $scheduleToBeDeleted = array(
+            'Schedule' => array(
+                'participant-phone' => '06',
+                )
+            );
+
+        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->save($scheduleToBeDeleted);
+
+        $scheduleToStay = array(
+            'Schedule' => array(
+                'participant-phone' => '07',
+                )
+            );
+
+        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->save($scheduleToStay);
+
+        $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']);
+        
+        $this->assertEquals(
+            0,
+            $this->Participants->Participant->find('count')
+            );
+        $this->assertEquals(
+            1,
+            $this->Participants->Schedule->find('count')
+            );
+    }
+
+
+    public function testEditParticipant()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '06',
+             )
+        );
+
+        $this->Participants->Participant->create();
+        $participantDB = $this->Participants->Participant->save($participant);
+
+        $scheduleToBeDeleted = array(
+            'Schedule' => array(
+                'participant-phone' => '06',
+                )
+            );
+
+        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->save($scheduleToBeDeleted);
+
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '07'
+                        )
+                    )
+                )
+            );
+        
+        $this->assertEquals(
+            1,
+            $this->Participants->Participant->find('count')
+            );
+        $this->assertEquals(
+            0,
+            $this->Participants->Schedule->find('count')
+            );
     }
 
 

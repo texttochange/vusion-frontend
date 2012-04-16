@@ -2,6 +2,8 @@
 
 App::uses('AppController', 'Controller');
 App::uses('UnattachedMessage', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 App::uses('ProgramSetting', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
@@ -27,8 +29,14 @@ class ProgramUnattachedMessagesController extends AppController
             );
         
         $this->UnattachedMessage = new UnattachedMessage($options);
-        
-        $this->ProgramSetting = new ProgramSetting($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
+        $this->Schedule          = new Schedule($options);
+        $this->VumiRabbitMQ      = new VumiRabbitMQ();
+    }
+
+    protected function _notifyUpdateBackendWorker($workerName)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
     }
 
 
@@ -36,7 +44,7 @@ class ProgramUnattachedMessagesController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	    
+            
         $unattachedMessages = $this->paginate();
         $this->set(compact('unattachedMessages'));
     }
@@ -46,25 +54,28 @@ class ProgramUnattachedMessagesController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	    
+            
         $programUrl = $this->params['program'];
         
         if ($this->request->is('post')) {
             $this->UnattachedMessage->create();
             if ($this->UnattachedMessage->save($this->request->data)) {
+                $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
                     array('class'=>'success-message')
                 );
-                $this->redirect(array(
-                    'program' => $programUrl,
-                    'controller' => 'programUnattachedMessages',
-                    'action' => 'index'
-                    ));
+                $this->redirect(
+                    array(
+                        'program' => $programUrl,
+                        'controller' => 'programUnattachedMessages',
+                        'action' => 'index'
+                        )
+                    );
             } else {
                 $this->Session->setFlash(__('The Message could not be saved.'));
             }
-        }    	    
+        }            
     }
     
     
@@ -72,10 +83,10 @@ class ProgramUnattachedMessagesController extends AppController
     {
         $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
         $this->set(compact('programTimezone'));
-    	    
+            
         $unattachedMessage = $this->params['unattchedMessage'];
-        $id         = $this->params['id'];
-        $programUrl = $this->params['program'];
+        $id                = $this->params['id'];
+        $programUrl        = $this->params['program'];
         
         $this->UnattachedMessage->id = $id;
         
@@ -84,16 +95,20 @@ class ProgramUnattachedMessagesController extends AppController
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->UnattachedMessage->save($this->request->data)) {
+                $this->_notifyUpdateBackendWorker($programUrl);
                 $unattachedMessage = $this->request->data;
-                $this->Session->setFlash(__('The Message has been saved.'),
+                $this->Session->setFlash(
+                    __('The Message has been saved.'),
                     'default',
                     array('class'=>'success-message')
-                );
-                $this->redirect(array(
-                    'program' => $programUrl,
-                    'controller' => 'programUnattachedMessages',
-                    'action' => 'index'
-                    ));
+                    );
+                $this->redirect(
+                    array(
+                        'program' => $programUrl,
+                        'controller' => 'programUnattachedMessages',
+                        'action' => 'index'
+                        )
+                    );
             } else {
                 $this->Session->setFlash(__('The Message could not be saved.'));
             }
@@ -120,15 +135,19 @@ class ProgramUnattachedMessagesController extends AppController
         }
         
         if ($this->UnattachedMessage->delete()) {
-            $this->Session->setFlash(__('Message deleted'),
+            $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
+            $this->Session->setFlash(
+                __('Message deleted'),
                 'default',
                 array('class'=>'success-message')
-            );
-            $this->redirect(array(
-               'program' => $programUrl,
-               'controller' => 'programUnattachedMessages',
-               'action' => 'index'
-               ));
+                );
+            $this->redirect(
+                array(
+                    'program' => $programUrl,
+                    'controller' => 'programUnattachedMessages',
+                    'action' => 'index'
+                    )
+                );
         }
         $this->Session->setFlash(__('Message was not deleted'));
     }
