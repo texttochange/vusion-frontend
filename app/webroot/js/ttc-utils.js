@@ -1,3 +1,14 @@
+function getNewDateUsingTimezone(timeOffset){
+	d = new Date();
+	localTime = d.getTime();
+	localOffset = d.getTimezoneOffset() * 60000; 
+	utc = localTime + localOffset;
+	offset = timeOffset;  
+	newTime = utc + (3600000*offset);
+	newDate = new Date(newTime);
+	return newDate;
+}
+
 function getCountryCodes(country){
 	//alert(country+" , "+countries[country]);
 	return countries[country];
