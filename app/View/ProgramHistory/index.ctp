@@ -24,6 +24,7 @@
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('type', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('status', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('failure reason', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('message', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('time', null, array('url'=> array('program' => $programUrl)));?></th>
 	</tr>
@@ -33,6 +34,7 @@
 		<td><?php echo h($status['History']['participant-phone']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-type']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-status']); ?>&nbsp;</td>
+		<td><?php if (isset($status['History']['failure-reason'])) echo h($status['History']['failure-reason']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-content']); ?>&nbsp;</td>
 		<td><?php echo $this->Time->format('d/m/Y H:i:s', $status['History']['timestamp']); ?>&nbsp;</td>
 	</tr>
