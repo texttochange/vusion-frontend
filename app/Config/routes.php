@@ -185,6 +185,14 @@
 			'action' => 'index'
 			)
 		);
+
+	Router::connect(
+		'/documentation',
+		array(
+			'controller' => 'documentation',
+			'action' => 'view'
+			)
+		);
 	
 	Router::connect(
 		'/',

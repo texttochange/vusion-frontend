@@ -239,3 +239,20 @@ var countries ={
 	"Zambia":260,
 	"Zimbabwe":263
 	};
+
+function addContentFormHelp() {
+	$.each($("[name*='content']").prev(":not(:has(img)) :not(div)"),
+		function (key, elt){
+			$("<img class='ttc-help' src='../../img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this)});
+		});
+}
+
+function requestHelp(elt) {
+	if ($($(elt).parent().next()).attr('class') == 'ttc-help-box') {
+		$(elt).parent().next().remove();
+		return;
+	}
+        $("<div class='ttc-help-box'><img src='../../img/ajax-loader.gif' /></div>").insertAfter($(elt).parent()).load('../../documentation', 
+                                                                                'topic=content');	
+}
+
