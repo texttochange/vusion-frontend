@@ -282,6 +282,49 @@ function activeForm(){
 				dateFormat:'dd/mm/yy'});
 			};
 	});
+	$("#dynamic-generic-program-form").validate();
+	$("input[name*='name']").each(function (item) {
+			$(this).rules("add",{
+				required:true
+			});
+	});
+	$("input[name*='date-time']").each(function (item) {
+			$(this).rules("add",{
+				required:true
+			});
+			$(this).rules("add",{
+				greaterThanOrEqualTo: Date.parse(new Date().toDateString()).toString('dd/MM/yyyy')
+			});
+	});
+	$("input[name*='keyword']").each(function (item) {
+			   $(this).rules("add",{
+			   required:true
+			    });
+	});
+	$("input[name*='type-question']:checked").each(function (item) {
+		if ($("input[name*='type-question']:checked").val() == "close-question") {
+			if($("input[name*='choice']").length == 0) {
+			    $("button[label='answer']").click();
+		    	}
+		}
+	});
+	$("input[name*='choice']").each(function (item) {
+		$(this).rules("add",{
+			required:true
+		});
+	});
+	
+	jQuery.validator.addMethod("greaterThanOrEqualTo", 
+		function(value, element, params) {
+			
+		if (!/Invalid|NaN/.test(new Date(value))) {
+			return new Date(value) >= new Date(params);
+		}
+			
+		return isNaN(value) && isNaN(params) 
+		|| (parseFloat(value) >= parseFloat(params)); 
+        },'Date must be greater than or equal to {0}.');
+
 	populateSelectableGoTo();
 }
 
