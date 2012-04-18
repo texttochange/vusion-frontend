@@ -122,9 +122,12 @@ class ProgramScriptsController extends AppController
     public function activateDraft()
     {
         $programUrl = $this->params['program'];
-
-        $this->Script->makeDraftActive(); 
-        $this->_notifyUpdateBackendWorker($programUrl);
+        if ($this->hasAllProgramSettings()) {
+            $this->Script->makeDraftActive(); 
+            $this->_notifyUpdateBackendWorker($programUrl);
+        } else {
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+        }
    
         $this->redirect(array('program'=>$programUrl, 'controller'=>'programHome'));
     }
@@ -186,6 +189,20 @@ class ProgramScriptsController extends AppController
             }
         }
         $this->set('result', array('status'=>1));
+    }
+    
+    
+    public function hasAllProgramSettings()
+    {
+        $programSetting = new ProgramSetting(
+            array('database'=>($this->Session->read($this->params['program']."_db")))
+        );
+        $shortCode = $programSetting->find('getProgramSetting', array('key'=>'shortcode'));
+        $timezone = $programSetting->find('getProgramSetting', array('key'=>'timezone'));        
+        if ($shortCode and $timezone) {
+            return true;
+        }
+        return false;
     }
 
 

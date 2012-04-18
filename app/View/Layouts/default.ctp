@@ -48,6 +48,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->script('ttc-generic-program.js');
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('datejs/date.js');
+		echo $this->Html->script('jquery-validation-1.9.0/jquery.validate.js');
 		
 		if (isset($this->Js)) {
 		//disappear success flash messages

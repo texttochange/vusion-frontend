@@ -5,9 +5,10 @@
 	<h3><?php echo __('Script'); ?></h3>
 	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>
 	
-	<?php	$this->Js->get("#dynamic-generic-program-form");
+	<?php
+        	$this->Js->get("#dynamic-generic-program-form");
 		$this->Js->each('$(this).buildTtcForm('.$this->Js->object($script).')', true); 
-		?>	
+	?>	
 </div>
 <div class='actions'>
 	<h3><?php echo __('Actions'); ?></h3>

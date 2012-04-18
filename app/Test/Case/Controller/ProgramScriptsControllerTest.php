@@ -529,6 +529,12 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
 
         $this->testAction('/testurl/scripts/activateDraft');       
     }
+    
+    
+    public function testHasAllProgramSettings()
+    {        
+        //To Do
+    }
 
 
 }
