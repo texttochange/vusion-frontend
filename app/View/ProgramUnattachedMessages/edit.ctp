@@ -14,7 +14,8 @@
 		echo $this->Form->input(__('content'), array('rows'=>5));
 		echo $this->Form->input(__('schedule'), array('id'=>'schedule',
 		                                              'value'=>$this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['schedule'])));
-		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();');
+		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();
+		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>

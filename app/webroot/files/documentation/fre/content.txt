@@ -1,0 +1,3 @@
+Vous pouvez personnaliser le contenu du message en utilisant un ou plusieurs tag(s).
+Par exemple: [participant.name] sera remplacer par le nom du participant. 
+Si le tag n'est pas défini, le message ne sera pas envoyer et une error sera reporter dans l'historique du program.
