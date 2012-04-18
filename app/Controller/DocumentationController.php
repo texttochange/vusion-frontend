@@ -20,8 +20,11 @@ class DocumentationController extends AppController
      public function view()
      {
          if (isset($this->params['url']['topic'])) {
+             $lang = Configure::read('Config.language');
+             if ($lang)
+                 $lang = $lang . "/";
              $topic = $this->params['url']['topic'];
-             $file = WWW_ROOT . "files/documentation/".$topic.".txt";
+             $file = WWW_ROOT . "files/documentation/".$lang.$topic.".txt";
              if (!file_exists($file)) {
                  $documentation = "Sorry, no help available for ". $topic;
              } else {
