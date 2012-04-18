@@ -13,7 +13,8 @@
 		echo "</div>";
 		echo $this->Form->input(__('content'), array('rows'=>5));
 		echo $this->Form->input(__('schedule'), array('id'=>'schedule'));
-		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();');
+		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();
+		                                           addContentFormHelp();');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>

@@ -101,7 +101,7 @@ class ProgramParticipantsController extends AppController
                     'default',
                     array('class'=>'success-message')
                 );
-                $this->redirect(array('program' => $programUrl, 'controller'=>'participants', 'action' => 'index'));
+                $this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
             }

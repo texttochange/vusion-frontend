@@ -41,7 +41,8 @@ var program = {"script": [
 	"radio-type-question": "radiobuttons", 
 	"type-question":{"close-question":"Close question","open-question":"Open question"},
 	"close-question": ["answers"],
-	"open-question": ["feedback"],
+	"open-question": ["answer-label", "feedback"],
+	"answer-label": "text",
 	"requests-responses":["add-request-response"],
 	"add-request-response":"button",
 	"request-response":["content","responses","actions"],
@@ -282,6 +283,7 @@ function activeForm(){
 				dateFormat:'dd/mm/yy'});
 			};
 	});
+
 	$("#dynamic-generic-program-form").validate();
 	$("input[name*='date-time']").each(function (item) {
 			$(this).rules("add",{
@@ -320,6 +322,7 @@ function activeForm(){
 		|| (parseFloat(value) >= parseFloat(params)); 
         },'Date must be greater than or equal to {0}.');
 
+	addContentFormHelp();
 	populateSelectableGoTo();
 }
 
