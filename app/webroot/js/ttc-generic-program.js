@@ -283,11 +283,6 @@ function activeForm(){
 			};
 	});
 	$("#dynamic-generic-program-form").validate();
-	$("input[name*='name']").each(function (item) {
-			$(this).rules("add",{
-				required:true
-			});
-	});
 	$("input[name*='date-time']").each(function (item) {
 			$(this).rules("add",{
 				required:true
