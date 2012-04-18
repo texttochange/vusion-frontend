@@ -10,6 +10,13 @@
                          array('class' => 'ttc-button')
                          );
             ?>
+        <?php echo $this->Html->link(__('Program Logs'),
+	                array('program'=> $programUrl, 
+	                'controller' => 'programLogs', 
+                        'action' => 'index'),
+                         array('class' => 'ttc-button')
+                         );
+            ?>
             </div>
 	<?php if (!$hasScriptActive && !$hasScriptDraft) { ?>
 		<div class='ttc-info-box'>

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 04, 2012 at 02:39 PM
+-- Generation Time: Apr 18, 2012 at 03:39 PM
 -- Server version: 5.5.16
 -- PHP Version: 5.3.8
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `vusion`
 --
-USE 'vusion';
+
 -- --------------------------------------------------------
 
 --
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `acos` (
   `lft` int(11) DEFAULT NULL,
   `rght` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=106 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=110 ;
 
 --
 -- Dumping data for table `acos`
@@ -71,7 +71,7 @@ INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 (36, 1, '', 0, 'AclExtras', 58, 59),
 (37, 1, '', 0, 'Mongodb', 60, 61),
 (44, 28, '', 0, 'initDB', 53, 54),
-(1, 0, '', 0, 'controllers', 1, 138),
+(1, 0, '', 0, 'controllers', 1, 146),
 (72, 59, NULL, NULL, 'index', 65, 66),
 (59, 1, NULL, NULL, 'ProgramSettings', 62, 69),
 (60, 59, NULL, NULL, 'edit', 63, 64),
@@ -110,7 +110,11 @@ INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 (102, 101, NULL, NULL, 'index', 129, 130),
 (103, 101, NULL, NULL, 'add', 131, 132),
 (104, 101, NULL, NULL, 'edit', 133, 134),
-(105, 101, NULL, NULL, 'delete', 135, 136);
+(105, 101, NULL, NULL, 'delete', 135, 136),
+(106, 1, NULL, NULL, 'Documentation', 138, 141),
+(107, 106, NULL, NULL, 'view', 139, 140),
+(108, 1, NULL, NULL, 'ProgramLogs', 142, 145),
+(109, 108, NULL, NULL, 'index', 143, 144);
 
 -- --------------------------------------------------------
 
@@ -164,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `aros_acos` (
   `_delete` varchar(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `aro_aco_key` (`aro_id`,`aco_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=98 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=102 ;
 
 --
 -- Dumping data for table `aros_acos`
@@ -203,7 +207,11 @@ INSERT INTO `aros_acos` (`id`, `aro_id`, `aco_id`, `_create`, `_read`, `_update`
 (94, 7, 84, '1', '1', '1', '1'),
 (95, 7, 74, '1', '1', '1', '1'),
 (96, 5, 94, '1', '1', '1', '1'),
-(97, 6, 94, '1', '1', '1', '1');
+(97, 6, 94, '1', '1', '1', '1'),
+(98, 5, 101, '1', '1', '1', '1'),
+(99, 6, 101, '1', '1', '1', '1'),
+(100, 5, 108, '1', '1', '1', '1'),
+(101, 6, 108, '1', '1', '1', '1');
 
 -- --------------------------------------------------------
 
