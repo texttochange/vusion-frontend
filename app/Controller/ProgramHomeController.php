@@ -21,6 +21,10 @@ class ProgramHomeController extends AppController
 
     public function index()
     {
+    	/*$redis = new Redis();
+    	$redis->connect('127.0.0.1');
+    	print_r($redis->zRange('wiki:logs',1, -1, true));*/
+
         $hasScriptActive  = count($this->Script->find('countActive'));
         $hasScriptDraft   = count($this->Script->find('countDraft'));
         $isScriptEdit     = $this->Acl->check(array(
