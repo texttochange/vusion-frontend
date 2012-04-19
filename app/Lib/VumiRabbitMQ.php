@@ -60,7 +60,8 @@ class VumiRabbitMQ {
         return $this->sendMessageTo($to.'.control', $msg);
     }*/
 
-    public function sendMessageToCreateWorker($application_name, $database_name){
+    public function sendMessageToCreateWorker($application_name, $database_name)
+    {
         return $this->sendMessageTo(
             'vusion.control', 
             array(
@@ -78,7 +79,22 @@ class VumiRabbitMQ {
             );
     }
 
-    public function sendMessageToUpdateSchedule($to){
+
+    public function sendMessageToCreateSimulatedWorker($database_name, $script_id)
+    {
+        return $this->sendMessageTo(
+            'vusion.control',
+            array(
+                'message_type' => 'simulate_script',
+                'database_name' => $database_name,
+                'script_id' => $script_id,
+                )
+            );
+    }
+
+
+    public function sendMessageToUpdateSchedule($to)
+    {
         return $this->sendMessageTo(
             $to.'.control',
             array('action' => 'update-schedule')
@@ -86,7 +102,8 @@ class VumiRabbitMQ {
     }
 
     
-    public function sendMessageTo($to, $msg) {
+    public function sendMessageTo($to, $msg)
+    {
         //echo "Send RabbitMQ message to:".$to;
         //print_r($msg);
         require_once('php-amqplib/amqp.inc');

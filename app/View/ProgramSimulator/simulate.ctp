@@ -17,14 +17,17 @@
 	    echo $this->Form->create(null, array('default'=>false));
 	    echo $this->Form->input('message', array('id' => 'simulator-input','value' => 'type here...', 'name'=>'message'));
 	    echo $this->Form->end(array('label' => __('Send Message'), 'id'=>'send-button'));
-	    $this->Js->get('#send-button');
-	    $this->Js->event(
+	    $this->Js->get('#send-button')->event(
 	           'click',
 	           $this->Js->request(
-	               array('program'=>$programUrl, 'action'=>'send'),
-	               array('async' => true, 
+	               array('program'=>$programUrl, 'action'=>'send.json'),
+	               array('method' => 'POST',
+                             'async' => true, 
 	                     'dataExpression' => true,
 	                     'data' => '$("#simulator-input").serialize()')));
+	     $this->Js->get('document')->event(
+	        'ready',
+	        'setInterval(function(){pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programUrl,'action'=>'receive.json')).'")}, 3000);');
 	    }
        ?>
 </div>

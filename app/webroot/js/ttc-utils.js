@@ -271,3 +271,13 @@ function requestHelp(elt, baseUrl) {
         'topic=content');
 }
 
+function pullSimulatorUpdate(url){
+    $.get(
+        url,
+    	function(data){
+    	    if (data['message']) {
+    	        $("#simulator-output").append("<div>"+data['message']+"</div>")
+    	    }
+    	});
+}
+
