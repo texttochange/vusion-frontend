@@ -14,8 +14,9 @@
 	} else { 
 	    echo $this->Html->tag('label', 'Exchanges');
 	    echo $this->Html->tag('div', "it's going be here...", array('class'=>'ttc-simulator-output', 'id' => 'simulator-output'));
-	    echo $this->Form->create(null, array('default'=>false));
-	    echo $this->Form->input('message', array('id' => 'simulator-input','value' => 'type here...', 'name'=>'message'));
+	    echo $this->Form->create(null, array('id'=>'simulator-input','default'=>false));
+	    echo $this->Form->input('from', array('value' => 'phone here...', 'name'=>'participant-phone'));
+	    echo $this->Form->input('message', array('value' => 'message here...', 'name'=>'message'));
 	    echo $this->Form->end(array('label' => __('Send Message'), 'id'=>'send-button'));
 	    $this->Js->get('#send-button')->event(
 	           'click',
@@ -24,7 +25,8 @@
 	               array('method' => 'POST',
                              'async' => true, 
 	                     'dataExpression' => true,
-	                     'data' => '$("#simulator-input").serialize()')));
+	                     'data' => '$("#simulator-input").serialize()',
+	                     'success' => 'logMessageSent()')));
 	     $this->Js->get('document')->event(
 	        'ready',
 	        'setInterval(function(){pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programUrl,'action'=>'receive.json')).'")}, 3000);');

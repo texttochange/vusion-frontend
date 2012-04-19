@@ -276,8 +276,15 @@ function pullSimulatorUpdate(url){
         url,
     	function(data){
     	    if (data['message']) {
-    	        $("#simulator-output").append("<div>"+data['message']+"</div>")
+    	    	    var message = $.parseJSON(data['message']);
+    	    	    $("#simulator-output").append("<div>> [time] from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
     	    }
     	});
 }
 
+function logMessageSent(){
+    var log = "> [time] from "+$('[name="participant-phone"]').val()+" '"+$('[name="message"]').val()+"'";
+    $('[name="participant-phone"]').val('')
+    $('[name="message"]').val('')
+    $('#simulator-output').append("<div>"+log+"</div>");
+}
