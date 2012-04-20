@@ -18,29 +18,30 @@ class ProgramSimulatorController extends AppController
     public function constructClasses()
     {
         parent::constructClasses();
-        $options            = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Script       = new Script($options);
+        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->Script         = new Script($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        $this->Participant  = new Participant($options);
-        $this->VumiRabbitMQ = new VumiRabbitMQ();
-        $this->redis        = new Redis();
+        $this->Participant    = new Participant($options);
+        $this->VumiRabbitMQ   = new VumiRabbitMQ();
+        $this->redis          = new Redis();
         $this->redis->connect('127.0.0.1');
     }
 
 
     public function beforeFilter()
     {
-    	parent::beforeFilter();
+        parent::beforeFilter();
         //$this->Auth->allow('*');
     }
 
 
-    public function simulate($id = null)
+    public function simulate()
     {
         $this->Script->id = $this->params['id'];
-        if (!$this->Script->exists()){
+        if (!$this->Script->exists()) {
             $this->Session->setFlash(
-                __('The script id is not in the database, please choose one available.'));
+                __('The script id is not in the database, please choose one available.')
+                );
             $scripts = array();
             if ($this->Script->find('draft'))
                 $scripts['draft'] = $this->Script->find('draft');
@@ -54,41 +55,41 @@ class ProgramSimulatorController extends AppController
     }
 
 
-    protected function _startSimulateScript($script_id)
+    protected function _startSimulateScript()
     {
-    	 $this->VumiRabbitMQ->sendMessageToRemoveWorker('simulator', 'simulator');
-    	 //$this->Script->id = $script_id;
-    	 $script = $this->Script->read();
-    	 
-    	 $options = array('database' => 'simulator');
+         $this->VumiRabbitMQ->sendMessageToRemoveWorker('simulator', 'simulator');
+         //$this->Script->id = $script_id;
+         $script = $this->Script->read();
+         
+         $options = array('database' => 'simulator');
 
-    	 $simulatorScriptModel = new Script($options);
-    	 $simulatorScriptModel->deleteAll(true, false);
-    	 $simulatorScriptModel->create();
-    	 $simulatorScriptModel->save($script);
-    	 $simulatorScriptModel->makeDraftActive();
-    	 
-    	 $programSettings = $this->ProgramSetting->find('all');
-    	 $simulatorProgramSettingModel = new ProgramSetting($options);
-    	 $simulatorProgramSettingModel->deleteAll(true, false);
-    	 foreach ($programSettings as $programSetting) {
-    	     $simulatorProgramSettingModel->create();
-    	     $simulatorProgramSettingModel->save($programSetting);
-    	 }
+         $simulatorScriptModel = new Script($options);
+         $simulatorScriptModel->deleteAll(true, false);
+         $simulatorScriptModel->create();
+         $simulatorScriptModel->save($script);
+         $simulatorScriptModel->makeDraftActive();
+         
+         $programSettings = $this->ProgramSetting->find('all');
+         $simulatorProgramSettingModel = new ProgramSetting($options);
+         $simulatorProgramSettingModel->deleteAll(true, false);
+         foreach ($programSettings as $programSetting) {
+             $simulatorProgramSettingModel->create();
+             $simulatorProgramSettingModel->save($programSetting);
+         }
 
-    	 $participants = $this->Participant->find('all');
-    	 $simulatorParticipantModel = new Participant($options);
-    	 $simulatorParticipantModel->deleteAll(true, false);
-    	 foreach ($participants as $participant) {
-    	     $simulatorParticipantModel->create();
-    	     $simulatorParticipantModel->save($participant);
-    	 }
+         $participants = $this->Participant->find('all');
+         $simulatorParticipantModel = new Participant($options);
+         $simulatorParticipantModel->deleteAll(true, false);
+         foreach ($participants as $participant) {
+             $simulatorParticipantModel->create();
+             $simulatorParticipantModel->save($participant);
+         }
 
-    	 $simulatorHistoryModel = new History($options);
-    	 $simulatorHistoryModel->deleteAll(true, false);
+         $simulatorHistoryModel = new History($options);
+         $simulatorHistoryModel->deleteAll(true, false);
 
-    	 $simulatorScheduleModel = new Schedule($options);
-    	 $simulatorScheduleModel->deleteAll(true,false);
+         $simulatorScheduleModel = new Schedule($options);
+         $simulatorScheduleModel->deleteAll(true,false);
 
          $this->VumiRabbitMQ->sendMessageToCreateWorker('simulator', 'simulator', 'simulator.disptacher');
          $this->VumiRabbitMQ->sendMessageToUpdateSchedule('simulator');
@@ -97,11 +98,9 @@ class ProgramSimulatorController extends AppController
 
     public function send()
     {
-        $programUrl = $this->params['program'];
-        if ($this->request->is('post')) {
+       if ($this->request->is('post')) {
             $message = $this->request->data['message'];
-            $from = $this->request->data['participant-phone'];
-            //$this->redis->lPush('vusion:'.$programUrl.':simulator:inbound', $message);
+            $from    = $this->request->data['participant-phone'];
             $this->VumiRabbitMQ->sendMessageToWorker('simulator', $from, $message);
         }
     }
@@ -109,7 +108,6 @@ class ProgramSimulatorController extends AppController
 
     public function receive()
     {
-        $programUrl = $this->params['program'];
         $message = $this->VumiRabbitMQ->getMessageFrom('simulator.outbound');
         $this->set(compact('message'));
     }
