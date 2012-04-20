@@ -31,7 +31,7 @@ class ProgramSimulatorController extends AppController
     public function beforeFilter()
     {
     	parent::beforeFilter();
-        $this->Auth->allow('*');
+        //$this->Auth->allow('*');
     }
 
 
@@ -41,10 +41,11 @@ class ProgramSimulatorController extends AppController
         if (!$this->Script->exists()){
             $this->Session->setFlash(
                 __('The script id is not in the database, please choose one available.'));
-            $scripts= array(
-            	    'currently active' => $this->Script->find('active'),
-            	    'draft' => $this->Script->find('draft')
-            	    );
+            $scripts = array();
+            if ($this->Script->find('draft'))
+                $scripts['draft'] = $this->Script->find('draft');
+            if ($this->Script->find('active'))
+                $script['currently active'] = $this->Script->find('active');
             $this->set(compact('scripts'));
             return;
         }

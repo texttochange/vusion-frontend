@@ -3,6 +3,7 @@
 	<?php 
         if (isset($scripts)) {
             echo $this->Form->create(null, array('default'=>false));
+            $options = array();
             foreach ($scripts as $label => $script) {
                 $options[$script[0]['Script']['_id']] = $label;
                 }
