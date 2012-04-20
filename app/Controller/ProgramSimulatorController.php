@@ -23,8 +23,6 @@ class ProgramSimulatorController extends AppController
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Participant    = new Participant($options);
         $this->VumiRabbitMQ   = new VumiRabbitMQ();
-        $this->redis          = new Redis();
-        $this->redis->connect('127.0.0.1');
     }
 
 
