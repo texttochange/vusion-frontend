@@ -1,6 +1,7 @@
 <?php
 App::uses('Controller', 'Controller');
 App::uses('VumiSupervisord', 'Lib');
+App::uses('ProgramSetting', 'Model');
 
 class AppController extends Controller
 {
@@ -69,10 +70,15 @@ class AppController extends Controller
                 //$this->redirect('/');
                 throw new NotFoundException('Could not find this page.');
             } else {
+            	$database_name = $data[0]['Program']['database'];
                 $this->Session->write($this->params['program'] . '_name', $data[0]['Program']['name']);
-                $this->Session->write($this->params['program'] . '_db', $data[0]['Program']['database']);
+                $this->Session->write($this->params['program'] . '_db', $database_name);
                 $this->set('programUrl', $this->params['program']);
                 $this->set('programName', $data[0]['Program']['name']);
+                $programSettingModel = new ProgramSetting(array('database' => $database_name));
+                $programTimezone = $programSettingModel->find('programSetting', array('key' => 'timezone'));
+                $this->set(compact('programTimezone'));
+      
             }
         }
         $this->VumiSupervisord = new VumiSupervisord();

@@ -193,3 +193,13 @@
 .ttc-help-box {
 	background: #EDEDED;
 }
+
+.ttc-simulator-output {
+	border: 1px solid black;
+	height: 200px;
+	overflow-y: scroll;
+	margin-bottom: 30px;
+}
+
+.ttc-simulator-input {
+}
