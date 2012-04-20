@@ -203,7 +203,7 @@ class VumiRabbitMQ {
         $ch = $conn->channel();
         $ch->access_request('/data', false, false, true, true);
         
-        $ch->queue_declare($EXCHANGE, false, true, false, false);
+        $ch->queue_declare($from, false, true, false, false);
         
         $ch->exchange_declare($EXCHANGE, 'direct', false, true, false);
         
