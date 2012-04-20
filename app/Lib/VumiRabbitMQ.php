@@ -206,6 +206,8 @@ class VumiRabbitMQ {
         $ch->queue_declare($from, false, true, false, false);
         
         $ch->exchange_declare($EXCHANGE, 'direct', false, true, false);
+
+        $ch->queue_bind($from, $EXCHANGE, $from);
         
         $msg = $ch->basic_get($from, true);
         
