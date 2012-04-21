@@ -67,18 +67,23 @@
 }
 
 .ui-dform-label {
-	float : left;
-	margin-top : 5px;
-	margin-left : 10px;
+/*	float : left;*/
+/*	margin-top : 5px;*/
+	margin-right : 10px;
+	margin-left: 5px;
 }
 
-.ui-dform-radiobuttons .ui-dform-label {
-	float : none;
-	margin-top: 5px;
+.ui-dform-radio {
+	float: none;
+}
+
+.ui-dform-radiobuttons{
+	margin-bottom: 0px;
+
 }
 
 .ui-dform-text {
-	margin-left : 20px;
+	margin-left : 10px;
 	height : 10px;
 	margin-bottom : 10px;
 	width : 92%;
@@ -86,6 +91,14 @@
 
 .ui-dform-addElt {
 	margin :5px;	
+}
+
+[name*=interactions\[]:not(input):not([name*=answer]):not([radiochildren]):nth-child(odd) {
+	background:#E3E4FA;
+}
+
+[name*=interactions\[]:not(input):not([name*=answer]):not([radiochildren]):nth-child(even) {
+	background:#FDEEF4;
 }
 
 .ttc-actions{
@@ -203,3 +216,4 @@
 
 .ttc-simulator-input {
 }
+

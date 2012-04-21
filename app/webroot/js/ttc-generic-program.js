@@ -11,7 +11,7 @@ var program = {"script": [
 		//"shortcode",
 		//"country",
 		//"participants",
-		"requests-responses",
+		//"requests-responses",
 		"dialogues",
 		],
 	"name" : "text",
@@ -81,8 +81,7 @@ var program = {"script": [
 	"type-schedule": {
 		"immediately":"Immediately",
 		"fixed-time":"Fixed time",
-		"wait":"Wait previous interation to be send",
-		"wait-answer": "Wait previous question to be answered"},
+		"wait":"Wait"},
 	"content":"text",
 	"date": "text",
 	//"fixed-time":["date-time","year","month","day","hour","minute"],
@@ -484,9 +483,9 @@ function configToForm(item,elt,id_prefix,configTree){
 						elt["elements"].push(
 						{
 							"name":id_prefix+"."+radio_type,
-							"caption": label,
+							//"caption": label,
 							"type": program[sub_item],
-							"options": checkedRadio 
+							"options": checkedRadio
 						});
 						if (checkedItem){
 							if (program[checkedItem]){

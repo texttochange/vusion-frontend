@@ -279,7 +279,7 @@ fieldset fieldset legend {
 }
 fieldset fieldset div {
 	clear: left;
-	margin: 0 20px;
+/*	margin: 0 20px;*/
 }
 form div {
 	clear: both;
@@ -304,9 +304,9 @@ form div.submit {
 	margin-top: 10px;
 }
 label {
-	display: block;
+/*	display: block;*/
 	font-size: 110%;
-	margin-bottom:3px;
+/*	margin-bottom:3px;*/
 }
 input, textarea {
 	clear: both;
@@ -337,7 +337,7 @@ div.checkbox label {
 	display: inline;
 }
 input[type=radio] {
-	float:left;
+/*	float:left;*/
 	width:auto;
 	margin: 6px 0;
 	padding: 0;
