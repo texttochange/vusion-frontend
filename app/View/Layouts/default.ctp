@@ -99,7 +99,7 @@
 					array('program' => $programUrl,
 					      'controller' => 'programHome',
 					      'action' => 'index'
-					      ), array('style'=>'text-decoration:none;font-weight:normal; font-size:17px'));
+					      ), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));
 				
 				    //echo " > ";
 				?>

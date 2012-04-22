@@ -181,6 +181,7 @@
 }
 
 .ttc-program-title{
+	font-size: 22px;
 }
 
 .ttc-program-link{
@@ -190,6 +191,7 @@
 .ttc-program-time {
 	float:right;
 	margin-top: 15px;
+	color: #003D4C;
 }
 
 /* css for timepicker */
