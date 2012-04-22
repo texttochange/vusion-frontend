@@ -22,7 +22,7 @@
 
 /** General Style Info **/
 body {
-	background: #003d4c;
+	background: white;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
@@ -77,8 +77,11 @@ p {
 }
 
 #header{
-	padding: 10px 20px;
+	padding: 5px 20px;
+	height: 40px;
+	background: black;
 }
+
 #header h1 {
 	line-height:20px;
 	background: #003d4c url('../img/cake.icon.png') no-repeat left;
@@ -107,6 +110,7 @@ p {
 	clear: both;
 	padding: 6px 10px;
 	text-align: right;
+	background: white;
 }
 
 /** containers **/
@@ -182,7 +186,7 @@ table td.actions a {
 	font-family: Monaco, Consolas, "Courier New", monospaced;
 }
 .cake-sql-log caption {
-	color:#fff;
+	color:black;
 }
 
 /** Paging **/

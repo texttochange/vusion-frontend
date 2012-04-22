@@ -3,12 +3,12 @@
 }
 
 #header .ttc-title {
-	background : url("../img/ttc-logo-2011.png") no-repeat scroll 0 0 transparent;
+/*	background : url("../img/vusion-logo-wide.png") no-repeat scroll 0 0 transparent;*/
+	height: 30px;
 	font-size : 30px;
 	font-weight : bold;	
 	line-height : 30px;
 	float : left;
-	width : 70%;
 }
 
 .ttc-info-box {
@@ -94,11 +94,13 @@
 }
 
 [name*=interactions\[]:not(input):not([name*=answer]):not([radiochildren]):nth-child(odd) {
-	background:#E3E4FA;
+/*	background:#E3E4FA;*/
+        background: #FFD97B;
 }
 
 [name*=interactions\[]:not(input):not([name*=answer]):not([radiochildren]):nth-child(even) {
-	background:#FDEEF4;
+	/*background:#FDEEF4;*/
+	background: #FFCB4B;
 }
 
 .ttc-actions{
@@ -132,7 +134,7 @@
 
 .ttc-right-header {
 	float : right;
-	width : 20%
+	margin-top: 10px;
 }
 
 .ajax-flash-message {
@@ -170,9 +172,26 @@
 .ttc-filter {
 	text-align: right;
 }
+
+.ttc-program-header {
+	height: 50px;
+	background: #19C1FF;
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 5px;
+}
+
+.ttc-program-title{
+}
+
+.ttc-program-link{
+	padding-left: 10px;
+}
+
 .ttc-program-time {
 	float:right;
-	font-weight:bold;
+	margin-top: 15px;
 }
 
 /* css for timepicker */
