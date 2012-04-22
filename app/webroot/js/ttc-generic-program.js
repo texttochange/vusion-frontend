@@ -155,12 +155,12 @@ function saveFormOnServer(){
 		success: function(data) {
 			var response = $.parseJSON(data);
 			if (location.href.indexOf("draft")<0){
-				$("#flashMessage").text('The script has been saved as draft, wait for redirection');
+				$("#flashMessage").text('The script has been saved as draft, wait for redirection').show();
 				//$("#flashMessage").attr('class', 'message');
 				setTimeout( function() { window.location.replace("draft")}, 3000);
 			} else {
-				$("#flashMessage").text('The script has been saved');
-				setTimeout( function() { $("#flashMessage").text('')} , 3000)
+				$("#flashMessage").text('The script has been saved').show();
+				$("#flashMessage").delay(3000).fadeOut(1000)
 			}
 		}
 	});

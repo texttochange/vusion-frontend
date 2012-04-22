@@ -62,7 +62,7 @@ class UsersController extends AppController
             if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'),
                     'default',
-                    array('class'=>'success-message')
+                    array('class'=>'message success')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -91,7 +91,7 @@ class UsersController extends AppController
             if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'),
                     'default',
-                    array('class'=>'success-message')
+                    array('class'=>'message success')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
@@ -124,7 +124,7 @@ class UsersController extends AppController
         if ($this->User->delete()) {
             $this->Session->setFlash(__('User deleted'),
                 'default',
-                array('class'=>'success-message')
+                array('class'=>'message success')
             );
             $this->redirect(array('action' => 'index'));
         }
@@ -138,7 +138,7 @@ class UsersController extends AppController
         if ($this->Auth->login()) {
             $this->Session->setFlash(__('Login successful.'),
                 'default',
-                array('class'=>'success-message')
+                array('class'=>'message success')
             );
             if ($this->Session->read('Auth.User.group_id') == 1) {
                 $this->redirect(array('controller' => 'admin'));
@@ -156,7 +156,7 @@ class UsersController extends AppController
     {
         $this->Session->setFlash(__('Good-Bye'),
             'default',
-            array('class'=>'success-message')
+            array('class'=>'message success')
         );
         $this->redirect($this->Auth->logout());
     }
@@ -183,7 +183,7 @@ class UsersController extends AppController
                 if ($this->User->save($user)) {
                     $this->Session->setFlash(__('Password changed successfully.'),
                         'default',
-                        array('class'=>'success-message')
+                        array('class'=>'message success')
                     );
                     $this->redirect(array('action' => 'view', $id));
                 } else {

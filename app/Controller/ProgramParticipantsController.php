@@ -63,7 +63,7 @@ class ProgramParticipantsController extends AppController
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
-                    array('class'=>'success-message')
+                    array('class'=>'message success')
                 );
                 $this->redirect(array(
                     'program' => $programUrl,  
@@ -99,7 +99,7 @@ class ProgramParticipantsController extends AppController
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
-                    array('class'=>'success-message')
+                    array('class'=>'message success')
                 );
                 $this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
@@ -132,7 +132,7 @@ class ProgramParticipantsController extends AppController
             $this->Session->setFlash(
                 __('Participant and related schedule deleted'),
                 'default',
-                array('class'=>'success-message')
+                array('class'=>'message success')
             );
             $this->redirect(
                 array('program' => $programUrl,

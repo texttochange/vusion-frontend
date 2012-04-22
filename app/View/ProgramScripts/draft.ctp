@@ -1,4 +1,4 @@
-<div id="flashMessage" class="ajax-flash-message"> </div>
+<div id="flashMessage" class="message success" style="display:none"> </div>
 <div>
 	
 <div class="index">

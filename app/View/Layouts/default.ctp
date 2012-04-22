@@ -33,9 +33,7 @@
 		if (isset($this->Js)) {
 		//disappear success flash messages
 		$this->Js->get('document')->event('ready', '
-			var className = $("#flashMessage").attr("class");
-			if($("#flashMessage").length > 0 && className == "success-message")
-			    $("#flashMessage").delay(5000).fadeOut(1000);
+			$("[class*=success]").delay(5000).fadeOut(1000);
 			');
 		}
 	?>
