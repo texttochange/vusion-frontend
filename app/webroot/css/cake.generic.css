@@ -22,7 +22,7 @@
 
 /** General Style Info **/
 body {
-	background: #003d4c;
+	background: white;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
@@ -77,8 +77,11 @@ p {
 }
 
 #header{
-	padding: 10px 20px;
+	padding: 5px 20px;
+	height: 40px;
+	background: black;
 }
+
 #header h1 {
 	line-height:20px;
 	background: #003d4c url('../img/cake.icon.png') no-repeat left;
@@ -107,6 +110,7 @@ p {
 	clear: both;
 	padding: 6px 10px;
 	text-align: right;
+	background: white;
 }
 
 /** containers **/
@@ -182,7 +186,7 @@ table td.actions a {
 	font-family: Monaco, Consolas, "Courier New", monospaced;
 }
 .cake-sql-log caption {
-	color:#fff;
+	color:black;
 }
 
 /** Paging **/
@@ -279,7 +283,7 @@ fieldset fieldset legend {
 }
 fieldset fieldset div {
 	clear: left;
-	margin: 0 20px;
+/*	margin: 0 20px;*/
 }
 form div {
 	clear: both;
@@ -304,9 +308,9 @@ form div.submit {
 	margin-top: 10px;
 }
 label {
-	display: block;
+/*	display: block;*/
 	font-size: 110%;
-	margin-bottom:3px;
+/*	margin-bottom:3px;*/
 }
 input, textarea {
 	clear: both;
@@ -337,7 +341,7 @@ div.checkbox label {
 	display: inline;
 }
 input[type=radio] {
-	float:left;
+/*	float:left;*/
 	width:auto;
 	margin: 6px 0;
 	padding: 0;
@@ -398,10 +402,16 @@ form .error-message {
 .message {
 	clear: both;
 	color: #fff;
-	font-size: 140%;
-	font-weight: bold;
+/*	font-size: 140%; 
+	font-weight: bold; 
 	margin: 0 0 1em 0;
-	padding: 5px;
+	padding: 5px;*/
+	position: fixed;
+	top: 10px;
+	left: 30%;
+	background: yellow;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .success,

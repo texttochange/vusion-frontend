@@ -112,7 +112,16 @@
 			};
 		  }; 
 	       } ?>
-
+	<div class='ttc-info-box'>
+	   <?php echo $this->Html->link(__('Script Simulator'),
+	        array(
+	            'program' => $programUrl,
+                    'controller' => 'programSimulator', 
+                    'action' => 'simulate'),
+	        array('class' => 'ttc-button')
+	        );
+	        ?>
+	</div>
 	<div class='ttc-info-box'>
 	<?php echo $this->Html->tag('div', 
 				'Participants: '.$participantCount,
@@ -165,15 +174,15 @@
                         'action' => 'index'),
                          array('class' => 'ttc-button')
                          );
-            ?>
-            <?php echo $this->Html->link(__('Back To Program List'),
-			array('controller' => 'programs', 
-                        'action' => 'index'),
-                         array('class' => 'ttc-button')
-                         );
-            ?>
-            <br /><br />
-          
+            ?>          
+	</div>
+	<div class='ttc-info-box'>
+	    <?php echo $this->Html->link(__('Back To Program List'),
+	        array('controller' => 'programs', 
+	        'action' => 'index'),
+	        array('class' => 'ttc-button')
+	        );
+	        ?>
 	</div>
 	</div>
 	<div class='ttc-info'>

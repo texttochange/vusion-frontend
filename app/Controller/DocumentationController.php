@@ -21,12 +21,15 @@ class DocumentationController extends AppController
      {
          if (isset($this->params['url']['topic'])) {
              $lang = Configure::read('Config.language');
-             if ($lang)
+             if ($lang and !is_numeric($lang)) {
                  $lang = $lang . "/";
+             } else {
+                 $lang = 'eng/';
+             }
              $topic = $this->params['url']['topic'];
              $file = WWW_ROOT . "files/documentation/".$lang.$topic.".txt";
              if (!file_exists($file)) {
-                 $documentation = "Sorry, no help available for ". $topic;
+             	     $documentation = "Sorry, no help available for '". $topic."'. Please leave us a comment [help@texttochange.com].";
              } else {
              	 $documentation = $this->readfile_chunked($file);
              }

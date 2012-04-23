@@ -16,7 +16,8 @@ class Script extends MongoModel
         'active' => true,
         'countActive' => true,
         'count' => true,
-        'hasKeyword' => true
+        'hasKeyword' => true,
+        'first' => true,
         );
     
     public function __construct($id = false, $table = null, $ds = null)

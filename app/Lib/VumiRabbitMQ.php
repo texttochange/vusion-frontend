@@ -49,18 +49,10 @@ class VumiRabbitMQ {
     //        return(false);
     //    }
     }
-    /*
-    public function sendInitMessageToWorker($to, $databaseName){
-    	    return $this->sendMessageTo('{"action": "init", "config": {"name":"'.$to.'","database-name":"'.$databaseName.'"}}' 
-                ,$to.'.control');
-    }
-    
 
-    public function sendStartMessageToWorker($to, $msg){
-        return $this->sendMessageTo($to.'.control', $msg);
-    }*/
 
-    public function sendMessageToCreateWorker($application_name, $database_name){
+    public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatch")
+    {
         return $this->sendMessageTo(
             'vusion.control', 
             array(
@@ -72,21 +64,55 @@ class VumiRabbitMQ {
                     'transport_name' => $database_name,
                     'control_name' => $database_name,
                     'database_name' => $database_name,
-                    'dispatcher_name' => 'dispatcher'
+                    'dispatcher_name' => $dispatcher_name,
                     )
                 ) 
             );
     }
 
-    public function sendMessageToUpdateSchedule($to){
+    public function sendMessageToRemoveWorker($application_name, $database_name)
+    {
+        return $this->sendMessageTo(
+            'vusion.control', 
+            array(
+                'message_type' => 'remove_worker',
+                'worker_name' => $database_name,
+                )
+            );
+    }
+
+    public function sendMessageToUpdateSchedule($to)
+    {
         return $this->sendMessageTo(
             $to.'.control',
             array('action' => 'update-schedule')
             );
     }
 
-    
-    public function sendMessageTo($to, $msg) {
+    public function sendMessageToWorker($to, $from, $msg)
+    {
+         return $this->sendMessageTo(
+             $to.'.inbound',
+             array(
+                 "content" => $msg, 
+                 "message_version" => '20110921',
+                 "message_type" => '', 
+                 "timestamp" =>"", 
+                 "message_id" => "", 
+                 "to_addr" => "0.0.0.0:9020",
+                 "from_addr" => $from,
+                 "in_reply_to" => "",
+                 "session_event"=> null,
+                 "transport_name" =>"",
+                 "transport_type" => "",
+                 "transport_metadata" => "",
+                 "helper_metadata" => "")
+             );
+    }    
+
+
+    public function sendMessageTo($to, $msg)
+    {
         //echo "Send RabbitMQ message to:".$to;
         //print_r($msg);
         require_once('php-amqplib/amqp.inc');
@@ -156,6 +182,42 @@ class VumiRabbitMQ {
         //echo "<br>Closing connection\n";
         $conn->close();
         return ($msg_body);
+    }
+
+    public function getMessageFrom($from)
+    {
+
+        require_once('php-amqplib/amqp.inc');
+        
+        $EXCHANGE = 'vumi';
+        $BROKER_HOST   = 'localhost';
+        $BROKER_PORT   = 5672;
+        //$ROUTING_KEY = 'telnet.event';
+        $USER     ='vumi';
+        $PASSWORD ='vumi';
+        $VHOST = "/develop";
+     
+        $conn = new AMQPConnection($BROKER_HOST, $BROKER_PORT,
+                           $USER,
+                           $PASSWORD,"/develop");
+        $ch = $conn->channel();
+        $ch->access_request('/data', false, false, true, true);
+        
+        $ch->queue_declare($from, false, true, false, false);
+        
+        $ch->exchange_declare($EXCHANGE, 'direct', false, true, false);
+
+        $ch->queue_bind($from, $EXCHANGE, $from);
+        
+        $msg = $ch->basic_get($from, true);
+        
+        $ch->close();
+        $conn->close();
+
+        if ($msg)
+            return $msg->body;
+        else 
+            return null;
     }
 
 

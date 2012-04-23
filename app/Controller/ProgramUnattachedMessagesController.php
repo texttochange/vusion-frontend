@@ -63,7 +63,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
-                    array('class'=>'success-message')
+                    array('class'=>'message success')
                 );
                 $this->redirect(
                     array(
@@ -100,7 +100,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $this->Session->setFlash(
                     __('The Message has been saved.'),
                     'default',
-                    array('class'=>'success-message')
+                    array('class'=>'message success')
                     );
                 $this->redirect(
                     array(
@@ -139,7 +139,7 @@ class ProgramUnattachedMessagesController extends AppController
             $this->Session->setFlash(
                 __('Message deleted'),
                 'default',
-                array('class'=>'success-message')
+                array('class'=>'message success')
                 );
             $this->redirect(
                 array(
