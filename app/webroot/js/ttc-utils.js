@@ -267,3 +267,14 @@ function requestHelp(elt) {
                                                                                 'topic=content');	
 }
 
+function pullBackendNotifications(url) {
+	$.get(url, function(data){
+		if (data['logs']) {
+			$("#notifications").empty();
+			for (var x = 0; x < data['logs'].length; x++) {
+				$("#notifications").append("<br \>"+data['logs'][x]);
+			}
+		}
+	});
+}
+

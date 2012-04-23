@@ -192,5 +192,15 @@
 	<?php endforeach; ?>
 	</table>
 	</div>
+	<div id='notifications' class='ttc-notification'>
+	<?php
+	$this->Js->get('document')->event(
+           'ready',
+           'setInterval(function(){pullBackendNotifications("'.$this->Html->url(
+                 array('program'=>$programUrl, 'controller'=>'programLogs', 'action'=>'getBackendNotifications.json')).'")}, 10000);');
+	?>
+	<p>Updates from the backend go here...</p>
+	</div>
+	
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
