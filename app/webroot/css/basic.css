@@ -113,7 +113,8 @@
     border-left: 1px solid #666666;
     float: right;
     padding: 10px 2%;
-    width: 50%;
+    width: 50%;    
+    height: 390px;
 }
 
 .ttc-status {
@@ -226,6 +227,15 @@
 	background: #EDEDED;
 }
 
+.ttc-notification {
+	border: 1px solid;
+	float: right;
+	padding: 10px 1%;
+	width: 30%;
+	height: 95px;
+	overflow-y: auto;
+}
+
 .ttc-simulator-output {
 	border: 1px solid black;
 	height: 200px;
@@ -234,5 +244,6 @@
 }
 
 .ttc-simulator-input {
+
 }
 

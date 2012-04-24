@@ -217,6 +217,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ShortCodes');
         $this->Acl->allow($group, 'controllers/UnmatchableReply');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($group, 'controllers/ProgramLogs');
         
         //allow program manager to programs
         $group->id = 3;
@@ -236,6 +237,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ShortCodes');
         $this->Acl->allow($group, 'controllers/UnmatchableReply');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($group, 'controllers/ProgramLogs');
         
         //allow customer to 
         $group->id = 4;
