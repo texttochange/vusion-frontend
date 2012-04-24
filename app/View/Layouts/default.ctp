@@ -84,7 +84,7 @@
 				<?php
 				    if (isset($programTimezone[0]['ProgramSetting']['value']) && $programTimezone[0]['ProgramSetting']['value']) {
 				        //echo $this->Html->tag('br');
-				        echo $this->Html->tag('span', 'program time: ');
+				        echo $this->Html->tag('span', $programTimezone[0]['ProgramSetting']['value'].' - ');
 				        $now = new DateTime('now');
 				        date_timezone_set($now,timezone_open($programTimezone[0]['ProgramSetting']['value']));
 				        echo $this->Html->tag('span', $now->format('H:i:s')  );

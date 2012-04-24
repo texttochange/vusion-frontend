@@ -2,7 +2,6 @@
 App::uses('AppController','Controller');
 App::uses('Participant','Model');
 App::uses('History', 'Model');
-App::uses('ProgramSetting', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
@@ -21,7 +20,6 @@ class ProgramParticipantsController extends AppController
 
         $this->Participant    = new Participant($options);
         $this->History        = new History($options);
-        $this->ProgramSetting = new ProgramSetting($options);
         $this->Schedule       = new Schedule($options);
         $this->VumiRabbitMQ   = new VumiRabbitMQ();
     }
@@ -36,9 +34,6 @@ class ProgramParticipantsController extends AppController
     
     public function index() 
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         $participants = $this->paginate();
         $this->set(compact('participants'));        
     }
@@ -52,9 +47,6 @@ class ProgramParticipantsController extends AppController
 
     public function add() 
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         $programUrl = $this->params['program'];
  
         if ($this->request->is('post')) {
@@ -79,9 +71,6 @@ class ProgramParticipantsController extends AppController
     
     public function edit() 
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
         
@@ -152,9 +141,6 @@ class ProgramParticipantsController extends AppController
     
     public function view() 
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         $id = $this->params['id'];
 
         $this->Participant->id = $id;
@@ -174,9 +160,6 @@ class ProgramParticipantsController extends AppController
     
     public function import()
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         require_once 'excel_reader2.php';
         //$data = new Spreadsheet_Excel_Reader("example.xls");
 

@@ -1,7 +1,6 @@
 <?php
 
 App::uses('AppController','Controller');
-App::uses('ProgramSetting','Model');
 
 class ProgramLogsController extends AppController
 {
@@ -15,9 +14,6 @@ class ProgramLogsController extends AppController
     function constructClasses()
     {
         parent::constructClasses();
-        
-        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->ProgramSetting = new ProgramSetting($options);
         
         $this->redis = new Redis();
         $this->redis->connect('127.0.0.1');
@@ -33,9 +29,6 @@ class ProgramLogsController extends AppController
     
     public function index()
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         $programLogs = $this->_getRedisZRange(0,-1);
         //$programLogs = array_reverse($programLogs);
         $this->set(compact('programLogs'));

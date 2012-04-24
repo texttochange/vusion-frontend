@@ -7,7 +7,6 @@ App::uses('ScriptHelper', 'Helper');
 App::uses('Participant','Model');
 App::uses('History','Model');
 App::uses('Schedule','Model');
-App::uses('ProgramSetting','Model');
 App::uses('VumiSupervisord','Lib');
 
 
@@ -31,7 +30,6 @@ class ProgramHomeController extends AppController
         $this->Participant    = new Participant($options);
         $this->History        = new History($options);
         $this->Schedule       = new Schedule($options);
-        $this->ProgramSetting = new ProgramSetting($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
 
         $this->VumiSupervisord = new VumiSupervisord();
@@ -57,6 +55,10 @@ class ProgramHomeController extends AppController
             ), 'controllers/ProgramParticipants/add');
         $participantCount = $this->Participant->find('count');
         $statusCount      = $this->History->find('count');
+        $schedules        = $this->Schedule->find('soon');
+        
+        //$workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
+        
         $schedules        = $this->Schedule->summary();
 
         foreach ($schedules as &$schedule) {
@@ -74,8 +76,7 @@ class ProgramHomeController extends AppController
             	    $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
             } 
         }
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        
+                
         $this->set(compact(
             'hasScriptActive', 
             'hasScriptDraft',
@@ -84,8 +85,7 @@ class ProgramHomeController extends AppController
             'participantCount',
             'statusCount',
             'schedules',
-            'workerStatus',
-            'programTimezone'));
+            'workerStatus'));
     }
 
 

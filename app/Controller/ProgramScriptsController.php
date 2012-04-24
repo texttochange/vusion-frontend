@@ -100,10 +100,6 @@ class ProgramScriptsController extends AppController
     {
         $draft = $this->Script->find('draft');
         
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
-
         if (count($draft)) {
             $script = $draft[0]['Script'];
         } else {
@@ -135,9 +131,6 @@ class ProgramScriptsController extends AppController
 
     public function active()
     {
-        $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-        $this->set(compact('programTimezone'));
-        
         $draft = $this->Script->find('active');
         if (count($draft)) {
             $script = $draft[0]['Script'];
