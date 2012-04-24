@@ -62,8 +62,17 @@ class Schedule extends MongoModel
         	array($this, "_unattached")
         	);
 
-        return array_merge($scriptResults, $unattachedResults); 
+        $summary = array_merge($scriptResults, $unattachedResults);
+        uasort($summary, array($this, '_compareSchedule'));
+        return $summary;
+        
+    }
 
+    private function _compareSchedule($a, $b)
+    {
+        if ($a['datetime'] == $b['datetime'])
+    	    return 0;
+        return ($a['datetime']<$b['datetime']) ? -1 : 1;
     }
 
 
