@@ -1,4 +1,4 @@
-<h2> <?php echo __('Login') ?></h2>
+<h3> <?php echo __('Login') ?></h3>
 <?php
 echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' =>'login')));
 echo $this->Form->input('User.email');

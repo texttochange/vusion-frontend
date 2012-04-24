@@ -12,7 +12,8 @@ class Schedule extends MongoModel
     
     public $findMethods = array(
         'soon' => true,
-        'count' => true
+        'count' => true,
+        'summary' => true
         );
      
      protected function _findSoon($state, $query, $results = array())
@@ -24,6 +25,59 @@ class Schedule extends MongoModel
         }
         return $results;
     }
-    
-    
+
+
+    public function summary()
+    {
+        $scriptQuery = array(
+            'key' => array(
+                'dialogue-id' => true,                'interaction-id' => true,
+                'datetime' => true,
+                ),
+            'initial' => array('csum' => 0),
+            'reduce' => 'function(obj, prev){prev.csum+=1;}',
+            );
+
+        $tmp = $this->getDataSource()->group($this, $scriptQuery);
+
+        $scriptResults = array_filter(
+        	$tmp['retval'], 
+        	array($this, "_interaction")
+        	);
+
+        $unattachedQuery = array(
+            'key' => array(
+                'unattach-id' => true,
+                'datetime' => true,
+                ),
+            'initial' => array('csum' => 0),
+            'reduce' => 'function(obj, prev){prev.csum+=1;}',
+            );
+        
+        
+        $tmp = $this->getDataSource()->group($this, $unattachedQuery);
+
+        $unattachedResults = array_filter(
+        	$tmp['retval'], 
+        	array($this, "_unattached")
+        	);
+
+        return array_merge($scriptResults, $unattachedResults); 
+
+    }
+
+
+    private function _interaction($var) 
+    {
+    	    return (isset($var['dialogue-id']) && $var['dialogue-id']!=null &&
+    	    	    isset($var['interaction-id']) && $var['interaction-id']!=null);
+    }
+
+
+    private function _unattached($var)
+    {
+        return (isset($var['unattach-id']) && $var['unattach-id']!=null);
+    }
+
+
 }

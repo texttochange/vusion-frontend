@@ -18,6 +18,7 @@ class Script extends MongoModel
         'count' => true,
         'hasKeyword' => true,
         'first' => true,
+        'getInteractionContent' => true,
         );
     
     public function __construct($id = false, $table = null, $ds = null)
@@ -84,6 +85,18 @@ class Script extends MongoModel
         return array();
     }
 
+/*
+    protected function _findGetInteractionContent($state, $query, $results = array())
+    {
+         if ($state == 'before') {
+            $query['order']['created'] = 'desc';
+            $query['limit'] = 1;
+            $query['conditions']['Script.activated'] = 1;
+            return $query;
+        }
+        return $this->scriptHelper->getInteraction($results, $query['interaction-id']);
+    }
+*/
 
     public function beforeValidate()
     { 
@@ -126,6 +139,8 @@ class Script extends MongoModel
         }
         return false;
     }
+
+    
 
 
 }

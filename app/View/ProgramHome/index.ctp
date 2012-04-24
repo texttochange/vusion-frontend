@@ -183,13 +183,23 @@
 	<table cellpadding="0" cellspacing="0">
 		<tr>
 			<th><?php echo __('at');?></th>
-			<th><?php echo __('to');?></th>
+			<th><?php echo __('type');?></th>
+			<th><?php echo __('to');?></th>	
+			<th><?php echo __('content');?></th>
 		</tr>
 	<?php
 	foreach ($schedules as $schedule): ?>
 	<tr>
-		<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['Schedule']['datetime']); ?>&nbsp;</td>
-		<td><?php echo h($schedule['Schedule']['participant-phone']); ?>&nbsp;</td>
+		<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['datetime']); ?>&nbsp;</td>
+		<?php if (isset($schedule['dialogue-id'])) { ?>
+		<td>Script</td>
+		<?php } elseif (isset($schedule['unattach-id'])) { ?>
+		<td>Unattached</td>   
+		<?php } else { ?>
+		<td></td>
+		<?php } ?>
+		<td><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
+		<td>&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
 	</tr>
 	<?php endforeach; ?>
 	</table>
