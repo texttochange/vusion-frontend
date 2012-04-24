@@ -26,8 +26,8 @@ class ProgramLogsController extends AppController
     
     public function _getRedisZRange($startValue,$endValue)
     {
-        $databaseName = $this->params['program'].':logs';
-        return $this->redis->zRange($databaseName, $startValue, $endValue, true);
+        $redisKey = $this->params['program'].':logs';
+        return $this->redis->zRange($redisKey, $startValue, $endValue, true);
     }
     
     
