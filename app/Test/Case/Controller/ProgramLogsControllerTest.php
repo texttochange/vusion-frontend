@@ -92,7 +92,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
                 '2',
                 $this->programData[0]['Program']['database'],
                 $this->programData[0]['Program']['name']
-                ));
+            ));
      
         return $logs;
     }
@@ -101,6 +101,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
     * Test Methods
     *
     */
+    
     public function testIndex()
     {
         $logs = $this->mock_program_access();
