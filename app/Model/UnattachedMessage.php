@@ -23,6 +23,9 @@ class UnattachedMessage extends MongoModel
 
     public function beforeValidate()
     {
+    	if ($this->scriptHelper->validateDate($this->data['UnattachedMessage']['schedule']))
+            return true;
+
         if (!$this->scriptHelper->validateDateFromForm($this->data['UnattachedMessage']['schedule']))
             return false;
 

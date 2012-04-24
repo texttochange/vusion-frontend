@@ -1,7 +1,9 @@
 <?php
 
 App::uses('AppController','Controller');
+App::uses('UnattachedMessage','Model');
 App::uses('Script','Model');
+App::uses('ScriptHelper', 'Helper');
 App::uses('Participant','Model');
 App::uses('History','Model');
 App::uses('Schedule','Model');
@@ -18,11 +20,26 @@ class ProgramHomeController extends AppController
         );
 
 
+    function constructClasses()
+    {
+        parent::constructClasses();
+
+        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
+        
+        $this->Script         = new Script($options);
+        $this->Participant    = new Participant($options);
+        $this->History        = new History($options);
+        $this->Schedule       = new Schedule($options);
+        $this->UnattachedMessage = new UnattachedMessage($options);
+
+        $this->VumiSupervisord = new VumiSupervisord();
+        
+        $this->ScriptHelper = new ScriptHelper();
+    }
+
+
     public function index()
     {
-    	/*$redis = new Redis();
-    	$redis->connect('127.0.0.1');
-    	print_r($redis->zRange('wiki:logs',1, -1, true));*/
 
         $hasScriptActive  = count($this->Script->find('countActive'));
         $hasScriptDraft   = count($this->Script->find('countDraft'));
@@ -42,6 +59,24 @@ class ProgramHomeController extends AppController
         
         //$workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
         
+        $schedules        = $this->Schedule->summary();
+
+        foreach ($schedules as &$schedule) {
+            if (isset($schedule['interaction-id'])) {
+                $interaction = $this->ScriptHelper->getInteraction(
+                    $this->Script->find('active'),
+                    $schedule['interaction-id']
+                    );
+                if (isset($interaction['content']))
+                    $schedule['content'] = $interaction['content'];
+            }
+            elseif (isset($schedule['unattach-id'])) {
+            	$unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
+            	if (isset($unattachedMessage['UnattachedMessage']['content']))
+            	    $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
+            } 
+        }
+                
         $this->set(compact(
             'hasScriptActive', 
             'hasScriptDraft',
@@ -51,21 +86,6 @@ class ProgramHomeController extends AppController
             'statusCount',
             'schedules',
             'workerStatus'));
-    }
-
-
-    function constructClasses()
-    {
-        parent::constructClasses();
-
-        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-        
-        $this->Script         = new Script($options);
-        $this->Participant    = new Participant($options);
-        $this->History        = new History($options);
-        $this->Schedule       = new Schedule($options);
-
-        $this->VumiSupervisord = new VumiSupervisord();
     }
 
 

@@ -27,7 +27,7 @@ class ScriptHelperTestCase extends CakeTestCase
                                     0 => array('choice'=>'Good'),
                                     1 => array('choice'=>'Bad')
                                     ),
-                                'interaction-id' => 'script.dialogues[0].interactions[0]'
+                                'interaction-id' => 'script.dialogues[0].interactions[1]'
                                 )
                             )
                         )
@@ -78,6 +78,28 @@ class ScriptHelperTestCase extends CakeTestCase
         
         $status = array('message-content'=>'keyword 2');
         $this->assertFalse($scriptHelper->hasNoMatchingAnswers($script, $status));
+    }
+
+    public function testGetInteraction()
+    {
+        $scriptHelper = new ScriptHelper();
+        $script = $this->getOneScript('keyword');
+        $this->assertEqual(
+            $script['Script']['script']['dialogues'][0]['interactions'][0],	
+            $scriptHelper->getInteraction($script, "script.dialogues[0].interactions[0]")
+            );
+        
+        $this->assertEqual(
+            $script['Script']['script']['dialogues'][0]['interactions'][1],	
+            $scriptHelper->getInteraction($script, "script.dialogues[0].interactions[1]")
+            );
+        
+        $this->assertEqual(
+            array(),	
+            $scriptHelper->getInteraction($script, "other")
+            );
+
+
     }
     
     

@@ -151,5 +151,25 @@ class ScriptHelper
         return false;
     }
     
+    public function getInteraction($currentLayer, $interaction_id)
+    {
+    	
+        if (!is_array($currentLayer)) {
+            return false;
+        }
+        
+        foreach ($currentLayer as $key => $value) {
+            if ($key == 'interaction-id' && $value == $interaction_id) {
+                return $currentLayer;
+            }
+            else if (is_array($value)) {
+                $result = $this->getInteraction($value, $interaction_id);
+                if ($result)
+                    return $result;
+            }
+        }
+        return array();
+    }
+    
 
 }

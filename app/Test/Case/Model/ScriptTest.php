@@ -203,5 +203,4 @@ class ScriptTestCase extends CakeTestCase
         $this->assertEquals(0, count($result));      
     }
 
-
 }
