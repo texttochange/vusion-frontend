@@ -6,7 +6,7 @@ App::uses('ProgramSetting','Model');
 class ProgramLogsController extends AppController
 {
     var $components = array('RequestHandler');
-    var $helpers = array(
+    var $helpers    = array(
         'Js' => array('Jquery'),
         'Time'
         );

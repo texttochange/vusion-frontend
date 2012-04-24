@@ -46,6 +46,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         
         $this->dropData();
     }
+    
    // we only mock the data to be used so we dont need a dropData() function;    
     
     public function tearDown()
@@ -72,7 +73,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
                     '_getRedisZRange'
                     )
                 )
-            );
+        );
         
         $logs->Acl
             ->expects($this->any())
