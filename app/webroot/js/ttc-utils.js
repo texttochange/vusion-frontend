@@ -276,7 +276,7 @@ function pullBackendNotifications(url) {
 		if (data['logs']) {
 			$("#notifications").empty();
 			for (var x = 0; x < data['logs'].length; x++) {
-				$("#notifications").append("<br \>"+data['logs'][x]);
+				$("#notifications").append(data['logs'][x]+"<br \>");
 			}
 		}
 	});
