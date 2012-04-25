@@ -155,14 +155,15 @@ function saveFormOnServer(){
 		success: function(data) {
 			var response = $.parseJSON(data);
 			if (location.href.indexOf("draft")<0){
-				$("#flashMessage").text('The script has been saved as draft, wait for redirection').show();
-				//$("#flashMessage").attr('class', 'message');
+				$("#flashMessage").show().attr('class', 'message success').text('The script has been saved as draft, wait for redirection');
 				setTimeout( function() { window.location.replace("draft")}, 3000);
 			} else {
-				$("#flashMessage").text('The script has been saved').show();
+				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
 				$("#flashMessage").delay(3000).fadeOut(1000)
 			}
-		}
+		},
+		timeout: 500,
+		error: vusionAjaxError
 	});
 }
 

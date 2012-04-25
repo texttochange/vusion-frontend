@@ -1,6 +1,3 @@
-<div id="flashMessage" class="message success"  style="display:none"> </div>
-<div>
-	
 <div class="index">
 	<h3><?php echo __('Script'); ?></h3>
 	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>

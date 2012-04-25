@@ -75,8 +75,16 @@
 			?> 
 			</div> 
 		</div> 
-
-			<?php echo $this->Session->flash(); ?>
+			<?php 
+			     if (!$this->Session->flash()) {
+			         echo $this->Html->tag('div', '', array(
+			             'id' => 'flashMessage', 
+			             'class' => 'message', 
+			             'style' => 'display: none')
+			             );
+			             }
+			     echo $this->Session->flash(); ?>
+			
 			<!-- To be refact with all the Controllers and views -->
 			<?php if (isset($programName)) { ?>
 				<div class='ttc-program-header'>
