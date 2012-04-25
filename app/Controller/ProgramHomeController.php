@@ -75,9 +75,9 @@ class ProgramHomeController extends AppController
                     $schedule['content'] = $interaction['content'];
             }
             elseif (isset($schedule['unattach-id'])) {
-            	$unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
-            	if (isset($unattachedMessage['UnattachedMessage']['content']))
-            	    $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
+                $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
+                if (isset($unattachedMessage['UnattachedMessage']['content']))
+                    $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
             } 
         }
         
