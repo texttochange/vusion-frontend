@@ -20,13 +20,14 @@
 			</tr>
 			<?php
 			foreach ($histories as $history): ?>
+			
 			<tr>
-				<?php if (isset($history['History']['message']['content'])) { ?>
-				<td><?php echo h($history['History']['message']['content']); ?>&nbsp;</td>
+				<?php if (isset($history['History']['content'])) { ?>
+				<td><?php echo h($history['History']['content']); ?>&nbsp;</td>
 				<?php } else { ?>
-				<td><?php echo h($history['History']['type']); ?>&nbsp;</td>
+				<td><?php echo h($history['History']['message-content']); ?>&nbsp;</td>
 				<?php } ?>
-				<td><?php echo h($history['History']['datetime']); ?>&nbsp;</td>
+				<td><?php echo h($history['History']['timestamp']); ?>&nbsp;</td>
 			</tr>
 			<?php endforeach; ?>
 			</table>

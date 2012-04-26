@@ -39,8 +39,9 @@ var program = {"script": [
 	"number":"text",
 	"every":"text",
 	"radio-type-question": "radiobuttons", 
-	"type-question":{"close-question":"Close question","open-question":"Open question"},
-	"close-question": ["answers"],
+	"type-question":{"close-question":"Closed question","open-question":"Open question"},
+	"close-question": ["label-for-participant-profiling", "answers"],
+	"label-for-participant-profiling": "text",
 	"open-question": ["answer-label", "feedback"],
 	"answer-label": "text",
 	"requests-responses":["add-request-response"],
@@ -51,7 +52,7 @@ var program = {"script": [
 	"keyword-routing":["keyword"],
 	"answers":["add-answer"],
 	"add-answer": "button",
-	"answer": ["choice","feedbacks", "actions"],
+	"answer": ["choice","feedbacks"],
 	"feedbacks":["add-feedback"],
 	"add-request":"button",
 	//"request": ["content","responses", "actions"],
@@ -391,11 +392,17 @@ function updateRadioButtonSubmenu() {
 	var elt = this;
 	var box = $(elt).parent().next("fieldset"); 
 	var name = $(elt).parent().parent().attr("name");
+	var label = $(elt).next().text();
 	if (box && $(box).attr('radiochildren')){
 		$(box).remove();
 	} 
 	
-	var newContent = {"type":"fieldset","radiochildren":"radiochildren","name":name,"elements":[]};
+	var newContent = {
+	     "type":"fieldset",
+	     "caption": label,
+	     "radiochildren":"radiochildren",
+	     "name":name,
+             "elements":[]};
 	var name = $(elt).parent().parent().attr('name');
 	configToForm($(elt).attr('value'), newContent, name);
 	
@@ -467,16 +474,19 @@ function configToForm(item,elt,id_prefix,configTree){
 						var radio_type = sub_item.substring(6);
 					        var checkedRadio = {};
 					        var checkedItem;
+					        var checkedItemLabel;
 					        if (configTree) {
 					        	$.each(program[radio_type],function(k,v){
 					        		if (k!=configTree[radio_type])
 					        			checkedRadio[k] = v;
 					        		else {
-					        			checkedRadio[k] = {"value": k, 
+					        			checkedRadio[k] = {
+					        				"value": k, 
 					        				"caption":v,
 					        				"checked":"checked"
 					        			}
 					        			checkedItem = k;
+					        			checkedItemLabel = v;
 					        		}
 					        })} else {
 					        	checkedRadio = program[radio_type];
@@ -492,6 +502,7 @@ function configToForm(item,elt,id_prefix,configTree){
 							if (program[checkedItem]){
 								var box = {
 									"type":"fieldset",
+									"caption": checkedItemLabel,
 									"radiochildren":"radiochildren",
 									"elements":[]
 								};
