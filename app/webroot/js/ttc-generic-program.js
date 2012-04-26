@@ -52,7 +52,7 @@ var program = {"script": [
 	"keyword-routing":["keyword"],
 	"answers":["add-answer"],
 	"add-answer": "button",
-	"answer": ["choice","feedbacks", "actions"],
+	"answer": ["choice","feedbacks"],
 	"feedbacks":["add-feedback"],
 	"add-request":"button",
 	//"request": ["content","responses", "actions"],
