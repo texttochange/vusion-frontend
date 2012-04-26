@@ -320,9 +320,9 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 'data' => array('keyword' => 'usedKeyword')
                 )
             );
-
+        
         $this->assertEquals(0, $this->vars['result']['status']);
-        $this->assertEquals('already used by: Test Name 2', $this->vars['result']['message']);
+        $this->assertEquals('usedKeyword already used by: Test Name 2', $this->vars['result']['message']);
               
     }
 
@@ -456,7 +456,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
             );
 
         $this->assertEquals(0, $this->vars['result']['status']);
-        $this->assertEquals('already used by: Test Name', $this->vars['result']['message']);
+        $this->assertEquals('usedKeyword already used by: Test Name', $this->vars['result']['message']);
     }
 
 

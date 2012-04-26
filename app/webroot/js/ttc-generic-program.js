@@ -332,13 +332,27 @@ function duplicateKeywordValidation() {
 	var keywordInput = this;
 	var isKeywordUsedInSameScript = false;
 	$.each($("input[name*='keyword']"), function(index, element){
+		if (!$(keywordInput).is(element)) {
+			var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
+			var elementWords = $(element).val().replace(/\s/g, '').split(',');
+			for(var x=0;x<keywords.length;x++) {
+				for (var y=0;y<elementWords.length;y++) {
+					if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
+						$(keywordInput).before("<p style='color:red'>'"+elementWords[y]+"' already used by the same script in another question</p>");
+						isKeywordUsedInSameScript = true;
+						return;
+					}
+				}
+			}
+		}
 			//alert("$this:"+$(keywordInput).val()+" and elt:"+$(element).val())
-			if ((!$(keywordInput).is(element)) && ($(keywordInput).val().toLowerCase() == $(element).val().toLowerCase()))
+			/*if ((!$(keywordInput).is(element)) && ($(keywordInput).val().toLowerCase() == $(element).val().toLowerCase()))
 			{
 				$(keywordInput).before("<p style='color:red'> already used by the same script in another question</p>");
 				isKeywordUsedInSameScript = true;
-			}
+			}*/
 	});
+	
 	
 	if (isKeywordUsedInSameScript)
 		return;

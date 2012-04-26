@@ -80,8 +80,9 @@ class Script extends MongoModel
             $query['conditions']['Script.activated'] = 1;
             return $query;
         }
-        if ($this->scriptHelper->hasKeyword($results, $query['keyword']))
-            return $results;
+        $foundKeyword = $this->scriptHelper->hasKeyword($results, $query['keyword']);
+        if ($foundKeyword)
+            return $foundKeyword;
         return array();
     }
 

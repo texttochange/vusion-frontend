@@ -87,13 +87,21 @@ class ScriptHelper
         
         foreach ($currentLayer as $key => &$value) {
             if (!is_int($key) && ($key == 'keyword')) {
-                if (strtolower($value) == strtolower($keyword)) {
-                    return true;
+                $value       = str_replace(" ", "", $value);
+                $valuesArray = explode(",", $value);
+                $keyword       = str_replace(" ", "", $keyword);
+                $keywordValues = explode(",", $keyword);
+                foreach ($valuesArray as $arrayValue) {
+                    foreach ($keywordValues as $keywordValue) {
+                        if (strtolower($arrayValue) == strtolower($keywordValue))
+                            return $keywordValue;
+                    }
                 }
             }
             else if (is_array($value)) {
-                if ($this->hasKeyword($value, $keyword))
-                    return true;
+                $searchResult = $this->hasKeyword($value, $keyword);
+                if ($searchResult)
+                    return $searchResult;
             }
         }
         return false;
@@ -109,16 +117,16 @@ class ScriptHelper
         foreach ($currentLayer as $key => &$value) {
             if (!is_int($key) && ($key == 'answers')) {
                 foreach($value as $answer => $choice) {
-		    $response    = $currentLayer['keyword']." ".$choice['choice'];
-		    $responseTwo = $currentLayer['keyword']." ".($answer+1);
-		    if ($this->_recurseStatus($status, $response, $responseTwo)) {
-		        if($answer==(count($value)-1))
+            $response    = $currentLayer['keyword']." ".$choice['choice'];
+            $responseTwo = $currentLayer['keyword']." ".($answer+1);
+            if ($this->_recurseStatus($status, $response, $responseTwo)) {
+                if($answer==(count($value)-1))
                             return true;
                         else
                             continue;
                     }
                     return false;
-	        }
+            }
             }
             else if (is_array($value)) {
                 $result = $this->hasNoMatchingAnswers($value, $status);
@@ -138,7 +146,7 @@ class ScriptHelper
         foreach ($newCurrentLayer as $newKey => &$newValue) {
             if (!is_int($newKey) && ($newKey == 'message-content')) {
                 if (strtolower($newValue) != strtolower($response)
-                	and strtolower($newValue) != strtolower($responseTwo)) {
+                    and strtolower($newValue) != strtolower($responseTwo)) {
                     return true;
                 }
                 return false;
@@ -153,7 +161,7 @@ class ScriptHelper
     
     public function getInteraction($currentLayer, $interaction_id)
     {
-    	
+        
         if (!is_array($currentLayer)) {
             return false;
         }

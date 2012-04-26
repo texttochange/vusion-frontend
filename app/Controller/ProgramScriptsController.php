@@ -164,11 +164,12 @@ class ProgramScriptsController extends AppController
             $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
             if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
                 $scriptModel = new Script(array('database'=>$program['Program']['database']));
-                if ($scriptModel->find('hasKeyword', array('keyword' => $keywordToValidate))) {
+                $foundKeyword = $scriptModel->find('hasKeyword', array('keyword' => $keywordToValidate));
+                if ($foundKeyword) {
                     $this->set(
                         'result', array(
                             'status'=>0, 
-                            'message'=>'already used by: ' . $program['Program']['name'])
+                            'message'=>$foundKeyword.' already used by: ' . $program['Program']['name'])
                         );
                     return;
                 }
