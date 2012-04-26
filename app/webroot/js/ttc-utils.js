@@ -271,26 +271,45 @@ function requestHelp(elt, baseUrl) {
         'topic=content');
 }
 
+
+function vusionAjaxError(jqXHR, textStatus, errorThrown){
+    if (textStatus == 'timeout') {
+         $('#flashMessage').show().text('Poor network connection (request timed out)');
+         return;
+    }
+    $('#flashMessage').show().text('Error: action failed.');
+}
+
+
 function pullBackendNotifications(url) {
-	$.get(url, function(data){
-		if (data['logs']) {
-			$("#notifications").empty();
-			for (var x = 0; x < data['logs'].length; x++) {
-				$("#notifications").append(data['logs'][x]+"<br \>");
-			}
-		}
-	});
+    $.ajax({ 
+        url: url, 
+        success: function(data){
+            $('#flashMessage').hide();
+            if (data['logs']) {
+                $("#notifications").empty();
+                for (var x = 0; x < data['logs'].length; x++) {
+                    $("#notifications").append(data['logs'][x]+"<br \>");
+                }
+            }
+        },
+        timeout: 500,
+        error: vusionAjaxError,
+    });
 }
 
 function pullSimulatorUpdate(url){
-    $.get(
-        url,
-    	function(data){
-    	    if (data['message']) {
-    	    	    var message = $.parseJSON(data['message']);
-    	    	    $("#simulator-output").append("<div>> [time] from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
-    	    }
-    	});
+	$.ajax({
+        url: url,
+        success: function(data){
+            if (data['message']) {
+                    var message = $.parseJSON(data['message']);
+                    $("#simulator-output").append("<div>> [time] from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
+            }
+        },
+        timeout: 500,
+        error: vusionAjaxError
+        });
 }
 
 function logMessageSent(){

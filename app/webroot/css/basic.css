@@ -79,7 +79,7 @@
 
 .ui-dform-radiobuttons{
 	margin-bottom: 0px;
-
+	padding-bottom: 0px;
 }
 
 .ui-dform-text {
@@ -136,6 +136,7 @@
 .ttc-right-header {
 	float : right;
 	margin-top: 10px;
+	color: white;
 }
 
 .ajax-flash-message {

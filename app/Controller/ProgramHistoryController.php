@@ -14,29 +14,6 @@ class ProgramHistoryController extends AppController
         'Time'
         );
 
-
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-        //For initial creation of the admin users uncomment the line below
-        //$this->Auth->allow('*');
-    }
-
-
-    public function index()
-    {
-        if (isset($this->params['url']['filter'])) {
-            $script = $this->Script->find('active');
-            $this->paginate = array(
-                'scriptFilter',
-                'script' => $script
-                );
-        }
-        $statuses = $this->paginate();
-        $this->set(compact('statuses'));
-    }
-
-
     function constructClasses()
     {
         parent::constructClasses();
@@ -44,6 +21,33 @@ class ProgramHistoryController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->History        = new History($options);
         $this->Script         = new Script($options);
+    }
+
+
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
+        //$this->Auth->allow('*');
+    }
+
+
+    public function index()
+    {
+        if (isset($this->params['url']['filter'])) {
+            if ($this->params['url']['filter']=='non_matching_answers') { 
+                $this->paginate = array(
+                    'all',
+                    'conditions' => array(
+                        'message-type' => 'received',
+                        'matching-answer' => null
+                        )
+                    );
+            } else {
+                $this->Session->setFlash('The filter "'.$this->params['url']['filter'].'" is not supported.');
+            }
+        }
+        $statuses = $this->paginate();
+        $this->set(compact('statuses'));
     }
     
     
