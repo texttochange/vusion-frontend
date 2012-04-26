@@ -136,6 +136,7 @@
 .ttc-right-header {
 	float : right;
 	margin-top: 10px;
+	color: white;
 }
 
 .ajax-flash-message {
