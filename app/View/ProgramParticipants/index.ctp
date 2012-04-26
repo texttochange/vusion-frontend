@@ -7,11 +7,12 @@
 	<h3>Participants</h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
+	    <th><?php echo __('phone'); ?></th> 
 	<?php
 	$headers = array();
 	foreach ($participants as $participant) {
 	    foreach ($participant['Participant'] as $key => $value) {
-	        if ($key!='modified' && $key!='created' && $key!='_id' && !in_array($key, $headers)) {
+	        if ($key!='modified' && $key!='created' && $key!='_id' && $key!='phone' && !in_array($key, $headers)) {
 	            array_push($headers, $key); 
 	            echo $this->Html->tag('th', null);
 	            echo $this->Paginator->sort($key, null, array('url'=> array('program' => $programUrl)));
@@ -23,6 +24,7 @@
 	</tr>
 	<?php foreach ($participants as $participant): ?>
 	<tr>
+	    <td><?php echo $participant['Participant']['phone']; ?></td> 
 	    <?php 
             foreach ($headers as $key) {
                 if (isset($participant['Participant'][$key])) {

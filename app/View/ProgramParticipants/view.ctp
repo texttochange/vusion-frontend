@@ -1,5 +1,5 @@
 <div class="participant view">
-<h3>Participant</h3>
+<h3><?php echo __('Participant'); ?></h3>
 	<dl>
 		<dt><?php echo __('phone'); ?></dt>
 		<dd>
@@ -11,28 +11,41 @@
 			<?php echo h($participant['Participant']['name']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('history'); ?></dt>
-		<dd>
+		<?php 
+		        foreach ($participant['Participant'] as $key => $value) {
+		            if ($key!='modified' && $key!='created' && $key!='_id' && $key!='phone' && $key!='name') {
+		                echo $this->Html->tag('dt', $key);
+		                echo $this->Html->tag('dd', $value);
+		            }
+		        }
+	    
+		?>
+	</dl>
+	<br/>
+			<h3><?php echo __("Participant's History"); ?></h3>
+	
 			<table cellpadding="0" cellspacing="0">
 			<tr>
-					<th><?php echo __('message');?></th>
-					<th><?php echo __('time');?></th>
+				<th><?php echo __('time');?></th>
+				<th><?php echo __('type');?></th>
+				<th><?php echo __('message');?></th>
 			</tr>
 			<?php
 			foreach ($histories as $history): ?>
 			
 			<tr>
-				<?php if (isset($history['History']['content'])) { ?>
-				<td><?php echo h($history['History']['content']); ?>&nbsp;</td>
-				<?php } else { ?>
-				<td><?php echo h($history['History']['message-content']); ?>&nbsp;</td>
-				<?php } ?>
-				<td><?php echo h($history['History']['timestamp']); ?>&nbsp;</td>
+			<td>
+			    <?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+			    <td><?php echo h($history['History']['message-type']); ?>&nbsp;</td>
+			    <?php if (isset($history['History']['content'])) { ?>
+			    <td><?php echo h($history['History']['content']); ?>&nbsp;</td>
+			    <?php } else { ?>
+			    <td><?php echo h($history['History']['message-content']); ?>&nbsp;</td>
+			    <?php } ?>
 			</tr>
 			<?php endforeach; ?>
 			</table>
-		</dd>
-	</dl>
+
 </div>
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
