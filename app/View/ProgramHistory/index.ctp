@@ -1,16 +1,17 @@
 <div>
 	
 <div class="status index">
-	<h3><?php echo __('Program History'); ?></h3>
-	<div class="ttc-filter">
-	<?php
+	
+<div class="ttc-filter">
+	
+        <?php
 	   echo $this->Form->create(null); 
 	   $options = array(); 
-	   $options['non_matching_answers'] = "non_matching_answers";
+	   $options['non_matching_answers'] = "Non matching answers";
 	   if (isset($this->params['url']['filter']))
-	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
+	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'style'=> 'float:right', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
 	   else 
-	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Filter...'));
+	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'style'=> 'float:right', 'empty' => 'Filter...'));
 	   $this->Js->get('#filter')->event('change', '
 	     if ($("select option:selected").val())
 	         window.location.search = "?filter="+$("select option:selected").val();
@@ -19,6 +20,9 @@
 	   ');
 	   echo $this->Form->end(); ?>
 	</div>
+
+        <h3 style='float:left'><?php echo __('Program History'); ?></h3>
+        
 	<table cellpadding="0" cellspacing="0">
 	<tr>                                                                        
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
