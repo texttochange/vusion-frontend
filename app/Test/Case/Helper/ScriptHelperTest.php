@@ -43,16 +43,19 @@ class ScriptHelperTestCase extends CakeTestCase
     {
         $scriptHelper = new ScriptHelper();
         $script = array('keyword'=>'keyword');
-        $this->assertTrue($scriptHelper->hasKeyword($script, "keyword"));
-        
-        $script = array();
-        $this->assertFalse($scriptHelper->hasKeyword($script, "keyword"));
+        $this->assertEquals($script['keyword'],$scriptHelper->hasKeyword($script, "keyword"));
         
         $script = $this->getOneScript('keyword');
-        $this->assertTrue($scriptHelper->hasKeyword($script, "feel"));
+        $this->assertEquals(
+            $script['Script']['script']['dialogues'][0]['interactions'][0]['keyword'],
+            $scriptHelper->hasKeyword($script, "feel")
+        );
         
         $script = $this->getOneScript('keyword');
-        $this->assertTrue($scriptHelper->hasKeyword($script, "keyword"));
+        $this->assertEquals(
+            $script['Script']['script']['dialogues'][0]['interactions'][1]['keyword'],
+            $scriptHelper->hasKeyword($script, "keyword")
+        );
     }
     
     
