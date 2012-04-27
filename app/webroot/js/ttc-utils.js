@@ -318,3 +318,39 @@ function logMessageSent(){
     $('[name="message"]').val('')
     $('#simulator-output').append("<div>"+log+"</div>");
 }
+
+function updateClock(){
+	originalTimeString = $('.ttc-program-time').text();
+	currentTime = $('.ttc-program-time').text().trim().substr(-9,8);
+	currentTimeArray = currentTime.split(':');
+	currentHours = Number(currentTimeArray[0]);
+	currentMinutes = Number(currentTimeArray[1]);
+	currentSeconds = Number(currentTimeArray[2]);
+	
+	currentSeconds = currentSeconds + 1;
+	if (currentSeconds > 59) {
+		currentMinutes += 1;
+		if (currentMinutes > 59) {
+			currentHours += 1;
+			if (currentHours > 23) {
+				currentHours = 0;
+			}
+			currentMinutes = 0;
+		}
+		currentSeconds = 0;
+	}
+	
+	// Pad the hours, minutes and seconds with leading zeros, if required
+	currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
+	currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+	currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+	
+	currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
+	newTimeString = originalTimeString.replace(currentTime, currentTimeString);
+	$('.ttc-program-time').text(newTimeString);
+	
+	//var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
+	//$('.ttc-program-time').text(currentTimeString);
+	
+	//alert(newTimeString);
+}
