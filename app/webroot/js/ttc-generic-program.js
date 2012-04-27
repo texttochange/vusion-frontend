@@ -291,7 +291,7 @@ function activeForm(){
 				required:true
 			});
 			$(this).rules("add",{
-				greaterThanOrEqualTo: Date.parse(new Date().toDateString()).toString('dd/MM/yyyy')
+				greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm")
 			});
 	});
 	$("input[name*='keyword']").each(function (item) {
@@ -314,14 +314,16 @@ function activeForm(){
 	
 	jQuery.validator.addMethod("greaterThanOrEqualTo", 
 		function(value, element, params) {
-			
-		if (!/Invalid|NaN/.test(new Date(value))) {
-			return new Date(value) >= new Date(params);
+		
+		if (!/Invalid|NaN/.test(Date.parse(value))) {
+			if (Date.parse(value).compareTo(Date.now())>0)
+				return true;
+			return false;
 		}
 			
 		return isNaN(value) && isNaN(params) 
 		|| (parseFloat(value) >= parseFloat(params)); 
-        },'Date must be greater than or equal to {0}.');
+		},'<span class="ttc-validation-error">'+localized_errors.past_date_error+'</span>');
 
 	addContentFormHelp();
 	populateSelectableGoTo();
@@ -500,7 +502,6 @@ function configToForm(item,elt,id_prefix,configTree){
 						elt["elements"].push(
 						{
 							"name":id_prefix+"."+radio_type,
-							//"caption": label,
 							"type": program[sub_item],
 							"options": checkedRadio
 						});
