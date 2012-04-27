@@ -144,7 +144,8 @@ class ProgramScriptsController extends AppController
     public function validateKeyword()
     {       
 //    	print_r($this->request);
-        $keywordToValidate = $this->request->query['keyword'];
+//        $keywordToValidate = $this->request->query['keyword'];
+        $keywordToValidate = $this->request->data['keyword'];
         $programs          = $this->Program->find(
             'all', 
             array('conditions'=> 

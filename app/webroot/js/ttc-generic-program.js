@@ -354,7 +354,8 @@ function duplicateKeywordValidation() {
 		return;
 
         $.ajax({
-            url: "validateKeyword.json", 
+            url: "validateKeyword.json",
+            type: "POST",
             data: { 'keyword': $(this).val() },
             inputName: $(this).attr('name'),
 	    success: validateKeywordReply,
