@@ -30,6 +30,19 @@
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('jquery.validate.js');
 		
+/*
+		$lang = Configure::read('Config.language');
+		if ($lang and !is_numeric($lang)) {
+                     $lang = $lang;
+                } else {
+                     $lang = 'eng';
+                }
+		echo $this->Html->script($lang.'-error.js');
+*/
+                ?><script><?php 
+                echo $this->element('localization');
+		?></script><?php 
+
 		if (isset($this->Js)) {
 		//disappear success flash messages
 		$this->Js->get('document')->event('ready', '
