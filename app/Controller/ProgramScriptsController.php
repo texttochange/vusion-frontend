@@ -155,7 +155,7 @@ class ProgramScriptsController extends AppController
         if (!$shortCode) {
             $this->set('result', array(
                     'status'=>0, 
-                    'message' => 'program shortcode not define, please go to program settings'
+                    'message' => 'program shortcode has not been defined, please go to program settings'
                     ));
             return;
         }
