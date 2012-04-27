@@ -143,7 +143,8 @@ class ProgramScriptsController extends AppController
 
     public function validateKeyword()
     {       
-        $keywordToValidate = $this->request->data['keyword'];
+//    	print_r($this->request);
+        $keywordToValidate = $this->request->query['keyword'];
         $programs          = $this->Program->find(
             'all', 
             array('conditions'=> 
@@ -154,7 +155,7 @@ class ProgramScriptsController extends AppController
        
         if (!$shortCode) {
             $this->set('result', array(
-                    'status'=>0, 
+                    'status'=>'fail', 
                     'message' => 'program shortcode not define, please go to program settings'
                     ));
             return;
@@ -168,14 +169,14 @@ class ProgramScriptsController extends AppController
                 if ($foundKeyword) {
                     $this->set(
                         'result', array(
-                            'status'=>0, 
+                            'status'=>'fail', 
                             'message'=>$foundKeyword.' already used by: ' . $program['Program']['name'])
                         );
                     return;
                 }
             }
         }
-        $this->set('result', array('status'=>1));
+        $this->set('result', array('status'=>'ok'));
     }
     
     

@@ -347,38 +347,29 @@ function duplicateKeywordValidation() {
 				}
 			}
 		}
-			//alert("$this:"+$(keywordInput).val()+" and elt:"+$(element).val())
-			/*if ((!$(keywordInput).is(element)) && ($(keywordInput).val().toLowerCase() == $(element).val().toLowerCase()))
-			{
-				$(keywordInput).before("<p style='color:red'> already used by the same script in another question</p>");
-				isKeywordUsedInSameScript = true;
-			}*/
 	});
 	
 	
 	if (isKeywordUsedInSameScript)
 		return;
 
-	//Validation on other scripts
-	$('#flashMessage').ajaxError(function() {
-			$(this).empty();
-			$(this).append("http error");
+        $.ajax({
+            url: "validateKeyword.json", 
+            data: { 'keyword': $(this).val() },
+            inputName: $(this).attr('name'),
+	    success: validateKeywordReply,
+	    timeout: 1000,
+	    error: vusionAjaxError,
 	});
-        $(this).load("validateKeyword.json", 
-        	{ keyword: $(this).val() }, 
-		function(responseText, textStatus){
-			// $(this).before("<p style='color:red'> " + textStatus + "</p>");
-			if (textStatus=="success") {  //HTTP success
-				$('#flashMessage').empty();
-				var responseMsg = $.parseJSON(responseText);
-				if (responseMsg.status==1)  //not used
-					$(this).before("<p style='color:green'> ok </p>");
-				else    //already used in another Program
-					$(this).before("<p style='color:red'>" + responseMsg.message + "</p>");
-			} else {  //HTTP error or Server error ,....
-				$(this).before("<p style='color:red'> " + responseText + "</p>");
-			}
-		});	
+}
+
+function validateKeywordReply(data, textStatus) {
+	var elt = $("[name='"+this.inputName+"']");
+	$('#flashMessage').empty();
+	if (data.status=='ok')  //not used
+	    $(elt).before("<p style='color:green'> ok </p>");
+        else    //already used in another Program
+            $(elt).before("<p style='color:red'>" + data.message + "</p>");    
 }
 
 
