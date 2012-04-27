@@ -321,7 +321,7 @@ function activeForm(){
 			
 		return isNaN(value) && isNaN(params) 
 		|| (parseFloat(value) >= parseFloat(params)); 
-        },'Date must be greater than or equal to {0}.');
+		},'<span class="ttc-validation-error">'+localized_errors.past_date_error+'</span>');
 
 	addContentFormHelp();
 	populateSelectableGoTo();
