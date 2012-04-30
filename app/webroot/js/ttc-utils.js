@@ -256,11 +256,15 @@ function addContentFormHelp(baseUrl) {
         baseUrl="../.."
     $.each($("[name*='content']").prev(":not(:has(img)) :not(div)"),
             function (key, elt){
-                    $("<img class='ttc-help' src='"+baseUrl+"/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl)});
+                    $("<img class='ttc-help' src='"+baseUrl+"/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
+            });
+    $.each($("[name*='keyword']").prev(":not(:has(img))"),
+            function (key, elt){
+                    $("<img class='ttc-help' src='"+baseUrl+"/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
             });
 }
 
-function requestHelp(elt, baseUrl) {
+function requestHelp(elt, baseUrl, topic) {
     if ($($(elt).parent().next()).attr('class') == 'ttc-help-box') {
         $(elt).parent().next().remove();
         return;
@@ -268,7 +272,7 @@ function requestHelp(elt, baseUrl) {
     if (!baseUrl)
             baseUrl="../.."
     $("<div class='ttc-help-box'><img src='"+baseUrl+"/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent()).load(baseUrl+'/documentation', 
-        'topic=content');
+        'topic='+topic);
 }
 
 

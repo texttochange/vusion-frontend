@@ -291,7 +291,7 @@ function activeForm(){
 				required:true
 			});
 			$(this).rules("add",{
-				greaterThanOrEqualTo: Date.parse(new Date().toDateString()).toString('dd/MM/yyyy')
+				greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm")
 			});
 	});
 	$("input[name*='keyword']").each(function (item) {
@@ -314,9 +314,11 @@ function activeForm(){
 	
 	jQuery.validator.addMethod("greaterThanOrEqualTo", 
 		function(value, element, params) {
-			
-		if (!/Invalid|NaN/.test(new Date(value))) {
-			return new Date(value) >= new Date(params);
+		
+		if (!/Invalid|NaN/.test(Date.parse(value))) {
+			if (Date.parse(value).compareTo(Date.now())>0)
+				return true;
+			return false;
 		}
 			
 		return isNaN(value) && isNaN(params) 
@@ -347,38 +349,30 @@ function duplicateKeywordValidation() {
 				}
 			}
 		}
-			//alert("$this:"+$(keywordInput).val()+" and elt:"+$(element).val())
-			/*if ((!$(keywordInput).is(element)) && ($(keywordInput).val().toLowerCase() == $(element).val().toLowerCase()))
-			{
-				$(keywordInput).before("<p style='color:red'> already used by the same script in another question</p>");
-				isKeywordUsedInSameScript = true;
-			}*/
 	});
 	
 	
 	if (isKeywordUsedInSameScript)
 		return;
 
-	//Validation on other scripts
-	$('#flashMessage').ajaxError(function() {
-			$(this).empty();
-			$(this).append("http error");
+        $.ajax({
+            url: "validateKeyword.json",
+            type: "POST",
+            data: { 'keyword': $(this).val() },
+            inputName: $(this).attr('name'),
+	    success: validateKeywordReply,
+	    timeout: 1000,
+	    error: vusionAjaxError,
 	});
-        $(this).load("validateKeyword.json", 
-        	{ keyword: $(this).val() }, 
-		function(responseText, textStatus){
-			// $(this).before("<p style='color:red'> " + textStatus + "</p>");
-			if (textStatus=="success") {  //HTTP success
-				$('#flashMessage').empty();
-				var responseMsg = $.parseJSON(responseText);
-				if (responseMsg.status==1)  //not used
-					$(this).before("<p style='color:green'> ok </p>");
-				else    //already used in another Program
-					$(this).before("<p style='color:red'>" + responseMsg.message + "</p>");
-			} else {  //HTTP error or Server error ,....
-				$(this).before("<p style='color:red'> " + responseText + "</p>");
-			}
-		});	
+}
+
+function validateKeywordReply(data, textStatus) {
+	var elt = $("[name='"+this.inputName+"']");
+	$('#flashMessage').empty();
+	if (data.status=='ok')  //not used
+	    $(elt).before("<p style='color:green'> ok </p>");
+        else    //already used in another Program
+            $(elt).before("<p style='color:red'>" + data.message + "</p>");    
 }
 
 
@@ -508,7 +502,6 @@ function configToForm(item,elt,id_prefix,configTree){
 						elt["elements"].push(
 						{
 							"name":id_prefix+"."+radio_type,
-							//"caption": label,
 							"type": program[sub_item],
 							"options": checkedRadio
 						});

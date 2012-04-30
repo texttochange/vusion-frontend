@@ -321,7 +321,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertEquals(0, $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['result']['status']);
         $this->assertEquals('usedKeyword already used by: Test Name 2', $this->vars['result']['message']);
               
     }
@@ -390,7 +390,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->assertEquals(1, $this->vars['result']['status']);
+        $this->assertEquals('ok', $this->vars['result']['status']);
     }
 
 
@@ -428,7 +428,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->assertEquals(1, $this->vars['result']['status']);
+        $this->assertEquals('ok', $this->vars['result']['status']);
     }
 
 
@@ -455,7 +455,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->assertEquals(0, $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['result']['status']);
         $this->assertEquals('usedKeyword already used by: Test Name', $this->vars['result']['message']);
     }
 
@@ -483,7 +483,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->assertEquals(1, $this->vars['result']['status']);
+        $this->assertEquals('ok', $this->vars['result']['status']);
     }
 
 
@@ -516,7 +516,7 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->assertEquals(1, $this->vars['result']['status']);
+        $this->assertEquals('ok', $this->vars['result']['status']);
     }
 
 
