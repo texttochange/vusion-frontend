@@ -1,11 +1,7 @@
-function getNewDateUsingTimezone(timeOffset){
-    d = new Date();
-    localTime = d.getTime();
-    localOffset = d.getTimezoneOffset() * 60000; 
-    utc = localTime + localOffset;
-    offset = timeOffset;  
-    newTime = utc + (3600000*offset);
-    newDate = new Date(newTime);
+function getNewDateUsingTimezone(){
+    date = new Date.parse(Date.now().toString('dd/MM/yyyy')+ " "+$('.ttc-program-time').text().trim().substr(-8,5));
+    localTime = date.getTime(); // in milliseconds
+    newDate = new Date(localTime);
     return newDate;
 }
 
@@ -321,7 +317,7 @@ function logMessageSent(){
 
 function updateClock(){
 	originalTimeString = $('.ttc-program-time').text();
-	currentTime = $('.ttc-program-time').text().trim().substr(-9,8);
+	currentTime = $('.ttc-program-time').text().trim().substr(-8,8);
 	currentTimeArray = currentTime.split(':');
 	currentHours = Number(currentTimeArray[0]);
 	currentMinutes = Number(currentTimeArray[1]);
@@ -348,9 +344,4 @@ function updateClock(){
 	currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
 	newTimeString = originalTimeString.replace(currentTime, currentTimeString);
 	$('.ttc-program-time').text(newTimeString);
-	
-	//var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
-	//$('.ttc-program-time').text(currentTimeString);
-	
-	//alert(newTimeString);
 }
