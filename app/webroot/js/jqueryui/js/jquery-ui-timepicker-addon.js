@@ -1094,7 +1094,7 @@ $.datepicker._gotoToday = function(id) {
 	// ############## ttc-hack-to-get-program-specific-date/time #####################
 	// This function gives us the program specific time as set in the program settings
 	// for that program. uncomment the previous "var now" if you dont need this one.
-	var now = getNewDateUsingTimezone(Number($("#program-offset").text()));
+	var now = getNewDateUsingTimezone();
 	// ##############################################################################
 	var tp_inst = this._get(inst, 'timepicker');
 	if (tp_inst && tp_inst._defaults.showTimezone && tp_inst.timezone_select) {
