@@ -333,28 +333,27 @@ function duplicateKeywordValidation() {
 	//alert(this.previousSibling);
 	if (this.previousSibling.tagName == 'P')
 		$(this.previousSibling).remove();
+	
 	var keywordInput = this;
 	var isKeywordUsedInSameScript = false;
+	
+	var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
+	var pattern = /[^a-zA-Z0-9]/g;
+	for(var x=0;x<keywords.length;x++) {
+		if (pattern.test(keywords[x])) {
+			$(keywordInput).before("<p style='color:red'>'"+keywords[x]+"' has some invalid characters. Keywords must contain only numbers or letters separated by a comma.</p>");
+			return;
+		}
+		if (keywords[x].length <= 0) {
+			$(keywordInput).before("<p style='color:red'>You cannot have a blank keyword.</p>");
+			return;
+		}
+	}
+	
 	$.each($("input[name*='keyword']"), function(index, element){
-		var pattern = /[^a-zA-Z0-9]/g;
-		var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
 		var elementWords = $(element).val().replace(/\s/g, '').split(',');
 		
 		for(var x=0;x<keywords.length;x++) {
-			if (pattern.test(keywords[x])) {
-				if (this.previousSibling.tagName == 'P')
-					$(this.previousSibling).remove();
-				$(keywordInput).before("<p style='color:red'>'"+keywords[x]+"' has some invalid characters. Keywords must contain only numbers or letters separated by a comma.</p>");
-				isKeywordUsedInSameScript = true;
-				return;
-			}
-			if (keywords[x].length <= 0) {
-				if (this.previousSibling.tagName == 'P')
-					$(this.previousSibling).remove();
-				$(keywordInput).before("<p style='color:red'>You cannot have a blank keyword.</p>");
-				isKeywordUsedInSameScript = true;
-				return;
-			}
 			if (!$(keywordInput).is(element)) {
 				for (var y=0;y<elementWords.length;y++) {				
 					if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
