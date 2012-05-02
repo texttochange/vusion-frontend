@@ -12,7 +12,7 @@
 		
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css(array('cake.generic', 'basic', 'jquery-ui-1.8.16.custom'));
+		echo $this->Html->css(array('cake.generic', 'basic', 'jquery-ui-1.8.16.custom', 'MenuMatic'));
 
 		echo $scripts_for_layout;
 		
@@ -29,7 +29,9 @@
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('jquery.validate.js');
-		
+		echo $this->Html->script('menu-matic/MenuMatic_0.68.3-source.js');
+		echo $this->Html->script('moo-tools/mootools-core-1.4.5-full-compat.js');
+		          
                 ?><script><?php 
                 echo $this->element('localization');
 		?></script><?php 
@@ -139,13 +141,18 @@
 				?>
 				
 				</div>
-				</div>
+				</div>				
 			<?php } ?>
+			
 		<div id="content">
 			
 			<?php echo $content_for_layout; ?>
 
 		</div>
+		<?php 
+		    if (isset($programName))
+		        echo $this->element('navigation_menu');
+		?>
 		<div id="footer">
 		</div>
 	</div>
