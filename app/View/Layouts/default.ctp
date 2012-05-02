@@ -102,8 +102,7 @@
 				        $now = new DateTime('now');
 				        date_timezone_set($now,timezone_open($programTimezone[0]['ProgramSetting']['value']));
 				        echo $this->Html->tag('span', $now->format('H:i:s')  );
-				        $offset = $now->getOffset()/3600;
-				        echo $this->Html->tag('span', $offset, array('id' => 'program-offset', 'style' => 'display:none'));
+				        $this->Js->get('document')->event('ready','setInterval("updateClock()", 1000);');
 				    }
 				?>
 				</div>
