@@ -39,7 +39,7 @@ class ProgramsController extends AppController
     {
         $this->Program->recursive = -1;
         if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
-            $this->paginate = array(
+           $this->paginate = array(
                 'authorized',
                 'specific_program_access' => 'true',
                 'user_id' => $this->Session->read('Auth.User.id'),
@@ -52,13 +52,12 @@ class ProgramsController extends AppController
                 ),
             ), 'controllers/Programs/edit');
         foreach($programs as &$program) {
-            //print_r($program);
             $tempProgramSetting = new ProgramSetting(array('database' => $program['Program']['database']));
-            $country = $tempProgramSetting->find('programSetting', array('key'=>'country'));
-            if (isset($country[0]['ProgramSetting']['value'])) {
-                $program['Program']['country'] = $country[0]['ProgramSetting']['value'];
+            $shortcode = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+            if (isset($shortcode[0]['ProgramSetting']['value'])) {
+                $program['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];
             } else {
-                $program['Program']['country'] = "Not defined";
+                $program['Program']['shortcode'] = "Not defined";
             }
         }
         $this->set(compact('programs', 'isProgramEdit'));

@@ -2,6 +2,18 @@
 	color : grey;
 }
 
+.ttc-link-header {
+	color : lightGrey;
+	float : right;
+	margin-right: 10px;
+	text-decoration: none;
+}
+
+.ttc-link-header:hover {
+	color : white;
+	text-decoration: none;
+}
+
 #header .ttc-title {
 /*	background : url("../img/vusion-logo-wide.png") no-repeat scroll 0 0 transparent;*/
 	height: 30px;
@@ -129,13 +141,14 @@
 }
 
 .ttc-central-header {
-	float : left;
-	width : 30%
+	float: right;
+	width: 30%;
+	padding-top: 25px;
+	padding-right: 10px;
 }
 
 .ttc-right-header {
 	float : right;
-	margin-top: 10px;
 	color: white;
 }
 
@@ -147,28 +160,7 @@
 	padding-left: 10px;
 	padding-right: 10px;
 }
-/*
-.success-message {
-	color: #fff;
-	background-repeat: repeat-x;
-	background-image: -moz-linear-gradient(top, #00CC00, #009900);
-	background-image: -ms-linear-gradient(top, #00CC00, #009900);
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#00CC00), to(#009900));
-	background-image: -webkit-linear-gradient(top, #00CC00, #009900);
-	background-image: -o-linear-gradient(top, #00CC00, #009900);
-	background-image: linear-gradient(top, #00CC00, #009900);
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	margin-bottom: 18px;
-	padding: 7px 14px;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25)
-}*/
+
 .ttc-filter {
 	text-align: right;
 }
@@ -251,4 +243,6 @@
 .ttc-validation-error{
 
 }
+
+
 

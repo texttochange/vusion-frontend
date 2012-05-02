@@ -51,18 +51,7 @@
 		        ));
 			?> 
 			</div>
-			<div class="ttc-central-header">
-			<?php
-			if (isset($vumiStatus)) {
-				//print_r($vumiStatus);
-				if ($vumiStatus['running']) {
-					echo $this->Html->tag('div', 'In the backend, Vumi is ' . $vumiStatus['msg']);
-				} else {
-					echo $this->Html->tag('div', 'Cannot connect to Vumi / ' . $vumiStatus['msg']);
-				}
-			}
-			?>
-			</div>
+			
 			<div class="ttc-right-header"> 
 			<?php
 			if ($this->Session->read('Auth.User.id')) {	
@@ -70,14 +59,27 @@
 					'span', 
 					'log as '.$this->Session->read('Auth.User.username').' '
 					);
-				echo $this->Html->link(
-					'Logout',
-					array('controller'=> 'users', 'action'=>'logout'), 
-					array('class' => 'ttc-link'));
 			}
 			?> 
+			</div>
+<div class="ttc-central-header">
+			<?php
+			if ($this->Session->read('Auth.User.id')) {	
+			    echo $this->Html->link(
+					__('logout'),
+					array('controller'=> 'users', 'action'=>'logout'), 
+					array('class' => 'ttc-link-header'));
+			}
+			if (isset($isAdmin) && $isAdmin) {
+			    echo $this->Html->link(
+			        __('admin'),
+			        array('controller'=>'admin'),
+			        array('class'=>'ttc-link-header'));
+				//print_r($vumiStatus);
+			}
+			?>
 			</div> 
-		</div> 
+		</div>     
 			<?php 
 			     echo $this->Session->flash(); 
 			     if (!$this->Session->flash()) {
@@ -95,11 +97,10 @@
 				<div class='ttc-program-header'>
 				<div class="ttc-program-time">
 				<?php
-				    if (isset($programTimezone[0]['ProgramSetting']['value']) && $programTimezone[0]['ProgramSetting']['value']) {
-				        //echo $this->Html->tag('br');
-				        echo $this->Html->tag('span', $programTimezone[0]['ProgramSetting']['value'].' - ');
+				    if ($programTimezone) {
+				        echo $this->Html->tag('span', $programTimezone.' - ');
 				        $now = new DateTime('now');
-				        date_timezone_set($now,timezone_open($programTimezone[0]['ProgramSetting']['value']));
+				        date_timezone_set($now,timezone_open($programTimezone));
 				        echo $this->Html->tag('span', $now->format('H:i:s')  );
 				        $this->Js->get('document')->event('ready','setInterval("updateClock()", 1000);');
 				    }
