@@ -141,7 +141,5 @@ class Script extends MongoModel
         return false;
     }
 
-    
-
 
 }

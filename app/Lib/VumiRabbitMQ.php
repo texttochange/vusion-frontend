@@ -89,6 +89,19 @@ class VumiRabbitMQ {
             );
     }
 
+
+    public function sendMessageToSendAllMessages($to, $phone, $scriptId)
+    {
+        return $this->sendMessageTo(
+            $to.'.control',
+            array(
+                'action' => 'test-send-all-messages',
+                'phone-number' => $phone,
+                'script-id' => $scriptId)
+            );
+    }
+
+
     public function sendMessageToWorker($to, $from, $msg)
     {
          return $this->sendMessageTo(
