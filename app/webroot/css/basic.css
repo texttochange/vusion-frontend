@@ -260,4 +260,70 @@
 	display: block;
 }
 
+.ttc-program-index {
+    float: left;
+    padding: 15px 2%;
+    width: 60%;
+}
 
+.ttc-program-index h3 {
+    border-bottom: solid;
+}
+
+.ttc-program-news {
+    float: left;
+    padding: 15px 2%;
+    width: 30%;
+}
+.ttc-program-news h3 {
+    border-bottom: solid;
+}
+
+.ttc-program-box {
+    cursor: pointer;
+    position: relative;
+    padding-bottom: 30px;
+    margin-bottom: 14px;
+    height: 40px;
+    background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+    border: 1px solid #BBBBBB;
+}
+
+.ttc-program-box:hover{
+   background: #19C1FF;;
+}
+
+.ttc-program-box a{
+   font-weight: normal;
+   text-decoration: none;
+}
+
+.ttc-program-index .ttc-program-title {
+    position: absolute;
+    left: 10px;
+    top: 15px;
+}
+
+.ttc-program-details {
+    position: absolute;
+    left: 20px;
+    top: 37px;
+}
+
+.ttc-program-stats {
+    position: absolute;
+    left:400px;
+    top: 7px;
+}
+
+.ttc-program-quicklinks{
+    position: absolute;
+    left: 622px;
+    top: 10px;
+}
+
+.ttc-program-news .ttc-program-box {
+    height: 20px;
+    padding: 5px;
+    text-align: center;
+}

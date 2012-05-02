@@ -2,6 +2,10 @@
 
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
+App::uses('Participant', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('History', 'Model');
+App::uses('UnmatchableReply', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 /**
@@ -52,14 +56,21 @@ class ProgramsController extends AppController
                 ),
             ), 'controllers/Programs/edit');
         foreach($programs as &$program) {
-            $tempProgramSetting = new ProgramSetting(array('database' => $program['Program']['database']));
+            $database = $program['Program']['database'];
+            $tempProgramSetting = new ProgramSetting(array('database' => $database));
             $shortcode = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
             if (isset($shortcode[0]['ProgramSetting']['value'])) {
                 $program['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];
-            } else {
-                $program['Program']['shortcode'] = "Not defined";
-            }
+            } 
+            $tempParticipant = new Participant(array('database' => $database));
+            $program['Program']['participant-count'] = $tempParticipant->find('count'); 
+            $tempHistory = new History(array('database' => $database));
+            $program['Program']['history-count'] = $tempHistory->find('count');
+            $tempSchedule = new Schedule(array('database' => $database));
+            $program['Program']['schedule-count'] = $tempSchedule->find('count');  
         }
+        $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
+        $this->set('unmatchableReplies', $tempUnmatchableReply->find('count'));
         $this->set(compact('programs', 'isProgramEdit'));
     }
 
