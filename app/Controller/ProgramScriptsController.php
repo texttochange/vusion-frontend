@@ -109,12 +109,6 @@ class ProgramScriptsController extends AppController
     }
 
 
-    protected function _notifyUpdateBackendWorker($workerName)
-    {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
-    }
-
-
     public function activateDraft()
     {
         $programUrl = $this->params['program'];
@@ -189,6 +183,40 @@ class ProgramScriptsController extends AppController
             return true;
         }
         return false;
+    }
+
+
+    public function testSendAllMessages()
+    {
+        $programUrl = $this->params['program'];
+        if ($this->request->is('post')) {
+            $phoneNumber = $this->request->data['SendAllMessages']['phone-number'];
+            $scriptId = $this->request->data['SendAllMessages']['script-id'];
+            $result = $this->_notifySendAllMessagesBackendWorker($programUrl, $phoneNumber, $scriptId);
+            $this->Session->setFlash(
+                __('Message are being send, they should arrive shortly.'), 
+                'default',
+                array('class' => "message success")
+                );
+        }
+        $scripts = array();    
+        if ($this->Script->find('draft'))
+            $scripts['draft'] = $this->Script->find('draft');
+        if ($this->Script->find('active'))
+            $scripts['currently active'] = $this->Script->find('active');
+        $this->set(compact('scripts')); 
+    }
+
+
+    protected function _notifySendAllMessagesBackendWorker($workerName, $phone, $scriptId)
+    {
+        return $this->VumiRabbitMQ->sendMessageToSendAllMessages($workerName, $phone, $scriptId);
+    }
+
+
+    protected function _notifyUpdateBackendWorker($workerName)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
     }
 
 

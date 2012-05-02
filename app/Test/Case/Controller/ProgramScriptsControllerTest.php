@@ -125,7 +125,8 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                     'Group' => array()
                     ),
                 'methods' => array(
-                    '_notifyUpdateBackendWorker'
+                    '_notifyUpdateBackendWorker',
+                    '_notifySendAllMessagesBackendWorker'
                     )
                 )
             );
@@ -565,6 +566,52 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
             );
 
         $this->testAction('/testurl/scripts/activateDraft'); 
+    }
+
+
+    public function testTestSendAllMessage()
+    {
+        $scripts = $this->mockProgramAccess();
+        $scripts
+            ->expects($this->once())
+            ->method('_notifySendAllMessagesBackendWorker')
+            ->will($this->returnValue(true));
+            
+        $this->Scripts->ProgramSetting->create();
+        $this->Scripts->ProgramSetting->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282'
+                )
+            );
+        $this->Scripts->ProgramSetting->create();
+        $this->Scripts->ProgramSetting->save(
+            array(
+                'key'=>'timezone',
+                'value'=>'Africa/Kampala'
+                )
+            );
+
+        $this->Scripts->Script->create();
+        $this->Scripts->Script->save($this->getOneScript('usedKeyword'));
+        $this->Scripts->Script->makeDraftActive();
+        $this->Scripts->Script->create();
+        $this->Scripts->Script->save($this->getOneScript('usedKeyword'));
+
+        $this->testAction(
+            '/testurl/scripts/testSendAllMessages',
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'SendAllMessages' => array(
+                        'script-id'=> 'whatever',
+                        'phone-number' => '06'
+                        )
+                    )
+                )
+            );
+
+        $this->assertEquals(2, count($this->vars['scripts']));
     }
 
 

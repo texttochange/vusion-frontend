@@ -12,6 +12,7 @@
 		<li><?php echo $this->Html->link(__('Program Homepage'), array('program'=>$programUrl,'controller'=>'programHome'), array('class'=>'ttc-button')); ?></li>
 		<li><?php echo $this->Html->tag('div', __('Save as draft'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
 		<?php $this->Js->get('#button-save')->event('click', 'saveFormOnServer()' , true); ?>
+		<li><?php echo $this->Html->link(__('Test send all messages'), array('program'=>$programUrl,'action'=>'testSendAllMessages'), array('class'=>'ttc-button', 'id' => 'button-test')); ?></li>
 	</ul>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

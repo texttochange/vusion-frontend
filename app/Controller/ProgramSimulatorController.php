@@ -44,7 +44,7 @@ class ProgramSimulatorController extends AppController
             if ($this->Script->find('draft'))
                 $scripts['draft'] = $this->Script->find('draft');
             if ($this->Script->find('active'))
-                $script['currently active'] = $this->Script->find('active');
+                $scripts['currently active'] = $this->Script->find('active');
             $this->set(compact('scripts'));
             return;
         }
