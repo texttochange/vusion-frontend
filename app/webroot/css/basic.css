@@ -240,9 +240,24 @@
 
 }
 
-.ttc-validation-error{
+.ttc-validation-error {
 
 }
 
+.ttc-login-title{
+}
+
+.ttc-login-container{
+	position: relative;
+	width: 40%;
+	left: 30%;
+}
+
+.ttc-login-input {
+	width:100%;
+	font-size: 100%;
+	float: none;
+	display: block;
+}
 
 
