@@ -194,7 +194,7 @@ class ProgramScriptsController extends AppController
             $scriptId = $this->request->data['SendAllMessages']['script-id'];
             $result = $this->_notifySendAllMessagesBackendWorker($programUrl, $phoneNumber, $scriptId);
             $this->Session->setFlash(
-                __('Message are being send, they should arrive shortly.'), 
+                __('Message(s) being sent, should arrive shortly...'), 
                 'default',
                 array('class' => "message success")
                 );
