@@ -12,7 +12,13 @@
 		
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css(array('cake.generic', 'basic', 'jquery-ui-1.8.16.custom', 'MenuMatic'));
+		echo $this->Html->css(array(
+		    'cake.generic',
+		    'basic',
+		    'jquery-ui-1.8.16.custom',
+		    'superfish',
+		    'superfish-vertical'
+		    ));
 
 		echo $scripts_for_layout;
 		
@@ -29,8 +35,9 @@
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('jquery.validate.js');
-		echo $this->Html->script('menu-matic/MenuMatic_0.68.3-source.js');
-		echo $this->Html->script('moo-tools/mootools-core-1.4.5-full-compat.js');
+		echo $this->Html->script('superfish-1.4.8/superfish.js');
+		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
+		echo $this->Html->script('superfish-1.4.8/supersubs.js');
 		          
                 ?><script><?php 
                 echo $this->element('localization');
