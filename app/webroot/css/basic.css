@@ -240,8 +240,30 @@
 
 }
 
-.ttc-validation-error {
+#dynamic-generic-program-form .error {
+    position: relative;
+}
 
+.ttc-validation-error {
+    position: absolute;
+    left: -700px;
+    top:-65px;
+    background: pink;
+    border: solid white;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.ttc-validation-error:after {
+	border-width: 12px;
+	border-style: solid;
+	border-color: white transparent transparent transparent;
+	content: ""; /* Forces this pseudo-element to appear on hover */
+	height: 2px; /* Width and height could  be left out, but I prefer a less 'pointy' triangle */
+	width: 2px;
+	position: absolute;
+	top: 29px;
+	left: 30px;
 }
 
 .ttc-login-title{

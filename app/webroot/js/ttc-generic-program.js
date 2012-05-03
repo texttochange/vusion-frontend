@@ -272,11 +272,11 @@ function activeForm(){
 				$(elt).change(updateRadioButtonSubmenu);
 			};
 	});
-	$.each($("input[name*='keyword']"), function (key,elt){
+	/*$.each($("input[name*='keyword']"), function (key,elt){
 			if (!$.data(elt,'events')){
 				$(elt).focusout(duplicateKeywordValidation);
 			};
-	});
+	});*/
 	$.each($("input[name*='date-time']"), function (key,elt){
 			if (!$.data(elt,'events')){
 				$(elt).datetimepicker({
@@ -285,18 +285,27 @@ function activeForm(){
 			};
 	});
 
-	$("#dynamic-generic-program-form").validate();
+	$("#dynamic-generic-program-form").validate(/*{
+			submitHandler: function(form) {
+				alert('hey');
+			},
+	}*/);
 	$("input[name*='date-time']").each(function (item) {
 			$(this).rules("add",{
-				required:true
-			});
-			$(this).rules("add",{
-				greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm")
+				required:true,
+				greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm"),
+				messages:{
+					required: wrapErrorMessage(localized_errors.validation_required_error),
+				}
 			});
 	});
 	$("input[name*='keyword']").each(function (item) {
 			   $(this).rules("add",{
-			   required:true
+			         required:true,
+	   			 keywordUnique:true,
+	   			 messages:{
+	   			 	 required: wrapErrorMessage(localized_errors.validation_required_error),
+	   			 }
 			    });
 	});
 	$("input[name*='type-question']:checked").each(function (item) {
@@ -308,45 +317,36 @@ function activeForm(){
 	});
 	$("input[name*='choice']").each(function (item) {
 		$(this).rules("add",{
-			required:true
+			required:true,
+			messages:{
+				required: wrapErrorMessage(localized_errors.validation_required_error),
+			}
 		});
 	});
 	
-	jQuery.validator.addMethod("greaterThanOrEqualTo", 
-		function(value, element, params) {
-		
-		if (!/Invalid|NaN/.test(Date.parse(value))) {
-			if (Date.parse(value).compareTo(Date.now())>0)
-				return true;
-			return false;
-		}
-			
-		return isNaN(value) && isNaN(params) 
-		|| (parseFloat(value) >= parseFloat(params)); 
-		},'<span class="ttc-validation-error">'+localized_errors.past_date_error+'</span>');
-
 	addContentFormHelp();
 	populateSelectableGoTo();
 }
 
-function duplicateKeywordValidation() {
-	//alert(this.previousSibling);
-	if (this.previousSibling.tagName == 'P')
-		$(this.previousSibling).remove();
-	
-	var keywordInput = this;
+
+function duplicateKeywordValidation(value, element, param) {	
+	var keywordInput = element;
 	var isKeywordUsedInSameScript = false;
-	
+	var errors = {}
 	var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
 	var pattern = /[^a-zA-Z0-9]/g;
 	for(var x=0;x<keywords.length;x++) {
 		if (pattern.test(keywords[x])) {
-			$(keywordInput).before("<p style='color:red'>'"+keywords[x]+"' has some invalid characters. Keywords must contain only numbers or letters separated by a comma.</p>");
-			return;
+			//$(keywordInput).before("<p style='color:red'>'"+keywords[x]+"' has some invalid characters. Keywords must contain only numbers or letters separated by a comma.</p>");
+			errors[$(element).attr('name')] = wrapErrorMessage(keywords[x] + localized_errors.validation_keyword_invalid_character_error);  
+			this.showErrors(errors); 
+			return true;
 		}
 		if (keywords[x].length <= 0) {
-			$(keywordInput).before("<p style='color:red'>You cannot have a blank keyword.</p>");
-			return;
+			//$(keywordInput).before("<p style='color:red'>You cannot have a blank keyword.</p>");
+			errors[$(element).attr('name')] = wrapErrorMessage(keywords[x] + localized_errors.validation_keyword_blank_error);  
+			this.showErrors(errors);
+			return true;
 		}
 	}
 	
@@ -357,38 +357,40 @@ function duplicateKeywordValidation() {
 			if (!$(keywordInput).is(element)) {
 				for (var y=0;y<elementWords.length;y++) {				
 					if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
-						$(keywordInput).before("<p style='color:red'>'"+elementWords[y]+"' already used by the same script in another question</p>");
-						isKeywordUsedInSameScript = true;
-						return;
+						//$(keywordInput).before("<p style='color:red'>'"+elementWords[y]+"' already used by the same script in another question</p>");
+						errors[$(element).attr('name')] = wrapErrorMessage(elementWords[y]+ localized_error.validation_keyword_used_same_script_error);
+						//isKeywordUsedInSameScript = true;
+						this.showErrors(errors);
+						return true;
 					}
 				}
 			}
 		}
 	});
 	
-	
-	if (isKeywordUsedInSameScript)
-		return;
-
         $.ajax({
             url: "validateKeyword.json",
             type: "POST",
-            data: { 'keyword': $(this).val() },
-            inputName: $(this).attr('name'),
+            data: { 'keyword': $(keywordInput).val() },
+            inputName: $(keywordInput).attr('name'),
 	    success: validateKeywordReply,
 	    timeout: 1000,
 	    error: vusionAjaxError,
 	});
+	return true;
 }
 
 function validateKeywordReply(data, textStatus) {
 	var elt = $("[name='"+this.inputName+"']");
-	$('#flashMessage').empty();
-	if (data.status=='ok')  //not used
-	    $(elt).before("<p style='color:green'> ok </p>");
-        else    //already used in another Program
-            $(elt).before("<p style='color:red'>" + data.message + "</p>");    
-}
+	$('#flashMessage').hide();
+	if (data.status=='fail') { //not used
+	//    $(elt).before("<p style='color:green'> ok </p>");
+        //else    //already used in another Program
+            var errors = {};
+            errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+            $("#dynamic-generic-program-form").validate().showErrors(errors);
+        }    
+};
 
 
 function isArray(obj) {
@@ -598,6 +600,9 @@ function fromIsoDateToFormDate(dateString) {
 	return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
 }
 
+function wrapErrorMessage(error) {
+     return '<span class="ttc-validation-error">'+error+'</span>';
+}
 
 function fromBackendToFrontEnd(configFile, id) {
 	//alert("function called");
@@ -610,6 +615,27 @@ function fromBackendToFrontEnd(configFile, id) {
 		});
 	
 	
+	$.validator.addMethod(
+		"greaterThanOrEqualTo", 
+		function(value, element, params) {	
+			if (!/Invalid|NaN/.test(Date.parse(value))) {
+				if (Date.parse(value).compareTo(Date.now())>0)
+					return true;
+				return false;
+			}
+			
+			return isNaN(value) && isNaN(params) 
+			|| (parseFloat(value) >= parseFloat(params)); 
+		},
+		wrapErrorMessage(localized_errors.past_date_error)
+		);
+	
+	$.validator.addMethod(
+		"keywordUnique",
+		duplicateKeywordValidation,
+		wrapErrorMessage(Error)
+		);
+
 		
 	$.dform.subscribe("alert", function(option, type) {
 			//alert("message alert "+type);
@@ -655,7 +681,7 @@ function fromBackendToFrontEnd(configFile, id) {
         
         return myform;
 }
-
+/*
 function fromDataToForm2(structure, lang, data, id) {
 	//alert("function called");
 	
@@ -711,7 +737,7 @@ function fromDataToForm2(structure, lang, data, id) {
         return myform;
 }
 
-/*
+
 function generateForm(elt, item, lang, configTree, id_prefix){
 	if (!program[item]){
 		elt['type']=null;	
