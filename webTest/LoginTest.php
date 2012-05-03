@@ -9,7 +9,7 @@ class Login extends PHPUnit_Extensions_SeleniumTestCase
   protected function setUp()
   {
     $this->setBrowser("*firefox");
-    $this->setBrowserUrl("http://localhost:81/users/login");
+    $this->setBrowserUrl("http://localhost/users/login");
   }
 
 
