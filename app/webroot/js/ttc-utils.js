@@ -302,6 +302,7 @@ function pullSimulatorUpdate(url){
 	$.ajax({
         url: url,
         success: function(data){
+            $('#flashMessage').hide();
             if (data['message']) {
                     var message = $.parseJSON(data['message']);
                     $("#simulator-output").append("<div>> [time] from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
