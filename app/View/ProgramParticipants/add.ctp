@@ -1,6 +1,11 @@
 <div>
 		
 <div class="participants form">
+    <ul class="ttc-actions">
+		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
+		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants'));?></li>
+	</ul>
+	<br /><br /><br />
 	<h3><?php echo __('Add Participant'); ?></h3>
 	<?php echo $this->Form->create('Participant');?>
 	<fieldset>
@@ -12,14 +17,4 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back To Program Home'),
-	                array('program'=> $programUrl,'controller' => 'programHome'));
-                ?></li>
-                <li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
-		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'));?></li>
-	</ul>
-</div>
-</div>
+

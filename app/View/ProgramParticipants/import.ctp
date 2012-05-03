@@ -1,6 +1,11 @@
 <div>
 	
 <div class="participants index">
+    <ul class="ttc-actions">
+		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'));?></li>
+	</ul>
+    <br /><br /><br />
     <h3>Import Participants</h3>
 	<?php
 	//echo $this->Form->create('Import', array('enctype' => 'multipart/form-data'));	
@@ -22,16 +27,4 @@
 	   ?>
 	</div>
 
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back To Program Home'),
-	                array('program'=> $programUrl,'controller' => 'programHome'));
-                ?></li>
-                <li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'));?></li>
-	</ul>
-	
-</div>
 </div>
