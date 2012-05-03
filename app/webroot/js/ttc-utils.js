@@ -305,16 +305,16 @@ function pullSimulatorUpdate(url){
             $('#flashMessage').hide();
             if (data['message']) {
                     var message = $.parseJSON(data['message']);
-                    $("#simulator-output").append("<div>> [time] from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
+                    $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
             }
         },
-        timeout: 500,
+        timeout: 1000,
         error: vusionAjaxError
         });
 }
 
 function logMessageSent(){
-    var log = "> [time] from "+$('[name="participant-phone"]').val()+" '"+$('[name="message"]').val()+"'";
+    var log = "> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+$('[name="participant-phone"]').val()+" '"+$('[name="message"]').val()+"'";
     $('[name="participant-phone"]').val('')
     $('[name="message"]').val('')
     $('#simulator-output').append("<div>"+log+"</div>");
