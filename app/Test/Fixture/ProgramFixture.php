@@ -25,7 +25,7 @@ class ProgramFixture extends CakeTestFixture
             'id' => 1,
             'name' => 'test',
             'url' => 'test',
-            'database' => 'test',
+            'database' => 'testdbprogram',
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
         ),

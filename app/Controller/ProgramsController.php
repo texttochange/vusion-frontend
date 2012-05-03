@@ -2,6 +2,10 @@
 
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
+App::uses('Participant', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('History', 'Model');
+App::uses('UnmatchableReply', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 /**
@@ -39,7 +43,7 @@ class ProgramsController extends AppController
     {
         $this->Program->recursive = -1;
         if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
-            $this->paginate = array(
+           $this->paginate = array(
                 'authorized',
                 'specific_program_access' => 'true',
                 'user_id' => $this->Session->read('Auth.User.id'),
@@ -52,15 +56,21 @@ class ProgramsController extends AppController
                 ),
             ), 'controllers/Programs/edit');
         foreach($programs as &$program) {
-            //print_r($program);
-            $tempProgramSetting = new ProgramSetting(array('database' => $program['Program']['database']));
-            $country = $tempProgramSetting->find('programSetting', array('key'=>'country'));
-            if (isset($country[0]['ProgramSetting']['value'])) {
-                $program['Program']['country'] = $country[0]['ProgramSetting']['value'];
-            } else {
-                $program['Program']['country'] = "Not defined";
-            }
+            $database = $program['Program']['database'];
+            $tempProgramSetting = new ProgramSetting(array('database' => $database));
+            $shortcode = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+            if (isset($shortcode[0]['ProgramSetting']['value'])) {
+                $program['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];
+            } 
+            $tempParticipant = new Participant(array('database' => $database));
+            $program['Program']['participant-count'] = $tempParticipant->find('count'); 
+            $tempHistory = new History(array('database' => $database));
+            $program['Program']['history-count'] = $tempHistory->find('count');
+            $tempSchedule = new Schedule(array('database' => $database));
+            $program['Program']['schedule-count'] = $tempSchedule->find('count');  
         }
+        $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
+        $this->set('unmatchableReplies', $tempUnmatchableReply->find('count'));
         $this->set(compact('programs', 'isProgramEdit'));
     }
 

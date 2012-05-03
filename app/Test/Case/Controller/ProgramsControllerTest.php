@@ -43,7 +43,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     protected function mockProgramAccess()
     {
-        $Programs = $this->generate('Programs', array(
+        $programs = $this->generate('Programs', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
@@ -53,12 +53,12 @@ class ProgramsControllerTestCase extends ControllerTestCase
             )
         ));
         
-        $Programs->Acl
+        $programs->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->returnValue('true'));
 
-        return $Programs;
+        return $programs;
     }
 
 /**
@@ -94,23 +94,23 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex_hasSpecificProgramAccess_True()
     {
     	
-        $Programs = $this->generate('Programs', array(
+        $programs = $this->generate('Programs', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read', 'write')
             ),
         ));
         
-        $Programs->Acl
+        $programs->Acl
             ->expects($this->any())
             ->method('check')
-            ->will($this->returnValue('true'));
+            ->will($this->onConsecutiveCalls('false', 'false'));
         
 
-        $Programs->Session
+        $programs->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls('2','2','2'));
+            ->will($this->onConsecutiveCalls('2','2','2','2','2','2'));
             
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
@@ -123,7 +123,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     'id' => 1,
                     'name' => 'test',
                     'url' => 'test',
-                    'database' => 'test',
+                    'database' => 'testdbprogram',
                     'created' => '2012-01-24 15:29:24',
                     'modified' => '2012-01-24 15:29:24'
                     ),

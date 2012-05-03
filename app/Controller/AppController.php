@@ -1,6 +1,5 @@
 <?php
 App::uses('Controller', 'Controller');
-App::uses('VumiSupervisord', 'Lib');
 App::uses('ProgramSetting', 'Model');
 
 class AppController extends Controller
@@ -45,9 +44,19 @@ class AppController extends Controller
     {    
         //set language into Session and Cookies
         $this->_setLanguage();
-        
-        //return the vumi status for the header
-        //$this->set('vumiStatus', $this->VumiSupervisord->getState());
+        $programUrl = $this->params['program'];
+        $programName = $this->Session->read($this->params['program'].'_name');
+        $programTimezone = $this->Session->read($this->params['program'].'_timezone');
+        if ($this->Session->read('Auth.User.id')) {
+            $isAdmin = $this->Acl->check(
+                array(
+                    'User' => array(
+                        'id' => $this->Session->read('Auth.User.id')
+                        )
+                    ),
+                'controllers/Admin');
+        }
+        $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
     }
 
 
@@ -66,22 +75,19 @@ class AppController extends Controller
                 'program_url' => $this->params['program']
                 ));
             if (count($data)==0) {
-                //$this->Session->setFlash(__('This program does not exists'));
-                //$this->redirect('/');
-                throw new NotFoundException('Could not find this page.');
+               throw new NotFoundException('Could not find this page.');
             } else {
             	$database_name = $data[0]['Program']['database'];
                 $this->Session->write($this->params['program'] . '_name', $data[0]['Program']['name']);
-                $this->Session->write($this->params['program'] . '_db', $database_name);
-                $this->set('programUrl', $this->params['program']);
-                $this->set('programName', $data[0]['Program']['name']);
+                $this->Session->write($this->params['program'] . '_db', $database_name); 
                 $programSettingModel = new ProgramSetting(array('database' => $database_name));
                 $programTimezone = $programSettingModel->find('programSetting', array('key' => 'timezone'));
-                $this->set(compact('programTimezone'));
-      
+                if (isset($programTimezone[0]['ProgramSetting']['value']))
+                    $this->Session->write($this->params['program'].'_timezone', $programTimezone[0]['ProgramSetting']['value']);
+                else 
+                    $this->Session->write($this->params['program'].'_timezone', null);                 
             }
         }
-        $this->VumiSupervisord = new VumiSupervisord();
     }
 
 

@@ -2,6 +2,18 @@
 	color : grey;
 }
 
+.ttc-link-header {
+	color : lightGrey;
+	float : right;
+	margin-right: 10px;
+	text-decoration: none;
+}
+
+.ttc-link-header:hover {
+	color : white;
+	text-decoration: none;
+}
+
 #header .ttc-title {
 /*	background : url("../img/vusion-logo-wide.png") no-repeat scroll 0 0 transparent;*/
 	height: 30px;
@@ -129,13 +141,14 @@
 }
 
 .ttc-central-header {
-	float : left;
-	width : 30%
+	float: right;
+	width: 30%;
+	padding-top: 25px;
+	padding-right: 10px;
 }
 
 .ttc-right-header {
 	float : right;
-	margin-top: 10px;
 	color: white;
 }
 
@@ -147,28 +160,7 @@
 	padding-left: 10px;
 	padding-right: 10px;
 }
-/*
-.success-message {
-	color: #fff;
-	background-repeat: repeat-x;
-	background-image: -moz-linear-gradient(top, #00CC00, #009900);
-	background-image: -ms-linear-gradient(top, #00CC00, #009900);
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#00CC00), to(#009900));
-	background-image: -webkit-linear-gradient(top, #00CC00, #009900);
-	background-image: -o-linear-gradient(top, #00CC00, #009900);
-	background-image: linear-gradient(top, #00CC00, #009900);
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	margin-bottom: 18px;
-	padding: 7px 14px;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25)
-}*/
+
 .ttc-filter {
 	text-align: right;
 }
@@ -248,13 +240,97 @@
 
 }
 
-.ttc-validation-error{
+.ttc-validation-error {
 
+}
+
+.ttc-login-title{
+}
+
+.ttc-login-container{
+	position: relative;
+	width: 40%;
+	left: 30%;
+}
+
+.ttc-login-input {
+	width:100%;
+	font-size: 100%;
+	float: none;
+	display: block;
 }
 
 .ttc-navigation-menu {
 	float: left;
 	padding: 10px 1.5%;
 	width: 15%;
+}
+
+.ttc-program-index {
+    float: left;
+    padding: 15px 2%;
+    width: 60%;
+}
+
+.ttc-program-index h3 {
+    border-bottom: solid;
+}
+
+.ttc-program-news {
+    float: left;
+    padding: 15px 2%;
+    width: 30%;
+}
+.ttc-program-news h3 {
+    border-bottom: solid;
+}
+
+.ttc-program-box {
+    cursor: pointer;
+    position: relative;
+    padding-bottom: 30px;
+    margin-bottom: 14px;
+    height: 40px;
+    background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+    border: 1px solid #BBBBBB;
+}
+
+.ttc-program-box:hover{
+   background: #19C1FF;;
+}
+
+.ttc-program-box a{
+   font-weight: normal;
+   text-decoration: none;
+}
+
+.ttc-program-index .ttc-program-title {
+    position: absolute;
+    left: 10px;
+    top: 15px;
+}
+
+.ttc-program-details {
+    position: absolute;
+    left: 20px;
+    top: 37px;
+}
+
+.ttc-program-stats {
+    position: absolute;
+    left:400px;
+    top: 7px;
+}
+
+.ttc-program-quicklinks{
+    position: absolute;
+    left: 622px;
+    top: 10px;
+}
+
+.ttc-program-news .ttc-program-box {
+    height: 20px;
+    padding: 5px;
+    text-align: center;
 }
 

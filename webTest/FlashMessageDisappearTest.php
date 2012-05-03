@@ -7,7 +7,7 @@ class Example extends PHPUnit_Extensions_SeleniumTestCase
     $this->setBrowserUrl("http://localhost/");
   }
 
-  public function testMyTestCase()
+  public function testFlashMessageDisappear()
   {
     $this->open("/users/login");
     $this->type("id=UserEmail", "marcus@texttochange.com");

@@ -254,7 +254,7 @@ function addContentFormHelp(baseUrl) {
             function (key, elt){
                     $("<img class='ttc-help' src='"+baseUrl+"/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
             });
-    $.each($("[name*='keyword']").prev(":not(:has(img))"),
+    $.each($("[name*='keyword']").prev("label").not(":has(img)"),
             function (key, elt){
                     $("<img class='ttc-help' src='"+baseUrl+"/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
             });
