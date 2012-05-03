@@ -1,7 +1,7 @@
 <?php header("Content-type: text/javascript"); ?>
 
 var localized_errors = {
-    past_date_error: "<?php echo __("Date must be greater than or equal to {0}.")?>",
+    past_date_error: "<?php echo __("Scheduling time cannot be in the past {0}.")?>",
     vusion_ajax_error: "<?php echo __("Poor network connection.")?>",
     validation_required_error: "<?php echo __("This field is required.")?>",
     validation_keyword_invalid_character_error: "<?php echo __(" has some invalid characters. Keywords must contain only numbers or letters separated by a comma.")?>",
