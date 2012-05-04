@@ -1,8 +1,13 @@
 <div>
 	
 <div class="status index">
+    <ul class="ttc-actions">
+		<li><?php echo $this->Html->link('Export CSV', array('program' => $programUrl, 'action' => 'export.csv')); ?></li>
+		<li><?php echo $this->Html->link('Export Raw CSV', array('program' => $programUrl, 'action' => 'index.csv')); ?></li>
+		<li><?php echo $this->Html->link('Export Json', array('program' => $programUrl, 'action' => 'index.json')); ?></li>
+	</ul>
 	
-<div class="ttc-filter">
+   <div class="ttc-filter">
 	
         <?php
 	   echo $this->Form->create(null); 
@@ -57,16 +62,8 @@
 		echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl)));
 		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl)), null, array('class' => 'next disabled'));
 	?>
-</div>
+    </div>
 	
 </div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back Homepage'), array('program'=>$programUrl,'controller'=>'programHome')); ?></li>
-		<li><?php echo $this->Html->link('Export CSV', array('program' => $programUrl, 'action' => 'export.csv')); ?></li>
-		<li><?php echo $this->Html->link('Export Raw CSV', array('program' => $programUrl, 'action' => 'index.csv')); ?></li>
-		<li><?php echo $this->Html->link('Export Json', array('program' => $programUrl, 'action' => 'index.json')); ?></li>
-	</ul>
-</div>	
+
 <?php echo $this->Js->writeBuffer(); ?>

@@ -92,12 +92,14 @@ class ProgramSettingsController extends AppController
                 'ProgramSettings' => array (
                     'shortcode' => $shortcode[0]['ProgramSetting']['value'],
                     'international-prefix' => $internationalprefix[0]['ProgramSetting']['value'],
-        	    'timezone' => $timezone[0]['ProgramSetting']['value']
+        	        'timezone' => $timezone[0]['ProgramSetting']['value']
         	    )
         	);
             
-            $programTimezone = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+            $programTimezoneArray = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
+            $programTimezone = $programTimezoneArray[0]['ProgramSetting']['value'];
     	    $this->set(compact('programTimezone'));
+    	    
             
             $this->request->data = $programSettings;
             return $programSettings;

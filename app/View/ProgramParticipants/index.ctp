@@ -1,9 +1,11 @@
 <div>
 	
 <div class="participants index">
-        <?php
-        
-        ?>
+    <ul class="ttc-actions">
+		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
+	</ul>
+	<br /><br />
 	<h3>Participants</h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
@@ -56,16 +58,5 @@
 		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl)), null, array('class' => 'next disabled'));
 	?>
 	</div>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back To Program Home'),
-	                array('program'=> $programUrl,'controller' => 'programHome'));
-                ?></li>
-		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
-		
-	</ul>
-</div>
+	
 </div>

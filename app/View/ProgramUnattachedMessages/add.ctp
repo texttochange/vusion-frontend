@@ -18,13 +18,5 @@
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back Homepage'), array('program'=>$programUrl,'controller'=>'programHome')); ?></li>
-		<li><?php echo $this->Html->link(__('view Messages'), array('program'=>$programUrl, 'action'=>'index')); ?></li>
-	</ul>
-	
-</div>
+
 <?php echo $this->Js->writeBuffer(); ?>

@@ -115,17 +115,34 @@
 	background: #FFCB4B;
 }
 
-.ttc-actions{
+.ttc-actions {
     float: left;
-    padding: 10px 1.5%;
-    width: 40%;
+    padding: 3px;
+    margin: 0;
+    width: 70%;
+}   
+
+.ttc-actions li{
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 3px;
+}
+.ttc-actions li a{
+    border: 1px solid #BBBBBB;
+    border-radius: 4px 4px 4px 4px;    
+    padding: 4px 8px;
+    display: block;
+    background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+    text-decoration: none;
+    font-weight: normal;
 }
 
 .ttc-info{
-    border-left: 1px solid #666666;
+    border: 0;
     float: right;
     padding: 10px 2%;
-    width: 50%;    
+    width: 98%;    
     height: 390px;
 }
 
@@ -286,6 +303,16 @@
 	font-weight: normal;
 }
 
+.ttc-navigation-menu {
+	float: left;
+	width: 10%;
+}
+
+.ttc-navigation-menu a {
+	font-weight: normal;
+	color: black;
+}
+
 .ttc-program-index {
     float: left;
     padding: 15px 2%;
@@ -353,3 +380,4 @@
     padding: 5px;
     text-align: center;
 }
+
