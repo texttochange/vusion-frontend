@@ -1,5 +1,8 @@
 <?php
-class Example extends PHPUnit_Extensions_SeleniumTestCase
+
+require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
+
+class Flash extends PHPUnit_Extensions_SeleniumTestCase
 {
   protected function setUp()
   {
