@@ -12,9 +12,3 @@
         echo $this->Form->end(__('Send'));
         ?>
     </div>
-    <div class="actions">
-        <h3><?php echo __('Actions'); ?></h3>
-        <ul>
-        </ul>
-    </div> 
-</div>
