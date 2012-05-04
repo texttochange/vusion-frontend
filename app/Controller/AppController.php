@@ -49,9 +49,7 @@ class AppController extends Controller
         $programUrl = $this->params['program'];
         $programName = $this->Session->read($this->params['program'].'_name');
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
-        $programUnattachedMessages = $this->Session->read($this->params['program'].'_unattachedMessages');
-        $hasScriptActive = $this->Session->read($this->params['program'].'_hasScriptActive');
-        $hasScriptDraft = $this->Session->read($this->params['program'].'_hasScriptDraft');
+        $databaseName = $this->Session->read($this->params['program'].'_db');
         if ($this->Session->read('Auth.User.id')) {
             $isAdmin = $this->Acl->check(
                 array(
@@ -61,28 +59,23 @@ class AppController extends Controller
                     ),
                 'controllers/Admin');
         }
-        if (isset($programUrl)) {
-            $databaseName = $this->Session->read($this->params['program'].'_db');
+        if (isset($programUrl)) {            
             $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
             $unattachedMessages = $unattachedMessageModel->find('all');
             if (isset($unattachedMessages))
-                $this->Session->write($this->params['program'].'_unattachedMessages', $unattachedMessages);
+                $programUnattachedMessages = $unattachedMessages;
             else
-                $this->Session->write($this->params['program'].'_unattachedMessages', null);
+                $programUnattachedMessages = null;
             
             $scriptModel = new Script(array('database' => $databaseName));
             $hasScriptActive  = count($scriptModel->find('countActive'));
-            if ($hasScriptActive)
-                $this->Session->write($this->params['program'].'_hasScriptActive', $hasScriptActive);
-            else
-                $this->Session->write($this->params['program'].'_hasScriptActive', null);
+            if (!$hasScriptActive)
+                $hasScriptActive = null;                
                 
             $hasScriptDraft   = count($scriptModel->find('countDraft'));
-            if ($hasScriptDraft)
-                $this->Session->write($this->params['program'].'_hasScriptDraft', $hasScriptDraft);
-            else
-                $this->Session->write($this->params['program'].'_hasScriptDraft', null);
-                
+            if (!$hasScriptDraft)
+                $hasScriptDraft = null;
+            
             $this->set(compact('programUnattachedMessages', 'hasScriptActive', 'hasScriptDraft'));
         }
         $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
