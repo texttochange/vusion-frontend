@@ -282,6 +282,10 @@
 	display: block;
 }
 
+.ttc-login-container .required{
+	font-weight: normal;
+}
+
 .ttc-program-index {
     float: left;
     padding: 15px 2%;
