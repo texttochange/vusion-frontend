@@ -76,7 +76,14 @@ class AppController extends Controller
             if (!$hasScriptDraft)
                 $hasScriptDraft = null;
             
-            $this->set(compact('programUnattachedMessages', 'hasScriptActive', 'hasScriptDraft'));
+            $redis = new Redis();
+            $redis->connect('127.0.0.1');
+            
+            $hasProgramLogs = $this->_hasProgramLogs($redis,$programUrl);
+            if ($this->_hasProgramLogs($redis,$programUrl))
+                $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
+            
+            $this->set(compact('programUnattachedMessages', 'hasScriptActive', 'hasScriptDraft', 'hasProgramLogs', 'programLogsUpdates'));
         }
         $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
     }
@@ -122,6 +129,29 @@ class AppController extends Controller
             $this->Session->write('Config.language', $this->params['language']);
             $this->Cookie->write('lang', $this->params['language'], false, '20 days');
         }
+    }
+    
+    
+    protected function _hasProgramLogs($redis,$program)
+    {
+        if (count($redis->zRange($program.':logs', -5, -1, true)) > 0)
+            return true;
+        return false;
+    }
+    
+    
+    protected function _processProgramLogs($redis,$program)
+    {
+        if ($this->_hasProgramLogs($redis,$program)) {
+            $programLogs = array();
+        
+            $logs = $redis->zRange($program.':logs', -5, -1, true);
+            foreach ($logs as $key => $value) {
+                $programLogs[] = $key;
+            }
+            return array_reverse($programLogs);
+        }
+        return array();    	    	    
     }
 
 

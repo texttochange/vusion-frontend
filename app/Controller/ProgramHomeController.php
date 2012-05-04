@@ -36,8 +36,6 @@ class ProgramHomeController extends AppController
         
         $this->ScriptHelper = new ScriptHelper();
         
-        $this->redis = new Redis();
-        $this->redis->connect('127.0.0.1');
     }
 
 
@@ -46,7 +44,6 @@ class ProgramHomeController extends AppController
 
         $hasScriptActive  = count($this->Script->find('countActive'));
         $hasScriptDraft   = count($this->Script->find('countDraft'));
-        $hasProgramLogs   = $this->_hasProgramLogs();
         $isScriptEdit     = $this->Acl->check(array(
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
@@ -80,14 +77,10 @@ class ProgramHomeController extends AppController
                     $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
             } 
         }
-        
-        $programLogs = $this->_processProgramLogs();
                 
         $this->set(compact(
-            'programLogs',
             'hasScriptActive', 
             'hasScriptDraft',
-            'hasProgramLogs',
             'isScriptEdit', 
             'isParticipantAdd', 
             'participantCount',
@@ -95,29 +88,6 @@ class ProgramHomeController extends AppController
             'schedules',
             'workerStatus'));
     }
-    
-    
-    protected function _hasProgramLogs()
-    {
-        if (count($this->redis->zRange($this->params['program'].':logs', -5, -1, true)) > 0)
-            return true;
-        return false;
-    }
-    
-    
-    protected function _processProgramLogs()
-    {
-        if ($this->_hasProgramLogs()) {
-            $programLogs = array();
         
-            $logs = $this->redis->zRange($this->params['program'].':logs', -5, -1, true);
-            foreach ($logs as $key => $value) {
-                $programLogs[] = $key;
-            }
-            return array_reverse($programLogs);
-        }
-        return array();    	    	    
-    }
-
 
 }
