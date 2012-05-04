@@ -163,7 +163,7 @@ function saveFormOnServer(){
 				$("#flashMessage").delay(3000).fadeOut(1000)
 			}
 		},
-		timeout: 500,
+		timeout: 1000,
 		error: vusionAjaxError
 	});
 }

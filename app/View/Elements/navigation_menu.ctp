@@ -13,7 +13,7 @@
 
 <ul class="sf-menu sf-vertical">  
     <li>
-       <?php echo $this->Html->link(__('Unattached Message'),
+       <?php echo $this->Html->link(__('Unattached Messages'),
            array(
                'program'=>$programUrl,
                'controller'=>'programUnattachedMessages',

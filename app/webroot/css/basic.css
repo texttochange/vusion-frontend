@@ -185,10 +185,8 @@
 .ttc-program-header {
 	height: 50px;
 	background: #19C1FF;
-	padding-top: 10px;
 	padding-left: 20px;
 	padding-right: 20px;
-	padding-bottom: 5px;
 }
 
 .ttc-program-title{
@@ -300,10 +298,18 @@
 	display: block;
 }
 
+.ttc-login-container .required{
+	font-weight: normal;
+}
+
 .ttc-navigation-menu {
 	float: left;
-	padding: 10px 1.5%;
-	width: 15%;
+	width: 10%;
+}
+
+.ttc-navigation-menu a {
+	font-weight: normal;
+	color: black;
 }
 
 .ttc-program-index {
