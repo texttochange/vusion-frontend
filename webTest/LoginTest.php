@@ -34,7 +34,7 @@ class Login extends PHPUnit_Extensions_SeleniumTestCase
     $this->waitForPageToLoad("30000");
     $this->click("css=div.ttc-program-box");
     $this->waitForPageToLoad("30000");
-    $this->click("link=Program Settings");
+    $this->click("link=Settings");
     $this->waitForPageToLoad("30000");
     $this->assertTrue((bool)preg_match('/^[\s\S]*\/view$/',$this->getLocation()));
   }
