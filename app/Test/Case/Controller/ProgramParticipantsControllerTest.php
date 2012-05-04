@@ -112,7 +112,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 '4', 
                 '2',
                 $this->programData[0]['Program']['database'],
-                $this->programData[0]['Program']['name']
+                $this->programData[0]['Program']['name'],
+                'Africa/Kampala',
+                'testdbprogram'
                 ));
      
         return $participants;

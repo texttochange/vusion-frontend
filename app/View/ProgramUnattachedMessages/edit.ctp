@@ -1,5 +1,5 @@
 <div class="unattached_messages form">
-<h3><?php echo __('Add Unattached Message'); ?></h3>
+<h3><?php echo __('Edit Unattached Message'); ?></h3>
 <?php echo $this->Form->create('UnattachedMessage');?>
 
 	<fieldset>
@@ -19,13 +19,5 @@
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back Homepage'), array('program'=>$programUrl,'controller'=>'programHome')); ?></li>
-		<li><?php echo $this->Html->link(__('view Messages'), array('program'=>$programUrl, 'action'=>'index')); ?></li>
-	</ul>
-	
-</div>
+
 <?php echo $this->Js->writeBuffer(); ?>

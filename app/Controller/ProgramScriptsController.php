@@ -38,6 +38,12 @@ class ProgramScriptsController extends AppController
 
     public function index()
     {
+        $isScriptEdit = $this->Acl->check(array(
+                'User' => array(
+                    'id' => $this->Session->read('Auth.User.id')
+                ),
+            ), 'controllers/ProgramScripts');
+        
         $draft = $this->Script->find('draft');
         
         if (count($draft)) {
@@ -45,7 +51,7 @@ class ProgramScriptsController extends AppController
         } else {
             $script = null;
         }
-        $this->set(compact('script'));
+        $this->set(compact('script', 'isScriptEdit'));
     }
 
 

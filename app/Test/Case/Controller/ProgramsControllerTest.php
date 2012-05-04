@@ -65,6 +65,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
  * test methods
  *
  */
+
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();
@@ -110,7 +111,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $programs->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls('2','2','2','2','2','2'));
+            ->will($this->onConsecutiveCalls('2','2','2','2','2','2','2','2','2'));
             
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
@@ -187,5 +188,5 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     }
 
-
+    
 }

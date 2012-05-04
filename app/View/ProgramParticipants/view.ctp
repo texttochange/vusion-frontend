@@ -1,4 +1,7 @@
 <div class="participant view">
+    <ul class="ttc-actions">
+		<li><?php echo $this->Html->link(__('Edit Participant'), array('action' => 'edit', $participant['Participant']['_id'])); ?> </li>
+	</ul>
 <h3><?php echo __('Participant'); ?></h3>
 	<dl>
 		<dt><?php echo __('phone'); ?></dt>
@@ -46,11 +49,6 @@
 			<?php endforeach; ?>
 			</table>
 
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Edit Participant'), array('action' => 'edit', $participant['Participant']['_id'])); ?> </li>
-	</ul>
-</div>
+
+
 

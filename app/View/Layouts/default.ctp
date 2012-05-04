@@ -11,7 +11,13 @@
 		
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css(array('cake.generic', 'basic', 'jquery-ui-1.8.16.custom'));
+		echo $this->Html->css(array(
+		    'cake.generic',
+		    'basic',
+		    'jquery-ui-1.8.16.custom',
+		    'superfish',
+		    'superfish-vertical'
+		    ));
 
 		echo $scripts_for_layout;
 		
@@ -28,7 +34,10 @@
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('jquery.validate.js');
-		
+		echo $this->Html->script('superfish-1.4.8/superfish.js');
+		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
+		echo $this->Html->script('superfish-1.4.8/supersubs.js');
+		          
                 ?><script><?php 
                 echo $this->element('localization');
 		?></script><?php 
@@ -139,13 +148,18 @@
 				?>
 				
 				</div>
-				</div>
+				</div>				
 			<?php } ?>
+			
 		<div id="content">
 			
 			<?php echo $content_for_layout; ?>
 
 		</div>
+		<?php 
+		    if (isset($programName))
+		        echo $this->element('navigation_menu');
+		?>
 		<div id="footer">
 		</div>
 	</div>

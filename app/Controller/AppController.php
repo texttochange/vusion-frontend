@@ -1,6 +1,8 @@
 <?php
 App::uses('Controller', 'Controller');
 App::uses('ProgramSetting', 'Model');
+App::uses('UnattachedMessage', 'Model');
+App::uses('Script', 'Model');
 
 class AppController extends Controller
 {
@@ -47,6 +49,7 @@ class AppController extends Controller
         $programUrl = $this->params['program'];
         $programName = $this->Session->read($this->params['program'].'_name');
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
+        $databaseName = $this->Session->read($this->params['program'].'_db');
         if ($this->Session->read('Auth.User.id')) {
             $isAdmin = $this->Acl->check(
                 array(
@@ -55,6 +58,25 @@ class AppController extends Controller
                         )
                     ),
                 'controllers/Admin');
+        }
+        if (isset($programUrl)) {            
+            $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
+            $unattachedMessages = $unattachedMessageModel->find('all');
+            if (isset($unattachedMessages))
+                $programUnattachedMessages = $unattachedMessages;
+            else
+                $programUnattachedMessages = null;
+            
+            $scriptModel = new Script(array('database' => $databaseName));
+            $hasScriptActive  = count($scriptModel->find('countActive'));
+            if (!$hasScriptActive)
+                $hasScriptActive = null;                
+                
+            $hasScriptDraft   = count($scriptModel->find('countDraft'));
+            if (!$hasScriptDraft)
+                $hasScriptDraft = null;
+            
+            $this->set(compact('programUnattachedMessages', 'hasScriptActive', 'hasScriptDraft'));
         }
         $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
     }
@@ -85,7 +107,7 @@ class AppController extends Controller
                 if (isset($programTimezone[0]['ProgramSetting']['value']))
                     $this->Session->write($this->params['program'].'_timezone', $programTimezone[0]['ProgramSetting']['value']);
                 else 
-                    $this->Session->write($this->params['program'].'_timezone', null);                 
+                    $this->Session->write($this->params['program'].'_timezone', null);
             }
         }
     }

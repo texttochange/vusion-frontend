@@ -157,7 +157,9 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                     '2',
                     $this->programData[0]['Program']['database'], 
                     $this->programData[0]['Program']['name'],
-                    $this->programData[0]['Program']['name']
+                    $this->programData[0]['Program']['name'],
+                    'utc',
+                    'testdbprogram'
                     )
                 );
             
@@ -368,7 +370,9 @@ class ProgramScriptsControllerTestCase extends ControllerTestCase
                     '2',
                     $this->programData[0]['Program']['database'], 
                     $this->programData[0]['Program']['database'],
-                    $this->programData[0]['Program']['name']
+                    $this->programData[0]['Program']['name'],
+                    'utc',
+                    'testdbprogram'
                     )
                 );
 
