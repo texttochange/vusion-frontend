@@ -157,8 +157,10 @@
 
 		</div>
 		<?php 
-		    if (isset($programName))
+		    if (isset($programName)) {
 		        echo $this->element('navigation_menu');
+		        echo $this->element('backend_notifications');
+		    }
 		?>
 		<div id="footer">
 		</div>

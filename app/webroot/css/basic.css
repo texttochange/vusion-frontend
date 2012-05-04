@@ -237,11 +237,12 @@
 
 .ttc-notification {
 	border: 1px solid;
-	float: right;
-	padding: 10px 1%;
-	width: 30%;
+	float: left;
+	padding: 2px 2px;
+	width: 15%;
 	height: 95px;
 	overflow-y: auto;
+	font-size: 9px;
 }
 
 .ttc-simulator-output {
