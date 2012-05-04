@@ -89,6 +89,9 @@ class ProgramSimulatorController extends AppController
          $simulatorScheduleModel = new Schedule($options);
          $simulatorScheduleModel->deleteAll(true,false);
 
+         while($this->VumiRabbitMQ->getMessageFrom('simulator.outbound'))
+             continue;
+
          $this->VumiRabbitMQ->sendMessageToCreateWorker('simulator', 'simulator', 'simulator.disptacher');
          $this->VumiRabbitMQ->sendMessageToUpdateSchedule('simulator');
     }
