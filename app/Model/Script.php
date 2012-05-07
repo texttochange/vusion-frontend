@@ -110,7 +110,7 @@ class Script extends MongoModel
             return false;
         }
 
-        $this->data['Script']['script'] = $this->scriptHelper->object_to_array($this->data['Script']['script']);
+        $this->data['Script']['script'] = $this->scriptHelper->objectToArray($this->data['Script']['script']);
 
         /**Convert all date-time in iso format*/
         $result = $this->scriptHelper->recurseScriptDateConverter($this->data['Script']['script']);

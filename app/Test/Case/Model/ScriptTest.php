@@ -77,6 +77,7 @@ class ScriptTestCase extends CakeTestCase
         $this->Script->recursive = -1;
         $this->Script->create();
         $saveResult = $this->Script->save($data);
+        //print_r($saveResult);
         $this->assertTrue(!empty($saveResult) && is_array($saveResult));
     
         $result = $this->Script->find('all');
