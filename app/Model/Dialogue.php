@@ -74,17 +74,31 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Dialogue' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && prev.Dialogue==0) 
+                if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified < obj.modified)) 
                     prev.Dialogue = obj;
-                else if (obj.activated && prev.Dialogue.modified < obj.modified) {
-                    prev.Dialogue = obj;
-                }}',
+                }',
             );
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
         return array_filter(
             $dialogues['retval'],
             array($this, "_filterDraft")
             );
+    }
+
+    public function getDialogues()
+    {
+        $dialogueQuery = array(
+            'key' => array(
+                'dialogue-id' => true,
+                ),
+            'initial' => array('Dialogue' => 0),
+            'reduce' => 'function(obj, prev){
+                if (prev.Dialogue==0 || prev.Dialogue.modified < obj.modified) 
+                    prev.Dialogue = obj;
+                }',
+            );
+        $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
+        return $dialogues['retval'];
     }
 
 
@@ -96,7 +110,7 @@ class Dialogue extends MongoModel
 
     public function saveDialogue($dialogue)
     {
-        if (!isset($dialogue['Dialogue']['dialogue-id'])) {
+         if (!isset($dialogue['Dialogue']['dialogue-id'])) {
             $this->create();
             return $this->save($dialogue);
         }
@@ -116,6 +130,18 @@ class Dialogue extends MongoModel
             $foundKeyword = $this->scriptHelper->hasKeyword($activeDialogue, $keyword);
             if ($foundKeyword) {
                 return $foundKeyword;
+            }
+        }
+        return array();
+    }
+
+
+    public function getActiveDialogueUseKeyword($keyword)
+    {
+        foreach ($this->getActiveDialogues() as $activeDialogue) {
+            $foundKeyword = $this->scriptHelper->hasKeyword($activeDialogue, $keyword);
+            if ($foundKeyword) {
+                return $activeDialogue;
             }
         }
         return array();

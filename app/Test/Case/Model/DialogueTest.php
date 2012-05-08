@@ -74,8 +74,10 @@ class DialogueTestCase extends CakeTestCase
         unset($data['Dialogue']['dialogue-id']);
         $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($data);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
+        $this->assertEquals(2, count($this->Dialogue->getDialogues()));
         $saveActiveOtherDialogue = $this->Dialogue->makeDraftActive($saveDraftOtherDialogue['Dialogue']['dialogue-id']);
         $this->assertEquals(2, count($this->Dialogue->getActiveDialogues()));
+        $this->assertEquals(2, count($this->Dialogue->getDialogues()));
     }
 
 
