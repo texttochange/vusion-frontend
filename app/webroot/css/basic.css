@@ -116,14 +116,14 @@
 }
 
 .ttc-actions {
-    float: left;
+    float: right;
     padding: 3px;
     margin: 0;
-    width: 70%;
+    width: 600px;
 }   
 
 .ttc-actions li{
-    float: left;
+    float: right;
     list-style-type: none;
     margin: 0;
     padding: 3px;
@@ -380,3 +380,8 @@
     text-align: center;
 }
 
+.ttc-display-area {
+    height: 450px;
+    overflow-y:auto;
+    width: 930px;
+}

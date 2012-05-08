@@ -3,7 +3,7 @@
 <div class="Program Logs index">
 	<h3><?php echo __('Program Logs'); ?></h3>
 	
-	<div style="height:400px; overflow-y:auto">
+	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	 <?php foreach ($programLogs as $key=>$log): ?>
 	 <tr>

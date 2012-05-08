@@ -1,9 +1,8 @@
 <div class="unattached_messages index">
+	<h3><?php echo __('Unattached Messages');?></h3>
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('New Unattached Message'), array('program'=>$programUrl, 'action' => 'add')); ?></li>
 	</ul>
-	<br /><br /><br />
-	<h3><?php echo __('Unattached Messages');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('To');?></th>
