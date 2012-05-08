@@ -2,10 +2,11 @@
 App::uses('Dialogue', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 
+
 class DialogueTestCase extends CakeTestCase
 {
 
-protected $_config = array(
+    protected $_config = array(
         'datasource' => 'Mongodb.MongodbSource',
         'host' => 'localhost',
         'login' => '',
@@ -54,8 +55,7 @@ protected $_config = array(
                 'do' => 'something'
                 )
             );
-
-        
+    
         $saveDraftFirstVersion = $this->Dialogue->saveDialogue($data);
         $this->assertEquals(0, $saveDraftFirstVersion['Dialogue']['activated']);
         $saveActiveFirstVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
@@ -72,12 +72,10 @@ protected $_config = array(
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
 
         unset($data['Dialogue']['dialogue-id']);
-        //print_r($data);
         $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($data);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
         $saveActiveOtherDialogue = $this->Dialogue->makeDraftActive($saveDraftOtherDialogue['Dialogue']['dialogue-id']);
         $this->assertEquals(2, count($this->Dialogue->getActiveDialogues()));
-
     }
 
 
@@ -108,6 +106,72 @@ protected $_config = array(
         $this->assertEqual($result[0]['Dialogue']['dialogue']['sub-tree']['date-time'], '2012-06-04T10:31:00');
         $this->assertEqual($result[0]['Dialogue']['dialogue']['another-sub-tree']['date-time'], '2012-06-04T10:32:00');
         $this->assertEqual($result[0]['Dialogue']['dialogue']['again-sub-tree']['date-time'], '2012-06-04T10:33:00');
+    }
+
+
+    public function testValidate_date_fail()
+    {
+        $data['Dialogue'] = array(
+            'dialogue' => array(
+                'date-time' => '2012-06-04 10:30:00',
+                )
+            );    
+        $saveResult = $this->Dialogue->saveDialogue($data);
+        $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
+    }
+
+    public function testFindAllKeywordInDialogues()
+    {
+        $dialogueOne['Dialogue'] = array(
+            'dialogue' => array(                
+                'interactions'=> array(
+                    array(
+                        'type-interaction' => 'question-answer', 
+                        'content' => 'how are you', 
+                        'keyword' => 'FEEL', 
+                        ),
+                    array( 
+                        'type-interaction'=> 'question-answer', 
+                        'content' => 'What is you name?', 
+                        'keyword'=> 'NAME', 
+                        )
+                    )
+                
+                )
+            );
+
+        $dialogueTwo['Dialogue'] = array(
+            'dialogue' => array(
+                'interactions'=> array(
+                    array(
+                        'type-interaction' => 'question-answer', 
+                        'content' => 'how are you', 
+                        'keyword' => 'FEL', 
+                        )
+                    )
+                
+                )
+            );
+
+      
+        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
+        $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);    
+
+        $saveDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
+        $this->Dialogue->makeDraftActive($saveDialogueTwo['Dialogue']['dialogue-id']);    
+
+
+        $result = $this->Dialogue->useKeyword('FEEL');
+        $this->assertEquals(1, count($result));
+
+        $result = $this->Dialogue->useKeyword('NAME');
+        $this->assertEquals(1, count($result));      
+
+        $result = $this->Dialogue->useKeyword('FEL');
+        $this->assertEquals(1, count($result));     
+
+        $result = $this->Dialogue->useKeyword('BT');
+        $this->assertEquals(0, count($result));      
     }
 
 

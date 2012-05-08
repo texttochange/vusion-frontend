@@ -96,8 +96,10 @@ class Dialogue extends MongoModel
 
     public function saveDialogue($dialogue)
     {
-        if (!isset($dialogue['Dialogue']['dialogue-id']))
+        if (!isset($dialogue['Dialogue']['dialogue-id'])) {
+            $this->create();
             return $this->save($dialogue);
+        }
 
         $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
         $this->create();
@@ -106,6 +108,17 @@ class Dialogue extends MongoModel
             $dialogue['Dialogue']['_id'] = $draft[0]['Dialogue']['_id'];
         }
         return $this->save($dialogue);
+    }
+
+    public function useKeyword($keyword)
+    {
+        foreach ($this->getActiveDialogues() as $activeDialogue) {
+            $foundKeyword = $this->scriptHelper->hasKeyword($activeDialogue, $keyword);
+            if ($foundKeyword) {
+                return $foundKeyword;
+            }
+        }
+        return array();
     }
 
 
