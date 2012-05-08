@@ -239,7 +239,7 @@
 	border: 1px solid;
 	float: left;
 	padding: 2px 2px;
-	width: 15%;
+	width: 196px;
 	height: 95px;
 	overflow-y: auto;
 	font-size: 9px;
@@ -304,7 +304,7 @@
 
 .ttc-navigation-menu {
 	float: left;
-	width: 10%;
+	width: 200px;
 }
 
 .ttc-navigation-menu a {
