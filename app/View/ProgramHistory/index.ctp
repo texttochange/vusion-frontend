@@ -1,13 +1,10 @@
-<div>
-	
-<div class="status index">
-    <h3 style='float:left'><?php echo __('Program History'); ?></h3>
+<div class="status index">    
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link('Export CSV', array('program' => $programUrl, 'action' => 'export.csv')); ?></li>
 		<li><?php echo $this->Html->link('Export Raw CSV', array('program' => $programUrl, 'action' => 'index.csv')); ?></li>
 		<li><?php echo $this->Html->link('Export Json', array('program' => $programUrl, 'action' => 'index.json')); ?></li>
 	</ul>
-	
+    <h3><?php echo __('Program History'); ?></h3>	
    <div class="ttc-filter">
 	
         <?php
@@ -15,9 +12,9 @@
 	   $options = array(); 
 	   $options['non_matching_answers'] = "Non matching answers";
 	   if (isset($this->params['url']['filter']))
-	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'style'=> 'float:right', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
+	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
 	   else 
-	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'style'=> 'float:right', 'empty' => 'Filter...'));
+	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Filter...'));
 	   $this->Js->get('#filter')->event('change', '
 	     if ($("select option:selected").val())
 	         window.location.search = "?filter="+$("select option:selected").val();
@@ -49,7 +46,7 @@
 	</tr>
 	<?php endforeach; ?>
 	</table>
-	</div><br />
+	</div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(
@@ -65,6 +62,5 @@
 	?>
     </div>
 	
-</div>
 
 <?php echo $this->Js->writeBuffer(); ?>
