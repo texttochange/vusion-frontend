@@ -116,14 +116,14 @@
 }
 
 .ttc-actions {
-    float: left;
+    float: right;
     padding: 3px;
     margin: 0;
-    width: 70%;
+    width: 600px;
 }   
 
 .ttc-actions li{
-    float: left;
+    float: right;
     list-style-type: none;
     margin: 0;
     padding: 3px;
@@ -239,7 +239,7 @@
 	border: 1px solid;
 	float: left;
 	padding: 2px 2px;
-	width: 15%;
+	width: 196px;
 	height: 95px;
 	overflow-y: auto;
 	font-size: 9px;
@@ -304,7 +304,7 @@
 
 .ttc-navigation-menu {
 	float: left;
-	width: 10%;
+	width: 200px;
 }
 
 .ttc-navigation-menu a {
@@ -380,3 +380,8 @@
     text-align: center;
 }
 
+.ttc-display-area {
+    height: 450px;
+    overflow-y:auto;
+    width: 930px;
+}

@@ -1,8 +1,8 @@
 <div class="participant view">
+    <h3><?php echo __('Participant'); ?></h3>
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('Edit Participant'), array('action' => 'edit', $participant['Participant']['_id'])); ?> </li>
-	</ul><br /><br /><br />
-<h3><?php echo __('Participant'); ?></h3>
+		<li><?php echo $this->Html->link(__('Edit Participant'), array('program'=>$programUrl, 'action' => 'edit', $participant['Participant']['_id'])); ?> </li>
+	</ul>
 	<dl>
 		<dt><?php echo __('phone'); ?></dt>
 		<dd>

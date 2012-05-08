@@ -1,6 +1,7 @@
 <div>
 	
 <div class="status index">
+    <h3 style='float:left'><?php echo __('Program History'); ?></h3>
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link('Export CSV', array('program' => $programUrl, 'action' => 'export.csv')); ?></li>
 		<li><?php echo $this->Html->link('Export Raw CSV', array('program' => $programUrl, 'action' => 'index.csv')); ?></li>
@@ -24,10 +25,9 @@
                  window.location.search = "?";
 	   ');
 	   echo $this->Form->end(); ?>
-	</div>
-
-        <h3 style='float:left'><?php echo __('Program History'); ?></h3>
+	</div><br /><br />
         
+    <div class="ttc-display-area">    
 	<table cellpadding="0" cellspacing="0">
 	<tr>                                                                        
 			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl)));?></th>
@@ -49,6 +49,7 @@
 	</tr>
 	<?php endforeach; ?>
 	</table>
+	</div><br />
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(

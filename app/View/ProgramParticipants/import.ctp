@@ -1,12 +1,11 @@
 <div>
 	
 <div class="participants index">
+    <h3>Import Participants</h3>
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
 		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'));?></li>
 	</ul>
-    <br /><br /><br />
-    <h3>Import Participants</h3>
 	<?php
 	//echo $this->Form->create('Import', array('enctype' => 'multipart/form-data'));	
 	echo $this->Form->create('Import', array('type' => 'file'));
