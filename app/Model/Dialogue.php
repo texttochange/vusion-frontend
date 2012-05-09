@@ -34,9 +34,10 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
+        /*
         if (!isset($this->data['Dialogue']['dialogue'])) {
             return false;
-        }
+        }*/
 
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
@@ -46,9 +47,9 @@ class Dialogue extends MongoModel
             $this->data['Dialogue']['dialogue-id'] = uniqid();
         }   
 
-        $this->data['Dialogue']['dialogue'] = $this->scriptHelper->objectToArray($this->data['Dialogue']['dialogue']);
+        $this->data['Dialogue'] = $this->scriptHelper->objectToArray($this->data['Dialogue']);
 
-        return $this->scriptHelper->recurseScriptDateConverter($this->data['Dialogue']['dialogue']);
+        return $this->scriptHelper->recurseScriptDateConverter($this->data['Dialogue']);
     }
 
 
@@ -95,6 +96,24 @@ class Dialogue extends MongoModel
             'reduce' => 'function(obj, prev){
                 if (prev.Dialogue==0 || prev.Dialogue.modified < obj.modified) 
                     prev.Dialogue = obj;
+                }',
+            );
+        $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
+        return $dialogues['retval'];
+    }
+
+    public function getActiveAndDraft()
+    {
+        $dialogueQuery = array(
+            'key' => array(
+                'dialogue-id' => true,
+                ),
+            'initial' => array('Active' => 0, 'Draft' => 0),
+            'reduce' => 'function(obj, prev){
+                if (obj.activated && (!prev.Active || prev.Active.modified < obj.modified)) 
+                    prev.Active = obj;
+                else if (!obj.activated)
+                    prev.Draft = obj;
                 }',
             );
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);

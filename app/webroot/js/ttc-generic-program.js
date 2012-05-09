@@ -130,9 +130,9 @@ var program = {"script": [
 	$.fn.extend(
 	{
 
-		buildTtcForm : function(script) {
-			if (script) {
-				$(this).empty().buildForm(fromBackendToFrontEnd(script['script'], script['_id']));
+		buildTtcForm : function(dialogue) {
+			if (dialogue) {
+				$(this).empty().buildForm(fromBackendToFrontEnd(dialogue['dialogue'], dialogue['_id']));
 			} else {
 				$(this).empty().buildForm(fromBackendToFrontEnd());
 			}
@@ -146,18 +146,26 @@ function saveFormOnServer(){
 	var formData = form2js('dynamic-generic-program-form', '.', true);
 	//alert();
 	var indata= JSON.stringify(formData, null, '\t');
-		
+
+	if (location.href.indexOf("edit/")<0)
+		var saveUrl = "./save.json";
+	else
+		var saveUrl= "../save.json";
+
 	$.ajax({
-		url:'../programScripts/add.json',
+		url: saveUrl,
 		type:'POST',
 		data: indata, 
 		contentType: 'application/json; charset=utf-8',
 		dataType: 'json', 
-		success: function(data) {
-			var response = $.parseJSON(data);
-			if (location.href.indexOf("draft")<0){
+		success: function(response) {
+			if (response['status'] == 'fail') {
+				$("#flashMessage").attr('class', 'message error').show().text("Saving failed");
+				return;
+			}
+			if (location.href.indexOf("edit/")<0){
 				$("#flashMessage").show().attr('class', 'message success').text('The script has been saved as draft, wait for redirection');
-				setTimeout( function() { window.location.replace("draft")}, 3000);
+				setTimeout( function() { window.location += "/" + response['object-id']}, 3000);
 			} else {
 				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
 				$("#flashMessage").delay(3000).fadeOut(1000)
@@ -563,11 +571,6 @@ function configToForm(item,elt,id_prefix,configTree){
 								eltValue = fromIsoDateToFormDate(eltValue);
 						}
 						var label = null;
-						if (program[sub_item]!="hidden"){
-							label = sub_item;
-						} else {
-							eltValue = id_prefix;	
-						}
 						elt["elements"].push(
 							{
 								"name":id_prefix+"."+sub_item,
@@ -672,7 +675,7 @@ function fromBackendToFrontEnd(configFile, id) {
                 ]
         };
         
-        configToForm("script",myform, "script", configFile);
+        configToForm("dialogue",myform, "dialogue", configFile);
         
         myform["elements"].push({
                         "type": "submit",
@@ -681,205 +684,4 @@ function fromBackendToFrontEnd(configFile, id) {
         
         return myform;
 }
-/*
-function fromDataToForm2(structure, lang, data, id) {
-	//alert("function called");
-	
-	$.dform.addType("addElt", function(option) {
-			return $("<button type='button'>").dformAttr(option).html("add "+option["label"])		
-		});
-	$.dform.addType("removeElt", function(option) {
-			return $("<button type='button'>").dformAttr(option).html("remove "+option["label"])		
-		});
-	
-	
-	$.dform.subscribe("alert", function(option, type) {
-			//alert("message alert "+type);
-			if (type=="add")
-			{
-				this.click(function (){
-					//alert(option +" "+ $(this).prev().prev().text());
-					$(this).prev().after($(this).prev().prev().clone());
-				});
-			};
-			if (type=="removeElt"){
-				alert("todo");	
-			}
-			if (type=="addElt")
-			{
-				this.click(clickBasicButton);
-			};
-	});
-		
-	
-	var myform = {
-		"action": "javascript:saveFormOnServer()",
-                "elements": 
-                [	
-                	{
-                		"type":"hidden",
-                		"value": id,
-                		"name":"id"
-                	},
-                	{
-                        "type": "p",
-                        }
-                ]
-        };
-        
-        configToForm("participants" , myform, "", data);
-        
-        myform["elements"].push({
-                        "type": "submit",
-                        "value": "Save as draft"
-                })
-        
-        return myform;
-}
 
-
-function generateForm(elt, item, lang, configTree, id_prefix){
-	if (!program[item]){
-		elt['type']=null;	
-		return;
-	}
-	if (!isArray(program[item])){
-		alert("structure is wrong, no array for: "+item);
-	}
-	var rabioButtonAtThisIteration = false;
-	program[item].forEach(function (sub_item){
-			//alert("for "+sub_item);
-			if (!isArray(program[sub_item]))
-			{
-				//alert("add item ");
-				if (program[sub_item]=="button"){
-					var label = sub_item.substring(4);
-					//populate form
-					if (rabioButtonAtThisIteration && configTree && configTree[label]){
-						tmpConfigTree = configTree[label];
-					} else {
-						tmpConfigTree = configTree;
-					};
-					if (tmpConfigTree && tmpConfigTree.length>0){
-						var i = 0;
-						tmpConfigTree.forEach(function (configElt){
-								if (rabioButtonAtThisIteration) {
-									tmpIdPrefix = id_prefix + "."+label;
-								}else{
-									tmpIdPrefix = id_prefix;
-								}
-								var myelt = {
-									"type":"fieldset",
-									"caption": label, //+" "+ i,
-									"name": tmpIdPrefix+"["+i+"]",
-									"elements": []
-								};
-								configToForm(label,myelt,tmpIdPrefix+"["+i+"]",configElt);
-								i = i + 1;
-								elt["elements"].push(myelt);
-						});
-						
-					}
-					elt["elements"].push({
-						"type":"addElt",
-						"alert":"add message",
-						"label": label
-					});
-				} else {
-					if (program[sub_item]=="radiobuttons"){
-						rabioButtonAtThisIteration = true;
-						var radio_type = sub_item.substring(6);
-					        var checkedRadio = {};
-					        var checkedItem;
-					        if (configTree) {
-					        	$.each(program[radio_type],function(k,v){
-					        		if (k!=configTree[radio_type])
-					        			checkedRadio[k] = v;
-					        		else {
-					        			checkedRadio[k] = {"value": k, 
-					        				"caption":v,
-					        				"checked":"checked"
-					        			}
-					        			checkedItem = k;
-					        		}
-					        })} else {
-					        	checkedRadio = program[radio_type];
-					        }
-						elt["elements"].push(
-						{
-							"name":id_prefix+"."+radio_type,
-							"caption": label,
-							"type": program[sub_item],
-							"options": checkedRadio 
-						});
-						if (checkedItem){
-							if (program[checkedItem]){
-								var box = {
-									"type":"fieldset",
-									"radiochildren":"radiochildren",
-									"elements":[]
-								};
-								configToForm(checkedItem, box,id_prefix,configTree);
-								if (box['type'])
-									elt["elements"].push(box);
-							};
-						}
-					}else if (program[sub_item]=="select") {
-						var eltValue = "";
-						if (configTree) {
-							eltValue = configTree[sub_item];
-						}
-						var label = null;
-						if (program[sub_item]!="hidden"){
-							label = sub_item;
-						}
-						elt["elements"].push(
-							{
-								"name":id_prefix+"."+sub_item,
-								"caption": label,
-								"type": program[sub_item],
-								"options": [ { 
-									"value": eltValue,
-									"html":eltValue,
-									"checked":"checked"
-								}]
-							});
-					}else{	
-						var eltValue = "";
-						if (configTree) {
-							eltValue = configTree[sub_item];
-						}
-						var label = null;
-						if (program[sub_item]!="hidden"){
-							label = sub_item;
-						} else {
-							eltValue = id_prefix;	
-						}
-						elt["elements"].push(
-							{
-								"name":id_prefix+"."+sub_item,
-								"caption": label,
-								"type": program[sub_item],
-								"value": eltValue
-							});
-					}
-				}
-			}else{
-				//alert("add fieldset "+sub_item)
-				var myelt = {
-					"type":"fieldset",
-					"caption": sub_item,
-					"name": id_prefix+"."+sub_item,
-					"elements": []
-				};
-				//alert("start recursive call "+sub_item);
-				if (configTree) {
-					configToForm(sub_item,myelt,id_prefix+"."+sub_item, configTree[sub_item]);
-				} else {
-					configToForm(sub_item,myelt,id_prefix+"."+sub_item);
-				}
-				elt["elements"].push(myelt);
-		}
-	});
-};
-*/
