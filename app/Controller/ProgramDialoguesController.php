@@ -39,10 +39,10 @@ class ProgramDialoguesController extends AppController
     public function save()
     {
         if ($this->request->is('post')) {
-            $dialogue = $this->request->data->dialogue;
-            $saveData['Dialogue'] = (is_object($dialogue)
-                ? get_object_vars($dialogue)
-                : $dialogue);
+            $dialogue = (is_object($this->request->data)
+                ? get_object_vars($this->request->data)
+                : $this->request->data);
+            $saveData['Dialogue'] = $dialogue['dialogue']; 
             //print_r($saveData);
             if ($this->Dialogue->saveDialogue($saveData)) {
                 $this->set('result', 

@@ -36,7 +36,7 @@ class DialogueTestCase extends CakeTestCase
         $this->Dialogue = new Dialogue($option);
 
         $this->Dialogue->setDataSource('mongo_test');
-
+        $this->Dialogue->deleteAll(true, false);
     }
 
 
@@ -51,9 +51,7 @@ class DialogueTestCase extends CakeTestCase
     public function testSaveDialogue()
     {
         $data['Dialogue'] = array(
-            'dialogue' => array(
                 'do' => 'something'
-                )
             );
     
         $saveDraftFirstVersion = $this->Dialogue->saveDialogue($data);
@@ -71,6 +69,7 @@ class DialogueTestCase extends CakeTestCase
         $saveActiveSecondVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
 
+        /**adding a new Dialogue*/
         unset($data['Dialogue']['dialogue-id']);
         $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($data);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
@@ -82,6 +81,7 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue($activeAndDraft[1]['Active']==0);
         $this->assertTrue($activeAndDraft[1]['Draft']!=0);
 
+        /**active the new Dialogue*/
         $saveActiveOtherDialogue = $this->Dialogue->makeDraftActive($saveDraftOtherDialogue['Dialogue']['dialogue-id']);
         $this->assertEquals(2, count($this->Dialogue->getActiveDialogues()));
         $this->assertEquals(2, count($this->Dialogue->getDialogues()));
@@ -91,6 +91,13 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue($activeAndDraft[1]['Active']!=0);
         $this->assertTrue($activeAndDraft[1]['Draft']==0);
 
+        /**add new version of the dialogue and check we get the correct one*/
+        $data['Dialogue']['dialogue-id'] = $saveActiveOtherDialogue['Dialogue']['dialogue-id']; 
+        $data['Dialogue']['do'] = "something new";
+        $saveNewVersionOtherDialogue = $this->Dialogue->saveDialogue($data);
+        $this->Dialogue->makeDraftActive($saveNewVersionOtherDialogue['Dialogue']['dialogue-id']);
+        $activeAndDraft = $this->Dialogue->getActiveAndDraft();
+        $this->assertEquals($saveNewVersionOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']);
        
     }
 

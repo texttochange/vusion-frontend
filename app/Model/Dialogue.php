@@ -75,7 +75,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Dialogue' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified < obj.modified)) 
+                if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
                     prev.Dialogue = obj;
                 }',
             );
@@ -94,7 +94,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Dialogue' => 0),
             'reduce' => 'function(obj, prev){
-                if (prev.Dialogue==0 || prev.Dialogue.modified < obj.modified) 
+                if (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified) 
                     prev.Dialogue = obj;
                 }',
             );
@@ -110,7 +110,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Active' => 0, 'Draft' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && (!prev.Active || prev.Active.modified < obj.modified)) 
+                if (obj.activated && (!prev.Active || prev.Active.modified <= obj.modified)) 
                     prev.Active = obj;
                 else if (!obj.activated)
                     prev.Draft = obj;

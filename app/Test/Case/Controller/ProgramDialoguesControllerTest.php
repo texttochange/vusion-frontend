@@ -199,13 +199,14 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
         $this->mockProgramAccess();
         $this->testAction(
-            "/testurl/programDialogues/add", 
+            "/testurl/programDialogues/save", 
             array(
                 'method' => 'post',
                 'data' => $dialogue
                 )
             );
-        $this->assertEquals(array('status'=>'ok'), $this->vars['result']);
+        $this->assertEquals('ok', $this->vars['result']['status']);
+        $this->assertTrue(isset($this->vars['result']['object-id']));        
     }
 
 
@@ -500,6 +501,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
         $newDialogue = $this->getOneDialogue('anotherKeyword');
         $newDialogue['Dialogue']['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
+        $newDialogue['Dialogue']['name'] = "my newer dialogue";
         $savedDialogue = $this->Dialogue->saveDialogue($newDialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         
