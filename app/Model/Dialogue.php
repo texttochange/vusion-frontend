@@ -52,6 +52,17 @@ class Dialogue extends MongoModel
         return $this->scriptHelper->recurseScriptDateConverter($this->data['Dialogue']);
     }
 
+    
+    public function makeActive($objectId)
+    {
+        $this->id = $objectId;
+        if (!$this->exists())
+            return false;
+        $dialogue = $this->read(null, $objectId);
+        $dialogue['Dialogue']['activated'] = 1;
+        return $this->save($dialogue);
+    }
+
 
     public function makeDraftActive($dialogueId)
     {

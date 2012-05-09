@@ -75,7 +75,7 @@ class ProgramDialoguesController extends AppController
         $dialogueId = $this->params['id'];
 
         if ($this->_hasAllProgramSettings()) {
-            if ($this->Dialogue->makeDraftActive($dialogueId)) {
+            if ($this->Dialogue->makeActive($dialogueId)) {
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('Dialogue activated.'));
             } else
@@ -84,7 +84,7 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Please set the program settings then try again.'));
     
         
-        $this->redirect(array('program'=>$programUrl, 'action' => 'index'));
+        //$this->redirect(array('program'=>$programUrl, 'action' => 'index'));
     }
 
 

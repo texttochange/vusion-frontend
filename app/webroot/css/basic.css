@@ -385,3 +385,7 @@
     overflow-y:auto;
     width: 930px;
 }
+
+.ttc-dialogue {
+   float: none;
+}

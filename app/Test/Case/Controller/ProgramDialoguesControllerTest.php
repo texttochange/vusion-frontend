@@ -286,7 +286,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->testAction('/testurl/scripts/activate/'.$savedDialogue['Dialogue']['dialogue-id']); 
+        $this->testAction('/testurl/programDialogues/activate/'.$savedDialogue['Dialogue']['_id']); 
 
     }
 
