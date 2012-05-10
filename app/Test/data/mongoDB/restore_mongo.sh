@@ -25,7 +25,7 @@ do
 	echo $path/$database_name/participants.json
 	mongoimport -drop -d $database_name -c participants $path/$database_name/participants.json
 	echo /$database_name/scripts.json
-	mongoimport -drop -d $database_name -c scripts $path/$database_name/scripts.json
+	mongoimport -drop -d $database_name -c dialogues $path/$database_name/dialogues.json
 	echo /$database_name/schedules.json
 	mongoimport -drop -d $database_name -c schedules $path/$database_name/schedules.json
 	echo /$database_name/history.json
