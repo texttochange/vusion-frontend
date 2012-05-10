@@ -1,7 +1,7 @@
 <?php
 
 App::uses('AppController', 'Controller');
-App::uses('Script', 'Model');
+App::uses('Dialogue', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
@@ -11,7 +11,6 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramSimulatorController extends AppController
 {
 
-    public $uses    = array('Script');
     var $components = array('RequestHandler');
 
 
@@ -19,7 +18,7 @@ class ProgramSimulatorController extends AppController
     {
         parent::constructClasses();
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Script         = new Script($options);
+        $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Participant    = new Participant($options);
         $this->VumiRabbitMQ   = new VumiRabbitMQ();
@@ -35,20 +34,14 @@ class ProgramSimulatorController extends AppController
 
     public function simulate()
     {
-        $this->Script->id = $this->params['id'];
-        if (!$this->Script->exists()) {
+        $this->Dialogue->id = $this->params['id'];
+        if (!$this->Dialogue->exists()) {
             $this->Session->setFlash(
-                __('The script id is not in the database, please choose one available.')
+                __('This Dialogue id is not in the database, please choose one available.')
                 );
-            $scripts = array();
-            if ($this->Script->find('draft'))
-                $scripts['draft'] = $this->Script->find('draft');
-            if ($this->Script->find('active'))
-                $scripts['currently active'] = $this->Script->find('active');
-            $this->set(compact('scripts'));
             return;
         }
-        $this->_startSimulateScript($this->Script->id);
+        $this->_startSimulateScript($this->Dialogue->id);
         
     }
 
@@ -56,16 +49,16 @@ class ProgramSimulatorController extends AppController
     protected function _startSimulateScript()
     {
          $this->VumiRabbitMQ->sendMessageToRemoveWorker('simulator', 'simulator');
-         //$this->Script->id = $script_id;
-         $script = $this->Script->read();
-         
+         //$this->Script->id = $script_id;         
          $options = array('database' => 'simulator');
 
-         $simulatorScriptModel = new Script($options);
-         $simulatorScriptModel->deleteAll(true, false);
-         $simulatorScriptModel->create();
-         $simulatorScriptModel->save($script);
-         $simulatorScriptModel->makeDraftActive();
+         /**Copy a version of the Dialogue to the database*/
+         $dialogue = $this->Dialogue->read();
+         $simulatorDialogueModel = new Dialogue($options);
+         $simulatorDialogueModel->deleteAll(true, false);
+         $simulatorDialogueModel->create();
+         $simulatorDialogueModel->save($dialogue);
+         $simulatorDialogueModel->makeActive($dialogue['Dialogue']['_id']);
          
          $programSettings = $this->ProgramSetting->find('all');
          $simulatorProgramSettingModel = new ProgramSetting($options);
@@ -89,6 +82,7 @@ class ProgramSimulatorController extends AppController
          $simulatorScheduleModel = new Schedule($options);
          $simulatorScheduleModel->deleteAll(true,false);
 
+         /**Clearning the receiving queue*/
          while($this->VumiRabbitMQ->getMessageFrom('simulator.outbound'))
              continue;
 

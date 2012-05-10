@@ -20,7 +20,7 @@ do
 	echo /$database_name/participants.json
 	mongoexport -d $database_name -c participants -o $database_name/participants.json
 	echo /$database_name/scripts.json
-	mongoexport -d $database_name -c scripts -o $database_name/scripts.json
+	mongoexport -d $database_name -c dialogues -o $database_name/dialogues.json
 	echo /$database_name/schedules.json
 	mongoexport -d $database_name -c schedules -o $database_name/schedules.json
 	echo /$database_name/history.json

@@ -65,7 +65,7 @@
 	}
 
 
-	Router::mapResources('programScripts', array('prefix' => '/:program/'));
+	Router::mapResources('programDialogues', array('prefix' => '/:program/'));
 	//Router::parseExtensions('json');
 	Router::mapResources('programHistory', array('prefix' => '/:program/'));
 	Router::mapResources('Programs');

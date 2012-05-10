@@ -117,8 +117,8 @@
 
 .ttc-actions {
     float: right;
-    padding-left: 3px;
-    margin: 0;
+    padding: 3px;
+    margin-top: -8px;
     width: 600px;
 }   
 
@@ -387,7 +387,44 @@
 }
 
 .ttc-display-area {
-    height: 355px;
+    height: 100%;
     overflow-y:auto;
-    width: 99.7%;
+    width: 100%;
 }
+
+.ttc-dialogue {
+   float: none;
+   margin-bottom: 10px;
+   border: 1px solid black;
+   padding: 10px;
+}
+
+.ttc-dialogue a {
+   text-decoration: none;
+   font-weight: normal;
+}
+
+.ttc-dialogue-active {
+   background: #19C1FF;	
+}
+
+.ttc-dialogue-name {
+   font-size: 110%;
+   display: inline;
+}
+
+.ttc-dialogue-draft {
+   color: red;
+   font-size: 10px;
+   display: inline;
+   margin-left: 5px;
+}
+
+.ttc-dialogue-status-label {
+  float: right;
+  display: inline;
+  font-size: 10px;
+  margin-right: -7px;
+  margin-top: -8px;
+}
+

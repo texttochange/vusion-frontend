@@ -1,13 +1,13 @@
 <?php
 
 App::uses('AppController','Controller');
-App::uses('UnattachedMessage','Model');
-App::uses('Script','Model');
+App::uses('UnattachedMessage', 'Model');
 App::uses('ScriptHelper', 'Helper');
-App::uses('Participant','Model');
-App::uses('History','Model');
-App::uses('Schedule','Model');
-App::uses('VumiSupervisord','Lib');
+App::uses('Dialogue', 'Model');
+App::uses('Participant', 'Model');
+App::uses('History', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('VumiSupervisord', 'Lib');
 
 
 class ProgramHomeController extends AppController
@@ -26,10 +26,10 @@ class ProgramHomeController extends AppController
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
         
-        $this->Script         = new Script($options);
-        $this->Participant    = new Participant($options);
-        $this->History        = new History($options);
-        $this->Schedule       = new Schedule($options);
+        $this->Participant       = new Participant($options);
+        $this->History           = new History($options);
+        $this->Schedule          = new Schedule($options);
+        $this->Dialogue          = new Dialogue($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
 
         $this->VumiSupervisord = new VumiSupervisord();
@@ -41,14 +41,7 @@ class ProgramHomeController extends AppController
 
     public function index()
     {
-
-        $hasScriptActive  = count($this->Script->find('countActive'));
-        $hasScriptDraft   = count($this->Script->find('countDraft'));
-        $isScriptEdit     = $this->Acl->check(array(
-                'User' => array(
-                    'id' => $this->Session->read('Auth.User.id')
-                ),
-            ), 'controllers/ProgramScripts');
+        
         $isParticipantAdd = $this->Acl->check(array(
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
@@ -56,16 +49,16 @@ class ProgramHomeController extends AppController
             ), 'controllers/ProgramParticipants/add');
         $participantCount = $this->Participant->find('count');
         $statusCount      = $this->History->find('count');
-        $schedules        = $this->Schedule->find('soon');
-        
-        //$workerStatus = $this->VumiSupervisord->getWorkerInfo($programUrl);
-        
+        //$schedules        = $this->Schedule->find('soon');
+                
         $schedules        = $this->Schedule->summary();
+
+        $activeInteractions = $this->Dialogue->getActiveInteractions();
 
         foreach ($schedules as &$schedule) {
             if (isset($schedule['interaction-id'])) {
                 $interaction = $this->ScriptHelper->getInteraction(
-                    $this->Script->find('active'),
+                    $activeInteractions,
                     $schedule['interaction-id']
                     );
                 if (isset($interaction['content']))

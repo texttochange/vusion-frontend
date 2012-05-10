@@ -31,7 +31,8 @@ class Schedule extends MongoModel
     {
         $scriptQuery = array(
             'key' => array(
-                'dialogue-id' => true,                'interaction-id' => true,
+                'dialogue-id' => true,                
+                'interaction-id' => true,
                 'datetime' => true,
                 ),
             'initial' => array('csum' => 0),

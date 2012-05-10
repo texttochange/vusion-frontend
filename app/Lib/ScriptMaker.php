@@ -26,4 +26,19 @@ class ScriptMaker
         return $script;
     }
 
+    public function getOneDialogue()
+    {
+        $dialogue['Dialogue'] = array(
+            'interactions'=> array(
+                array(
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'how are you', 
+                    'keyword' => 'keyword', 
+                    )
+                )
+            );
+
+        return $dialogue;
+    }
+
 }

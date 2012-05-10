@@ -2,7 +2,7 @@
 App::uses('Controller', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('UnattachedMessage', 'Model');
-App::uses('Script', 'Model');
+App::uses('Dialogue', 'Model');
 
 class AppController extends Controller
 {
@@ -46,6 +46,10 @@ class AppController extends Controller
     {    
         //set language into Session and Cookies
         $this->_setLanguage();
+        //In case of a Json request, no need to set up the variables
+        if ($this->params['ext']=='json')
+            return;
+
         $programUrl = $this->params['program'];
         $programName = $this->Session->read($this->params['program'].'_name');
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
@@ -67,15 +71,8 @@ class AppController extends Controller
             else
                 $programUnattachedMessages = null;
             
-            $scriptModel = new Script(array('database' => $databaseName));
-            $hasScriptActive  = count($scriptModel->find('countActive'));
-            if (!$hasScriptActive)
-                $hasScriptActive = null;                
-                
-            $hasScriptDraft   = count($scriptModel->find('countDraft'));
-            if (!$hasScriptDraft)
-                $hasScriptDraft = null;
-            
+            $dialogueModel = new Dialogue(array('database' => $databaseName));
+            $dialogues = $dialogueModel->getActiveAndDraft();
             $redis = new Redis();
             $redis->connect('127.0.0.1');
             
@@ -83,7 +80,7 @@ class AppController extends Controller
             if ($this->_hasProgramLogs($redis,$programUrl))
                 $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
             
-            $this->set(compact('programUnattachedMessages', 'hasScriptActive', 'hasScriptDraft', 'hasProgramLogs', 'programLogsUpdates'));
+            $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates'));
         }
         $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
     }

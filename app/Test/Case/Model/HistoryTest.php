@@ -1,7 +1,6 @@
 <?php
 /* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
-App::uses('Script', 'Model');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -18,8 +17,6 @@ class HistoryTestCase extends CakeTestCase
         
         $options                 = array('database' => 'testdbprogram');
         $this->History = new History($options);
-        $this->Script = new Script($options);
-        
         
         $this->dropData();
     }
@@ -56,41 +53,8 @@ class HistoryTestCase extends CakeTestCase
         $this->History->create();
         $history = $this->History->save($participantsState);
         
-        $script = array(
-            0 => array(
-                'Script' => array(
-                    'script' => array(
-                        'dialogues' => array(
-                            0 => array (
-                                'interactions'=>array(
-                                    0 => array(
-                                        'type-interaction'=>'question-answer',
-                                        'content'=>'how do you feel',
-                                        'keyword'=>'FEEL',
-                                        'type-question'=>'close-question',
-                                        'answers'=> array(
-                                            0 => array('choice'=>'Good'),
-                                            1 => array('choice'=>'Bad')
-                                              ),
-                                        'interaction-id'=>'script.dialogues[0].interactions[0]'
-                                           )
-                                    ),
-                                'dialogue-id'=>'script.dialogues[0]'
-                                )
-                            )
-                        )
-                    )
-                )
-            );  
-
-        $this->Script->recursive = -1;
-        $this->Script->create();
-        $this->Script->save($script);
-        $this->Script->makeDraftActive();
               
-        $result   = $this->History->find('scriptFilter',
-            array('script' => $script)
-            );
+        $result   = $this->History->find('scriptFilter');
         $this->assertEquals(1, count($result));
     }
     
@@ -148,45 +112,13 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]',
             'interaction-id'=>'script.dialogues[0].interactions[0]'
             );
-        
-        $script = array(
-            0 => array(
-                'Script' => array(
-                    'script' => array(
-                        'dialogues' => array(
-                            0 => array (
-                                'interactions'=>array(
-                                    0 => array(
-                                        'type-interaction'=>'question-answer',
-                                        'content'=>'how do you feel',
-                                        'keyword'=>'FEEL',
-                                        'type-question'=>'close-question',
-                                        'answers'=> array(
-                                            0 => array('choice'=>'Good'),
-                                            1 => array('choice'=>'Bad')
-                                              ),
-                                        'interaction-id'=>'script.dialogues[0].interactions[0]'
-                                           )
-                                    ),
-                                'dialogue-id'=>'script.dialogues[0]'
-                                )
-                            )
-                        )
-                    )
-                )
-            );  
-
-        $this->Script->recursive = -1;
-        $this->Script->create();
-        $this->Script->save($script);
-        $this->Script->makeDraftActive();
-        
+           
         $this->History->create();
         $history = $this->History->save($participantsState);
         
         $state = 'before';
               
-        $result = $this->History->find('count', array('type' => 'scriptFilter', 'script' => $script));
+        $result = $this->History->find('count', array('type' => 'scriptFilter'));
         $this->assertEquals(1, $result);    
     }
 

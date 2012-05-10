@@ -52,39 +52,66 @@
        </ul>
     </li>  
     <li>
-        <?php echo $this->Html->link(__('Scripts'),
-            array(
-                'program'=>$programUrl,
-                'controller'=>'programScripts',
-                'action'=>'index'
-                )
-            ); ?>
-        <?php if ($hasScriptActive or $hasScriptDraft) { ?>
-        <ul> 
-            <?php if ($hasScriptDraft) { ?>
+        <?php 
+        echo $this->Html->link(
+            __('Dialogues'),
+            array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'index')); 
+        ?>
+        <ul>
             <li>
-                <?php echo $this->Html->link(__('Draft'),
-                    array(
-                        'program'=>$programUrl,
-                        'controller'=>'programScripts',
-                        'action'=>'draft'
-                        )
-                    ); ?>
+            <?php 
+            echo $this->Html->link(
+                __('New Dialogue'),
+                array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'edit')); 
+            ?>
             </li>
-            <?php } ?>
-            <?php if ($hasScriptActive) { ?>
-            <li>
-                <?php echo $this->Html->link(__('Active'),
-                    array(
-                        'program'=>$programUrl,
-                        'controller'=>'programScripts',
-                        'action'=>'active'
-                        )
+            <?php foreach ($dialogues as $dialogue) { ?>
+                <li>
+                <?php 
+                if ($dialogue['Active']) {
+                    echo $this->Html->link(
+                        $dialogue['Active']['name'],
+                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Active']['_id'])
+                        ); 
+                } else {
+                    echo $this->Html->link(
+                        $dialogue['Draft']['name'],
+                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id'])
+                        ); 
+                }              
+                ?>
+                <ul>
+                    <?php if ($dialogue['Active']) {?>
+                    <li>
+                    <?php 
+                    echo $this->Html->link(
+                        __('Active'),
+                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Active']['_id'])
                     ); ?>
-            </li>
+                    </li>
+                    <?php } ?>
+                    <?php if ($dialogue['Draft']) {?>
+                    <li>
+                    <?php 
+                    echo $this->Html->link(
+                        __('Draft'),
+                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id'])
+                    ); ?>
+                    <ul>
+                        <li>
+                        <?php 
+                        echo $this->Html->link(
+                            __('Activate'),
+                            array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'activate', 'id'=> $dialogue['Draft']['_id'])
+                            ); ?>
+                        </li>
+                    </ul>
+                    </li>
+                    <?php } ?>
+                </ul>
+                </li>
             <?php } ?>
         </ul>
-        <?php } ?>
     </li>  
     <li>
         <?php echo $this->Html->link(__('Participants'),
