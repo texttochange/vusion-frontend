@@ -147,10 +147,7 @@ function saveFormOnServer(){
 	//alert();
 	var indata= JSON.stringify(formData, null, '\t');
 
-	if (location.href.indexOf("edit/")<0)
-		var saveUrl = "./save.json";
-	else
-		var saveUrl= "../save.json";
+	var saveUrl = location.href.indexOf("edit/")<0 ? "./save.json" : "../save.json";
 
 	$.ajax({
 		url: saveUrl,
@@ -163,9 +160,14 @@ function saveFormOnServer(){
 				$("#flashMessage").attr('class', 'message error').show().text("Saving failed");
 				return;
 			}
-			if (location.href.indexOf("edit/")<0){
-				$("#flashMessage").show().attr('class', 'message success').text('The script has been saved as draft, wait for redirection');
-				setTimeout( function() { window.location += "/" + response['object-id']}, 3000);
+			if (location.href.indexOf(response['object-id'])<0){
+				$("#flashMessage").show().attr('class', 'message success').text('The dialogue has been saved as draft, wait for redirection');
+				setTimeout( function() { 
+					if (location.href.indexOf("edit/")<0) 
+						window.location.replace("edit/" + response['object-id']);
+					else 
+						window.location.replace(response['object-id']);
+					}, 3000);
 			} else {
 				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
 				$("#flashMessage").delay(3000).fadeOut(1000)
