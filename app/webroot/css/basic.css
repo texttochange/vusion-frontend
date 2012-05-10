@@ -391,3 +391,21 @@
     overflow-y:auto;
     width: 99.7%;
 }
+
+.ttc-advanced-filter {
+    display: none;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+}
+
+.ttc-advanced-filter input{
+    font-size: 90%;
+    width: 75%;
+    padding:0.5%;
+}
+
+.ttc-advanced-filter div{
+    width: 30%;
+    margin: 0;
+    padding: 0.2em;
+}
