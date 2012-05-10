@@ -557,7 +557,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array(
                     'SendAllMessages' => array(
-                        '_id'=> $saveDialogue['Dialogue']['_id'],
+                        'object-id'=> $saveDialogue['Dialogue']['_id'],
                         'phone-number' => '06'
                         )
                     )

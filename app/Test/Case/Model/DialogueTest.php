@@ -204,4 +204,36 @@ class DialogueTestCase extends CakeTestCase
     }
 
 
+    public function saveAddingId()
+    {
+        $dialogueOne['Dialogue'] = array(
+            'interactions'=> array(
+                array(
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'how are you', 
+                    'keyword' => 'FEEL', 
+                    ),
+                array(
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'How old are you?', 
+                    'keyword' => 'Age', 
+                    ),
+                array( 
+                    'type-interaction'=> 'question-answer', 
+                    'content' => 'What is you name?', 
+                    'keyword'=> 'NAME', 
+                    'interaction-id' => 'id not to be removed'
+                    )
+                )
+            );
+
+      
+        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
+        $this->assertTrue(isset($dialogueOne['Dialogue']['dialogue-id']));
+        $this->assertTrue(isset($dialogueOne['Dialogue']['interactions'][0]['interaction-id']));
+        $this->assertFalse($dialogueOne['Dialogue']['interactions'][0]['interaction-id']!=
+            $dialogueOne['Dialogue']['interactions'][1]['interaction-id']);
+        $this->assertEquals('id not to be removed', isset($dialogueOne['Dialogue']['interactions'][2]['interaction-id']));      
+    }
+
 }

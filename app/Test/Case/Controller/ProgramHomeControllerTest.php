@@ -5,7 +5,7 @@ App::uses('ScriptMaker', 'Lib');
 App::uses('UnattachedMessage','Model');
 
 /**
- * TestProgramScriptsControllerController *
+ * TestProgramHomeControllerController *
  */
 class TestProgramHomeController extends ProgramHomeController
 {
@@ -53,7 +53,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
 
     protected function dropData()
     {
-        $this->Home->Script->deleteAll(true, false);
+        $this->Home->Dialogue->deleteAll(true, false);
         $this->Home->Schedule->deleteAll(true, false);
         $this->Home->UnattachedMessage->deleteAll(true, false);
     }
@@ -63,7 +63,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
         
-        $this->Home->Script            = new Script($options);
+        $this->Home->Dialogue          = new Dialogue($options);
         $this->Home->Schedule          = new Schedule($options);
         $this->Home->UnattachedMessage = new UnattachedMessage($options);
     }
@@ -129,13 +129,9 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
 
         $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
         $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
-        $this->assertEquals($this->vars['isScriptEdit'], 'true');
-        $this->assertEquals($this->vars['isParticipantAdd'], 'true');
-        $this->assertEquals($this->vars['hasScriptActive'], '0');
-        $this->assertEquals($this->vars['hasScriptDraft'], '0');
     }
 
-    
+/* to be used in testing access write    
     public function testIndex_existingDraftScript_asManager()
     {
         $this->mockProgramAccess();
@@ -153,10 +149,6 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         
         $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
         $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
-        $this->assertEquals($this->vars['isScriptEdit'], 'true');
-        $this->assertEquals($this->vars['isParticipantAdd'], 'true');
-        $this->assertEquals($this->vars['hasScriptActive'], '0');
-        $this->assertEquals($this->vars['hasScriptDraft'], '1');
     }
 
     
@@ -173,22 +165,17 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
 
         $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
         $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
-        $this->assertEquals($this->vars['isScriptEdit'], 'true');
-        $this->assertEquals($this->vars['isParticipantAdd'], 'true');
-        $this->assertEquals($this->vars['hasScriptActive'], '0');
-        $this->assertEquals($this->vars['hasScriptDraft'], '1');
     }
-
+*/
 
     public function testIndex_displayScheduled()
     {
         $this->mockProgramAccess();
 
-        $script = $this->ScriptMaker->getOneScript(); 
+        $dialogue = $this->ScriptMaker->getOneDialogue(); 
 
-        $this->Home->Script->create();
-        $this->Home->Script->save($script);
-        $this->Home->Script->makeDraftActive();
+        $savedDialogue = $this->Home->Dialogue->saveDialogue($dialogue);
+        $this->Home->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
         
         $unattachedMessage = array(
             'schedule' => '2021-06-12T12:30:00',
@@ -199,8 +186,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $schedules = array(
             array(
                 'datetime' => '2021-06-12T12:30',
-                'dialogue-id' => 'script.dialogues[0]',
-                'interaction-id' => 'script.dialogues[0].interactions[0]',
+                'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
+                'interaction-id' => $savedDialogue['Dialogue']['interactions'][0]['interaction-id'],
                 ),
             array(
                 'datetime' => '2021-06-12T12:30',

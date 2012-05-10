@@ -34,10 +34,6 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
-        /*
-        if (!isset($this->data['Dialogue']['dialogue'])) {
-            return false;
-        }*/
 
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
@@ -46,6 +42,13 @@ class Dialogue extends MongoModel
         if (!isset($this->data['Dialogue']['dialogue-id'])) {
             $this->data['Dialogue']['dialogue-id'] = uniqid();
         }   
+
+        if (isset($this->data['Dialogue']['interactions'])) {
+            foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
+                if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="")
+                    $interaction['interaction-id'] = uniqid();
+            }
+        }
 
         $this->data['Dialogue'] = $this->scriptHelper->objectToArray($this->data['Dialogue']);
 
@@ -95,6 +98,16 @@ class Dialogue extends MongoModel
             $dialogues['retval'],
             array($this, "_filterDraft")
             );
+    }
+
+    public function getActiveInteractions()
+    {
+        $activeInteractions = array();
+        $activeDialogues    = $this->getActiveDialogues();
+        foreach ($activeDialogues as $activeDialogue) {
+            $activeInteractions = array_merge($activeInteractions, $activeDialogue['Dialogue']['interactions']);
+        }
+        return $activeInteractions;
     }
 
     public function getDialogues()
