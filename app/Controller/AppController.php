@@ -46,6 +46,10 @@ class AppController extends Controller
     {    
         //set language into Session and Cookies
         $this->_setLanguage();
+        //In case of a Json request, no need to set up the variables
+        if ($this->params['ext']=='json')
+            return;
+
         $programUrl = $this->params['program'];
         $programName = $this->Session->read($this->params['program'].'_name');
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
