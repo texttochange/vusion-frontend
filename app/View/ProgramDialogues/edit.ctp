@@ -1,15 +1,29 @@
 <div class="index">
-	<h3><?php echo __('Dialogue'); ?></h3>
+	<h3><?php 
+	if (isset($dialogue)) 
+	    echo __('Edit Dialogue'); 
+	else
+	    echo __('Create Dialogue');
+	?></h3>
+	<?php
+	if (isset($dialogue) && !$dialogue['Dialogue']['activated'])  
+	    	    echo $this->Html->tag('span', __('(editing the draft)', array('class'=>'ttc-dialogue-draft'))); 
+	?>
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->tag('div', __('Save as draft'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+		<li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
 		<?php $this->Js->get('#button-save')->event('click', 'saveFormOnServer()' , true);?> 
         <?php 
         if (isset($dialogue)) {
-            echo "<li>";
-            echo $this->Html->link(__('Test send all messages'), array('program'=>$programUrl,'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));
-            echo "</li>";
+            if (!$dialogue['Dialogue']['activated']) {
+                echo "<li>";
+                echo $this->Html->link(__('Activate'), array('program'=>$programUrl,'action'=>'activate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));
+                echo "</li>";
+            } 
             echo "<li>";
             echo $this->Html->link(__('Simulate'), array('program'=>$programUrl,'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));
+            echo "</li>";
+            echo "<li>";
+            echo $this->Html->link(__('Test send all messages'), array('program'=>$programUrl,'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));
             echo "</li>"; 
         }?>
 	</ul><br /><br />

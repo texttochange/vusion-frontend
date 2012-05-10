@@ -140,6 +140,8 @@ class Dialogue extends MongoModel
 
     public function saveDialogue($dialogue)
     {
+        $dialogue = $this->scriptHelper->objectToArray($dialogue);
+
          if (!isset($dialogue['Dialogue']['dialogue-id'])) {
             $this->create();
             return $this->save($dialogue);

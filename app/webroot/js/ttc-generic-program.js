@@ -375,11 +375,13 @@ function duplicateKeywordValidation(value, element, param) {
 			}
 		}
 	});
+
+	var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
 	
         $.ajax({
-            url: "validateKeyword.json",
+            url: url,
             type: "POST",
-            data: { 'keyword': $(keywordInput).val() },
+            data: { 'keyword': $(keywordInput).val(), 'dialogue-id': $("[name$=dialogue-id]").val()},
             inputName: $(keywordInput).attr('name'),
 	    success: validateKeywordReply,
 	    timeout: 1000,
@@ -571,6 +573,9 @@ function configToForm(item,elt,id_prefix,configTree){
 								eltValue = fromIsoDateToFormDate(eltValue);
 						}
 						var label = null;
+						if (program[sub_item]!="hidden"){
+							label = sub_item;
+						} 
 						elt["elements"].push(
 							{
 								"name":id_prefix+"."+sub_item,

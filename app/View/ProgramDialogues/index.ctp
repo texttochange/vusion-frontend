@@ -8,16 +8,29 @@
         <?php
         
         foreach ($dialogues as $dialogue) {
-            echo "<div class=ttc-dialogue>";
             if ($dialogue['Active']) {
-                echo $this->Html->tag('div', $dialogue['Active']['name']);
+                echo "<div class='ttc-dialogue ttc-dialogue-active'>";
+                echo $this->Html->link(
+                    $dialogue['Active']['name'], 
+                    array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Active']['_id']),
+                    array('class'=>'ttc-dialogue-name'));
                 if ($dialogue['Draft']) {
-                    echo $this->Html->tag('div', 'also a draft');
+                    echo $this->Html->link(
+                        '(draft)',
+                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id']),
+                        array('class'=>'ttc-dialogue-draft')
+                        ); 
                 }
+                echo $this->Html->tag('div', 'activated', array('class'=>'ttc-dialogue-status-label'));
             } else {
-                echo $this->Html->tag('div', $dialogue['Draft']['name']);
-                echo $this->Html->tag('div', 'only a draft');
+                echo "<div class=ttc-dialogue>";
+                echo $this->Html->link(
+                        $dialogue['Draft']['name'],
+                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id']),
+                        array('class'=>'ttc-dialogue-name')
+                        ); 
             }
+           
             /* echo $this->Html->link(
                 __('Edit'), 
                 array('program'=>$programUrl, 'action' => 'edit', $dialogue['Dialogue']['_id']));

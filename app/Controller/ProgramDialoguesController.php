@@ -84,7 +84,7 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Please set the program settings then try again.'));
     
         
-        //$this->redirect(array('program'=>$programUrl, 'action' => 'index'));
+        $this->redirect(array('program'=>$programUrl, 'action' => 'index'));
     }
 
 
@@ -144,9 +144,14 @@ class ProgramDialoguesController extends AppController
     public function testSendAllMessages()
     {
         $programUrl = $this->params['program'];
+        if (isset($this->params['id'])) {
+            $objectId = $this->params['id'];
+            $this->set(compact('objectId'));
+        }
+ 
         if ($this->request->is('post')) {
             $phoneNumber = $this->request->data['SendAllMessages']['phone-number'];
-            $dialogueId  = $this->request->data['SendAllMessages']['_id'];
+            $dialogueId  = $this->request->data['SendAllMessages']['object-id'];
             $result      = $this->_notifySendAllMessagesBackendWorker($programUrl, $phoneNumber, $dialogueId);
             $this->Session->setFlash(
                 __('Message(s) being sent, should arrive shortly...'), 
@@ -154,7 +159,7 @@ class ProgramDialoguesController extends AppController
                 array('class' => "message success")
                 );
         }
-        $dialogues = $this->Dialogue->getDialogues();    
+        $dialogues = $this->Dialogue->getActiveAndDraft();    
         $this->set(compact('dialogues'));         
     }
 

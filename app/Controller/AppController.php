@@ -73,7 +73,6 @@ class AppController extends Controller
             
             $dialogueModel = new Dialogue(array('database' => $databaseName));
             $dialogues = $dialogueModel->getActiveAndDraft();
-           
             $redis = new Redis();
             $redis->connect('127.0.0.1');
             
