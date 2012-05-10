@@ -20,7 +20,7 @@
                 echo "</li>";
             } 
             echo "<li>";
-            echo $this->Html->link(__('Simulate'), array('program'=>$programUrl,'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));
+            echo $this->Html->link(__('Simulate'), array('program'=>$programUrl, 'controller' => 'programSimulator', 'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));
             echo "</li>";
             echo "<li>";
             echo $this->Html->link(__('Test send all messages'), array('program'=>$programUrl,'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button', 'id' => 'button-test'));

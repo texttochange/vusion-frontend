@@ -2,7 +2,6 @@
 
 App::uses('AppController','Controller');
 App::uses('UnattachedMessage','Model');
-App::uses('Script','Model');
 App::uses('ScriptHelper', 'Helper');
 App::uses('Participant','Model');
 App::uses('History','Model');
@@ -26,7 +25,6 @@ class ProgramHomeController extends AppController
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
         
-        $this->Script         = new Script($options);
         $this->Participant    = new Participant($options);
         $this->History        = new History($options);
         $this->Schedule       = new Schedule($options);

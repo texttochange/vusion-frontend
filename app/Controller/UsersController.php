@@ -210,7 +210,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramsUsers');
         $this->Acl->allow($group, 'controllers/ProgramHome');
         $this->Acl->allow($group, 'controllers/ProgramParticipants');
-        $this->Acl->allow($group, 'controllers/ProgramScripts');
+        $this->Acl->allow($group, 'controllers/ProgramDialogues');
         $this->Acl->allow($group, 'controllers/ProgramHistory');
         $this->Acl->allow($group, 'controllers/ProgramSettings');
         $this->Acl->allow($group, 'controllers/ProgramSimulator');
@@ -228,7 +228,7 @@ class UsersController extends AppController
         //$this->Acl->allow($group, 'controllers/Users/logout');
         $this->Acl->allow($group, 'controllers/ProgramHome');
         $this->Acl->allow($group, 'controllers/ProgramParticipants');
-        $this->Acl->allow($group, 'controllers/ProgramScripts');
+        $this->Acl->allow($group, 'controllers/ProgramDialogues');
         $this->Acl->allow($group, 'controllers/ProgramHistory');
         $this->Acl->deny($group, 'controllers/ProgramSettings');
         $this->Acl->allow($group, 'controllers/ProgramSettings/index');

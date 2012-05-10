@@ -2,7 +2,6 @@
 
 App::uses('AppController','Controller');
 App::uses('History','Model');
-App::uses('Script','Model');
 
 class ProgramHistoryController extends AppController
 {
@@ -20,7 +19,6 @@ class ProgramHistoryController extends AppController
         
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->History        = new History($options);
-        $this->Script         = new Script($options);
     }
 
 
