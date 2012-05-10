@@ -1,11 +1,11 @@
 <div>
 	
 <div class="participants index">
-	<h3>Participants</h3>
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
 		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
 	</ul>
+	<h3>Participants</h3>
 	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>

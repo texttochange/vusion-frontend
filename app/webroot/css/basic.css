@@ -180,6 +180,12 @@
 
 .ttc-filter {
 	text-align: right;
+	width: 100%;
+}
+
+.ttc-filter form {
+	float: right;
+	margin-right: 2px;
 }
 
 .ttc-program-header {

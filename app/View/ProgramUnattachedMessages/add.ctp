@@ -1,8 +1,8 @@
 <div class="unattached_messages form">
-<h3><?php echo __('Add Unattached Message'); ?></h3>
 <ul class="ttc-actions">
     <li></li>
 </ul>
+<h3><?php echo __('Add Unattached Message'); ?></h3>
 <?php echo $this->Form->create('UnattachedMessage');?>
 
 	<fieldset>
