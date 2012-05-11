@@ -206,7 +206,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         $this->assertEquals('ok', $this->vars['result']['status']);
-        $this->assertTrue(isset($this->vars['result']['object-id']));        
+        $this->assertTrue(isset($this->vars['result']['dialogue-obj-id']));        
     }
 
 
@@ -557,7 +557,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array(
                     'SendAllMessages' => array(
-                        'object-id'=> $saveDialogue['Dialogue']['_id'],
+                        'dialogue-obj-id'=> $saveDialogue['Dialogue']['_id'],
                         'phone-number' => '06'
                         )
                     )
