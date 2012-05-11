@@ -185,12 +185,12 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
 
         $schedules = array(
             array(
-                'datetime' => '2021-06-12T12:30',
+                'date-time' => '2021-06-12T12:30',
                 'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
                 'interaction-id' => $savedDialogue['Dialogue']['interactions'][0]['interaction-id'],
                 ),
             array(
-                'datetime' => '2021-06-12T12:30',
+                'date-time' => '2021-06-12T12:30',
                 'unattach-id' => $this->Home->UnattachedMessage->id,
                 )
             );

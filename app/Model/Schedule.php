@@ -19,7 +19,7 @@ class Schedule extends MongoModel
      protected function _findSoon($state, $query, $results = array())
      {
         if ($state == 'before') {
-            $query['order']['datetime'] = 'asc';
+            $query['order']['date-time'] = 'asc';
             $query['limit'] = 10;
             return $query;
         }
@@ -33,7 +33,7 @@ class Schedule extends MongoModel
             'key' => array(
                 'dialogue-id' => true,                
                 'interaction-id' => true,
-                'datetime' => true,
+                'date-time' => true,
                 ),
             'initial' => array('csum' => 0),
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
@@ -49,7 +49,7 @@ class Schedule extends MongoModel
         $unattachedQuery = array(
             'key' => array(
                 'unattach-id' => true,
-                'datetime' => true,
+                'date-time' => true,
                 ),
             'initial' => array('csum' => 0),
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
@@ -71,9 +71,9 @@ class Schedule extends MongoModel
 
     private function _compareSchedule($a, $b)
     {
-        if ($a['datetime'] == $b['datetime'])
+        if ($a['date-time'] == $b['date-time'])
     	    return 0;
-        return ($a['datetime']<$b['datetime']) ? -1 : 1;
+        return ($a['date-time']<$b['date-time']) ? -1 : 1;
     }
 
 
