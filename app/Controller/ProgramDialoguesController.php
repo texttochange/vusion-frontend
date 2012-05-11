@@ -59,6 +59,9 @@ class ProgramDialoguesController extends AppController
     {
         $id = $this->params['id'];
         
+        if (!isset($id))
+            return;
+
         $this->Dialogue->id = $id;
 
         if (!$this->Dialogue->exists()) {
