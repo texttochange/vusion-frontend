@@ -13,45 +13,6 @@
 
 <ul class="sf-menu sf-vertical">  
     <li>
-       <?php echo $this->Html->link(__('Unattached Messages'),
-           array(
-               'program'=>$programUrl,
-               'controller'=>'programUnattachedMessages',
-               'action'=>'index'
-               )
-           ); ?>
-       <ul>
-           <li><?php echo $this->Html->link(__('New Message'),
-               array(
-                   'program'=>$programUrl,
-                   'controller'=>'programUnattachedMessages',
-                   'action' => 'add'
-                   )
-               ); ?>
-           </li>
-           <?php if(isset($programUnattachedMessages) && $programUnattachedMessages!=null) { ?>
-           <li>
-               <?php echo $this->Html->link("Edit", array()); ?>               
-               <ul>
-                   <?php foreach ($programUnattachedMessages as $unattachedMessage): ?>
-                   <li>
-                   <?php
-                       echo $this->Html->link(__($this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['schedule'])),
-                           array(
-                               'program'=>$programUrl,
-                               'controller'=>'programUnattachedMessages',
-                               'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']
-                               )
-                           );
-                   ?>
-                   </li>
-                   <?php endforeach; ?>
-               </ul>               
-           </li>
-           <?php } ?>
-       </ul>
-    </li>  
-    <li>
         <?php 
         echo $this->Html->link(
             __('Dialogues'),
@@ -112,6 +73,45 @@
                 </li>
             <?php } ?>
         </ul>
+    </li>  
+<li>
+       <?php echo $this->Html->link(__('Separate Messages'),
+           array(
+               'program'=>$programUrl,
+               'controller'=>'programUnattachedMessages',
+               'action'=>'index'
+               )
+           ); ?>
+       <ul>
+           <li><?php echo $this->Html->link(__('New Message'),
+               array(
+                   'program'=>$programUrl,
+                   'controller'=>'programUnattachedMessages',
+                   'action' => 'add'
+                   )
+               ); ?>
+           </li>
+           <?php if(isset($programUnattachedMessages) && $programUnattachedMessages!=null) { ?>
+           <li>
+               <?php echo $this->Html->link("Edit", array()); ?>               
+               <ul>
+                   <?php foreach ($programUnattachedMessages as $unattachedMessage): ?>
+                   <li>
+                   <?php
+                       echo $this->Html->link(__($this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['schedule'])),
+                           array(
+                               'program'=>$programUrl,
+                               'controller'=>'programUnattachedMessages',
+                               'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']
+                               )
+                           );
+                   ?>
+                   </li>
+                   <?php endforeach; ?>
+               </ul>               
+           </li>
+           <?php } ?>
+       </ul>
     </li>  
     <li>
         <?php echo $this->Html->link(__('Participants'),
