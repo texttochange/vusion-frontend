@@ -51,7 +51,7 @@ class VumiRabbitMQ {
     }
 
 
-    public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatch")
+    public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatch", $daemon_loop=null)
     {
         return $this->sendMessageTo(
             'vusion.control', 
@@ -65,6 +65,7 @@ class VumiRabbitMQ {
                     'control_name' => $database_name,
                     'database_name' => $database_name,
                     'dispatcher_name' => $dispatcher_name,
+                    'daemon_loop'=> $daemon_loop,
                     )
                 ) 
             );
@@ -90,14 +91,14 @@ class VumiRabbitMQ {
     }
 
 
-    public function sendMessageToSendAllMessages($to, $phone, $scriptId)
+    public function sendMessageToSendAllMessages($to, $phone, $dialogueObjId)
     {
         return $this->sendMessageTo(
             $to.'.control',
             array(
                 'action' => 'test-send-all-messages',
-                'phone-number' => $phone,
-                'script-id' => $scriptId)
+                'phone_number' => $phone,
+                'dialogue_obj_id' => $dialogueObjId)
             );
     }
 

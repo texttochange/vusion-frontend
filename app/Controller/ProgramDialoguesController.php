@@ -48,7 +48,7 @@ class ProgramDialoguesController extends AppController
                 $this->set('result', 
                     array(
                         'status'=>'ok',
-                        'object-id' => $this->Dialogue->id));
+                        'dialogue-obj-id' => $this->Dialogue->id));
             } else {
                 $this->set('result', array('status'=>'fail'));
             }
@@ -59,6 +59,9 @@ class ProgramDialoguesController extends AppController
     {
         $id = $this->params['id'];
         
+        if (!isset($id))
+            return;
+
         $this->Dialogue->id = $id;
 
         if (!$this->Dialogue->exists()) {
@@ -151,7 +154,7 @@ class ProgramDialoguesController extends AppController
  
         if ($this->request->is('post')) {
             $phoneNumber = $this->request->data['SendAllMessages']['phone-number'];
-            $dialogueId  = $this->request->data['SendAllMessages']['object-id'];
+            $dialogueId  = $this->request->data['SendAllMessages']['dialogue-obj-id'];
             $result      = $this->_notifySendAllMessagesBackendWorker($programUrl, $phoneNumber, $dialogueId);
             $this->Session->setFlash(
                 __('Message(s) being sent, should arrive shortly...'), 

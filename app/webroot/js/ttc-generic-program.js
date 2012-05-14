@@ -160,13 +160,13 @@ function saveFormOnServer(){
 				$("#flashMessage").attr('class', 'message error').show().text("Saving failed");
 				return;
 			}
-			if (location.href.indexOf(response['object-id'])<0){
+			if (location.href.indexOf(response['dialogue-obj-id'])<0){
 				$("#flashMessage").show().attr('class', 'message success').text('The dialogue has been saved as draft, wait for redirection');
 				setTimeout( function() { 
 					if (location.href.indexOf("edit/")<0) 
-						window.location.replace("edit/" + response['object-id']);
+						window.location.replace("edit/" + response['dialogue-obj-id']);
 					else 
-						window.location.replace(response['object-id']);
+						window.location.replace(response['dialogue-obj-id']);
 					}, 3000);
 			} else {
 				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');

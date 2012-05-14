@@ -12,6 +12,7 @@ class ProgramSimulatorController extends AppController
 {
 
     var $components = array('RequestHandler');
+    var $uses = array();
 
 
     public function constructClasses()

@@ -11,9 +11,9 @@
                 $options[$dialogue['Draft']['_id'].""] = $dialogue['Draft']['name']. "- draft";
         }
         if (isset($objectId))
-            echo $this->Form->select('object-id', $options, array('id' => 'script-selector', 'empty' => 'Select Dialogue...', 'default' => $objectId));
+            echo $this->Form->select('dialogue-obj-id', $options, array('id' => 'script-selector', 'empty' => 'Select Dialogue...', 'default' => $objectId));
         else
-            echo $this->Form->select('object-id', $options, array('id' => 'script-selector', 'empty' => 'Select Dialogue...'));
+            echo $this->Form->select('dialogue-obj-id', $options, array('id' => 'script-selector', 'empty' => 'Select Dialogue...'));
         echo $this->Form->input('phone-number');
         echo $this->Form->end(__('Send'));
         ?>

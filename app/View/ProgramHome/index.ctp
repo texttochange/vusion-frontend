@@ -12,7 +12,7 @@
 	<?php
 	foreach ($schedules as $schedule): ?>
 	<tr>
-		<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['datetime']); ?>&nbsp;</td>
+		<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
 		<?php if (isset($schedule['dialogue-id'])) { ?>
 		<td>Script</td>
 		<?php } elseif (isset($schedule['unattach-id'])) { ?>

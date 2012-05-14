@@ -55,24 +55,24 @@ class ScheduleTestCase extends CakeTestCase
              array(
                  'dialogue-id' => 'someId',
                  'interaction-id' => 'someOtherId',
-                 'datetime' => '2013-04-12T12:00',
+                 'date-time' => '2013-04-12T12:00',
                  'participant-phone' => '06'
                  ),
              array(
                  'dialogue-id' => 'someId',
                  'interaction-id' => 'someOtherId',
-                 'datetime' => '2013-04-12T12:00',
+                 'date-time' => '2013-04-12T12:00',
                  'participant-phone' => '07'
                  ),
              array(
                  'dialogue-id' => 'someId',
                  'interaction-id' => 'someOtherId2',
-                 'datetime' => '2013-04-12T13:00',
+                 'date-time' => '2013-04-12T13:00',
                  'participant-phone' => '07'
                  ),
              array(
                   'unattach-id' => 'someId2',
-                  'datetime' => '2013-04-12T11:00',
+                  'date-time' => '2013-04-12T11:00',
                  ),
               array(
                   'content-type' => 'feedback',
