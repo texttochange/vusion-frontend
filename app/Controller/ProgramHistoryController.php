@@ -37,17 +37,44 @@ class ProgramHistoryController extends AppController
     {
         if (preg_grep('/^filter_/', array_keys($this->params['url']))) {        
             $conditons = array();
+            $or = array();
+            $orConditons = array();
             if (isset($this->params['url']['filter_type']))
-                $conditions['message-type'] = $this->params['url'][' filter_type'];
+                $conditions['message-type'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))
                 $conditions['message-status'] = $this->params['url']['filter_status'];
-            if (isset($this->params['url']['filter_from']))
+            if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to']))
             $conditions['timestamp'] = array('$gt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_from'].' 00:00'));
-            if (isset($this->params['url']['filter_to']))
+            if (isset($this->params['url']['filter_to']) && !isset($this->params['url']['filter_from']))
                 $conditions['timestamp'] = array('$lt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_to'].' 00:00'));
-            if (isset($this->params['url']['filter_phone']))
-                $conditions['participant-phone'] = $this->params['url']['filter_phone'];
-            
+            if (isset($this->params['url']['filter_from']) && isset($this->params['url']['filter_to']))
+                $conditions['timestamp'] = array(
+                    '$gt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_from'].' 00:00'),
+                    '$lt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_to'].' 00:00')
+                );
+            if (isset($this->params['url']['filter_phone'])) {
+                $phoneNumbers = explode(",", str_replace(" ", "",$this->params['url']['filter_phone']));
+                if (sizeof($phoneNumbers) > 1) {
+                    foreach ($phoneNumbers as $phoneNumber) {
+                        if (strlen($phoneNumber) >= 12) {
+                            $orConditions['participant-phone'] = $phoneNumber;
+                            $or[] = $orConditions;
+                        } else {
+                            $regex = new MongoRegex("/^".$phoneNumber."/");
+                            $orConditions['participant-phone'] = $regex;
+                            $or[] = $orConditions;
+                        }
+                    }
+                    $conditions['$or'] = $or;
+                } else {                
+                    if (strlen($phoneNumbers[0]) >= 12) {
+                        $conditions['participant-phone'] = $phoneNumbers[0];
+                    } else {
+                        $regex = new MongoRegex("/^".$phoneNumbers[0]."/");
+                        $conditions['participant-phone'] = $regex;
+                    }
+                }
+            }
             //print_r($conditions);
         
             $this->paginate = array(
