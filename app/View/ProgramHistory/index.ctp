@@ -77,7 +77,11 @@
         else
             $dateTo = null;
        echo $this->Form->input('filter_to', array('label'=>'to','id'=>'filter_to', 'value'=> $dateTo));
-       echo $this->Form->input('filter_phone', array('label'=>'phone','id'=>'filter_phone'));
+       if (isset($this->params['url']['filter_phone']))
+            $phone = $this->params['url']['filter_phone'];
+        else
+            $phone = null;
+       echo $this->Form->input('filter_phone', array('label'=>'phone','id'=>'filter_phone', 'value'=>$phone));
        echo $this->Form->end(__('Search'));
        $this->Js->get('#advanced_filter_form')->event('submit','
            $(":input[value=\"\"]").attr("disabled", true);
