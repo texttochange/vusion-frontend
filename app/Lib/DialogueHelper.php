@@ -1,6 +1,6 @@
 <?php
 
-class ScriptHelper
+class DialogueHelper
 {
 
     public function validateDate($date)
