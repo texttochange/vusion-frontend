@@ -41,4 +41,23 @@ class ScriptMaker
         return $dialogue;
     }
 
+    public function getOneRequest()
+    {
+        $request['Request'] = array(
+            'keyword' => 'KEYWORD',
+            'responses' => array(
+                array(
+                    'choice' => 'Something',
+                    'actions' => array(
+                        array(
+                            'do' => 'something'
+                            )
+                        ),
+                    'feedback' => 'thank you',
+                    )
+                )
+            );
+        return $request;
+    }
+
 }

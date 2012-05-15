@@ -1,5 +1,6 @@
 <?php
 App::uses('ProgramDialoguesController', 'Controller');
+App::uses('Dialogue', 'Model');
 
 class TestProgramDialoguesController extends ProgramDialoguesController
 {
