@@ -63,7 +63,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     }
     
 	
-    public function mock_program_access()
+    public function mockProgramAccess()
     {
         $shortCodes = $this->generate('ShortCodes', array(
             'components' => array(
@@ -91,7 +91,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
     
-        $this->mock_program_access();
+        $this->mockProgramAccess();
    
         $this->instanciateShortCodesModel();
         $this->ShortCodes->ShortCode->create();
@@ -109,7 +109,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 
     public function testAdd()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
     
         $shortcodes = array(
             'ShortCodes' => array(
@@ -128,7 +128,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 
     public function testEdit()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
 
         $shortcodes = array(
             'ShortCodes' => array(
@@ -158,7 +158,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 
     public function testDelete()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
     
         $shortcodes = array(
             'ShortCodes' => array(
