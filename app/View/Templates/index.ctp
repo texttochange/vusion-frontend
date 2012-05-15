@@ -3,7 +3,6 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('Name');?></th>
-			<th><?php echo $this->Paginator->sort('Description');?></th>
 			<th><?php echo $this->Paginator->sort('Updated');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
@@ -11,7 +10,6 @@
 	foreach ($templates as $template): ?>
 	<tr>
 		<td><?php echo h($template['Template']['name']); ?>&nbsp;</td>
-		<td><?php echo h($template['Template']['description']); ?>&nbsp;</td>
 		<td><?php echo $this->Time->format('d/m/Y H:i:s',$template['Template']['modified']->sec); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>

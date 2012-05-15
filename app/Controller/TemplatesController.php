@@ -80,8 +80,7 @@ class TemplatesController extends AppController
             }
         } else {
             $this->request->data = $this->Template->read(null, $id);
-        }
-        return $template;    
+        }   
     }
     
     
