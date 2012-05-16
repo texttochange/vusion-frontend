@@ -56,19 +56,19 @@ class RequestTestCase extends CakeTestCase
         $this->Request->create();
         $this->Request->save($request);
         $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keyword'));
-        $this->assertEqual(1, count($matchingKeywordRequest));
+        $this->assertEqual('keyword', $matchingKeywordRequest);
 
         $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keywo'));
-        $this->assertEqual(0, count($matchingKeywordRequest));
+        $this->assertEqual(null, $matchingKeywordRequest);
 
         $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keywor, keyword'));
-        $this->assertEqual(1, count($matchingKeywordRequest));
+        $this->assertEqual('keyword', $matchingKeywordRequest);
         
         $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'kEy'));
-        $this->assertEqual(1, count($matchingKeywordRequest));
+        $this->assertEqual('kEy', $matchingKeywordRequest);
         
         $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'request'));
-        $this->assertEqual(0, count($matchingKeywordRequest));
+        $this->assertEqual(null, $matchingKeywordRequest);
 
         $request['Request'] = array(
             'keyword' => 'key'
@@ -76,7 +76,7 @@ class RequestTestCase extends CakeTestCase
         $this->Request->create();
         $this->Request->save($request);
         $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'key'));
-        $this->assertEqual(1, count($matchingKeywordRequest));
+        $this->assertEqual('key', $matchingKeywordRequest);
         
     }
 

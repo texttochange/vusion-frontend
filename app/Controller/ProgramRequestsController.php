@@ -117,7 +117,7 @@ class ProgramRequestsController extends AppController
         if (!$shortCode) {
             $this->set('result', array(
                     'status'=>'fail', 
-                    'message' => 'Program shortcode has not been defined, please go to program settings.'
+                    'message' => __('Program shortcode has not been defined, please go to program settings.')
                     ));
             return;
         }
@@ -131,8 +131,8 @@ class ProgramRequestsController extends AppController
             $this->set(
                 'result', array(
                     'status'=>'fail', 
-                    'message'=>$keywordToValidate.' already used in same program by: '.$dialogueUsingKeyword['Dialogue']['name'])
-                );
+                    'message'=> __("'%s' already used in same program in the '%s' dialogue.", $keywordToValidate, $dialogueUsingKeyword['Dialogue']['name'])
+                ));
             return;
             }
         
@@ -152,7 +152,8 @@ class ProgramRequestsController extends AppController
                     $this->set(
                         'result', array(
                             'status'=>'fail', 
-                            'message'=>$foundKeyword.' already used in a dialogue by: ' . $program['Program']['name'])
+                            'message'=> __("'%s' already used in a dialogue of '%s' program", $foundKeyword, $program['Program']['name'])
+                            )
                         );
                     return;
                 }
@@ -162,7 +163,8 @@ class ProgramRequestsController extends AppController
                     $this->set(
                         'result', array(
                             'status'=>'fail', 
-                            'message'=>$foundKeyword.' already used in a dialogue by: ' . $program['Program']['name'])
+                            'message'=> __("'%s' already used in a request of '%s' program", $foundKeyword, $program['Program']['name'])
+                            )
                         );
                     return;
                 }

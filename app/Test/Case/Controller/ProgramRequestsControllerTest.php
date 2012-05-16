@@ -261,7 +261,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 )
             );
          $this->assertEquals('fail', $this->vars['result']['status']);
-
+        
         /**Test a simple keyword not used*/
          $this->mockProgramAccess();
 

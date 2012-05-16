@@ -27,7 +27,14 @@ class Request extends MongoModel
                 $query['conditions'] = $conditions[0];
             return $query;
         }
-        return $results;
+        if ($results) {
+            $keywords = explode(', ', $query['keywords']);
+            foreach($keywords as $keyword) {
+                  if (preg_match('/(,\s|^)'.$keyword.'($|\s|,)/i', $results[0]['Request']['keyword']))
+                      return $keyword;
+            } 
+        } 
+        return null;
     }
 
 }
