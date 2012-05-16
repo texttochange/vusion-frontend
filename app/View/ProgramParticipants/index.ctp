@@ -1,5 +1,3 @@
-<div>
-	
 <div class="participants index">
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
@@ -42,15 +40,16 @@
 			<?php echo $this->Form->postLink(__('Delete'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'delete', $participant['Participant']['_id']), null, __('Are you sure you want to delete # %s?', $participant['Participant']['_id'])); ?>
 		</td>
 	</tr>
-<?php endforeach; ?>
+    <?php endforeach; ?>
 	</table>
-	</div><br />
+	</div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(
 	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
 	));
-	?>	</p>
+	?>
+	</p>
 
 	<div class="paging">
 	<?php

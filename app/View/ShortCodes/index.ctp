@@ -1,5 +1,5 @@
 <div class="shortcodes index">
-	<h2><?php echo __('ShortCodes');?></h2>
+	<h3><?php echo __('ShortCodes');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('country');?></th>

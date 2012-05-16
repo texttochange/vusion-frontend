@@ -25,7 +25,7 @@
 	</tr>
 <?php endforeach; ?>
 	</table>
-	</div><br />
+	</div>
 	<p>
 	   <?php
 	      echo $this->Paginator->counter(array(
@@ -40,3 +40,4 @@
 		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
 	?>
 	</div>
+</div>

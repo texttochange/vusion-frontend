@@ -1,5 +1,3 @@
-<div>
-		
 <div class="participants form">
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>

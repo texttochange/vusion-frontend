@@ -38,5 +38,5 @@
             $this->Js->each('$(this).buildTtcForm()', true);
 	?>
 	</div>
-
+</div>
 <?php echo $this->Js->writeBuffer(); ?>

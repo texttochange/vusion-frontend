@@ -1,9 +1,6 @@
-<div>
-	
 <div class="Program Logs index">
-	<h3><?php echo __('Program Logs'); ?></h3>
-	
-	<div class="ttc-display-area">
+	<h3><?php echo __('Program Logs'); ?></h3>	
+  <div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	 <?php foreach ($programLogs as $key=>$log): ?>
 	 <tr>
@@ -17,15 +14,7 @@
 	 </tr>
 	 <?php endforeach; ?>
 	 </table>
-	 </div>
-	<p>
-		
-	</p>
-
-	<div class="paging">
-	
-        </div>
-	
+  </div>	
 </div>
 
 <?php echo $this->Js->writeBuffer(); ?>

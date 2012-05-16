@@ -154,14 +154,15 @@
 		<div id="content">
 			
 			<?php echo $content_for_layout; ?>
+			<?php 
+		        if (isset($programName)) {
+		            echo $this->element('navigation_menu');
+		            echo $this->element('backend_notifications');
+		        }
+		    ?>
 
 		</div>
-		<?php 
-		    if (isset($programName)) {
-		        echo $this->element('navigation_menu');
-		        echo $this->element('backend_notifications');
-		    }
-		?>
+		
 		<div id="footer">
 		</div>
 	</div>
