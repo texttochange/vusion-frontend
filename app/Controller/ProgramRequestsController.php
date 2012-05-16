@@ -1,23 +1,32 @@
 <?php
 App::uses('AppController', 'Controller');
 App::uses('Request', 'Model');
+App::uses('ProgramSetting', 'Model');
+App::uses('Dialogue', 'Model');
+App::uses('DialogueHelper', 'Helper');
 
 class ProgramRequestsController extends AppController
 {
+
+    var $components = array('RequestHandler');
     
     
     public function beforeFilter()
     {
         parent::beforeFilter();
         $this->Auth->allow('*');
+        $this->RequestHandler->accepts('json');
+        $this->RequestHandler->addInputType('json', array('json_decode'));
     }
 
 
     function constructClasses()
     {
         parent::constructClasses();
-        $options       = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Request = new Request($options);
+        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->Request        = new Request($options);
+        $this->Dialogue       = new Dialogue($options);
+        $this->ProgramSetting = new ProgramSetting($options);
     }
 
 
@@ -32,16 +41,13 @@ class ProgramRequestsController extends AppController
         $programUrl = $this->params['program'];
 
         if ($this->request->is('post')) {
+            //print_r($saveData);
             $this->Request->create();
             if ($this->Request->save($this->request->data)) {
-                $this->Session->setFlash(
-                    __('The request has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                );
-                $this->redirect(array(
-                    'program' => $programUrl,
-                    'action' => 'index')
+                $this->set(
+                    'result', array(
+                        'status' => 'ok',
+                        'request-id' => $this->Request->id)
                     );
             }
         }
@@ -52,31 +58,29 @@ class ProgramRequestsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
-        
-        $this->Request->id = $id;
-        if (!$this->Request->exists()) {
-            throw new NotFoundException(__('Invalide Request') . $id);
-        }
 
         if ($this->request->is('post')) {
+            $this->Request->create();
+            $this->Request->id = $id;
             if ($this->Request->save($this->request->data)) {
-                $request = $this->request->data;
-                $this->Session->setFlash(
-                    __('The request has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                );
-                $this->redirect(
-                    array(
-                        'program' => $programUrl,
-                        'action' => 'index'
-                        )
-                    ); 
+                $this->set(
+                    'result', array(
+                        'status' => 'ok',
+                        'request-id' => $this->Request->id)
+                    );
             } else {
-                $this->Session->setFlash(__('The request could not be saved. Please, try again.'));
+                $this->set(
+                    'result', array(
+                        'status' => 'fail'
+                        )
+                    );
             }
         } else {
-            $this->request->data = $this->Request->read(null, $id);
+            $this->Request->id = $id;
+            if (!$this->Request->exists()) {
+                throw new NotFoundException(__('Invalide Request') . $id);
+            }
+            $this->set('request', $this->Request->read(null, $id));
         }
     }
 
@@ -105,6 +109,73 @@ class ProgramRequestsController extends AppController
                 'action' => 'index'
                 )
             );
+    }
+
+    public function validateKeyword()
+    {
+        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode'));
+        if (!$shortCode) {
+            $this->set('result', array(
+                    'status'=>'fail', 
+                    'message' => 'Program shortcode has not been defined, please go to program settings.'
+                    ));
+            return;
+        }
+
+        $DialogueHelper = new DialogueHelper();
+
+        $keywordToValidate = $DialogueHelper->getRequestKeywordToValidate($this->request->data['keyword']);
+
+        $dialogueUsingKeyword = $this->Dialogue->getActiveDialogueUseKeyword($keywordToValidate);
+        if ($dialogueUsingKeyword) {
+            $this->set(
+                'result', array(
+                    'status'=>'fail', 
+                    'message'=>$keywordToValidate.' already used in same program by: '.$dialogueUsingKeyword['Dialogue']['name'])
+                );
+            return;
+            }
+        
+        /**Is the keyword used by another program*/
+        $programs = $this->Program->find(
+            'all', 
+            array('conditions'=> 
+            array('Program.url !='=> $this->params['program'])
+            )
+        );
+        foreach ($programs as $program) {
+            $programSettingModel = new ProgramSetting(array('database'=>$program['Program']['database']));
+            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
+                $dialogueModel = new Dialogue(array('database'=>$program['Program']['database']));
+                $foundKeyword = $dialogueModel->useKeyword($keywordToValidate);
+                if ($foundKeyword) {
+                    $this->set(
+                        'result', array(
+                            'status'=>'fail', 
+                            'message'=>$foundKeyword.' already used in a dialogue by: ' . $program['Program']['name'])
+                        );
+                    return;
+                }
+                $requestModel = new Request(array('database'=>$program['Program']['database']));
+                $foundKeyword = $requestModel->find('keyword', array('keywords'=> $keywordToValidate));
+                if ($foundKeyword) {
+                    $this->set(
+                        'result', array(
+                            'status'=>'fail', 
+                            'message'=>$foundKeyword.' already used in a dialogue by: ' . $program['Program']['name'])
+                        );
+                    return;
+                }
+            }
+        }
+
+        $this->set('result', array('status' => 'ok'));
+    }
+    
+
+    public function getActiveDialogue()
+    {
+
     }
 
 

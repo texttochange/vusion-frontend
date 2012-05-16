@@ -32,7 +32,7 @@ class RequestTestCase extends CakeTestCase
         ConnectionManager::create('mongo_test', $this->_config);
         $this->Mongo = new MongodbSource($this->_config);
 
-        $option         = array('database'=>'test');
+        $option        = array('database'=>'test');
         $this->Request = new Request($option);
 
         $this->Request->setDataSource('mongo_test');
@@ -48,9 +48,35 @@ class RequestTestCase extends CakeTestCase
     }
 
     
-    public function testSave()
+    public function testFindKeyword()
     {
-        $this->assertTrue(false);
+        $request['Request'] = array(
+            'keyword' => 'key request, keyword, otherkeyword request'
+            );
+        $this->Request->create();
+        $this->Request->save($request);
+        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keyword'));
+        $this->assertEqual(1, count($matchingKeywordRequest));
+
+        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keywo'));
+        $this->assertEqual(0, count($matchingKeywordRequest));
+
+        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keywor, keyword'));
+        $this->assertEqual(1, count($matchingKeywordRequest));
+        
+        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'kEy'));
+        $this->assertEqual(1, count($matchingKeywordRequest));
+        
+        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'request'));
+        $this->assertEqual(0, count($matchingKeywordRequest));
+
+        $request['Request'] = array(
+            'keyword' => 'key'
+            );
+        $this->Request->create();
+        $this->Request->save($request);
+        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'key'));
+        $this->assertEqual(1, count($matchingKeywordRequest));
         
     }
 

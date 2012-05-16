@@ -73,8 +73,24 @@
                 </li>
             <?php } ?>
         </ul>
-    </li>  
-<li>
+    </li>
+    <li>
+       <?php 
+        echo $this->Html->link(
+            __('Requests'),
+            array('program'=>$programUrl, 'controller'=>'programRequests','action'=>'index')); 
+        ?>
+        <ul>
+            <li>
+            <?php 
+            echo $this->Html->link(
+                __('New Requests'),
+                array('program'=>$programUrl, 'controller'=>'programRequests','action'=>'add')); 
+            ?>
+            </li>
+        </ul>
+    </li>
+    <li>
        <?php echo $this->Html->link(__('Separate Messages'),
            array(
                'program'=>$programUrl,

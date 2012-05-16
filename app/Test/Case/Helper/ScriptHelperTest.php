@@ -101,7 +101,15 @@ class DialogueHelperTestCase extends CakeTestCase
             array(),	
             $DialogueHelper->getInteraction($script, "other")
             );
+    }
 
+    public function testGetRequestKeywordToValidate()
+    {
+        $DialogueHelper = new DialogueHelper();
+        $requestKeywords = "www, www join, ww";
+        $this->assertEqual('www, www, ww', 
+            $DialogueHelper->getRequestKeywordToValidate($requestKeywords)
+            );
 
     }
     

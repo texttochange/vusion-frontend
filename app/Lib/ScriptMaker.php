@@ -29,6 +29,7 @@ class ScriptMaker
     public function getOneDialogue()
     {
         $dialogue['Dialogue'] = array(
+            'name' => 'my dialogue',
             'interactions'=> array(
                 array(
                     'type-interaction' => 'question-answer', 
@@ -44,18 +45,17 @@ class ScriptMaker
     public function getOneRequest()
     {
         $request['Request'] = array(
-            'keyword' => 'KEYWORD',
+            'keyword' => 'KEYWORD request',
             'responses' => array(
                 array(
-                    'choice' => 'Something',
-                    'actions' => array(
-                        array(
-                            'do' => 'something'
-                            )
-                        ),
-                    'feedback' => 'thank you',
+                    'content' => 'thanks message',
                     )
-                )
+                ),
+            'actions' => array(
+                array(
+                    'type-action' => 'optin'
+                    )
+                ),
             );
         return $request;
     }
