@@ -328,7 +328,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals('usedKeyword already used by: Test Name 2', $this->vars['result']['message']);
+        $this->assertEquals("'usedKeyword' already used by a dialogue of program 'Test Name 2'.", $this->vars['result']['message']);
               
     }
     
@@ -448,7 +448,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
 
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals('usedKeyword already used in same program by: '.$savedDialogue['Dialogue']['name'], $this->vars['result']['message']);
+        $this->assertEquals("'usedKeyword' already used in dialogue 'my dialogue' of the same program.", $this->vars['result']['message']);
     }
 
 

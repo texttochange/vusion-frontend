@@ -97,7 +97,7 @@ class ProgramDialoguesController extends AppController
         if (!$shortCode) {
             $this->set('result', array(
                     'status'=>'fail', 
-                    'message' => 'Program shortcode has not been defined, please go to program settings'
+                    'message' => __('Program shortcode has not been defined, please go to program settings.')
                     ));
             return;
         }
@@ -112,7 +112,8 @@ class ProgramDialoguesController extends AppController
             $this->set(
                 'result', array(
                     'status'=>'fail', 
-                    'message'=>$keywordToValidate.' already used in same program by: '.$dialogueUsingKeyword['Dialogue']['name'])
+                    'message'=> __("'%s' already used in dialogue '%s' of the same program.", $keywordToValidate, $dialogueUsingKeyword['Dialogue']['name'])
+                    )
                 );
             return;
             }
@@ -133,7 +134,8 @@ class ProgramDialoguesController extends AppController
                     $this->set(
                         'result', array(
                             'status'=>'fail', 
-                            'message'=>$foundKeyword.' already used by: ' . $program['Program']['name'])
+                            'message'=>__("'%s' already used by a dialogue of program '%s'.", $foundKeyword, $program['Program']['name'])
+                            )
                         );
                     return;
                 }
