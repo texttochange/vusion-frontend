@@ -446,3 +446,14 @@
     padding: 0.2em;
 }
 
+.ttc-action-link {
+    font-size: 120%;
+    color: #2C6877;
+}
+
+.ttc-action-link:Hover {
+    text-decoration: underline;
+    cursor: pointer;
+    color: grey;
+}
+

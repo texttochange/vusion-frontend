@@ -8,7 +8,7 @@
    <div class="ttc-filter">
         <?php
 	   echo $this->Form->create(null);
-	   echo $this->Html->tag('span', 'Advanced Filter', array('id'=>'advFilter', 'style'=>'text-decoration:underline'));
+	   echo $this->Html->tag('span', 'Advanced Filter', array('id'=>'advFilter', 'class'=>'ttc-action-link'));
 	   $this->Js->get('#advFilter')->event(
 	    'click','
 	    $(".ttc-filter").hide();
@@ -20,7 +20,7 @@
 	   if (isset($this->params['url']['filter']))
 	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
 	   else 
-	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Filter...'));
+	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Quick Filter...'));
 	   $this->Js->get('#filter')->event('change', '
 	     if ($("select option:selected").val())
 	         window.location.search = "?filter="+$("select option:selected").val();
@@ -45,11 +45,12 @@
    <?php
        echo "<h5>Filter Options</h5>";
        echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
+       echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
        echo $this->Html->tag('label','Message Type');
        echo "&nbsp;";
        $optionsType = array();
        $optionsType['received'] = "received";
-       $optionsType['send'] = "send";
+       $optionsType['sent'] = "sent";
        if (isset($this->params['url']['filter_type']))
 	        echo $this->Form->select('filter_type', $optionsType, array('id'=> 'filter_type', 'default' => $this->params['url']['filter_type'], 'empty' => '....'));
 	   else
@@ -82,11 +83,16 @@
         else
             $phone = null;
        echo $this->Form->input('filter_phone', array('label'=>'phone','id'=>'filter_phone', 'value'=>$phone));
-       echo $this->Form->end(__('Search'));
+       echo $this->Form->end(__('Filter'));       
        $this->Js->get('#advanced_filter_form')->event('submit','
            $(":input[value=\"\"]").attr("disabled", true);
            return true;
            ');
+       $this->Js->get('#hideAdvFilter')->event(
+	    'click','
+	    $(".ttc-filter").show();
+	    $("#advanced_filter_form").hide();
+	    ');
    ?>
    </div>
         
@@ -100,6 +106,11 @@
 			<th><?php echo $this->Paginator->sort('message', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('time', null, array('url'=> array('program' => $programUrl)));?></th>
 	</tr>
+	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $statuses == null) { ?>
+	    <tr>
+	        <td colspan=6>No results found</td>
+	    </tr>
+	<?php } else {?>    
 	<?php
 	foreach ($statuses as $status): ?>
 	<tr>
@@ -111,6 +122,7 @@
 		<td><?php echo $this->Time->format('d/m/Y H:i:s', $status['History']['timestamp']); ?>&nbsp;</td>		
 	</tr>
 	<?php endforeach; ?>
+	<?php } ?>
 	</table>
 	</div>
 	<p>
