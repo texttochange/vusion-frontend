@@ -152,7 +152,7 @@ class ProgramRequestsController extends AppController
                     $this->set(
                         'result', array(
                             'status'=>'fail', 
-                            'message'=> __("'%s' already used in a dialogue of '%s' program", $foundKeyword, $program['Program']['name'])
+                            'message'=> __("'%s' already used in a dialogue of program '%s'.", $foundKeyword, $program['Program']['name'])
                             )
                         );
                     return;
@@ -163,7 +163,7 @@ class ProgramRequestsController extends AppController
                     $this->set(
                         'result', array(
                             'status'=>'fail', 
-                            'message'=> __("'%s' already used in a request of '%s' program", $foundKeyword, $program['Program']['name'])
+                            'message'=> __("'%s' already used in a request of program '%s'.", $foundKeyword, $program['Program']['name'])
                             )
                         );
                     return;
