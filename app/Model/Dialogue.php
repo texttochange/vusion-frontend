@@ -100,15 +100,18 @@ class Dialogue extends MongoModel
             );
     }
 
+
     public function getActiveInteractions()
     {
         $activeInteractions = array();
         $activeDialogues    = $this->getActiveDialogues();
         foreach ($activeDialogues as $activeDialogue) {
-            $activeInteractions = array_merge($activeInteractions, $activeDialogue['Dialogue']['interactions']);
+            if (isset($activeDialogue['Dialogue']['interactions']))
+                $activeInteractions = array_merge($activeInteractions, $activeDialogue['Dialogue']['interactions']);
         }
         return $activeInteractions;
     }
+
 
     public function getDialogues()
     {
