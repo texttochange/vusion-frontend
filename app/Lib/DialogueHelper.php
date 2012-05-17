@@ -94,7 +94,7 @@ class DialogueHelper
                 foreach ($valuesArray as $arrayValue) {
                     foreach ($keywordValues as $keywordValue) {
                         if (strtolower($arrayValue) == strtolower($keywordValue))
-                            return $keywordValue;
+                            return $keywordValue;   
                     }
                 }
             }
@@ -177,6 +177,19 @@ class DialogueHelper
             }
         }
         return array();
+    }
+
+    public function getRequestKeywordToValidate($value) 
+    {
+        $requests = explode(", ", $value);
+        $keywords = "";
+        foreach ($requests as &$request) {
+            $request = explode(" ", $request);
+            //if (isset($request[1]))
+            //    unset($request[1]);
+            $request = $request[0];
+        }
+        return implode(", ",$requests);
     }
     
 

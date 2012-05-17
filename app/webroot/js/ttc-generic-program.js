@@ -55,7 +55,7 @@ var program = {"script": [
 	"answer": ["choice","feedbacks"],
 	"feedbacks":["add-feedback"],
 	"add-request":"button",
-	//"request": ["content","responses", "actions"],
+	"Request": ["keyword", "responses", "actions"],
 	"responses":["add-response"],
 	"actions":["add-action"],
 	"add-response":"button",
@@ -64,12 +64,12 @@ var program = {"script": [
 	"add-action":"button",
 	"add-feedback":"button",
 	"action":["radio-type-action"],
-	"type-action": {"tagging":"Tag participant", "goingto":"Go to a dialogue"},
+	"type-action": {"optin": "Opt-in", "optout": "Opt-out", "enrolling":"Enrole in an active dialogue",  "tagging":"Tag participant"},
 	"choice":"text",
 	"tagging":["tag"],
-	"tag":"select",
-	"goingto":["goto"],
-	"goto":"select",
+	"tag":"text",
+	"enrolling":["enrole"],
+	"enrole":"select",
 	"add-request-reply":'button',
 	"request-reply":["keyword","add-feedback","radio-type-action"],
 	"id":"text",
@@ -130,12 +130,8 @@ var program = {"script": [
 	$.fn.extend(
 	{
 
-		buildTtcForm : function(dialogue) {
-			if (dialogue) {
-				$(this).empty().buildForm(fromBackendToFrontEnd(dialogue['dialogue'], dialogue['_id']));
-			} else {
-				$(this).empty().buildForm(fromBackendToFrontEnd());
-			}
+		buildTtcForm : function(type, object, submitCall) {
+			$(this).empty().buildForm(fromBackendToFrontEnd(type, object, submitCall));
 			activeForm();	
 		},
 	});
@@ -168,6 +164,40 @@ function saveFormOnServer(){
 					else 
 						window.location.replace(response['dialogue-obj-id']);
 					}, 3000);
+			} else {
+				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
+				$("#flashMessage").delay(3000).fadeOut(1000)
+			}
+		},
+		timeout: 1000,
+		error: vusionAjaxError
+	});
+}
+
+function saveRequestOnServer(){
+		
+	var formData = form2js('dynamic-generic-program-form', '.', true);
+	//alert();
+	var indata= JSON.stringify(formData, null, '\t');
+
+	var saveUrl = location.href.indexOf("add")>0 ? "./add.json" : "../edit.json";
+
+	$.ajax({
+		url: saveUrl,
+		type:'POST',
+		data: indata, 
+		contentType: 'application/json; charset=utf-8',
+		dataType: 'json', 
+		success: function(response) {
+			if (response['status'] == 'fail') {
+				$("#flashMessage").attr('class', 'message error').show().text("Saving failed.");
+				return;
+			}
+			if (location.href.indexOf("add")>0 && location.href.indexOf(response['request-id'])<0){
+				$("#flashMessage").show().attr('class', 'message success').text('The request has been saved, wait for redirection.');
+			setTimeout( function() { 
+					window.location.replace("edit/"+response['request-id']);
+				}, 3000);
 			} else {
 				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
 				$("#flashMessage").delay(3000).fadeOut(1000)
@@ -549,8 +579,15 @@ function configToForm(item,elt,id_prefix,configTree){
 						}
 					}else if (program[sub_item]=="select") {
 						var eltValue = "";
+						var options = [];
+						if (window.app[sub_item+'Options']) {
+							options = window.app[sub_item+'Options'];
+						}
 						if (configTree) {
-							eltValue = configTree[sub_item];
+							for (var j=0; j<options.length; j++){
+								if (options[j]['value']==configTree[sub_item])
+									options[j]['selected'] = true;
+							}
 						}
 						var label = null;
 						if (program[sub_item]!="hidden"){
@@ -561,11 +598,7 @@ function configToForm(item,elt,id_prefix,configTree){
 								"name":id_prefix+"."+sub_item,
 								"caption": label,
 								"type": program[sub_item],
-								"options": [ { 
-									"value": eltValue,
-									"html":eltValue,
-									"checked":"checked"
-								}]
+								"options": options
 							});
 					}else{	
 						var eltValue = "";
@@ -614,7 +647,7 @@ function wrapErrorMessage(error) {
      return '<span class="ttc-validation-error">'+error+'</span>';
 }
 
-function fromBackendToFrontEnd(configFile, id) {
+function fromBackendToFrontEnd(type, object, submitCall) {
 	//alert("function called");
 	
 	$.dform.addType("addElt", function(option) {
@@ -667,14 +700,14 @@ function fromBackendToFrontEnd(configFile, id) {
 		
 	
 	var myform = {
-		"action": "javascript:saveFormOnServer()",
+		"action": submitCall,
 		"method": "post",
                 "elements": 
                 [	
                 	{
                 		"type":"hidden",
-                		"value": id,
-                		"name":"id"
+                		"value": (object) ?  object['_id'] : null,
+                		"name": type+"._id"
                 	},
                 	{
                         "type": "p",
@@ -682,7 +715,7 @@ function fromBackendToFrontEnd(configFile, id) {
                 ]
         };
         
-        configToForm("dialogue",myform, "dialogue", configFile);
+        configToForm(type, myform, type, object);
         
         myform["elements"].push({
                         "type": "submit",
