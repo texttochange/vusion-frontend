@@ -428,3 +428,32 @@
   margin-top: -8px;
 }
 
+.ttc-advanced-filter {
+    display: none;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+}
+
+.ttc-advanced-filter input{
+    font-size: 90%;
+    width: 75%;
+    padding:0.5%;
+}
+
+.ttc-advanced-filter div{
+    width: 30%;
+    margin: 0;
+    padding: 0.2em;
+}
+
+.ttc-action-link {
+    font-size: 120%;
+    color: #2C6877;
+}
+
+.ttc-action-link:Hover {
+    text-decoration: underline;
+    cursor: pointer;
+    color: grey;
+}
+

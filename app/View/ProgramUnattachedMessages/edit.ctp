@@ -5,10 +5,10 @@
 	<fieldset>
 	
 	<?php
-	        $options = array();
-	        $options['all participants'] = "all participants";
-	        echo "<div class='input-text'>";
-	        echo $this->Html->tag('label',__('Send To'));
+        $options = array();
+        $options['all participants'] = "all participants";
+        echo "<div class='input-text'>";
+        echo $this->Html->tag('label',__('Send To'));
 		echo $this->Form->select('to', $options);
 		echo "</div>";
 		echo $this->Form->input(__('content'), array('rows'=>5));

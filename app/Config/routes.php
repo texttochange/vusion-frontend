@@ -196,6 +196,30 @@
 		);
 	
 	Router::connect(
+		'/templates/:action/:id',
+		array(
+			'controller' => 'templates',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/templates/:action/*',
+		array(
+			'controller' => 'templates',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/templates/',
+		array(
+			'controller' => 'templates',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
 		'/',
 		array(
 			'controller' => 'programs',
