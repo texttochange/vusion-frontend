@@ -394,10 +394,9 @@
     height: 340px;
     min-height: 250px;
     overflow-y:auto;
-    width: 97%;
-    border-top-color: grey;
+    width: 100%;
+    border: 2px solid lightgrey;
     margin-bottom: 10px;
-    border-style: inset;
     padding: 1%;
 }
 
