@@ -2,7 +2,7 @@
 
 App::uses('AppController','Controller');
 App::uses('UnattachedMessage', 'Model');
-App::uses('ScriptHelper', 'Helper');
+App::uses('DialogueHelper', 'Helper');
 App::uses('Dialogue', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
@@ -34,7 +34,7 @@ class ProgramHomeController extends AppController
 
         $this->VumiSupervisord = new VumiSupervisord();
         
-        $this->ScriptHelper = new ScriptHelper();
+        $this->DialogueHelper = new DialogueHelper();
         
     }
 
@@ -57,7 +57,7 @@ class ProgramHomeController extends AppController
 
         foreach ($schedules as &$schedule) {
             if (isset($schedule['interaction-id'])) {
-                $interaction = $this->ScriptHelper->getInteraction(
+                $interaction = $this->DialogueHelper->getInteraction(
                     $activeInteractions,
                     $schedule['interaction-id']
                     );

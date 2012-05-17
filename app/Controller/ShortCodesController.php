@@ -87,7 +87,6 @@ class ShortCodesController extends AppController
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
-        return $shortcode;    
     }
     
     

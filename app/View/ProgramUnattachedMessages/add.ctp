@@ -2,7 +2,7 @@
 <ul class="ttc-actions">
     <li></li>
 </ul>
-<h3><?php echo __('Add Unattached Message'); ?></h3>
+<h3><?php echo __('Add Separate Message'); ?></h3>
 <?php echo $this->Form->create('UnattachedMessage');?>
 
 	<fieldset>
@@ -20,6 +20,6 @@
 		                                           addContentFormHelp();');
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit'));?>
+<?php echo $this->Form->end(__('Save'));?>
 
 <?php echo $this->Js->writeBuffer(); ?>

@@ -1,12 +1,13 @@
 # LANGUAGE translation of CakePHP Application
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2012-04-26 15:25+0000\n"
-"PO-Revision-Date: 2012-04-26 18:32+0300\n"
-"Last-Translator: Olivier Vernin <overnin@gmail.com>\n"
+"POT-Creation-Date: 2012-05-16 19:16+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -31,6 +32,26 @@ msgstr ""
 
 #: Controller/GroupsController.php:117
 msgid "Group was not deleted"
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:68
+msgid "Dialogue doesn't exist."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:83
+msgid "Dialogue activated."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:85
+msgid "Dialogue unknown reload the page and try again."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:87
+msgid "Please set the program settings then try again."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:160
+msgid "Message(s) being sent, should arrive shortly..."
 msgstr ""
 
 #: Controller/ProgramParticipantsController.php:56;89
@@ -62,12 +83,36 @@ msgstr ""
 msgid "Participant was not deleted"
 msgstr ""
 
-#: Controller/ProgramScriptsController.php:125
-msgid "Please set the program settings then try again."
+#: Controller/ProgramRequestsController.php:81
+msgid "Invalide Request"
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:95
+msgid "Invalid request"
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:99
+msgid "The request has been deleted."
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:104
+msgid "The request has not been deleted."
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:120
+msgid "Program shortcode has not been defined, please go to program settings."
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:134
+msgid "'%s' already used in same program in the '%s' dialogue."
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:155
+msgid "'%s' already used in a dialogue of '%s' program"
 msgstr ""
 
 #: Controller/ProgramSimulatorController.php:41
-msgid "The script id is not in the database, please choose one available."
+msgid "This Dialogue id is not in the database, please choose one available."
 msgstr ""
 
 #: Controller/ProgramUnattachedMessagesController.php:56;90
@@ -90,23 +135,23 @@ msgstr ""
 msgid "Message was not deleted"
 msgstr ""
 
-#: Controller/ProgramsController.php:78;129;160
+#: Controller/ProgramsController.php:88;139;170
 msgid "Invalid program"
 msgstr ""
 
-#: Controller/ProgramsController.php:94;133
+#: Controller/ProgramsController.php:104;143
 msgid "The program has been saved"
 msgstr ""
 
-#: Controller/ProgramsController.php:104;139
+#: Controller/ProgramsController.php:114;149
 msgid "The program could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/ProgramsController.php:163
+#: Controller/ProgramsController.php:173
 msgid "Program deleted"
 msgstr ""
 
-#: Controller/ProgramsController.php:169
+#: Controller/ProgramsController.php:179
 msgid "Program was not deleted"
 msgstr ""
 
@@ -138,7 +183,7 @@ msgstr ""
 msgid "The shortcode could not be saved."
 msgstr ""
 
-#: Controller/ShortCodesController.php:72;103
+#: Controller/ShortCodesController.php:72;102
 msgid "Invalid shortcode"
 msgstr ""
 
@@ -150,11 +195,11 @@ msgstr ""
 msgid "The shortcode could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/ShortCodesController.php:106
+#: Controller/ShortCodesController.php:105
 msgid "ShortCode deleted"
 msgstr ""
 
-#: Controller/ShortCodesController.php:114
+#: Controller/ShortCodesController.php:113
 msgid "ShortCode was not deleted"
 msgstr ""
 
@@ -377,24 +422,11 @@ msgstr ""
 #: View/Groups/edit.ctp:15
 #: View/Groups/index.ctp:10;44
 #: View/Groups/view.ctp:32
-#: View/ProgramHistory/index.ctp:64
-#: View/ProgramLogs/index.ctp:30
-#: View/ProgramParticipants/add.ctp:16
-#: View/ProgramParticipants/edit.ctp:15
-#: View/ProgramParticipants/import.ctp:27
-#: View/ProgramParticipants/index.ctp:23;61
-#: View/ProgramParticipants/view.ctp:51
-#: View/ProgramScripts/active.ctp:10
-#: View/ProgramScripts/draft.ctp:11
-#: View/ProgramSettings/edit.ctp:44
-#: View/ProgramSettings/view.ctp:13
-#: View/ProgramSimulator/simulate.ctp:38
-#: View/ProgramUnattachedMessages/add.ctp:23
-#: View/ProgramUnattachedMessages/edit.ctp:24
-#: View/ProgramUnattachedMessages/index.ctp:8;40
+#: View/ProgramParticipants/index.ctp:25
+#: View/ProgramRequests/index.ctp:10
+#: View/ProgramUnattachedMessages/index.ctp:12
 #: View/Programs/add.ctp:52
 #: View/Programs/edit.ctp:16
-#: View/Programs/index.ctp:9;45
 #: View/Programs/view.ctp:47
 #: View/ProgramsUsers/add.ctp:13
 #: View/ProgramsUsers/edit.ctp:14
@@ -428,8 +460,121 @@ msgid "Shortcodes Management"
 msgstr ""
 
 #: View/Elements/localization.ctp:4
-msgid "Date must be greater than or equal to {0}."
-msgstr "La date saisie est déjà passé."
+msgid "Scheduling time cannot be in the past {0}."
+msgstr ""
+
+#: View/Elements/localization.ctp:5
+msgid "Poor network connection."
+msgstr ""
+
+#: View/Elements/localization.ctp:6
+msgid "This field is required."
+msgstr ""
+
+#: View/Elements/localization.ctp:7
+msgid " has some invalid characters. Keywords must contain only numbers or letters separated by a comma."
+msgstr ""
+
+#: View/Elements/localization.ctp:8
+msgid "You cannot have a blank keyword."
+msgstr ""
+
+#: View/Elements/localization.ctp:9
+msgid " already used by the same script in another question."
+msgstr ""
+
+#: View/Elements/localization.ctp:13;14
+msgid "dialogue"
+msgstr ""
+
+#: View/Elements/localization.ctp:15
+msgid "keyword"
+msgstr ""
+
+#: View/Elements/localization.ctp:16
+#: View/ProgramHome/index.ctp:10
+#: View/ProgramUnattachedMessages/add.ctp:17
+#: View/ProgramUnattachedMessages/edit.ctp:14
+msgid "content"
+msgstr ""
+
+#: View/Elements/localization.ctp:17
+#: View/ProgramParticipants/view.ctp:32
+msgid "time"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:18
+msgid "Dialogues"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:25
+#: View/ProgramDialogues/index.ctp:4
+msgid "New Dialogue"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:49
+msgid "Active"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:58
+msgid "Draft"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:65
+#: View/ProgramDialogues/edit.ctp:19
+msgid "Activate"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:80
+#: View/ProgramRequests/index.ctp:4
+msgid "Requests"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:87
+msgid "New Requests"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:94
+#: View/ProgramUnattachedMessages/index.ctp:5
+msgid "Separate Messages"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:102
+msgid "New Message"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:133
+msgid "Participants"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:142
+#: View/ProgramParticipants/add.ctp:8
+#: View/ProgramParticipants/import.ctp:5
+#: View/ProgramParticipants/index.ctp:5
+msgid "Add Participant"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:151
+#: View/ProgramParticipants/add.ctp:5
+#: View/ProgramParticipants/index.ctp:6
+msgid "Import Participant(s)"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:162
+msgid "History"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:176
+msgid "Settings"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:185
+msgid "Logs"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:193
+msgid "Program List"
+msgstr ""
 
 #: View/Groups/add.ctp:2
 msgid "Add Group"
@@ -437,9 +582,8 @@ msgstr ""
 
 #: View/Groups/add.ctp:11
 #: View/Groups/edit.ctp:12
-#: View/ProgramParticipants/add.ctp:13
-#: View/ProgramParticipants/edit.ctp:12
-#: View/ProgramUnattachedMessages/add.ctp:20
+#: View/ProgramParticipants/add.ctp:17
+#: View/ProgramParticipants/edit.ctp:15
 #: View/ProgramUnattachedMessages/edit.ctp:21
 #: View/Programs/add.ctp:49
 #: View/Programs/edit.ctp:13
@@ -469,9 +613,10 @@ msgstr ""
 
 #: View/Groups/edit.ctp:18
 #: View/Groups/index.ctp:23
-#: View/ProgramParticipants/edit.ctp:18
-#: View/ProgramParticipants/index.ctp:40
-#: View/ProgramUnattachedMessages/index.ctp:18
+#: View/ProgramParticipants/edit.ctp:5
+#: View/ProgramParticipants/index.ctp:42
+#: View/ProgramRequests/index.ctp:34
+#: View/ProgramUnattachedMessages/index.ctp:22
 #: View/Programs/edit.ctp:19
 #: View/ProgramsUsers/edit.ctp:17
 #: View/ProgramsUsers/index.ctp:23
@@ -485,9 +630,9 @@ msgstr ""
 #: View/Groups/edit.ctp:18
 #: View/Groups/index.ctp:23
 #: View/Groups/view.ctp:35
-#: View/ProgramParticipants/edit.ctp:18
-#: View/ProgramParticipants/index.ctp:40
-#: View/ProgramUnattachedMessages/index.ctp:19
+#: View/ProgramParticipants/edit.ctp:5
+#: View/ProgramParticipants/index.ctp:42
+#: View/ProgramUnattachedMessages/index.ctp:23
 #: View/Programs/edit.ctp:19
 #: View/Programs/view.ctp:50
 #: View/ProgramsUsers/edit.ctp:17
@@ -505,7 +650,7 @@ msgid "Groups"
 msgstr ""
 
 #: View/Groups/index.ctp:21
-#: View/ProgramParticipants/index.ctp:38
+#: View/ProgramParticipants/index.ctp:40
 #: View/ProgramsUsers/index.ctp:21
 #: View/Users/index.ctp:25
 #: View/Users/view.ctp:82
@@ -513,9 +658,9 @@ msgid "View"
 msgstr ""
 
 #: View/Groups/index.ctp:22
-#: View/ProgramParticipants/index.ctp:39
-#: View/ProgramUnattachedMessages/index.ctp:17
-#: View/Programs/index.ctp:21
+#: View/ProgramParticipants/index.ctp:41
+#: View/ProgramRequests/index.ctp:33
+#: View/ProgramUnattachedMessages/index.ctp:21
 #: View/ProgramsUsers/index.ctp:22
 #: View/ShortCodes/index.ctp:17
 #: View/Users/index.ctp:26
@@ -524,10 +669,9 @@ msgid "Edit"
 msgstr ""
 
 #: View/Groups/index.ctp:31
-#: View/ProgramHistory/index.ctp:50
-#: View/ProgramParticipants/index.ctp:48
-#: View/ProgramUnattachedMessages/index.ctp:27
-#: View/Programs/index.ctp:31
+#: View/ProgramHistory/index.ctp:53
+#: View/ProgramParticipants/index.ctp:51
+#: View/ProgramUnattachedMessages/index.ctp:32
 #: View/ProgramsUsers/index.ctp:31
 #: View/ShortCodes/index.ctp:26
 #: View/UnmatchableReply/index.ctp:24
@@ -536,10 +680,9 @@ msgid "Page {:page} of {:pages}, showing {:current} records out of {:count} tota
 msgstr ""
 
 #: View/Groups/index.ctp:37
-#: View/ProgramHistory/index.ctp:56
-#: View/ProgramParticipants/index.ctp:54
-#: View/ProgramUnattachedMessages/index.ctp:33
-#: View/Programs/index.ctp:37
+#: View/ProgramHistory/index.ctp:59
+#: View/ProgramParticipants/index.ctp:57
+#: View/ProgramUnattachedMessages/index.ctp:38
 #: View/ProgramsUsers/index.ctp:37
 #: View/ShortCodes/index.ctp:32
 #: View/UnmatchableReply/index.ctp:31
@@ -548,10 +691,9 @@ msgid "previous"
 msgstr ""
 
 #: View/Groups/index.ctp:39
-#: View/ProgramHistory/index.ctp:58
-#: View/ProgramParticipants/index.ctp:56
-#: View/ProgramUnattachedMessages/index.ctp:35
-#: View/Programs/index.ctp:39
+#: View/ProgramHistory/index.ctp:61
+#: View/ProgramParticipants/index.ctp:59
+#: View/ProgramUnattachedMessages/index.ctp:40
 #: View/ProgramsUsers/index.ctp:39
 #: View/ShortCodes/index.ctp:34
 #: View/UnmatchableReply/index.ctp:33
@@ -606,156 +748,175 @@ msgstr ""
 msgid "Delete Group"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:24
+#: View/Layouts/default.ctp:78
+msgid "logout"
+msgstr ""
+
+#: View/Layouts/default.ctp:84
+msgid "admin"
+msgstr ""
+
+#: View/ProgramDialogues/edit.ctp:4
+msgid "Edit Dialogue"
+msgstr ""
+
+#: View/ProgramDialogues/edit.ctp:6
+msgid "Create Dialogue"
+msgstr ""
+
+#: View/ProgramDialogues/edit.ctp:10
+msgid "(editing the draft)"
+msgstr ""
+
+#: View/ProgramDialogues/edit.ctp:13
+#: View/ProgramSettings/edit.ctp:41
+#: View/ProgramUnattachedMessages/add.ctp:23
+#: View/Users/change_password.ctp:8
+msgid "Save"
+msgstr ""
+
+#: View/ProgramDialogues/edit.ctp:23
+msgid "Simulate"
+msgstr ""
+
+#: View/ProgramDialogues/edit.ctp:26
+#: View/ProgramScripts/active.ctp:5
+#: View/ProgramScripts/draft.ctp:5
+msgid "Test send all messages"
+msgstr ""
+
+#: View/ProgramDialogues/index.ctp:2
+msgid "Dialogue Index"
+msgstr ""
+
+#: View/ProgramDialogues/test_send_all_messages.ctp:4
+msgid "Send All Messages Of"
+msgstr ""
+
+#: View/ProgramDialogues/test_send_all_messages.ctp:18
+#: View/ProgramScripts/test_send_all_messages.ctp:12
+msgid "Send"
+msgstr ""
+
+#: View/ProgramHistory/index.ctp:7
 msgid "Program History"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:66
-#: View/ProgramLogs/index.ctp:32
-#: View/ProgramSettings/edit.ctp:46
-#: View/ProgramSettings/view.ctp:15
-#: View/ProgramSimulator/simulate.ctp:40
-#: View/ProgramUnattachedMessages/add.ctp:25
-#: View/ProgramUnattachedMessages/edit.ctp:26
-#: View/ProgramUnattachedMessages/index.ctp:42
-msgid "Back Homepage"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:2
-#: View/Programs/index.ctp:19
-msgid "Home"
-msgstr ""
-
 #: View/ProgramHome/index.ctp:4
-msgid "Status & Actions"
+msgid "Sending Next"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:6
-#: View/ProgramUnattachedMessages/index.ctp:2
-msgid "Unattached Messages"
+#: View/ProgramHome/index.ctp:7
+msgid "at"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:13
+#: View/ProgramHome/index.ctp:8
+#: View/ProgramParticipants/view.ctp:33
+msgid "type"
+msgstr ""
+
+#: View/ProgramHome/index.ctp:9
+msgid "to"
+msgstr ""
+
+#: View/ProgramHome/index.ctp:17
+msgid "Dialogue"
+msgstr ""
+
+#: View/ProgramHome/index.ctp:19
+msgid "Separate Msg"
+msgstr ""
+
+#: View/ProgramHome/index.ctp:23
+#: View/Programs/index.ctp:14
+msgid " participant(s)"
+msgstr ""
+
 #: View/ProgramLogs/index.ctp:4
 msgid "Program Logs"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:116
-msgid "Script Simulator"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:148
-#: View/ProgramParticipants/add.ctp:21
-#: View/ProgramParticipants/index.ctp:67
-msgid "Import Participant(s)"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:171
-msgid "Program Settings"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:180
-#: View/UnmatchableReply/index.ctp:40
-msgid "Back To Program List"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:189
-msgid "Sending Next"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:192
-msgid "at"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:193
-#: View/ProgramParticipants/view.ctp:30
-msgid "type"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:194
-msgid "to"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:195
-#: View/ProgramUnattachedMessages/add.ctp:14
-#: View/ProgramUnattachedMessages/edit.ctp:14
-msgid "content"
-msgstr ""
-
-#: View/ProgramHome/index.ctp:208
-msgid " participant(s)"
-msgstr ""
-
-#: View/ProgramParticipants/add.ctp:4
-#: View/ProgramParticipants/import.ctp:32
-#: View/ProgramParticipants/index.ctp:66
-msgid "Add Participant"
-msgstr ""
-
-#: View/ProgramParticipants/add.ctp:18
-#: View/ProgramParticipants/import.ctp:29
-#: View/ProgramParticipants/index.ctp:63
-msgid "Back To Program Home"
-msgstr ""
-
-#: View/ProgramParticipants/add.ctp:22
-#: View/ProgramParticipants/import.ctp:33
+#: View/ProgramParticipants/add.ctp:6
+#: View/ProgramParticipants/import.ctp:6
 msgid "View Participant(s)"
 msgstr ""
 
-#: View/ProgramParticipants/edit.ctp:4
-#: View/ProgramParticipants/view.ctp:53
+#: View/ProgramParticipants/edit.ctp:7
+#: View/ProgramParticipants/view.ctp:3
 msgid "Edit Participant"
 msgstr ""
 
-#: View/ProgramParticipants/edit.ctp:19
-msgid "List Participants"
-msgstr ""
-
-#: View/ProgramParticipants/import.ctp:12
+#: View/ProgramParticipants/import.ctp:16
 msgid "Upload"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:10
-#: View/ProgramParticipants/view.ctp:4
+#: View/ProgramParticipants/index.ctp:12
+#: View/ProgramParticipants/view.ctp:7
 msgid "phone"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:2
+#: View/ProgramParticipants/view.ctp:5
 msgid "Participant"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:9
+#: View/ProgramParticipants/view.ctp:12
 #: View/Programs/add.ctp:44
 msgid "name"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:25
+#: View/ProgramParticipants/view.ctp:28
 msgid "Participant's History"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:29
-msgid "time"
-msgstr ""
-
-#: View/ProgramParticipants/view.ctp:31
+#: View/ProgramParticipants/view.ctp:34
 msgid "message"
 msgstr ""
 
+#: View/ProgramRequests/add.ctp:5
+msgid "Add Request"
+msgstr ""
+
+#: View/ProgramRequests/edit.ctp:5
+msgid "Edit Request"
+msgstr ""
+
+#: View/ProgramRequests/index.ctp:7
+msgid "Keyword"
+msgstr ""
+
+#: View/ProgramRequests/index.ctp:8
+msgid "Responses"
+msgstr ""
+
+#: View/ProgramRequests/index.ctp:9
+msgid "Do"
+msgstr ""
+
+#: View/ProgramRequests/index.ctp:35
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
 #: View/ProgramScripts/activate_draft.ctp:2
-#: View/ProgramScripts/active.ctp:2
-#: View/ProgramScripts/draft.ctp:2
+#: View/ProgramScripts/active.ctp:8
+#: View/ProgramScripts/draft.ctp:7
 msgid "Script"
 msgstr ""
 
-#: View/ProgramScripts/active.ctp:12
-#: View/ProgramScripts/draft.ctp:13
-msgid "Program Homepage"
+#: View/ProgramScripts/active.ctp:3
+#: View/ProgramScripts/draft.ctp:3
+msgid "Save as draft"
 msgstr ""
 
-#: View/ProgramScripts/active.ctp:13
-#: View/ProgramScripts/draft.ctp:14
-msgid "Save as draft"
+#: View/ProgramScripts/index.ctp:4
+msgid "Scripts Index"
+msgstr ""
+
+#: View/ProgramScripts/index.ctp:100
+msgid "Script Simulator"
+msgstr ""
+
+#: View/ProgramScripts/test_send_all_messages.ctp:4
+msgid "Send All Messages To"
 msgstr ""
 
 #: View/ProgramSettings/edit.ctp:2
@@ -775,11 +936,6 @@ msgstr ""
 msgid "Timezone"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:41
-#: View/Users/change_password.ctp:8
-msgid "Save"
-msgstr ""
-
 #: View/ProgramSettings/view.ctp:2
 msgid "View Program Settings"
 msgstr ""
@@ -792,28 +948,26 @@ msgstr ""
 msgid "Send Message"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:2
-#: View/ProgramUnattachedMessages/edit.ctp:2
-msgid "Add Unattached Message"
+#: View/ProgramUnattachedMessages/add.ctp:5
+msgid "Add Separate Message"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:11
+#: View/ProgramUnattachedMessages/add.ctp:14
 #: View/ProgramUnattachedMessages/edit.ctp:11
 msgid "Send To"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:15
+#: View/ProgramUnattachedMessages/add.ctp:18
 #: View/ProgramUnattachedMessages/edit.ctp:15
 msgid "schedule"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:26
-#: View/ProgramUnattachedMessages/edit.ctp:27
-msgid "view Messages"
+#: View/ProgramUnattachedMessages/edit.ctp:2
+msgid "Edit Separate Message"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:43
-msgid "New Unattached Message"
+#: View/ProgramUnattachedMessages/index.ctp:3
+msgid "New Separate Message"
 msgstr ""
 
 #: View/Programs/add.ctp:39
@@ -840,33 +994,39 @@ msgid "Edit Program"
 msgstr ""
 
 #: View/Programs/index.ctp:2
+msgid "Create Program"
+msgstr ""
+
+#: View/Programs/index.ctp:3
 msgid "Programs"
 msgstr ""
 
-#: View/Programs/index.ctp:22
+#: View/Programs/index.ctp:14
+msgid " history(s)"
+msgstr ""
+
+#: View/Programs/index.ctp:14
+msgid " schedule(s)"
+msgstr ""
+
+#: View/Programs/index.ctp:20
+msgid "System Settings"
+msgstr ""
+
+#: View/Programs/index.ctp:21
 msgid "Archive"
 msgstr ""
 
-#: View/Programs/index.ctp:22
+#: View/Programs/index.ctp:21
 msgid "Are you sure you want to archive # %s?"
 msgstr ""
 
-#: View/Programs/index.ctp:47
-#: View/Programs/view.ctp:52
-#: View/ProgramsUsers/add.ctp:18
-#: View/ProgramsUsers/edit.ctp:20
-#: View/ProgramsUsers/index.ctp:48
-#: View/ProgramsUsers/view.ctp:29
-#: View/Users/add.ctp:24
-#: View/Users/edit.ctp:27
-#: View/Users/index.ctp:54
-#: View/Users/view.ctp:53;93
-msgid "New Program"
+#: View/Programs/index.ctp:28
+msgid "Recent Issues"
 msgstr ""
 
-#: View/Programs/index.ctp:48
-#: View/UnmatchableReply/index.ctp:2
-msgid "Unmatchable Replies"
+#: View/Programs/index.ctp:31
+msgid " unmatchable replies"
 msgstr ""
 
 #: View/Programs/view.ctp:2
@@ -893,6 +1053,18 @@ msgstr ""
 
 #: View/Programs/view.ctp:50
 msgid "Delete Program"
+msgstr ""
+
+#: View/Programs/view.ctp:52
+#: View/ProgramsUsers/add.ctp:18
+#: View/ProgramsUsers/edit.ctp:20
+#: View/ProgramsUsers/index.ctp:48
+#: View/ProgramsUsers/view.ctp:29
+#: View/Users/add.ctp:24
+#: View/Users/edit.ctp:27
+#: View/Users/index.ctp:54
+#: View/Users/view.ctp:53;93
+msgid "New Program"
 msgstr ""
 
 #: View/ProgramsUsers/add.ctp:4
@@ -977,6 +1149,14 @@ msgstr ""
 msgid "New ShortCode"
 msgstr ""
 
+#: View/UnmatchableReply/index.ctp:2
+msgid "Unmatchable Replies"
+msgstr ""
+
+#: View/UnmatchableReply/index.ctp:40
+msgid "Back To Program List"
+msgstr ""
+
 #: View/Users/add.ctp:2
 msgid "Add User"
 msgstr ""
@@ -1001,7 +1181,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: View/Users/login.ctp:1;6
+#: View/Users/login.ctp:3;7
 msgid "Login"
 msgstr ""
 
@@ -1021,29 +1201,22 @@ msgstr ""
 msgid "Related Programs"
 msgstr ""
 
-#: Model/Group.php:validation
-#: for field name
-#: Model/ProgramsUser.php:validation
-#: for field program_id
-#: Model/User.php:validation
-#: for field username;validation for field password
+#: Model/Group.php:validation for field name
+#: Model/ProgramsUser.php:validation for field program_id
+#: Model/User.php:validation for field username;validation for field password
 msgid "notempty"
 msgstr ""
 
-#: Model/ProgramsUser.php:validation
-#: for field user_id
-#: Model/User.php:validation
-#: for field group_id
+#: Model/ProgramsUser.php:validation for field user_id
+#: Model/User.php:validation for field group_id
 msgid "numeric"
 msgstr ""
 
-#: Model/User.php:validation
-#: for field email
+#: Model/User.php:validation for field email
 msgid "Invalid email address"
 msgstr ""
 
-#: Model/User.php:validation
-#: for field limited_program_access
+#: Model/User.php:validation for field limited_program_access
 msgid "boolean"
 msgstr ""
 

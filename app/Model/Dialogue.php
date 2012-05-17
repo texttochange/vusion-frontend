@@ -1,6 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
-App::uses('ScriptHelper', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 
 class Dialogue extends MongoModel
 {
@@ -17,7 +17,7 @@ class Dialogue extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        $this->scriptHelper = new ScriptHelper();
+        $this->DialogueHelper = new DialogueHelper();
     }
 
 
@@ -50,9 +50,9 @@ class Dialogue extends MongoModel
             }
         }
 
-        $this->data['Dialogue'] = $this->scriptHelper->objectToArray($this->data['Dialogue']);
+        $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
 
-        return $this->scriptHelper->recurseScriptDateConverter($this->data['Dialogue']);
+        return $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
     }
 
     
@@ -100,15 +100,18 @@ class Dialogue extends MongoModel
             );
     }
 
+
     public function getActiveInteractions()
     {
         $activeInteractions = array();
         $activeDialogues    = $this->getActiveDialogues();
         foreach ($activeDialogues as $activeDialogue) {
-            $activeInteractions = array_merge($activeInteractions, $activeDialogue['Dialogue']['interactions']);
+            if (isset($activeDialogue['Dialogue']['interactions']))
+                $activeInteractions = array_merge($activeInteractions, $activeDialogue['Dialogue']['interactions']);
         }
         return $activeInteractions;
     }
+
 
     public function getDialogues()
     {
@@ -153,7 +156,7 @@ class Dialogue extends MongoModel
 
     public function saveDialogue($dialogue)
     {
-        $dialogue = $this->scriptHelper->objectToArray($dialogue);
+        $dialogue = $this->DialogueHelper->objectToArray($dialogue);
 
          if (!isset($dialogue['Dialogue']['dialogue-id'])) {
             $this->create();
@@ -172,7 +175,7 @@ class Dialogue extends MongoModel
     public function useKeyword($keyword)
     {
         foreach ($this->getActiveDialogues() as $activeDialogue) {
-            $foundKeyword = $this->scriptHelper->hasKeyword($activeDialogue, $keyword);
+            $foundKeyword = $this->DialogueHelper->hasKeyword($activeDialogue, $keyword);
             if ($foundKeyword) {
                 return $foundKeyword;
             }
@@ -184,7 +187,7 @@ class Dialogue extends MongoModel
     public function getActiveDialogueUseKeyword($keyword)
     {
         foreach ($this->getActiveDialogues() as $activeDialogue) {
-            $foundKeyword = $this->scriptHelper->hasKeyword($activeDialogue, $keyword);
+            $foundKeyword = $this->DialogueHelper->hasKeyword($activeDialogue, $keyword);
             if ($foundKeyword) {
                 return $activeDialogue;
             }

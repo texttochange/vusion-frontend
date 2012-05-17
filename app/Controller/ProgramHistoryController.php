@@ -2,7 +2,7 @@
 
 App::uses('AppController','Controller');
 App::uses('History','Model');
-App::uses('ScriptHelper', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 
 class ProgramHistoryController extends AppController
 {
@@ -20,7 +20,7 @@ class ProgramHistoryController extends AppController
         
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->History        = new History($options);
-        $this->scriptHelper   = new ScriptHelper();
+        $this->scriptHelper   = new DialogueHelper();
     }
 
 

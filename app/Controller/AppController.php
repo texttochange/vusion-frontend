@@ -3,6 +3,7 @@ App::uses('Controller', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Dialogue', 'Model');
+App::uses('Request', 'Model');
 
 class AppController extends Controller
 {
@@ -73,6 +74,9 @@ class AppController extends Controller
             
             $dialogueModel = new Dialogue(array('database' => $databaseName));
             $dialogues = $dialogueModel->getActiveAndDraft();
+            $requestModel = new Request(array('database' => $databaseName));
+            $requests = $requestModel->find('all');
+
             $redis = new Redis();
             $redis->connect('127.0.0.1');
             
@@ -80,7 +84,7 @@ class AppController extends Controller
             if ($this->_hasProgramLogs($redis,$programUrl))
                 $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
             
-            $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates'));
+            $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
         }
         $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
     }

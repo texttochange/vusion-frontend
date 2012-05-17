@@ -1,5 +1,5 @@
 <div class="unattached_messages form">
-<h3><?php echo __('Edit Unattached Message'); ?></h3>
+<h3><?php echo __('Edit Separate Message'); ?></h3>
 <?php echo $this->Form->create('UnattachedMessage');?>
 
 	<fieldset>
