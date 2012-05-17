@@ -579,8 +579,15 @@ function configToForm(item,elt,id_prefix,configTree){
 						}
 					}else if (program[sub_item]=="select") {
 						var eltValue = "";
+						var options = [];
+						if (window.app[sub_item+'Options']) {
+							options = window.app[sub_item+'Options'];
+						}
 						if (configTree) {
-							eltValue = configTree[sub_item];
+							for (var j=0; j<options.length; j++){
+								if (options[j]['value']==configTree[sub_item])
+									options[j]['selected'] = true;
+							}
 						}
 						var label = null;
 						if (program[sub_item]!="hidden"){
@@ -591,11 +598,7 @@ function configToForm(item,elt,id_prefix,configTree){
 								"name":id_prefix+"."+sub_item,
 								"caption": label,
 								"type": program[sub_item],
-								"options": [ { 
-									"value": eltValue,
-									"html":eltValue,
-									"checked":"checked"
-								}]
+								"options": options
 							});
 					}else{	
 						var eltValue = "";
