@@ -83,8 +83,9 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $shortCodes->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls('1','1','1'));	    
- 
+            ->will($this->onConsecutiveCalls('1','1','1'));	   
+            
+        return $shortCodes;
     }
 
 
@@ -128,7 +129,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 
     public function testEdit()
     {
-        $this->mockProgramAccess();
+
+        $shortCodes = $this->mockProgramAccess();
 
         $shortcodes = array(
             'ShortCodes' => array(
@@ -150,9 +152,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
                 )
             )
         ));
-        //print_r($this->result);
-        $this->assertEquals(8383, $this->result['ShortCodes']['shortcode']);
-        
+        $this->assertEquals(8383, $shortCodes->data['ShortCodes']['shortcode']);
     }
 
 

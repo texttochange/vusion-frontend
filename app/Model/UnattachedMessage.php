@@ -1,6 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
-App::uses('ScriptHelper', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 /**
  * UnattachedMessage Model
  *
@@ -17,19 +17,19 @@ class UnattachedMessage extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);	    
-        $this->scriptHelper = new ScriptHelper();
+        $this->DialogueHelper = new DialogueHelper();
     }
 
 
     public function beforeValidate()
     {
-    	if ($this->scriptHelper->validateDate($this->data['UnattachedMessage']['schedule']))
+    	if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['schedule']))
             return true;
 
-        if (!$this->scriptHelper->validateDateFromForm($this->data['UnattachedMessage']['schedule']))
+        if (!$this->DialogueHelper->validateDateFromForm($this->data['UnattachedMessage']['schedule']))
             return false;
 
-        $this->data['UnattachedMessage']['schedule'] = $this->scriptHelper->convertDateFormat($this->data['UnattachedMessage']['schedule']);
+        $this->data['UnattachedMessage']['schedule'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['schedule']);
         return true;    
     }
     

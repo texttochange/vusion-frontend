@@ -1,9 +1,9 @@
 <div class="unattached_messages form">
-    <ul class="ttc-actions">
-        <li></li>
-    </ul>
-    <h3><?php echo __('Add Unattached Message'); ?></h3>
-    <?php echo $this->Form->create('UnattachedMessage');?>
+<ul class="ttc-actions">
+    <li></li>
+</ul>
+<h3><?php echo __('Add Separate Message'); ?></h3>
+<?php echo $this->Form->create('UnattachedMessage');?>
 
 	<fieldset>	
 	<?php
@@ -19,6 +19,6 @@
 		                                           addContentFormHelp();');
 	?>
 	</fieldset>
-	<?php echo $this->Form->end(__('Submit'));?>
+	<?php echo $this->Form->end(__('Save'));?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

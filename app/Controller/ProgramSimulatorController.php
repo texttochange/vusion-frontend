@@ -87,7 +87,7 @@ class ProgramSimulatorController extends AppController
          while($this->VumiRabbitMQ->getMessageFrom('simulator.outbound'))
              continue;
 
-         $this->VumiRabbitMQ->sendMessageToCreateWorker('simulator', 'simulator', 'simulator.disptacher');
+         $this->VumiRabbitMQ->sendMessageToCreateWorker('simulator', 'simulator', 'simulator.disptacher', '10');
          $this->VumiRabbitMQ->sendMessageToUpdateSchedule('simulator');
     }
 

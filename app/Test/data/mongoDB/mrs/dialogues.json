@@ -1,0 +1,1 @@
+{ "activated" : 1, "name" : "Welcome", "created" : { "$date" : 1332329425915 }, "modified" : { "$date" : 1332333038746 }, "interactions" : [ { "type-interaction" : "question-answer", "content" : "How do you feel", "keyword" : "FEEL", "type-question" : "close-question", "answers" : [ { "choice" : "Good" }, { "choice" : "Bad" } ], "interaction-id" : "2" } ], "dialogue-id" : "1" }

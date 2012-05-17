@@ -2,6 +2,7 @@
 App::uses('AppController', 'Controller');
 App::uses('Dialogue', 'Model');
 App::uses('Program', 'Model');
+App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
@@ -26,6 +27,7 @@ class ProgramDialoguesController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->Request        = new Request($options);
         $this->VumiRabbitMQ   = new VumiRabbitMQ();
     }
 
@@ -97,7 +99,7 @@ class ProgramDialoguesController extends AppController
         if (!$shortCode) {
             $this->set('result', array(
                     'status'=>'fail', 
-                    'message' => 'Program shortcode has not been defined, please go to program settings'
+                    'message' => __('Program shortcode has not been defined, please go to program settings.')
                     ));
             return;
         }
@@ -112,10 +114,23 @@ class ProgramDialoguesController extends AppController
             $this->set(
                 'result', array(
                     'status'=>'fail', 
-                    'message'=>$keywordToValidate.' already used in same program by: '.$dialogueUsingKeyword['Dialogue']['name'])
+                    'message'=> __("'%s' already used in dialogue '%s' of the same program.", $keywordToValidate, $dialogueUsingKeyword['Dialogue']['name'])
+                    )
                 );
             return;
             }
+
+        /**Is the keyword used by request in the same program*/
+        $foundKeyword = $this->Request->find('keyword', array('keywords'=> $keywordToValidate));
+        if ($foundKeyword) {
+            $this->set(
+                'result', array(
+                    'status'=>'fail', 
+                    'message'=> __("'%s' already used by a request of the same program.", $foundKeyword)
+                    )
+                );
+            return;
+        }
 
         /**Is the keyword used by another program*/
         $programs = $this->Program->find(
@@ -133,7 +148,19 @@ class ProgramDialoguesController extends AppController
                     $this->set(
                         'result', array(
                             'status'=>'fail', 
-                            'message'=>$foundKeyword.' already used by: ' . $program['Program']['name'])
+                            'message'=>__("'%s' already used by a dialogue of program '%s'.", $foundKeyword, $program['Program']['name'])
+                            )
+                        );
+                    return;
+                }
+                $requestModel = new Request(array('database'=>$program['Program']['database']));
+                $foundKeyword = $requestModel->find('keyword', array('keywords'=> $keywordToValidate));
+                if ($foundKeyword) {
+                    $this->set(
+                        'result', array(
+                            'status'=>'fail', 
+                            'message'=> __("'%s' already used by a request of program '%s'.", $foundKeyword, $program['Program']['name'])
+                            )
                         );
                     return;
                 }

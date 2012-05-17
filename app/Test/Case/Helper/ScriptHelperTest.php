@@ -1,8 +1,8 @@
 <?php
 
-App::uses('ScriptHelper', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 
-class ScriptHelperTestCase extends CakeTestCase
+class DialogueHelperTestCase extends CakeTestCase
 {
     protected function getOneScript($keyword)
     {
@@ -41,27 +41,27 @@ class ScriptHelperTestCase extends CakeTestCase
     
     public function testHasKeyword()
     {
-        $scriptHelper = new ScriptHelper();
+        $DialogueHelper = new DialogueHelper();
         $script = array('keyword'=>'keyword');
-        $this->assertEquals($script['keyword'],$scriptHelper->hasKeyword($script, "keyword"));
+        $this->assertEquals($script['keyword'],$DialogueHelper->hasKeyword($script, "keyword"));
         
         $script = $this->getOneScript('keyword');
         $this->assertEquals(
             $script['Script']['script']['dialogues'][0]['interactions'][0]['keyword'],
-            $scriptHelper->hasKeyword($script, "feel")
+            $DialogueHelper->hasKeyword($script, "feel")
         );
         
         $script = $this->getOneScript('keyword');
         $this->assertEquals(
             $script['Script']['script']['dialogues'][0]['interactions'][1]['keyword'],
-            $scriptHelper->hasKeyword($script, "keyword")
+            $DialogueHelper->hasKeyword($script, "keyword")
         );
     }
     
     
     public function testHasNoMatchingAnswers()
     {
-        $scriptHelper = new ScriptHelper();
+        $DialogueHelper = new DialogueHelper();
         $script = array('keyword'=>'keyword',
         	'answers'=> array(
         	    0 => array('choice' => 'Bad'),
@@ -70,38 +70,46 @@ class ScriptHelperTestCase extends CakeTestCase
         );
         
         $status = array('message-content'=>'keyword Good');
-        $this->assertFalse($scriptHelper->hasNoMatchingAnswers($script, $status));
+        $this->assertFalse($DialogueHelper->hasNoMatchingAnswers($script, $status));
                 
         $status = array('message-content'=>'keyword Goo');
-        $this->assertTrue($scriptHelper->hasNoMatchingAnswers($script, $status));
+        $this->assertTrue($DialogueHelper->hasNoMatchingAnswers($script, $status));
         
         $script = $this->getOneScript('keyword');
         $status = array('message-content'=>'keyword Bad');
-        $this->assertFalse($scriptHelper->hasNoMatchingAnswers($script, $status));
+        $this->assertFalse($DialogueHelper->hasNoMatchingAnswers($script, $status));
         
         $status = array('message-content'=>'keyword 2');
-        $this->assertFalse($scriptHelper->hasNoMatchingAnswers($script, $status));
+        $this->assertFalse($DialogueHelper->hasNoMatchingAnswers($script, $status));
     }
 
     public function testGetInteraction()
     {
-        $scriptHelper = new ScriptHelper();
+        $DialogueHelper = new DialogueHelper();
         $script = $this->getOneScript('keyword');
         $this->assertEqual(
             $script['Script']['script']['dialogues'][0]['interactions'][0],	
-            $scriptHelper->getInteraction($script, "script.dialogues[0].interactions[0]")
+            $DialogueHelper->getInteraction($script, "script.dialogues[0].interactions[0]")
             );
         
         $this->assertEqual(
             $script['Script']['script']['dialogues'][0]['interactions'][1],	
-            $scriptHelper->getInteraction($script, "script.dialogues[0].interactions[1]")
+            $DialogueHelper->getInteraction($script, "script.dialogues[0].interactions[1]")
             );
         
         $this->assertEqual(
             array(),	
-            $scriptHelper->getInteraction($script, "other")
+            $DialogueHelper->getInteraction($script, "other")
             );
+    }
 
+    public function testGetRequestKeywordToValidate()
+    {
+        $DialogueHelper = new DialogueHelper();
+        $requestKeywords = "www, www join, ww";
+        $this->assertEqual('www, www, ww', 
+            $DialogueHelper->getRequestKeywordToValidate($requestKeywords)
+            );
 
     }
     

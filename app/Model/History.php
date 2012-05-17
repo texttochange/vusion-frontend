@@ -1,6 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
-App::uses('ScriptHelper', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 /**
  * Program Model
  *
@@ -31,7 +31,7 @@ class History extends MongoModel
     {
     	    parent::__construct($id, $table, $ds);
     	    
-    	    $this->scriptHelper = new ScriptHelper();
+    	    $this->DialogueHelper = new DialogueHelper();
     }
     
     
