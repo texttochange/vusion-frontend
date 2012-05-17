@@ -93,7 +93,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $this->Templates->Template->create();
         $this->Templates->Template->save(array(
             'name' => 'example',
-            'translation' => 'type KEYWORD'
+            'template' => 'type KEYWORD'
             ));
         
         $this->testAction("/templates/index");
@@ -108,7 +108,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $templates = array(
             'Templates'=>array(
                 'name'=>'example',
-                'translation'=>'type KEYWORD'
+                'template'=>'type KEYWORD'
                 )
             );
         $this->testAction("/templates/add", array(
@@ -125,7 +125,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $newtemplates = array(
             'Templates'=>array(
                 'name'=>'example',
-                'translation'=>'type KEYWORD'
+                'template'=>'type KEYWORD'
                 )
             );
         $this->Templates->Template->create();
@@ -136,7 +136,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
             'data'=>array(
                 'Templates'=>array(
                     'name'=>'example one',
-                    'translation'=>'type KEYWORD here'
+                    'template'=>'type KEYWORD here'
                     )
                 )
             ));
@@ -150,7 +150,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $templates = array(
             'Templates'=>array(
                 'name'=>'example',
-                'translation'=>'type KEYWORD'
+                'template'=>'type KEYWORD'
                 )
             );
         $this->Templates->Template->create();
