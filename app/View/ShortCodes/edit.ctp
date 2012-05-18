@@ -11,21 +11,19 @@
 		$countries=array();
 		$count = 0;
 		$options = array();
-		$optionscode = array();
 		while(!feof($importedCountries)){
 		   $countries[] = fgets($importedCountries);
 		   if($count > 0 && $countries[$count]){
 		   $countries[$count] = str_replace("\n", "", $countries[$count]);
 		   $explodedLine = explode(",", $countries[$count]);
-		   $options[$explodedLine[0]] = $explodedLine[0];
-		   $optionscode[$explodedLine[1]] = $explodedLine[0];
+		   $options[trim($explodedLine[0])] = trim($explodedLine[0]);
 		   }
 		   $count++;		   
 		}
 	
 		echo $this->Html->tag('label',__('Country'));
 		echo $this->Form->select('country', $options, array('id'=> 'country'));
-		$this->Js->get('#country')->event('change', '		       
+		$this->Js->get('#country')->event('change', '	       
 		       $("#internationalprefix").val(getCountryCodes($("select option:selected").text()));
 		       ');
 	?>
@@ -43,6 +41,8 @@
 </div>
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
-	
+	<ul>
+		<li><?php echo $this->Html->link(__('View ShortCodes'), array('action' => 'index')); ?></li>
+	</ul>	
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

@@ -1,7 +1,9 @@
-<div>
-  <div class='Program Requests index'>
-	<div class='ttc-info'>
+<div class='Program Requests index'>
+	<ul class="ttc-actions">
+		<li><?php echo $this->Html->link(__('New Request'), array('program'=>$programUrl, 'action' => 'add')); ?></li>
+	</ul>	
 	<h3><?php echo __('Requests');?></h3>
+	<div class='ttc-display-area'>
 	<table cellpadding="0" cellspacing="0">
 		<tr>
 			<th><?php echo __('Keyword');?></th>
@@ -37,8 +39,7 @@
 	</tr>
 	<?php endforeach; ?>
 	</table>
-	</div>
-	
-  </div>
+	</div>	
+</div>
 	
 <?php echo $this->Js->writeBuffer(); ?>

@@ -33,4 +33,5 @@
 	        'setInterval(function(){pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programUrl,'action'=>'receive.json')).'")}, 3000);');
 	    }
        ?>
+</div>
 <?php echo $this->Js->writeBuffer(); ?>

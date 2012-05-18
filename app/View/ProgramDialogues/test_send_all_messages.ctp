@@ -1,4 +1,3 @@
-<div>
     <div class="test form">
         <?php
         echo $this->Html->tag('h3', __('Send All Messages Of'));
