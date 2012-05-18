@@ -1,0 +1,5 @@
+<p>Re-type the text below in the Template box while replacing text in black with its translation in the language being created.Maintain the rest of the words and characters in their case and position</p>
+Example:<br />
+<span style="color:red">QUESTION<br />ANSWERS<br /></span>
+To Reply, type <span style="color:red">KEYWORD </span>&lt;space&gt;&lt;Answer Nr&gt; &amp;
+send to <span style="color:red">SHORTCODE</span>
