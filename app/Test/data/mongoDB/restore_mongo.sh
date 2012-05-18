@@ -11,8 +11,11 @@ main_database=('vusion')
 #general tables
 main_tables=('shortcodes' 'unmatchable_reply')
 
-#program specific
+#program specific database
 specific_databases=('m4h' 'mrs' 'wiki')
+
+#program specific tables
+specific_tables=('participants' 'dialogues' 'schedules' 'history' 'program_settings' 'requests')
 
 for main_table in ${main_tables[@]}
 do
@@ -22,15 +25,9 @@ done
 
 for database_name in ${specific_databases[@]}
 do
-	echo $path/$database_name/participants.json
-	mongoimport -drop -d $database_name -c participants $path/$database_name/participants.json
-	echo /$database_name/scripts.json
-	mongoimport -drop -d $database_name -c dialogues $path/$database_name/dialogues.json
-	echo /$database_name/schedules.json
-	mongoimport -drop -d $database_name -c schedules $path/$database_name/schedules.json
-	echo /$database_name/history.json
-	mongoimport -drop -d $database_name -c history $path/$database_name/history.json
-	echo /$database_name/program_settings.json
-	mongoimport -drop -d $database_name -c program_settings $path/$database_name/program_settings.json
-	
+	for table_name in ${specific_tables[@]}
+	do
+		echo $path/$database_name/$table_name.json
+		mongoimport -drop -d $database_name -c $table_name $path/$database_name/$table_name.json
+	done	
 done
