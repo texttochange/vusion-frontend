@@ -59,11 +59,10 @@ class DialogueTestCase extends CakeTestCase
         $saveActiveFirstVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, $saveActiveFirstVersion['Dialogue']['activated']);
         
-        $data['Dialogue']['dialogue-id'] = $saveDraftFirstVersion['Dialogue']['dialogue-id'];
-        $this->Dialogue->saveDialogue($data);
+        $this->Dialogue->saveDialogue($saveActiveFirstVersion);
         $this->assertEquals(2, $this->Dialogue->find('count'));
         
-        $this->Dialogue->saveDialogue($data);
+        $this->Dialogue->saveDialogue($saveActiveFirstVersion);
         $this->assertEquals(2, $this->Dialogue->find('count'));
         
         $saveActiveSecondVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
@@ -103,7 +102,7 @@ class DialogueTestCase extends CakeTestCase
         $this->Dialogue->makeActive($saveActiveOtherDialogue['Dialogue']['_id']);
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
         $this->assertEquals($saveActiveOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']);
-       
+
     }
 
 
@@ -234,5 +233,6 @@ class DialogueTestCase extends CakeTestCase
             $dialogueOne['Dialogue']['interactions'][1]['interaction-id']);
         $this->assertEquals('id not to be removed', isset($dialogueOne['Dialogue']['interactions'][2]['interaction-id']));      
     }
+
 
 }

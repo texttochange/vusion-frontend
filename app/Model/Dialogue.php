@@ -168,6 +168,9 @@ class Dialogue extends MongoModel
         if ($draft) {
             $this->id                    = $draft[0]['Dialogue']['_id'];
             $dialogue['Dialogue']['_id'] = $draft[0]['Dialogue']['_id'];
+        } else {
+            unset($dialogue['Dialogue']['_id']);
+            $dialogue['Dialogue']['activated'] = 0;
         }
         return $this->save($dialogue);
     }
