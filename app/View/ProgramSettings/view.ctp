@@ -8,5 +8,5 @@
             }
         ?>
 </dl>      
-
+</div>
 <?php echo $this->Js->writeBuffer(); ?>

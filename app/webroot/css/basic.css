@@ -117,8 +117,10 @@
 
 .ttc-actions {
     float: right;
-    padding: 3px;
+    padding: 3px 0px 3px 3px;
     margin-top: -8px;
+    margin-left: 0;
+    margin-right: -25px;
     width: 600px;
 }   
 
@@ -141,7 +143,7 @@
 .ttc-info{
     border: 0;
     float: right;
-    padding: 10px 2%;
+    padding: 0 2% 10px 2%;
     width: 98%;    
     height: 390px;
 }
@@ -180,12 +182,13 @@
 
 .ttc-filter {
 	text-align: right;
-	width: 100%;
+	width: 102.78%;
 }
 
 .ttc-filter form {
 	float: right;
 	margin-right: 2px;
+	padding-bottom: 10px;
 }
 
 .ttc-program-header {
@@ -311,6 +314,7 @@
 .ttc-navigation-menu {
 	float: left;
 	width: 200px;
+	padding-top: 10px;
 }
 
 .ttc-navigation-menu a {
@@ -387,9 +391,13 @@
 }
 
 .ttc-display-area {
-    height: 100%;
+    height: 340px;
+    min-height: 250px;
     overflow-y:auto;
     width: 100%;
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;
+    padding: 1%;
 }
 
 .ttc-dialogue {

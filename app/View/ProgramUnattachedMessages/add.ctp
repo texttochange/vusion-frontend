@@ -5,8 +5,7 @@
 <h3><?php echo __('Add Separate Message'); ?></h3>
 <?php echo $this->Form->create('UnattachedMessage');?>
 
-	<fieldset>
-	
+	<fieldset>	
 	<?php
         $otions = array();
         $options['all participants'] = "all participants";
@@ -20,6 +19,6 @@
 		                                           addContentFormHelp();');
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Save'));?>
-
+	<?php echo $this->Form->end(__('Save'));?>
+</div>
 <?php echo $this->Js->writeBuffer(); ?>

@@ -49,6 +49,6 @@
 			<?php endforeach; ?>
 			</table>
 
-
+</div>
 
 

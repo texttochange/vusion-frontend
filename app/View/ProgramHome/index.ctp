@@ -1,6 +1,5 @@
-<div>
-  <div class='Program Home index'>
-	<div class='ttc-info'>
+<div class='Program Home index'>
+  <div class='ttc-info'>
 	<h3><?php echo __('Sending Next');?></h3>
 	<table cellpadding="0" cellspacing="0">
 		<tr>
@@ -25,8 +24,7 @@
 	</tr>
 	<?php endforeach; ?>
 	</table>
-	</div>
-	
-  </div>
+  </div>	
+</div>
 	
 <?php echo $this->Js->writeBuffer(); ?>

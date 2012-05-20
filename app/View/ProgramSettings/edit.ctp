@@ -39,5 +39,5 @@
         </div>
     </fieldset>
 <?php echo $this->Form->end(__('Save'));?>
-
+</div>
 <?php echo $this->Js->writeBuffer(); ?>

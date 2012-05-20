@@ -1,5 +1,3 @@
-<div>
-	
 <div class="participants index">
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
