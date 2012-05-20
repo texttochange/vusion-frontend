@@ -17,7 +17,7 @@
                     );
             }
         }
-        $this->Js->set('enroleOptions', $dialogueOptions);
+        $this->Js->set('enrollOptions', $dialogueOptions);
 	?>
 	</div>
 </div>

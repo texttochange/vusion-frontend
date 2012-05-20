@@ -25,8 +25,10 @@ var program = {"script": [
 	"country": "text",
 	"dialogues": ["add-dialogue"],
 	"add-dialogue":"button",
-	"dialogue": ["name","interactions","dialogue-id"],
-	"dialogue-id": "hidden",	
+	"dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
+	"dialogue-id": "hidden",
+	"auto-enrollment": "select",
+	"auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],	
 	"interactions":["add-interaction"],
 	"interaction":["radio-type-schedule", "radio-type-interaction","interaction-id"],
 	"interaction-id":"hidden",
@@ -64,12 +66,12 @@ var program = {"script": [
 	"add-action":"button",
 	"add-feedback":"button",
 	"action":["radio-type-action"],
-	"type-action": {"optin": "Opt-in", "optout": "Opt-out", "enrolling":"Enrole in an active dialogue",  "tagging":"Tag participant"},
+	"type-action": {"optin": "Opt-in", "optout": "Opt-out", "enrolling":"Enroll in an active dialogue",  "tagging":"Tag participant"},
 	"choice":"text",
 	"tagging":["tag"],
 	"tag":"text",
-	"enrolling":["enrole"],
-	"enrole":"select",
+	"enrolling":["enroll"],
+	"enroll":"select",
 	"add-request-reply":'button',
 	"request-reply":["keyword","add-feedback","radio-type-action"],
 	"id":"text",
@@ -580,8 +582,10 @@ function configToForm(item,elt,id_prefix,configTree){
 					}else if (program[sub_item]=="select") {
 						var eltValue = "";
 						var options = [];
-						if (window.app[sub_item+'Options']) {
+						if (window.app && window.app[sub_item+'Options']) {
 							options = window.app[sub_item+'Options'];
+						} else {
+							options = program[sub_item+'-options'];
 						}
 						if (configTree) {
 							for (var j=0; j<options.length; j++){
