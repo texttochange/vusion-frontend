@@ -38,7 +38,17 @@
             $this->Js->each('$(this).buildTtcForm("dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
         else
         $this->Js->each('$(this).buildTtcForm("dialogue", null, "javascript:saveFormOnServer()")', true);
-	?>
+        $dialogueOptions = array();
+        foreach($dialogues as $dialogue) {
+            if ($dialogue['Active']) {
+                $dialogueOptions[] = array(
+                    'value' => $dialogue['Active']['dialogue-id'],
+                    'html' => $dialogue['Active']['name']
+                    );
+            }
+        }
+        $this->Js->set('enrollOptions', $dialogueOptions);
+    ?>
 	</div>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
