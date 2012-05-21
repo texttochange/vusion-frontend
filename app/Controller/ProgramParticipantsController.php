@@ -63,7 +63,10 @@ class ProgramParticipantsController extends AppController
                     'action' => 'index'
                     ));
             } else {
-                $this->Session->setFlash(__('The participant could not be saved.'));
+                $this->Session->setFlash(__('The participant could not be saved.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         }        
     }
@@ -92,7 +95,10 @@ class ProgramParticipantsController extends AppController
                 );
                 $this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         } else {
             $this->request->data = $this->Participant->read(null, $id);
@@ -129,7 +135,10 @@ class ProgramParticipantsController extends AppController
                     )
                 );
         }
-        $this->Session->setFlash(__('Participant was not deleted'));
+        $this->Session->setFlash(__('Participant was not deleted'), 
+                'default',
+                array('class' => "message failure")
+                );
         $this->redirect(
             array(
                 'program' => $programUrl,
@@ -172,7 +181,10 @@ class ProgramParticipantsController extends AppController
                 $ext      = end(explode('.', $fileName));
 
                 if (!($ext == 'csv') and !($ext == 'xls') and !($ext == 'xlsx')) {
-                    $this->Session->setFlash('This file format is not supported');
+                    $this->Session->setFlash(__('This file format is not supported'), 
+                        'default',
+                        array('class' => "message failure")
+                        );
                     return;
                 }
 

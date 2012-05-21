@@ -140,6 +140,10 @@
     font-weight: normal;
 }
 
+.ttc-actions form{
+    margin: 0;
+}
+
 .ttc-info{
     border: 0;
     float: right;

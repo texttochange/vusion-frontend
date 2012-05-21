@@ -50,7 +50,10 @@ class TemplatesController extends AppController
                     'action' => 'index'
                     ));
             } else {
-                $this->Session->setFlash(__('The template could not be saved.'));
+                $this->Session->setFlash(__('The template could not be saved.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         }
     }
@@ -63,12 +66,12 @@ class TemplatesController extends AppController
         
         $this->Template->id = $id;
         if (!$this->Template->exists()) {
-            throw new NotFoundException(__('Invalid template') . $id);
+            throw new NotFoundException(__('Invalid template.') . $id);
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Template->save($this->request->data)) {
                 $template = $this->request->data;
-                $this->Session->setFlash(__('The template has been saved'),
+                $this->Session->setFlash(__('The template has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
@@ -76,7 +79,10 @@ class TemplatesController extends AppController
                     'action' => 'index'
                     ));
             } else {
-                $this->Session->setFlash(__('The template could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The template could not be saved. Please, try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         } else {
             $this->request->data = $this->Template->read(null, $id);
@@ -93,10 +99,10 @@ class TemplatesController extends AppController
         }
         $this->Template->id = $id;
         if (!$this->Template->exists()) {
-            throw new NotFoundException(__('Invalid template') . $id);
+            throw new NotFoundException(__('Invalid template.') . $id);
         }
         if ($this->Template->delete()) {
-            $this->Session->setFlash(__('Template deleted'),
+            $this->Session->setFlash(__('Template deleted.'),
                 'default',
                 array('class'=>'message success')
             );
@@ -104,7 +110,10 @@ class TemplatesController extends AppController
                 'action' => 'index'
                 ));
         }
-        $this->Session->setFlash(__('Template was not deleted'));
+        $this->Session->setFlash(__('Template was not deleted.'), 
+                'default',
+                array('class' => "message failure")
+                );
         $this->redirect(array('controller' => 'templates',
                 'action' => 'index'
                 ));

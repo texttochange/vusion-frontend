@@ -370,7 +370,7 @@ form .submit input[type=submit] {
 	border-color: #2d6324;
 	color: #fff;
 	text-shadow: rgba(0, 0, 0, 0.5) 0px -1px 0px;
-	padding: 8px 10px;
+	padding: 4px 5px;
 }
 form .submit input[type=submit]:hover {
 	background: #5BA150;

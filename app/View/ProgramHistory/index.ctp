@@ -1,8 +1,20 @@
 <div class="status index">    
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->link('Export CSV', array('program' => $programUrl, 'action' => 'export.csv')); ?></li>
-		<li><?php echo $this->Html->link('Export Raw CSV', array('program' => $programUrl, 'action' => 'index.csv')); ?></li>
-		<li><?php echo $this->Html->link('Export Json', array('program' => $programUrl, 'action' => 'index.json')); ?></li>
+		<li>
+		    <?php
+		        echo $this->Form->create(null);
+		        $exportOptions = array();
+		        $exportOptions['export.csv'] = 'Export CSV'; 
+		        $exportOptions['index.csv'] = 'Export Raw CSV';
+		        $exportOptions['index.json'] = 'Export Json';
+		        echo $this->Form->select('export',$exportOptions, array('id'=>'export-type', 'empty' => 'Export History...'));
+		        echo $this->Form->end();
+		        $url = $programUrl.'/programHistory/';
+		        $this->Js->get('#export-type')->event('change', '
+	                window.location = "http://"+window.location.host+"/'.$url.'"+$("select option:selected").val();
+	            ');
+		    ?>
+		</li>
 	</ul>
     <h3><?php echo __('Program History'); ?></h3>	
    <div class="ttc-filter">

@@ -1,18 +1,21 @@
 <div class="index" >
 	<h3><?php echo __('Program Simulator'); ?></h3>
 	<?php 
-        if (isset($scripts)) {
+        if (isset($dialogues) && !isset($this->params['id'])) {
             echo $this->Form->create(null, array('default'=>false));
             $options = array();
-            foreach ($scripts as $label => $script) {
-                $options[$script[0]['Script']['_id']] = $label;
-                }
-            echo $this->Form->select('script', $options, array('id' => 'script-selector', 'empty' => 'Existing Script...'));
+            foreach ($dialogues as $dialogue) {
+                if ($dialogue['Active'])
+                    $options[$dialogue['Active']['_id'].''] = $dialogue['Active']['name'].' - active';
+                if ($dialogue['Draft'])
+                    $options[$dialogue['Draft']['_id'].''] = $dialogue['Draft']['name'].' - draft';
+            }
+            echo $this->Form->select('dialogue', $options, array('id' => 'dialogue-selector', 'empty' => 'Existing Dialogue...'));
             echo $this->Form->end();
-            $this->Js->get('#script-selector')->event('change', '
+            $this->Js->get('#dialogue-selector')->event('change', '
 	           window.location = window.location+"/"+$("select option:selected").val();
-	   ');
-	} else { 
+	       ');
+	    } else { 
 	    echo $this->Html->tag('label', 'Exchanges');
 	    echo $this->Html->tag('div', "it's going be here...", array('class'=>'ttc-simulator-output', 'id' => 'simulator-output'));
 	    echo $this->Form->create(null, array('id'=>'simulator-input','default'=>false));

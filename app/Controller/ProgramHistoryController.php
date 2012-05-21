@@ -91,7 +91,10 @@ class ProgramHistoryController extends AppController
                         )
                     );
             } else {
-                $this->Session->setFlash('The filter "'.$this->params['url']['filter'].'" is not supported.');
+                $this->Session->setFlash(__('The filter "%s" is not supported.',$this->params['url']['filter']), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         }
         $statuses = $this->paginate();

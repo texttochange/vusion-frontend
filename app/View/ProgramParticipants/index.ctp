@@ -7,7 +7,7 @@
 	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-	    <th><?php echo __('phone'); ?></th> 
+	    <th><?php echo __('Phone'); ?></th> 
 	<?php
 	$headers = array();
 	foreach ($participants as $participant) {
