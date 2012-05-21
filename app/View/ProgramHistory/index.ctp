@@ -11,7 +11,7 @@
 		        echo $this->Form->end();
 		        $url = $programUrl.'/programHistory/';
 		        $this->Js->get('#export-type')->event('change', '
-	                window.location = "http://"+window.location.host+"/'.$url.'"+$("select option:selected").val();
+	                window.location = "http://"+window.location.host+"/'.$url.'"+$("#export-type option:selected").val();
 	            ');
 		    ?>
 		</li>
@@ -30,14 +30,14 @@
 	   $options = array(); 
 	   $options['non_matching_answers'] = "Non matching answers";
 	   if (isset($this->params['url']['filter']))
-	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Filter...'));
+	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Quick Filter...'));
 	   else 
 	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Quick Filter...'));
 	   $this->Js->get('#filter')->event('change', '
-	     if ($("select option:selected").val())
-	         window.location.search = "?filter="+$("select option:selected").val();
-             else
-                 window.location.search = "?";
+	     if ($("#filter option:selected").val())
+	         window.location.search = "?filter="+$("#filter option:selected").val();
+         else
+             window.location.search = "?";
 	   ');
 	   $this->Js->get('document')->event('ready','
            $("#filter_from").datepicker();
