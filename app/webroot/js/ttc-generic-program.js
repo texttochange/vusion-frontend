@@ -54,8 +54,13 @@ var program = {"script": [
 	"keyword-routing":["keyword"],
 	"answers":["add-answer"],
 	"add-answer": "button",
-	"answer": ["choice","feedbacks"],
+	"answer": ["choice","feedbacks", "answer-actions"],
 	"feedbacks":["add-feedback"],
+	"answer-actions": ["add-answer-action"],
+	"add-answer-action": "button",
+	"answer-action": ["radio-type-answer-action"],
+	"radio-type-answer-action": "radiobuttons",
+	"type-answer-action": {"optout": "Opt-out", "enrolling":"Enroll in an active dialogue",  "tagging":"Tag participant"},
 	"add-request":"button",
 	"Request": ["keyword", "responses", "actions"],
 	"responses":["add-response"],
@@ -295,6 +300,11 @@ function activeForm(){
 			};
 	});
 	$.each($("input[name*='type-action']"),function (key, elt){
+			if (!$.data(elt,'events')){	
+				$(elt).change(updateRadioButtonSubmenu);
+			};
+	});
+	$.each($("input[name*='type-answer-action']"),function (key, elt){
 			if (!$.data(elt,'events')){	
 				$(elt).change(updateRadioButtonSubmenu);
 			};

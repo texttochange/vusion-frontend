@@ -4,6 +4,7 @@ App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Helper');
+App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramRequestsController extends AppController
 {
@@ -27,6 +28,7 @@ class ProgramRequestsController extends AppController
         $this->Request        = new Request($options);
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->VumiRabbitMQ   = new VumiRabbitMQ();
     }
 
 
@@ -44,6 +46,7 @@ class ProgramRequestsController extends AppController
             //print_r($saveData);
             $this->Request->create();
             if ($this->Request->save($this->request->data)) {
+                $this->_notifyUpdateBackendWorker($programUrl);
                 $this->set(
                     'result', array(
                         'status' => 'ok',
@@ -63,6 +66,7 @@ class ProgramRequestsController extends AppController
             $this->Request->create();
             $this->Request->id = $id;
             if ($this->Request->save($this->request->data)) {
+                $this->_notifyUpdateBackendWorker($programUrl);
                 $this->set(
                     'result', array(
                         'status' => 'ok',
@@ -95,6 +99,7 @@ class ProgramRequestsController extends AppController
             throw new NotFoundException(__('Invalid request') . $id);
         }
         if ($this->Request->delete()) {
+            $this->_notifyUpdateBackendWorker($programUrl);
             $this->Session->setFlash(
                 __('The request has been deleted.'),
                 'default',
@@ -174,6 +179,12 @@ class ProgramRequestsController extends AppController
         $this->set('result', array('status' => 'ok'));
     }
     
+
+    protected function _notifyUpdateBackendWorker($workerName)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
+    }
+
 
     public function getActiveDialogue()
     {

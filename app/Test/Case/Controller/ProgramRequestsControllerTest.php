@@ -120,6 +120,9 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     'Program' => array('find', 'count'),
                     'Group' => array()
                     ),
+                 'methods' => array(
+                    '_notifyUpdateBackendWorker',
+                    )
                 )
             );
         
@@ -158,6 +161,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     public function testAdd()
     {
         $requests = $this->mockProgramAccess();
+        $requests
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
       
         $request = $this->Maker->getOneRequest();
        
@@ -174,6 +181,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     public function testEdit()
     {
         $requests = $this->mockProgramAccess();
+        $requests
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
       
         $request = $this->Maker->getOneRequest();
 
@@ -223,6 +234,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             ->expects($this->once())
             ->method('setFlash')
             ->with('The request has been deleted.');
+        $requests
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
 
         $request = $this->Maker->getOneRequest();
 
