@@ -82,7 +82,10 @@ class ProgramDialoguesController extends AppController
         if ($this->_hasAllProgramSettings()) {
             if ($this->Dialogue->makeActive($dialogueId)) {
                 $this->_notifyUpdateBackendWorker($programUrl);
-                $this->Session->setFlash(__('Dialogue activated.'));
+                $this->Session->setFlash(__('Dialogue activated.'), 
+                'default',
+                array('class' => "message success")
+                );
             } else
                 $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
         } else 
