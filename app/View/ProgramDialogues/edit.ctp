@@ -17,16 +17,18 @@
             echo "</li>"; 
         }?>
 	</ul>
-	<h3><?php 
+	<h3>
+	<?php 
 	if (isset($dialogue)) 
 	    echo __('Edit Dialogue'); 
 	else
 	    echo __('Create Dialogue');
-	?></h3>
+	?>
 	<?php
 	if (isset($dialogue) && !$dialogue['Dialogue']['activated'])  
 	    	    echo $this->Html->tag('span', __('(editing the draft)', array('class'=>'ttc-dialogue-draft'))); 
 	?>
+	</h3>
 	<div class="ttc-display-area">
 	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>
 	
