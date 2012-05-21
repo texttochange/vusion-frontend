@@ -67,7 +67,10 @@ class ProgramDialoguesController extends AppController
         $this->Dialogue->id = $id;
 
         if (!$this->Dialogue->exists()) {
-            $this->Session->setFlash(__("Dialogue doesn't exist."));
+            $this->Session->setFlash(__("Dialogue doesn't exist."), 
+                'default',
+                array('class' => "message failure")
+                );
             return;
         }
 
@@ -87,9 +90,15 @@ class ProgramDialoguesController extends AppController
                 array('class' => "message success")
                 );
             } else
-                $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
+                $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
         } else 
-            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->Session->setFlash(__('Please set the program settings then try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
     
         
         $this->redirect(array('program'=>$programUrl, 'action' => 'index'));

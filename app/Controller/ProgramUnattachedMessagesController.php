@@ -80,7 +80,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->UnattachedMessage->id = $id;
         
         if (!$this->UnattachedMessage->exists()) {
-            throw new NotFoundException(__('Invalid Message'));
+            throw new NotFoundException(__('Invalid Message.'));
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->UnattachedMessage->save($this->request->data)) {
@@ -99,7 +99,10 @@ class ProgramUnattachedMessagesController extends AppController
                         )
                     );
             } else {
-                $this->Session->setFlash(__('The Message could not be saved.'));
+                $this->Session->setFlash(__('The Message could not be saved.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
@@ -120,7 +123,7 @@ class ProgramUnattachedMessagesController extends AppController
         }
         
         if (!$this->UnattachedMessage->exists()) {
-            throw new NotFoundException(__('Invalid Message'));
+            throw new NotFoundException(__('Invalid Message.'));
         }
         
         if ($this->UnattachedMessage->delete()) {
@@ -138,7 +141,10 @@ class ProgramUnattachedMessagesController extends AppController
                     )
                 );
         }
-        $this->Session->setFlash(__('Message was not deleted'));
+        $this->Session->setFlash(__('Message was not deleted.'), 
+                'default',
+                array('class' => "message failure")
+                );
     }
 
     

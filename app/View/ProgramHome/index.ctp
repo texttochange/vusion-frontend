@@ -3,10 +3,10 @@
 	<h3><?php echo __('Sending Next');?></h3>
 	<table cellpadding="0" cellspacing="0">
 		<tr>
-			<th><?php echo __('at');?></th>
-			<th><?php echo __('type');?></th>
-			<th><?php echo __('to');?></th>	
-			<th><?php echo __('content');?></th>
+			<th><?php echo __('At');?></th>
+			<th><?php echo __('Type');?></th>
+			<th><?php echo __('To');?></th>	
+			<th><?php echo __('Content');?></th>
 		</tr>
 	<?php
 	foreach ($schedules as $schedule): ?>

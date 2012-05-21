@@ -85,7 +85,7 @@ class ProgramsController extends AppController
     {
         $this->Program->id = $id;
         if (!$this->Program->exists()) {
-            throw new NotFoundException(__('Invalid program'));
+            throw new NotFoundException(__('Invalid program.'));
         }
         $this->set('program', $this->Program->read(null, $id));
     }
@@ -101,7 +101,7 @@ class ProgramsController extends AppController
         if ($this->request->is('post')) {
             $this->Program->create();
             if ($this->Program->save($this->request->data)) {
-                $this->Session->setFlash(__('The program has been saved'),
+                $this->Session->setFlash(__('The program has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
@@ -111,7 +111,10 @@ class ProgramsController extends AppController
                     );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The program could not be saved. Please, try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         }
     }
@@ -136,17 +139,20 @@ class ProgramsController extends AppController
     {
         $this->Program->id = $id;
         if (!$this->Program->exists()) {
-            throw new NotFoundException(__('Invalid program'));
+            throw new NotFoundException(__('Invalid program.'));
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Program->save($this->request->data)) {
-                $this->Session->setFlash(__('The program has been saved'),
+                $this->Session->setFlash(__('The program has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The program could not be saved. Please, try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         } else {
             $this->request->data = $this->Program->read(null, $id);
@@ -167,16 +173,19 @@ class ProgramsController extends AppController
         }
         $this->Program->id = $id;
         if (!$this->Program->exists()) {
-            throw new NotFoundException(__('Invalid program'));
+            throw new NotFoundException(__('Invalid program.'));
         }
         if ($this->Program->delete()) {
-            $this->Session->setFlash(__('Program deleted'),
+            $this->Session->setFlash(__('Program deleted.'),
                 'default',
                 array('class'=>'message success')
             );
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('Program was not deleted'));
+        $this->Session->setFlash(__('Program was not deleted.'), 
+                'default',
+                array('class' => "message failure")
+                );
         $this->redirect(array('action' => 'index'));
     }
 

@@ -44,7 +44,7 @@ class UsersController extends AppController
     {
         $this->User->id = $id;
         if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
+            throw new NotFoundException(__('Invalid user.'));
         }
         $this->set('user', $this->User->read(null, $id));
     }
@@ -60,13 +60,16 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved'),
+                $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         }
         $groups   = $this->User->Group->find('list');
@@ -85,17 +88,20 @@ class UsersController extends AppController
     {
         $this->User->id = $id;
         if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
+            throw new NotFoundException(__('Invalid user.'));
         }
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved'),
+                $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
@@ -119,16 +125,19 @@ class UsersController extends AppController
         }
         $this->User->id = $id;
         if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
+            throw new NotFoundException(__('Invalid user.'));
         }
         if ($this->User->delete()) {
-            $this->Session->setFlash(__('User deleted'),
+            $this->Session->setFlash(__('User deleted.'),
                 'default',
                 array('class'=>'message success')
             );
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('User was not deleted'));
+        $this->Session->setFlash(__('User was not deleted.'), 
+                'default',
+                array('class' => "message failure")
+                );
         $this->redirect(array('action' => 'index'));
     }
 
@@ -146,7 +155,7 @@ class UsersController extends AppController
             $this->redirect($this->Auth->redirect());
         } else {
             if($this->request->is('post')) {
-                $this->Session->setFlash(__('Invalid username or password, try again'));
+                $this->Session->setFlash(__('Invalid username or password, try again.'));
             }
         }    
     }
@@ -154,7 +163,7 @@ class UsersController extends AppController
 
     public function logout()
     {
-        $this->Session->setFlash(__('Good-Bye'),
+        $this->Session->setFlash(__('Good Bye'),
             'default',
             array('class'=>'message success')
         );
@@ -167,7 +176,7 @@ class UsersController extends AppController
     {
         $this->User->id = $id;
         if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
+            throw new NotFoundException(__('Invalid user.'));
         }
         $user   = $this->User->read(null, $id);
         $userId = $id;
@@ -175,9 +184,15 @@ class UsersController extends AppController
         
         if ($this->request->is('post') || $this->request->is('put')) {
             if (Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
-                $this->Session->setFlash(__('old password is incorrect. Please try again.'));
+                $this->Session->setFlash(__('old password is incorrect. Please try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             } else if ($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
-                $this->Session->setFlash(__('new passwords do not match. Please try again.'));
+                $this->Session->setFlash(__('new passwords do not match. Please try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
@@ -187,7 +202,10 @@ class UsersController extends AppController
                     );
                     $this->redirect(array('action' => 'view', $id));
                 } else {
-                    $this->Session->setFlash(__('Password saving failed.'));
+                    $this->Session->setFlash(__('Password saving failed.'), 
+                        'default',
+                        array('class' => "message failure")
+                        );
                 }	
             }
         }

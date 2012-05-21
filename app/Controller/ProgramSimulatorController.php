@@ -38,11 +38,13 @@ class ProgramSimulatorController extends AppController
         $this->Dialogue->id = $this->params['id'];
         if (!$this->Dialogue->exists()) {
             $this->Session->setFlash(
-                __('This Dialogue id is not in the database, please choose one available.')
+                __('This Dialogue id is not in the database, please choose one available.'), 
+                'default',
+                array('class' => "message failure")                
                 );
             return;
         }
-        $this->_startSimulateScript($this->Dialogue->id);
+        $this->_startSimulateScript();
         
     }
 
