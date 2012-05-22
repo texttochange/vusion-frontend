@@ -545,7 +545,7 @@ function configToForm(item,elt,id_prefix,configTree){
                     elt["elements"].push({
                         "type":"addElt",
                         "alert":"add message",
-                        "label": label
+                        "label": localize_label(label)
                     });
                 } else if (program[sub_item]=="radiobuttons") {
                 	rabioButtonAtThisIteration = true;
@@ -637,7 +637,7 @@ function configToForm(item,elt,id_prefix,configTree){
                 //alert("add fieldset "+sub_item)
                 var myelt = {
                     "type":"fieldset",
-                    "caption": sub_item,
+                    "caption": localize_label(sub_item),
                     "name": id_prefix+"."+sub_item,
                     "elements": []
                 };

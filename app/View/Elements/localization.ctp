@@ -30,5 +30,10 @@ var localized_labels = {
     "question": "<?php echo __('Question')?>",
     "open-question": "<?php echo __('Open question')?>",
     "closed-question": "<?php echo __('Closed question')?>",
+    "answers": "<?php echo __('Answers')?>",
+    "answer": "<?php echo __('Answer')?>",
+    "label-for-participant-profiling": "<?php echo __("Profile participant's reply with label")?>",
+    "feedback": "<?php echo __('Feedback')?>",
+    "answer-action": "<?php echo __('Action')?>",
 };
 
