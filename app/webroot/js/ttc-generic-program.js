@@ -593,7 +593,8 @@ function configToForm(item,elt,id_prefix,configTree){
 						var eltValue = "";
 						var options = [];
 						if (window.app && window.app[sub_item+'Options']) {
-							options = window.app[sub_item+'Options'];
+							/**need to clone otherwise the selected will be share by all form*/
+							options = clone(window.app[sub_item+'Options']);
 						} else {
 							options = program[sub_item+'-options'];
 						}
@@ -652,6 +653,27 @@ function configToForm(item,elt,id_prefix,configTree){
 		}
 	});
 };
+
+function clone(obj) {
+     if (null == obj || "object" != typeof obj) return obj;
+
+     if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0; i < obj.length; ++i) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+}
 
 function fromIsoDateToFormDate(dateString) {
 	if (dateString == null)
