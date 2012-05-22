@@ -160,11 +160,11 @@ function saveFormOnServer(){
 		dataType: 'json', 
 		success: function(response) {
 			if (response['status'] == 'fail') {
-				$("#flashMessage").attr('class', 'message error').show().text("Saving failed");
+				$("#flashMessage").attr('class', 'message error').show().text(response['message']);
 				return;
 			}
 			if (location.href.indexOf(response['dialogue-obj-id'])<0){
-				$("#flashMessage").show().attr('class', 'message success').text('The dialogue has been saved as draft, wait for redirection');
+				$("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['vait_redirection']);
 				setTimeout( function() { 
 					if (location.href.indexOf("edit/")<0) 
 						window.location.replace("edit/" + response['dialogue-obj-id']);
@@ -172,7 +172,7 @@ function saveFormOnServer(){
 						window.location.replace(response['dialogue-obj-id']);
 					}, 3000);
 			} else {
-				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
+				$("#flashMessage").attr('class', 'message success').show().text(response['message']);
 				$("#flashMessage").delay(3000).fadeOut(1000)
 			}
 		},
@@ -197,16 +197,16 @@ function saveRequestOnServer(){
 		dataType: 'json', 
 		success: function(response) {
 			if (response['status'] == 'fail') {
-				$("#flashMessage").attr('class', 'message error').show().text("Saving failed.");
+				$("#flashMessage").attr('class', 'message error').show().text(response['message']);
 				return;
 			}
 			if (location.href.indexOf("add")>0 && location.href.indexOf(response['request-id'])<0){
-				$("#flashMessage").show().attr('class', 'message success').text('The request has been saved, wait for redirection.');
+				$("#flashMessage").show().attr('class', 'message success').text(response['message']);
 			setTimeout( function() { 
 					window.location.replace("edit/"+response['request-id']);
 				}, 3000);
 			} else {
-				$("#flashMessage").attr('class', 'message success').show().text('The draft has been saved');
+				$("#flashMessage").attr('class', 'message success').show().text(response['message']);
 				$("#flashMessage").delay(3000).fadeOut(1000)
 			}
 		},

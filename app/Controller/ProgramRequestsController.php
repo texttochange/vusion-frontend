@@ -50,7 +50,8 @@ class ProgramRequestsController extends AppController
                 $this->set(
                     'result', array(
                         'status' => 'ok',
-                        'request-id' => $this->Request->id)
+                        'request-id' => $this->Request->id,
+                        'message' => __('Request created, wait for redirection.'))
                     );
             }
         }
@@ -70,7 +71,8 @@ class ProgramRequestsController extends AppController
                 $this->set(
                     'result', array(
                         'status' => 'ok',
-                        'request-id' => $this->Request->id)
+                        'request-id' => $this->Request->id,
+                        'message' => 'Request saved.')
                     );
             } else {
                 $this->set(

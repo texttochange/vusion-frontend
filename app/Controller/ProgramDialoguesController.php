@@ -47,12 +47,22 @@ class ProgramDialoguesController extends AppController
             $saveData['Dialogue'] = $dialogue['dialogue']; 
             //print_r($saveData);
             if ($this->Dialogue->saveDialogue($saveData)) {
-                $this->set('result', 
+                $this->set(
+                    'result', 
                     array(
                         'status'=>'ok',
-                        'dialogue-obj-id' => $this->Dialogue->id));
+                        'dialogue-obj-id' => $this->Dialogue->id,
+                        'message' => __('Dialogue saved as draft.')
+                        )
+                    );
             } else {
-                $this->set('result', array('status'=>'fail'));
+                $this->set(
+                    'result', 
+                    array(
+                        'status'=>'fail',
+                        'message' => __('Saving failed.')
+                        )
+                    );
             }
         }
     }

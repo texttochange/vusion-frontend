@@ -26,7 +26,7 @@
 	?>
 	<?php
 	if (isset($dialogue) && !$dialogue['Dialogue']['activated'])  
-	    	    echo $this->Html->tag('span', __('(editing the draft)', array('class'=>'ttc-dialogue-draft'))); 
+	    	    echo $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
 	?>
 	</h3>
 	<div class="ttc-display-area">
