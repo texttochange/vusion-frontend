@@ -1,8 +1,8 @@
-var participant = {"participants": ["add-participant"],
+/*var participant = {"participants": ["add-participant"],
     "participant":["phone","name"],
     "phone":"text",
     "name" : "text"
-    }
+    }*/
 
 
 var program = {"script": [ 
@@ -660,7 +660,9 @@ function localize_label(label) {
 }
 
 function fromIsoDateToFormDate(dateString) {
-    return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
+	if (dateString == null)
+		return '';
+	return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
 }
 
 function wrapErrorMessage(error) {
