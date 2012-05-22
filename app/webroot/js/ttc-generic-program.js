@@ -25,7 +25,7 @@ var program = {"script": [
 	"country": "text",
 	"dialogues": ["add-dialogue"],
 	"add-dialogue":"button",
-	"dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
+	"Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
 	"dialogue-id": "hidden",
 	"auto-enrollment": "select",
 	"auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],	
