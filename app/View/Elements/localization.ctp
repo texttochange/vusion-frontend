@@ -15,10 +15,20 @@ var localized_messages = {
 };
 
 var localized_labels = {
-    "dialogue": "<?php echo __('dialogue')?>",
+    "name": "<?php echo __('Name')?>",
+    "auto-enrollment": "<?php echo __('Automatic enrollment')?>",
+    "dialogue": "<?php echo __('Dialogue')?>",
     "interaction": "<?php echo __('dialogue')?>",
-    "keyword": "<?php echo __('keyword')?>",
-    "content": "<?php echo __('content')?>",
-    "date-time": "<?php echo __('time')?>",
+    "keyword": "<?php echo __('Keyword')?>",
+    "choice": "<?php echo __('Choice')?>",
+    "content": "<?php echo __('Content')?>",
+    "date-time": "<?php echo __('Time')?>",
+    "immediately": "<?php echo __('Immediately')?>",
+    "fixed-time": "<?php echo __('Fixed time')?>",
+    "wait": "<?php echo __('Wait')?>",
+    "announcement": "<?php echo __('Announcement')?>",
+    "question": "<?php echo __('Question')?>",
+    "open-question": "<?php echo __('Open question')?>",
+    "closed-question": "<?php echo __('Closed question')?>",
 };
 
