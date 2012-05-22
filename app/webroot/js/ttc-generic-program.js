@@ -654,6 +654,8 @@ function configToForm(item,elt,id_prefix,configTree){
 };
 
 function fromIsoDateToFormDate(dateString) {
+	if (dateString == null)
+		return '';
 	return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
 }
 
