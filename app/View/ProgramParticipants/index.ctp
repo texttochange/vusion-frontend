@@ -27,10 +27,16 @@
 	    <td><?php echo $participant['Participant']['phone']; ?></td> 
 	    <?php 
             foreach ($headers as $key) {
+                echo $this->Html->tag('td', null);
                 if (isset($participant['Participant'][$key])) {
-                    echo $this->Html->tag('td', $participant['Participant'][$key]);
+                    if (is_array($participant['Participant'][$key])) {
+                        foreach ($participant['Participant'][$key] as $item)
+                            echo $this->Html->tag('div', $item);
+                    } else {
+                         echo $this->Html->tag('div', $participant['Participant'][$key]);
+                    }
                 } else {
-                    echo $this->Html->tag('td', '');
+                    echo $this->Html->tag('div', '');
                 }
             }
             ?>
