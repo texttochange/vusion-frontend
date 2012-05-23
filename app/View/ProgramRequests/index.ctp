@@ -27,7 +27,15 @@
 		<?php 
 		if (isset($request['Request']['actions']))
 		    foreach ($request['Request']['actions'] as $action) {
-		        echo $this->Html->tag('div', $action['type-action']);
+		        $info = __($action['type-action']);
+		        if ($action['type-action']=='enrolling')
+		            foreach ($dialogues as $dialogue) {
+		                if ($dialogue['dialogue-id'] == $action['enroll']) {
+		                    $info = __("Enrolling dialogue %s", $dialogue['Active']['name']);
+		                    break;
+		                }
+		            }
+		        echo $this->Html->tag('div', $info);
 		    } 
 		?>
 		</td>
