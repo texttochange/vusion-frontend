@@ -1,9 +1,8 @@
-var participant = {"participants": ["add-participant"],
+/*var participant = {"participants": ["add-participant"],
 	"participant":["phone","name"],
 	"phone":"text",
 	"name" : "text"
-	}
-
+	}*/
 
 var program = {"script": [ 
 		//"name", 
@@ -425,7 +424,9 @@ function duplicateKeywordValidation(value, element, param) {
         $.ajax({
             url: url,
             type: "POST",
-            data: { 'keyword': $(keywordInput).val(), 'dialogue-id': $("[name$=dialogue-id]").val()},
+            data: { 'keyword': $(keywordInput).val(), 
+            	    'dialogue-id': $("[name$=dialogue-id]").val(),
+                    'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
 	    success: validateKeywordReply,
 	    timeout: 1000,

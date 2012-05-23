@@ -145,10 +145,10 @@ class ProgramRequestsController extends AppController
             return;
         }
 
-        if (isset($this->request->data['excludeRequest'])) 
+        if (isset($this->request->data['object-id'])) 
             $conditions = array(    
                 'keywords'=> $keywords,
-                'excludeRequest' => $this->request->data['excludeRequest']
+                'excludeRequest' => $this->request->data['object-id']
                 );
          else
             $conditions = array('keywords'=> $keywords);

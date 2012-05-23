@@ -141,7 +141,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     $this->programData[0]['Program']['database'], 
                     $this->programData[0]['Program']['name'],
                     $this->programData[0]['Program']['name'],
-                    'utc',
+                    $this->otherProgramData[0]['Program']['database'],
                     'testdbprogram'
                     )
                 );
@@ -276,9 +276,9 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             );
          $this->assertEquals('fail', $this->vars['result']['status']);
     }
-     
+   
     
-    public function testValidateKeyword_fail_sameProgram_requestUse()
+    public function testValidateKeyword_sameProgram_requestUse()
     {
         $request = $this->Maker->getOneRequest();
         
@@ -294,7 +294,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
 
          $request['Request']['keyword'] = 'otherkeyword request';
          $this->Request->create();
-         $this->Request->save($request);
+         $savedRequest = $this->Request->save($request);
 
          $this->mockProgramAccess();
 
@@ -310,7 +310,34 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
              "'otherkeyword request' already used in the same program by a request.", 
              $this->vars['result']['message']
              );
+
+         $requests = $this->mockProgramAccess_withoutProgram();
+         $requests->Program
+            ->expects($this->any())
+            ->method('find')
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->programData, 
+                    array(
+                        $this->otherProgramData[0])
+                    )
+                );
+
+         $this->testAction(
+            "testurl/programRequests/validateKeyword",
+            array(
+                'method' => 'post',
+                'data' => array (
+                    'keyword'=>'otherkeyword request',
+                    'object-id' => $savedRequest['Request']['_id'])
+                )
+            );
+        
+         $this->assertEquals('ok', $this->vars['result']['status']);
+         
+
     }
+
 
     public function testValidateKeyword_ok()
     {
@@ -413,6 +440,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
          $this->assertEquals('fail', $this->vars['result']['status']);
 
     }
-    
+  
 
 }
