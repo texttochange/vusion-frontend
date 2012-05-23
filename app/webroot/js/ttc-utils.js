@@ -276,10 +276,10 @@ function requestHelp(elt, baseUrl, topic) {
 
 function vusionAjaxError(jqXHR, textStatus, errorThrown){
     if (textStatus == 'timeout') {
-         $('#flashMessage').show().text('Poor network connection (request timed out)');
+    	    $('#flashMessage').show().text(localized_errors['vusion_ajax_timeout_error']);
          return;
     }
-    $('#flashMessage').show().text('Error: action failed.');
+    $('#flashMessage').show().text(localized_errors['vusion_ajax_error']);
 }
 
 

@@ -1,2 +1,4 @@
-{ "_id" : { "$oid" : "4f5dcb4a9fa4da842b000000" }, "country" : "Uganda ", "shortcode" : "8282", "international-prefix" : "256", "modified" : { "$date" : 1331546954428 }, "created" : { "$date" : 1331546954428 } }
-{ "_id" : { "$oid" : "4f5dcb599fa4dac126000059" }, "country" : "Uganda ", "shortcode" : "8181", "international-prefix" : "256", "modified" : { "$date" : 1331546969447 }, "created" : { "$date" : 1331546969447 } }
+{ "country" : "Uganda", "shortcode" : "8282", "international-prefix" : "256" }
+{ "country" : "Uganda", "shortcode" : "8181", "international-prefix" : "256" }
+{ "country" : "Netherland", "shortcode" : "+31642500021", "international-prefix" : "31" }
+

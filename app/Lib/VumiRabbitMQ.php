@@ -51,7 +51,7 @@ class VumiRabbitMQ {
     }
 
 
-    public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatch", $send_loop_period="60")
+    public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatcher", $send_loop_period="60")
     {
         return $this->sendMessageTo(
             'vusion.control', 

@@ -26,7 +26,7 @@
 	?>
 	<?php
 	if (isset($dialogue) && !$dialogue['Dialogue']['activated'])  
-	    	    echo $this->Html->tag('span', __('(editing the draft)', array('class'=>'ttc-dialogue-draft'))); 
+	    	    echo $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
 	?>
 	</h3>
 	<div class="ttc-display-area">
@@ -35,9 +35,9 @@
 	<?php
         $this->Js->get("#dynamic-generic-program-form");
         if (isset($dialogue))
-            $this->Js->each('$(this).buildTtcForm("dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
+            $this->Js->each('$(this).buildTtcForm("Dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
         else
-        $this->Js->each('$(this).buildTtcForm("dialogue", null, "javascript:saveFormOnServer()")', true);
+        $this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
         $dialogueOptions = array();
         foreach($dialogues as $dialogue) {
             if ($dialogue['Active']) {
