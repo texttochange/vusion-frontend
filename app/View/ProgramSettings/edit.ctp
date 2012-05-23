@@ -10,6 +10,7 @@
             foreach($shortcodes as $shortcode) {
                 $shortcode_options[$shortcode['ShortCode']['shortcode']] = $shortcode['ShortCode']['country']." - ".$shortcode['ShortCode']['shortcode'];
             }
+            echo "<br />";
             echo $this->Form->select('shortcode', $shortcode_options, array('id' => 'shortcode'));
             $this->Js->get('#shortcode')->event('change','
             			var countryShortcode = $("#shortcode option:selected").text();
@@ -33,6 +34,7 @@
             foreach($timezone_identifiers as $timezone_identifier) {
             $timezone_options[$timezone_identifier] = $timezone_identifier; 
             }
+            echo "<br />";
             echo $this->Form->select('timezone', $timezone_options);
             //echo $this->Form->select('timezone', $timezone_identifiers, array('value'=>'412'));
         ?>
