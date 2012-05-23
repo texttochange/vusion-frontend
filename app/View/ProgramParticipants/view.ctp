@@ -11,14 +11,22 @@
 		</dd>
 		<dt><?php echo __('name'); ?></dt>
 		<dd>
-			<?php echo h($participant['Participant']['name']); ?>
+			<?php 
+			if (isset($participant['Participant']['name']))
+			    echo h($participant['Participant']['name']); ?>
 			&nbsp;
 		</dd>
 		<?php 
 		        foreach ($participant['Participant'] as $key => $value) {
 		            if ($key!='modified' && $key!='created' && $key!='_id' && $key!='phone' && $key!='name') {
 		                echo $this->Html->tag('dt', $key);
-		                echo $this->Html->tag('dd', $value);
+		                echo $this->Html->tag('dd', null);
+		                if (is_array($value))
+		                    foreach ($value as $item) {
+		                        echo $this->Html->tag('div', $item);
+		                    }
+		                else
+		                    echo $this->Html->tag('div', $value);
 		            }
 		        }
 	    
