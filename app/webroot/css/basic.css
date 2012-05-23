@@ -291,7 +291,7 @@
 	height: 2px; /* Width and height could  be left out, but I prefer a less 'pointy' triangle */
 	width: 2px;
 	position: absolute;
-	top: 29px;
+	top: 27.5px;
 	left: 30px;
 }
 

@@ -3,7 +3,7 @@
 	if($hasProgramLogs) {
 	    foreach ($programLogsUpdates as $log) {
                 $newDate = $this->Time->format('d/m/Y H:i:s', substr($log, 1, 19));
-                echo substr_replace($log, $newDate, 1, 19)."<br />";
+                echo substr_replace($log, "<span style='font-weight:bold'>".$newDate."</span>", 1, 19)."<br />";
             }
 	}
 	$this->Js->get('document')->event(

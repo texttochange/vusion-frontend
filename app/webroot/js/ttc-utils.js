@@ -291,6 +291,7 @@ function pullBackendNotifications(url) {
             if (data['logs']) {
                 $("#notifications").empty();
                 for (var x = 0; x < data['logs'].length; x++) {
+                    data['logs'][x] = data['logs'][x].replace(data['logs'][x].substr(1,19),"<span style='font-weight:bold'>"+data['logs'][x].substr(1,19)+"</span>");	
                     $("#notifications").append(data['logs'][x]+"<br \>");
                 }
             }

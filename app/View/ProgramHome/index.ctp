@@ -1,6 +1,6 @@
 <div class='Program Home index'>
-  <div class='ttc-info'>
 	<h3><?php echo __('Sending Next');?></h3>
+	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 		<tr>
 			<th><?php echo __('At');?></th>
