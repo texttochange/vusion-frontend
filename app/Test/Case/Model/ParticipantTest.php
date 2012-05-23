@@ -57,7 +57,7 @@ class ParticipantTestCase extends CakeTestCase
     {
         //1st assertion phone is already a string
         $participant = array(
-            'phone' => '788601462',
+            'phone' => '+788601462',
             'name' => 'Oliv'
             );
         $this->Participant->create();
@@ -75,7 +75,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $savedParticipant = $this->Participant->save($participant);
 
-        $this->assertTrue(is_string($savedParticipant['Participant']['phone']));
+        $this->assertFalse(is_string($savedParticipant['Participant']['phone']));
     }
 
 

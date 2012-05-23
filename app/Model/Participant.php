@@ -12,8 +12,20 @@ class Participant extends MongoModel
         
     public $validate = array(
         'phone' => array(
-            'rule' => 'isReallyUnique',
-            'required' => true
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a phone number.'
+                ),
+            'hasPlus'=>array(
+                'rule' => 'hasPlus',
+                'message' => 'The phone number must begin with a "+" sign.',
+                'required' => true
+                ),
+            'isReallyUnique' => array(
+                'rule' => 'isReallyUnique',
+                'message' => 'This phone number already exists in the participant list.',
+                'required' => true
+                )
             ));
 
     
@@ -33,5 +45,13 @@ class Participant extends MongoModel
              $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
          return true;
     }
+    
+    
+    public function hasPlus($check)
+    {
+        $regex = '/^\+[0-9]+/';
+        return preg_match($regex, $check['phone']);
+    }
+    
     
 }

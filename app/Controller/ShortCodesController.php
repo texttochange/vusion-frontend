@@ -38,7 +38,7 @@ class ShortCodesController extends AppController
     {
         $shortcodes = $this->paginate();
         $this->set(compact('shortcodes'));
-        //print_r($shortcodes);
+        print_r($shortcodes);
     }
     
     
