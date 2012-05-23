@@ -80,4 +80,49 @@ class RequestTestCase extends CakeTestCase
         
     }
 
+
+    public function testFindKeyphrase()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request, keyword, otherkeyword request'
+            );
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+
+        $otherRequest['Request'] = array(
+            'keyword' => 'something else'
+            );
+        $this->Request->create();
+        $this->Request->save($otherRequest);
+
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'keyword'));
+        $this->assertEqual('keyword', $matchingKeywordRequest);
+
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'keywo'));
+        $this->assertEqual(null, $matchingKeywordRequest);
+
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'keywor, keyword'));
+        $this->assertEqual('keyword', $matchingKeywordRequest);
+        
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'kEy'));
+        $this->assertEqual(null, $matchingKeywordRequest);
+        
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'kEy request'));
+        $this->assertEqual('kEy request', $matchingKeywordRequest);
+
+        $matchingKeywordRequest = $this->Request->find(
+            'keyphrase', 
+            array(
+                'keywords'=>'kEy request',
+                'excludeRequest' => $savedRequest['Request']['_id']
+                )
+            );
+        $this->assertEqual(null, $matchingKeywordRequest);
+
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'request'));
+        $this->assertEqual(null, $matchingKeywordRequest);
+
+    }
+
+
 }

@@ -118,6 +118,7 @@ class ProgramRequestsController extends AppController
             );
     }
 
+
     public function validateKeyword()
     {
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode'));
@@ -129,10 +130,11 @@ class ProgramRequestsController extends AppController
             return;
         }
 
-        $DialogueHelper = new DialogueHelper();
+        $keywords          = $this->request->data['keyword'];
+        $DialogueHelper    = new DialogueHelper();
+        $keywordToValidate = $DialogueHelper->getRequestKeywordToValidate($keywords);
 
-        $keywordToValidate = $DialogueHelper->getRequestKeywordToValidate($this->request->data['keyword']);
-
+        /**Search in the same Program*/
         $dialogueUsingKeyword = $this->Dialogue->getActiveDialogueUseKeyword($keywordToValidate);
         if ($dialogueUsingKeyword) {
             $this->set(
@@ -141,9 +143,30 @@ class ProgramRequestsController extends AppController
                     'message'=> __("'%s' already used in same program in the '%s' dialogue.", $keywordToValidate, $dialogueUsingKeyword['Dialogue']['name'])
                 ));
             return;
-            }
+        }
+
+        if (isset($this->request->data['excludeRequest'])) 
+            $conditions = array(    
+                'keywords'=> $keywords,
+                'excludeRequest' => $this->request->data['excludeRequest']
+                );
+         else
+            $conditions = array('keywords'=> $keywords);
+        $foundKeyword = $this->Request->find(
+            'keyphrase', 
+            $conditions
+            );
+        if ($foundKeyword) {
+            $this->set(
+                'result', array(
+                    'status'=>'fail', 
+                    'message'=> __("'%s' already used in the same program by a request.", $foundKeyword)
+                    )
+                );
+            return;
+        }
         
-        /**Is the keyword used by another program*/
+        /**Search in another program*/
         $programs = $this->Program->find(
             'all', 
             array('conditions'=> 
