@@ -141,7 +141,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     $this->programData[0]['Program']['database'], 
                     $this->programData[0]['Program']['name'],
                     $this->programData[0]['Program']['name'],
-                    'utc',
+                    $this->otherProgramData[0]['Program']['database'],
                     'testdbprogram'
                     )
                 );
@@ -248,14 +248,12 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->testAction("testurl/programRequests/delete/" . $savedRequest['Request']['_id']);     
     }
 
-    public function testValidateKeyword(){
+    public function testValidateKeyword_fail_sameProgram_dialogueUse()
+    {
         
-        $request = $this->Maker->getOneRequest();
         $dialogue = $this->Maker->getOneDialogue();
-
+ 
         $this->instanciateModels();
-        $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($saveDialogue['Dialogue']['_id']);
 
         $this->ProgramSetting->create();
         $this->ProgramSetting->save(
@@ -265,7 +263,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        /**Test a keyword used in an active dialogue in the same program*/
+        $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($saveDialogue['Dialogue']['_id']);
         $this->mockProgramAccess();
 
         $this->testAction(
@@ -276,8 +275,83 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 )
             );
          $this->assertEquals('fail', $this->vars['result']['status']);
+    }
+   
+    
+    public function testValidateKeyword_sameProgram_requestUse()
+    {
+        $request = $this->Maker->getOneRequest();
         
-        /**Test a simple keyword not used*/
+        $this->instanciateModels();
+
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282'
+                )
+            );
+
+         $request['Request']['keyword'] = 'otherkeyword request';
+         $this->Request->create();
+         $savedRequest = $this->Request->save($request);
+
+         $this->mockProgramAccess();
+
+         $this->testAction(
+            "testurl/programRequests/validateKeyword",
+            array(
+                'method' => 'post',
+                'data' => array ('keyword'=>'otherkeyword request')
+                )
+            );
+         $this->assertEquals('fail', $this->vars['result']['status']);
+         $this->assertEquals(
+             "'otherkeyword request' already used in the same program by a request.", 
+             $this->vars['result']['message']
+             );
+
+         $requests = $this->mockProgramAccess_withoutProgram();
+         $requests->Program
+            ->expects($this->any())
+            ->method('find')
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->programData, 
+                    array(
+                        $this->otherProgramData[0])
+                    )
+                );
+
+         $this->testAction(
+            "testurl/programRequests/validateKeyword",
+            array(
+                'method' => 'post',
+                'data' => array (
+                    'keyword'=>'otherkeyword request',
+                    'object-id' => $savedRequest['Request']['_id'])
+                )
+            );
+        
+         $this->assertEquals('ok', $this->vars['result']['status']);
+         
+
+    }
+
+
+    public function testValidateKeyword_ok()
+    {
+
+        $this->instanciateModels();
+
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282'
+                )
+            );
+        
          $this->mockProgramAccess();
 
          $this->testAction(
@@ -289,8 +363,24 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             );
          $this->assertEquals('ok', $this->vars['result']['status']);
       
+    }
+    
+    public function testValidateKeyword_fail_otherProgram_dialogueUse_requestUse()
+    {
 
-         /**Test a simple keyword is used by another program Dialogue*/
+        $request = $this->Maker->getOneRequest();
+        $dialogue = $this->Maker->getOneDialogue();
+       
+        $this->instanciateModels();
+
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282'
+                )
+            );
+
          $requests = $this->mockProgramAccess_withoutProgram();
          $requests->Program
             ->expects($this->any())
@@ -325,7 +415,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             );
          $this->assertEquals('fail', $this->vars['result']['status']);   
 
-         /**Test a keyword is not used by another Request in another program.*/
          $request['Request']['keyword'] = 'key join';
          $this->externalModels['request']->create();
          $this->externalModels['request']->save($request);
@@ -351,8 +440,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
          $this->assertEquals('fail', $this->vars['result']['status']);
 
     }
-
-    
-
+  
 
 }

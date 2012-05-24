@@ -27,8 +27,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             0 => array( 
                 'Program' => array(
                     'name' => 'Test Name',
-                    'country' => 'Test Country',
-                    'timezone' => 'UTC',
                     'url' => 'testurl',
                     'database' => 'testdbprogram'
                 )

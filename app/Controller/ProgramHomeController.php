@@ -7,7 +7,7 @@ App::uses('Dialogue', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
-App::uses('VumiSupervisord', 'Lib');
+App::uses('VumiRabbitMQ', 'Lib');
 
 
 class ProgramHomeController extends AppController
@@ -32,7 +32,7 @@ class ProgramHomeController extends AppController
         $this->Dialogue          = new Dialogue($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
 
-        $this->VumiSupervisord = new VumiSupervisord();
+        $this->VumiRabbitMQ = new VumiRabbitMQ();
         
         $this->DialogueHelper = new DialogueHelper();
         
@@ -80,6 +80,27 @@ class ProgramHomeController extends AppController
             'statusCount',
             'schedules',
             'workerStatus'));
+    }
+
+    public function restartWorker()
+    {
+        $programUrl   = $this->params['program'];
+        $databaseName = $this->Session->read($programUrl.'_db');
+
+        $this->_startBackendWorker(
+            $programUrl,
+            $databaseName
+            );
+        $this->set(
+            'result',
+            array('status'=>'ok','message'=> __('Worker is starting.'))
+            );
+    }   
+
+
+    protected function _startBackendWorker($workerName, $databaseName)
+    {
+        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
     }
         
 

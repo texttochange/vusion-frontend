@@ -1,17 +1,4 @@
-/*var participant = {"participants": ["add-participant"],
-    "participant":["phone","name"],
-    "phone":"text",
-    "name" : "text"
-    }*/
-
-
 var program = {"script": [ 
-        //"name", 
-        //"customer",  
-        //"shortcode",
-        //"country",
-        //"participants",
-        //"requests-responses",
         "dialogues",
         ],
     "name" : "text",
@@ -22,7 +9,6 @@ var program = {"script": [
     "add-participant":"button",
     "participant":["phone","name"],
     "phone":"text",
-    "country": "text",
     "dialogues": ["add-dialogue"],
     "add-dialogue":"button",
     "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
@@ -60,7 +46,7 @@ var program = {"script": [
     "add-answer-action": "button",
     "answer-action": ["radio-type-answer-action"],
     "radio-type-answer-action": "radiobuttons",
-    "type-answer-action": {"optout": "Opt-out", "enrolling":"Enroll in an active dialogue",  "tagging":"Tag participant"},
+    "type-answer-action": {"optout": "optout", "enrolling":"enrolling",  "tagging":"tagging"},
     "add-request":"button",
     "Request": ["keyword", "responses", "actions"],
     "responses":["add-response"],
@@ -71,7 +57,7 @@ var program = {"script": [
     "add-action":"button",
     "add-feedback":"button",
     "action":["radio-type-action"],
-    "type-action": {"optin": "Opt-in", "optout": "Opt-out", "enrolling":"Enroll in an active dialogue",  "tagging":"Tag participant"},
+    "type-action": {"optin": "optin", "optout": "optout", "enrolling":"enrolling",  "tagging":"tagging"},
     "choice":"text",
     "tagging":["tag"],
     "tag":"text",
@@ -232,15 +218,12 @@ function clickBasicButton(){
     }
     var parent = $(this).parent();
     
-    var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption":eltLabel,"elements":[]}
+    var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
         
-    configToForm(eltLabel, expandedElt,tableLabel+"["+id+"]");
+    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
     
     $(parent).formElement(expandedElt);
     
-    //need to move down all the button
-    /*$(this).clone().appendTo($(parent));
-    $(this).remove();*/
     $(this).parent().children("button").each(function(index,elt){
         $(elt).clone().appendTo($(parent));
         $(elt).remove();    
@@ -425,7 +408,9 @@ function duplicateKeywordValidation(value, element, param) {
         $.ajax({
             url: url,
             type: "POST",
-            data: { 'keyword': $(keywordInput).val(), 'dialogue-id': $("[name$=dialogue-id]").val()},
+            data: { 'keyword': $(keywordInput).val(), 
+            	    'dialogue-id': $("[name$=dialogue-id]").val(),
+                    'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
         success: validateKeywordReply,
         timeout: 1000,
@@ -510,13 +495,10 @@ function configToForm(item,elt,id_prefix,configTree){
     }
     var rabioButtonAtThisIteration = false;
     program[item].forEach(function (sub_item){
-            //alert("for "+sub_item);
             if (!isArray(program[sub_item]))
             {
-                //alert("add item ");
                 if (program[sub_item]=="button"){
                     var label = sub_item.substring(4);
-                    //populate form
                     if (rabioButtonAtThisIteration && configTree && configTree[label]){
                         tmpConfigTree = configTree[label];
                     } else {
@@ -532,7 +514,7 @@ function configToForm(item,elt,id_prefix,configTree){
                                 }
                                 var myelt = {
                                     "type":"fieldset",
-                                    "caption": label, //+" "+ i,
+                                    "caption": localize_label(label), //+" "+ i,
                                     "name": tmpIdPrefix+"["+i+"]",
                                     "elements": []
                                 };
@@ -545,94 +527,90 @@ function configToForm(item,elt,id_prefix,configTree){
                     elt["elements"].push({
                         "type":"addElt",
                         "alert":"add message",
-                        "label": localize_label(label)
+                        "label": label
                     });
                 } else if (program[sub_item]=="radiobuttons") {
                 	rabioButtonAtThisIteration = true;
-                        var radio_type = sub_item.substring(6);
-                            var checkedRadio = {};
-                            var checkedItem;
-                            var checkedItemLabel;
-                            if (configTree) {
-                                $.each(program[radio_type],function(k,v){
-                                    if (k!=configTree[radio_type])
-                                        checkedRadio[k] = localize_label(v);
-                                    else {
-                                        checkedRadio[k] = {
-                                            "value": k, 
-                                            "caption": localize_label(v),
-                                            "checked":"checked"
-                                        }
-                                        checkedItem = k;
-                                        checkedItemLabel = localize_label(v);
-                                    }
-                            })} else {
-                                checkedRadio = program[radio_type];
-                            }
-                        elt["elements"].push(
-                        {
+                	var radio_type = sub_item.substring(6);
+                	var checkedRadio = {};
+                	var checkedItem;
+                	var checkedItemLabel;
+                	$.each(program[radio_type],function(k,v) {
+                	        if (configTree && k==configTree[radio_type]) {
+                	            checkedRadio[k] = {
+                	                "value": k, 
+                	                "caption": localize_label(v),
+                	                "checked":"checked"
+                	            }
+                	            checkedItem = k;
+                	            checkedItemLabel = localize_label(v);
+                	        } else {
+                	            checkedRadio[k] = localize_label(v);
+                	        }     
+                	})
+                	elt["elements"].push({
                             "name":id_prefix+"."+radio_type,
                             "type": program[sub_item],
                             "options": checkedRadio
-                        });
-                        if (checkedItem){
-                            if (program[checkedItem]){
-                                var box = {
-                                    "type":"fieldset",
-                                    "caption": checkedItemLabel,
-                                    "radiochildren":"radiochildren",
-                                    "elements":[]
-                                };
-                                configToForm(checkedItem, box,id_prefix,configTree);
-                                if (box['type'])
-                                    elt["elements"].push(box);
+                    });
+                    if (checkedItem){
+                        if (program[checkedItem]){
+                            var box = {
+                                "type":"fieldset",
+                                "caption": localize_label(checkedItem),
+                                "radiochildren":"radiochildren",
+                                "elements":[]
                             };
-                        }
-                } else if (program[sub_item]=="select") {
-                        var eltValue = "";
-                        var options = [];
-                        if (window.app && window.app[sub_item+'Options']) {
-                            options = window.app[sub_item+'Options'];
-                        } else {
-                            options = program[sub_item+'-options'];
-                        }
-                        if (configTree) {
-                            for (var j=0; j<options.length; j++){
-                                if (options[j]['value']==configTree[sub_item])
-                                    options[j]['selected'] = true;
-                            }
-                        }
-                        var label = null;
-                        if (program[sub_item]!="hidden"){
-                            label = localize_label(sub_item)
-                        }
-                        elt["elements"].push(
-                            {
-                                "name":id_prefix+"."+sub_item,
-                                "caption": label,
-                                "type": program[sub_item],
-                                "options": options
-                            });
-                    } else {    
-                        var eltValue = "";
-                        if (configTree) {
-                            eltValue = configTree[sub_item];
-                            if (sub_item == 'date-time')
-                                eltValue = fromIsoDateToFormDate(eltValue);
-                        }
-                        var label = null;
-                        if (program[sub_item]!="hidden"){
-                            label = localize_label(sub_item)
-                        } 
-                        elt["elements"].push(
-                            {
-                                "name":id_prefix+"."+sub_item,
-                                "caption": label,
-                                "type": program[sub_item],
-                                "value": eltValue
-                            });
+                            configToForm(checkedItem, box,id_prefix,configTree);
+                            if (box['type'])
+                                elt["elements"].push(box);
+                        };
                     }
-                
+                } else if (program[sub_item]=="select") {
+                    var eltValue = "";
+                    var options = [];
+                    if (window.app && window.app[sub_item+'Options']) {
+                        /**need to clone otherwise the selected will be share by all form*/
+                        options = clone(window.app[sub_item+'Options']);
+                    } else {
+                        options = program[sub_item+'-options'];
+                    }
+                    if (configTree) {
+                        for (var j=0; j<options.length; j++){
+                            if (options[j]['value']==configTree[sub_item])
+                                options[j]['selected'] = true;
+                        }
+                    }
+                    var label = null;
+                    if (program[sub_item]!="hidden"){
+                        label = localize_label(sub_item)
+                    }
+                    elt["elements"].push(
+                        {
+                            "name":id_prefix+"."+sub_item,
+                            "caption": label,
+                            "type": program[sub_item],
+                            "options": options
+                        });
+                } else {    
+                    var eltValue = "";
+                    if (configTree) {
+                        eltValue = configTree[sub_item];
+                        if (sub_item == 'date-time')
+                            eltValue = fromIsoDateToFormDate(eltValue);
+                    }
+                    var label = null;
+                    if (program[sub_item]!="hidden"){
+                        label = localize_label(sub_item)
+                    } 
+                    elt["elements"].push(
+                        {
+                            "name":id_prefix+"."+sub_item,
+                            "caption": label,
+                            "type": program[sub_item],
+                            "value": eltValue
+                        });
+                }
             } else {
                 //alert("add fieldset "+sub_item)
                 var myelt = {
@@ -659,6 +637,27 @@ function localize_label(label) {
 		return null;
 }
 
+function clone(obj) {
+     if (null == obj || "object" != typeof obj) return obj;
+
+     if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0; i < obj.length; ++i) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+}
+
 function fromIsoDateToFormDate(dateString) {
 	if (dateString == null)
 		return '';
@@ -673,10 +672,10 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     //alert("function called");
     
     $.dform.addType("addElt", function(option) {
-            return $("<button type='button'>").dformAttr(option).html("add "+option["label"])        
+            return $("<button type='button'>").dformAttr(option).html(localize_label("add")+' '+localize_label(option["label"]))        
         });
     $.dform.addType("removeElt", function(option) {
-            return $("<button type='button'>").dformAttr(option).html("remove "+option["label"])        
+            return $("<button type='button'>").dformAttr(option).html(localize_label("remove")+' '+localize_label(option["label"]))        
         });
     
     
