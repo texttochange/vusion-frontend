@@ -24,13 +24,27 @@
 	</div>
     <?php endforeach; ?>
 	</div>
-<div class="ttc-program-news">
+<div class="ttc-recent-issues">
 	<h3><?php echo __('Recent Issues'); ?></h3>
-	<div class="ttc-program-box" onclick="window.location.pathname='<?php echo $this->Html->url(array('controller'=>'unmatchableReply','action' => 'index')) ?>'">
+	<ul class="ttc-issues-list">
+	<?php foreach ($unmatchableReplies as $unmatchableReply): ?>
+	<li>
+	<?php	    
+	    echo $this->Html->tag('div', $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']), array('class' => 'ttc-issue-time'));
+	    echo "<div class='ttc-issue-content'>";
+	    //echo $this->Html->tag('h3', 'unmatchable reply', array('onclick'=>'alert("hi");'));
+	    echo $this->Html->tag('h3', $this->Html->link('unmatchable reply',array('controller'=>'unmatchableReply','action' => 'index')));
+	    echo $this->Html->tag('p', $unmatchableReply['UnmatchableReply']['message-content']);
+	    echo "</div>";
+	?>
+	</li>
+	<?php endforeach; ?>
+	</ul>
+	<!--<div class="ttc-program-box" onclick="window.location.pathname='<?php echo $this->Html->url(array('controller'=>'unmatchableReply','action' => 'index')) ?>'">
 	<?php 
 	echo $this->Html->tag('div', $unmatchableReplies.__(' unmatchable replies'), array('class' => 'ttc-title'));
 	?>
-	<div>
+	<div>-->
 </div>
 </div>
 
