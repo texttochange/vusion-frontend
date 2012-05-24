@@ -23,7 +23,15 @@
 		                echo $this->Html->tag('dd', null);
 		                if (is_array($value))
 		                    foreach ($value as $item) {
-		                        echo $this->Html->tag('div', $item);
+		                        if ($key=="enrolled") {
+		                            foreach ($dialogues as $dialogue) {
+		                                if ($dialogue['dialogue-id'] == $item) {
+		                                    echo $this->Html->tag('div', __("%s", $dialogue['Active']['name']));
+		                                    break;
+		                                }
+		                            }
+		                        } else
+		                            echo $this->Html->tag('div', $item);
 		                    }
 		                else
 		                    echo $this->Html->tag('div', $value);
