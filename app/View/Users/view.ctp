@@ -60,7 +60,6 @@
 	<tr>
 		<th><?php echo __('Id'); ?></th>
 		<th><?php echo __('Name'); ?></th>
-		<th><?php echo __('Country'); ?></th>
 		<th><?php echo __('Url'); ?></th>
 		<th><?php echo __('Database'); ?></th>
 		<th><?php echo __('Created'); ?></th>
@@ -73,7 +72,6 @@
 		<tr>
 			<td><?php echo $program['id'];?></td>
 			<td><?php echo $program['name'];?></td>
-			<td><?php echo $program['country'];?></td>
 			<td><?php echo $program['url'];?></td>
 			<td><?php echo $program['database'];?></td>
 			<td><?php echo $program['created'];?></td>

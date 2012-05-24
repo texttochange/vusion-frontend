@@ -5,12 +5,6 @@
 	}*/
 
 var program = {"script": [ 
-		//"name", 
-		//"customer",  
-		//"shortcode",
-		//"country",
-		//"participants",
-		//"requests-responses",
 		"dialogues",
 		],
 	"name" : "text",
@@ -21,7 +15,6 @@ var program = {"script": [
 	"add-participant":"button",
 	"participant":["phone","name"],
 	"phone":"text",
-	"country": "text",
 	"dialogues": ["add-dialogue"],
 	"add-dialogue":"button",
 	"Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],

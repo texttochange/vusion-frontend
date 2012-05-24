@@ -31,9 +31,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             0 => array( 
                 'Program' => array(
                     'name' => 'Test Name',
-                    'country' => 'Test Country',
                     'url' => 'testurl',
-                    'timezone' => 'UTC',
                     'database' => 'testdbprogram'
                 )
             ));
