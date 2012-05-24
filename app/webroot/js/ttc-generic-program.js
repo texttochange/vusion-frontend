@@ -740,7 +740,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         
         myform["elements"].push({
                         "type": "submit",
-                        "value": "Save"
+                        "value": localize_label("save")
                 })
         
         return myform;
