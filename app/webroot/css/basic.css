@@ -316,6 +316,10 @@
 	font-weight: normal;
 }
 
+.ttc-login-container .required label:after{
+	content: "";
+}
+
 .ttc-navigation-menu {
 	float: left;
 	width: 200px;
@@ -331,6 +335,7 @@
     float: left;
     padding: 15px 2%;
     width: 60%;
+    min-width: 737px;
 }
 
 .ttc-program-index h3 {
@@ -339,7 +344,7 @@
 }
 
 .ttc-recent-issues {
-    float: left;
+    float: right;
     padding: 15px 2%;
     width: 30%;
 }

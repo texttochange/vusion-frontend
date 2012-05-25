@@ -75,7 +75,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $savedParticipant = $this->Participant->save($participant);
 
-        $this->assertFalse(is_string($savedParticipant['Participant']['phone']));
+        $this->assertTrue(is_string($savedParticipant['Participant']['phone']));
     }
 
 
