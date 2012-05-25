@@ -95,7 +95,7 @@ class ProgramParticipantsController extends AppController
                 );
                 $this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
+                $this->Session->setFlash(__('The participant could not be saved. Please, try again.'), 
                 'default',
                 array('class' => "message failure")
                 );
@@ -241,9 +241,9 @@ class ProgramParticipantsController extends AppController
                 $participant['name']  = $explodeLine[1];
                 //print_r($participant);
                 if ($this->Participant->save($participant)) {
-                    $entries[$count] .= " insert ok"; 
+                    $entries[$count] .= __(" Insert ok"); 
                 } else {
-                    $entries[$count] .= " duplicated phone line ".($count+1);
+                    $entries[$count] .= " ".$this->Participant->validationErrors['phone'][0]. " line ".($count+1);
                 }
                 
             }
@@ -264,9 +264,9 @@ class ProgramParticipantsController extends AppController
             //for view report
             $entries[$i] = $participant['phone'] . ','.$participant['name'];
             if ($this->Participant->save($participant)) {
-                $entries[$i] .= " insert ok"; 
+                $entries[$i] .= " Insert ok"; 
             } else {
-                $entries[$i] .= " duplicated phone line ".$i;
+                $entries[$i] .= " ".$this->Participant->validationErrors['phone'][0]. " line ".$i;
             }
         }
         return $entries;
@@ -275,7 +275,7 @@ class ProgramParticipantsController extends AppController
    
     public function checkPhoneNumber($phoneNumber) 
     {
-        $newPhoneNumber = preg_replace("/[^0-9]/", "", $phoneNumber);
+        $newPhoneNumber = preg_replace("/[^0-9\+]/", "", $phoneNumber);
         $newPhoneNumber = preg_replace("/^0/", "", $newPhoneNumber);
         return $newPhoneNumber;
     }
