@@ -14,7 +14,7 @@
             echo $this->Form->select('shortcode', $shortcode_options, array('id' => 'shortcode'));
             $this->Js->get('#shortcode')->event('change','
             			var countryShortcode = $("#shortcode option:selected").text();
-            			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-2);            			
+            			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-1);            			
             			$("#international-prefix").val(getCountryCodes(countryname));
             			');
         ?>
