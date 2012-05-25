@@ -157,7 +157,7 @@
   </exec>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='init-db,clear-cache'>
  <exec executable="phpunit" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="-c" />
