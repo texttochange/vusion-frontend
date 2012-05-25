@@ -17,7 +17,7 @@ class ProgramsController extends AppController
 {
 
     var $components = array('RequestHandler');
-    public $helpers = array('Js' => array('Jquery'));    
+    public $helpers = array('Time', 'Js' => array('Jquery'));    
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
@@ -70,7 +70,7 @@ class ProgramsController extends AppController
             $program['Program']['schedule-count'] = $tempSchedule->find('count');  
         }
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
-        $this->set('unmatchableReplies', $tempUnmatchableReply->find('count'));
+        $this->set('unmatchableReplies', $tempUnmatchableReply->find('all'));
         $this->set(compact('programs', 'isProgramEdit'));
     }
 

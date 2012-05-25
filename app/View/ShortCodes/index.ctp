@@ -2,16 +2,16 @@
 	<h3><?php echo __('ShortCodes');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('country');?></th>
 			<th><?php echo $this->Paginator->sort('short code');?></th>
+			<th><?php echo $this->Paginator->sort('country');?></th>
 			<th><?php echo $this->Paginator->sort('international prefix');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 	foreach ($shortcodes as $shortcode): ?>
-	<tr>
-		<td><?php echo h($shortcode['ShortCode']['country']); ?>&nbsp;</td>
+	<tr>		
 		<td><?php echo h($shortcode['ShortCode']['shortcode']); ?>&nbsp;</td>
+		<td><?php echo h($shortcode['ShortCode']['country']); ?>&nbsp;</td>
 		<td><?php echo h($shortcode['ShortCode']['international-prefix']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $shortcode['ShortCode']['_id'])); ?>
@@ -39,5 +39,6 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New ShortCode'), array('action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
 	</ul>
 </div>

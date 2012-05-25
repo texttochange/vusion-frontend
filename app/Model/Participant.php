@@ -12,8 +12,20 @@ class Participant extends MongoModel
         
     public $validate = array(
         'phone' => array(
-            'rule' => 'isReallyUnique',
-            'required' => true
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a phone number.'
+                ),
+            'hasPlus'=>array(
+                'rule' => 'hasPlus',
+                'message' => 'The phone number must begin with a "+" sign.',
+                'required' => true
+                ),
+            'isReallyUnique' => array(
+                'rule' => 'isReallyUnique',
+                'message' => 'This phone number already exists in the participant list.',
+                'required' => true
+                )
             ));
 
     
@@ -28,10 +40,22 @@ class Participant extends MongoModel
     
     public function beforeValidate()
     {
+         $this->data['Participant']['phone'] = preg_replace("/[^0-9\+]/", "",$this->data['Participant']['phone']);
+         $this->data['Participant']['phone'] = preg_replace("/^(0|00)/", "+",$this->data['Participant']['phone']);
+         if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone']))
+             $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone'];
          $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
          if (isset($this->data['Participant']['name']))
              $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
          return true;
     }
+    
+    
+    public function hasPlus($check)
+    {
+        $regex = '/^\+[0-9]+/';
+        return preg_match($regex, $check['phone']);
+    }
+    
     
 }
