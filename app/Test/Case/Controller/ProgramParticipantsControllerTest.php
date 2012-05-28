@@ -164,7 +164,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participants->Participant->create();
         $this->Participants->Participant->save(
             array(
-                'phone' => '256712747841',
+                'phone' => '+256712747841',
                 'name' => 'Gerald'
                 )
             );
@@ -236,6 +236,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
 
         $participantInDatabase = $this->Participants->Participant->find('count');
+
         $this->assertEquals(2, $participantInDatabase);
 
         
