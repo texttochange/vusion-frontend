@@ -130,7 +130,7 @@
                    <?php foreach ($programUnattachedMessages as $unattachedMessage): ?>
                    <li>
                    <?php
-                       echo $this->Html->link(__($this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['schedule'])),
+                       echo $this->Html->link(__($unattachedMessage['UnattachedMessage']['name']),
                            array(
                                'program'=>$programUrl,
                                'controller'=>'programUnattachedMessages',

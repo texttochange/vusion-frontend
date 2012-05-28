@@ -7,6 +7,7 @@
 
 	<fieldset>	
 	<?php
+        echo $this->Form->input(__('name'), array('id' => 'name'));
         $otions = array();
         $options['all participants'] = "all participants";
         echo "<div class='input-text'>";

@@ -57,5 +57,18 @@ class Participant extends MongoModel
         return preg_match($regex, $check['phone']);
     }
     
+    /*
+    public function beforeSave()
+    {
+        $this->data['Participant']['phone'] = preg_replace("/[^0-9\+]/", "",$this->data['Participant']['phone']);
+         $this->data['Participant']['phone'] = preg_replace("/^(0|00)/", "+",$this->data['Participant']['phone']);
+         if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone']))
+             $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone'];
+         $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
+         if (isset($this->data['Participant']['name']))
+             $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
+         return true;
+    }
+    */
     
 }
