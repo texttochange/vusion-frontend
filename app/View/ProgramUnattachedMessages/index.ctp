@@ -6,6 +6,7 @@
 	<div class="ttc-display-area"> 
 	<table cellpadding="0" cellspacing="0">
 	<tr>
+			<th><?php echo $this->Paginator->sort('Name');?></th>
 			<th><?php echo $this->Paginator->sort('To');?></th>
 			<th><?php echo $this->Paginator->sort('Content');?></th>
 			<th><?php echo $this->Paginator->sort('Schedule');?></th>
@@ -14,6 +15,7 @@
 	<?php
 	foreach ($unattachedMessages as $unattachedMessage): ?>
 	<tr>
+		<td><?php echo h($unattachedMessage['UnattachedMessage']['name']); ?>&nbsp;</td>
 		<td><?php echo h($unattachedMessage['UnattachedMessage']['to']); ?>&nbsp;</td>
 		<td><?php echo h($unattachedMessage['UnattachedMessage']['content']); ?>&nbsp;</td>
 		<td><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['schedule']); ?>&nbsp;</td>

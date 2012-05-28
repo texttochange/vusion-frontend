@@ -12,6 +12,15 @@ class UnattachedMessage extends MongoModel
     var $name        = 'UnattachedMessage';
     var $useDbConfig = 'mongo';
     var $useTable    = 'unattached_messages';
+    
+    public $validate = array(
+        'name' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a name for this separate message.'
+                )
+            )
+        );
 
 
     public function __construct($id = false, $table = null, $ds = null)
@@ -23,14 +32,27 @@ class UnattachedMessage extends MongoModel
 
     public function beforeValidate()
     {
-    	if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['schedule']))
+    	/*if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['schedule']))
             return true;
 
         if (!$this->DialogueHelper->validateDateFromForm($this->data['UnattachedMessage']['schedule']))
             return false;
 
         $this->data['UnattachedMessage']['schedule'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['schedule']);
-        return true;    
+        return true;   */ 
+    }
+    
+    
+    public function beforeSave()
+    {
+        if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['schedule']))
+            return true;
+
+        if (!$this->DialogueHelper->validateDateFromForm($this->data['UnattachedMessage']['schedule']))
+            return false;
+
+        $this->data['UnattachedMessage']['schedule'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['schedule']);
+        return true;
     }
     
 }

@@ -358,6 +358,14 @@ function activeForm(){
             }
         });
     });
+    $("input[name*='name']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            messages:{
+                required: wrapErrorMessage(localized_errors.validation_required_error),
+            }
+        });
+    });
     
     addContentFormHelp();
     populateSelectableGoTo();
@@ -393,21 +401,27 @@ function duplicateKeywordValidation(value, element, param) {
                 for (var y=0;y<elementWords.length;y++) {                
                     if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
                         //$(keywordInput).before("<p style='color:red'>'"+elementWords[y]+"' already used by the same script in another question</p>");
-                        errors[$(element).attr('name')] = wrapErrorMessage(elementWords[y]+ localized_error.validation_keyword_used_same_script_error);
-                        //isKeywordUsedInSameScript = true;
-                        this.showErrors(errors);
-                        return true;
+                        errorMessage = wrapErrorMessage(elementWords[y]+ localized_errors.validation_keyword_used_same_script_error);
+                        errors[$(element).attr('name')] = errorMessage;
+                        isKeywordUsedInSameScript = true;
                     }
                 }
             }
         }
     });
+    
+    if(isKeywordUsedInSameScript) {
+    	errors[$(element).attr('name')] = errorMessage;    
+        this.showErrors(errors)
+        return true;
+    }
 
     var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
     
         $.ajax({
             url: url,
             type: "POST",
+            async: false,
             data: { 'keyword': $(keywordInput).val(), 
             	    'dialogue-id': $("[name$=dialogue-id]").val(),
                     'object-id': $("[name$='_id']").val()},
