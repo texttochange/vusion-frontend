@@ -358,6 +358,14 @@ function activeForm(){
             }
         });
     });
+    $("input[name*='name']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            messages:{
+                required: wrapErrorMessage(localized_errors.validation_required_error),
+            }
+        });
+    });
     
     addContentFormHelp();
     populateSelectableGoTo();
