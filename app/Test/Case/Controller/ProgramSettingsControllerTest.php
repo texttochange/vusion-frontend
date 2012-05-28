@@ -99,6 +99,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 'utc',
                 'testdbprogram'
                 )); 
+         return $programSettings;
     }
 
 
@@ -107,7 +108,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
  */
     public function testEdit() 
     {
-        $this->mockProgramAccess();
+        $programSettingsController = $this->mockProgramAccess();
 
         $programSettings = array(
             'ProgramSettings' => array(
@@ -122,7 +123,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             'data' => $programSettings
             ));
             
-        $this->assertEquals($programSettings, $this->result);
+        $this->assertEquals($programSettings, $programSettingsController->data);
     }
 
 

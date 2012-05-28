@@ -2,10 +2,16 @@
 <H3><?php echo __('View Program Settings'); ?></H3>
 <dl>
         <?php
-            foreach ($programSettings as $programSetting) { 
-                echo $this->Html->tag('dt',__(ucfirst($programSetting['ProgramSetting']['key'])));
-                echo $this->Html->tag('dd',__($programSetting['ProgramSetting']['value']));
-            }
+            echo $this->Html->tag('dt',__('Shortcode'));
+            echo $this->Html->tag('dd', $programSettings['shortcode']);
+            echo $this->Html->tag('dt',__('International prefix'));
+            echo $this->Html->tag('dd', $programSettings['international-prefix']);
+            echo $this->Html->tag('dt',__('Timezone'));
+            echo $this->Html->tag('dd', $programSettings['timezone']);
+            echo $this->Html->tag('dt',__('Default template for open questions'));
+            echo $this->Html->tag('dd', $programSettings['default-template-open-question']);
+            echo $this->Html->tag('dt',__('Default template for closed questions'));
+            echo $this->Html->tag('dd', $programSettings['default-template-closed-question']);            
         ?>
 </dl>      
 </div>

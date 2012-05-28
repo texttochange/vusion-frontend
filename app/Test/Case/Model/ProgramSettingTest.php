@@ -80,6 +80,30 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEquals(array(), $result);    
     }
 
+
+    public function testSaveProgramSetting()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->assertEqual(1, count($this->ProgramSetting->find('count')));
+        $this->assertEqual('8282', $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode')));        
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8181');
+        $this->assertEqual(1, count($this->ProgramSetting->find('count')));
+        $this->assertEqual('8181', $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode')));        
+
+    }
+
+    public function testGetProgramSettings()
+    {
+        $this->assertEqual(0, count($this->ProgramSetting->getProgramSettings()));
+        $this->ProgramSetting->saveProgramSetting('setting1', 'value1');
+        $this->ProgramSetting->saveProgramSetting('setting2', 'value2');
+        $this->assertEqual(
+            array('setting1' => 'value1', 'setting2'=>'value2'),
+            $this->ProgramSetting->getProgramSettings()
+            );
+        
+    }
+
     
 }
 

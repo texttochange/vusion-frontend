@@ -2,15 +2,17 @@
 	<h3><?php echo __('Templates');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('Name');?></th>
-			<th><?php echo $this->Paginator->sort('Updated');?></th>
+			<th><?php echo $this->Paginator->sort('name');?></th>
+			<th><?php echo $this->Paginator->sort('type-template', 'Type');?></th>
+			<th><?php echo $this->Paginator->sort('template');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 	foreach ($templates as $template): ?>
 	<tr>
 		<td><?php echo h($template['Template']['name']); ?>&nbsp;</td>
-		<td><?php echo $this->Time->format('d/m/Y H:i:s',$template['Template']['modified']->sec); ?>&nbsp;</td>
+		<td><?php echo __($template['Template']['type-template']) ?></td>
+		<td><?php echo __($template['Template']['template']) ?></td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete # %s?', $template['Template']['_id'])); ?>

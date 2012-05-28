@@ -244,21 +244,21 @@ table td.actions a {
 dl {
 	line-height: 2em;
 	margin: 0em 0em;
-	width: 60%;
+	width: 70%;
 }
 dl dd:nth-child(4n+2),
 dl dt:nth-child(4n+1) {
-	background: #f4f4f4;
+	background: #f0f0f0;
 }
 
 dt {
-	font-weight: bold;
+/*	font-weight: bold;*/
 	padding-left: 4px;
 	vertical-align: top;
-	width: 10em;
+	width: 24em;
 }
 dd {
-	margin-left: 13em;
+	margin-left: 25em;
 	margin-top: -2em;
 	vertical-align: top;
 }
@@ -302,7 +302,7 @@ form .input {
 	color: #444;
 }
 form .required {
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 form .required label:after {
 	color: #e32;
@@ -316,20 +316,20 @@ form div.submit {
 }
 label {
 /*	display: block;*/
-	font-size: 110%;
+/*	font-size: 110%;*/
 /*	margin-bottom:3px;*/
 }
 input, textarea {
 	clear: both;
-	font-size: 140%;
+	font-size: 110%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-	padding: 1%;
+	/*padding: 1%;*/
 	width:98%;
 }
 select {
 	clear: both;
-	font-size: 120%;
-	vertical-align: text-bottom;
+	/*font-size: 120%;
+	vertical-align: text-bottom;*/
 }
 select[multiple=multiple] {
 	width: 100%;
