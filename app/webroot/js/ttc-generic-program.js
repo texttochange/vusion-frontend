@@ -413,6 +413,7 @@ function duplicateKeywordValidation(value, element, param) {
         $.ajax({
             url: url,
             type: "POST",
+            async: false,
             data: { 'keyword': $(keywordInput).val(), 
             	    'dialogue-id': $("[name$=dialogue-id]").val(),
                     'object-id': $("[name$='_id']").val()},
