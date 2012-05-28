@@ -15,4 +15,4 @@ au <span style="color:red">SHORTCODE</span>
 Example Open Question:<br />
 <span style="color:red">QUESTION<br /></span>
 To Reply, type <span style="color:red">KEYWORD </span>&lt;space&gt;&lt;<span style="color:red">ANSWER</span>&gt; &amp;
-send to <span style="color:red">SHORTCODE</span>
+send to <span style="color:red">SHORTCODE</span

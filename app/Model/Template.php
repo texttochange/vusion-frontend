@@ -41,6 +41,7 @@ class Template extends MongoModel
     public function getTemplateOptions($type)
     {
         $templates = $this->find('all', array('conditions' => array('Template.type-template' => $type)));
+        $option = array();
         foreach ($templates as $template) {
             $options[$template['Template']['_id']] = $template['Template']['name'];
         }
