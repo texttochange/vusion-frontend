@@ -28,7 +28,7 @@ var program = {"script": [
     "every":"text",
     "radio-type-question": "radiobuttons", 
     "type-question":{"closed-question":"closed-question","open-question":"open-question"},
-    "close-question": ["label-for-participant-profiling", "answers"],
+    "closed-question": ["label-for-participant-profiling", "answers"],
     "label-for-participant-profiling": "text",
     "open-question": ["answer-label", "feedback"],
     "answer-label": "text",
