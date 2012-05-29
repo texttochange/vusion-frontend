@@ -559,5 +559,20 @@
 	position: absolute;
 	right: 7px;
 	top: 16px;
+	cursor: pointer;
+}
+
+.ttc-fold-icon {
+	position: absolute;
+	right: 30px;
+	top: 21px;
+	cursor: pointer;
+}
+
+.ttc-expand-icon {
+	position: absolute;
+	right: 30px;
+	top: 18px;
+	cursor: pointer;
 }
 

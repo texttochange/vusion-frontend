@@ -248,7 +248,7 @@ dl {
 }
 dl dd:nth-child(4n+2),
 dl dt:nth-child(4n+1) {
-	background: #f0f0f0;
+/*	background: #f0f0f0;*/
 }
 
 dt {

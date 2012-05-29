@@ -309,11 +309,14 @@ function activeForm(){
                 $(elt).change(updateRadioButtonSubmenu);
             };
     });
-    $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend"), function (key, elt){
+    $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
                     $(this).parent().remove();
             });
+            var foldButton = document.createElement('img');
+            $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/fold-icon-16.png').on('click', foldForm);
+            $(elt).before(foldButton);
             $(elt).before(deleteButton);
             
     });
@@ -376,6 +379,15 @@ function activeForm(){
     populateSelectableGoTo();
 }
 
+function expandForm(){
+    $(this).parent().children().show();
+    $(this).attr('src','/img/fold-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
+}
+
+function foldForm(){
+    $(this).parent().children(":not(img):not(.ui-dform-legend)").hide();
+    $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
+}
 
 function duplicateKeywordValidation(value, element, param) {    
     var keywordInput = element;
