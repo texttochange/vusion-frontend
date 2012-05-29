@@ -76,6 +76,8 @@
 .ui-dform-fieldset {
 	border: 1px solid gray;
 	margin : 4px 4px 4px 10px;
+	position: relative;
+	padding-bottom: 10px;
 }
 
 .ui-dform-label {
@@ -104,13 +106,29 @@
 	margin :5px;	
 }
 
-[name*=interactions\[]:not(input):not([name*=answer]):not([radiochildren]):nth-child(odd) {
+[name*=interactions\[]:not(input):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not([name*=answer]):not([radiochildren]):nth-child(even) {
+[name*=interactions\[]:not(input):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even) {
 	/*background:#FDEEF4;*/
+	background: #FFCB4B;
+}
+
+[name*=responses\[]:not(input):nth-child(odd) {
+	background: #FFD97B;
+}
+
+[name*=responses\[]:not(input):nth-child(even) {
+	background: #FFCB4B;
+}
+
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):nth-child(odd) {
+	background: #FFD97B;
+}
+
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):nth-child(even) {
 	background: #FFCB4B;
 }
 
@@ -535,5 +553,11 @@
 	border: 1.5px solid white;
 	font-weight: bold;
 	background: black;
+}
+
+.ttc-delete-icon {
+	position: absolute;
+	right: 7px;
+	top: 16px;
 }
 

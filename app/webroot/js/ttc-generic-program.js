@@ -30,7 +30,7 @@ var program = {"script": [
     "type-question":{"closed-question":"closed-question","open-question":"open-question"},
     "closed-question": ["label-for-participant-profiling", "answers"],
     "label-for-participant-profiling": "text",
-    "open-question": ["answer-label", "feedback"],
+    "open-question": ["answer-label", "feedbacks"],
     "answer-label": "text",
     "requests-responses":["add-request-response"],
     "add-request-response":"button",
@@ -309,11 +309,14 @@ function activeForm(){
                 $(elt).change(updateRadioButtonSubmenu);
             };
     });
-    /*$.each($("input[name*='keyword']"), function (key,elt){
-            if (!$.data(elt,'events')){
-                $(elt).focusout(duplicateKeywordValidation);
-            };
-    });*/
+    $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend"), function (key, elt){
+            var deleteButton = document.createElement('img');
+            $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
+                    $(this).parent().remove();
+            });
+            $(elt).before(deleteButton);
+            
+    });
     $.each($("input[name*='date-time']"), function (key,elt){
             if (!$.data(elt,'events')){
                 $(elt).datetimepicker({
@@ -498,7 +501,9 @@ function updateRadioButtonSubmenu() {
     activeForm();
 };
 
+function addDeleteButton() {
 
+}
 
 
 function configToForm(item,elt,id_prefix,configTree){
