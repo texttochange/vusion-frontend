@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
+App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
     /**
     *  Users Controller
