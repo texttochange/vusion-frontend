@@ -275,6 +275,9 @@ function requestHelp(elt, baseUrl, topic) {
 
 
 function vusionAjaxError(jqXHR, textStatus, errorThrown){
+    if (this.userAction) {
+        $('#flashMessage').show().text(localized_errors['vusion_ajax_action_failed']+this.userAction).attr('class', 'message failure');
+    }
     if (textStatus == 'timeout') {
     	    $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
          return;
@@ -286,7 +289,7 @@ function pullBackendNotifications(url) {
     $.ajax({ 
         url: url, 
         success: function(data){
-            $('#flashMessage').hide();
+            $('#connectionState').hide();
             if (data['logs']) {
                 $("#notifications").empty();
                 for (var x = 0; x < data['logs'].length; x++) {
@@ -304,7 +307,7 @@ function pullSimulatorUpdate(url){
 	$.ajax({
         url: url,
         success: function(data){
-            $('#flashMessage').hide();
+            $('#connectionState').hide();
             if (data['message']) {
                     var message = $.parseJSON(data['message']);
                     $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")

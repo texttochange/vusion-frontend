@@ -8,10 +8,16 @@ var localized_errors = {
     validation_keyword_invalid_character_error: "<?php echo __(" has some invalid characters. Keywords must contain only numbers or letters separated by a comma.")?>",
     validation_keyword_blank_error: "<?php echo __("You cannot have a blank keyword.")?>",
     validation_keyword_used_same_script_error: "<?php echo __(" already used by the same script in another question.")?>",
+    vusion_ajax_action_failed: "<?php echo __("Action failed: ")?>",
 };
 
 var localized_messages = {
     vait_redirection: "<?php echo __('Wait for redirection.')?>",
+};
+
+var localized_actions= {
+    save_dialogue: "<?php echo __('Save dialogue.')?>",
+    save_request: "<?php echo __('Save request.')?>",
 };
 
 var localized_labels = {
