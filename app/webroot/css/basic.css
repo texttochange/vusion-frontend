@@ -96,9 +96,8 @@
 
 .ui-dform-text {
 	margin-left : 10px;
-	height : 10px;
 	margin-bottom : 10px;
-	width : 92%;
+	/*width : 92%;*/
 }
 
 .ui-dform-addElt {

@@ -3,6 +3,7 @@
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('ShortCode', 'Model');
+App::uses('Template', 'Model');
 
 class ProgramSettingsController extends AppController
 {
@@ -26,8 +27,9 @@ class ProgramSettingsController extends AppController
         
         $this->ProgramSetting = new ProgramSetting($options);
         
-        $optionsShortCode = array('database' => 'vusion');
-        $this->ShortCode  = new ShortCode($optionsShortCode);
+        $optionVisionDb = array('database' => 'vusion');
+        $this->ShortCode  = new ShortCode($optionVisionDb);
+        $this->Template   = new Template($optionVisionDb);
     }
 
 
@@ -51,7 +53,15 @@ class ProgramSettingsController extends AppController
     public function view()
     {
     	
-        $programSettings = $this->ProgramSetting->find('all');
+        $programSettings = $this->ProgramSetting->getProgramSettings();
+        if (isset($programSettings['default-template-open-question'])) {
+            $template = $this->Template->read(null, $programSettings['default-template-open-question']);
+            $programSettings['default-template-open-question'] = $template['Template']['name'];
+        }
+        if (isset($programSettings['default-template-closed-question'])) {
+            $template = $this->Template->read(null, $programSettings['default-template-closed-question']);
+            $programSettings['default-template-closed-question'] = $template['Template']['name'];
+        }
         $this->set(compact('programSettings'));
     }
 
@@ -60,51 +70,37 @@ class ProgramSettingsController extends AppController
     {    	
         if ($this->request->is('post') || $this->request->is('put')) {
             foreach ($this->request->data['ProgramSettings'] as $key => $value) {
-                 //echo $key ." = " . $value;
-                $programSetting = $this->ProgramSetting->find('programSetting', array( 'key' => $key));
-                if (!$programSetting) {
-                    //save
-                    $this->ProgramSetting->create();
-                } else {
-                    //update
-                    $this->ProgramSetting->id = $programSetting[0]['ProgramSetting']['_id'];
-                }
-                if ($this->ProgramSetting->save(array(
-                        'key' => $key,
-                        'value' => $value
-                        ))){
-                    $this->Session->setFlash("Program Settings saved.",
+                if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
+                    $this->Session->setFlash(__("Program Settings saved."),
                         'default',
                         array('class'=>'message success')
+                    );
+                } else {
+                    $this->Session->setFlash(__("Save Program Settings failed."),
+                        'default',
+                        array('class'=>'message failure')
                     );
                 }
             }
         }
         $shortcodes = $this->ShortCode->find('all');
         $this->set(compact('shortcodes'));
-        $shortcode           = $this->ProgramSetting->find('programSetting', array( 'key' => 'shortcode'));
-        $internationalprefix = $this->ProgramSetting->find('programSetting', array( 'key' => 'international-prefix'));
-        $timezone            = $this->ProgramSetting->find('programSetting', array( 'key' => 'timezone'));
-        //print_r($shortcode);
-        if ($shortcode) {
-            //echo "there is a shortcode";
-            $programSettings = array(
-                'ProgramSettings' => array (
-                    'shortcode' => $shortcode[0]['ProgramSetting']['value'],
-                    'international-prefix' => $internationalprefix[0]['ProgramSetting']['value'],
-        	        'timezone' => $timezone[0]['ProgramSetting']['value']
-        	    )
-        	);
-            
-            $programTimezoneArray = $this->ProgramSetting->find('programSetting', array('key' => 'timezone'));
-            $programTimezone = $programTimezoneArray[0]['ProgramSetting']['value'];
-    	    $this->set(compact('programTimezone'));
+       
+        $openQuestionTemplateOptions   = $this->Template->getTemplateOptions('open-question');
+        $closedQuestionTemplateOptions = $this->Template->getTemplateOptions('closed-question');  
+        $this->set(compact('openQuestionTemplateOptions', 'closedQuestionTemplateOptions'));
+
+        $settings = $this->ProgramSetting->getProgramSettings();
+
+        if ($settings) {
+            $programSettings['ProgramSettings'] = $settings;
+    	    if (isset($settings['timezone']))
+    	        $this->set('programTimezone', $settings['timezone']);
     	    
-            
             $this->request->data = $programSettings;
-            return $programSettings;
         }
-        
+
+       
     }
 
 

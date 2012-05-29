@@ -52,5 +52,30 @@ class ProgramSetting extends MongoModel
             return array();
     }
 
+    public function saveProgramSetting($key, $value) 
+    {
+        $setting = $this->find('all', array('conditions' => array('ProgramSetting.key' => $key)));
+        
+        $this->create();
+        if ($setting) {
+            $this->id = $setting[0]['ProgramSetting']['_id'];
+        }
+        return $this->save(
+            array(
+                'key' => $key,
+                'value' => $value
+                )
+            );
+    }
+
+    public function getProgramSettings()
+    {
+        $rawSettings = $this->find('all');
+        $settings = array();
+        foreach ($rawSettings as $setting) {
+            $settings[$setting['ProgramSetting']['key']] = $setting['ProgramSetting']['value'];
+        }
+        return $settings;
+    }
 
 }

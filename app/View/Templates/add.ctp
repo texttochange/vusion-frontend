@@ -2,10 +2,20 @@
     <h3><?php echo __('Add Template'); ?></h3>
     <?php echo $this->Form->create('Template'); ?>
        <?php echo $this->Form->input(__('name')); ?>
+       <div class="input select required <?php if ($this->Form->isFieldError('type-template')) {echo "error";}?>">
+       <?php 
+       echo $this->Form->label(__('Template type'));
+       echo "<br>";
+       echo $this->Form->select('type-template', $typeTemplateOptions, array(
+           'empty'=> __('Template type...'))); 
+       if ($this->Form->isFieldError('type-template')) {
+           echo $this->Form->error('type-template');
+       }
+       ?>
+       </div>
        <?php echo $this->Form->input(__('template'), array('rows'=>3)); ?>
        <?php $this->Js->get('document')->event('ready','addContentFormHelp();'); ?>
     <?php echo $this->Form->end(__('Submit')); ?>
-
 
 </div>
 <div class="actions">

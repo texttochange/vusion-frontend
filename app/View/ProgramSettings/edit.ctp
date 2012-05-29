@@ -39,6 +39,22 @@
             //echo $this->Form->select('timezone', $timezone_identifiers, array('value'=>'412'));
         ?>
         </div>
+        <div>
+        <?php 
+            echo $this->Form->label(__('Default template for open questions'));
+            echo "<br>";
+            echo $this->Form->select('default-template-open-question', $openQuestionTemplateOptions, array(
+                'empty'=> __('Template...')));
+       ?>
+        </div>
+                <div>
+        <?php 
+            echo $this->Form->label(__('Default template for closed questions'));
+            echo "<br>";
+            echo $this->Form->select('default-template-closed-question', $closedQuestionTemplateOptions, array(
+                'empty'=> __('Template...')));
+       ?>
+        </div>
     </fieldset>
 <?php echo $this->Form->end(__('Save'));?>
 </div>

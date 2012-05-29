@@ -1,5 +1,18 @@
-<p>Re-type the text below in the Template box while replacing text in black with its translation in the language being created.Maintain the rest of the words and characters in their case and position</p>
-Example:<br />
+<p>A template describe the formating messages. It's usually use for localization of open and closed question. The words QUESTION, ANSWERS, ANSWER, KEYWORD and SHORTCODE will be replace when the message is send.</p>
+
+Example Closed Question in english:<br />
 <span style="color:red">QUESTION<br />ANSWERS<br /></span>
 To Reply, type <span style="color:red">KEYWORD </span>&lt;space&gt;&lt;Answer Nr&gt; &amp;
 send to <span style="color:red">SHORTCODE</span>
+<br />
+<br />
+Example Closed Question in french:<br />
+<span style="color:red">QUESTION<br />ANSWERS<br /></span>
+Pour répondre, envoyer <span style="color:red">KEYWORD </span>&lt;espace&gt;&lt;RéponseNum&gt; 
+au <span style="color:red">SHORTCODE</span>
+<br />
+<br />
+Example Open Question:<br />
+<span style="color:red">QUESTION<br /></span>
+To Reply, type <span style="color:red">KEYWORD </span>&lt;space&gt;&lt;<span style="color:red">ANSWER</span>&gt; &amp;
+send to <span style="color:red">SHORTCODE</span

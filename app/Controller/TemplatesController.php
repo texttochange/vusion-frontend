@@ -27,6 +27,12 @@ class TemplatesController extends AppController
                 );
         }
         $this->Template = new Template($options);
+
+        $templateTypes = $this->Template->typeTemplates;
+        $this->typeTemplateOptions = array();
+        foreach ($templateTypes as $key => $label) {
+            $this->typeTemplateOptions[$key] = __($label);
+        }
     }
     
     
@@ -37,7 +43,8 @@ class TemplatesController extends AppController
     }
     
     public function add()
-    {
+    { 
+        $this->set('typeTemplateOptions', $this->typeTemplateOptions);
         if ($this->request->is('post')) {
             $this->Template->create();
             if ($this->Template->save($this->request->data)) {
@@ -56,6 +63,7 @@ class TemplatesController extends AppController
                 );
             }
         }
+       
     }
     
     
@@ -68,6 +76,7 @@ class TemplatesController extends AppController
         if (!$this->Template->exists()) {
             throw new NotFoundException(__('Invalid template.') . $id);
         }
+        $this->set('typeTemplateOptions', $this->typeTemplateOptions);
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Template->save($this->request->data)) {
                 $template = $this->request->data;
@@ -117,7 +126,6 @@ class TemplatesController extends AppController
         $this->redirect(array('controller' => 'templates',
                 'action' => 'index'
                 ));
-        
     }
     
     
