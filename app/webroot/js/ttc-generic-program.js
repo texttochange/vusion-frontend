@@ -163,7 +163,8 @@ function saveFormOnServer(){
             }
         },
         timeout: 1000,
-        error: vusionAjaxError
+        error: vusionAjaxError,
+        userAction: localized_actions['save_dialogue'],
     });
 }
 
@@ -197,7 +198,8 @@ function saveRequestOnServer(){
             }
         },
         timeout: 1000,
-        error: vusionAjaxError
+        error: vusionAjaxError,
+        userAction: localized_actions['save_request'],
     });
 }
 
@@ -435,7 +437,7 @@ function duplicateKeywordValidation(value, element, param) {
 
 function validateKeywordReply(data, textStatus) {
     var elt = $("[name='"+this.inputName+"']");
-    $('#flashMessage').hide();
+    $('#connectionState').hide();
     if (data.status=='fail') { //not used
     //    $(elt).before("<p style='color:green'> ok </p>");
         //else    //already used in another Program

@@ -34,9 +34,17 @@ class Template extends MongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please write a template.'
-                )
+                ),
+            'hasAllTemplateKeyword' => array(
+                'rule' => 'hasAllTemplateKeyword'
+                ),
             ),
         );
+
+    public function beforeValidate()
+    {
+        return true;
+    }
 
     public function getTemplateOptions($type)
     {
@@ -46,6 +54,29 @@ class Template extends MongoModel
             $options[$template['Template']['_id']] = $template['Template']['name'];
         }
         return $options;
+    }
+
+    public function hasAllTemplateKeyword($check)
+    {
+
+        if (!preg_match('/QUESTION/', $check['template'])) 
+            return __("Please use 'QUESTION' in the template.");
+
+        if (!preg_match('/SHORTCODE/', $check['template'])) 
+            return __("Please use 'SHORTCODE' in the template.");
+
+        if (!preg_match('/KEYWORD/', $check['template'])) 
+            return __("Please use 'KEYWORD' in the template.");
+        
+        if ($this->data['Template']['type-template'] == 'open-question') {
+            if (!preg_match('/ANSWER/', $check['template']))
+                return __("Please use 'ANSWER' in the template.");
+        } elseif ($this->data['Template']['type-template'] == 'closed-question') {
+            if (!preg_match('/ANSWERS/', $check['template']))
+                return __("Please use 'ANSWERS' in the template.");
+        }
+
+        return true;
     }
 
 

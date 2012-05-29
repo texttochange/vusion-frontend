@@ -52,12 +52,14 @@ class TemplateTestCase extends CakeTestCase
 
         $openTemplate = array(
             'name'=>'my open template',
-            'type-template'=>'open-question'
+            'type-template'=>'open-question',
+            'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
             );
 
         $closedTemplate = array(
             'name'=>'my closed template',
-            'type-template'=>'closed-question'
+            'type-template'=>'closed-question',
+            'template' => 'QUESTION, SHORTCODE, ANSWERS, KEYWORD'
             );
 
         $this->Template->create();

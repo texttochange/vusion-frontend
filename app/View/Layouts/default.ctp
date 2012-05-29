@@ -97,7 +97,12 @@
 			             'class' => 'message', 
 			             'style' => 'display: none')
 			             );
-			     } 
+			     }
+			     echo $this->Html->tag('div', '', array(
+			         'id' => 'connectionState',
+			         'class' => 'connection-message',
+			         'style' => 'display: none')
+			         );
 			     
 			     ?>
 			

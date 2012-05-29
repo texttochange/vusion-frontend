@@ -93,7 +93,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $this->Templates->Template->create();
         $this->Templates->Template->save(array(
             'name' => 'example',
-            'template' => 'type KEYWORD'
+            'type-template' => 'open question',
+            'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
             ));
         
         $this->testAction("/templates/index");
@@ -108,7 +109,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $templates = array(
             'Templates'=>array(
                 'name'=>'example',
-                'template'=>'type KEYWORD'
+                'type-template' => 'open question',
+                'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                 )
             );
         $this->testAction("/templates/add", array(
@@ -125,7 +127,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $newtemplates = array(
             'Templates'=>array(
                 'name'=>'example',
-                'template'=>'type KEYWORD'
+                'type-template' => 'open question',
+                'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                 )
             );
         $this->Templates->Template->create();
@@ -135,8 +138,9 @@ Class TemplatesControllerTestCase extends ControllerTestCase
             'method'=>'post',
             'data'=>array(
                 'Templates'=>array(
-                    'name'=>'example one',
-                    'template'=>'type KEYWORD here'
+                    'name'=>'example one',            
+                    'type-template' => 'open question',
+                    'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                     )
                 )
             ));
@@ -150,7 +154,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $templates = array(
             'Templates'=>array(
                 'name'=>'example',
-                'template'=>'type KEYWORD'
+                'type-template' => 'open question',
+                'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                 )
             );
         $this->Templates->Template->create();

@@ -31,6 +31,9 @@ class AppController extends Controller
                 'Form' => array(
                     //'field' => array('username' => 'username'),
                     'fields' => array('username' => 'email')
+                    ),
+                'Basic' => array(
+                    'fields' => array('username' => 'email')
                     )
                 ),
             'authorize' => array(
