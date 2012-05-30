@@ -574,6 +574,9 @@ input[type=submit]:active,
 .related {
 	clear: both;
 	display: block;
+	width: 70%;
+	margin-top: 30px;
+	overflow-y: auto;
 }
 
 /** Debugging **/

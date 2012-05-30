@@ -3,6 +3,7 @@
 App::uses('ProgramHomeController', 'Controller');
 App::uses('ScriptMaker', 'Lib');
 App::uses('UnattachedMessage','Model');
+App::uses('ProgramSetting', 'Model');
 
 /**
  * TestProgramHomeControllerController *
@@ -54,6 +55,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->Home->Dialogue->deleteAll(true, false);
         $this->Home->Schedule->deleteAll(true, false);
         $this->Home->UnattachedMessage->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
     }
 
 
@@ -64,6 +66,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->Home->Dialogue          = new Dialogue($options);
         $this->Home->Schedule          = new Schedule($options);
         $this->Home->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting          = new ProgramSetting($options);
     }
 
 
@@ -175,8 +178,10 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $savedDialogue = $this->Home->Dialogue->saveDialogue($dialogue);
         $this->Home->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
         
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
         $unattachedMessage = array(
-            'schedule' => '2021-06-12T12:30:00',
+            'schedule' => '12/06/2021 12:30',
             'content' => 'Hello',
             );        $this->Home->UnattachedMessage->create();
         $this->Home->UnattachedMessage->save($unattachedMessage);

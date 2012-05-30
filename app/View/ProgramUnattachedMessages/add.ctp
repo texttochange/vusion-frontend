@@ -10,9 +10,15 @@
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $otions = array();
         $options['all participants'] = "all participants";
-        echo "<div class='input-text'>";
+        $error = "";
+        if ($this->Form->isFieldError('to')) 
+            $error = "error";            
+        echo "<div class='input-text required ".$error."'>";
         echo $this->Html->tag('label',__('Send To'));
-		echo $this->Form->select('to', $options);
+        echo "<br />";
+		echo $this->Form->select('to', $options, array('empty'=>'....'));
+		if ($this->Form->isFieldError('to'))
+		    echo $this->Form->error('to');
 		echo "</div>";
 		echo $this->Form->input(__('content'), array('rows'=>5));
 		echo $this->Form->input(__('schedule'), array('id'=>'schedule'));
