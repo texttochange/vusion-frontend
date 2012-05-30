@@ -234,7 +234,7 @@ function clickBasicButton(){
     activeForm();
     
 };
-
+/*
 function getSelectableGotTo() {
     //get dialogue elements id or name
     var list = [];
@@ -266,7 +266,7 @@ function populateSelectableGoTo(){
                     }
                 });
     });
-}
+}*/
 
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
@@ -346,7 +346,7 @@ function activeForm(){
     });
     
     addContentFormHelp();
-    populateSelectableGoTo();
+   // populateSelectableGoTo();
 }
 
 function expandForm(){
@@ -405,17 +405,17 @@ function duplicateKeywordValidation(value, element, param) {
 
     var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
     
-        $.ajax({
+    $.ajax({
             url: url,
             type: "POST",
             async: false,
             data: { 'keyword': $(keywordInput).val(), 
-            	    'dialogue-id': $("[name$=dialogue-id]").val(),
-                    'object-id': $("[name$='_id']").val()},
+                'dialogue-id': $("[name$=dialogue-id]").val(),
+                'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
-        success: validateKeywordReply,
-        timeout: 1000,
-        error: vusionAjaxError,
+            success: validateKeywordReply,
+            timeout: 1000,
+            error: vusionAjaxError,
     });
     return true;
 }
@@ -482,10 +482,6 @@ function updateRadioButtonSubmenu() {
     
     activeForm();
 };
-
-function addDeleteButton() {
-
-}
 
 
 function configToForm(item,elt,id_prefix,configTree){
