@@ -274,37 +274,7 @@ function activeForm(){
                 $(value).click(clickBasicButton);
             }
     });
-    $.each($("input[name*='type-interaction']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-schedule']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-action']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-answer-action']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-routing']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-reminder']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-question']"),function (key, elt){
+    $.each($("input[name*='type-']"),function (key, elt){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateRadioButtonSubmenu);
             };
