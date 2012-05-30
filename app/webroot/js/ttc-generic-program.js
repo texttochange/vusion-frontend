@@ -298,11 +298,11 @@ function activeForm(){
             };
     });
 
-    $("#dynamic-generic-program-form").validate(/*{
+    $("#dynamic-generic-program-form").validate({
             submitHandler: function(form) {
-                alert('hey');
+                form.submit();
             },
-    }*/);
+    });
     $("input[name*='date-time']").each(function (item) {
             $(this).rules("add",{
                 required:true,
