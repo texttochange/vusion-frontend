@@ -234,4 +234,36 @@ class ProgramDialoguesController extends AppController
     }
 
 
+    public function delete()
+    {
+         $programUrl = $this->params['program'];
+         $dialogueId = $this->params['id'];
+         if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+         }
+         if ($this->Dialogue->deleteDialogue($dialogueId)) {
+             $this->Session->setFlash(
+                 __('Dialogue deleted.'),
+                 'default',
+                 array('class'=>'message success')
+                 );
+             $this->redirect(array(
+                 'program' => $programUrl,
+                 'action' => 'index'
+                 ));
+         }  
+         $this->Session->setFlash(
+             __('Delete dialogue failed.'), 
+             'default',
+             array('class' => "message failure")
+             );
+         $this->redirect(
+             array(
+                 'program' => $programUrl,
+                 'action' => 'index'
+                 )
+             );
+    }
+
+
 }

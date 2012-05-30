@@ -234,5 +234,25 @@ class DialogueTestCase extends CakeTestCase
         $this->assertEquals('id not to be removed', isset($dialogueOne['Dialogue']['interactions'][2]['interaction-id']));      
     }
 
+    
+    public function testDeleteDialogue()
+    {
+         $dialogueOne['Dialogue'] = array(
+             'name'=> 'mydialgoue',
+             'dialogue-id'=> '01'
+             );
+         $dialogueTwo['Dialogue'] = array(
+             'name'=> 'mydialgoue',
+             'dialogue-id'=> '02'
+             );
+         $this->Dialogue->saveDialogue($dialogueOne);
+         $this->Dialogue->saveDialogue($dialogueTwo);
+         
+         $this->Dialogue->deleteDialogue('01');
+         
+         $dialogues = $this->Dialogue->getActiveAndDraft();
+         $this->assertEqual(1, count($dialogues));
+         $this->assertEqual('02', $dialogues[0]['dialogue-id']);
+    }
 
 }

@@ -175,6 +175,7 @@ class Dialogue extends MongoModel
         return $this->save($dialogue);
     }
 
+
     public function useKeyword($keyword)
     {
         foreach ($this->getActiveDialogues() as $activeDialogue) {
@@ -198,5 +199,10 @@ class Dialogue extends MongoModel
         return array();
     }
 
+
+    public function deleteDialogue($dialogueId)
+    {
+        return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
+    }
 
 }

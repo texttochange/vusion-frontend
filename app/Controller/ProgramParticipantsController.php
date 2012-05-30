@@ -125,7 +125,7 @@ class ProgramParticipantsController extends AppController
                 false
                 );
             $this->Session->setFlash(
-                __('Participant and related schedule deleted'),
+                __('Participant and related schedule deleted.'),
                 'default',
                 array('class'=>'message success')
             );

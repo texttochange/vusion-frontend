@@ -660,5 +660,17 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     }
 
     
+    public function testDeleteDialogue()
+    {        
+        $this->mockProgramAccess();
+
+        $this->instanciateModels();
+        $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        
+        $this->testAction('/testurl/programDialogues/delete/'.$savedDialogue['Dialogue']['dialogue-id']);
+
+        $this->assertEqual(0, $this->Dialogue->find('count'));
+    }
+        
 
 }
