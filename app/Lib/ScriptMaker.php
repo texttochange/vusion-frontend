@@ -60,4 +60,15 @@ class ScriptMaker
         return $request;
     }
 
+    public function getDialogueSchedule($participantPhone='08', $dialogueId='01', $interactionId='01')
+    {
+        return array('Schedule' => array(
+                'participant-phone' => $participantPhone,
+                'dialogue-id' => $dialogueId,
+                'interaction-id' => $interactionId,
+                'date-time' => '2013/12/01T12:12'
+            ));
+    }
+
+
 }

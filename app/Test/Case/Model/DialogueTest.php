@@ -1,11 +1,13 @@
 <?php
 App::uses('Dialogue', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
+App::uses('Schedule', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
 
 class DialogueTestCase extends CakeTestCase
 {
-
+/*
     protected $_config = array(
         'datasource' => 'Mongodb.MongodbSource',
         'host' => 'localhost',
@@ -16,12 +18,12 @@ class DialogueTestCase extends CakeTestCase
         'prefix' => '',
         'persistent' => true,
         );
-
+*/
     
     public function setUp()
     {
         parent::setUp();
-
+/*
         $connections = ConnectionManager::enumConnectionObjects();
         
         if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
@@ -31,19 +33,27 @@ class DialogueTestCase extends CakeTestCase
         
         ConnectionManager::create('mongo_test', $this->_config);
         $this->Mongo = new MongodbSource($this->_config);
-
-        $option         = array('database'=>'test');
+*/
+        $option         = array('database'=>'testdbprogram');
         $this->Dialogue = new Dialogue($option);
+        $this->Schedule = new Schedule($option);
 
+        $this->Maker = new ScriptMaker();
+/*
         $this->Dialogue->setDataSource('mongo_test');
         $this->Dialogue->deleteAll(true, false);
+        
+        $this->Dialogue->setDataSource('mongo_test');
+        $this->Dialogue->deleteAll(true, false);*/
     }
 
 
     public function tearDown()
     {
         $this->Dialogue->deleteAll(true, false);
+        $this->Schedule->deleteAll(true, false);
         unset($this->Dialogue);
+        unset($this->Schedule);
         parent::tearDown();
     }
 
@@ -68,7 +78,7 @@ class DialogueTestCase extends CakeTestCase
         $saveActiveSecondVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
 
-        /**adding a new Dialogue*/
+        //adding a new Dialogue
         unset($data['Dialogue']['dialogue-id']);
         $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($data);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
@@ -80,7 +90,7 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue($activeAndDraft[1]['Active']==0);
         $this->assertTrue($activeAndDraft[1]['Draft']!=0);
 
-        /**active the new Dialogue*/
+        //active the new Dialogue
         $saveActiveOtherDialogue = $this->Dialogue->makeDraftActive($saveDraftOtherDialogue['Dialogue']['dialogue-id']);
         $this->assertEquals(2, count($this->Dialogue->getActiveDialogues()));
         $this->assertEquals(2, count($this->Dialogue->getDialogues()));
@@ -90,7 +100,7 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue($activeAndDraft[1]['Active']!=0);
         $this->assertTrue($activeAndDraft[1]['Draft']==0);
 
-        /**add new version of the dialogue and check we get the correct one*/
+        //add new version of the dialogue and check we get the correct one
         $data['Dialogue']['dialogue-id'] = $saveActiveOtherDialogue['Dialogue']['dialogue-id']; 
         $data['Dialogue']['do'] = "something new";
         $saveNewVersionOtherDialogue = $this->Dialogue->saveDialogue($data);
@@ -98,7 +108,7 @@ class DialogueTestCase extends CakeTestCase
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
         $this->assertEquals($saveNewVersionOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']."");
         
-        /**reactivate the olderone*/
+        //reactivate the olderone
         $this->Dialogue->makeActive($saveActiveOtherDialogue['Dialogue']['_id']);
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
         $this->assertEquals($saveActiveOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']);
@@ -106,6 +116,24 @@ class DialogueTestCase extends CakeTestCase
     }
 
 
+    public function testMakeDialogueActive_deleteNonPresentInteractions()
+    {
+         $savedDialogue = $this->Dialogue->saveDialogue($this->Maker->getOneDialogue());
+         $schedule = $this->Maker->getDialogueSchedule(
+             '08',
+             $savedDialogue['Dialogue']['dialogue-id'],
+             '01'
+             );
+         $this->Schedule->create();
+         $this->Schedule->save($schedule);
+         
+         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
+         
+         $this->assertEqual(0, $this->Schedule->find('count'));
+         
+    }
+
+/*
     public function testValidate_date_ok()
     {
         $data['Dialogue'] = array(
@@ -241,11 +269,17 @@ class DialogueTestCase extends CakeTestCase
              'name'=> 'mydialgoue',
              'dialogue-id'=> '01'
              );
+         $schedule['Schedule'] = array(
+             'dialogue-id'=>'01',
+             'interaction-id'=>'01',
+             );   
          $dialogueTwo['Dialogue'] = array(
              'name'=> 'mydialgoue',
              'dialogue-id'=> '02'
              );
          $this->Dialogue->saveDialogue($dialogueOne);
+         $this->Schedule->create();
+         $this->Schedule->save($schedule);
          $this->Dialogue->saveDialogue($dialogueTwo);
          
          $this->Dialogue->deleteDialogue('01');
@@ -253,6 +287,8 @@ class DialogueTestCase extends CakeTestCase
          $dialogues = $this->Dialogue->getActiveAndDraft();
          $this->assertEqual(1, count($dialogues));
          $this->assertEqual('02', $dialogues[0]['dialogue-id']);
-    }
 
+         $this->assertEqual(0, $this->Schedule->find('count'));
+    }
+*/
 }

@@ -1,6 +1,7 @@
 <?php
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::Uses('Schedule', 'Model');
 
 class Dialogue extends MongoModel
 {
@@ -18,6 +19,7 @@ class Dialogue extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         $this->DialogueHelper = new DialogueHelper();
+        $this->Schedule = new Schedule($id, $table, $ds);
     }
 
 
@@ -63,6 +65,13 @@ class Dialogue extends MongoModel
             return false;
         $dialogue = $this->read(null, $objectId);
         $dialogue['Dialogue']['activated'] = 1;
+        if (isset($dialogue['Dialogue']['interactions'])) {
+            $interactionIds = array();
+            foreach ($dialogue['Dialogue']['interactions'] as $interaction) {
+                $interactionIds[] = $interaction['interaction-id'];
+            }
+            $this->Schedule->deleteAll(array('Schedule.interaction-id'=>array('$nin'=>$interactionIds)), false);
+        } 
         return $this->save($dialogue);
     }
 
@@ -71,11 +80,7 @@ class Dialogue extends MongoModel
     {
         $draft = $this->find('draft', array('dialogue-id'=>$dialogueId));
         if ($draft) {
-            $draft[0]['Dialogue']['activated'] = 1;
-            $this->create();
-            $this->id = $draft[0]['Dialogue']['_id'];
-            $this->save($draft[0]['Dialogue']);
-            return $draft[0];
+            return $this->makeActive($draft[0]['Dialogue']['_id'].'');
         }
         return false;
     }
@@ -202,7 +207,9 @@ class Dialogue extends MongoModel
 
     public function deleteDialogue($dialogueId)
     {
+        $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
     }
+
 
 }
