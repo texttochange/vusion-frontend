@@ -21,7 +21,7 @@
 
 		echo $scripts_for_layout;
 		
-		echo $this->Html->script('jqueryui/js/jquery-1.6.2.min.js');
+		echo $this->Html->script('jquery-1.7.2.min.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
 		echo $this->Html->script('jqueryui/js/jquery.ui.datepicker.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
