@@ -70,7 +70,7 @@
 	Router::mapResources('programHistory', array('prefix' => '/:program/'));
 	Router::mapResources('programRequests', array('prefix' => '/:program/'));
 	Router::mapResources('Programs');
-	Router::mapResources('users');
+	//Router::mapResources('users');
 	Router::parseExtensions('json', 'csv');
 	
 /**

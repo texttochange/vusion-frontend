@@ -145,20 +145,22 @@ class UsersController extends AppController
 
     public function login()
     {
-        if ($this->Auth->login()) {
-            $this->Session->setFlash(__('Login successful.'),
-                'default',
-                array('class'=>'message success')
-            );
-            if ($this->Session->read('Auth.User.group_id') == 1) {
-                $this->redirect(array('controller' => 'admin'));
+        if ($this->request->is('post')) {
+            if ($this->Auth->login()) {
+                $this->Session->setFlash(__('Login successful.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                if ($this->Session->read('Auth.User.group_id') == 1) {
+                    $this->redirect(array('controller' => 'admin'));
+                }
+                $this->redirect($this->Auth->redirect());
+            } else {
+                if($this->request->is('post')) {
+                    $this->Session->setFlash(__('Invalid username or password, try again.'));
+                }
             }
-            $this->redirect($this->Auth->redirect());
-        } else {
-            if($this->request->is('post')) {
-                $this->Session->setFlash(__('Invalid username or password, try again.'));
-            }
-        }    
+        }
     }
 
 
