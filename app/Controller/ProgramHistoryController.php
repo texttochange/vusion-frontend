@@ -33,10 +33,36 @@ class ProgramHistoryController extends AppController
 
     public function index()
     {
-        if (preg_grep('/^filter_/', array_keys($this->params['url']))) {        
-            $conditons = array();
+        $this->paginate = array(
+            'all',
+            'conditions' => $this->_getConditions()
+        );
+        
+        $statuses = $this->paginate();
+        $this->set(compact('statuses'));
+    }
+    
+    
+    public function export()
+    {        
+        $this->paginate = array(
+            'all',
+            'fields' => array('participant-phone','message-type','message-status','message-content','timestamp'),
+            'conditions' => $this->_getConditions()
+        );
+        
+        $data = $this->paginate();
+        $this->set(compact('data'));
+    }
+    
+    
+    protected function _getConditions()
+    {
+        $conditions = array();
+        
+        if (preg_grep('/^filter_/', array_keys($this->params['url']))) {    
             $or = array();
-            $orConditons = array();
+            $orConditions = array();
             if (isset($this->params['url']['filter_type']))
                 $conditions['message-type'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))
@@ -73,23 +99,11 @@ class ProgramHistoryController extends AppController
                     }
                 }
             }
-            //print_r($conditions);
-        
-            $this->paginate = array(
-                'all',
-                'conditions' => $conditions
-            );
         }
-        
         if (isset($this->params['url']['filter'])) {
-            if ($this->params['url']['filter']=='non_matching_answers') { 
-                $this->paginate = array(
-                    'all',
-                    'conditions' => array(
-                        'message-type' => 'received',
-                        'matching-answer' => null
-                        )
-                    );
+            if ($this->params['url']['filter']=='non_matching_answers') {
+                $conditions['message-type'] = 'received';
+                $conditions['matching-answer'] = null;
             } else {
                 $this->Session->setFlash(__('The filter "%s" is not supported.',$this->params['url']['filter']), 
                 'default',
@@ -97,21 +111,7 @@ class ProgramHistoryController extends AppController
                 );
             }
         }
-        $statuses = $this->paginate();
-        $this->set(compact('statuses'));
-    }
-    
-    
-    public function export()
-    {        
-        // Stop Cake from displaying action's execution time
-        //Configure::write('debug',0);
-        
-        $data = $this->History->find('all', array(
-            'fields' => array('participant-phone','message-type','message-status','message-content','timestamp')
-            ));
-        // Make the data available to the view (and the resulting CSV file)
-        $this->set(compact('data'));
+        return $conditions;
     }
     
 
