@@ -74,11 +74,15 @@
 }
 
 .ui-dform-fieldset {
-	border: 1px solid gray;
+	border: 1px dotted gray;
 	margin : 4px 4px 4px 10px;
 	position: relative;
 	padding-bottom: 10px;
 }
+
+.ui-dform-fieldset .actions {
+	border: none;
+}	
 
 .ui-dform-label {
 /*	float : left;*/
@@ -293,11 +297,16 @@
 .ttc-validation-error {
     position: absolute;
     left: -700px;
-    top:-65px;
+    top:-49px;
     background: pink;
     border: solid white;
     padding: 5px;
     font-size: 12px;
+}
+
+/*Chrome hack*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.ttc-validation-error{   top: -32px; }
 }
 
 .ttc-validation-error:after {
@@ -574,4 +583,5 @@
 	top: 18px;
 	cursor: pointer;
 }
+
 
