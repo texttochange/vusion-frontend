@@ -9,7 +9,7 @@ mongo $path/dropAll.js
 main_database=('vusion')
 
 #general tables
-main_tables=('shortcodes' 'unmatchable_reply', 'templates')
+main_tables=('shortcodes' 'unmatchable_reply' 'templates')
 
 #program specific database
 specific_databases=('m4h' 'mrs' 'wiki')
