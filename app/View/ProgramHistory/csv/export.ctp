@@ -14,7 +14,10 @@
         foreach ($row['History'] as $key => &$value)
         {
             // Apply opening and closing text delimiters to every value
-            $value = "\"".$value."\"";
+            if ($key == 'timestamp')
+                $value = "\"".$this->Time->format('d/m/Y H:i:s', $value)."\"";
+            else               
+                $value = "\"".$value."\"";           
         }
         //remove the id from the array
         $id =array_shift($row['History']);

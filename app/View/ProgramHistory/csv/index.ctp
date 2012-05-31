@@ -18,7 +18,11 @@
         foreach ($headers as $key)
         {
             if (isset($row['History'][$key])) {
-                echo "\"".$row['History'][$key]."\",";
+                // Apply opening and closing text delimiters to every value
+                if ($key == 'timestamp')
+                    echo "\"".$this->Time->format('d/m/Y H:i:s', $row['History'][$key])."\",";
+                else 
+                    echo "\"".$row['History'][$key]."\",";
             } else { 
                 echo ",";
             }
