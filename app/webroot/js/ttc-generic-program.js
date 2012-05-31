@@ -586,12 +586,16 @@ function configToForm(item,elt,id_prefix,configTree){
                     }
                     elt["elements"].push(
                         {
-                            "name":id_prefix+"."+sub_item,
-                            "caption": label,
-                            "type": program[sub_item],
-                            "options": options
+                            "type":"fieldset",
+                            'class': "actions",
+                            'elements': [{
+                                    "name":id_prefix+"."+sub_item,
+                                    "caption": label,
+                                    "type": program[sub_item],
+                                    "options": options
+                            }]
                         });
-                } else {    
+                } else {  //It's not a Radio, Select or a button  
                     var eltValue = "";
                     if (configTree) {
                         eltValue = configTree[sub_item];
@@ -610,8 +614,7 @@ function configToForm(item,elt,id_prefix,configTree){
                             "value": eltValue
                         });
                 }
-            } else {
-                //alert("add fieldset "+sub_item)
+            } else { //It's an array
                 var myelt = {
                     "type":"fieldset",
                     "caption": localize_label(sub_item),
