@@ -15,6 +15,51 @@ class Program extends AppModel
         'count' => true
         );
     
+    public $validate = array(
+        'name' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'Please give a name to the program.'
+                ),
+            'unique' => array(
+                'rule' => 'isunique',
+                'required' => true,
+                'message' => 'Another program is currently using this name, please choose another one.'
+                ),
+            ),
+        'url' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'Please give a url to the program.'
+                ),
+            'unique' => array(
+                'rule' => 'isunique',
+                'required' => true,
+                'message' => 'Another program is currently using this url, please choose another one.'
+                ),
+            'alphaNumeric'=> array(
+                'rule' => 'alphaNumeric',
+                'required' => true,
+                'message' => 'The url can only be composed of letters and digits.'
+                ),
+            ),
+        'database' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'Please give a database to the program.'
+                ),
+            'unique' => array(
+                'rule' => 'isunique',
+                'required' => true,
+                'message' => 'Another program is currently using this database, please choose another one.'
+                ),
+            'alphaNumeric' => array(
+                'rule' => 'alphaNumeric',
+                'required' => true,
+                'message' => 'The database can only be composed of letters and digits.'
+                ),
+            )
+        );
     
     public function _findAuthorized($state, $query, $results = array())
     {

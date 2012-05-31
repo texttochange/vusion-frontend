@@ -234,7 +234,7 @@ function clickBasicButton(){
     activeForm();
     
 };
-
+/*
 function getSelectableGotTo() {
     //get dialogue elements id or name
     var list = [];
@@ -266,7 +266,7 @@ function populateSelectableGoTo(){
                     }
                 });
     });
-}
+}*/
 
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
@@ -274,37 +274,7 @@ function activeForm(){
                 $(value).click(clickBasicButton);
             }
     });
-    $.each($("input[name*='type-interaction']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-schedule']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-action']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-answer-action']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-routing']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-reminder']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
-    });
-    $.each($("input[name*='type-question']"),function (key, elt){
+    $.each($("input[name*='type-']"),function (key, elt){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateRadioButtonSubmenu);
             };
@@ -328,11 +298,11 @@ function activeForm(){
             };
     });
 
-    $("#dynamic-generic-program-form").validate(/*{
+    $("#dynamic-generic-program-form").validate({
             submitHandler: function(form) {
-                alert('hey');
+                form.submit();
             },
-    }*/);
+    });
     $("input[name*='date-time']").each(function (item) {
             $(this).rules("add",{
                 required:true,
@@ -376,7 +346,7 @@ function activeForm(){
     });
     
     addContentFormHelp();
-    populateSelectableGoTo();
+   // populateSelectableGoTo();
 }
 
 function expandForm(){
@@ -435,17 +405,17 @@ function duplicateKeywordValidation(value, element, param) {
 
     var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
     
-        $.ajax({
+    $.ajax({
             url: url,
             type: "POST",
             async: false,
             data: { 'keyword': $(keywordInput).val(), 
-            	    'dialogue-id': $("[name$=dialogue-id]").val(),
-                    'object-id': $("[name$='_id']").val()},
+                'dialogue-id': $("[name$=dialogue-id]").val(),
+                'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
-        success: validateKeywordReply,
-        timeout: 1000,
-        error: vusionAjaxError,
+            success: validateKeywordReply,
+            timeout: 1000,
+            error: vusionAjaxError,
     });
     return true;
 }
@@ -512,10 +482,6 @@ function updateRadioButtonSubmenu() {
     
     activeForm();
 };
-
-function addDeleteButton() {
-
-}
 
 
 function configToForm(item,elt,id_prefix,configTree){

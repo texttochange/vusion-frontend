@@ -546,12 +546,11 @@
 	clear: both;
 	color: white;
 	position: fixed;
-	top: 13px;
+	top: -1px;
 	left: 37%;
 	padding-left: 8px;
 	padding-right: 8px;
 	border: 1.5px solid white;
-	font-weight: bold;
 	background: black;
 }
 
