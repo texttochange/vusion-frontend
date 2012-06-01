@@ -178,11 +178,29 @@
         <?php echo $this->Html->link(__('History'), array('program'=>$programUrl,'controller'=>'programHistory')); ?>
         <ul>
             <li>
+                <?php echo $this->Html->link('Export CSV',
+                    array(
+                        'program' => $programUrl,
+                        'controller'=>'programHistory',
+                        'action' => 'export.csv'
+                        )
+                    ); ?>
+            </li>            
+            <li>
                 <?php echo $this->Html->link('Export Raw CSV',
                     array(
                         'program' => $programUrl,
                         'controller'=>'programHistory',
                         'action' => 'index.csv'
+                        )
+                    ); ?>
+            </li>
+            <li>
+                <?php echo $this->Html->link('Export Json',
+                    array(
+                        'program' => $programUrl,
+                        'controller'=>'programHistory',
+                        'action' => 'index.json'
                         )
                     ); ?>
             </li>
