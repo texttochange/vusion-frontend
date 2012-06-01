@@ -6,9 +6,9 @@
 	<div class='ttc-display-area'>
 	<table cellpadding="0" cellspacing="0">
 		<tr>
-			<th><?php echo __('Keyword');?></th>
-			<th><?php echo __('Responses');?></th>
-			<th><?php echo __('Do');?></th>
+			<th><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('responses', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('do', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo __('Actions');?></th>
 		</tr>
 	<?php
@@ -47,7 +47,21 @@
 	</tr>
 	<?php endforeach; ?>
 	</table>
-	</div>	
+	</div>
+	<p>
+	<?php
+	echo $this->Paginator->counter(array(
+	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
+	));
+	?>
+	</p>
+	<div class="paging">
+	<?php
+		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'prev disabled'));
+		echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl, '?'=>$this->params['url'])));
+		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'next disabled'));
+	?>
+    </div>
 </div>
 	
 <?php echo $this->Js->writeBuffer(); ?>
