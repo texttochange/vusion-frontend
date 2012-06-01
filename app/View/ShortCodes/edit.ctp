@@ -22,6 +22,7 @@
 		}
 	
 		echo $this->Html->tag('label',__('Country'));
+		echo "<br />";
 		echo $this->Form->select('country', $options, array('id'=> 'country'));
 		$this->Js->get('#country')->event('change', '	       
 		       $("#internationalprefix").val(getCountryCodes($("select option:selected").text()));

@@ -1,7 +1,11 @@
 <div class="unattached_messages form">
+<ul class="ttc-actions">		
+    <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+    <?php $this->Js->get('#button-save')->event('click', '$("#UnattachedMessageEditForm").submit()' , true);?>
+</ul>
 <h3><?php echo __('Edit Separate Message'); ?></h3>
-<?php echo $this->Form->create('UnattachedMessage');?>
-
+    <div class="ttc-display-area">
+    <?php echo $this->Form->create('UnattachedMessage');?>
 	<fieldset>
 	
 	<?php
@@ -25,6 +29,7 @@
 		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");');
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit'));?>
+	<?php echo $this->Form->end(__('Save'));?>
+	</div>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

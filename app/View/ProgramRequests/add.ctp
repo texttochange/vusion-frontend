@@ -1,6 +1,7 @@
 <div class="request form">
     <ul class="ttc-actions">
-        <li></li>
+        <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+        <?php $this->Js->get('#button-save')->event('click', '$("#dynamic-generic-program-form").submit()' , true);?>
     </ul>
     <h3><?php echo __('Add Request'); ?></h3>
     <div class="ttc-display-area">
