@@ -48,8 +48,6 @@ class AppController extends Controller
 
     function beforeFilter()
     {    
-        //set language into Session and Cookies
-        $this->_setLanguage();
         //In case of a Json request, no need to set up the variables
         if ($this->params['ext']=='json' or $this->params['ext']=='csv')
             return;
@@ -122,19 +120,6 @@ class AppController extends Controller
             }
         }
     }
-
-
-    function _setLanguage()
-    {
-        if ($this->Cookie->read('lang') && !$this->Session->check('Config.language')) {
-            $this->Session->write('Config.language',$this->Cookie->read('lang'));
-        } else if (isset($this->params['language']) && 
-            ($this->params['language'] != $this->Session->read('Config.language'))) {
-            $this->Session->write('Config.language', $this->params['language']);
-            $this->Cookie->write('lang', $this->params['language'], false, '20 days');
-        }
-    }
-    
     
     protected function _hasProgramLogs($redis,$program)
     {

@@ -18,7 +18,7 @@ class Participant extends MongoModel
                 ),
             'hasPlus'=>array(
                 'rule' => 'hasPlus',
-                'message' => 'The phone number must begin with a "+" sign.',
+                'message' => "The phone number must begin with a '+' sign.",
                 'required' => true
                 ),
             'isReallyUnique' => array(
