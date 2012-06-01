@@ -6,10 +6,10 @@
 	<div class="ttc-display-area"> 
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('Name');?></th>
-			<th><?php echo $this->Paginator->sort('To');?></th>
-			<th><?php echo $this->Paginator->sort('Content');?></th>
-			<th><?php echo $this->Paginator->sort('Schedule');?></th>
+			<th><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('to', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('schedule', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php

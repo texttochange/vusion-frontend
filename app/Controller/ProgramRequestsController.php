@@ -10,6 +10,7 @@ class ProgramRequestsController extends AppController
 {
 
     var $components = array('RequestHandler');
+    public $uses = array('Request');
     
     
     public function beforeFilter()
@@ -34,7 +35,7 @@ class ProgramRequestsController extends AppController
 
     public function index()
     {
-        $this->set('requests', $this->Request->find('all'));
+        $this->set('requests', $this->paginate());
     }
 
 
