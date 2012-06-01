@@ -8,7 +8,7 @@
             echo $this->Html->tag('label',__('Shortcode'));    
             $shortcode_options = array();
             foreach($shortcodes as $shortcode) {
-                $shortcode_options[$shortcode['ShortCode']['shortcode']] = $shortcode['ShortCode']['country']." - ".$shortcode['ShortCode']['shortcode'];
+                $shortcode_options[$shortcode['ShortCode']['shortcode']] = trim($shortcode['ShortCode']['country'])." - ".$shortcode['ShortCode']['shortcode'];
             }
             echo "<br />";
             echo $this->Form->select('shortcode', $shortcode_options, array('id' => 'shortcode'));
