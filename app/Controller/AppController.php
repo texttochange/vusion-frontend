@@ -51,7 +51,7 @@ class AppController extends Controller
         //set language into Session and Cookies
         $this->_setLanguage();
         //In case of a Json request, no need to set up the variables
-        if ($this->params['ext']=='json')
+        if ($this->params['ext']=='json' or $this->params['ext']=='csv')
             return;
 
         $programUrl = $this->params['program'];

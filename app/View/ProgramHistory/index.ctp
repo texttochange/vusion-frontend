@@ -10,8 +10,9 @@
 		        echo $this->Form->select('export',$exportOptions, array('id'=>'export-type', 'empty' => 'Export History...'));
 		        echo $this->Form->end();
 		        $url = $programUrl.'/programHistory/';
+		        $filterParams = 
 		        $this->Js->get('#export-type')->event('change', '
-	                window.location = "http://"+window.location.host+"/'.$url.'"+$("#export-type option:selected").val();
+	                window.location = "http://"+window.location.host+"/'.$url.'"+$("#export-type option:selected").val()+window.location.search;	                
 	            ');
 		    ?>
 		</li>
