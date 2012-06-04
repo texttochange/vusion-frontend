@@ -84,7 +84,7 @@ class ProgramHistoryController extends AppController
                             $orConditions['participant-phone'] = $phoneNumber;
                             $or[] = $orConditions;
                         } else {
-                            $regex = new MongoRegex("/^".$phoneNumber."/");
+                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
                             $orConditions['participant-phone'] = $regex;
                             $or[] = $orConditions;
                         }
@@ -94,7 +94,7 @@ class ProgramHistoryController extends AppController
                     if (strlen($phoneNumbers[0]) >= 12) {
                         $conditions['participant-phone'] = $phoneNumbers[0];
                     } else {
-                        $regex = new MongoRegex("/^".$phoneNumbers[0]."/");
+                        $regex = new MongoRegex("/^\\".$phoneNumbers[0]."/");
                         $conditions['participant-phone'] = $regex;
                     }
                 }
