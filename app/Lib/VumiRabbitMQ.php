@@ -64,6 +64,7 @@ class VumiRabbitMQ {
                     'transport_name' => $database_name,
                     'control_name' => $database_name,
                     'database_name' => $database_name,
+                    'vusion_database_name' => 'vusion',
                     'dispatcher_name' => $dispatcher_name,
                     'send_loop_period'=> $send_loop_period,
                     )

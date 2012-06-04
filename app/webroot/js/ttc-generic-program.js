@@ -234,39 +234,6 @@ function clickBasicButton(){
     activeForm();
     
 };
-/*
-function getSelectableGotTo() {
-    //get dialogue elements id or name
-    var list = [];
-    $(":regex(name,program.dialogues\\[*\\d\\]$)").each(function(index, elt){
-            list = list.concat([$(elt).attr('name')]);
-    })
-    return list;
-}
-
-function populateSelectableGoTo(){
-    
-    function doubleEscape(str){
-        return str.replace("[","\\\\[").replace("]","\\\\]").replace(".","\\\\.");
-    }    
-    
-    var selectableGoTo = getSelectableGotTo();
-    //var selectableGoTo = {};
-    //selectableGoTo["value"] = "option1";
-    //selectableGoTo["html"] = "Option1";
-    //selectableGoTo["type"] = "option";
-    $(":regex(name,goto$)").each(function(index, elt){
-            selectableGoTo.forEach(function(item){
-                    if ($(elt).children('[value="'+doubleEscape(item)+'"]').length<=0){
-                        var toInsert = {};
-                        toInsert["type"] = "option";
-                        toInsert["value"] = item;
-                        toInsert["html"] = item;
-                        $(elt).formElement(toInsert);
-                    }
-                });
-    });
-}*/
 
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
