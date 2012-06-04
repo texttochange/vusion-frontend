@@ -67,14 +67,19 @@ class ProgramHistoryController extends AppController
                 $conditions['message-type'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))
                 $conditions['message-status'] = $this->params['url']['filter_status'];
-            if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to']))
-            $conditions['timestamp'] = array('$gt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_from'].' 00:00'));
+            if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to'])) {
+                if ($this->scriptHelper->validateDate($this->params['url']['filter_from'])) {
+                    $conditions['timestamp'] = array('$gt'=>$this->params['url']['filter_from']);
+                } else {
+                    $conditions['timestamp'] = array('$gt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_from']));
+                }
+            }
             if (isset($this->params['url']['filter_to']) && !isset($this->params['url']['filter_from']))
-                $conditions['timestamp'] = array('$lt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_to'].' 00:00'));
+                $conditions['timestamp'] = array('$lt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_to']));
             if (isset($this->params['url']['filter_from']) && isset($this->params['url']['filter_to']))
                 $conditions['timestamp'] = array(
-                    '$gt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_from'].' 00:00'),
-                    '$lt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_to'].' 00:00')
+                    '$gt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_from']),
+                    '$lt'=>$this->scriptHelper->ConvertDateFormat($this->params['url']['filter_to'])
                 );
             if (isset($this->params['url']['filter_phone'])) {
                 $phoneNumbers = explode(",", str_replace(" ", "",$this->params['url']['filter_phone']));
