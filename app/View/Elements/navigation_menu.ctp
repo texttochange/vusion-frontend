@@ -124,24 +124,19 @@
                ); ?>
            </li>
            <?php if(isset($programUnattachedMessages) && $programUnattachedMessages!=null) { ?>
-           <li>
-               <?php echo $this->Html->link("Edit", array()); ?>               
-               <ul>
-                   <?php foreach ($programUnattachedMessages as $unattachedMessage): ?>
-                   <li>
-                   <?php
-                       echo $this->Html->link(__($unattachedMessage['UnattachedMessage']['name']),
-                           array(
-                               'program'=>$programUrl,
-                               'controller'=>'programUnattachedMessages',
-                               'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']
-                               )
-                           );
-                   ?>
-                   </li>
-                   <?php endforeach; ?>
-               </ul>               
-           </li>
+           <?php foreach ($programUnattachedMessages as $unattachedMessage): ?>
+               <li>
+               <?php
+                   echo $this->Html->link(__($unattachedMessage['UnattachedMessage']['name']),
+                       array(
+                           'program'=>$programUrl,
+                           'controller'=>'programUnattachedMessages',
+                           'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']
+                           )
+                       );
+               ?>
+               </li>
+           <?php endforeach; ?>
            <?php } ?>
        </ul>
     </li>  
