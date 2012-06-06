@@ -33,25 +33,29 @@ class ProgramHistoryController extends AppController
 
     public function index()
     {
-        $this->paginate = array(
-            'all',
-            'conditions' => $this->_getConditions()
-        );
-        
-        $statuses = $this->paginate();
-        $this->set(compact('statuses'));
+        if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
+            $statuses = $this->History->find('all', array('conditions' => $this->_getConditions()));
+            $this->set(compact('statuses')); 
+        } else {   
+            $this->paginate = array(
+                'all',
+                'conditions' => $this->_getConditions()
+            );
+            
+            $statuses = $this->paginate();
+            $this->set(compact('statuses'));
+        }
     }
     
     
     public function export()
     {        
-        $this->paginate = array(
-            'all',
+        $exportParams = array(
             'fields' => array('participant-phone','message-type','message-status','message-content','timestamp'),
             'conditions' => $this->_getConditions()
         );
         
-        $data = $this->paginate();
+        $data = $this->History->find('all', $exportParams);
         $this->set(compact('data'));
     }
     
@@ -67,13 +71,8 @@ class ProgramHistoryController extends AppController
                 $conditions['message-type'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))
                 $conditions['message-status'] = $this->params['url']['filter_status'];
-            if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to'])) {
-                if ($this->dialogueHelper->validateDate($this->params['url']['filter_from'])) {
-                    $conditions['timestamp'] = array('$gt'=>$this->params['url']['filter_from']);
-                } else {
-                    $conditions['timestamp'] = array('$gt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_from']));
-                }
-            }
+            if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to'])) 
+                $conditions['timestamp'] = array('$gt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_from']));
             if (isset($this->params['url']['filter_to']) && !isset($this->params['url']['filter_from']))
                 $conditions['timestamp'] = array('$lt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_to']));
             if (isset($this->params['url']['filter_from']) && isset($this->params['url']['filter_to']))
