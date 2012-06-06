@@ -1,4 +1,8 @@
 <div class="programsettings form">
+    <ul class="ttc-actions">		
+        <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+        <?php $this->Js->get('#button-save')->event('click', '$("#ProgramSettingsEditForm").submit()' , true);?>
+	</ul>
 <H3><?php echo __('Edit Program Settings'); ?></H3>
 <?php echo $this->Form->create('ProgramSettings'); ?>
     <fieldset>      

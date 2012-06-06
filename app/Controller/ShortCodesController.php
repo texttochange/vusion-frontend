@@ -52,7 +52,7 @@ class ShortCodesController extends AppController
                 );
                 $this->redirect(array(
                     'controller' => 'shortCodes',
-                    'action' => 'add'
+                    'action' => 'index'
                     ));
             } else {
                 $this->Session->setFlash(__('The shortcode could not be saved.'), 

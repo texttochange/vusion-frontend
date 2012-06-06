@@ -19,6 +19,10 @@ class UnattachedMessage extends MongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter a name for this separate message.'
+                ),
+            'isUnique' => array(
+                'rule' => 'isUnique',
+                'message' => 'This name already exists. Please choose another.'
                 )
             ),
         'to' => array(
@@ -90,5 +94,15 @@ class UnattachedMessage extends MongoModel
             return __("Schedule cannot be in the past.");
         return true;
     }
+    
+    
+    public function isUnique($check)
+    {
+        $result = $this->find('count', array(
+            'conditions' => array('name' => $check['name'])
+            ));
+        return $result < 1;
+    }
+    
     
 }
