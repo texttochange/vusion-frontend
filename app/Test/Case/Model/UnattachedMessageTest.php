@@ -42,15 +42,16 @@ class UnattachedMessageTestCase extends CakeTestCase
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
+        $date = new DateTime('tomorrow');  
         $unattachedMessage = array(
             'name'=>'hello',
             'to'=>'all participants',
             'content'=>'hello there',
-            'schedule'=>'05/06/2012 14:30'
+            'schedule'=> $date->format('d/m/Y H:i')
             );
         $this->UnattachedMessage->create();
         $this->UnattachedMessage->save($unattachedMessage);
-        
+
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
         
         $otherUnattachedMessage = array(
