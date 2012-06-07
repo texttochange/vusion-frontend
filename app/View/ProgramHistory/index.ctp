@@ -25,7 +25,7 @@
 	   $this->Js->get('#advFilter')->event(
 	    'click','
 	    $(".ttc-filter").hide();
-	    $("#advanced_filter_form").show();
+	    $("#advanced_filter_form").show(hasNoStackFilter());
 	    ');
 	   echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 	   $options = array(); 
@@ -50,23 +50,40 @@
        if (preg_grep('/^filter_/', array_keys($this->params['url']))) {
            $this->Js->get('document')->event('ready','
                $(".ttc-filter").hide();
-               $("#advanced_filter_form").show();
+               $("#advanced_filter_form").show(hasNoStackFilter());
            ');
        }
    ?>
    <div id="advanced_filter_form" class="ttc-advanced-filter">
    <?php
+       $this->Js->set('myOptions', $filterFieldOptions);
+       $this->Js->set('typeConditionOptions', $filterTypeConditionsOptions);
+       $this->Js->set('statusConditionOptions', $filterStatusConditionsOptions);
+       $this->Js->set('dateConditionOptions', $filterDateConditionsOptions);
+       
+       $this->Js->get('$(\"#filter_field\"):focus')->event('change','
+               var fieldOption = $("$(\"#filter_field\"):focus option:selected").text();
+               if($(document.activeElement).attr("id") == "filter_field")
+                   supplyConditionOptions(fieldOption);
+           ');
+       
        echo "<h5>Filter Options</h5>";
        echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
        echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
-       echo $this->Html->tag('label','Message Type');
+       /*echo $this->Html->tag('label','Message Type');
        echo "&nbsp;";
        $optionsType = array();
        $optionsType['received'] = "received";
-       $optionsType['sent'] = "sent";
-       if (isset($this->params['url']['filter_type']))
-	        echo $this->Form->select('filter_type', $optionsType, array('id'=> 'filter_type', 'default' => $this->params['url']['filter_type'], 'empty' => '....'));
-	   else
+       $optionsType['sent'] = "sent";*/
+       if (isset($this->params['url']['filter_field'])) {
+           print_r(sizeof($this->params['url']['filter_field']));
+           foreach ($this->params['url']['filter_field'] as $field) {
+               $this->Js->get('document')->event('ready','addStackFilter');
+           }
+       }
+       /*if (isset($this->params['url']['filter_type']))
+	        $this->Js->get('#filter_type', $optionsType, array('id'=> 'filter_type', 'default' => $this->params['url']['filter_type'], 'empty' => '....'));
+	   /*else
             echo $this->Form->select('filter_type', $optionsType, array('id'=> 'filter_type', 'empty' => '.......'));
        echo "&nbsp;&nbsp;&nbsp;&nbsp;";
        echo $this->Html->tag('label','Message Status');
@@ -95,7 +112,7 @@
             $phone = $this->params['url']['filter_phone'];
         else
             $phone = null;
-       echo $this->Form->input('filter_phone', array('label'=>'phone','id'=>'filter_phone', 'value'=>$phone));
+       echo $this->Form->input('filter_phone', array('label'=>'phone','id'=>'filter_phone', 'value'=>$phone));*/
        echo $this->Form->end(__('Filter'));       
        $this->Js->get('#advanced_filter_form')->event('submit','
            $(":input[value=\"\"]").attr("disabled", true);

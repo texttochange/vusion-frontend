@@ -21,6 +21,31 @@ class ProgramHistoryController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->History        = new History($options);
         $this->scriptHelper   = new DialogueHelper();
+        
+        $filterFields = $this->History->fieldFilters;
+        $this->filterFieldOptions = array();
+        foreach ($filterFields as $key => $value) {
+            $this->filterFieldOptions[$key] = __($value);
+        }
+        
+        $filterTypeConditions = $this->History->typeConditionFilters;
+        $this->filterTypeConditionsOptions = array();
+        foreach ($filterTypeConditions as $key => $value) {
+            $this->filterTypeConditionsOptions[$key] = __($value);
+        }
+        
+        $filterStatusConditions = $this->History->statusConditionFilters;
+        $this->filterStatusConditionsOptions = array();
+        foreach ($filterStatusConditions as $key => $value) {
+            $this->filterStatusConditionsOptions[$key] = __($value);
+        }
+        
+        $filterDateConditions = $this->History->dateConditionFilters;
+        $this->filterDateConditionsOptions = array();
+        foreach ($filterDateConditions as $key => $value) {
+            $this->filterDateConditionsOptions[$key] = __($value);
+        }
+        
     }
 
 
@@ -32,7 +57,12 @@ class ProgramHistoryController extends AppController
 
 
     public function index()
-    {
+    {print_r($this->params['url']);
+        $this->set('filterFieldOptions',$this->filterFieldOptions);
+        $this->set('filterTypeConditionsOptions',$this->filterTypeConditionsOptions);
+        $this->set('filterStatusConditionsOptions',$this->filterStatusConditionsOptions);
+        $this->set('filterDateConditionsOptions',$this->filterDateConditionsOptions);
+        
         $this->paginate = array(
             'all',
             'conditions' => $this->_getConditions()

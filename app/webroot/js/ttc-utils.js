@@ -355,3 +355,113 @@ function updateClock(){
 	newTimeString = originalTimeString.replace(currentTime, currentTimeString);
 	$('.ttc-program-time').text(newTimeString);
 }
+
+function addStackFilter(){
+	var count = $('.ttc-stack-filter').length + 1;
+	var stackFilter = document.createElement("div");
+	//$(stackFilter).attr('class','ttc-stack-filter').insertBefore('.submit');
+	$(stackFilter).attr('class','ttc-stack-filter').attr('id','stack-filter['+count+']').appendTo('#advanced_filter_form > form').insertBefore('.submit');
+	
+	var addButton = document.createElement("img");
+	$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
+	$(stackFilter).append(addButton);
+	
+	var deleteButton = document.createElement("img");
+	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/Button-Delete-icon-16.png').on('click', removeStackFilter);
+	$(stackFilter).append(deleteButton);
+	
+	// retrieve the contents of the array stored by javascript in window.app
+	var myOptions = window.app.myOptions;
+	
+	var addFilterFieldDropDown = document.createElement("select");
+	$(addFilterFieldDropDown).attr('id','filter_field').attr('name','filter_field['+count+']');
+	$(addFilterFieldDropDown).append(new Option("", ""));
+	$.each(myOptions, function(val, text) {
+		$(addFilterFieldDropDown).append(new Option(text, val));
+	});
+	$(stackFilter).append(addFilterFieldDropDown);
+	
+	var addFilterConditionDropDown = document.createElement("select");
+	$(addFilterConditionDropDown).attr('id','filter_condition').attr('name','filter_condition['+count+']');
+	$(addFilterConditionDropDown).append(new Option("", ""));
+	/*$.each(conditionOptions, function(val, text) {
+		$(addFilterConditionDropDown).append(new Option(text, val));
+	});*/
+	$(stackFilter).append(addFilterConditionDropDown);
+}
+
+function removeStackFilter(){
+	$(this).parent().remove();
+	hasNoStackFilter();
+}
+
+function hasNoStackFilter(){
+	if($(".ttc-stack-filter").length == 0){
+		addStackFilter();
+	}
+}
+
+function supplyConditionOptions(fieldOption){
+	$("#filter_condition", $('$("#filter_field"):focus').closest('div')).empty();
+	
+	if(fieldOption == "message type"){
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_type').append(new Option("", ""));
+		var typeConditionOptions = window.app.typeConditionOptions;
+		$.each(typeConditionOptions, function(val, text) {
+			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	if(fieldOption == "message status"){
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_status').append(new Option("", ""));
+		var statusConditionOptions = window.app.statusConditionOptions;
+		$.each(statusConditionOptions, function(val, text) {
+			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	if(fieldOption == "date from"){
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_from').append(new Option("", ""));
+		var dateConditionOptions = window.app.dateConditionOptions;
+		$.each(dateConditionOptions, function(val, text) {
+			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	if(fieldOption == "date to"){
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_to').append(new Option("", ""));
+		var dateConditionOptions = window.app.dateConditionOptions;
+		$.each(dateConditionOptions, function(val, text) {
+			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	/*
+	$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).empty();
+	
+	if(fieldOption == "message type"){
+		$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).attr('name','filter_type').append(new Option("", ""));
+		var typeConditionOptions = window.app.typeConditionOptions;
+		$.each(typeConditionOptions, function(val, text) {
+			$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	if(fieldOption == "message status"){
+		$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).attr('name','filter_status').append(new Option("", ""));
+		var statusConditionOptions = window.app.statusConditionOptions;
+		$.each(statusConditionOptions, function(val, text) {
+			$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	if(fieldOption == "date from"){
+		$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).attr('name','filter_from').append(new Option("", ""));
+		var dateConditionOptions = window.app.dateConditionOptions;
+		$.each(dateConditionOptions, function(val, text) {
+			$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	if(fieldOption == "date to"){
+		$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).attr('name','filter_to').append(new Option("", ""));
+		var dateConditionOptions = window.app.dateConditionOptions;
+		$.each(dateConditionOptions, function(val, text) {
+			$("select[id*='filter_condition']", $('$("select[id*="filter_field"]"):focus').closest('div')).append(new Option(text, val));
+		});
+	}
+	*/
+}

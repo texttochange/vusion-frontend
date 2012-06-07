@@ -550,7 +550,7 @@
 }
 
 .ttc-advanced-filter div{
-    width: 30%;
+    width: 70%;
     margin: 0;
     padding: 0.2em;
 }
@@ -599,4 +599,12 @@
 	cursor: pointer;
 }
 
+.ttc-add-icon {
+	cursor: pointer;
+	float: right;
+}
+
+.ttc-stack-filter {
+	background-color: blue;
+}
 
