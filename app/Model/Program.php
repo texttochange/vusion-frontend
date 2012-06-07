@@ -1,9 +1,8 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * Program Model
- *
- */
+App::uses('History', 'Model');
+
+
 class Program extends AppModel
 {
 
@@ -130,6 +129,28 @@ class Program extends AppModel
                 }
             }
         return $query;
+    }
+    
+    public function deleteProgram()
+    {
+       $program = $this->read();
+       if (!$this->delete()) {
+           return false;
+       }
+       $mongoDbSource = ConnectionManager::getDataSource('mongo');
+       $config = $mongoDbSource->config;
+       $host = "mongodb://";
+       $hostname = $config['host'] . ':' . $config['port'];
+       
+       if(!empty($config['login'])){
+           $host .= $config['login'] .':'. $config['password'] . '@' . $hostname . '/'. $config['database'];
+       } else {
+           $host .= $hostname;
+       }
+       $con = new Mongo($host);
+       $db = $con->selectDB($program['Program']['database']);
+       $db->drop();
+       return true;
     }
     
    

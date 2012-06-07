@@ -159,34 +159,27 @@ class ProgramsController extends AppController
         }
     }
 
-
-    /**
-    * delete method
-    *
-    * @param string $id
-    * @return void
-    */
+    //TODO: Ask for delete confirmation
     public function delete($id = null)
     {
-        if (!$this->request->is('post')) {
-            throw new MethodNotAllowedException();
-        }
-        $this->Program->id = $id;
-        if (!$this->Program->exists()) {
-            throw new NotFoundException(__('Invalid program.'));
-        }
-        if ($this->Program->delete()) {
-            $this->Session->setFlash(__('Program deleted.'),
-                'default',
-                array('class'=>'message success')
-            );
-            $this->redirect(array('action' => 'index'));
-        }
-        $this->Session->setFlash(__('Program was not deleted.'), 
+        //if ($this->request->is('post')) {
+            $this->Program->id = $id;
+            if (!$this->Program->exists()) {
+                throw new NotFoundException(__('Invalid program.'));
+            }
+            if ($this->Program->deleteProgram()) {
+                $this->Session->setFlash(__('Program deleted.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array('action' => 'index'));
+            }
+            $this->Session->setFlash(__('Program was not deleted.'), 
                 'default',
                 array('class' => "message failure")
                 );
-        $this->redirect(array('action' => 'index'));
+            $this->redirect(array('action' => 'index'));
+        //}
     }
 
 

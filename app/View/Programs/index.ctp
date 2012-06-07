@@ -34,13 +34,16 @@
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">
-			<?php echo $this->Html->link(__('System Settings'), array('action' => 'edit', $program['Program']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Archive'), array('action' => 'delete', $program['Program']['id']), null, __('Are you sure you want to archive # %s?', $program['Program']['name'])); ?>
+			<?php echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id'])); ?>
+			<br>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), null, __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
 		</div>
-		<?php }; ?>
+		<?php };
+		$this->Js->get('.ttc-program-quicklinks')->event('click', 'event.stopPropagation()');
+		?>
 	</div>
     <?php endforeach; ?>
 </div>
-
+<?php echo $this->Js->writeBuffer(); ?>
 
 
