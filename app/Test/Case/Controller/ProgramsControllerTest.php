@@ -186,6 +186,19 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testDelete() 
     {
 
+        $Programs = $this->generate('Programs', array(
+            'methods' => array(
+                '_stopBackendWorker'
+            )
+            ));
+        
+        $Programs
+            ->expects($this->once())
+            ->method('_stopBackendWorker')
+            ->will($this->returnValue(true));
+        
+        $this->testAction('/programs/delete/1');
+
     }
 
     
