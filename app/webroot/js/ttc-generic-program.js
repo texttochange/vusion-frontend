@@ -269,6 +269,8 @@ function activeForm(){
             submitHandler: function(form) {
                 form.submit();
             },
+            onkeyup: false,
+//            validClass: "success",
     });
     $("input[name*='date-time']").each(function (item) {
             $(this).rules("add",{
