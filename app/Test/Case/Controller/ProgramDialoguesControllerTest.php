@@ -662,7 +662,11 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function testDeleteDialogue()
     {        
-        $this->mockProgramAccess();
+        $dialogues = $this->mockProgramAccess();
+        $dialogues
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->will($this->returnValue(true));
 
         $this->instanciateModels();
         $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));

@@ -242,6 +242,7 @@ class ProgramDialoguesController extends AppController
             throw new MethodNotAllowedException();
          }
          if ($this->Dialogue->deleteDialogue($dialogueId)) {
+             $this->_notifyUpdateBackendWorker($programUrl);
              $this->Session->setFlash(
                  __('Dialogue deleted.'),
                  'default',
