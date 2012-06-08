@@ -4,32 +4,10 @@ App::uses('MongodbSource', 'Mongodb.MongodbSource');
 
 class ParticipantTestCase extends CakeTestCase
 {
-
-    protected $_config = array(
-        'datasource' => 'Mongodb.MongodbSource',
-        'host' => 'localhost',
-        'login' => '',
-        'password' => '',
-        'database' => 'test',
-        'port' => 27017,
-        'prefix' => '',
-        'persistent' => true,
-        );
-
     
     public function setUp()
     {
         parent::setUp();
-
-        $connections = ConnectionManager::enumConnectionObjects();
-        
-        if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
-            $config = new DATABASE_CONFIG();
-            $this->_config = $config->test;
-        }
-        
-        ConnectionManager::create('mongo_test', $this->_config);
-        $this->Mongo = new MongodbSource($this->_config);
 
         $option            = array('database'=>'test');
         $this->Participant = new Participant($option);
@@ -55,16 +33,14 @@ class ParticipantTestCase extends CakeTestCase
 
     public function testSave()
     {
-        //1st assertion phone is already a string
+        //1st assertion phone is already in the correct format
         $participant = array(
             'phone' => '+788601462',
             'name' => 'Oliv'
             );
         $this->Participant->create();
-
         $savedParticipant = $this->Participant->save($participant);
-
-        $this->assertTrue(is_string($savedParticipant['Participant']['phone']));
+        $this->assertEqual('+788601462', $savedParticipant['Participant']['phone']);
 
         //2nd assertion phone is a number
         $participant = array(
@@ -72,10 +48,45 @@ class ParticipantTestCase extends CakeTestCase
             'name' => 'Oliv'
             );
         $this->Participant->create();
-
         $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual("+788601463", $savedParticipant['Participant']['phone']);
 
-        $this->assertTrue(is_string($savedParticipant['Participant']['phone']));
+        //Phone with letter O instead of 0 digit is NOT SAVED
+        $participant = array(
+            'phone' => 'OO7886O1464',
+            'name' => 'Oliv'
+            );
+        $this->Participant->create();
+        $this->assertFalse($this->Participant->save($participant));
+
+        //The double 00 are replace by a +
+        $participant = array(
+            'phone' => '00788601465',
+            'name' => 'Oliv'
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual("+788601465", $savedParticipant['Participant']['phone']);
+
+        //The single 0 is replace by a +
+        $participant = array(
+            'phone' => '0788601466',
+            'name' => 'Oliv'
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual("+788601466", $savedParticipant['Participant']['phone']);
+        
+         //The phone & name are is trimmed 
+        $participant = array(
+            'phone' => ' 0788601467 ',
+            'name' => ' Oliv'
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual("+788601467", $savedParticipant['Participant']['phone']);
+        $this->assertEqual("Oliv", $savedParticipant['Participant']['name']);
+
     }
 
 

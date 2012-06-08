@@ -91,6 +91,12 @@
 	margin-left: 5px;
 }
 
+.ui-dform-textarea {
+	background: white;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .ui-dform-radio {
 	float: none;
 }
@@ -110,21 +116,21 @@
 	margin :5px;	
 }
 
-[name*=interactions\[]:not(input):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even) {
 	/*background:#FDEEF4;*/
 	background: #FFCB4B;
 }
 
-[name*=responses\[]:not(input):nth-child(odd) {
+[name*=responses\[]:not(input):not(textarea):nth-child(odd) {
 	background: #FFD97B;
 }
 
-[name*=responses\[]:not(input):nth-child(even) {
+[name*=responses\[]:not(input):not(textarea):nth-child(even) {
 	background: #FFCB4B;
 }
 
@@ -628,4 +634,7 @@
 	margin-right: 3px;
 }
 
+.ttc-fold-summary{
+	font-style: italic;
+}
 

@@ -76,7 +76,7 @@ var program = {"script": [
         "immediately":"immediately",
         "fixed-time":"fixed-time",
         "wait":"wait"},
-    "content":"text",
+    "content":"textarea",
     "date": "text",
     //"fixed-time":["date-time","year","month","day","hour","minute"],
     "fixed-time":["date-time"],
@@ -315,18 +315,29 @@ function activeForm(){
     });
     
     addContentFormHelp();
-   // populateSelectableGoTo();
 }
 
 function expandForm(){
-    $(this).parent().children().show();
+    $(this).parent().children().slideDown('fast');
+    $(this).parent().children('[class="ttc-fold-summary"]').remove();
     $(this).attr('src','/img/fold-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
 }
 
 function foldForm(){
-    $(this).parent().children(":not(img):not(.ui-dform-legend)").hide();
+    var name = $(this).parent().attr('name');
+    $(this).parent().children(":not(img):not(.ui-dform-legend)").slideUp('fast');
+    var summary = $('[name="'+name+'.content"]').val();
+    if (summary && summary != "")
+        $(this).parent().append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
+    else {
+        var choice = $('[name="'+name+'.choice"]').val();
+        if (choice && choice != "") {
+            $(this).parent().append('<div class="ttc-fold-summary">'+choice+'</div>');
+        } 
+    }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
+
 
 function duplicateKeywordValidation(value, element, param) {    
     var keywordInput = element;
@@ -336,13 +347,11 @@ function duplicateKeywordValidation(value, element, param) {
     var pattern = /[^a-zA-Z0-9]/g;
     for(var x=0;x<keywords.length;x++) {
         if (pattern.test(keywords[x])) {
-            //$(keywordInput).before("<p style='color:red'>'"+keywords[x]+"' has some invalid characters. Keywords must contain only numbers or letters separated by a comma.</p>");
             errors[$(element).attr('name')] = wrapErrorMessage(keywords[x] + localized_errors.validation_keyword_invalid_character_error);  
             this.showErrors(errors); 
             return true;
         }
         if (keywords[x].length <= 0) {
-            //$(keywordInput).before("<p style='color:red'>You cannot have a blank keyword.</p>");
             errors[$(element).attr('name')] = wrapErrorMessage(keywords[x] + localized_errors.validation_keyword_blank_error);  
             this.showErrors(errors);
             return true;
@@ -356,7 +365,6 @@ function duplicateKeywordValidation(value, element, param) {
             if (!$(keywordInput).is(element)) {
                 for (var y=0;y<elementWords.length;y++) {                
                     if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
-                        //$(keywordInput).before("<p style='color:red'>'"+elementWords[y]+"' already used by the same script in another question</p>");
                         errorMessage = wrapErrorMessage(elementWords[y]+ localized_errors.validation_keyword_used_same_script_error);
                         errors[$(element).attr('name')] = errorMessage;
                         isKeywordUsedInSameScript = true;

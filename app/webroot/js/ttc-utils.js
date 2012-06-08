@@ -250,11 +250,11 @@ var countries ={
 function addContentFormHelp(baseUrl) {
     if (!baseUrl)
         baseUrl="../.."
-    $.each($("[name*='content']").prev(":not(:has(img)) :not(div)"),
+    $.each($("[name*='content']").prev(":not(:has(img)):not(div)"),
             function (key, elt){
                     $("<img class='ttc-help' src='/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
             });
-    $.each($("[name*='[template]']").prev(":not(:has(img)) :not(div)"),
+    $.each($("[name*='[template]']").prev(":not(:has(img)):not(div)"),
             function (key, elt){
                     $("<img class='ttc-help' src='/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
             });
