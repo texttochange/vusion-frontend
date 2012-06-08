@@ -27,6 +27,28 @@ class History extends MongoModel
         'all' => true,
         );
     
+    
+    public $fieldFilters = array(
+        'message-type'=>'message type',
+        'message-status'=>'message status',
+        'timestamp-from'=>'date from',
+        'timestamp-to'=>'date to',
+        'participant-phone'=>'participant phone',
+        'message-content'=>'message content'
+        );
+    
+    public $typeConditionFilters = array(
+        'received'=>'received',
+        'sent'=>'sent',
+        );
+    
+    public $statusConditionFilters = array(
+        'failed'=>'failed',
+        'delivered'=>'delivered',
+        'pending'=>'pending',
+        );
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
     	    parent::__construct($id, $table, $ds);

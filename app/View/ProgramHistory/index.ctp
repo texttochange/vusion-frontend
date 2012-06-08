@@ -25,7 +25,7 @@
 	   $this->Js->get('#advFilter')->event(
 	    'click','
 	    $(".ttc-filter").hide();
-	    $("#advanced_filter_form").show();
+	    $("#advanced_filter_form").show(hasNoStackFilter());
 	    ');
 	   echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 	   $options = array(); 
@@ -50,52 +50,76 @@
        if (preg_grep('/^filter_/', array_keys($this->params['url']))) {
            $this->Js->get('document')->event('ready','
                $(".ttc-filter").hide();
-               $("#advanced_filter_form").show();
+               $("#advanced_filter_form").show(hasNoStackFilter());
            ');
        }
    ?>
    <div id="advanced_filter_form" class="ttc-advanced-filter">
    <?php
-       echo "<h5>Filter Options</h5>";
-       echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
-       echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
-       echo $this->Html->tag('label','Message Type');
-       echo "&nbsp;";
-       $optionsType = array();
-       $optionsType['received'] = "received";
-       $optionsType['sent'] = "sent";
-       if (isset($this->params['url']['filter_type']))
-	        echo $this->Form->select('filter_type', $optionsType, array('id'=> 'filter_type', 'default' => $this->params['url']['filter_type'], 'empty' => '....'));
-	   else
-            echo $this->Form->select('filter_type', $optionsType, array('id'=> 'filter_type', 'empty' => '.......'));
-       echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-       echo $this->Html->tag('label','Message Status');
-       echo "&nbsp;";
-       $optionsStatus = array();
-       $optionsStatus['pending'] = "pending";
-       $optionsStatus['delivered'] = "delivered";
-       $optionsStatus['failed'] = "failed";
-       if (isset($this->params['url']['filter_status']))
-	        echo $this->Form->select('filter_status', $optionsStatus, array('id'=> 'filter_status', 'default' => $this->params['url']['filter_status'],'empty' => '....'));
-	   else
-            echo $this->Form->select('filter_status', $optionsStatus, array('id'=> 'filter_status', 'empty' => '.......'));
+       $this->Js->set('myOptions', $filterFieldOptions);
+       $this->Js->set('typeConditionOptions', $filterTypeConditionsOptions);
+       $this->Js->set('statusConditionOptions', $filterStatusConditionsOptions);
+       $this->Js->set('dateConditionOptions', $filterDateConditionsOptions);
        
-            
-        if (isset($this->params['url']['filter_from']))
-            $dateFrom = $this->params['url']['filter_from'];
-        else
-            $dateFrom = null;
-       echo $this->Form->input('filter_from', array('label'=>'from','id'=>'filter_from', 'value'=> $dateFrom));
-       if (isset($this->params['url']['filter_to']))
-            $dateTo = $this->params['url']['filter_to'];
-        else
-            $dateTo = null;
-       echo $this->Form->input('filter_to', array('label'=>'to','id'=>'filter_to', 'value'=> $dateTo));
-       if (isset($this->params['url']['filter_phone']))
-            $phone = $this->params['url']['filter_phone'];
-        else
-            $phone = null;
-       echo $this->Form->input('filter_phone', array('label'=>'phone','id'=>'filter_phone', 'value'=>$phone));
+       $this->Js->get('$(\"#filter_field\"):focus')->event('change','
+               var fieldOption = $("$(\"#filter_field\"):focus option:selected").text();
+               if($(document.activeElement).attr("id") == "filter_field")
+                   supplyConditionOptions(fieldOption);
+           ');
+       echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
+       //echo "<h5>Filter Options</h5>";
+       echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
+       if (isset($this->params['url']['filter_field'])) {
+           for ($i=1;$i<=sizeof($this->params['url']['filter_field']);$i++) {
+               $this->Js->get('document')->event('ready','addStackFilter();
+                   $("select[name=\'filter_field['.$i.']\']").focus();
+                   $("select[name=\'filter_field['.$i.']\'] > option").each(function(){
+                       if(this.value == "'.$this->params['url']['filter_field'][$i].'"){
+                           $(this).attr("selected",true);
+                           supplyConditionOptions(this.text);
+                       }
+                   });
+               ');
+           }
+       }
+       if (isset($this->params['url']['filter_type'])) {
+           $this->Js->get('document')->event('ready','
+               $("select[name=\'filter_type\'] > option").each(function(){
+                   if(this.value == "'.$this->params['url']['filter_type'].'"){
+                       $(this).attr("selected",true);
+                   }
+               });
+           ');
+       }
+       if (isset($this->params['url']['filter_status'])) {
+           $this->Js->get('document')->event('ready','
+               $("select[name=\'filter_status\'] > option").each(function(){
+                   if(this.value == "'.$this->params['url']['filter_status'].'"){
+                       $(this).attr("selected",true);
+                   }
+               });
+           ');
+       }
+       if (isset($this->params['url']['filter_from'])) {
+           $this->Js->get('document')->event('ready','
+               $("input[name=\'filter_from\']").val("'.$this->params['url']['filter_from'].'");
+           ');
+       }
+       if (isset($this->params['url']['filter_to'])) {
+           $this->Js->get('document')->event('ready','
+               $("input[name=\'filter_to\']").val("'.$this->params['url']['filter_to'].'");
+           ');
+       }
+       if (isset($this->params['url']['filter_phone'])) {
+           $this->Js->get('document')->event('ready','
+               $("input[name=\'filter_phone\']").val("'.$this->params['url']['filter_phone'].'");
+           ');
+       }
+       if (isset($this->params['url']['filter_content'])) {
+           $this->Js->get('document')->event('ready','
+               $("input[name=\'filter_content\']").val("'.$this->params['url']['filter_content'].'");
+           ');
+       }
        echo $this->Form->end(__('Filter'));       
        $this->Js->get('#advanced_filter_form')->event('submit','
            $(":input[value=\"\"]").attr("disabled", true);
