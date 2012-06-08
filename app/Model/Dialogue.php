@@ -149,7 +149,18 @@ class Dialogue extends MongoModel
                 }',
             );
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
+        uasort($dialogues['retval'], array($this, '_compareDialogue'));
         return $dialogues['retval'];
+    }
+
+    private function _compareDialogue($a, $b)
+    {
+        if ($a['Active'] && $b['Active'])
+            return ($a['Active']['modified']<$b['Active']['modified']) ? 1 : -1;
+        if ($a['Active'] && !$b['Active'])
+            return -1;
+        if (!$a['Active'] && $b['Active'])
+            return 1;
     }
 
 

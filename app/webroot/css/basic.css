@@ -505,7 +505,8 @@
    float: none;
    margin-bottom: 10px;
    border: 1px solid black;
-   padding: 10px;
+   padding: 5px 10px 5px 10px;
+   height: 28px
 }
 
 .ttc-dialogue a {
@@ -518,7 +519,7 @@
 }
 
 .ttc-dialogue-name {
-   font-size: 110%;
+   font-size: 135%;
    display: inline;
 }
 
