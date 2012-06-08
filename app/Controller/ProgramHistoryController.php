@@ -40,11 +40,6 @@ class ProgramHistoryController extends AppController
             $this->filterStatusConditionsOptions[$key] = __($value);
         }
         
-        $filterDateConditions = $this->History->dateConditionFilters;
-        $this->filterDateConditionsOptions = array();
-        foreach ($filterDateConditions as $key => $value) {
-            $this->filterDateConditionsOptions[$key] = __($value);
-        }
         
     }
 
@@ -57,11 +52,10 @@ class ProgramHistoryController extends AppController
 
 
     public function index()
-    {print_r($this->params['url']);
+    {
         $this->set('filterFieldOptions',$this->filterFieldOptions);
         $this->set('filterTypeConditionsOptions',$this->filterTypeConditionsOptions);
         $this->set('filterStatusConditionsOptions',$this->filterStatusConditionsOptions);
-        $this->set('filterDateConditionsOptions',$this->filterDateConditionsOptions);
         
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
             $statuses = $this->History->find('all', array('conditions' => $this->_getConditions()));
@@ -133,6 +127,8 @@ class ProgramHistoryController extends AppController
                     }
                 }
             }
+            if (isset($this->params['url']['filter_content']))
+                $conditions['message-content'] = new MongoRegex("/".$this->params['url']['filter_content']."/i");
         }
         if (isset($this->params['url']['filter'])) {
             if ($this->params['url']['filter']=='non_matching_answers') {

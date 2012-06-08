@@ -539,20 +539,34 @@
 
 .ttc-advanced-filter {
     display: none;
-    border-bottom: 1px solid;
-    border-top: 1px solid;
 }
 
 .ttc-advanced-filter input{
     font-size: 90%;
-    width: 30%;
+    width: 50%;
     padding:0.5%;
 }
 
 .ttc-advanced-filter div{
-    width: 70%;
-    margin: 0;
+    width: 50%;
+    margin-bottom: 2px;
     padding: 0.2em;
+}
+
+.ttc-advanced-filter input[type="submit"]{
+	width: 15%;
+}
+
+.ttc-advanced-filter div.submit {
+	margin: 0;
+	padding-left: 0;
+}
+
+.ttc-advanced-filter form{
+	width: 90%;
+	float: left;
+	clear: none;
+	padding-bottom: 10px;
 }
 
 .ttc-action-link {
@@ -605,6 +619,12 @@
 }
 
 .ttc-stack-filter {
-	background-color: blue;
+	background: #FFCB4B;
+	border: 1px solid grey;
 }
+
+.ttc-stack-filter select{
+	margin-right: 3px;
+}
+
 

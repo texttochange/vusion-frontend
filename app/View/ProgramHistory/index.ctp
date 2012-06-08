@@ -66,10 +66,9 @@
                if($(document.activeElement).attr("id") == "filter_field")
                    supplyConditionOptions(fieldOption);
            ');
-       
-       echo "<h5>Filter Options</h5>";
-       echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
        echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
+       //echo "<h5>Filter Options</h5>";
+       echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
        if (isset($this->params['url']['filter_field'])) {
            for ($i=1;$i<=sizeof($this->params['url']['filter_field']);$i++) {
                $this->Js->get('document')->event('ready','addStackFilter();

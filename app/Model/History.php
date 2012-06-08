@@ -48,16 +48,6 @@ class History extends MongoModel
         'pending'=>'pending',
         );
     
-    public $dateConditionFilters = array(
-        '$lte'=>'up to',
-        '$gte'=>'start from',
-        );
-    
-    /*public $phoneConditionFilters = array(
-        '$lte'=>'like',
-        '$gte'=>'start from',
-        );*/
-    
     
     public function __construct($id = false, $table = null, $ds = null)
     {
