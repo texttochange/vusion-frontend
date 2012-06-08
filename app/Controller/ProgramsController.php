@@ -70,7 +70,9 @@ class ProgramsController extends AppController
             $program['Program']['schedule-count'] = $tempSchedule->find('count');  
         }
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
-        $this->set('unmatchableReplies', $tempUnmatchableReply->find('all'));
+        $this->set('unmatchableReplies', $tempUnmatchableReply->find('all', 
+            array('limit' => 8, 'order'=> array('timestamp' => 'DESC')))
+            );
         $this->set(compact('programs', 'isProgramEdit'));
     }
 
@@ -128,6 +130,11 @@ class ProgramsController extends AppController
         $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
     }
 
+    protected function _stopBackendWorker($workerName, $databaseName)
+    {
+        $this->VumiRabbitMQ->sendMessageToRemoveWorker($workerName, $databaseName);    	 
+    }
+
 
     /**
     * edit method
@@ -159,33 +166,27 @@ class ProgramsController extends AppController
         }
     }
 
-
-    /**
-    * delete method
-    *
-    * @param string $id
-    * @return void
-    */
     public function delete($id = null)
     {
-        if (!$this->request->is('post')) {
-            throw new MethodNotAllowedException();
-        }
         $this->Program->id = $id;
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        if ($this->Program->delete()) {
+        $program = $this->Program->read();
+        if ($this->Program->deleteProgram()) {
+            $this->_stopBackendWorker(
+                $program['Program']['url'],
+                $program['Program']['database']);
             $this->Session->setFlash(__('Program deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Program was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
         $this->redirect(array('action' => 'index'));
     }
 

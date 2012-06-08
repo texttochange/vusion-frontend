@@ -36,7 +36,9 @@ class DialogueHelper
 
     public function convertDateFormat($date)
     {
-        return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
+        if (!$this->validateDate($date))
+            return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
+        return $date;
     }
 
 

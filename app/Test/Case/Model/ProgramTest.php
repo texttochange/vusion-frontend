@@ -97,5 +97,12 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEquals(2, $result);
     }
 
+    public function testDeleteProgram()
+    {
+        $this->Program->id = 1;
+        $this->Program->deleteProgram();
+        $this->assertEquals(1,$this->Program->find('count'));
+    }
+
 
 }
