@@ -46,7 +46,7 @@ var program = {"script": [
     "add-answer-action": "button",
     "answer-action": ["radio-type-answer-action"],
     "radio-type-answer-action": "radiobuttons",
-    "type-answer-action": {"optout": "optout", "enrolling":"enrolling",  "tagging":"tagging"},
+    "type-answer-action": {"optin":"optin", "optout": "optout", "enrolling":"enrolling",  "tagging":"tagging"},
     "add-request":"button",
     "Request": ["keyword", "responses", "actions"],
     "responses":["add-response"],
