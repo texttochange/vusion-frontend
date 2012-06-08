@@ -18,7 +18,7 @@ class Participant extends MongoModel
                 ),
             'hasPlus'=>array(
                 'rule' => 'hasPlus',
-                'message' => "The phone number must begin with a '+' sign.",
+                'message' => "A phone number must begin with a '+' sign and end with a serie of digits such as +3345678733.",
                 'required' => true
                 ),
             'isReallyUnique' => array(
@@ -53,15 +53,23 @@ class Participant extends MongoModel
     
     public function beforeSave()
     {
-        if (isset($this->data['Participant']['phone']) && $this->data['Participant']['phone'] != "" ) {
-            $this->data['Participant']['phone'] = preg_replace("/[^0-9\+]/", "",$this->data['Participant']['phone']);
-            $this->data['Participant']['phone'] = preg_replace("/^(0|00)/", "+",$this->data['Participant']['phone']);
-            if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone'])) 
-                $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
-            $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
-        }
-        if (isset($this->data['Participant']['name']))
+        
+
+        if (!isset($this->data['Participant']['phone']) or $this->data['Participant']['phone'] == "" )
+            return false;
+
+        $this->data['Participant']['phone'] = trim($this->data['Participant']['phone']);
+        $this->data['Participant']['phone'] = preg_replace("/^(00|0)/", "+",$this->data['Participant']['phone']);    
+        if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone'])) 
+            $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
+
+        $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
+        
+        if (isset($this->data['Participant']['name'])) {
+            $this->data['Participant']['name'] = trim($this->data['Participant']['name']);
             $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
+        }
+
         return true;
     }
     
