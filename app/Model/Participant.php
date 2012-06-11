@@ -31,8 +31,13 @@ class Participant extends MongoModel
     
     public function isReallyUnique($check)
     {
+        if ($this->id) {
+            $conditions = array('id'=>array('$ne'=> $this->id),'phone' => $check['phone']);
+        } else {
+            $conditions = array('phone' => $check['phone']);
+        }
         $result = $this->find('count', array(
-            'conditions' => array('phone' => $check['phone'])
+            'conditions' => $conditions
             ));
         return $result < 1;            
     }

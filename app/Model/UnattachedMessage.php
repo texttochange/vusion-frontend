@@ -20,8 +20,8 @@ class UnattachedMessage extends MongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please enter a name for this separate message.'
                 ),
-            'isUnique' => array(
-                'rule' => 'isUnique',
+            'isVeryUnique' => array(
+                'rule' => 'isVeryUnique',
                 'message' => 'This name already exists. Please choose another.'
                 )
             ),
@@ -96,10 +96,15 @@ class UnattachedMessage extends MongoModel
     }
     
     
-    public function isUnique($check)
+    public function isVeryUnique($check)
     {
+        if ($this->id) {
+            $conditions = array('id'=>array('$ne'=> $this->id),'name' => $check['name']);
+        } else {
+            $conditions = array('name' => $check['name']);
+        }
         $result = $this->find('count', array(
-            'conditions' => array('name' => $check['name'])
+            'conditions' => $conditions
             ));
         return $result < 1;
     }
