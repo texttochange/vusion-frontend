@@ -56,6 +56,7 @@ class ProgramHistoryController extends AppController
         $this->set('filterFieldOptions',$this->filterFieldOptions);
         $this->set('filterTypeConditionsOptions',$this->filterTypeConditionsOptions);
         $this->set('filterStatusConditionsOptions',$this->filterStatusConditionsOptions);
+        $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
         
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
             $statuses = $this->History->find('all', array('conditions' => $this->_getConditions()));
