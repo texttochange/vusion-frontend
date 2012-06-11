@@ -435,11 +435,11 @@ function supplyConditionOptions(fieldOption){
 	}
 	if(fieldOption == "date from"){
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_from').show().datepicker();		
+		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_from').attr('name','filter_from').show().datepicker();		
 	}
 	if(fieldOption == "date to"){
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_to').show().datepicker();		
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();// we need to change id because the dtae picker will recognize only the id.
+		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_to').attr('name','filter_to').show().datepicker();		
 	}
 	if(fieldOption == "participant phone"){
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();

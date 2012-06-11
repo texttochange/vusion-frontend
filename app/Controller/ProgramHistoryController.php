@@ -96,13 +96,13 @@ class ProgramHistoryController extends AppController
             if (isset($this->params['url']['filter_status']))
                 $conditions['message-status'] = $this->params['url']['filter_status'];
             if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to'])) 
-                $conditions['timestamp'] = array('$gt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_from']));
+                $conditions['timestamp'] = array('$gt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_from'].' 00:00'));
             if (isset($this->params['url']['filter_to']) && !isset($this->params['url']['filter_from']))
-                $conditions['timestamp'] = array('$lt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_to']));
+                $conditions['timestamp'] = array('$lt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_to'].' 00:00'));
             if (isset($this->params['url']['filter_from']) && isset($this->params['url']['filter_to']))
                 $conditions['timestamp'] = array(
-                    '$gt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_from']),
-                    '$lt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_to'])
+                    '$gt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_from'].' 00:00'),
+                    '$lt'=>$this->dialogueHelper->ConvertDateFormat($this->params['url']['filter_to'].' 00:00')
                 );
             if (isset($this->params['url']['filter_phone'])) {
                 $phoneNumbers = explode(",", str_replace(" ", "",$this->params['url']['filter_phone']));

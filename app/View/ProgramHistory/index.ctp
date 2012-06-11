@@ -59,7 +59,6 @@
        $this->Js->set('myOptions', $filterFieldOptions);
        $this->Js->set('typeConditionOptions', $filterTypeConditionsOptions);
        $this->Js->set('statusConditionOptions', $filterStatusConditionsOptions);
-       $this->Js->set('dateConditionOptions', $filterDateConditionsOptions);
        
        $this->Js->get('$(\"#filter_field\"):focus')->event('change','
                var fieldOption = $("$(\"#filter_field\"):focus option:selected").text();
@@ -70,16 +69,18 @@
        //echo "<h5>Filter Options</h5>";
        echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
        if (isset($this->params['url']['filter_field'])) {
-           for ($i=1;$i<=sizeof($this->params['url']['filter_field']);$i++) {
+           $count = 1; // the stack filters and filter fields will always have names begining with index 1.
+           foreach (array_keys($this->params['url']['filter_field']) as $key) {
                $this->Js->get('document')->event('ready','addStackFilter();
-                   $("select[name=\'filter_field['.$i.']\']").focus();
-                   $("select[name=\'filter_field['.$i.']\'] > option").each(function(){
-                       if(this.value == "'.$this->params['url']['filter_field'][$i].'"){
+                   $("select[name=\'filter_field['.$count.']\']").focus();
+                   $("select[name=\'filter_field['.$count.']\'] > option").each(function(){
+                       if(this.value == "'.$this->params['url']['filter_field'][$key].'"){
                            $(this).attr("selected",true);
                            supplyConditionOptions(this.text);
                        }
                    });
                ');
+               $count++;
            }
        }
        if (isset($this->params['url']['filter_type'])) {
