@@ -638,3 +638,14 @@
 	font-style: italic;
 }
 
+.paging .ttc-page-count{
+	color: black;
+	border-bottom-width: 0;
+	border-right-width: 0;
+	border-top-width: 0;
+	margin-right: 5px;
+}
+
+.paging .ttc-page-count:hover{
+	background: white
+}

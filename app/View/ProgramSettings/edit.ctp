@@ -4,7 +4,8 @@
         <?php $this->Js->get('#button-save')->event('click', '$("#ProgramSettingsEditForm").submit()' , true);?>
 	</ul>
 <H3><?php echo __('Edit Program Settings'); ?></H3>
-<?php echo $this->Form->create('ProgramSettings'); ?>
+  <div class="ttc-display-area">
+  <?php echo $this->Form->create('ProgramSettings'); ?>
     <fieldset>      
         
         <div class='input text'>
@@ -60,6 +61,7 @@
        ?>
         </div>
     </fieldset>
-<?php echo $this->Form->end(__('Save'));?>
+  <?php echo $this->Form->end(__('Save'));?>
+  </div>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
