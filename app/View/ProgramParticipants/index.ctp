@@ -57,18 +57,16 @@
     <?php endforeach; ?>
 	</table>
 	</div>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>
-	</p>
 
 	<div class="paging">
 	<?php
+	    echo "<span class='ttc-page-count'>";
+	    echo $this->Paginator->counter(array(
+	        'format' => __('{:start} - {:end} of {:count}')
+	    ));
+	    echo "</span>";
 		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl)), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl)));
+		//echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl)));
 		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl)), null, array('class' => 'next disabled'));
 	?>
 	</div>
