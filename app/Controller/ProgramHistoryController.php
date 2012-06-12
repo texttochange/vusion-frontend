@@ -92,6 +92,8 @@ class ProgramHistoryController extends AppController
         if (preg_grep('/^filter_/', array_keys($this->params['url']))) {    
             $or = array();
             $orConditions = array();
+            if (isset($this->params['url']['dialogue_id']))
+                $conditions['dialogue-id'] = $this->params['url']['dialogue_id'];
             if (isset($this->params['url']['filter_type']))
                 $conditions['message-type'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))

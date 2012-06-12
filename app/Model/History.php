@@ -34,7 +34,8 @@ class History extends MongoModel
         'timestamp-from'=>'date from',
         'timestamp-to'=>'date to',
         'participant-phone'=>'participant phone',
-        'message-content'=>'message content'
+        'message-content'=>'message content',
+        'dialogue-id'=>'dialogue' 
         );
     
     public $typeConditionFilters = array(
