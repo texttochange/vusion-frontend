@@ -36,10 +36,10 @@
 		<div class="ttc-program-quicklinks">
 			<?php echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id'])); ?>
 			<br>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), null, __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), array('id'=>'deleteProgram'), __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
 		</div>
 		<?php };
-		$this->Js->get('.ttc-program-quicklinks')->event('click', 'event.stopPropagation()');
+		$this->Js->get('#deleteProgram')->event('click', 'event.stopPropagation()');
 		?>
 	</div>
     <?php endforeach; ?>
