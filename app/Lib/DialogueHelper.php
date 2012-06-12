@@ -21,12 +21,15 @@ class DialogueHelper
     public function validateDateFromForm($date)
     {
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/', $date, $parts) == true) {
-            /*$time = gmmktime($parts[4], $parts[5], 0, $parts[2], $parts[1], $parts[3]);
-          
-            $input_time = strtotime($date);
-            if ($input_time === false) return false;
-            
-            return $input_time == $time;*/
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isValideDateFromSearch($date)
+    {
+        if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $date, $parts) == true) {
             return true;
         } else {
             return false;
@@ -35,9 +38,13 @@ class DialogueHelper
 
 
     public function convertDateFormat($date)
-    {
-        if (!$this->validateDate($date))
+    { 
+        if (!$this->validateDate($date)) {
+            if ($this->isValideDateFromSearch($date)) {
+                return DateTime::createFromFormat('d/m/Y', $date)->format('Y-m-d\T00:00:00');
+            }
             return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
+        }
         return $date;
     }
 
