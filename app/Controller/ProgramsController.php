@@ -7,6 +7,7 @@ App::uses('Schedule', 'Model');
 App::uses('History', 'Model');
 App::uses('UnmatchableReply', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('ShortCode', 'Model');
 
 /**
  * Programs Controller
@@ -56,18 +57,22 @@ class ProgramsController extends AppController
                 ),
             ), 'controllers/Programs/edit');
         foreach($programs as &$program) {
-            $database = $program['Program']['database'];
+            $database           = $program['Program']['database'];
             $tempProgramSetting = new ProgramSetting(array('database' => $database));
-            $shortcode = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+            $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
             if (isset($shortcode[0]['ProgramSetting']['value'])) {
-                $program['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];
+                $this->ShortCode  = new ShortCode(array('database' => 'vusion'));
+                $codes            = $this->ShortCode->find('all', array( 
+                    'conditions' => array('shortcode'=> $shortcode[0]['ProgramSetting']['value'])
+                    ));
+                $program['Program']['shortcode'] = $codes[0]['ShortCode']['country']."-".$shortcode[0]['ProgramSetting']['value'];
             } 
-            $tempParticipant = new Participant(array('database' => $database));
+            $tempParticipant                         = new Participant(array('database' => $database));
             $program['Program']['participant-count'] = $tempParticipant->find('count'); 
-            $tempHistory = new History(array('database' => $database));
-            $program['Program']['history-count'] = $tempHistory->find('count');
-            $tempSchedule = new Schedule(array('database' => $database));
-            $program['Program']['schedule-count'] = $tempSchedule->find('count');  
+            $tempHistory                             = new History(array('database' => $database));
+            $program['Program']['history-count']     = $tempHistory->find('count');
+            $tempSchedule                            = new Schedule(array('database' => $database));
+            $program['Program']['schedule-count']    = $tempSchedule->find('count');  
         }
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find('all', 
