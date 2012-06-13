@@ -16,8 +16,10 @@
 	</ul>
 </div>
 <div class="ttc-program-index">
+    <?php if ($this->Session->read('Auth.User.group_id') != 3 && $this->Session->read('Auth.User.group_id') != 4) { ?>
     <?php echo $this->Html->link(__('Create Program'), array('action' => 'add'), array('class' => 'ttc-button', 'style'=>'float:right')); ?>    
-	<h3><?php echo __('Programs');?></h3>
+	<?php } ?>
+    <h3><?php echo __('Programs');?></h3>
 	<?php
 	foreach ($programs as $program): ?>
 	<div class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
