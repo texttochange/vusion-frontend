@@ -8,16 +8,17 @@
             delay:     1200               // 1.2 second delay on mouseout 
          });'
         );
- 
+
 ?>
 
 <ul class="sf-menu sf-vertical">  
     <li>
+        <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
         <?php 
         echo $this->Html->link(
             __('Dialogues'),
-            array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'index')); 
-        ?>
+            array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'index'), array('disabled'=> true)); 
+        ?>        
         <ul>
             <li>
             <?php 
@@ -73,8 +74,12 @@
                 </li>
             <?php } ?>
         </ul>
+        <?php } else {
+            echo $this->Html->tag('span',__('Dialogues'), array('class'=>'ttc-disabled-link'));
+         } ?>
     </li>
     <li>
+       <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
        <?php 
         echo $this->Html->link(
             __('Requests'),
@@ -105,8 +110,12 @@
                <?php endforeach; ?>
            <?php } ?>
         </ul>
+        <?php } else {
+            echo $this->Html->tag('span',__('Requests'), array('class'=>'ttc-disabled-link'));
+         } ?>
     </li>
     <li>
+       <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
        <?php echo $this->Html->link(__('Separate Messages'),
            array(
                'program'=>$programUrl,
@@ -139,6 +148,9 @@
            <?php endforeach; ?>
            <?php } ?>
        </ul>
+        <?php } else {
+            echo $this->Html->tag('span',__('Separate Messages'), array('class'=>'ttc-disabled-link'));
+         } ?>
     </li>  
     <li>
         <?php echo $this->Html->link(__('Participants'),
@@ -150,22 +162,34 @@
             ); ?>
         <ul>
             <li>
-                <?php echo $this->Html->link(__('Add Participant'),
-                    array(
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'add'
-                        )
-                    ); ?>
+                <?php 
+                    if ($this->Session->read('Auth.User.group_id') != 4 ) { 
+                        echo $this->Html->link(__('Add Participant'),
+                            array(
+                                'program' => $programUrl,
+                                'controller' => 'programParticipants',
+                                'action' => 'add'
+                                )
+                            );
+                    } else {
+                        echo $this->Html->tag('span',__('Add Participant'), array('class'=>'ttc-disabled-link'));
+                    }
+                ?>
             </li>
 		    <li>
-		        <?php echo $this->Html->link(__('Import Participant(s)'),
-		            array(
-		                'program' => $programUrl,
-		                'controller' => 'programParticipants',
-		                'action' => 'import'
-		                )
-		            ); ?>
+		        <?php
+		            if ($this->Session->read('Auth.User.group_id') != 4 ) {
+		                echo $this->Html->link(__('Import Participant(s)'),
+		                    array(
+		                        'program' => $programUrl,
+		                        'controller' => 'programParticipants',
+		                        'action' => 'import'
+		                        )
+		                    );
+		            } else {
+		                echo $this->Html->tag('span',__('Import Participant(s)'), array('class'=>'ttc-disabled-link'));
+		            }
+		        ?>
 		    </li>
         </ul>
     </li>
@@ -202,21 +226,33 @@
         </ul>
     </li>
     <li>
-        <?php echo $this->Html->link(__('Settings'),
-            array(
-                'program'=>$programUrl,
-                'controller'=>'programSettings',
-               'action'=>'index'
-                )
-            ); ?>
+        <?php
+            if ($this->Session->read('Auth.User.group_id') != 4 ) {
+                echo $this->Html->link(__('Settings'),
+                    array(
+                        'program'=>$programUrl,
+                        'controller'=>'programSettings',
+                        'action'=>'index'
+                        )
+                    );
+            } else {
+                echo $this->Html->tag('span',__('Settings'), array('class'=>'ttc-disabled-link'));
+            }
+         ?>
     </li>
     <li>
-        <?php echo $this->Html->link(__('Logs'),
-            array(
-                'program'=>$programUrl,
-                'controller'=>'programLogs'
-                )
-            ); ?>
+        <?php
+            if ($this->Session->read('Auth.User.group_id') != 4 ) {
+                echo $this->Html->link(__('Logs'),
+                    array(
+                        'program'=>$programUrl,
+                        'controller'=>'programLogs'
+                        )
+                    );
+            } else {
+                echo $this->Html->tag('span',__('Logs'), array('class'=>'ttc-disabled-link'));
+            }
+         ?>
     </li>
     <li>
         <?php echo $this->Html->link(__('Program List'),

@@ -647,5 +647,17 @@
 }
 
 .paging .ttc-page-count:hover{
-	background: white
+	background: white;
+}
+
+.sf-menu .ttc-disabled-link {
+	border-left: 1px solid #fff;
+	border-top: 1px solid white;
+	padding: .75em 1em;
+	text-decoration: none;
+	font-size: 14px;
+	display: block;
+	position: relative;
+	color: grey;
+	background: #EDEDED;
 }
