@@ -59,12 +59,15 @@ class ProgramHistoryController extends AppController
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
         
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
-            $statuses = $this->History->find('all', array('conditions' => $this->_getConditions()));
+            $statuses = $this->History->find('all', array('conditions' => $this->_getConditions(),
+                'order'=> array('timestamp' => 'DESC')
+                ));
             $this->set(compact('statuses')); 
         } else {   
             $this->paginate = array(
                 'all',
-                'conditions' => $this->_getConditions()
+                'conditions' => $this->_getConditions(),
+                'order'=> array('timestamp' => 'DESC')
             );
             
             $statuses = $this->paginate();
@@ -77,7 +80,8 @@ class ProgramHistoryController extends AppController
     {        
         $exportParams = array(
             'fields' => array('participant-phone','message-type','message-status','message-content','timestamp'),
-            'conditions' => $this->_getConditions()
+            'conditions' => $this->_getConditions(),
+            'order'=> array('timestamp' => 'DESC')
         );
         
         $data = $this->History->find('all', $exportParams);
