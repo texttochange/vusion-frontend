@@ -259,7 +259,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramSimulator');        
         $this->Acl->allow($group, 'controllers/ProgramRequests');
         $this->Acl->allow($group, 'controllers/ShortCodes');
-        $this->Acl->allow($group, 'controllers/UnmatchableReply');
+        $this->Acl->deny($group, 'controllers/UnmatchableReply');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/ProgramLogs');
         
