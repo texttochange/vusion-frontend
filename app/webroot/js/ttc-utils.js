@@ -407,12 +407,18 @@ function hasNoStackFilter(){
 	}
 }
 
+function changeFilterConditionTextBoxID(){	
+		$("#date_from", $('$("#filter_field"):focus').closest('div')).attr('id','filter_condition_textbox');
+		$("#date_to", $('$("#filter_field"):focus').closest('div')).attr('id','filter_condition_textbox');
+}
+
 function supplyConditionOptions(fieldOption){
 	$("#filter_condition", $('$("#filter_field"):focus').closest('div')).empty();
 	
 	if(fieldOption == ""){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
+		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();		
 	}
 	
 	if(fieldOption == "message type"){
@@ -442,10 +448,12 @@ function supplyConditionOptions(fieldOption){
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_to').attr('name','filter_to').show().datepicker();		
 	}
 	if(fieldOption == "participant phone"){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_phone').show().datepicker("destroy").removeClass("hasDatepicker");
 	}
 	if(fieldOption == "message content"){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_content').show().datepicker("destroy").removeClass("hasDatepicker");
 	}
