@@ -379,7 +379,7 @@ function duplicateKeywordValidation(value, element, param) {
         this.showErrors(errors)
         return true;
     }
-
+        
     var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
     
     $.ajax({
@@ -406,7 +406,9 @@ function validateKeywordReply(data, textStatus) {
             var errors = {};
             errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
             $("#dynamic-generic-program-form").validate().showErrors(errors);
-        }    
+    } else {
+    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/Ok-icon-16.png'/>");
+    }
 };
 
 
