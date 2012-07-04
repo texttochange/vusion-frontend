@@ -422,6 +422,7 @@ function supplyConditionOptions(fieldOption){
 	}
 	
 	if(fieldOption == "message type"){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_type').append(new Option("", ""));
@@ -431,6 +432,7 @@ function supplyConditionOptions(fieldOption){
 		});
 	}
 	if(fieldOption == "message status"){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_status').append(new Option("", ""));
@@ -440,10 +442,12 @@ function supplyConditionOptions(fieldOption){
 		});
 	}
 	if(fieldOption == "date from"){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_from').attr('name','filter_from').show().datepicker();		
 	}
 	if(fieldOption == "date to"){
+		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();// we need to change id because the dtae picker will recognize only the id.
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_to').attr('name','filter_to').show().datepicker();		
 	}
