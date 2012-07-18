@@ -99,7 +99,7 @@ exec { "Clone git repository":
 
 apache2::site {
     "default": ensure => "absent";
-    #"vusion": ensure => "present";
+    "vusion": ensure => "present";
 }
 
 
@@ -107,6 +107,11 @@ $apache2_sites = "/etc/apache2/sites"
 $apache2_mods = "/etc/apache2/mods"
 
 class apache2 {
+
+    file { "/etc/apache2/sites-available":
+        source => "puppet:///vusion",
+        before => Site['vusion']
+    }
 
    # Define an apache2 site. Place all site configs into
    # /etc/apache2/sites-available and en-/disable them with this type.
@@ -119,15 +124,17 @@ class apache2 {
          'present' : {
             exec { "/usr/sbin/a2ensite $name":
                unless => "/bin/readlink -e ${apache2_sites}-enabled/$name",
-               subscribe => Exec['reload-apache2'],
+               #notify => Exec['reload-apache2'],
                require => Package['apache2'],
+               user => 'root'
             }
          }
          'absent' : {
-            exec { "/usr/sbin/a2dissite $name":
+            exec { "sudo /usr/sbin/a2dissite $name":
                onlyif => "/bin/readlink -e ${apache2_sites}-enabled/$name",
-               subscribe => Exec['reload-apache2'],
+               #notify => Exec['reload-apache2'],
                require => Package['apache2'],
+               user => 'root'
             }
          }
          default: { err ( "Unknown ensure value: '$ensure'" ) }
@@ -145,15 +152,17 @@ class apache2 {
          'present' : {
             exec { "/usr/sbin/a2enmod $name":
                unless => "/bin/readlink -e ${apache2_mods}-enabled/${name}.load",
-               notify => Exec["force-reload-apache2"],
+               #notify => Exec["force-reload-apache2"],
                require => Package[$require],
+               user => 'root'
             }
          }
          'absent': {
             exec { "/usr/sbin/a2dismod $name":
                onlyif => "/bin/readlink -e ${apache2_mods}-enabled/${name}.load",
-               notify => Exec["force-reload-apache2"],
+               #notify => Exec["force-reload-apache2"],
                require => Package["apache2"],
+               user => 'root'
             }
          }
          default: { err ( "Unknown ensure value: '$ensure'" ) }
@@ -167,11 +176,13 @@ class apache2 {
    exec { "reload-apache2":
       command => "/etc/init.d/apache2 reload",
       refreshonly => true,
+      user => 'root'
    }
 
    exec { "force-reload-apache2":
       command => "/etc/init.d/apache2 force-reload",
       refreshonly => true,
+      user => 'root'
    }
 
    # We want to make sure that Apache2 is running.
@@ -180,5 +191,6 @@ class apache2 {
       hasstatus => true,
       hasrestart => true,
       require => Package["apache2"],
+      user => 'root'
    }
 }
