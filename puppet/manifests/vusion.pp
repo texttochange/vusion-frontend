@@ -6,7 +6,7 @@ Exec {
 # Make sure packge index is updated
 exec { "apt-get update":
     command => "apt-get update",
-    user => "root",
+    user => "root"
 }
 
 # Install these packages after apt-get update
@@ -32,14 +32,20 @@ apt::package { "libcurl4-openssl-dev": ensure => "7.19.7-1ubuntu1.1" }
 apt::package { "redis-server": ensure => "2:1.2.0-1" }
 
 # Install Frontend packages
-apt::package { "python-software-properties": }
-apt::package { "mongodb-10gen": require => Exec["mongodb_repository"] }
+apt::package { "mongodb-10gen": require => File["mongodb-apt-list"] }
 apt::package { "mysql-server": }
 apt::package { "php5": }
 apt::package { "php5-dev": }
-apt::package { "make": }
 apt::package { "apache2": }
 apt::package { "libapache2-mod-php5": }
+
+# Install packatge necessary for installation (to be removed at the end)
+apt::package { "make": }
+apt::package { "augeas-tools": }
+apt::package { "libaugeas-dev": }
+apt::package { "libaugeas-ruby": }
+apt::package { "libaugeas0": }
+apt::package { "augeas-lenses": }
 
 define apt::key($keyid, $ensure, $keyserver = 'keyserver.ubuntu.com') {
   case $ensure {
@@ -70,16 +76,60 @@ define apt::key($keyid, $ensure, $keyserver = 'keyserver.ubuntu.com') {
   }
 }
 
-apt::key { "mongodb_key":
+apt::key { "mongodb-key":
     ensure => present,
     keyid => "7F0CEB10" 
 }
-
-exec { "sudo add-apt-repository 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' && sudo apt-get update":
+/*# initial way of adding mongo to the apt list
+apt::package { "python-software-properties": }
+exec { "add-apt-repository 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' && apt-get update && touch /etc/apt/sources.list.d/mongodb-upstart-gen10.list":
     alias => "mongodb_repository",
-    #creates => "/etc/apt/source.list.d/mongodb-upstart-gen10.list",
-    require => [ Apt::Key["mongodb_key"], Package["python-software-properties"]]
+    creates => "/etc/apt/sources.list.d/mongodb-upstart-gen10.list",
+    require => [ Apt::Key["mongodb_key"], Package["python-software-properties"]],
+    user => 'root'
   }
+*/
+
+file { "mongodb-apt-list":
+    path => "/etc/apt/sources.list.d/mongodb-upstart-gen10.list",
+    content => 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen',
+    owner => 'root',
+    group => 'root',
+    mode => '0644',
+    require => Apt::Key["mongodb-key"],
+    notify => Exec['apt-get update']
+}
+
+exec { "clone-mongodb-php-driver":
+    command => "git clone git://github.com/mongodb/mongo-php-driver.git",
+    cwd => "/tmp",
+    unless => "test -d /tmp/mongo-php-driver/.git",
+    require => [Apt::Package["make"], Apt::Package["git-core"]]
+}
+
+exec { "checkout129-mongodb-php-driver":
+    command => "git checkout 1.2.9",
+    cwd => "/tmp/mongo-php-driver",
+    require => Exec["clone-mongodb-php-driver"],
+}
+
+exec { "compile-mongodb-php-driver":
+    command => "phpize && ./configure && make && sudo make install",
+    cwd => "/tmp/mongo-php-driver",
+    unless => "test -f /tmp/mongo-php-driver/modules/mongo.so",
+    require => Exec["checkout129-mongodb-php-driver"],
+}
+
+augeas { "add-extension-mongo":
+  require => [
+                Apt::Package["augeas-tools"], 
+                Apt::Package["libaugeas-dev"], 
+                Apt::Package["libaugeas-ruby"],
+                Apt::Package["libaugeas0"],
+                Exec["compile-mongodb-php-driver"]],
+  context => "/etc/php3/apache2/php.ini",
+  changes => "set extension mongo.so"
+}
 
 file {
     "/var/vusion":
@@ -87,11 +137,28 @@ file {
         owner => "vagrant",
 }
 
-exec { "Clone git repository":
+exec { "clone-frontend-repository":
     command => "git clone git://github.com/texttochange/vusion-frontend.git",
     cwd => "/var/vusion",
     unless => "test -d /var/vusion/vusion-frontend/.git",
-    subscribe => [
+    require => [
+        Package['git-core'],
+        File['/var/vusion']
+    ],
+}
+
+file { "/var/vusion/vusion-frontend/app/temp":
+    ensure => directory, 
+    recurse => true,
+    mode => "0777",
+    require => Exec["clone-frontend-repository"]
+}
+
+exec { "clone-backend-repository":
+    command => "git clone git://github.com/texttochange/vusion-backend.git",
+    cwd => "/var/vusion",
+    unless => "test -d /var/vusion/vusion-backend/.git",
+    require => [
         Package['git-core'],
         File['/var/vusion']
     ],
@@ -99,19 +166,19 @@ exec { "Clone git repository":
 
 apache2::site {
     "default": ensure => "absent";
-    "vusion": ensure => "present";
+    "vusion": ensure => "present",
+            require => File["/etc/apache2/sites-available/vusion"]    
 }
 
+file { "/etc/apache2/sites-available/vusion":
+    source => "/var/vusion/vusion-frontend/puppet/files/vusion",
+    require => Apt::Package["apache2"]
+    }
 
 $apache2_sites = "/etc/apache2/sites"
 $apache2_mods = "/etc/apache2/mods"
 
-class apache2 {
-
-    file { "/etc/apache2/sites-available":
-        source => "puppet:///vusion",
-        before => Site['vusion']
-    }
+class apache2 {    
 
    # Define an apache2 site. Place all site configs into
    # /etc/apache2/sites-available and en-/disable them with this type.
