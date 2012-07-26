@@ -5,7 +5,7 @@ Exec {
 
 # Make sure packge index is updated
 exec { "apt-get update":
-    command => "apt-get update",
+    command => "ls", #"apt-get update",
     user => "root"
 }
 
@@ -24,9 +24,9 @@ apt::package { "python-dev": ensure => "2.6.5-0ubuntu1" }
 apt::package { "python-setuptools": ensure => "0.6.10-4ubuntu1" }
 apt::package { "python-pip": ensure => "0.3.1-1ubuntu2" }
 apt::package { "python-virtualenv": ensure => "1.4.5-1ubuntu1" }
-apt::package { "rabbitmq-server": ensure => "1.7.2-1ubuntu1" }
+#apt::package { "rabbitmq-server": ensure => "1.7.2-1ubuntu1" }
 apt::package { "git-core": ensure => "1:1.7.0.4-1ubuntu0.2" }
-apt::package { "openjdk-6-jre-headless": }
+#apt::package { "openjdk-6-jre-headless": }
 apt::package { "libcurl3": ensure => "7.19.7-1ubuntu1.1" }
 apt::package { "libcurl4-openssl-dev": ensure => "7.19.7-1ubuntu1.1" }
 apt::package { "redis-server": ensure => "2:1.2.0-1" }
@@ -41,11 +41,13 @@ apt::package { "libapache2-mod-php5": }
 
 # Install packatge necessary for installation (to be removed at the end)
 apt::package { "make": }
-apt::package { "augeas-tools": }
-apt::package { "libaugeas-dev": }
-apt::package { "libaugeas-ruby": }
-apt::package { "libaugeas0": }
-apt::package { "augeas-lenses": }
+apt::package { "augeas-tools": require => Exec['ppa-augeas']}
+apt::package { "libaugeas-dev": require => Exec['ppa-augeas']}
+apt::package { "libaugeas0": require => Exec['ppa-augeas']}
+apt::package { "augeas-lenses": require => Exec['ppa-augeas']}
+apt::package { "python-software-properties": }
+
+### Apt Config ###
 
 define apt::key($keyid, $ensure, $keyserver = 'keyserver.ubuntu.com') {
   case $ensure {
@@ -76,12 +78,14 @@ define apt::key($keyid, $ensure, $keyserver = 'keyserver.ubuntu.com') {
   }
 }
 
-apt::key { "mongodb-key":
-    ensure => present,
-    keyid => "7F0CEB10" 
-}
+exec { "add-apt-repository 'ppa:raphink/augeas'":
+    alias => "ppa-augeas",
+    creates => "/etc/apt/sources.list.d/raphink-augeas-lucid.list",
+    require => Apt::Package["python-software-properties"],
+    user => 'root'
+  }
+
 /*# initial way of adding mongo to the apt list
-apt::package { "python-software-properties": }
 exec { "add-apt-repository 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' && apt-get update && touch /etc/apt/sources.list.d/mongodb-upstart-gen10.list":
     alias => "mongodb_repository",
     creates => "/etc/apt/sources.list.d/mongodb-upstart-gen10.list",
@@ -89,6 +93,13 @@ exec { "add-apt-repository 'deb http://downloads-distro.mongodb.org/repo/ubuntu-
     user => 'root'
   }
 */
+
+### MongoDB ###
+
+apt::key { "mongodb-key":
+    ensure => present,
+    keyid => "7F0CEB10" 
+}
 
 file { "mongodb-apt-list":
     path => "/etc/apt/sources.list.d/mongodb-upstart-gen10.list",
@@ -108,7 +119,7 @@ exec { "clone-mongodb-php-driver":
 }
 
 exec { "checkout129-mongodb-php-driver":
-    command => "git checkout 1.2.9",
+    command => "git tag -l && git checkout 1.2.9",
     cwd => "/tmp/mongo-php-driver",
     require => Exec["clone-mongodb-php-driver"],
 }
@@ -120,16 +131,46 @@ exec { "compile-mongodb-php-driver":
     require => Exec["checkout129-mongodb-php-driver"],
 }
 
+### RabbitMQ ###
+
+include "rabbitmq::server"
+
+rabbitmq_user { "vumi":
+    admin => false,
+    password => "vumi",
+    provider => "rabbitmqctl"
+}
+
+rabbitmq_vhost { "develop":
+    ensure => present,
+    provider => "rabbitmqctl"
+}
+
+rabbitmq_user_permissions { "vumi@develop":
+    require => [Rabbitmq_user["vumi"],Rabbitmq_vhost["develop"]], 
+    configure_permission => ".*",
+    read_permission => ".*",
+    write_permission => ".*",
+    provider => "rabbitmqctl"
+}
+
+### PHP.ini ###
+
 augeas { "add-extension-mongo":
   require => [
-                Apt::Package["augeas-tools"], 
                 Apt::Package["libaugeas-dev"], 
-                Apt::Package["libaugeas-ruby"],
                 Apt::Package["libaugeas0"],
                 Exec["compile-mongodb-php-driver"]],
-  context => "/etc/php3/apache2/php.ini",
-  changes => "set extension mongo.so"
+  context => "/files/etc/php5/apache2/php.ini",
+  onlyif => "match PHP/extension[1] size == 0",
+  changes => [
+                "ins extension after PHP/#comment[747]",
+                "set PHP/extension[1] mongo.so",
+                "ins extension after PHP/extension[1]",
+                "set PHP/extension[2] redis.so"]
 }
+
+### Vusion ###
 
 file {
     "/var/vusion":
@@ -163,6 +204,8 @@ exec { "clone-backend-repository":
         File['/var/vusion']
     ],
 }
+
+### Apache Configuration ###
 
 apache2::site {
     "default": ensure => "absent";
