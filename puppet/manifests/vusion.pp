@@ -3,6 +3,7 @@ Exec {
     user => 'vagrant',
 }
 
+
 # Make sure packge index is updated
 exec { "apt-get update":
     command => "ls", #"apt-get update",
@@ -18,22 +19,22 @@ define apt::package($ensure='latest') {
 }
 
 # Install Backend these packages
-apt::package { "build-essential": ensure => "11.4build1" }
-apt::package { "python": ensure => "2.6.5-0ubuntu1" }
-apt::package { "python-dev": ensure => "2.6.5-0ubuntu1" }
-apt::package { "python-setuptools": ensure => "0.6.10-4ubuntu1" }
-apt::package { "python-pip": ensure => "0.3.1-1ubuntu2" }
-apt::package { "python-virtualenv": ensure => "1.4.5-1ubuntu1" }
+apt::package { "build-essential": }
+apt::package { "python": }
+apt::package { "python-dev": }
+apt::package { "python-setuptools": }
+apt::package { "python-pip": }
+apt::package { "python-virtualenv": }
 #apt::package { "rabbitmq-server": ensure => "1.7.2-1ubuntu1" }
-apt::package { "git-core": ensure => "1:1.7.0.4-1ubuntu0.2" }
+apt::package { "git-core": }
 #apt::package { "openjdk-6-jre-headless": }
-apt::package { "libcurl3": ensure => "7.19.7-1ubuntu1.1" }
-apt::package { "libcurl4-openssl-dev": ensure => "7.19.7-1ubuntu1.1" }
-apt::package { "redis-server": ensure => "2:1.2.0-1" }
+apt::package { "libcurl3": }
+apt::package { "libcurl4-openssl-dev": }
+apt::package { "redis-server": }
 
 # Install Frontend packages
 apt::package { "mongodb-10gen": require => File["mongodb-apt-list"] }
-apt::package { "mysql-server": }
+#apt::package { "mysql-server": }
 apt::package { "php5": }
 apt::package { "php5-dev": }
 apt::package { "apache2": }
@@ -46,6 +47,12 @@ apt::package { "libaugeas-dev": require => Exec['ppa-augeas']}
 apt::package { "libaugeas0": require => Exec['ppa-augeas']}
 apt::package { "augeas-lenses": require => Exec['ppa-augeas']}
 apt::package { "python-software-properties": }
+
+package { "ruby-augeas":
+    provider => "gem",
+    ensure => "installed",
+    require => Apt::Package["libaugeas-dev"]
+}
 
 ### Apt Config ###
 
@@ -84,6 +91,14 @@ exec { "add-apt-repository 'ppa:raphink/augeas'":
     require => Apt::Package["python-software-properties"],
     user => 'root'
   }
+
+# ToDo only if already in sources.list
+exec { "add-apt-repository 'deb http://www.rabbitmq.com/debian/ testing main'":
+    alias => "repo-rabbitmq",
+    creates => "/etc/apt/sources.list.d/rabbitmq.list",
+    require => Apt::Package["python-software-properties"],
+    user => 'root'
+}
 
 /*# initial way of adding mongo to the apt list
 exec { "add-apt-repository 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' && apt-get update && touch /etc/apt/sources.list.d/mongodb-upstart-gen10.list":
@@ -133,7 +148,10 @@ exec { "compile-mongodb-php-driver":
 
 ### RabbitMQ ###
 
-include "rabbitmq::server"
+class { 'rabbitmq::server':
+    port              => '5673',
+    delete_guest_user => true,
+}
 
 rabbitmq_user { "vumi":
     admin => false,
@@ -141,13 +159,13 @@ rabbitmq_user { "vumi":
     provider => "rabbitmqctl"
 }
 
-rabbitmq_vhost { "develop":
+rabbitmq_vhost { "/develop":
     ensure => present,
     provider => "rabbitmqctl"
 }
 
-rabbitmq_user_permissions { "vumi@develop":
-    require => [Rabbitmq_user["vumi"],Rabbitmq_vhost["develop"]], 
+rabbitmq_user_permissions { "vumi@/develop":
+    require => [Rabbitmq_user["vumi"],Rabbitmq_vhost["/develop"]], 
     configure_permission => ".*",
     read_permission => ".*",
     write_permission => ".*",
@@ -188,7 +206,7 @@ exec { "clone-frontend-repository":
     ],
 }
 
-file { "/var/vusion/vusion-frontend/app/temp":
+file { "/var/vusion/vusion-frontend/app/tmp":
     ensure => directory, 
     recurse => true,
     mode => "0777",
@@ -207,8 +225,14 @@ exec { "clone-backend-repository":
 
 ### Apache Configuration ###
 
+include apache2
+
+apache2::module {
+    "rewrite": ensure => "present"
+}
+
 apache2::site {
-    "default": ensure => "absent";
+    "000-default": ensure => "absent";
     "vusion": ensure => "present",
             require => File["/etc/apache2/sites-available/vusion"]    
 }
@@ -221,8 +245,20 @@ file { "/etc/apache2/sites-available/vusion":
 $apache2_sites = "/etc/apache2/sites"
 $apache2_mods = "/etc/apache2/mods"
 
+
 class apache2 {    
 
+    exec { "reload-apache2":
+        command => "/etc/init.d/apache2 reload",
+        refreshonly => true,
+        user => 'root'
+    }
+    
+    exec { "force-reload-apache2":
+      command => "/etc/init.d/apache2 force-reload",
+      refreshonly => true,
+      user => 'root'
+    }
    # Define an apache2 site. Place all site configs into
    # /etc/apache2/sites-available and en-/disable them with this type.
    #
@@ -234,18 +270,19 @@ class apache2 {
          'present' : {
             exec { "/usr/sbin/a2ensite $name":
                unless => "/bin/readlink -e ${apache2_sites}-enabled/$name",
-               #notify => Exec['reload-apache2'],
-               require => Package['apache2'],
+               notify => Exec["reload-apache2"],
+               require => Apt::Package['apache2'],
                user => 'root'
             }
          }
          'absent' : {
-            exec { "sudo /usr/sbin/a2dissite $name":
+            exec { "/usr/sbin/a2dissite $name":
                onlyif => "/bin/readlink -e ${apache2_sites}-enabled/$name",
-               #notify => Exec['reload-apache2'],
-               require => Package['apache2'],
+               notify => Exec["reload-apache2"],
+               require => Apt::Package['apache2'],
                user => 'root'
             }
+
          }
          default: { err ( "Unknown ensure value: '$ensure'" ) }
       }
@@ -257,21 +294,21 @@ class apache2 {
    # You can add a custom require (string) if the module depends on 
    # packages that aren't part of the default apache2 package. Because of 
    # the package dependencies, apache2 will automagically be included.
-   define module ( $ensure = 'present', $require = 'apache2' ) {
+   define module ( $ensure = 'present') {
       case $ensure {
          'present' : {
             exec { "/usr/sbin/a2enmod $name":
                unless => "/bin/readlink -e ${apache2_mods}-enabled/${name}.load",
-               #notify => Exec["force-reload-apache2"],
-               require => Package[$require],
+               notify => Exec["force-reload-apache2"],
+               require => Apt::Package["apache2"],
                user => 'root'
             }
          }
          'absent': {
             exec { "/usr/sbin/a2dismod $name":
                onlyif => "/bin/readlink -e ${apache2_mods}-enabled/${name}.load",
-               #notify => Exec["force-reload-apache2"],
-               require => Package["apache2"],
+               notify => Exec["force-reload-apache2"],
+               require => Apt::Package["apache2"],
                user => 'root'
             }
          }
@@ -283,17 +320,7 @@ class apache2 {
    # sites are added or removed, since a full restart then would be
    # a waste of time. When the module-config changes, a force-reload is
    # needed.
-   exec { "reload-apache2":
-      command => "/etc/init.d/apache2 reload",
-      refreshonly => true,
-      user => 'root'
-   }
-
-   exec { "force-reload-apache2":
-      command => "/etc/init.d/apache2 force-reload",
-      refreshonly => true,
-      user => 'root'
-   }
+ 
 
    # We want to make sure that Apache2 is running.
    service { "apache2":
@@ -301,6 +328,28 @@ class apache2 {
       hasstatus => true,
       hasrestart => true,
       require => Package["apache2"],
-      user => 'root'
    }
 }
+
+### MySQL Configuration ###
+
+$root_password = "admin"
+$cake_login = "cake"
+$cake_password = "password" 
+
+class { "mysql": }
+apt::package { "php5-mysql": }
+
+class { "mysql::server":
+    config_hash => {'root_password' => $root_password} 
+    }
+
+#Need to move the /root/.my.cnf to ~/.my.cnf as the curent user is vagrant
+mysql::db { "vusion":
+    user => $cake_login,
+    password => $cake_password,
+    host => "localhost",
+    grant => ["all"],
+    sql => "/var/vusion/vusion-frontend/app/Test/data/mySQL/vusion.sql"
+    }
+
