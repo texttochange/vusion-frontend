@@ -20,19 +20,19 @@
 		   }
 		   $count++;		   
 		}
-	
+
 		echo $this->Html->tag('label',__('Country'));
 		echo "<br />";
 		echo $this->Form->select('country', $options, array('id'=> 'country'));
 		$this->Js->get('#country')->event('change', '	       
-		       $("#internationalprefix").val(getCountryCodes($("select option:selected").text()));
+		       $("#international-prefix").val(getCountryCodes($("select option:selected").text()));
 		       ');
 	?>
 		</div>
 	<?php
 		echo $this->Form->input(__('shortcode'));
-		echo $this->Form->input(__('internationalprefix'),
-				array('id' => 'internationalprefix',
+		echo $this->Form->input(__('international-prefix'),
+				array('id' => 'international-prefix',
 					'label' =>'International Prefix',
 					'readonly' => true)
 					);

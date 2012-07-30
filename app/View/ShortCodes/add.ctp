@@ -18,7 +18,7 @@
 		   if($count > 0 && $countries[$count]){
 		   $countries[$count] = str_replace("\n", "", $countries[$count]);
 		   $explodedLine = explode(",", $countries[$count]);
-		   $options[$explodedLine[0]] = trim($explodedLine[0]);
+		   $options[trim($explodedLine[0])] = trim($explodedLine[0]);
 		   $optionscode[$explodedLine[1]] = $explodedLine[0];
 		   }
 		   $count++;		   
