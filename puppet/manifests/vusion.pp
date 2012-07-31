@@ -37,8 +37,8 @@ apt::package { "mongodb-10gen": require => File["mongodb-apt-list"] }
 #apt::package { "mysql-server": }
 apt::package { "php5": }
 apt::package { "php5-dev": }
-apt::package { "apache2": }
-apt::package { "libapache2-mod-php5": }
+#apt::package { "apache2": }
+#apt::package { "libapache2-mod-php5": }
 
 # Install packatge necessary for installation (to be removed at the end)
 apt::package { "make": }
@@ -146,6 +146,26 @@ exec { "compile-mongodb-php-driver":
     require => Exec["checkout129-mongodb-php-driver"],
 }
 
+### Redis ###
+
+##TODO issue with the root exectuion of the service start
+#include redis
+
+exec { "clone-redis-php-driver":
+    command => "git clone git://github.com/nicolasff/phpredis.git",
+    cwd => "/tmp",
+    unless => "test -d /tmp/phpredis/.git",
+    require => [Apt::Package["make"], Apt::Package["git-core"]]
+}
+
+exec { "compile-redis-php-driver":
+    command => "phpize && ./configure && make && sudo make install",
+    cwd => "/tmp/phpredis",
+    unless =>  "test -f /tmp/phpredis/modules/redis.so",
+    require => Exec["clone-redis-php-driver"],
+}
+
+
 ### RabbitMQ ###
 
 class { 'rabbitmq::server':
@@ -206,6 +226,13 @@ exec { "clone-frontend-repository":
     ],
 }
 
+exec { "update-frontend-module":
+    command => "git submodule init && git submodule update",
+    cwd => "/var/vusion/vusion-frontend",
+    unless => "test -d /var/vusion/vusion-frontend/app/Plugin/Mongodb/.git",
+    require => Exec['clone-frontend-repository'],
+}
+
 file { "/var/vusion/vusion-frontend/app/tmp":
     ensure => directory, 
     recurse => true,
@@ -225,6 +252,19 @@ exec { "clone-backend-repository":
 
 ### Apache Configuration ###
 
+include apache
+
+class { 'apache::php': }
+
+apache::vhost { "vusion":
+    port => "80",
+    docroot => "/var/vusion/vusion-frontend/app/webroot",
+    serveraliases => ["*.localhost"],
+    template => "apache/cake-default.conf.erb",
+    #serveradmin => "overnin@gmail.com"
+}
+
+/*
 include apache2
 
 apache2::module {
@@ -329,7 +369,7 @@ class apache2 {
       hasrestart => true,
       require => Package["apache2"],
    }
-}
+}*/
 
 ### MySQL Configuration ###
 
