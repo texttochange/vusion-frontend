@@ -10,6 +10,7 @@ Vagrant::Config.run do |config|
     puppet.module_path = "/home/oliv/.puppet/modules"
   end
 
-  config.vm.forward_port 80, 4568
+  config.vm.forward_port 80, 4567
+  config.vm.forward_port 9010, 4568
 
 end

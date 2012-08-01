@@ -1,6 +1,6 @@
 Exec {
     path => ["/bin", "/usr/bin", "/usr/local/bin"],
-    user => 'vagrant',
+    #user => 'root', #'vagrant',
 }
 
 
@@ -19,7 +19,7 @@ define apt::package($ensure='latest') {
 }
 
 # Install Backend these packages
-apt::package { "build-essential": }
+#apt::package { "build-essential": }
 apt::package { "python": }
 apt::package { "python-dev": }
 apt::package { "python-setuptools": }
@@ -30,7 +30,7 @@ apt::package { "git-core": }
 #apt::package { "openjdk-6-jre-headless": }
 apt::package { "libcurl3": }
 apt::package { "libcurl4-openssl-dev": }
-apt::package { "redis-server": }
+#apt::package { "redis-server": }
 
 # Install Frontend packages
 apt::package { "mongodb-10gen": require => File["mongodb-apt-list"] }
@@ -128,39 +128,42 @@ file { "mongodb-apt-list":
 
 exec { "clone-mongodb-php-driver":
     command => "git clone git://github.com/mongodb/mongo-php-driver.git",
-    cwd => "/tmp",
-    unless => "test -d /tmp/mongo-php-driver/.git",
-    require => [Apt::Package["make"], Apt::Package["git-core"]]
+    cwd => "/opt",
+    unless => "test -d /opt/mongo-php-driver/.git",
+    require => [Apt::Package["make"], Apt::Package["git-core"]],
+    #user => 'root'
 }
 
 exec { "checkout129-mongodb-php-driver":
     command => "git tag -l && git checkout 1.2.9",
-    cwd => "/tmp/mongo-php-driver",
+    cwd => "/opt/mongo-php-driver",
     require => Exec["clone-mongodb-php-driver"],
+    #user => 'root'
 }
 
 exec { "compile-mongodb-php-driver":
     command => "phpize && ./configure && make && sudo make install",
-    cwd => "/tmp/mongo-php-driver",
-    unless => "test -f /tmp/mongo-php-driver/modules/mongo.so",
+    cwd => "/opt/mongo-php-driver",
+    unless => "test -f /opt/mongo-php-driver/modules/mongo.so",
     require => Exec["checkout129-mongodb-php-driver"],
+    #user => 'root'
 }
 
 ### Redis ###
 
 ##TODO issue with the root exectuion of the service start
-#include redis
+include redis
 
 exec { "clone-redis-php-driver":
     command => "git clone git://github.com/nicolasff/phpredis.git",
-    cwd => "/tmp",
+    cwd => "/opt",
     unless => "test -d /tmp/phpredis/.git",
     require => [Apt::Package["make"], Apt::Package["git-core"]]
 }
 
 exec { "compile-redis-php-driver":
     command => "phpize && ./configure && make && sudo make install",
-    cwd => "/tmp/phpredis",
+    cwd => "/opt/phpredis",
     unless =>  "test -f /tmp/phpredis/modules/redis.so",
     require => Exec["clone-redis-php-driver"],
 }
@@ -169,7 +172,7 @@ exec { "compile-redis-php-driver":
 ### RabbitMQ ###
 
 class { 'rabbitmq::server':
-    port              => '5673',
+    port              => '5672',
     delete_guest_user => true,
 }
 
@@ -236,8 +239,9 @@ exec { "update-frontend-module":
 file { "/var/vusion/vusion-frontend/app/tmp":
     ensure => directory, 
     recurse => true,
-    mode => "0777",
-    require => Exec["clone-frontend-repository"]
+    mode => "0755",
+    require => Exec["clone-frontend-repository"],
+    owner => "www-data"
 }
 
 exec { "clone-backend-repository":
@@ -249,6 +253,31 @@ exec { "clone-backend-repository":
         File['/var/vusion']
     ],
 }
+
+exec { "setup-backend-virtualenv":
+    command => "virtualenv ve && . ve/bin/activate && pip install -r requirements.pip",
+    cwd => "/var/vusion/vusion-backend",
+    unless => "test -d /var/vusion/vusion-backend/ve",
+    require => Exec['clone-backend-repository'],
+    user => 'vagrant',
+    timeout => '0'
+}
+
+file {
+    "/var/vusion/vusion-backend/logs":
+        ensure => "directory",
+        owner => "vagrant",
+}
+
+exec { "start-backend":
+    command => "bash -x ./startvm.sh",
+    cwd => "/var/vusion/vusion-backend",
+    user => 'vagrant',
+    require => [Exec['setup-backend-virtualenv'],
+                File['/var/vusion/vusion-backend/logs'],
+                Rabbitmq_user_permissions['vumi@/develop']]
+}
+    
 
 ### Apache Configuration ###
 
