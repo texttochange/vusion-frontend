@@ -1,6 +1,5 @@
 Exec {
     path => ["/bin", "/usr/bin", "/usr/local/bin"],
-    #user => 'root',
 }
 
 
@@ -56,6 +55,7 @@ package { "ruby-augeas":
 
 ### Apt Config ###
 
+# TODO: to be removed for the apt module
 define apt::key($keyid, $ensure, $keyserver = 'keyserver.ubuntu.com') {
   case $ensure {
     present: {
@@ -85,6 +85,7 @@ define apt::key($keyid, $ensure, $keyserver = 'keyserver.ubuntu.com') {
   }
 }
 
+# TODO: be removed for the apt module
 exec { "add-apt-repository 'ppa:raphink/augeas'":
     alias => "ppa-augeas",
     creates => "/etc/apt/sources.list.d/raphink-augeas-lucid.list",
@@ -128,6 +129,7 @@ exec { "clone-mongodb-php-driver":
 
 exec { "checkout129-mongodb-php-driver":
     command => "git tag -l && git checkout 1.2.9",
+    unless => "test $(git describe) = '1.2.9'",
     cwd => "/opt/mongo-php-driver",
     require => Exec["clone-mongodb-php-driver"],
     #user => 'root'
@@ -221,17 +223,18 @@ exec { "clone-frontend-repository":
     ],
 }
 
+# TODO: create a define and use it for all the submodule: Mongo & backend
 exec { "update-frontend-module":
     command => "git submodule init && git submodule update",
     cwd => "/var/vusion/vusion-frontend",
-    unless => "test -d /var/vusion/vusion-frontend/app/Plugin/Mongodb/.git",
+    unless => "test -e /var/vusion/vusion-frontend/app/Plugin/Mongodb/.git",
     require => Exec['clone-frontend-repository'],
 }
 
-# TODO: Exclude the file contained in the directories
 file { "/var/vusion/vusion-frontend/app/tmp":
     ensure => directory, 
     recurse => true,
+    ignore => '*',
     mode => "0755",
     require => Exec["clone-frontend-repository"],
     owner => "www-data"
@@ -248,6 +251,7 @@ exec { "clone-backend-repository":
     ],
 }
 
+# TODO: should not get the last Vumi but the one that has been tested, use either with tag or commit id
 exec { "setup-backend-virtualenv":
     command => "virtualenv ve && . ve/bin/activate && pip install -r requirements.pip",
     cwd => "/var/vusion/vusion-backend",
