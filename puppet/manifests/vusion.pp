@@ -1,10 +1,10 @@
 Exec {
     path => ["/bin", "/usr/bin", "/usr/local/bin"],
-    #user => 'root', #'vagrant',
+    #user => 'root',
 }
 
 
-# Make sure packge index is updated
+# TODO: use the apt module
 exec { "apt-get update":
     command => "ls", #"apt-get update",
     user => "root"
@@ -100,17 +100,9 @@ exec { "add-apt-repository 'deb http://www.rabbitmq.com/debian/ testing main'":
     user => 'root'
 }
 
-/*# initial way of adding mongo to the apt list
-exec { "add-apt-repository 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' && apt-get update && touch /etc/apt/sources.list.d/mongodb-upstart-gen10.list":
-    alias => "mongodb_repository",
-    creates => "/etc/apt/sources.list.d/mongodb-upstart-gen10.list",
-    require => [ Apt::Key["mongodb_key"], Package["python-software-properties"]],
-    user => 'root'
-  }
-*/
-
 ### MongoDB ###
 
+#TODO: use the apt module
 apt::key { "mongodb-key":
     ensure => present,
     keyid => "7F0CEB10" 
@@ -151,20 +143,19 @@ exec { "compile-mongodb-php-driver":
 
 ### Redis ###
 
-##TODO issue with the root exectuion of the service start
 include redis
 
 exec { "clone-redis-php-driver":
     command => "git clone git://github.com/nicolasff/phpredis.git",
     cwd => "/opt",
-    unless => "test -d /tmp/phpredis/.git",
+    unless => "test -d /opt/phpredis/.git",
     require => [Apt::Package["make"], Apt::Package["git-core"]]
 }
 
 exec { "compile-redis-php-driver":
     command => "phpize && ./configure && make && sudo make install",
     cwd => "/opt/phpredis",
-    unless =>  "test -f /tmp/phpredis/modules/redis.so",
+    unless =>  "test -f /opt/phpredis/modules/redis.so",
     require => Exec["clone-redis-php-driver"],
 }
 
@@ -197,6 +188,7 @@ rabbitmq_user_permissions { "vumi@/develop":
 
 ### PHP.ini ###
 
+#TODO: shouldn't we use some php ini module rather then augeas?
 augeas { "add-extension-mongo":
   require => [
                 Apt::Package["libaugeas-dev"], 
@@ -236,6 +228,7 @@ exec { "update-frontend-module":
     require => Exec['clone-frontend-repository'],
 }
 
+# TODO: Exclude the file contained in the directories
 file { "/var/vusion/vusion-frontend/app/tmp":
     ensure => directory, 
     recurse => true,
@@ -244,6 +237,7 @@ file { "/var/vusion/vusion-frontend/app/tmp":
     owner => "www-data"
 }
 
+# TODO: include the backend as a submodule, rename the frontend as "Vusion"
 exec { "clone-backend-repository":
     command => "git clone git://github.com/texttochange/vusion-backend.git",
     cwd => "/var/vusion",
@@ -266,7 +260,6 @@ exec { "setup-backend-virtualenv":
 file {
     "/var/vusion/vusion-backend/logs":
         ensure => "directory",
-        owner => "vagrant",
 }
 
 exec { "start-backend":
@@ -290,115 +283,7 @@ apache::vhost { "vusion":
     docroot => "/var/vusion/vusion-frontend/app/webroot",
     serveraliases => ["*.localhost"],
     template => "apache/cake-default.conf.erb",
-    #serveradmin => "overnin@gmail.com"
 }
-
-/*
-include apache2
-
-apache2::module {
-    "rewrite": ensure => "present"
-}
-
-apache2::site {
-    "000-default": ensure => "absent";
-    "vusion": ensure => "present",
-            require => File["/etc/apache2/sites-available/vusion"]    
-}
-
-file { "/etc/apache2/sites-available/vusion":
-    source => "/var/vusion/vusion-frontend/puppet/files/vusion",
-    require => Apt::Package["apache2"]
-    }
-
-$apache2_sites = "/etc/apache2/sites"
-$apache2_mods = "/etc/apache2/mods"
-
-
-class apache2 {    
-
-    exec { "reload-apache2":
-        command => "/etc/init.d/apache2 reload",
-        refreshonly => true,
-        user => 'root'
-    }
-    
-    exec { "force-reload-apache2":
-      command => "/etc/init.d/apache2 force-reload",
-      refreshonly => true,
-      user => 'root'
-    }
-   # Define an apache2 site. Place all site configs into
-   # /etc/apache2/sites-available and en-/disable them with this type.
-   #
-   # You can add a custom require (string) if the site depends on packages
-   # that aren't part of the default apache2 package. Because of the
-   # package dependencies, apache2 will automagically be included.
-   define site ( $ensure = 'present' ) {
-      case $ensure {
-         'present' : {
-            exec { "/usr/sbin/a2ensite $name":
-               unless => "/bin/readlink -e ${apache2_sites}-enabled/$name",
-               notify => Exec["reload-apache2"],
-               require => Apt::Package['apache2'],
-               user => 'root'
-            }
-         }
-         'absent' : {
-            exec { "/usr/sbin/a2dissite $name":
-               onlyif => "/bin/readlink -e ${apache2_sites}-enabled/$name",
-               notify => Exec["reload-apache2"],
-               require => Apt::Package['apache2'],
-               user => 'root'
-            }
-
-         }
-         default: { err ( "Unknown ensure value: '$ensure'" ) }
-      }
-   }
-
-   # Define an apache2 module. Debian packages place the module config
-   # into /etc/apache2/mods-available.
-   #
-   # You can add a custom require (string) if the module depends on 
-   # packages that aren't part of the default apache2 package. Because of 
-   # the package dependencies, apache2 will automagically be included.
-   define module ( $ensure = 'present') {
-      case $ensure {
-         'present' : {
-            exec { "/usr/sbin/a2enmod $name":
-               unless => "/bin/readlink -e ${apache2_mods}-enabled/${name}.load",
-               notify => Exec["force-reload-apache2"],
-               require => Apt::Package["apache2"],
-               user => 'root'
-            }
-         }
-         'absent': {
-            exec { "/usr/sbin/a2dismod $name":
-               onlyif => "/bin/readlink -e ${apache2_mods}-enabled/${name}.load",
-               notify => Exec["force-reload-apache2"],
-               require => Apt::Package["apache2"],
-               user => 'root'
-            }
-         }
-         default: { err ( "Unknown ensure value: '$ensure'" ) }
-      }
-   }
-
-   # Notify this when apache needs a reload. This is only needed when
-   # sites are added or removed, since a full restart then would be
-   # a waste of time. When the module-config changes, a force-reload is
-   # needed.
- 
-
-   # We want to make sure that Apache2 is running.
-   service { "apache2":
-      ensure => running,
-      hasstatus => true,
-      hasrestart => true,
-      require => Package["apache2"],
-   }
-}*/
 
 ### MySQL Configuration ###
 
