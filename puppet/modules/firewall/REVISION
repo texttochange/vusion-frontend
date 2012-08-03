@@ -1,0 +1,4 @@
+module: puppetlabs/firewall
+version: 0.0.4
+url: file:///home/oliv/.puppet/var/puppet-module/cache/http_forge_puppetlabs_com-75a31f1d6f1ef6eb63b4479b3512ee1508209a7f/puppetlabs-firewall-0.0.4.tar.gz
+installed: Mon Jul 16 11:40:29 +0200 2012
