@@ -22,6 +22,9 @@
 		    echo $this->Form->error('to');
 		echo "</div>";
 		echo $this->Form->input(__('content'), array('rows'=>5));
+		$options = array('immediately'=>'Immediately', 'fixed-time'=>'Fixed Time');
+		$attributes = array('separator'=>'&nbsp;&nbsp;');
+		echo $this->Form->radio('Scheduler', $options, $attributes);
 		echo $this->Form->input(__('schedule'), array('id'=>'schedule'));
 		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();
 		                                           addContentFormHelp();');
