@@ -14,7 +14,9 @@ class Template extends MongoModel
     
     public $typeTemplates = array(
         'open-question' => 'Open question',
-        'closed-question' => 'Closed question'
+        'closed-question' => 'Closed question',
+        'unmatching-answer' => 'Unmatching Answer',
+        'unmatching-keyword' => 'Unmatching Keyword'
         );
 
     public $validate = array(
@@ -59,21 +61,27 @@ class Template extends MongoModel
     public function hasAllTemplateKeyword($check)
     {
 
-        if (!preg_match('/QUESTION/', $check['template'])) 
-            return __("Please use 'QUESTION' in the template.");
-
-        if (!preg_match('/SHORTCODE/', $check['template'])) 
-            return __("Please use 'SHORTCODE' in the template.");
-
-        if (!preg_match('/KEYWORD/', $check['template'])) 
-            return __("Please use 'KEYWORD' in the template.");
+        if ($this->data['Template']['type-template'] == 'open-question'
+            or $this->data['Template']['type-template'] == 'closed-question') {
+            if (!preg_match('/QUESTION/', $check['template'])) 
+                return __("Please use 'QUESTION' in the template.");
+            
+            if (!preg_match('/SHORTCODE/', $check['template'])) 
+                return __("Please use 'SHORTCODE' in the template.");
+            
+            if (!preg_match('/KEYWORD/', $check['template'])) 
+                return __("Please use 'KEYWORD' in the template.");
         
-        if ($this->data['Template']['type-template'] == 'open-question') {
-            if (!preg_match('/ANSWER/', $check['template']))
+            if ($this->data['Template']['type-template'] == 'open-question') {
+                if (!preg_match('/ANSWER/', $check['template']))
+                    return __("Please use 'ANSWER' in the template.");
+            } elseif ($this->data['Template']['type-template'] == 'closed-question') {
+                if (!preg_match('/ANSWERS/', $check['template']))
+                    return __("Please use 'ANSWERS' in the template.");
+            }
+        } else {
+            if (!preg_match('/ANSWER/', $check['template'])) 
                 return __("Please use 'ANSWER' in the template.");
-        } elseif ($this->data['Template']['type-template'] == 'closed-question') {
-            if (!preg_match('/ANSWERS/', $check['template']))
-                return __("Please use 'ANSWERS' in the template.");
         }
 
         return true;

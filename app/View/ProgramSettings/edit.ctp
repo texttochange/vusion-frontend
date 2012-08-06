@@ -60,6 +60,15 @@
                 'empty'=> __('Template...')));
        ?>
         </div>
+	<div>
+	<?php
+	    echo $this->Html->tag('label',__('Default template for unmatching answers'));
+		echo "<br />";
+	    echo $this->Form->select('default-template-unmatching-answer', $unmatchingAnswerTemplateOptions,
+	        array('empty'=> __('Template...'))
+	        );
+	?>
+	</div>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>
   </div>

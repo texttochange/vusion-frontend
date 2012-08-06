@@ -25,7 +25,7 @@
 		echo "<br />";
 		echo $this->Form->select('country', $options, array('id'=> 'country'));
 		$this->Js->get('#country')->event('change', '	       
-		       $("#international-prefix").val(getCountryCodes($("select option:selected").text()));
+		       $("#international-prefix").val(getCountryCodes($("#country option:selected").text()));
 		       ');
 	?>
 		</div>
@@ -37,6 +37,17 @@
 					'readonly' => true)
 					);
 	?>
+	<div>
+	<?php
+	    echo $this->Html->tag('label',__('Error Template'));
+		echo "<br />";
+	    echo $this->Form->select('error-template', $errorTemplateOptions,
+	        array('id' => 'error-template',
+	            'empty'=> __('Template...')
+	            )
+	        );
+	?>
+	</div>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>

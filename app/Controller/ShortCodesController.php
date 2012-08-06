@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('ShortCode', 'Model');
+App::uses('Template', 'Model');
 
 class ShortCodesController extends AppController
 {
@@ -31,6 +32,7 @@ class ShortCodesController extends AppController
                 );
         }
         $this->ShortCode = new ShortCode($options);
+        $this->Template  = new Template($options);
     }
     
     
@@ -61,6 +63,8 @@ class ShortCodesController extends AppController
                 );
             }
         }
+        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
+        $this->set(compact('errorTemplateOptions'));
     }
     
     
@@ -92,6 +96,8 @@ class ShortCodesController extends AppController
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
+        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
+        $this->set(compact('errorTemplateOptions'));
     }
     
     

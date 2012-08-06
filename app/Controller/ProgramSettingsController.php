@@ -62,6 +62,10 @@ class ProgramSettingsController extends AppController
             $template = $this->Template->read(null, $programSettings['default-template-closed-question']);
             $programSettings['default-template-closed-question'] = $template['Template']['name'];
         }
+        if (isset($programSettings['default-template-unmatching-answer'])) {
+            $template = $this->Template->read(null, $programSettings['default-template-unmatching-answer']);
+            $programSettings['default-template-unmatching-answer'] = $template['Template']['name'];
+        }
         $this->set(compact('programSettings'));
     }
 
@@ -86,9 +90,12 @@ class ProgramSettingsController extends AppController
         $shortcodes = $this->ShortCode->find('all');
         $this->set(compact('shortcodes'));
        
-        $openQuestionTemplateOptions   = $this->Template->getTemplateOptions('open-question');
-        $closedQuestionTemplateOptions = $this->Template->getTemplateOptions('closed-question');  
-        $this->set(compact('openQuestionTemplateOptions', 'closedQuestionTemplateOptions'));
+        $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
+        $closedQuestionTemplateOptions   = $this->Template->getTemplateOptions('closed-question');
+        $unmatchingAnswerTemplateOptions = $this->Template->getTemplateOptions('unmatching-answer');
+        $this->set(compact('openQuestionTemplateOptions',
+            'closedQuestionTemplateOptions',
+            'unmatchingAnswerTemplateOptions'));
 
         $settings = $this->ProgramSetting->getProgramSettings();
 
