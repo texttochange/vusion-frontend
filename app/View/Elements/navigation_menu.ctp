@@ -8,16 +8,33 @@
             delay:     1200               // 1.2 second delay on mouseout 
          });'
         );
-
+    
+    function generateLink($context, $title, $url, $controller, $action = null) {
+        //if ($context->Acl->check(
+            //array('user'=>array('id'=>$context->Session->read('Auth.User.id'))),
+            '//controllers/'.$controller)) {
+        if ($context->Session->read('Auth.User.group_id') != 4 ) {
+            return $context->Html->link(__($title),
+                array(
+                    'program'=>$url,
+                    'controller'=>$controller,
+                    'action'=>$action
+                    )
+                );
+        } else {
+            return $context->Html->tag('span',__($title), array('class'=>'ttc-disabled-link'));
+        }
+    }
 ?>
 
 <ul class="sf-menu sf-vertical">  
     <li>
-        <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
-        <?php 
-        echo $this->Html->link(
+        <?php //if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
+        <?php
+        echo generateLink($this,'Dialogues',$programUrl,'programDialogues');
+        /*echo $this->Html->link(
             __('Dialogues'),
-            array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'index'), array('disabled'=> true)); 
+            array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'index'), array('disabled'=> true));*/ 
         ?>        
         <ul>
             <li>
@@ -74,9 +91,9 @@
                 </li>
             <?php } ?>
         </ul>
-        <?php } else {
+        <?php /*} else {
             echo $this->Html->tag('span',__('Dialogues'), array('class'=>'ttc-disabled-link'));
-         } ?>
+         }*/ ?>
     </li>
     <li>
        <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
