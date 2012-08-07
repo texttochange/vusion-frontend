@@ -40,11 +40,17 @@ class UnattachedMessage extends MongoModel
         'schedule' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please enter a schedule for this message.'
+                'message' => 'Please choose a schedule for this message.'
+                )
+            ),
+        'fixed-time' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a fixed time for this message.'
                 ),
             'isNotPast' => array(
                 'rule' => 'isNotPast',
-                'required' => true
+                //'required' => true
                 )
             )
         );
@@ -62,20 +68,27 @@ class UnattachedMessage extends MongoModel
 
     public function beforeValidate()
     {
-    	
+            	
     }
     
     
     public function beforeSave()
-    {
-        if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['schedule']))
+    {    
+        if (isset($this->data['UnattachedMessage']['fixed-time'])) {
+            $validator = $this->validator();
+            $validator['fixed-time']['isNotPast']->required = true;
+        
+            if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['fixed-time']))
+                return true;
+            
+            if (!$this->DialogueHelper->validateDateFromForm($this->data['UnattachedMessage']['fixed-time']))
+                return false;
+            
+            $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
             return true;
-
-        if (!$this->DialogueHelper->validateDateFromForm($this->data['UnattachedMessage']['schedule']))
-            return false;
-
-        $this->data['UnattachedMessage']['schedule'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['schedule']);
-        return true;
+        } else {
+            return true;
+        }
     }
     
     
@@ -87,11 +100,11 @@ class UnattachedMessage extends MongoModel
             return __("The program settings are incomplete. Please specificy the Timezone.");
         
         $programTimezone = $programSettings['timezone'];
-        date_timezone_set($now,timezone_open($programTimezone));
-        $dateSchedule = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['schedule']);
+        date_timezone_set($now,timezone_open($programTimezone));        
+        $dateFixedTime = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
         $dateNow = $this->DialogueHelper->convertDateFormat($now->format('d/m/Y H:i'));
-        if ($dateSchedule < $dateNow)
-            return __("Schedule cannot be in the past.");
+        if ($dateFixedTime < $dateNow)
+            return __("Fixed time cannot be in the past.");
         return true;
     }
     
