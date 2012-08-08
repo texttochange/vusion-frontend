@@ -37,7 +37,8 @@
 		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time', 'label'=>false));
 		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
 		                                           addContentFormHelp();
-		                                           $("input").change()');
+		                                           $("input").change();
+		                                           $("#fixed-time").val('')');
 		$this->Js->get('input')->event('change','
 		    if ($("input:checked").val() == "fixed-time") {
 		        $("#fixed-time").attr("disabled",false);

@@ -5,6 +5,7 @@ App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
+App::uses('ProgramSetting', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
@@ -30,8 +31,9 @@ class ProgramUnattachedMessagesController extends AppController
         
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule          = new Schedule($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ();
-        $this->DialogueHelper = new DialogueHelper();
+        $this->DialogueHelper    = new DialogueHelper();
     }
 
     protected function _notifyUpdateBackendWorker($workerName)
@@ -54,7 +56,8 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->UnattachedMessage->create();
             $now = new DateTime('now');
-            date_timezone_set($now,timezone_open('Africa/Kampala'));
+            $programSettings = $this->ProgramSetting->getProgramSettings();
+            date_timezone_set($now,timezone_open($programSettings['timezone']));
             $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl);
@@ -88,6 +91,10 @@ class ProgramUnattachedMessagesController extends AppController
             throw new NotFoundException(__('Invalid Message.'));
         }
         if ($this->request->is('post') || $this->request->is('put')) {
+            $now = new DateTime('now');
+            $programSettings = $this->ProgramSetting->getProgramSettings();
+            date_timezone_set($now,timezone_open($programSettings['timezone']));
+            $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $unattachedMessage = $this->request->data;
