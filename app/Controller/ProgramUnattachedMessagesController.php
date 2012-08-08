@@ -55,10 +55,12 @@ class ProgramUnattachedMessagesController extends AppController
         
         if ($this->request->is('post')) {
             $this->UnattachedMessage->create();
-            $now = new DateTime('now');
-            $programSettings = $this->ProgramSetting->getProgramSettings();
-            date_timezone_set($now,timezone_open($programSettings['timezone']));
-            $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
+            if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
+                $now = new DateTime('now');
+                $programSettings = $this->ProgramSetting->getProgramSettings();
+                date_timezone_set($now,timezone_open($programSettings['timezone']));
+                $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
+            }
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('The Message has been saved.'),
@@ -86,15 +88,17 @@ class ProgramUnattachedMessagesController extends AppController
         $programUrl        = $this->params['program'];
         
         $this->UnattachedMessage->id = $id;
-        
+        print_r($this->params);
         if (!$this->UnattachedMessage->exists()) {
             throw new NotFoundException(__('Invalid Message.'));
         }
         if ($this->request->is('post') || $this->request->is('put')) {
-            $now = new DateTime('now');
-            $programSettings = $this->ProgramSetting->getProgramSettings();
-            date_timezone_set($now,timezone_open($programSettings['timezone']));
-            $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
+            if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
+                $now = new DateTime('now');
+                $programSettings = $this->ProgramSetting->getProgramSettings();
+                date_timezone_set($now,timezone_open($programSettings['timezone']));
+                $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
+            }
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $unattachedMessage = $this->request->data;

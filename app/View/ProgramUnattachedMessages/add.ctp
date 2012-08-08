@@ -7,7 +7,7 @@
     <div class="ttc-display-area">
     <?php echo $this->Form->create('UnattachedMessage');?>
 	<fieldset>	
-	<?php print_r($this->data);
+	<?php 
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $otions = array();
         $options['all participants'] = "all participants";
@@ -37,13 +37,13 @@
 		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time', 'label'=>false));
 		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
 		                                           addContentFormHelp();
-		                                           $("input").change();
-		                                           $("#fixed-time").val('')');
+		                                           $("input").change();');
 		$this->Js->get('input')->event('change','
 		    if ($("input:checked").val() == "fixed-time") {
 		        $("#fixed-time").attr("disabled",false);
             } else {
                 $("#fixed-time").attr("disabled","disabled");
+		        $("#fixed-time").val("");
             }
 		    ');
 	?>

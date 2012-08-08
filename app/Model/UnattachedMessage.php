@@ -50,7 +50,7 @@ class UnattachedMessage extends MongoModel
                 ),
             'isNotPast' => array(
                 'rule' => 'isNotPast',
-                //'required' => true
+                'required' => true
                 )
             )
         );
@@ -73,11 +73,8 @@ class UnattachedMessage extends MongoModel
     
     
     public function beforeSave()
-    {    
+    {
         if (isset($this->data['UnattachedMessage']['fixed-time'])) {
-            $validator = $this->validator();
-            $validator['fixed-time']['isNotPast']->required = true;
-        
             if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['fixed-time']))
                 return true;
             

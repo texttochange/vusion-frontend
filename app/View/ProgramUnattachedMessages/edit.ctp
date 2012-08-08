@@ -35,11 +35,13 @@
 		if ($this->Form->isFieldError('schedule'))
 		    echo $this->Form->error('schedule');
 		echo "</div>";
+		if ($this->data['UnattachedMessage']['fixed-time'] != "")
+		    $fixedTime = $this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['fixed-time']);
+		else
+		    $fixedTime = "";
 		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time',
 		    'label'=>false,
-		    'value'=>$this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['fixed-time'])));
-		//echo $this->Form->input(__('schedule'), array('id'=>'schedule',
-		//                                              'value'=>$this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['schedule'])));
+		    'value'=>$fixedTime));
 		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
 		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");
 		                                           $("input").change()');
@@ -48,6 +50,7 @@
 		        $("#fixed-time").attr("disabled",false);
             } else {
                 $("#fixed-time").attr("disabled","disabled");
+		        $("#fixed-time").val("");
             }
 		    ');
 	?>
