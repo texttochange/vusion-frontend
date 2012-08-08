@@ -8,64 +8,47 @@
             delay:     1200               // 1.2 second delay on mouseout 
          });'
         );
-
+    
 ?>
 
 <ul class="sf-menu sf-vertical">  
     <li>
-        <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
-        <?php 
-        echo $this->Html->link(
-            __('Dialogues'),
-            array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'index'), array('disabled'=> true)); 
+        <?php
+        echo $this->AclLink->generateLink(__('Dialogues'),$programUrl,'programDialogues');
         ?>        
         <ul>
             <li>
             <?php 
-            echo $this->Html->link(
-                __('New Dialogue'),
-                array('program'=>$programUrl, 'controller'=>'programDialogues','action'=>'edit')); 
+            echo $this->AclLink->generateLink(__('New Dialogue'),$programUrl,'programDialogues','edit');    
             ?>
             </li>
             <?php foreach ($dialogues as $dialogue) { ?>
                 <li>
                 <?php 
                 if ($dialogue['Active']) {
-                    echo $this->Html->link(
-                        $dialogue['Active']['name'],
-                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Active']['_id'])
-                        ); 
+                    echo $this->AclLink->generateLink($dialogue['Active']['name'],$programUrl,'programDialogues','edit',$dialogue['Active']['_id']);
                 } else {
-                    echo $this->Html->link(
-                        $dialogue['Draft']['name'],
-                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id'])
-                        ); 
+                    echo $this->AclLink->generateLink($dialogue['Draft']['name'],$programUrl,'programDialogues','edit',$dialogue['Draft']['_id']);
                 }              
                 ?>
                 <ul>
                     <?php if ($dialogue['Active']) {?>
                     <li>
-                    <?php 
-                    echo $this->Html->link(
-                        __('Active'),
-                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Active']['_id'])
-                    ); ?>
+                    <?php
+                    echo $this->AclLink->generateLink(__('Active'),$programUrl,'programDialogues','edit',$dialogue['Active']['_id']);
+                    ?>
                     </li>
                     <?php } ?>
                     <?php if ($dialogue['Draft']) {?>
                     <li>
-                    <?php 
-                    echo $this->Html->link(
-                        __('Draft'),
-                        array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id'])
-                    ); ?>
+                    <?php
+                    echo $this->AclLink->generateLink(__('Draft'),$programUrl,'programDialogues','edit',$dialogue['Draft']['_id']);
+                    ?>
                     <ul>
                         <li>
                         <?php 
-                        echo $this->Html->link(
-                            __('Activate'),
-                            array('program'=>$programUrl, 'controller'=>'programDialogues', 'action'=>'activate', 'id'=> $dialogue['Draft']['_id'])
-                            ); ?>
+                        echo $this->AclLink->generateLink(__('Activate'),$programUrl,'programDialogues','edit',$dialogue['Draft']['_id']);
+                        ?>
                         </li>
                     </ul>
                     </li>
@@ -74,192 +57,106 @@
                 </li>
             <?php } ?>
         </ul>
-        <?php } else {
-            echo $this->Html->tag('span',__('Dialogues'), array('class'=>'ttc-disabled-link'));
-         } ?>
     </li>
     <li>
-       <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
        <?php 
-        echo $this->Html->link(
-            __('Requests'),
-            array('program'=>$programUrl, 'controller'=>'programRequests','action'=>'index')); 
+        echo $this->AclLink->generateLink(__('Requests'),$programUrl,'programRequests');
         ?>
         <ul>
             <li>
             <?php 
-            echo $this->Html->link(
-                __('New Requests'),
-                array('program'=>$programUrl, 'controller'=>'programRequests','action'=>'add')); 
+            echo $this->AclLink->generateLink(__('New Request'),$programUrl,'programRequests','add');
             ?>
             </li>
             <?php if(isset($requests) && $requests!=null) { ?>
             <?php foreach ($requests as $request): ?>
                 <li>
                 <?php
-                echo $this->Html->link( $request['Request']['keyword'],
-                           array(
-                               'program'=>$programUrl,
-                               'controller'=>'programRequests',
-                               'action' => 'edit', 
-                               $request['Request']['_id']
-                               )
-                           );
+                echo $this->AclLink->generateLink($request['Request']['keyword'],$programUrl,'programRequests','edit',$request['Request']['_id']);
                 ?>
                </li>
                <?php endforeach; ?>
            <?php } ?>
         </ul>
-        <?php } else {
-            echo $this->Html->tag('span',__('Requests'), array('class'=>'ttc-disabled-link'));
-         } ?>
     </li>
     <li>
-       <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
-       <?php echo $this->Html->link(__('Separate Messages'),
-           array(
-               'program'=>$programUrl,
-               'controller'=>'programUnattachedMessages',
-               'action'=>'index'
-               )
-           ); ?>
+       <?php
+       echo $this->AclLink->generateLink(__('Separate Messages'),$programUrl,'programUnattachedMessages');
+       ?>
        <ul>
-           <li><?php echo $this->Html->link(__('New Message'),
-               array(
-                   'program'=>$programUrl,
-                   'controller'=>'programUnattachedMessages',
-                   'action' => 'add'
-                   )
-               ); ?>
+           <li>
+           <?php
+           echo $this->AclLink->generateLink(__('New Message'),$programUrl,'programUnattachedMessages','add');
+           ?>
            </li>
            <?php if(isset($programUnattachedMessages) && $programUnattachedMessages!=null) { ?>
            <?php foreach ($programUnattachedMessages as $unattachedMessage): ?>
                <li>
                <?php
-                   echo $this->Html->link(__($unattachedMessage['UnattachedMessage']['name']),
-                       array(
-                           'program'=>$programUrl,
-                           'controller'=>'programUnattachedMessages',
-                           'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']
-                           )
+                   echo $this->AclLink->generateLink(
+                       __($unattachedMessage['UnattachedMessage']['name']),
+                       $programUrl,
+                       'programUnattachedMessages',
+                       'edit',
+                       $unattachedMessage['UnattachedMessage']['_id']
                        );
                ?>
                </li>
            <?php endforeach; ?>
            <?php } ?>
        </ul>
-        <?php } else {
-            echo $this->Html->tag('span',__('Separate Messages'), array('class'=>'ttc-disabled-link'));
-         } ?>
     </li>  
     <li>
-        <?php echo $this->Html->link(__('Participants'),
-            array(
-                'program'=>$programUrl,
-                'controller'=>'programParticipants',
-               'action'=>'index'
-               )
-            ); ?>
+        <?php
+        echo $this->AclLink->generateLink(__('Participants'),$programUrl,'programParticipants','index');
+        ?>
         <ul>
             <li>
                 <?php 
-                    if ($this->Session->read('Auth.User.group_id') != 4 ) { 
-                        echo $this->Html->link(__('Add Participant'),
-                            array(
-                                'program' => $programUrl,
-                                'controller' => 'programParticipants',
-                                'action' => 'add'
-                                )
-                            );
-                    } else {
-                        echo $this->Html->tag('span',__('Add Participant'), array('class'=>'ttc-disabled-link'));
-                    }
+                     echo $this->AclLink->generateLink(__('Add Participants'),$programUrl,'programParticipants','add');
                 ?>
             </li>
 		    <li>
 		        <?php
-		            if ($this->Session->read('Auth.User.group_id') != 4 ) {
-		                echo $this->Html->link(__('Import Participant(s)'),
-		                    array(
-		                        'program' => $programUrl,
-		                        'controller' => 'programParticipants',
-		                        'action' => 'import'
-		                        )
-		                    );
-		            } else {
-		                echo $this->Html->tag('span',__('Import Participant(s)'), array('class'=>'ttc-disabled-link'));
-		            }
+		             echo $this->AclLink->generateLink(__('Import Participants'),$programUrl,'programParticipants','import');
 		        ?>
 		    </li>
         </ul>
     </li>
     <li>
-        <?php echo $this->Html->link(__('History'), array('program'=>$programUrl,'controller'=>'programHistory')); ?>
+        <?php echo $this->AclLink->generateLink(__('History'),$programUrl,'programHistory'); ?>
         <ul>
             <li>
-                <?php echo $this->Html->link('Export CSV',
-                    array(
-                        'program' => $programUrl,
-                        'controller'=>'programHistory',
-                        'action' => 'export.csv'
-                        )
-                    ); ?>
+                <?php
+                    echo $this->AclLink->generateLink(__('Export CSV'),$programUrl,'programHistory','export',null,'.csv');
+                ?>
             </li>            
             <li>
-                <?php echo $this->Html->link('Export Raw CSV',
-                    array(
-                        'program' => $programUrl,
-                        'controller'=>'programHistory',
-                        'action' => 'index.csv'
-                        )
-                    ); ?>
+                <?php
+                    echo $this->AclLink->generateLink(__('Export Raw CSV'),$programUrl,'programHistory','index',null,'.csv');
+                ?>
             </li>
             <li>
-                <?php echo $this->Html->link('Export Json',
-                    array(
-                        'program' => $programUrl,
-                        'controller'=>'programHistory',
-                        'action' => 'index.json'
-                        )
-                    ); ?>
+                <?php
+                    echo $this->AclLink->generateLink(__('Export Json'),$programUrl,'programHistory','index',null,'.json');
+                ?>
             </li>
         </ul>
     </li>
     <li>
         <?php
-            if ($this->Session->read('Auth.User.group_id') != 4 ) {
-                echo $this->Html->link(__('Settings'),
-                    array(
-                        'program'=>$programUrl,
-                        'controller'=>'programSettings',
-                        'action'=>'index'
-                        )
-                    );
-            } else {
-                echo $this->Html->tag('span',__('Settings'), array('class'=>'ttc-disabled-link'));
-            }
+            echo $this->AclLink->generateLink(__('Settings'),$programUrl,'programSettings');
          ?>
     </li>
     <li>
         <?php
-            if ($this->Session->read('Auth.User.group_id') != 4 ) {
-                echo $this->Html->link(__('Logs'),
-                    array(
-                        'program'=>$programUrl,
-                        'controller'=>'programLogs'
-                        )
-                    );
-            } else {
-                echo $this->Html->tag('span',__('Logs'), array('class'=>'ttc-disabled-link'));
-            }
+            echo $this->AclLink->generateLink(__('Logs'),$programUrl,'programLogs');
          ?>
     </li>
     <li>
-        <?php echo $this->Html->link(__('Program List'),
-            array(
-                'controller'=>'programs'
-                )
-            ); ?>
+        <?php
+            echo $this->AclLink->generateLink(__('Program List'),null,'programs','index');
+        ?>
     </li>
 </ul>  
 
