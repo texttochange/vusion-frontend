@@ -5,7 +5,7 @@ class DATABASE_CONFIG {
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'cake',
+		'login' => 'cake_test',
 		'password' => 'password',
 		'database' => 'vusion_test',
 		'encoding' => 'utf8'

@@ -1,0 +1,31 @@
+{
+  "types": [
+
+  ],
+  "license": "The license the module is release under - generally GPLv2 or Apache",
+  "source": "UNKNOWN",
+  "description": "UNKNOWN",
+  "dependencies": [
+
+  ],
+  "summary": "UNKNOWN",
+  "checksums": {
+    "files/redis.conf": "403d36824791900fce32f2fd3635cd23",
+    "TODO.md": "7f1cda7d7df6113c2ee88a5c8e612870",
+    "files/redis-2.4.13.tar.gz": "f8a160f8a6fe7d7e8ebb4c23ff583d71",
+    "tests/init.pp": "7df9826add5de77d910d515c7f4f0993",
+    "Modulefile": "a36c4d1ef505e73f0e21966974127d3d",
+    "templates/6379.conf.erb": "ea84252693820e3d004e6c52b0965d49",
+    "README.md": "4ed7be5b67de8d9bf0082dc99a679a40",
+    "Makefile": "e8932175b672f5705a6f9f45ea0179d1",
+    "Gemfile": "0e4029f6884b06f0c058c610507170df",
+    "files/redis.init": "b87e8c76d447434e58721c3ea8feefbf",
+    "manifests/init.pp": "c7a6a39452ee83943417c1efb5a8f6ed",
+    "CHANGES.md": "75c8e7a53f98f89a66081332fe9efe76",
+    "Rakefile": "7bf4fddf709573c87d7157fc200173ef"
+  },
+  "project_page": "https://github.com/thomasvandoren/puppet-redis",
+  "author": "Thomas Van Doren",
+  "version": "0.0.2",
+  "name": "thomasvandoren-redis"
+}
