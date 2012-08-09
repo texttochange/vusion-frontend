@@ -13,6 +13,7 @@
         $options['all participants'] = "all participants";
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $error = "";
+        $errorSchedule = "";
         if ($this->Form->isFieldError('to')) 
             $error = "error";            
         echo "<div class='input-text required ".$error."'>";
@@ -23,10 +24,35 @@
 		    echo $this->Form->error('to');
 		echo "</div>";
 		echo $this->Form->input(__('content'), array('rows'=>5));
-		echo $this->Form->input(__('schedule'), array('id'=>'schedule',
-		                                              'value'=>$this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['schedule'])));
-		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();
-		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");');
+		$options = array('immediately'=>'Immediately', 'fixed-time'=>'Fixed Time');
+		$attributes = array('separator'=>'&nbsp;&nbsp;', 'legend'=>false);
+		if ($this->Form->isFieldError('schedule')) 
+            $errorSchedule = "error";            
+        echo "<div class='input-text required ".$errorSchedule."'>";
+		echo $this->Html->tag('label',__('Schedule'));
+        echo "<br />";
+		echo $this->Form->radio('schedule', $options, $attributes);
+		if ($this->Form->isFieldError('schedule'))
+		    echo $this->Form->error('schedule');
+		echo "</div>";
+		if ($this->data['UnattachedMessage']['fixed-time'] != "")
+		    $fixedTime = $this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['fixed-time']);
+		else
+		    $fixedTime = "";
+		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time',
+		    'label'=>false,
+		    'value'=>$fixedTime));
+		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
+		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");
+		                                           $("input").change()');
+		$this->Js->get('input')->event('change','
+		    if ($("input:checked").val() == "fixed-time") {
+		        $("#fixed-time").attr("disabled",false);
+            } else {
+                $("#fixed-time").attr("disabled","disabled");
+		        $("#fixed-time").val("");
+            }
+		    ');
 	?>
 	</fieldset>
 	<?php echo $this->Form->end(__('Save'));?>

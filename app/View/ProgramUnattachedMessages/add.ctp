@@ -7,11 +7,12 @@
     <div class="ttc-display-area">
     <?php echo $this->Form->create('UnattachedMessage');?>
 	<fieldset>	
-	<?php
+	<?php 
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $otions = array();
         $options['all participants'] = "all participants";
         $error = "";
+        $errorSchedule = "";
         if ($this->Form->isFieldError('to')) 
             $error = "error";            
         echo "<div class='input-text required ".$error."'>";
@@ -22,9 +23,29 @@
 		    echo $this->Form->error('to');
 		echo "</div>";
 		echo $this->Form->input(__('content'), array('rows'=>5));
-		echo $this->Form->input(__('schedule'), array('id'=>'schedule'));
-		$this->Js->get('document')->event('ready','$("#schedule").datetimepicker();
-		                                           addContentFormHelp();');
+		$options = array('immediately'=>'Immediately', 'fixed-time'=>'Fixed Time');
+		$attributes = array('separator'=>'&nbsp;&nbsp;', 'legend'=>false);
+		if ($this->Form->isFieldError('schedule')) 
+            $errorSchedule = "error";            
+        echo "<div class='input-text required ".$errorSchedule."'>";
+		echo $this->Html->tag('label',__('Schedule'));
+        echo "<br />";
+		echo $this->Form->radio('schedule', $options, $attributes);
+		if ($this->Form->isFieldError('schedule'))
+		    echo $this->Form->error('schedule');
+		echo "</div>";
+		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time', 'label'=>false));
+		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
+		                                           addContentFormHelp();
+		                                           $("input").change();');
+		$this->Js->get('input')->event('change','
+		    if ($("input:checked").val() == "fixed-time") {
+		        $("#fixed-time").attr("disabled",false);
+            } else {
+                $("#fixed-time").attr("disabled","disabled");
+		        $("#fixed-time").val("");
+            }
+		    ');
 	?>
 	</fieldset>
 	<?php echo $this->Form->end(__('Save'));?>

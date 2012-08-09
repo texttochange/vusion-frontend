@@ -18,7 +18,7 @@
 		<td><?php echo h($unattachedMessage['UnattachedMessage']['name']); ?>&nbsp;</td>
 		<td><?php echo h($unattachedMessage['UnattachedMessage']['to']); ?>&nbsp;</td>
 		<td><?php echo h($unattachedMessage['UnattachedMessage']['content']); ?>&nbsp;</td>
-		<td><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['schedule']); ?>&nbsp;</td>
+		<td><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('program'=>$programUrl, 'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('program'=>$programUrl, 'action' => 'delete', $unattachedMessage['UnattachedMessage']['_id']), null,
