@@ -47,7 +47,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'name'=>'hello',
             'to'=>'all participants',
             'content'=>'hello there',
-            'schedule'=> $date->format('d/m/Y H:i')
+            'schedule'=>'fixed-time',
+            'fixed-time'=> $date->format('d/m/Y H:i')
             );
         $this->UnattachedMessage->create();
         $this->UnattachedMessage->save($unattachedMessage);
@@ -58,15 +59,16 @@ class UnattachedMessageTestCase extends CakeTestCase
             'name'=>'hello',
             'to'=>'all participants',
             'content'=>'hello there',
-            'schedule'=>'05/04/2012 14:30'
+            'schedule'=>'fixed-time',
+            'fixed-time'=>'05/04/2012 14:30'
             );
         $this->UnattachedMessage->create();
         $this->UnattachedMessage->save($otherUnattachedMessage);
         
         //1st assertion, count does not increase, remains 1
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
-        //2st assertion, error schedule cannot be in the past
-        $this->assertEquals('Schedule cannot be in the past.',$this->UnattachedMessage->validationErrors['schedule'][0]);
+        //2st assertion, error fixed time cannot be in the past
+        $this->assertEquals('Fixed time cannot be in the past.',$this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
     
     

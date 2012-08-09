@@ -88,7 +88,7 @@ class ProgramUnattachedMessagesController extends AppController
         $programUrl        = $this->params['program'];
         
         $this->UnattachedMessage->id = $id;
-        print_r($this->params);
+
         if (!$this->UnattachedMessage->exists()) {
             throw new NotFoundException(__('Invalid Message.'));
         }

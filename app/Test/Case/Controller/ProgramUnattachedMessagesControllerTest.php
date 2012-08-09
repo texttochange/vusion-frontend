@@ -175,7 +175,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
 
         $this->assertEquals(1,
             $this->UnattachedMessage->find('count')
-        );       
+        );
         
     }
 
@@ -196,12 +196,13 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
-                'schedule' => 'immediately'
+                'schedule' => 'fixed-time',
+                'fixed-time' => $date->format('d/m/Y H:i')
              )
         );
         $this->UnattachedMessage->create();
         $data = $this->UnattachedMessage->save($unattachedMessage);
-        print_r($data);
+        
         $this->testAction("/testurl/programUnattachedMessages/edit/".$data['UnattachedMessage']['_id'],
             array(
             'method' => 'post',
@@ -220,7 +221,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             $this->result['UnattachedMessage']['content']
         );            
     }
-/*
+
 
     public function testDelete()
     {
@@ -233,7 +234,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
-                'schedule' => $date->format('d/m/Y H:i')
+                'schedule' => 'fixed-time',
+                'fixed-time' => $date->format('d/m/Y H:i')
              )
         );
         $this->UnattachedMessage->create();
@@ -260,6 +262,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             );
 
     }
-*/
+
 
 }

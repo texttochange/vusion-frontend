@@ -181,7 +181,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $unattachedMessage = array(
-            'schedule' => '12/06/2021 12:30',
+            'schedule' => 'fixed-time',
+            'fixed-time' => '12/06/2021 12:30',
             'content' => 'Hello',
             );        $this->Home->UnattachedMessage->create();
         $this->Home->UnattachedMessage->save($unattachedMessage);
