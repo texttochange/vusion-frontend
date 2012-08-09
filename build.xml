@@ -176,7 +176,9 @@
     <arg value="--hard" />
     <arg value="origin/develop"/>
  </exec>
- <exec dir="/var/vusion/vusion-backend" executable="bash supervisord.vusion restart">   
+ <exec dir="/var/vusion/vusion-backend" executable="bash">
+    <arg value="supervisord.vusion" />
+    <arg value="restart" />   
  </exec>
  </target>
 
