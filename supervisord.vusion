@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+echo "`basename $0` {start|stop|restart}"
+exit
+fi
+
+case "$1" in
+start)
+if ps ax | grep -v grep | grep -v bash | grep supervisord > /dev/null
+then
+    echo "supervisord.vusion service already running."
+else
+    echo "supervisord.vusion is starting...."
+    source ve/bin/activate
+    supervisord -c etc/supervisord.vusion.conf
+fi
+;;
+
+stop)
+source ve/bin/activate
+supervisorctl -c etc/supervisord.vusion.conf shutdown
+;;
+
+restart)
+source ve/bin/activate
+supervisorctl -c etc/supervisord.vusion.conf restart all
+;;
+
+esac
