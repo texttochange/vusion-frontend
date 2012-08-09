@@ -145,7 +145,7 @@
     </li>
     <li>
         <?php
-            echo $this->AclLink->generateLink(__('Settings'),$programUrl,'programSettings');
+            echo $this->AclLink->generateLink(__('Settings'),$programUrl,'programSettings','index');
          ?>
     </li>
     <li>
