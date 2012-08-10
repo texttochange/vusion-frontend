@@ -1,34 +1,22 @@
 Vusion Frontend 
 ===============
 
-Vusion Frontend is build with CakePHP2.0.5. It doesn't work on his own but need the Vusion Backend: https://github.com/texttochange/vusion-backend 
+Vusion Frontend is build with CakePHP2.0.5.  
 
 Installation
 ------------
 ::
 
 	$ git clone <this repository>
+	# Then retrive the Plugins and the Backend
 	$ git submodule init
-	$ git submodule update
+	$ git submodule update   
 
 Web Server Configuration
 ------------------------
-You need to configure you webserver with the DocumentRoot pointing at the app/ folder.
-
-Create the cache file as
-::
-
-	app/
-		tmp/
-		cache/
-    			models/
-    			persistent/
-    		logs/
-    		session/
-    		tests/
-
-Then make those file writable by the webserver. 
-Under ubuntu: sudo chmod -R 777 app/tmp   
+You need to configure you webserver according to cakephp2.x requirements. 
+First the DocumentRoot pointing at the app/webroot folder. 
+Second make app/tmp file writable by the webserver.    
 
 Databases
 ---------
@@ -45,24 +33,17 @@ PHP Modules
 -----------
 Modules need to be install and configure in PHP
  
-- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags)
+- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
 
 Development PHP Modules
 ----------------------- 
 
 - Pear
 - PHPUnit
-- XDebug
-- Mongo (https://github.com/ichikaway/cakephp-mongodb/tree/cake2.0)
-- phploc (https://github.com/sebastianbergmann/phploc)
-- pdepend (http://pear.pdepend.org/)
-- phpmd (http://pear.phpmd.org/)
-- phpcpd (https://github.com/sebastianbergmann/phpcpd)
-- phpdoc (http://sourceforge.net/projects/phpdocu/files/)
 
 Jenkins
 -------
 To run the different build task from build.xml, you need to install
 
-- Jdk6 or higher
+- Jdk6
 - Ant
