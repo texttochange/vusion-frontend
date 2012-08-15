@@ -167,18 +167,13 @@
     <arg value="--hard" />
     <arg value="origin/develop"/>
  </exec>
- <exec dir="/var/vusion/vusion-backend" executable="git">   
-    <arg value="fetch" />
-    <arg value="--all" />
+ <exec dir="/var/vusion/vusion-frontend" executable="git">   
+    <arg value="submodule" />
+    <arg value="update" />
  </exec>
- <exec dir="/var/vusion/vusion-backend" executable="git">   
-    <arg value="reset" />
-    <arg value="--hard" />
-    <arg value="origin/develop"/>
- </exec>
- <exec dir="/var/vusion/vusion-backend" executable="bash">
-    <arg value="supervisord.vusion" />
-    <arg value="restart" />   
+ <exec dir="/bin" executable="bash">   
+    <arg value="/var/vusion/vusion-frontend/backend/supervisord.vusion" />
+    <arg value="restart" />
  </exec>
  </target>
 
