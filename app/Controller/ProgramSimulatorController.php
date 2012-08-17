@@ -22,7 +22,9 @@ class ProgramSimulatorController extends AppController
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Participant    = new Participant($options);
-        $this->VumiRabbitMQ   = new VumiRabbitMQ();
+        $this->VumiRabbitMQ   = new VumiRabbitMQ(
+            Configure::read('vusion.rabbitmq')
+            );
     }
 
 

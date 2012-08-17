@@ -32,7 +32,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule          = new Schedule($options);
         $this->ProgramSetting    = new ProgramSetting($options);
-        $this->VumiRabbitMQ      = new VumiRabbitMQ();
+        $this->VumiRabbitMQ      = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->DialogueHelper    = new DialogueHelper();
     }
 

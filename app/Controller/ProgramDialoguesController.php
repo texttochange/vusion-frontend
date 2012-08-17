@@ -28,7 +28,9 @@ class ProgramDialoguesController extends AppController
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Request        = new Request($options);
-        $this->VumiRabbitMQ   = new VumiRabbitMQ();
+        $this->VumiRabbitMQ   = new VumiRabbitMQ(
+            Configure::read('vusion.rabbitmq')
+            );
     }
 
 
