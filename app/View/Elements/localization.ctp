@@ -34,6 +34,7 @@ var localized_labels = {
     "fixed-time": "<?php echo __('Fixed time')?>",
     "wait": "<?php echo __('Wait')?>",
     "minutes": "<?php echo __('Minutes')?>",
+    "days": "<?php echo __('Days')?>",
     "announcement": "<?php echo __('Announcement')?>",
     "question": "<?php echo __('Question')?>",
     "open-question": "<?php echo __('Open question')?>",
