@@ -9,7 +9,7 @@
 			<th><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('to', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programUrl)));?></th>
-			<th><?php echo $this->Paginator->sort('schedule', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('type-schedule', null, array('url'=> array('program' => $programUrl)));?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php

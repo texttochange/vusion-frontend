@@ -21,7 +21,9 @@ class ProgramParticipantsController extends AppController
         $this->Participant    = new Participant($options);
         $this->History        = new History($options);
         $this->Schedule       = new Schedule($options);
-        $this->VumiRabbitMQ   = new VumiRabbitMQ();
+        $this->VumiRabbitMQ   = new VumiRabbitMQ(
+            Configure::read('vusion.rabbitmq')
+            );
     }
 
 

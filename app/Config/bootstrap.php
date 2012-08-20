@@ -65,3 +65,5 @@ Cache::config('default', array('engine' => 'File'));
  */
 // CakePlugin::load('Mongodb');
  CakePlugin::loadAll();
+ 
+ Configure::load('vusion.php');

@@ -47,7 +47,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'name'=>'hello',
             'to'=>'all participants',
             'content'=>'hello there',
-            'schedule'=>'fixed-time',
+            'type-schedule'=>'fixed-time',
             'fixed-time'=> $date->format('d/m/Y H:i')
             );
         $this->UnattachedMessage->create();
@@ -59,7 +59,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'name'=>'hello',
             'to'=>'all participants',
             'content'=>'hello there',
-            'schedule'=>'fixed-time',
+            'type-schedule'=>'fixed-time',
             'fixed-time'=>'05/04/2012 14:30'
             );
         $this->UnattachedMessage->create();
