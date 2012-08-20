@@ -86,10 +86,12 @@ var program = {"script": [
     //"day":"text",
     //"hour":"text",
     //"minute":"text",
-    "wait":["days","date-time"],
+    //"wait":["days","minutes"],
+    "wait":["days","at-time"],
     "wait-answer": ["minutes"],
     "days":"text",
-    "minutes":"text",
+    //"minutes":"text",
+    "at-time":"text",
     "time": "text",
     "keyword":"text",
     "feedback":["content"]
@@ -263,6 +265,13 @@ function activeForm(){
                 $(elt).datetimepicker({
                 timeFormat: 'hh:mm',
                 dateFormat:'dd/mm/yy'});
+            };
+    });
+    $.each($("input[name*='at-time']"), function (key,elt){
+            if (!$.data(elt,'events')){
+                $(elt).timepicker({
+                timeFormat: 'hh:mm',
+                /*dateFormat:'dd/mm/yy'*/});
             };
     });
 
