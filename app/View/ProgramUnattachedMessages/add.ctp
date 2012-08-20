@@ -25,14 +25,14 @@
 		echo $this->Form->input(__('content'), array('rows'=>5));
 		$options = array('immediately'=>'Immediately', 'fixed-time'=>'Fixed Time');
 		$attributes = array('separator'=>'&nbsp;&nbsp;', 'legend'=>false);
-		if ($this->Form->isFieldError('schedule')) 
+		if ($this->Form->isFieldError('type-schedule')) 
             $errorSchedule = "error";            
         echo "<div class='input-text required ".$errorSchedule."'>";
 		echo $this->Html->tag('label',__('Schedule'));
         echo "<br />";
-		echo $this->Form->radio('schedule', $options, $attributes);
-		if ($this->Form->isFieldError('schedule'))
-		    echo $this->Form->error('schedule');
+		echo $this->Form->radio('type-schedule', $options, $attributes);
+		if ($this->Form->isFieldError('type-schedule'))
+		    echo $this->Form->error('type-schedule');
 		echo "</div>";
 		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time', 'label'=>false));
 		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();

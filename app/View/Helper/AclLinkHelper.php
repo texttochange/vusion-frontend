@@ -14,7 +14,7 @@ class AclLinkHelper extends AppHelper{
         $this->Session=new SessionComponent(new ComponentCollection()); 
     }
     
-    function generateLink( $title, $url, $controller, $action = null, $id = null, $ext = null){
+    function generateLink( $title, $url, $controller, $action = 'index', $id = null, $ext = null){
         $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->Acl->check(
             array('user'=>array('id'=>$this->Session->read('Auth.User.id'))),

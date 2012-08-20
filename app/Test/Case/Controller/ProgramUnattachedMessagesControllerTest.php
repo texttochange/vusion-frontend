@@ -136,7 +136,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'name' => 'my message',
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
-                'schedule' => 'fixed-time',
+                'type-schedule' => 'fixed-time',
                 'fixed-time' => $date->format('d/m/Y H:i')
             ));
         
@@ -163,7 +163,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'name' => 'my message',
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
-                'schedule' => 'immediately'
+                'type-schedule' => 'immediately'
              )
         );
         
@@ -196,7 +196,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
-                'schedule' => 'fixed-time',
+                'type-schedule' => 'fixed-time',
                 'fixed-time' => $date->format('d/m/Y H:i')
              )
         );
@@ -210,7 +210,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'UnattachedMessage' => array(
                     'to' => 'all participants',
                     'content' => 'Bye!!!!',
-                    'schedule' => 'fixed-time',
+                    'type-schedule' => 'fixed-time',
                     'fixed-time' => $date->format('d/m/Y H:i')
                     )
                 )
@@ -234,7 +234,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'UnattachedMessage' => array(
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
-                'schedule' => 'fixed-time',
+                'type-schedule' => 'fixed-time',
                 'fixed-time' => $date->format('d/m/Y H:i')
              )
         );

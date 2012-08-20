@@ -37,10 +37,10 @@ class UnattachedMessage extends MongoModel
                 'message' => 'Please enter some content for this message.'
                 )
             ),
-        'schedule' => array(
+        'type_schedule' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please choose a schedule for this message.'
+                'message' => 'Please choose a type of schedule for this message.'
                 )
             ),
         'fixed-time' => array(
