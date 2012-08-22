@@ -173,7 +173,7 @@
  </exec>
  <exec dir="/bin" executable="bash">   
     <arg value="/etc/init.d/supervisord.vusion" />
-    <arg value="restart" />
+    <arg value="reload" />
  </exec>
  </target>
 
