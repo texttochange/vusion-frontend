@@ -86,9 +86,12 @@ var program = {"script": [
     //"day":"text",
     //"hour":"text",
     //"minute":"text",
-    "wait":["minutes"],
+    //"wait":["days","minutes"],
+    "wait":["days","at-time"],
     "wait-answer": ["minutes"],
-    "minutes":"text",
+    "days":"text",
+    //"minutes":"text",
+    "at-time":"text",
     "time": "text",
     "keyword":"text",
     "feedback":["content"]
@@ -261,7 +264,14 @@ function activeForm(){
             if (!$.data(elt,'events')){
                 $(elt).datetimepicker({
                 timeFormat: 'hh:mm',
+                timeOnly: false,
                 dateFormat:'dd/mm/yy'});
+            };
+    });
+    $.each($("input[name*='at-time']"), function (key,elt){
+            if (!$.data(elt,'events')){
+                $(elt).timepicker({
+                timeFormat: 'hh:mm'});
             };
     });
 
@@ -276,6 +286,15 @@ function activeForm(){
             $(this).rules("add",{
                 required:true,
                 greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm"),
+                messages:{
+                    required: wrapErrorMessage(localized_errors.validation_required_error),
+                }
+            });
+    });
+    $("input[name*='at-time']").each(function (item) {
+            $(this).rules("add",{
+                required:true,
+                timeGreaterThan: Date.now().toString("HH:mm"),
                 messages:{
                     required: wrapErrorMessage(localized_errors.validation_required_error),
                 }
@@ -662,7 +681,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     $.validator.addMethod(
         "greaterThanOrEqualTo", 
-        function(value, element, params) {    
+        function(value, element, params) {alert(element.id);    
             if (!/Invalid|NaN/.test(Date.parse(value))) {
                 //if (Date.parse(value).compareTo(Date.now())>0)
                 if (Date.parseExact(value, "dd/MM/yyyy HH:mm").compareTo(Date.parseExact(Date.now().toString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm"))>0)
@@ -681,6 +700,18 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         duplicateKeywordValidation,
         wrapErrorMessage(Error)
         );
+    
+    $.validator.addMethod(
+    	"timeGreaterThan",
+    	function(value, element, params) {
+	    if (!/Invalid|NaN/.test(Date.parse(value))) {
+                if (Date.parseExact(value, "HH:mm").compareTo(Date.parseExact(Date.now().toString("HH:mm"), "HH:mm"))>0)
+                    return true;
+                return false;
+            }
+    	},
+    	wrapErrorMessage(localized_errors.past_date_error)
+    	);
 
         
     $.dform.subscribe("alert", function(option, type) {
