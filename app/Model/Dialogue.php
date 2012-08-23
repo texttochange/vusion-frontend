@@ -49,7 +49,7 @@ class Dialogue extends MongoModel
                 if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="")
                     $interaction['interaction-id'] = uniqid();
                 # do something in here.
-                if ($interaction['type-schedule'] == 'wait' 
+                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'wait') 
                     and (!isset($interaction['days']) or $interaction['days'] == ""))
                     $interaction['days'] = '0';
             }
