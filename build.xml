@@ -161,7 +161,9 @@
  <mkdir dir="/tmp/vusion"/>
  <copy file="${basedir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
  <mkdir dir="/tmp/vusion/backend"/> 
- <copy file="${basedir}/backend/etc/*" todir="/tmp/vusion/backend" overwrite="true"/>
+ <copy todir="/tmp/vusion/backend" overwrite="true">
+     <fileset dir="${basedir}/backend/etc"/>
+ </copy>
  <exec dir="/var/vusion" executable="git">   
     <arg value="fetch" />
     <arg value="--all" />
@@ -180,7 +182,9 @@
     <arg value="${basedir}/app/Config"/>
  </exec>
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
- <copy file="/tmp/vision/backend/*" todir="${basedir}/backend/etc" overwrite="true"/>
+ <copy todir="${basedir}/backend/etc" overwrite="true">
+     <fileset dir="/tmp/vision/backend"/>
+ </copy>
  <delete dir="/tmp/vusion"/>
  </target>
 
