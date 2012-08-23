@@ -158,6 +158,10 @@
  </target>
 
  <target name="pull4webtest" description="Pull the last develop version for the webtest">
+ <mkdir dir="/tmp/vusion"/>
+ <copy file="${basedir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
+ <mkdir dir="/tmp/vusion/backend"/> 
+ <copy file="${basedir}/backend/etc/*" todir="/tmp/vusion/backend" overwrite="true"/>
  <exec dir="/var/vusion" executable="git">   
     <arg value="fetch" />
     <arg value="--all" />
@@ -171,10 +175,13 @@
     <arg value="submodule" />
     <arg value="update" />
  </exec>
- <exec dir="/bin" executable="bash">   
-    <arg value="/etc/init.d/supervisord.vusion" />
-    <arg value="reload" />
+ <exec dir="/bin" executable="cp">
+    <arg value="/tmp/database.php"/>
+    <arg value="${basedir}/app/Config"/>
  </exec>
+ <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vision/backend/*" todir="${basedir}/backend/etc" overwrite="true"/>
+ <delete dir="/tmp/vusion"/>
  </target>
 
  <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,clear-cache'>
