@@ -177,13 +177,9 @@
     <arg value="submodule" />
     <arg value="update" />
  </exec>
- <exec dir="/bin" executable="cp">
-    <arg value="/tmp/database.php"/>
-    <arg value="${basedir}/app/Config"/>
- </exec>
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
  <copy todir="${basedir}/backend/etc" overwrite="true">
-     <fileset dir="/tmp/vision/backend"/>
+     <fileset dir="/tmp/vusion/backend"/>
  </copy>
  <delete dir="/tmp/vusion"/>
  </target>
