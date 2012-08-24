@@ -176,6 +176,7 @@
  <exec dir="/var/vusion" executable="git">   
     <arg value="submodule" />
     <arg value="update" />
+    <arg value="--force" />
  </exec>
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
  <copy todir="${basedir}/backend/etc" overwrite="true">
