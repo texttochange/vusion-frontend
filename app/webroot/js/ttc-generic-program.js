@@ -294,7 +294,6 @@ function activeForm(){
     $("input[name*='at-time']").each(function (item) {
             $(this).rules("add",{
                 required:true,
-                //timeGreaterThan: Date.now().toString("HH:mm"),
                 messages:{
                     required: wrapErrorMessage(localized_errors.validation_required_error),
                 }
@@ -701,17 +700,6 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         wrapErrorMessage(Error)
         );
     
-    $.validator.addMethod(
-    	"timeGreaterThan",
-    	function(value, element, params) {
-	    if (!/Invalid|NaN/.test(Date.parse(value))) {
-                if (Date.parseExact(value, "HH:mm").compareTo(Date.parseExact(Date.now().toString("HH:mm"), "HH:mm"))>0)
-                    return true;
-                return false;
-            }
-    	},
-    	wrapErrorMessage(localized_errors.past_date_error)
-    	);
 
         
     $.dform.subscribe("alert", function(option, type) {
