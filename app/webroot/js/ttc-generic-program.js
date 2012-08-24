@@ -294,7 +294,7 @@ function activeForm(){
     $("input[name*='at-time']").each(function (item) {
             $(this).rules("add",{
                 required:true,
-                timeGreaterThan: Date.now().toString("HH:mm"),
+                //timeGreaterThan: Date.now().toString("HH:mm"),
                 messages:{
                     required: wrapErrorMessage(localized_errors.validation_required_error),
                 }
