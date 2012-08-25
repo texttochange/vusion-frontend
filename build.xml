@@ -208,7 +208,7 @@
  </chgrp>
  <chmod perm="660">
     <fileset dir="/var/log/supervisord" includes="*"/>
- </chgrp>
+ </chmod>
  </target>
 
  <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,clear-cache'>
