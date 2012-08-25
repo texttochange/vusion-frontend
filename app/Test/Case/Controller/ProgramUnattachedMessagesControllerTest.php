@@ -131,6 +131,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $date = new DateTime('tomorrow');
+        //in case it's midnight
+        $date->modify("+4 hour");
         $this->UnattachedMessage->create();
         $this->UnattachedMessage->save(array(
                 'name' => 'my message',
@@ -191,7 +193,9 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
         
-        $date = new DateTime('tomorrow');    
+        $date = new DateTime('tomorrow');  
+        //in case it's midnight
+        $date->modify("+3 hour");
         $unattachedMessage = array(
             'UnattachedMessage' => array(
                 'to' => 'all participants',
@@ -230,6 +234,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $date = new DateTime('tomorrow');
+         //in case it's midnight
+        $date->modify("+3 hour");
         $unattachedMessage = array(
             'UnattachedMessage' => array(
                 'to' => 'all participants',
