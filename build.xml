@@ -190,17 +190,22 @@
     <arg value="update" />
     <arg value="--force" />
  </exec>
-<!-- start the backend -->
- <exec dir="/bin" executable="bash">
-    <arg value="/etc/init.d/supervisord.vusion" />
-    <arg value="start" />
- </exec>
 <!-- restor config files -->
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
  <copy todir="${basedir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
  </copy>
  <delete dir="/tmp/vusion"/>
+ <!-- start the backend -->
+ <exec dir="/bin" executable="bash">
+    <arg value="/etc/init.d/supervisord.vusion" />
+    <arg value="start" />
+ </exec>
+ <!-- necessary to automaticaly start after reboot -->
+ <sleep seconds="5"/>
+ <chgrp group="root">
+    <fileset dir="/var/log/supervisord" includes="*"/>
+ </chgrp>
  </target>
 
  <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,clear-cache'>
