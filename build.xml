@@ -158,13 +158,24 @@
  </target>
 
  <target name="pull4webtest" description="Pull the last develop version for the webtest">
+<!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
  <copy file="${basedir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
  <mkdir dir="/tmp/vusion/backend"/> 
  <copy todir="/tmp/vusion/backend" overwrite="true">
      <fileset dir="${basedir}/backend/etc"/>
  </copy>
- <exec dir="/var/vusion" executable="git">   
+<!-- stop the backend -->
+ <exec dir="/bin" executable="bash">
+    <arg value="/etc/init.d/supervisord.vusion" />
+    <arg value="stop" />
+ </exec>
+<!--remove log files-->
+ <delete>
+    <fileset dir="/var/log/supervisord" includes="*"/>
+ </delete>
+<!-- updating code  -->
+ <exec dir="/var/vusion" executable="git">  
     <arg value="fetch" />
     <arg value="--all" />
  </exec>
@@ -178,6 +189,12 @@
     <arg value="update" />
     <arg value="--force" />
  </exec>
+<!-- start the backend -->
+ <exec dir="/bin" executable="bash">
+    <arg value="/etc/init.d/supervisord.vusion" />
+    <arg value="start" />
+ </exec>
+<!-- restor config files -->
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
  <copy todir="${basedir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
