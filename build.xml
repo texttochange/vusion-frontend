@@ -193,7 +193,7 @@
  </exec>
 <!-- restor config files -->
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
- <copy file="/tmp/vusion/restore_data.php" todir="${basedir}/app/Test/data" overwrite="true"/>
+ <copy file="/tmp/vusion/restore_data.sh" todir="${basedir}/app/Test/data" overwrite="true"/>
  <copy todir="${basedir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
  </copy>
