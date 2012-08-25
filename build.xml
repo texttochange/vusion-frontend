@@ -166,8 +166,7 @@
      <fileset dir="${basedir}/backend/etc"/>
  </copy>
 <!-- stop the backend -->
- <exec dir="/bin" executable="bash">
-    <arg value="/etc/init.d/supervisord.vusion" />
+ <exec dir="/etc/init.d" executable="supervisord.vusion">
     <arg value="stop" />
  </exec>
  <sleep seconds="5"/>
@@ -197,8 +196,7 @@
  </copy>
  <delete dir="/tmp/vusion"/>
  <!-- start the backend -->
- <exec dir="/bin" executable="bash">
-    <arg value="/etc/init.d/supervisord.vusion" />
+ <exec dir="/etc/init.d" executable="supervisord.vusion">
     <arg value="start" />
  </exec>
  <!-- necessary to automaticaly start after reboot -->
