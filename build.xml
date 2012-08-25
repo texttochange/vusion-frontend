@@ -158,7 +158,7 @@
  </target>
 
  <target name="pull4webtest" description="Pull the last develop version for the webtest">
-  <var name="vusiondir" value="/var/vusion"/>
+  <property name="vusiondir" value="/var/vusion"/>
 <!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
  <copy file="${vusiondir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
