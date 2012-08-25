@@ -161,6 +161,7 @@
 <!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
  <copy file="${basedir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${basedir}/app/Test/data/restore_data.sh" todir="/tmp/vusion" overwrite="true"/>
  <mkdir dir="/tmp/vusion/backend"/> 
  <copy todir="/tmp/vusion/backend" overwrite="true">
      <fileset dir="${basedir}/backend/etc"/>
@@ -192,6 +193,7 @@
  </exec>
 <!-- restor config files -->
  <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/restore_test_data.php" todir="${basedir}/app/Test/data" overwrite="true"/>
  <copy todir="${basedir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
  </copy>
@@ -211,7 +213,7 @@
  </chmod>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,clear-cache'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,init-db,clear-cache'>
  <exec executable="phpunit" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="-c" />
@@ -252,10 +254,9 @@
 </input>-->
 
 
-<target name="init-db"
-          description="init the relational and mongo dbs">
-  <exec executable="bash" inputstring="${password}" failonerror="true">
-  <arg value="./app/Test/data/restore_data.sh"/>
+<target name="init-db" description="init the relational and mongo dbs">
+  <exec executable="bash">
+     <arg value="./restore_data.sh"/>
   </exec>
 </target>
 
