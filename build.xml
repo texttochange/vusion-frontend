@@ -203,7 +203,7 @@
  </exec>
  <!-- necessary to automaticaly start after reboot -->
  <sleep seconds="5"/>
- <chgrp group="root">
+ <chgrp perm="660" group="root">
     <fileset dir="/var/log/supervisord" includes="*"/>
  </chgrp>
  </target>
