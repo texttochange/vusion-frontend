@@ -170,6 +170,7 @@
     <arg value="/etc/init.d/supervisord.vusion" />
     <arg value="stop" />
  </exec>
+ <sleep seconds="5"/>
 <!--remove log files-->
  <delete>
     <fileset dir="/var/log/supervisord" includes="*"/>
