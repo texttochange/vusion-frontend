@@ -158,13 +158,14 @@
  </target>
 
  <target name="pull4webtest" description="Pull the last develop version for the webtest">
+  <var name="vusiondir" value="/var/vusion"/>
 <!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
- <copy file="${basedir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
- <copy file="${basedir}/app/Test/data/restore_data.sh" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Test/data/restore_data.sh" todir="/tmp/vusion" overwrite="true"/>
  <mkdir dir="/tmp/vusion/backend"/> 
  <copy todir="/tmp/vusion/backend" overwrite="true">
-     <fileset dir="${basedir}/backend/etc"/>
+     <fileset dir="${vusiondir}/backend/etc"/>
  </copy>
 <!-- stop the backend -->
  <exec dir="/bin" executable="bash">
@@ -177,24 +178,24 @@
     <fileset dir="/var/log/supervisord" includes="*"/>
  </delete>
 <!-- updating code  -->
- <exec dir="/var/vusion" executable="git">  
+ <exec dir="${vusiondir}" executable="git">  
     <arg value="fetch" />
     <arg value="--all" />
  </exec>
- <exec dir="/var/vusion" executable="git">   
+ <exec dir="${vusiondir}" executable="git">   
     <arg value="reset" />
     <arg value="--hard" />
     <arg value="origin/develop"/>
  </exec>
- <exec dir="/var/vusion" executable="git">   
+ <exec dir="${vusiondir}" executable="git">   
     <arg value="submodule" />
     <arg value="update" />
     <arg value="--force" />
  </exec>
 <!-- restor config files -->
- <copy file="/tmp/vusion/database.php" todir="${basedir}/app/Config" overwrite="true"/>
- <copy file="/tmp/vusion/restore_data.sh" todir="${basedir}/app/Test/data" overwrite="true"/>
- <copy todir="${basedir}/backend/etc" overwrite="true">
+ <copy file="/tmp/vusion/database.php" todir="${vusiondir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/restore_data.sh" todir="${vusiondir}/app/Test/data" overwrite="true"/>
+ <copy todir="${vusiondir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
  </copy>
  <delete dir="/tmp/vusion"/>
@@ -255,8 +256,8 @@
 
 
 <target name="init-db" description="init the relational and mongo dbs">
-  <exec executable="bash">
-     <arg value="./restore_data.sh"/>
+  <exec dir="${vusiondir}" executable="bash">
+     <arg value="./app/Test/data/restore_data.sh"/>
   </exec>
 </target>
 
