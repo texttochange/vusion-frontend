@@ -127,7 +127,9 @@ var program = {"script": [
 
         buildTtcForm : function(type, object, submitCall) {
             $(this).empty().buildForm(fromBackendToFrontEnd(type, object, submitCall));
-            activeForm();    
+            activeForm();
+            //On load fold every element 
+            $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
         },
     });
 })(jQuery);
