@@ -337,7 +337,10 @@ function activeForm(){
 }
 
 function expandForm(){
-    $(this).parent().children().slideDown('fast');
+    $(this).parent().children().each(function(){ 
+        if ($(this).attr('type')=='text')
+            $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
+        $(this).slideDown('fast')});
     $(this).parent().children('[class="ttc-fold-summary"]').remove();
     $(this).attr('src','/img/fold-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
 }
