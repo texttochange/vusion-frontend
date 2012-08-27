@@ -73,7 +73,6 @@ var program = {"script": [
         "question-answer":"question"},
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
-        "immediately":"immediately",
         "fixed-time":"fixed-time",
         "wait":"wait"},
     "content":"textarea",
@@ -680,7 +679,8 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     $.validator.addMethod(
         "greaterThanOrEqualTo", 
-        function(value, element, params) {alert(element.id);    
+        function(value, element, params) {
+            //alert(element.id);    
             if (!/Invalid|NaN/.test(Date.parse(value))) {
                 //if (Date.parse(value).compareTo(Date.now())>0)
                 if (Date.parseExact(value, "dd/MM/yyyy HH:mm").compareTo(Date.parseExact(Date.now().toString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm"))>0)
