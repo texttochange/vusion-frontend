@@ -202,7 +202,7 @@
  </copy>
  <delete dir="/tmp/vusion"/>
  <!-- start the backend -->
- <exec executable="daemonize">
+ <exec executable="/usr/local/sbin/daemonize">
     <arg value="/etc/init.d/supervisord.vusion" />
     <arg value="start" />
  </exec>
