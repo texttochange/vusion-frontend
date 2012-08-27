@@ -202,10 +202,9 @@
  </copy>
  <delete dir="/tmp/vusion"/>
  <!-- start the backend -->
- <exec dir="/bin" executable="bash">
+ <exec dir="/bin" executable="bash" spawn="true">
     <arg value="/etc/init.d/supervisord.vusion" />
     <arg value="start" />
-    <arg value="&" />
  </exec>
  <!-- necessary to automaticaly start after reboot -->
  <sleep seconds="5"/>
