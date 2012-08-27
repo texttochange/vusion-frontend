@@ -24,6 +24,11 @@ class Template extends MongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please give a name to the template.'
+                ),
+            'isReallyUnique' => array(
+                'rule' => 'isReallyUnique',
+                'message' => 'This name is already used by another template, choose another one.',
+                'require' => true
                 )
             ),
         'type-template' => array(
@@ -42,6 +47,18 @@ class Template extends MongoModel
                 ),
             ),
         );
+
+    public function isReallyUnique($check) {
+         if ($this->id) {
+            $conditions = array('id'=>array('$ne'=> $this->id),'name' => '/^'.$check['name'].'$/i');
+        } else {
+            $conditions = array('name' => new MongoRegex('/^'.$check['name'].'$/i'));
+        }
+        $result = $this->find('count', array(
+            'conditions' => $conditions
+            ));
+        return $result < 1;       
+    }
 
     public function beforeValidate()
     {
