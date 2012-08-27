@@ -202,7 +202,13 @@
  </copy>
  <delete dir="/tmp/vusion"/>
  <!-- start the backend -->
- <exec dir="/bin" executable="bash" spawn="true">
+ <exec executable="daemon" spawn="true">
+    <arg value="--errlog" />
+    <arg value="/var/log/daemon.supervisord.jenkins" />
+    <arg value="--dbglog" />
+    <arg value="/var/log/daemon.supervisord.jenkins" />
+    <arg value="--output" />
+    <arg value="/var/log/daemon.supervisord.jenkins" />
     <arg value="/etc/init.d/supervisord.vusion" />
     <arg value="start" />
  </exec>
