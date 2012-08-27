@@ -15,7 +15,7 @@
 		<td><?php echo __($template['Template']['template']) ?></td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete # %s?', $template['Template']['_id'])); ?>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete "%s"?', $template['Template']['name'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
