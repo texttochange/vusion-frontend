@@ -214,7 +214,7 @@
  </chmod>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,init-db,clear-cache'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='init-db,clear-cache,pull4webtest'>
  <exec executable="phpunit" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="-c" />
