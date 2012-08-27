@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="vusion-frontend" default="build">
+
+ <property file="build.properties"/>
+
  <target name="build"
    depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,caketest,webtest,phpcb"/>
 
@@ -158,7 +161,6 @@
  </target>
 
  <target name="pull4webtest" description="Pull the last develop version for the webtest">
-  <property name="vusiondir" value="/var/vusion"/>
 <!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
  <copy file="${vusiondir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
@@ -256,7 +258,6 @@
 
 
 <target name="init-db" description="init the relational and mongo dbs">
-  <property name="vusiondir" value="/var/vusion"/>
   <exec dir="${vusiondir}" executable="bash">
      <arg value="./app/Test/data/restore_data.sh"/>
   </exec>
