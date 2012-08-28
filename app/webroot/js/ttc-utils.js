@@ -367,7 +367,7 @@ function addStackFilter(){
 	$(stackFilter).append(addButton);
 	
 	var deleteButton = document.createElement("img");
-	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/Button-Delete-icon-16.png').on('click', removeStackFilter);
+	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/minus-icon-16.png').on('click', removeStackFilter);
 	$(stackFilter).append(deleteButton);
 	
 	// retrieve the contents of the array stored by javascript in window.app

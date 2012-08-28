@@ -609,20 +609,26 @@
 .ttc-fold-icon {
 	position: absolute;
 	right: 30px;
-	top: 21px;
+	top: 16px;
 	cursor: pointer;
 }
 
 .ttc-expand-icon {
 	position: absolute;
 	right: 30px;
-	top: 18px;
+	top: 16px;
 	cursor: pointer;
+}
+
+.ttc-ok {
+    margin-left: 10px;
 }
 
 .ttc-add-icon {
 	cursor: pointer;
 	float: right;
+	margin-top: 2px;
+	margin-right: 2px;
 }
 
 .ttc-stack-filter {

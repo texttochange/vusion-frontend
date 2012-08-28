@@ -429,7 +429,7 @@ function validateKeywordReply(data, textStatus) {
             errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
             $("#dynamic-generic-program-form").validate().showErrors(errors);
     } else {
-    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/Ok-icon-16.png'/>");
+    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
     }
 };
 
