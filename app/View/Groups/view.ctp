@@ -32,7 +32,7 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Edit Group'), array('action' => 'edit', $group['Group']['id'])); ?> </li>
-		<li><?php echo $this->Form->postLink(__('Delete Group'), array('action' => 'delete', $group['Group']['id']), null, __('Are you sure you want to delete # %s?', $group['Group']['id'])); ?> </li>
+		<li><?php echo $this->Form->postLink(__('Delete Group'), array('action' => 'delete', $group['Group']['id']), null, __('Are you sure you want to delete "%s" group?', $group['Group']['name'])); ?> </li>
 		<li><?php echo $this->Html->link(__('List Groups'), array('action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Group'), array('action' => 'add')); ?> </li>
 	</ul>
