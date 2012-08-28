@@ -137,12 +137,12 @@
     <div class="ttc-display-area">    
 	<table cellpadding="0" cellspacing="0">
 	<tr>                                                                        
-			<th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('type', null, array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('status', null, array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('failure reason', null, array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('message', null, array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('time', null, array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('message-type', __('Type'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('message-content', __('Message'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 	</tr>
 	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $statuses == null) { ?>
 	    <tr>
