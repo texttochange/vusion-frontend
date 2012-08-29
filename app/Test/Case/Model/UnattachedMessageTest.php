@@ -42,7 +42,8 @@ class UnattachedMessageTestCase extends CakeTestCase
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
-        $date = new DateTime('tomorrow');  
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
         $unattachedMessage = array(
             'name'=>'hello',
             'to'=>'all participants',

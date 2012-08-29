@@ -22,7 +22,7 @@
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('program'=>$programUrl, 'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('program'=>$programUrl, 'action' => 'delete', $unattachedMessage['UnattachedMessage']['_id']), null,
-			                                __('Are you sure you want to delete # %s?', $unattachedMessage['UnattachedMessage']['_id'])); ?>
+			                                __('Are you sure you want to delete the separate message "%s" ?', $unattachedMessage['UnattachedMessage']['name'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>

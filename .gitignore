@@ -15,3 +15,6 @@
 /app/tmp/cache/models
 /app/tmp/cache/persistent
 /things to note
+empty
+/lib/Cake
+.vagrant

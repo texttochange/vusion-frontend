@@ -58,16 +58,22 @@ class ProgramHistoryController extends AppController
         $this->set('filterStatusConditionsOptions',$this->filterStatusConditionsOptions);
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
         
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        } else {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
             $statuses = $this->History->find('all', array('conditions' => $this->_getConditions(),
-                'order'=> array('timestamp' => 'DESC')
+                'order'=> $order,
                 ));
             $this->set(compact('statuses')); 
         } else {   
             $this->paginate = array(
                 'all',
                 'conditions' => $this->_getConditions(),
-                'order'=> array('timestamp' => 'DESC')
+                'order'=> $order,
             );
             
             $statuses = $this->paginate();
@@ -77,11 +83,17 @@ class ProgramHistoryController extends AppController
     
     
     public function export()
-    {        
+    {    
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        } else {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+    
         $exportParams = array(
             'fields' => array('participant-phone','message-type','message-status','message-content','timestamp'),
             'conditions' => $this->_getConditions(),
-            'order'=> array('timestamp' => 'DESC')
+            'order'=> $order,
         );
         
         $data = $this->History->find('all', $exportParams);

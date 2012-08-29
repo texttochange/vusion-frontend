@@ -59,8 +59,8 @@
 *  get the local language form the subdomain such as fre.domain.com
 */
 	$subdomain = substr(env("HTTP_HOST"), 0, strpos(env("HTTP_HOST"),"."));
-	
-	if (strlen($subdomain)>0) {
+
+	if (strlen($subdomain)>0 && in_array($subdomain, array('eng','fre','spa'))) {
 		Configure::write('Config.language', $subdomain);
 	}
 

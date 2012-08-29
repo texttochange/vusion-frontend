@@ -36,7 +36,6 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
-
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
         }
@@ -49,6 +48,10 @@ class Dialogue extends MongoModel
             foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
                 if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="")
                     $interaction['interaction-id'] = uniqid();
+                # do something in here.
+                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'wait') 
+                    and (!isset($interaction['days']) or $interaction['days'] == ""))
+                    $interaction['days'] = '0';
             }
         }
 

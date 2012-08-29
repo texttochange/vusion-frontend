@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="vusion-frontend" default="build">
+
+ <property file="build.properties"/>
+
  <target name="build"
    depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,caketest,webtest,phpcb"/>
 
@@ -158,26 +161,62 @@
  </target>
 
  <target name="pull4webtest" description="Pull the last develop version for the webtest">
- <exec dir="/var/vusion" executable="git">   
+<!-- backup the config files -->
+ <mkdir dir="/tmp/vusion"/>
+ <copy file="${vusiondir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Test/data/restore_data.sh" todir="/tmp/vusion" overwrite="true"/>
+ <mkdir dir="/tmp/vusion/backend"/> 
+ <copy todir="/tmp/vusion/backend" overwrite="true">
+     <fileset dir="${vusiondir}/backend/etc"/>
+ </copy>
+<!-- stop the backend -->
+ <exec dir="/bin" executable="bash">
+    <arg value="/etc/init.d/supervisord.vusion" />
+    <arg value="stop" />
+ </exec>
+ <sleep seconds="5"/>
+<!--remove log files-->
+ <delete>
+    <fileset dir="/var/log/supervisord" includes="*"/>
+ </delete>
+<!-- updating code  -->
+ <exec dir="${vusiondir}" executable="git">  
     <arg value="fetch" />
     <arg value="--all" />
  </exec>
- <exec dir="/var/vusion" executable="git">   
+ <exec dir="${vusiondir}" executable="git">   
     <arg value="reset" />
     <arg value="--hard" />
     <arg value="origin/develop"/>
  </exec>
- <exec dir="/var/vusion" executable="git">   
+ <exec dir="${vusiondir}" executable="git">   
     <arg value="submodule" />
     <arg value="update" />
+    <arg value="--force" />
  </exec>
- <exec dir="/bin" executable="bash">   
+<!-- restor config files -->
+ <copy file="/tmp/vusion/database.php" todir="${vusiondir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/restore_data.sh" todir="${vusiondir}/app/Test/data" overwrite="true"/>
+ <copy todir="${vusiondir}/backend/etc" overwrite="true">
+     <fileset dir="/tmp/vusion/backend"/>
+ </copy>
+ <delete dir="/tmp/vusion"/>
+ <!-- start the backend -->
+ <exec executable="/usr/local/sbin/daemonize">
     <arg value="/etc/init.d/supervisord.vusion" />
-    <arg value="restart" />
+    <arg value="start" />
  </exec>
+ <!-- necessary to automaticaly start after reboot -->
+ <sleep seconds="5"/>
+ <chgrp group="root">
+    <fileset dir="/var/log/supervisord" includes="*"/>
+ </chgrp>
+ <chmod perm="660">
+    <fileset dir="/var/log/supervisord" includes="*"/>
+ </chmod>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='pull4webtest,clear-cache'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='init-db,clear-cache,pull4webtest'>
  <exec executable="phpunit" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="-c" />
@@ -218,10 +257,9 @@
 </input>-->
 
 
-<target name="init-db"
-          description="init the relational and mongo dbs">
-  <exec executable="bash" inputstring="${password}" failonerror="true">
-  <arg value="./app/Test/data/restore_data.sh"/>
+<target name="init-db" description="init the relational and mongo dbs">
+  <exec dir="${vusiondir}" executable="bash">
+     <arg value="./app/Test/data/restore_data.sh"/>
   </exec>
 </target>
 

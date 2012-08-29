@@ -73,7 +73,6 @@ var program = {"script": [
         "question-answer":"question"},
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
-        "immediately":"immediately",
         "fixed-time":"fixed-time",
         "wait":"wait"},
     "content":"textarea",
@@ -86,9 +85,12 @@ var program = {"script": [
     //"day":"text",
     //"hour":"text",
     //"minute":"text",
-    "wait":["minutes"],
+    //"wait":["days","minutes"],
+    "wait":["days","at-time"],
     "wait-answer": ["minutes"],
-    "minutes":"text",
+    "days":"text",
+    //"minutes":"text",
+    "at-time":"text",
     "time": "text",
     "keyword":"text",
     "feedback":["content"]
@@ -125,7 +127,9 @@ var program = {"script": [
 
         buildTtcForm : function(type, object, submitCall) {
             $(this).empty().buildForm(fromBackendToFrontEnd(type, object, submitCall));
-            activeForm();    
+            activeForm();
+            //On load fold every element 
+            $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
         },
     });
 })(jQuery);
@@ -252,7 +256,7 @@ function activeForm(){
                     $(this).parent().remove();
             });
             var foldButton = document.createElement('img');
-            $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/fold-icon-16.png').on('click', foldForm);
+            $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/minimize-icon-16.png').on('click', foldForm);
             $(elt).before(foldButton);
             $(elt).before(deleteButton);
             
@@ -261,7 +265,14 @@ function activeForm(){
             if (!$.data(elt,'events')){
                 $(elt).datetimepicker({
                 timeFormat: 'hh:mm',
+                timeOnly: false,
                 dateFormat:'dd/mm/yy'});
+            };
+    });
+    $.each($("input[name*='at-time']"), function (key,elt){
+            if (!$.data(elt,'events')){
+                $(elt).timepicker({
+                timeFormat: 'hh:mm'});
             };
     });
 
@@ -276,6 +287,14 @@ function activeForm(){
             $(this).rules("add",{
                 required:true,
                 greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm"),
+                messages:{
+                    required: wrapErrorMessage(localized_errors.validation_required_error),
+                }
+            });
+    });
+    $("input[name*='at-time']").each(function (item) {
+            $(this).rules("add",{
+                required:true,
                 messages:{
                     required: wrapErrorMessage(localized_errors.validation_required_error),
                 }
@@ -318,9 +337,12 @@ function activeForm(){
 }
 
 function expandForm(){
-    $(this).parent().children().slideDown('fast');
+    $(this).parent().children().each(function(){ 
+        if ($(this).attr('type')=='text')
+            $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
+        $(this).slideDown('fast')});
     $(this).parent().children('[class="ttc-fold-summary"]').remove();
-    $(this).attr('src','/img/fold-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
+    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
 }
 
 function foldForm(){
@@ -407,7 +429,7 @@ function validateKeywordReply(data, textStatus) {
             errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
             $("#dynamic-generic-program-form").validate().showErrors(errors);
     } else {
-    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/Ok-icon-16.png'/>");
+    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
     }
 };
 
@@ -662,7 +684,8 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     $.validator.addMethod(
         "greaterThanOrEqualTo", 
-        function(value, element, params) {    
+        function(value, element, params) {
+            //alert(element.id);    
             if (!/Invalid|NaN/.test(Date.parse(value))) {
                 //if (Date.parse(value).compareTo(Date.now())>0)
                 if (Date.parseExact(value, "dd/MM/yyyy HH:mm").compareTo(Date.parseExact(Date.now().toString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm"))>0)
@@ -681,6 +704,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         duplicateKeywordValidation,
         wrapErrorMessage(Error)
         );
+    
 
         
     $.dform.subscribe("alert", function(option, type) {

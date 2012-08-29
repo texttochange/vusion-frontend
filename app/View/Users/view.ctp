@@ -53,7 +53,6 @@
 			<td class="actions">
 				<?php echo $this->Html->link(__('View'), array('controller' => 'programs', 'action' => 'view', $program['id'])); ?>
 				<?php echo $this->Html->link(__('Edit'), array('controller' => 'programs', 'action' => 'edit', $program['id'])); ?>
-				<?php echo $this->Form->postLink(__('Delete'), array('controller' => 'programs', 'action' => 'delete', $program['id']), null, __('Are you sure you want to delete # %s?', $program['id'])); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

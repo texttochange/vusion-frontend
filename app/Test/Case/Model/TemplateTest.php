@@ -47,6 +47,30 @@ class TemplateTestCase extends CakeTestCase
         parent::tearDown();
     }
 
+    public function testSave()
+    {
+        $openTemplate = array(
+            'name'=>'my open template',
+            'type-template'=>'open-question',
+            'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
+            );
+
+        $otherOpenTemplate = array(
+            'name'=>'my Open template',
+            'type-template'=>'open-question',
+            'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD but different'
+            );
+        
+        $this->Template->create();
+        $saveTemplate = $this->Template->save($openTemplate);
+        $this->assertEqual('my open template', $saveTemplate['Template']['name']);
+        
+        $this->Template->create();
+        $this->assertFalse($this->Template->save($otherOpenTemplate));        
+
+    }
+
+
     public function testGetTemplateOptions()
     {
 
@@ -64,7 +88,7 @@ class TemplateTestCase extends CakeTestCase
 
         $this->Template->create();
         $this->Template->save($openTemplate);
-        
+
         $this->Template->create();
         $this->Template->save($closedTemplate);
 

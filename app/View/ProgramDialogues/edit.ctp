@@ -9,9 +9,10 @@
                 echo $this->Html->link(__('Activate'), array('program'=>$programUrl,'action'=>'activate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
                 echo "</li>";
             } 
-            echo "<li>";
+            ## Remove simulate button as long as it's not properly working in the backend
+            /*echo "<li>";
             echo $this->Html->link(__('Simulate'), array('program'=>$programUrl, 'controller' => 'programSimulator', 'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
-            echo "</li>";
+            echo "</li>";*/
             echo "<li>";
             echo $this->Html->link(__('Test send all messages'), array('program'=>$programUrl,'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
             echo "</li>"; 
