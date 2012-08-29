@@ -252,15 +252,15 @@ function addContentFormHelp(baseUrl) {
         baseUrl="../.."
     $.each($("[name*='content']").prev(":not(:has(img)):not(div)"),
             function (key, elt){
-                    $("<img class='ttc-help' src='/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
+                    $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
             });
     $.each($("[name*='[template]']").prev(":not(:has(img)):not(div)"),
             function (key, elt){
-                    $("<img class='ttc-help' src='/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
+                    $("<img class='ttc-help' src='/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
             });
     $.each($("[name*='keyword']").prev("label").not(":has(img)"),
             function (key, elt){
-                    $("<img class='ttc-help' src='/img/question-mark-icon-32.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
+                    $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
             });
 }
 
@@ -367,7 +367,7 @@ function addStackFilter(){
 	$(stackFilter).append(addButton);
 	
 	var deleteButton = document.createElement("img");
-	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/minus-icon-16.png').on('click', removeStackFilter);
+	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/remove-icon-16.png').on('click', removeStackFilter);
 	$(stackFilter).append(deleteButton);
 	
 	// retrieve the contents of the array stored by javascript in window.app
