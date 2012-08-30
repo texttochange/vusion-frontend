@@ -398,7 +398,8 @@ function duplicateKeywordValidation(value, element, param) {
     
     if(isKeywordUsedInSameScript) {
     	errors[$(element).attr('name')] = errorMessage;    
-        this.showErrors(errors)
+        this.showErrors(errors);
+        $(element).prev("label").children('img.ttc-ok').remove();
         return true;
     }
         
