@@ -425,6 +425,9 @@ function validateKeywordReply(data, textStatus) {
     if (data.status=='fail') { //not used
     //    $(elt).before("<p style='color:green'> ok </p>");
         //else    //already used in another Program
+        if ($(elt).prev("label").has('.ttc-ok')) {
+        	$(elt).prev("label").children('img.ttc-ok').remove();
+        }
             var errors = {};
             errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
             $("#dynamic-generic-program-form").validate().showErrors(errors);
