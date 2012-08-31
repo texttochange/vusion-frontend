@@ -43,6 +43,15 @@
 		?>
 	</dl>
 	<br/>
+			<h3><?php echo __("Participant's Scheduled Messages"); ?></h3>
+	
+			<table cellpadding="0" cellspacing="0">
+			<tr>
+				<th><?php echo __('time');?></th>
+				<th><?php echo __('message');?></th>
+			</tr>
+			</table>
+	<br/>
 			<h3><?php echo __("Participant's History"); ?></h3>
 	
 			<table cellpadding="0" cellspacing="0">
