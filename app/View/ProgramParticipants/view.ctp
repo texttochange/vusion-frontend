@@ -62,8 +62,7 @@
 			} else { ?>
 			    <td></td>
 			<?php } ?>
-			<!--<td><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
-			--><td>&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
+			<td>&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
 			</tr>
 			<?php endforeach; ?>
 			</table>
@@ -73,7 +72,7 @@
 			<table cellpadding="0" cellspacing="0">
 			<tr>
 				<th><?php echo __('time');?></th>
-				<th><?php echo __('direction');?></th>
+				<th><?php echo __('type');?></th>
 				<th><?php echo __('message');?></th>
 			</tr>
 			<?php

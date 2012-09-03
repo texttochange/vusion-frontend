@@ -169,27 +169,12 @@ class ProgramParticipantsController extends AppController
                 'phone' => $participant['Participant']['phone']
                 )
             );
-        $schedules          = $this->Schedule->summary();
-        $activeInteractions = $this->Dialogue->getActiveInteractions();
-        if (!isset($participant['Participant']['optout'])) {
-            foreach ($schedules as &$schedule) {
-                if (isset($schedule['interaction-id'])) {
-                    $interaction = $this->DialogueHelper->getInteraction(
-                        $activeInteractions,
-                        $schedule['interaction-id']
-                        );
-                    if (isset($interaction['content']))
-                        $schedule['content'] = $interaction['content'];
-                }
-                elseif (isset($schedule['unattach-id'])) {
-                    $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
-                    if (isset($unattachedMessage['UnattachedMessage']['content']))
-                        $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
-                }
-            }
-        } else {
-            $schedules = array();
-        }
+        
+        $activeInteractions   = $this->Dialogue->getActiveInteractions();
+        $schedules = $this->Schedule->generateSchedule(
+                                    $this->Schedule->summary(),
+                                    $activeInteractions
+                                );
         $this->set(compact('participant','histories', 'schedules'));
     }
 
