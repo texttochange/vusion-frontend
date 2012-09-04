@@ -171,7 +171,7 @@ class ProgramParticipantsController extends AppController
             );
         
         $activeInteractions   = $this->Dialogue->getActiveInteractions();
-        $schedules = $this->Schedule->generateSchedule(
+        $schedules            = $this->Schedule->generateSchedule(
                                     $this->Schedule->summary(),
                                     $activeInteractions
                                 );
