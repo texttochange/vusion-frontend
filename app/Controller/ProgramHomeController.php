@@ -53,25 +53,12 @@ class ProgramHomeController extends AppController
         $statusCount      = $this->History->find('count');
         //$schedules        = $this->Schedule->find('soon');
                 
-        $schedules        = $this->Schedule->summary();
-
         $activeInteractions = $this->Dialogue->getActiveInteractions();
 
-        foreach ($schedules as &$schedule) {
-            if (isset($schedule['interaction-id'])) {
-                $interaction = $this->DialogueHelper->getInteraction(
-                    $activeInteractions,
-                    $schedule['interaction-id']
-                    );
-                if (isset($interaction['content']))
-                    $schedule['content'] = $interaction['content'];
-            }
-            elseif (isset($schedule['unattach-id'])) {
-                $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
-                if (isset($unattachedMessage['UnattachedMessage']['content']))
-                    $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
-            } 
-        }
+        $schedules = $this->Schedule->generateSchedule(
+                                    $this->Schedule->summary(),
+                                    $activeInteractions
+                                );
                 
         $this->set(compact(
             'hasScriptActive', 

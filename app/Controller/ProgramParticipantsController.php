@@ -3,6 +3,7 @@ App::uses('AppController','Controller');
 App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
+App::uses('Dialogue', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
@@ -18,12 +19,15 @@ class ProgramParticipantsController extends AppController
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
 
-        $this->Participant    = new Participant($options);
-        $this->History        = new History($options);
-        $this->Schedule       = new Schedule($options);
-        $this->VumiRabbitMQ   = new VumiRabbitMQ(
+        $this->Participant       = new Participant($options);
+        $this->History           = new History($options);
+        $this->Schedule          = new Schedule($options);
+        $this->Dialogue          = new Dialogue($options);
+        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->VumiRabbitMQ      = new VumiRabbitMQ(
             Configure::read('vusion.rabbitmq')
             );
+        $this->DialogueHelper = new DialogueHelper();
     }
 
 
@@ -165,7 +169,13 @@ class ProgramParticipantsController extends AppController
                 'phone' => $participant['Participant']['phone']
                 )
             );
-        $this->set(compact('participant','histories'));
+        
+        $activeInteractions   = $this->Dialogue->getActiveInteractions();
+        $schedules            = $this->Schedule->generateSchedule(
+                                    $this->Schedule->summary(),
+                                    $activeInteractions
+                                );
+        $this->set(compact('participant','histories', 'schedules'));
     }
 
     

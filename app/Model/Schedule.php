@@ -1,5 +1,8 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('Dialogue', 'Model');
+App::uses('UnattachedMessage', 'Model');
+App::uses('DialogueHelper', 'Lib');
 /**
  * Program Model
  *
@@ -15,9 +18,20 @@ class Schedule extends MongoModel
         'count' => true,
         'summary' => true
         );
+    
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $options                 = array('database'=>$id['database']);
+        //$this->Dialogue          = new Dialogue($options);
+        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->DialogueHelper    = new DialogueHelper();
+    }
+    
      
-     protected function _findSoon($state, $query, $results = array())
-     {
+    protected function _findSoon($state, $query, $results = array())
+    {
         if ($state == 'before') {
             $query['order']['date-time'] = 'asc';
             $query['limit'] = 10;
@@ -87,6 +101,27 @@ class Schedule extends MongoModel
     private function _unattached($var)
     {
         return (isset($var['unattach-id']) && $var['unattach-id']!=null);
+    }
+    
+    
+    public function generateSchedule($schedules,$activeInteractions)
+    {
+        foreach ($schedules as &$schedule) {
+            if (isset($schedule['interaction-id'])) {
+                $interaction = $this->DialogueHelper->getInteraction(
+                    $activeInteractions,
+                    $schedule['interaction-id']
+                    );
+                if (isset($interaction['content']))
+                    $schedule['content'] = $interaction['content'];
+            }
+            elseif (isset($schedule['unattach-id'])) {
+                $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
+                if (isset($unattachedMessage['UnattachedMessage']['content']))
+                    $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
+            }
+        }
+        return $schedules;
     }
 
 
