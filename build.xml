@@ -202,8 +202,7 @@
  </copy>
  <delete dir="/tmp/vusion"/>
  <!-- start the backend -->
- <exec executable="/usr/local/sbin/daemonize">
-    <arg value="/etc/init.d/supervisord.vusion" />
+ <exec executable="/etc/init.d/supervisord.vusion">
     <arg value="start" />
  </exec>
  <!-- necessary to automaticaly start after reboot -->
@@ -216,7 +215,7 @@
  </chmod>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='init-db,clear-cache,pull4webtest'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,init-db'>
  <exec executable="phpunit" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="-c" />
