@@ -72,7 +72,7 @@
 			<table cellpadding="0" cellspacing="0">
 			<tr>
 				<th><?php echo __('time');?></th>
-				<th><?php echo __('type');?></th>
+				<th><?php echo __('direction');?></th>
 				<th><?php echo __('message');?></th>
 			</tr>
 			<?php
@@ -81,7 +81,7 @@
 			<tr>
 			<td>
 			    <?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
-			    <td><?php echo h($history['History']['message-type']); ?>&nbsp;</td>
+			    <td><?php echo h($history['History']['message-direction']); ?>&nbsp;</td>
 			    <?php if (isset($history['History']['content'])) { ?>
 			    <td><?php echo h($history['History']['content']); ?>&nbsp;</td>
 			    <?php } else { ?>

@@ -421,7 +421,7 @@ function supplyConditionOptions(fieldOption){
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();		
 	}
 	
-	if(fieldOption == "message type"){
+	if(fieldOption == "message direction"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();

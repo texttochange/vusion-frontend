@@ -29,7 +29,7 @@ class History extends MongoModel
     
     
     public $fieldFilters = array(
-        'message-type'=>'message type',
+        'message-direction'=>'message direction',
         'message-status'=>'message status',
         'timestamp-from'=>'date from',
         'timestamp-to'=>'date to',
@@ -39,8 +39,8 @@ class History extends MongoModel
         );
     
     public $typeConditionFilters = array(
-        'received'=>'received',
-        'sent'=>'sent',
+        'incoming'=>'incoming',
+        'outgoing'=>'outgoing',
         );
     
     public $statusConditionFilters = array(
@@ -103,7 +103,7 @@ class History extends MongoModel
     {
         if ($state == 'before') {
             $query['conditions'] = array(
-            	    	    'message-type' => 'received',
+            	    	    'message-direction' => 'incoming',
             	    	    'matching-answer' => null
             	    );
             return $query;

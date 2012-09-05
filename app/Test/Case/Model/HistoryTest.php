@@ -45,7 +45,7 @@ class HistoryTestCase extends CakeTestCase
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
             'message-status' => null,
-            'message-type' => 'received',
+            'message-direction' => 'incoming',
             'interaction-id'=>'script.dialogues[0].interactions[0]',
             'dialogue-id'=>'script.dialogues[0]'
             );
@@ -66,7 +66,7 @@ class HistoryTestCase extends CakeTestCase
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
             'message-status' => null,
-            'message-type' => 'received',
+            'message-direction' => 'incoming',
             'interaction-id'=>'script.dialogues[0].interactions[0]',
             'dialogue-id'=>'script.dialogues[0]'
             );
@@ -88,7 +88,7 @@ class HistoryTestCase extends CakeTestCase
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL Good',
             'message-status' => null,
-            'message-type' => 'received' 
+            'message-direction' => 'incoming' 
             );
         
         $this->History->create();
@@ -108,7 +108,7 @@ class HistoryTestCase extends CakeTestCase
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
             'message-status' => null,
-            'message-type' => 'received',
+            'message-direction' => 'incoming',
             'dialogue-id'=>'script.dialogues[0]',
             'interaction-id'=>'script.dialogues[0].interactions[0]'
             );
