@@ -36,7 +36,9 @@ class Schedule extends MongoModel
         } elseif ($objectType=='feedback-schedule'){
             return array(
                 'participant-phone',
-                'content-type'
+                'content-type',
+                'date-time',
+                'content',
                 );
         }
         throw new Exception("Object-type not supported:".$objectType);

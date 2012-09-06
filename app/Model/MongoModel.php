@@ -5,6 +5,8 @@ App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
 
 abstract class MongoModel extends Model
 {
+    abstract function getModelVersion();
+    abstract function getRequiredFields($objectType);
     
     var $specific = false;
 
@@ -18,9 +20,6 @@ abstract class MongoModel extends Model
         'model-version',
         'object-type'
         );
-
-    abstract function getModelVersion();
-    abstract function getRequiredFields($objectType);
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -54,9 +53,13 @@ abstract class MongoModel extends Model
         parent::__construct($id, $table, $ds);
     }
 
+
     public function checkFields($object)
     {
-        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
+        if (isset($object['object-type']))
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
+        else
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
        
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)){
@@ -66,6 +69,7 @@ abstract class MongoModel extends Model
 
         return $object;
     }
+
 
     public function create($objectType=null)
     {
@@ -81,6 +85,7 @@ abstract class MongoModel extends Model
         $this->data[$this->alias]['model-version'] = $this->getModelVersion();
         $this->data[$this->alias]['object-type'] = $objectType;
     }
+
     
     public function beforeValidate()
     {
@@ -89,6 +94,7 @@ abstract class MongoModel extends Model
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         return true;
     }
+
 
 }
 ?> 

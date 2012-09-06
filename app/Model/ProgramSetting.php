@@ -16,7 +16,7 @@ class ProgramSetting extends MongoModel
         return "1";
     }
 
-    function getRequiredFields($objectType)
+    function getRequiredFields($objectType=null)
     {
         return array(
             'key',

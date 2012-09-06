@@ -88,7 +88,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         return $shortCodes;
     }
 
-/*
+
     public function testIndex()
     {
     
@@ -125,7 +125,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         ));
         $this->assertEquals(1, $this->ShortCodes->ShortCode->find('count'));
     }
-*/
+
 
     public function testEdit()
     {
@@ -153,7 +153,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->assertEquals(8383, $shortCodes->data['ShortCodes']['shortcode']);
     }
 
-/*
+
     public function testDelete()
     {
         $this->mockProgramAccess();
@@ -172,6 +172,6 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     
         $this->assertEquals(0, $this->ShortCodes->ShortCode->find('count'));
     }
-*/
+
 
 }
