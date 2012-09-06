@@ -75,7 +75,7 @@ abstract class MongoModel extends Model
     {
         parent::create();
         
-       $toCreate = array_merge($this->defaultFields, $this->getRequiredFields($objectType));
+        $toCreate = array_merge($this->defaultFields, $this->getRequiredFields($objectType));
         
         foreach ($toCreate as $field) {
             if (!isset($object[$field])){
@@ -89,8 +89,6 @@ abstract class MongoModel extends Model
     
     public function beforeValidate()
     {
-        echo "saving\n";
-        print_r($this->data[$this->alias]);
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         return true;
     }
