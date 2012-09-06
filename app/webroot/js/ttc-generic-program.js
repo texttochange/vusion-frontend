@@ -389,7 +389,13 @@ function duplicateKeywordValidation(value, element, param) {
                     if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
                         errorMessage = wrapErrorMessage(elementWords[y]+ localized_errors.validation_keyword_used_same_script_error);
                         errors[$(element).attr('name')] = errorMessage;
+                        $(element).prev("label").children('img.ttc-ok').remove();
                         isKeywordUsedInSameScript = true;
+                    }
+                    if ($(element).hasClass('error')) { // a kind of re-validation 
+                    	$(element).next("label").children('span.ttc-validation-error').remove();
+                        $(element).removeClass('error').addClass('valid');
+		        $(element).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");                        
                     }
                 }
             }
