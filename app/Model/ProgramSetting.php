@@ -11,6 +11,20 @@ class ProgramSetting extends MongoModel
     var $name        = 'ProgramSetting';
     var $useDbConfig = 'mongo';
 
+     function getModelVersion()
+    {
+        return "1";
+    }
+
+    function getRequiredFields($objectType)
+    {
+        return array(
+            'key',
+            'value'
+            );
+    }
+
+
     public $findMethods =  array(
         'programSetting' => true,
         'count' => true,

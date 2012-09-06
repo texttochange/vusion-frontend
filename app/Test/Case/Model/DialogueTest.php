@@ -124,8 +124,8 @@ class DialogueTestCase extends CakeTestCase
              $savedDialogue['Dialogue']['dialogue-id'],
              '01'
              );
-         $this->Schedule->create();
-         $this->Schedule->save($schedule);
+         $this->Schedule->create($schedule['Schedule']['object-type']);
+         $this->Schedule->save($schedule['Schedule']);
          
          $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
          
@@ -133,7 +133,7 @@ class DialogueTestCase extends CakeTestCase
          
     }
 
-/*
+
     public function testValidate_date_ok()
     {
         $data['Dialogue'] = array(
@@ -278,7 +278,7 @@ class DialogueTestCase extends CakeTestCase
              'dialogue-id'=> '02'
              );
          $this->Dialogue->saveDialogue($dialogueOne);
-         $this->Schedule->create();
+         $this->Schedule->create('dialogue-schedule');
          $this->Schedule->save($schedule);
          $this->Dialogue->saveDialogue($dialogueTwo);
          
@@ -290,5 +290,5 @@ class DialogueTestCase extends CakeTestCase
 
          $this->assertEqual(0, $this->Schedule->find('count'));
     }
-*/
+
 }

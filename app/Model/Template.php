@@ -12,6 +12,20 @@ class Template extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'templates';
     
+    function getModelVersion()
+    {
+        return '1';
+    }
+   
+    function getRequiredFields($objectType=null)
+    {
+        return array(
+            'name',
+            'type-template',
+            'template'
+            );
+     }
+
     public $typeTemplates = array(
         'open-question' => 'Open question',
         'closed-question' => 'Closed question',

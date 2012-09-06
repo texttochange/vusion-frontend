@@ -111,30 +111,28 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     public function testPagination() 
     {
 
-        $this->mockProgramAccess();
-
         $this->instanciateHistoryModel();
-        $this->Status->History->create();
+        $this->Status->History->create('default-history');
         $this->Status->History->save(array(
-            'phone' => '256712747841',
-            'message' => 'Hello everyone!',
-            'time' => '2012-02-08T12:20:43.882854'
+            'participant-phone' => '256712747841',
+            'message-content' => 'Hello everyone!',
+            'timestamp' => '2012-02-08T12:20:43.882854'
             ));
-        $this->Status->History->create();
+        $this->Status->History->create('default-history');
         $this->Status->History->save(array(
-            'phone' => '356774527841',
-            'message' => 'Hello there!',
-            'time' => '2013-02-08T12:20:43.882854'
+            'participant-phone' => '356774527841',
+            'message-content' => 'Hello there!',
+            'timestamp' => '2013-02-08T12:20:43.882854'
             ));
-        
-        $this->testAction("/testurl/status/index/sort:phone/direction:desc");
-        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['phone']);
+
+        $this->mockProgramAccess();        
+        $this->testAction("/testurl/status/index/sort:participant-phone/direction:desc");
+        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['participant-phone']);
         
 
         $this->mockProgramAccess();
-
-        $this->testAction("/testurl/status/index/sort:phone/direction:asc");
-        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['phone']);
+        $this->testAction("/testurl/status/index/sort:participant-phone/direction:asc");
+        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['participant-phone']);
 
     }
 

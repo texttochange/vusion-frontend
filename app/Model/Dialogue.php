@@ -9,6 +9,22 @@ class Dialogue extends MongoModel
     var $specific = true;
     var $name     = 'Dialogue';
 
+    function getModelVersion()
+    {
+        return '1';
+    }
+
+    function getRequiredFields($objectType=null)
+    {
+        return array(
+            'name',
+            'dialogue-id',
+            'auto-enrollment',
+            'interactions',
+            'activated',
+            );
+    }
+
     var $findMethods = array(
         'draft' => true,
         'first' => true,

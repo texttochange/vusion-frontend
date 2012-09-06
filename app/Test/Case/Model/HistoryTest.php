@@ -50,7 +50,7 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create();
+        $this->History->create('default-history');
         $history = $this->History->save($participantsState);
         
               
@@ -62,6 +62,7 @@ class HistoryTestCase extends CakeTestCase
     public function testFindParticipant()
     {   
         $participantsState = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
@@ -71,7 +72,7 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create();
+        $this->History->create('dialogue-history');
         $history = $this->History->save($participantsState);
         
         $result   = $this->History->find('participant',array(
@@ -84,6 +85,7 @@ class HistoryTestCase extends CakeTestCase
     public function testFindCount()
     {
         $participantsState = array(
+            'object-type' => 'default-history',
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL Good',
@@ -91,7 +93,7 @@ class HistoryTestCase extends CakeTestCase
             'message-direction' => 'incoming' 
             );
         
-        $this->History->create();
+        $this->History->create('default-history');
         $history = $this->History->save($participantsState);
               
         $result   = $this->History->find(
@@ -104,6 +106,7 @@ class HistoryTestCase extends CakeTestCase
     public function testCountFiltered()
     {
         $participantsState = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
@@ -113,7 +116,7 @@ class HistoryTestCase extends CakeTestCase
             'interaction-id'=>'script.dialogues[0].interactions[0]'
             );
            
-        $this->History->create();
+        $this->History->create('dialogue-history');
         $history = $this->History->save($participantsState);
         
         $state = 'before';

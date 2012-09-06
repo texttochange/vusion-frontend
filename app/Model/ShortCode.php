@@ -1,9 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
-/**
- * Shortcode Model
- *
- */
+
 class ShortCode extends MongoModel
 {
 
@@ -11,20 +8,20 @@ class ShortCode extends MongoModel
     var $name        = 'ShortCode';
     var $useDbConfig = 'mongo';
     var $useTable    = 'shortcodes';
-    /*
-    public $findMethods = array(
-    	    'ShortCode' => true,
-    	    'count' => true
-    	    );
     
-    protected function _findShortCode($state, $query, $results = array())
+    function getModelVersion()
     {
-    	    if($state == 'before') {
-    	    	    $query['conditions']['ShortCode.key'] = $query['key'];
-    	    	    return $query;
-    	    }
-    	    return $results;
-    } 
-    */
+        return '1';
+    }
+   
+    function getRequiredFields($objectType=null)
+    {
+        return array(
+            'country',
+            'shortcode',
+            'international-prefix',
+            'error-template',
+            'support-customized-id');
+    }
 
 }

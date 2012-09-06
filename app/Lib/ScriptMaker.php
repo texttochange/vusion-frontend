@@ -63,6 +63,7 @@ class ScriptMaker
     public function getDialogueSchedule($participantPhone='08', $dialogueId='01', $interactionId='01')
     {
         return array('Schedule' => array(
+                'object-type' => 'dialogue-schedule',
                 'participant-phone' => $participantPhone,
                 'dialogue-id' => $dialogueId,
                 'interaction-id' => $interactionId,
