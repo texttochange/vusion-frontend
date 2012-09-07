@@ -9,7 +9,23 @@ class Participant extends MongoModel
 
     var $name        = 'Participant';
     var $useDbConfig = 'mongo';
-        
+    
+    
+    function getModelVersion()
+    {
+        return '1';
+    }
+
+    
+    function getRequiredFields($objectType=null)
+    {
+        return array(
+            'phone',
+            'session-id',
+            'last-optin-date'
+            );
+    }
+    
     public $validate = array(
         'phone' => array(
             'notempty' => array(

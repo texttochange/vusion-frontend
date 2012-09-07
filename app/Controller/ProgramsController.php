@@ -64,10 +64,8 @@ class ProgramsController extends AppController
             $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
             if (isset($shortcode[0]['ProgramSetting']['value'])) {
                 $this->ShortCode  = new ShortCode(array('database' => 'vusion'));
-                $codes            = $this->ShortCode->find('all', array( 
-                    'conditions' => array('shortcode'=> $shortcode[0]['ProgramSetting']['value'])
-                    ));
-                $program['Program']['shortcode'] = $codes[0]['ShortCode']['country']."-".$shortcode[0]['ProgramSetting']['value'];
+                $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
+                $program['Program']['shortcode'] = $code['ShortCode']['country']."-".$code['ShortCode']['shortcode'];
             } 
             $tempParticipant                         = new Participant(array('database' => $database));
             $program['Program']['participant-count'] = $tempParticipant->find('count'); 

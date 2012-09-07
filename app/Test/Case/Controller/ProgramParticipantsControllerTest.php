@@ -324,7 +324,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDeleted);
 
         $scheduleToStay = array(
@@ -333,7 +333,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToStay);
 
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']);
@@ -371,7 +371,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDeleted);
 
         $this->testAction(
@@ -416,7 +416,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDisplayed);
 
         $this->testAction(

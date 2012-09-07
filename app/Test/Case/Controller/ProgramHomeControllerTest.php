@@ -181,33 +181,41 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $unattachedMessage = array(
-            'schedule' => 'fixed-time',
+            'type-schedule' => 'fixed-time',
             'fixed-time' => '12/06/2021 12:30',
             'content' => 'Hello',
-            );        $this->Home->UnattachedMessage->create();
-        $this->Home->UnattachedMessage->save($unattachedMessage);
+            'name' => 'test',
+            'to' => 'all participant'
+            );        
 
+        $this->Home->UnattachedMessage->create();
+        $savedUnattachMessage = $this->Home->UnattachedMessage->save($unattachedMessage);
+ 
         $schedules = array(
             array(
+                'object-type' => 'dialogue-schedule',
                 'date-time' => '2021-06-12T12:30',
                 'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
                 'interaction-id' => $savedDialogue['Dialogue']['interactions'][0]['interaction-id'],
                 ),
             array(
+                'object-type' => 'unattach-schedule',
                 'date-time' => '2021-06-12T12:30',
-                'unattach-id' => $this->Home->UnattachedMessage->id,
+                'unattach-id' => $savedUnattachMessage['UnattachedMessage']['_id'],
                 )
             );
 
-        $this->Home->Schedule->create();
-        $this->Home->Schedule->saveMany($schedules);
+        foreach ($schedules as $schedule){
+            $this->Home->Schedule->create($schedule['object-type']);
+            $this->Home->Schedule->save($schedule);
+        }
 
         $this->testAction("/testurl/home", array('method' => 'get'));
 
         $this->assertEquals(2, count($this->vars['schedules']));
         $this->assertEquals("how are you", $this->vars['schedules'][0]['content']);
         $this->assertEquals(1, $this->vars['schedules'][0]['csum']);
-         $this->assertEquals("Hello", $this->vars['schedules'][1]['content']);
+        $this->assertEquals("Hello", $this->vars['schedules'][1]['content']);
         $this->assertEquals(1, $this->vars['schedules'][1]['csum']);
     }
 

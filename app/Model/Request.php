@@ -7,6 +7,20 @@ class Request extends MongoModel
     var $specific = true;
     var $name     = 'Request';
 
+     function getModelVersion()
+    {
+        return '1';
+    }
+
+    function getRequiredFields($objectType=null)
+    {
+        return array(
+            'keyword',
+            'actions',
+            'feedbacks'
+            );
+    }
+
     var $findMethods = array(
         'count' => true,
         'first' => true,

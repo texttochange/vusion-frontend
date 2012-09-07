@@ -14,6 +14,22 @@ class UnattachedMessage extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'unattached_messages';
     
+    function getModelVersion()
+    {
+        return "1";
+    }
+
+    function getRequiredFields($objectType)
+    {
+        return array(
+            'name',
+            'to',
+            'content',
+            'type-schedule',
+            'fixed-time'
+            );
+    }
+
     public $validate = array(
         'name' => array(
             'notempty' => array(
