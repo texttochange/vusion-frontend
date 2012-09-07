@@ -27,7 +27,8 @@ class ShortCode extends MongoModel
     var $findMethods = array(
         'prefixShortCode' => true,
         'count' => true,
-        'all' => true
+        'all' => true,
+        'first' => true,
         );
 
     protected function _findPrefixShortCode($state, $query, $results = array())
