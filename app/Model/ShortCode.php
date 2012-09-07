@@ -49,6 +49,43 @@ class ShortCode extends MongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please enter a shortcode.'
                 ),
+            'isShortCodeCountryUnique'=> array(
+                'rule' => 'isShortCodeCountryUnique',
+                'message' => 'There is already the same shortcode for this country.',
+                'required' => true
+                )   
+            ),
+        'country' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please choose a country.'
+                ),
+            'isShortCodeCountryUnique'=> array(
+                'rule' => 'isShortCodeCountryUnique',
+                'message' => 'There is already the same shortcode for this country.',
+                'required' => true
+                )
+            )
+        );
+
+
+    public function isShortCodeCountryUnique($check)
+    {
+        if ($this->id) {
+            $conditions = array(
+                'id'=>array('$ne'=> $this->id),
+                'country' => $this->data['ShortCode']['country'], 
+                'shortcode' => $this->data['ShortCode']['shortcode']);
+        } else {
+            $conditions = array(
+                'country' => $this->data['ShortCode']['country'], 
+                'shortcode' => $this->data['ShortCode']['shortcode']);
+        }
+        $result = $this->find('count', array(
+            'conditions' => $conditions
             ));
+
+        return $result < 1;            
+    }
 
 }

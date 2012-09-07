@@ -31,16 +31,21 @@ class ShortCodeTestCase extends CakeTestCase
 
         $wrongShortCode = array(
             'shortcode' => '8282',
+            'country' => 'uganda',
             'badfield' => 'something'
             );
 
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($emptyShortCode);
-        $this->assertEqual($emptyShortCode, array());
+        $this->assertEqual($emptyShortCode, array()); ##Todo how come it's an array
         
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($wrongShortCode);
         $this->assertFalse(array_key_exists('badfield', $savedShortCode['ShortCode']));
+
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($wrongShortCode);
+        $this->assertFalse($savedShortCode);
                      
     }
 
