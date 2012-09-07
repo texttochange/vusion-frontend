@@ -32,7 +32,7 @@ var localized_labels = {
     "date-time": "<?php echo __('Time')?>",
     "immediately": "<?php echo __('Immediately')?>",
     "fixed-time": "<?php echo __('Fixed time')?>",
-    "wait": "<?php echo __('Offset time')?>",
+    "offset-days": "<?php echo __('Offset days')?>",
     "minutes": "<?php echo __('Minutes')?>",
     "at-time": "<?php echo __('At Time')?>",
     "days": "<?php echo __('Days')?>",
