@@ -52,13 +52,13 @@ class ShortCodeTestCase extends CakeTestCase
         $emptyShortCode = array();
 
         $wrongShortCode = array(
-            'country' => 'France',
+            'shortcode' => '8282',
             'badfield' => 'something'
             );
 
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($emptyShortCode);
-        $this->assertTrue(array_key_exists('country', $savedShortCode['ShortCode']));
+        $this->assertEqual($emptyShortCode, array());
         
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($wrongShortCode);
