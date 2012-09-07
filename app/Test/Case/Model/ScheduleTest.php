@@ -6,39 +6,16 @@ App::uses('Schedule', 'Model');
 class ScheduleTestCase extends CakeTestCase
 {
 
-     protected $_config = array(
-        'datasource' => 'Mongodb.MongodbSource',
-        'host' => 'localhost',
-        'login' => '',
-        'password' => '',
-        'database' => 'test',
-        'port' => 27017,
-        'prefix' => '',
-        'persistent' => true,
-    );
 
     public function setUp()
     {
         parent::setUp();
         
-         $connections = ConnectionManager::enumConnectionObjects();
-        
-        if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
-            $config        = new DATABASE_CONFIG();
-            $this->_config = $config->test;
-        }
-        
-        ConnectionManager::create('mongo_test', $this->_config);
-        $this->Mongo = new MongodbSource($this->_config);
-
         $options        = array('database' => 'test');
         $this->Schedule = new Schedule($options);
 
         $this->Schedule->setDataSource('mongo_test');
-        
-        $this->mongodb =& ConnectionManager::getDataSource($this->Schedule->useDbConfig);
-        $this->mongodb->connect();
-            
+                   
     }
 
     public function tearDown()
