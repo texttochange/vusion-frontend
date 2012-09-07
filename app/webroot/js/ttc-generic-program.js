@@ -74,7 +74,7 @@ var program = {"script": [
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
-        "wait":"wait"},
+        "offset-days":"offset-days"},
     "content":"textarea",
     "date": "text",
     //"fixed-time":["date-time","year","month","day","hour","minute"],
@@ -86,7 +86,7 @@ var program = {"script": [
     //"hour":"text",
     //"minute":"text",
     //"wait":["days","minutes"],
-    "wait":["days","at-time"],
+    "offset-days":["days","at-time"],
     "wait-answer": ["minutes"],
     "days":"text",
     //"minutes":"text",
