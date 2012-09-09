@@ -4,6 +4,12 @@
 
  <property file="build.properties"/>
 
+ <condition property="vusiondir" value="/var/vusion">
+   <not>  
+      <isset property="vusiondir"/>
+   </not>
+ </condition>
+
  <target name="build"
    depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,caketest,webtest,phpcb"/>
 
