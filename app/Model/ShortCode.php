@@ -88,4 +88,12 @@ class ShortCode extends MongoModel
         return $result < 1;            
     }
 
+    public function beforeValidate()
+    {
+        parent::beforeValidate();
+        $this->data['ShortCode']['shortcode'] = trim($this->data['ShortCode']['shortcode']);
+        
+        return true;
+    }
+
 }
