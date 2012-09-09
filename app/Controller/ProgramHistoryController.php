@@ -91,7 +91,7 @@ class ProgramHistoryController extends AppController
         }
     
         $exportParams = array(
-            'fields' => array('participant-phone','message-type','message-status','message-content','timestamp'),
+            'fields' => array('participant-phone','message-direction','message-status','message-content','timestamp'),
             'conditions' => $this->_getConditions(),
             'order'=> $order,
         );
@@ -111,7 +111,7 @@ class ProgramHistoryController extends AppController
             if (isset($this->params['url']['dialogue_id']))
                 $conditions['dialogue-id'] = $this->params['url']['dialogue_id'];
             if (isset($this->params['url']['filter_type']))
-                $conditions['message-type'] = $this->params['url']['filter_type'];
+                $conditions['message-direction'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))
                 $conditions['message-status'] = $this->params['url']['filter_status'];
             if (isset($this->params['url']['filter_from']) && !isset($this->params['url']['filter_to'])) 
@@ -151,7 +151,7 @@ class ProgramHistoryController extends AppController
         }
         if (isset($this->params['url']['filter'])) {
             if ($this->params['url']['filter']=='non_matching_answers') {
-                $conditions['message-type'] = 'received';
+                $conditions['message-direction'] = 'incoming';
                 $conditions['matching-answer'] = null;
             } else {
                 $this->Session->setFlash(__('The filter "%s" is not supported.',$this->params['url']['filter']), 

@@ -198,6 +198,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $date->modify("+3 hour");
         $unattachedMessage = array(
             'UnattachedMessage' => array(
+                'name' => 'test',
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
@@ -212,6 +213,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'method' => 'post',
             'data' => array(
                 'UnattachedMessage' => array(
+                    'name' => 'test',
                     'to' => 'all participants',
                     'content' => 'Bye!!!!',
                     'type-schedule' => 'fixed-time',
@@ -238,6 +240,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $date->modify("+3 hour");
         $unattachedMessage = array(
             'UnattachedMessage' => array(
+                'name' => 'test',
                 'to' => 'all participants',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
@@ -253,7 +256,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Schedule->create();
+        $this->Schedule->create('unattach-schedule');
         $this->Schedule->save($scheduleToBeDeleted);
       
         $this->testAction("/testurl/programUnattachedMessages/delete/".$data['UnattachedMessage']['_id']);

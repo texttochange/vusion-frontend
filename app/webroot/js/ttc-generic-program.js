@@ -74,7 +74,7 @@ var program = {"script": [
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
-        "wait":"wait"},
+        "offset-days":"offset-days"},
     "content":"textarea",
     "date": "text",
     //"fixed-time":["date-time","year","month","day","hour","minute"],
@@ -86,7 +86,7 @@ var program = {"script": [
     //"hour":"text",
     //"minute":"text",
     //"wait":["days","minutes"],
-    "wait":["days","at-time"],
+    "offset-days":["days","at-time"],
     "wait-answer": ["minutes"],
     "days":"text",
     //"minutes":"text",
@@ -389,7 +389,13 @@ function duplicateKeywordValidation(value, element, param) {
                     if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
                         errorMessage = wrapErrorMessage(elementWords[y]+ localized_errors.validation_keyword_used_same_script_error);
                         errors[$(element).attr('name')] = errorMessage;
+                        $(element).prev("label").children('img.ttc-ok').remove();
                         isKeywordUsedInSameScript = true;
+                    }
+                    if ($(element).hasClass('error')) { // a kind of re-validation 
+                    	$(element).next("label").children('span.ttc-validation-error').remove();
+                        $(element).removeClass('error').addClass('valid');
+		        $(element).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");                        
                     }
                 }
             }
@@ -398,7 +404,8 @@ function duplicateKeywordValidation(value, element, param) {
     
     if(isKeywordUsedInSameScript) {
     	errors[$(element).attr('name')] = errorMessage;    
-        this.showErrors(errors)
+        this.showErrors(errors);
+        $(element).prev("label").children('img.ttc-ok').remove();
         return true;
     }
         
@@ -425,6 +432,9 @@ function validateKeywordReply(data, textStatus) {
     if (data.status=='fail') { //not used
     //    $(elt).before("<p style='color:green'> ok </p>");
         //else    //already used in another Program
+        if ($(elt).prev("label").has('.ttc-ok')) {
+        	$(elt).prev("label").children('img.ttc-ok').remove();
+        }
             var errors = {};
             errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
             $("#dynamic-generic-program-form").validate().showErrors(errors);

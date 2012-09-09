@@ -14,6 +14,7 @@
 /app/tmp/tests/views
 /app/tmp/cache/models
 /app/tmp/cache/persistent
+/app/webroot/files/testurl/
 /things to note
 empty
 /lib/Cake

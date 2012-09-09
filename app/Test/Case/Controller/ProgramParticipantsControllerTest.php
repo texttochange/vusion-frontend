@@ -324,7 +324,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDeleted);
 
         $scheduleToStay = array(
@@ -333,7 +333,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToStay);
 
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']);
@@ -371,7 +371,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $this->Participants->Schedule->create();
+        $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDeleted);
 
         $this->testAction(
@@ -392,6 +392,43 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         $this->assertEquals(
             0,
+            $this->Participants->Schedule->find('count')
+            );
+    }
+    
+    
+    public function testView_displayScheduled()
+    {
+        $participants = $this->mock_program_access();
+                
+        $participant = array(
+            'Participant' => array(
+                'phone' => '06',
+             )
+        );
+
+        $this->Participants->Participant->create();
+        $participantDB = $this->Participants->Participant->save($participant);
+
+        $scheduleToBeDisplayed = array(
+            'Schedule' => array(
+                'participant-phone' => '+6',
+                )
+            );
+
+        $this->Participants->Schedule->create('dialogue-schedule');
+        $this->Participants->Schedule->save($scheduleToBeDisplayed);
+
+        $this->testAction(
+            "/testurl/programParticipants/view/".$participantDB['Participant']['_id']
+            );
+        
+        $this->assertEquals(
+            1,
+            $this->Participants->Participant->find('count')
+            );
+        $this->assertEquals(
+            1,
             $this->Participants->Schedule->find('count')
             );
     }

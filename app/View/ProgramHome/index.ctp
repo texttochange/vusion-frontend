@@ -17,7 +17,7 @@
 	<table cellpadding="0" cellspacing="0">
 		<tr>
 			<th><?php echo __('At');?></th>
-			<th><?php echo __('Type');?></th>
+			<th><?php echo __('Source');?></th>
 			<th><?php echo __('To');?></th>	
 			<th><?php echo __('Content');?></th>
 		</tr>

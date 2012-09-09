@@ -48,6 +48,12 @@
 	        );
 	?>
 	</div>
+	<div>
+	<?php
+	    echo $this->Html->tag('label',__('Support Customized Id'));
+	    echo $this->Form->checkbox('support-customized-id');
+	?>
+	</div>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>

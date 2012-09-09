@@ -10,15 +10,61 @@ class History extends MongoModel
 
     var $specific = true;    
 
-    
-/**
- * Display field
- *
- * @var string
- */
     //var $name = 'ParticipantStat';
     var $useDbConfig = 'mongo';    
     var $useTable    = 'history';
+
+    function getModelVersion()
+    {
+        return '1';
+    }
+
+    function getRequiredFields($objectType='default-history')
+    {
+        if ($objectType == 'dialogue-history'){
+            return array(
+                'message-id',
+                'participant-phone',
+                'timestamp',
+                'message-content',
+                'message-status',
+                'message-direction',
+                'interaction-id',
+                'dialogue-id',
+                );
+        } elseif ($objectType == 'unattach-history'){
+             return array(
+                'message-id',
+                'participant-phone',
+                'timestamp',
+                'message-content',
+                'message-status',
+                'message-direction',
+                'unattach-id'
+                );
+        } elseif ($objectType == 'default-history'){
+            return array(                
+                'message-id',
+                'participant-phone',
+                'timestamp',
+                'message-content',
+                'message-status',
+                'message-direction',
+                );
+        } elseif ($objectType == 'failure-history'){
+            return array(
+                'message-id',
+                'participant-phone',
+                'timestamp',
+                'message-content',
+                'message-status',
+                'message-direction',
+                'failure-reason'
+                );
+        } 
+        throw new Exception("Object-type not supported:".$objectType);
+    }
+
     
     public $findMethods = array(
         'participant' => true,
@@ -29,7 +75,7 @@ class History extends MongoModel
     
     
     public $fieldFilters = array(
-        'message-type'=>'message type',
+        'message-direction'=>'message direction',
         'message-status'=>'message status',
         'timestamp-from'=>'date from',
         'timestamp-to'=>'date to',
@@ -39,8 +85,8 @@ class History extends MongoModel
         );
     
     public $typeConditionFilters = array(
-        'received'=>'received',
-        'sent'=>'sent',
+        'incoming'=>'incoming',
+        'outgoing'=>'outgoing',
         );
     
     public $statusConditionFilters = array(
@@ -103,7 +149,7 @@ class History extends MongoModel
     {
         if ($state == 'before') {
             $query['conditions'] = array(
-            	    	    'message-type' => 'received',
+            	    	    'message-direction' => 'incoming',
             	    	    'matching-answer' => null
             	    );
             return $query;

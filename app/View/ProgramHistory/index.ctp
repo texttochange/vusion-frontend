@@ -138,7 +138,7 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>                                                                        
 			<th><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('message-type', __('Type'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			<th><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			<th><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			<th><?php echo $this->Paginator->sort('message-content', __('Message'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
@@ -153,7 +153,7 @@
 	foreach ($statuses as $status): ?>
 	<tr>
 		<td><?php echo h($status['History']['participant-phone']); ?>&nbsp;</td>
-		<td><?php echo h($status['History']['message-type']); ?>&nbsp;</td>
+		<td><?php echo h($status['History']['message-direction']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-status']); ?>&nbsp;</td>
 		<td><?php if (isset($status['History']['failure-reason'])) echo h($status['History']['failure-reason']); ?>&nbsp;</td>
 		<td><?php echo h($status['History']['message-content']); ?>&nbsp;</td>
