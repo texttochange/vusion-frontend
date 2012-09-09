@@ -36,10 +36,11 @@
         ?>
         </div>
         <?php
-            echo $this->Form->input(__('international-prefix'),
+            echo $this->Form->input('international-prefix',
             		array('id' => 'international-prefix',
             		      'label' => 'International Prefix',
-            		      'disabled' => 'disabled')
+            		      'readonly' => 'true',
+            		      'style' => 'color:#AAAAAA')
             		);
         ?>
         <div>
@@ -77,7 +78,10 @@
 	    ?>
 	    </div>
 	    <?php
-	        $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSettings"]["shortcode"]]["support-customized-id"] ? false : true;
+	        if (isset($this->data["ProgramSettings"]["shortcode"]))
+	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSettings"]["shortcode"]]["support-customized-id"] ? false : true;
+	        else
+    	        $customizedIdDisabled = true;
             echo $this->Form->input('customized-id',
             		array('id' => 'customized-id',
             		      'label' => 'Customized Id',
