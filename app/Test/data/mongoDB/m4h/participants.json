@@ -1,2 +1,2 @@
-{ "phone" : "+256788601462", "name" : "Oliv", "modified" : { "$date" : 1331892493465 }, "created" : { "$date" : 1331892493465 } }
-{ "phone" : "+256712747841", "name" : "Gerald", "modified" : { "$date" : 1331892493465 }, "created" : { "$date" : 1331892493465 } }
+{ "phone" : "+256788601462", "session-id": "1", "last-optin-date": "2012-08-09T10:46:00", "enrolled": ["1"], "tags" : ["geek", "mustach"], "profile": {"name": "Oliv"}}
+{ "phone" : "+256712747841",  "session-id": null, "last-optin-date": null, "enrolled": [], "tags" : ["glasses", "geek"], "profile": {"name": "Gerald", "DoB": "26 April 1985"}}

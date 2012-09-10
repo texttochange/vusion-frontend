@@ -6,41 +6,51 @@
 	<?php } ?>
     <h3><?php echo __('Participant'); ?></h3>
 	<dl>
-		<dt><?php echo __('phone'); ?></dt>
-		<dd>
-			<?php echo h($participant['Participant']['phone']); ?>
-			&nbsp;
+		<dt><?php echo __('Phone'); ?></dt>
+		<dd><?php echo $participant['Participant']['phone']; ?>
 		</dd>
-		<dt><?php echo __('name'); ?></dt>
-		<dd>
-			<?php 
-			if (isset($participant['Participant']['name']))
-			    echo h($participant['Participant']['name']); ?>
-			&nbsp;
+		<dt><?php echo __('Optin Date'); ?></dt>
+		<dd><?php 
+			if ($participant['Participant']['last-optin-date']) {
+			    echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 
+			} else {
+			    echo "&nbsp;"; 
+			}?>
 		</dd>
-		<?php 
-		        foreach ($participant['Participant'] as $key => $value) {
-		            if ($key!='modified' && $key!='created' && $key!='_id' && $key!='phone' && $key!='name') {
-		                echo $this->Html->tag('dt', $key);
-		                echo $this->Html->tag('dd', null);
-		                if (is_array($value))
-		                    foreach ($value as $item) {
-		                        if ($key=="enrolled") {
-		                            foreach ($dialogues as $dialogue) {
-		                                if ($dialogue['dialogue-id'] == $item) {
-		                                    echo $this->Html->tag('div', __("%s", $dialogue['Active']['name']));
-		                                    break;
-		                                }
-		                            }
-		                        } else
-		                            echo $this->Html->tag('div', $item);
-		                    }
-		                else
-		                    echo $this->Html->tag('div', $value);
+		<dt><?php echo __('Enrolled'); ?></dt>
+		<dd><?php 
+		if (count($participant['Participant']['enrolled']) > 0) {
+		    foreach ($participant['Participant']['enrolled'] as $enrolled) {
+		        foreach ($dialogues as $dialogue) {
+		            if ($dialogue['dialogue-id'] == $enrolled) {
+		                echo $this->Html->tag('div', __("%s", $dialogue['Active']['name']));
+		                break;
 		            }
 		        }
-	    
-		?>
+		    }
+		} else {
+		    echo "&nbsp;"; 
+		}?></dd>
+		<dt><?php echo __('Tags'); ?></dt>
+		<dd><?php 
+		if (count($participant['Participant']['tags']) > 0) {
+	        foreach ($participant['Participant']['tags'] as $tag) {
+	            echo $this->Html->tag('div', __("%s,", $tag));
+	        }
+        } else {
+		    echo "&nbsp;"; 
+        }
+		?></dd>
+		<dt><?php echo __('Profile'); ?></dt>
+		<dd><?php
+		if (count($participant['Participant']['profile']) > 0) {
+	        foreach ($participant['Participant']['profile'] as $label => $value) {
+                echo $this->Html->tag('div', __("%s: %s", $label, $value));
+            }
+         } else {
+		    echo "&nbsp;"; 
+         }
+		?></dd>
 	</dl>
 	<br/>
 			<h3><?php echo __("Participant's Scheduled Messages"); ?></h3>
