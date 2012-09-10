@@ -22,7 +22,9 @@ class Participant extends MongoModel
         return array(
             'phone',
             'session-id',
-            'last-optin-date'
+            'last-optin-date',
+            'tags',
+            'profile',
             );
     }
     
@@ -57,12 +59,6 @@ class Participant extends MongoModel
             ));
         return $result < 1;            
     }
-
-    
-    public function beforeValidate()
-    {
-        $this->beforeSave();
-    }
     
     
     public function hasPlus($check)
@@ -72,9 +68,9 @@ class Participant extends MongoModel
     }
     
     
-    public function beforeSave()
+    public function beforeValidate()
     {
-        
+        parent::beforeValidate();
 
         if (!isset($this->data['Participant']['phone']) or $this->data['Participant']['phone'] == "" )
             return false;
@@ -85,11 +81,6 @@ class Participant extends MongoModel
             $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
 
         $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
-        
-        if (isset($this->data['Participant']['name'])) {
-            $this->data['Participant']['name'] = trim($this->data['Participant']['name']);
-            $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
-        }
 
         return true;
     }

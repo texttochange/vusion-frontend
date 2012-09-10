@@ -41,11 +41,11 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual('+788601462', $savedParticipant['Participant']['phone']);
+        //$this->assertTrue(isset($savedParticipant['Participant']['session-id']));
 
         //2nd assertion phone is a number
         $participant = array(
             'phone' => 788601463,
-            'name' => 'Oliv'
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
@@ -54,7 +54,6 @@ class ParticipantTestCase extends CakeTestCase
         //Phone with letter O instead of 0 digit is NOT SAVED
         $participant = array(
             'phone' => 'OO7886O1464',
-            'name' => 'Oliv'
             );
         $this->Participant->create();
         $this->assertFalse($this->Participant->save($participant));
@@ -62,7 +61,6 @@ class ParticipantTestCase extends CakeTestCase
         //The double 00 are replace by a +
         $participant = array(
             'phone' => '00788601465',
-            'name' => 'Oliv'
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
@@ -71,21 +69,18 @@ class ParticipantTestCase extends CakeTestCase
         //The single 0 is replace by a +
         $participant = array(
             'phone' => '0788601466',
-            'name' => 'Oliv'
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual("+788601466", $savedParticipant['Participant']['phone']);
         
-         //The phone & name are is trimmed 
+         //The phone is trimmed 
         $participant = array(
             'phone' => ' 0788601467 ',
-            'name' => ' Oliv'
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual("+788601467", $savedParticipant['Participant']['phone']);
-        $this->assertEqual("Oliv", $savedParticipant['Participant']['name']);
 
     }
 
