@@ -107,7 +107,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
     {
         $templates = $this->mockProgramAccess();
         $templates = array(
-            'Templates'=>array(
+            'Template'=>array(
                 'name'=>'example',
                 'type-template' => 'open question',
                 'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
@@ -125,7 +125,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
     {
         $templates = $this->mockProgramAccess();
         $newtemplates = array(
-            'Templates'=>array(
+            'Template'=>array(
                 'name'=>'example',
                 'type-template' => 'open question',
                 'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
@@ -137,14 +137,14 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $this->testAction("templates/edit/".$data['Template']['_id'], array(
             'method'=>'post',
             'data'=>array(
-                'Templates'=>array(
+                'Template'=>array(
                     'name'=>'example one',            
                     'type-template' => 'open question',
                     'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                     )
                 )
             ));
-        $this->assertEquals('example one', $templates->data['Templates']['name']);
+        $this->assertEquals('example one', $templates->data['Template']['name']);
     }
     
     
@@ -152,7 +152,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
     {
         $templates = $this->mockProgramAccess();
         $templates = array(
-            'Templates'=>array(
+            'Template'=>array(
                 'name'=>'example',
                 'type-template' => 'open question',
                 'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'

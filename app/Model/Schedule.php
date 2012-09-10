@@ -13,6 +13,38 @@ class Schedule extends MongoModel
     var $specific = true;
     var $useDbConfig = 'mongo';
     
+     function getModelVersion()
+    {
+        return '1';
+    }
+
+    function getRequiredFields($objectType='dialogue-schedule')
+    {
+        if ($objectType=='dialogue-schedule'){
+            return array(
+                'participant-phone',
+                'dialogue-id',
+                'interaction-id',
+                'date-time'
+                );
+        } elseif ($objectType=='unattach-schedule'){
+            return array(
+                'participant-phone',
+                'unattach-id',
+                'date-time'
+                );
+        } elseif ($objectType=='feedback-schedule'){
+            return array(
+                'participant-phone',
+                'type-content',
+                'date-time',
+                'content',
+                );
+        }
+        throw new Exception("Object-type not supported:".$objectType);
+        
+    }
+
     public $findMethods = array(
         'soon' => true,
         'count' => true,

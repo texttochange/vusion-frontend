@@ -112,16 +112,16 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
     
-        $shortcodes = array(
-            'ShortCodes' => array(
+        $shortcode = array(
+            'ShortCode' => array(
             'country' => 'uganda',
             'shortcode' => 8282,
-            'internationalprefix' => 256
+            'international-prefix' => 256
             )
         );
         $this->testAction("/shortCodes/add", array(
             'method' => 'post',
-            'data' => $shortcodes
+            'data' => $shortcode
         ));
         $this->assertEquals(1, $this->ShortCodes->ShortCode->find('count'));
     }
@@ -133,11 +133,9 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $shortCodes = $this->mockProgramAccess();
 
         $shortcodes = array(
-            'ShortCodes' => array(
             'country' => 'uganda',
             'shortcode' => 8282,
-            'internationalprefix' => 256
-            )
+            'international-prefix' => 256
         );
         $this->ShortCodes->ShortCode->create();
         $data = $this->ShortCodes->ShortCode->save($shortcodes);	    
@@ -145,14 +143,14 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->testAction("/shortCodes/edit/".$data['ShortCode']['_id'], array(
             'method' => 'post',
             'data' => array(
-                'ShortCodes' => array(
+                'ShortCode' => array(
                     'country' => 'uganda',
                     'shortcode' => 8383,
-                    'internationalprefix' => 256
+                    'international-prefix' => 256
                 )
             )
         ));
-        $this->assertEquals(8383, $shortCodes->data['ShortCodes']['shortcode']);
+        $this->assertEquals(8383, $shortCodes->data['ShortCode']['shortcode']);
     }
 
 
@@ -161,10 +159,10 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();
     
         $shortcodes = array(
-            'ShortCodes' => array(
+            'ShortCode' => array(
                 'country' => 'uganda',
                 'shortcode' => 8282,
-                'internationalprefix' => 256
+                'international-prefix' => 256
             )
         );
         $this->ShortCodes->ShortCode->create();

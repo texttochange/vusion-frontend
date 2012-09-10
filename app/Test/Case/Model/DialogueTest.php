@@ -7,44 +7,16 @@ App::uses('ScriptMaker', 'Lib');
 
 class DialogueTestCase extends CakeTestCase
 {
-/*
-    protected $_config = array(
-        'datasource' => 'Mongodb.MongodbSource',
-        'host' => 'localhost',
-        'login' => '',
-        'password' => '',
-        'database' => 'test',
-        'port' => 27017,
-        'prefix' => '',
-        'persistent' => true,
-        );
-*/
     
     public function setUp()
     {
         parent::setUp();
-/*
-        $connections = ConnectionManager::enumConnectionObjects();
-        
-        if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
-            $config = new DATABASE_CONFIG();
-            $this->_config = $config->test;
-        }
-        
-        ConnectionManager::create('mongo_test', $this->_config);
-        $this->Mongo = new MongodbSource($this->_config);
-*/
+
         $option         = array('database'=>'testdbprogram');
         $this->Dialogue = new Dialogue($option);
         $this->Schedule = new Schedule($option);
 
         $this->Maker = new ScriptMaker();
-/*
-        $this->Dialogue->setDataSource('mongo_test');
-        $this->Dialogue->deleteAll(true, false);
-        
-        $this->Dialogue->setDataSource('mongo_test');
-        $this->Dialogue->deleteAll(true, false);*/
     }
 
 
@@ -124,8 +96,8 @@ class DialogueTestCase extends CakeTestCase
              $savedDialogue['Dialogue']['dialogue-id'],
              '01'
              );
-         $this->Schedule->create();
-         $this->Schedule->save($schedule);
+         $this->Schedule->create($schedule['Schedule']['object-type']);
+         $this->Schedule->save($schedule['Schedule']);
          
          $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
          
@@ -133,7 +105,7 @@ class DialogueTestCase extends CakeTestCase
          
     }
 
-/*
+
     public function testValidate_date_ok()
     {
         $data['Dialogue'] = array(
@@ -278,7 +250,7 @@ class DialogueTestCase extends CakeTestCase
              'dialogue-id'=> '02'
              );
          $this->Dialogue->saveDialogue($dialogueOne);
-         $this->Schedule->create();
+         $this->Schedule->create('dialogue-schedule');
          $this->Schedule->save($schedule);
          $this->Dialogue->saveDialogue($dialogueTwo);
          
@@ -290,5 +262,5 @@ class DialogueTestCase extends CakeTestCase
 
          $this->assertEqual(0, $this->Schedule->find('count'));
     }
-*/
+
 }

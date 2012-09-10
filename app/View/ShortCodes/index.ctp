@@ -2,17 +2,19 @@
 	<h3><?php echo __('ShortCodes');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('short code');?></th>
-			<th><?php echo $this->Paginator->sort('country');?></th>
-			<th><?php echo $this->Paginator->sort('international prefix');?></th>
+	<th><?php echo $this->Paginator->sort('shortcode', __('Shortcode'));?></th>
+			<th><?php echo $this->Paginator->sort('country', __('Country'));?></th>
+			<th><?php echo $this->Paginator->sort('international-prefix', __('International Prefix'));?></th>
+			<th><?php echo $this->Paginator->sort('support-customized id', __('Support Customized Id'));?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 	foreach ($shortcodes as $shortcode): ?>
 	<tr>		
-		<td><?php echo h($shortcode['ShortCode']['shortcode']); ?>&nbsp;</td>
-		<td><?php echo h($shortcode['ShortCode']['country']); ?>&nbsp;</td>
-		<td><?php echo h($shortcode['ShortCode']['international-prefix']); ?>&nbsp;</td>
+		<td><?php echo $shortcode['ShortCode']['shortcode']; ?>&nbsp;</td>
+		<td><?php echo $shortcode['ShortCode']['country']; ?>&nbsp;</td>
+		<td><?php echo $shortcode['ShortCode']['international-prefix']; ?>&nbsp;</td>
+		<td><?php echo ($shortcode['ShortCode']['support-customized-id']? __('yes'):__('no')); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $shortcode['ShortCode']['_id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to delete the shortcode "%s"?', $shortcode['ShortCode']['shortcode'])); ?>
