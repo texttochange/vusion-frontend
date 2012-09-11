@@ -1,6 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
-
+App::uses('ProgramSetting', 'Model');
 
 class Participant extends MongoModel
 {
@@ -29,6 +29,14 @@ class Participant extends MongoModel
             );
     }
     
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $options              = array('database'=>$id['database']);
+        $this->ProgramSetting = new ProgramSetting($options);
+    }
+
     public $validate = array(
         'phone' => array(
             'notempty' => array(
@@ -85,8 +93,10 @@ class Participant extends MongoModel
 
         //The time should be provide by the controller
         if (!$this->data['Participant']['_id']) {
-            if (!$this->data['Participant']['last-optin-date'])
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow==null)
                 return false;
+            $this->data['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
             $this->data['Participant']['session-id'] = $this->gen_uuid();
             $this->data['Participant']['tags'] = array();
             $this->data['Participant']['enrolled'] = array();
