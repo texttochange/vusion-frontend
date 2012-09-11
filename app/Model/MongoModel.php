@@ -92,6 +92,21 @@ abstract class MongoModel extends Model
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         return true;
     }
+    
+    
+    public function isVeryUnique($check)
+    {
+        $key = array_keys($check);
+        $conditions = array($key[0] => $check[$key[0]]);
+        
+        if ($this->id) {
+            $conditions['id'] = array('$ne'=> $this->id);
+        }
+        $result = $this->find('count', array(
+            'conditions' => $conditions
+            ));
+        return $result < 1;
+    }
 
 
 }
