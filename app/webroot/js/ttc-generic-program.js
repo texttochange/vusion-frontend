@@ -16,13 +16,13 @@ var program = {"script": [
     "auto-enrollment": "select",
     "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "interactions":["add-interaction"],
-    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id"],
+    "interaction":["radio-type-schedule", "radio-type-interaction","reminder","interaction-id"],
     "interaction-id":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
     "question-answer": ["content","keyword", "radio-type-question"],
-    "radio-type-reminder":"radiobuttons",
-    "type-reminder":{"no-reminder":"No reminder","reminder":"Reminder"},
+    //"radio-type-reminder":"radiobuttons",
+    //"type-reminder":{"no-reminder":"No reminder","reminder":"Reminder"},
     "reminder":["number","every"],
     "number":"text",
     "every":"text",
@@ -93,7 +93,9 @@ var program = {"script": [
     "at-time":"text",
     "time": "text",
     "keyword":"text",
-    "feedback":["content"]
+    "feedback":["content"],
+    "reminder":"checkbox",
+    "reminder-options":["number", "every"]
 };
 
 (function($)
@@ -273,6 +275,11 @@ function activeForm(){
             if (!$.data(elt,'events')){
                 $(elt).timepicker({
                 timeFormat: 'hh:mm'});
+            };
+    });
+    $.each($("input[name*='reminder']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).change(updateCheckboxSubmenu);
             };
     });
 
@@ -477,6 +484,39 @@ function updateRadioButtonSubmenu() {
          "type":"fieldset",
          "caption": label,
          "radiochildren":"radiochildren",
+         "name":name,
+             "elements":[]};
+    var name = $(elt).parent().parent().attr('name');
+    configToForm($(elt).attr('value'), newContent, name);
+    
+    $(elt).parent().formElement(newContent);
+    
+    var newElt = $(elt).nextAll('fieldset');
+    
+    $(elt).parent().after($(newElt).clone());
+    //$(newElt).clone().appendTo($(elt).parent());
+    $(newElt).remove();
+    //$(elt).parent().after($(newElt).clone());
+    
+    activeForm();
+};
+
+function updateCheckboxSubmenu() {
+	//alert("hi");
+	
+    //var elt = event.currentTarget;
+    var elt = this;
+    var box = $(elt).parent().next("fieldset"); 
+    var name = $(elt).parent().parent().attr("name");
+    var label = $(elt).next().text();
+    /*if (box && $(box).attr('radiochildren')){
+        $(box).remove();
+    } 
+    */
+    var newContent = {
+         "type":"fieldset",
+         "caption": label,
+         //"radiochildren":"radiochildren",
          "name":name,
              "elements":[]};
     var name = $(elt).parent().parent().attr('name');
