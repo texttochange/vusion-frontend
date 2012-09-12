@@ -33,6 +33,7 @@ var localized_labels = {
     "immediately": "<?php echo __('Immediately')?>",
     "fixed-time": "<?php echo __('Fixed time')?>",
     "offset-days": "<?php echo __('Offset days')?>",
+    "offset-time": "<?php echo __('Offset time')?>",
     "minutes": "<?php echo __('Minutes')?>",
     "at-time": "<?php echo __('At Time')?>",
     "days": "<?php echo __('Days')?>",
@@ -59,5 +60,8 @@ var localized_labels = {
     "actions": "<?php echo __('Actions')?>",
     "action": "<?php echo __('Action')?>",
     "save": "<?php echo __('Save')?>",
+    "reminder": "<?php echo __('Set Reminder')?>",
+    "number": "<?php echo __('Number')?>",
+    "every": "<?php echo __('Every')?>",
 };
 
