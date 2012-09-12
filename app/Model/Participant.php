@@ -1,6 +1,6 @@
 <?php
 App::uses('MongoModel', 'Model');
-
+App::uses('ProgramSetting', 'Model');
 
 class Participant extends MongoModel
 {
@@ -22,10 +22,21 @@ class Participant extends MongoModel
         return array(
             'phone',
             'session-id',
-            'last-optin-date'
+            'last-optin-date',
+            'enrolled',
+            'tags',
+            'profile',
             );
     }
     
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $options              = array('database'=>$id['database']);
+        $this->ProgramSetting = new ProgramSetting($options);
+    }
+
     public $validate = array(
         'phone' => array(
             'notempty' => array(
@@ -57,12 +68,6 @@ class Participant extends MongoModel
             ));
         return $result < 1;            
     }
-
-    
-    public function beforeValidate()
-    {
-        $this->beforeSave();
-    }
     
     
     public function hasPlus($check)
@@ -72,9 +77,9 @@ class Participant extends MongoModel
     }
     
     
-    public function beforeSave()
+    public function beforeValidate()
     {
-        
+        parent::beforeValidate();
 
         if (!isset($this->data['Participant']['phone']) or $this->data['Participant']['phone'] == "" )
             return false;
@@ -85,14 +90,43 @@ class Participant extends MongoModel
             $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
 
         $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
-        
-        if (isset($this->data['Participant']['name'])) {
-            $this->data['Participant']['name'] = trim($this->data['Participant']['name']);
-            $this->data['Participant']['name'] = str_replace("\n" , "", $this->data['Participant']['name']);
+
+        //The time should be provide by the controller
+        if (!$this->data['Participant']['_id']) {
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow==null)
+                return false;
+            $this->data['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+            $this->data['Participant']['session-id'] = $this->gen_uuid();
+            $this->data['Participant']['tags'] = array();
+            $this->data['Participant']['enrolled'] = array();
+            $this->data['Participant']['profile'] = array();
         }
 
         return true;
     }
-    
+
+    function gen_uuid() {
+        return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
+            // 32 bits for "time_low"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+            
+            // 16 bits for "time_mid"
+            mt_rand( 0, 0xffff ),
+            
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand( 0, 0x0fff ) | 0x4000,
+            
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand( 0, 0x3fff ) | 0x8000,
+            
+            // 48 bits for "node"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+            );
+    }
+
     
 }

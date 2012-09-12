@@ -33,6 +33,7 @@ class UnattachedMessageTestCase extends CakeTestCase
     public function dropData()
     {
         $this->UnattachedMessage->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
     }
     
     

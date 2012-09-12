@@ -251,7 +251,6 @@ class ProgramParticipantsController extends AppController
                 $participant['phone'] = $explodeLine[0];
                 $participant['phone'] = $this->checkPhoneNumber($participant['phone']);
                 $participant['name']  = $explodeLine[1];
-                //print_r($participant);
                 if ($this->Participant->save($participant)) {
                     $entries[$count] .= __(" Insert ok"); 
                 } else {

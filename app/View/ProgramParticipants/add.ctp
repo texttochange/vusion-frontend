@@ -11,7 +11,6 @@
 	        <fieldset>		
 	            <?php
 	                echo $this->Form->input('phone');
-	                echo $this->Form->input('name');
 	            ?>
 	        </fieldset>
 	    <?php echo $this->Form->end(__('Save'));?>
