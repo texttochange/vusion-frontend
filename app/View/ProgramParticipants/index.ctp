@@ -10,7 +10,7 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 	    <th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl))); ?></th>
-	    <th><?php echo $this->Paginator->sort('last-optin-date', __('Optin Date'), array('url'=> array('program' => $programUrl))); ?></th> 
+	    <th><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programUrl))); ?></th> 
 	    <th><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programUrl))); ?></th> 
 	    <th><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programUrl))); ?></th>
 	    <th><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programUrl))); ?></th>
@@ -43,7 +43,7 @@
 	    <td><?php 
 	    if (count($participant['Participant']['tags']) > 0) {
 	        foreach ($participant['Participant']['tags'] as $tag) {
-	            echo $this->Html->tag('div', __("%s,", $tag));
+	            echo $this->Html->tag('div', __("%s", $tag));
 	        }
         } else {
             echo $this->Html->tag('div', '');

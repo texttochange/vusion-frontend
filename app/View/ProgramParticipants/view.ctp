@@ -9,7 +9,7 @@
 		<dt><?php echo __('Phone'); ?></dt>
 		<dd><?php echo $participant['Participant']['phone']; ?>
 		</dd>
-		<dt><?php echo __('Optin Date'); ?></dt>
+		<dt><?php echo __('Last Optin Date'); ?></dt>
 		<dd><?php 
 			if ($participant['Participant']['last-optin-date']) {
 			    echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 
@@ -35,7 +35,7 @@
 		<dd><?php 
 		if (count($participant['Participant']['tags']) > 0) {
 	        foreach ($participant['Participant']['tags'] as $tag) {
-	            echo $this->Html->tag('div', __("%s,", $tag));
+	            echo $this->Html->tag('div', __("%s", $tag));
 	        }
         } else {
 		    echo "&nbsp;"; 
