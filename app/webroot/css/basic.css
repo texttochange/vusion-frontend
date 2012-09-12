@@ -101,7 +101,7 @@
 	float: none;
 }
 
-.ui-dform-radiobuttons{
+.ui-dform-radiobuttons, .ui-dform-checkboxes{
 	margin-bottom: 0px;
 	padding-bottom: 0px;
 }
@@ -116,12 +116,12 @@
 	margin :5px;	
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=\.action]):not([radiochildren]):nth-child(odd) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=\.action]):not([radiochildren]):nth-child(even) {
 	/*background:#FDEEF4;*/
 	background: #FFCB4B;
 }
