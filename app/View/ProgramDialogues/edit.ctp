@@ -38,7 +38,22 @@
         if (isset($dialogue))
             $this->Js->each('$(this).buildTtcForm("Dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
         else
-        $this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
+             $this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
+    ?>
+	</div>
+	<?php
+	    if (isset($dialogue['Dialogue']['interactions'])) {
+            foreach($dialogue['Dialogue']['interactions'] as $interaction) {
+                if ($interaction['type-interaction']!='question-answer')
+                    continue;
+                $offsetConditionOptions[] = array(
+                    'value' => $interaction['interaction-id'],
+                    'html' => $interaction['content']
+                    );
+            }
+            $this->Js->set('offset-condition-interaction-idOptions', $offsetConditionOptions);
+        }
+        
         $dialogueOptions = array();
         foreach($dialogues as $dialogue) {
             if ($dialogue['Active']) {
@@ -49,7 +64,6 @@
             }
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
-    ?>
-	</div>
+	?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
