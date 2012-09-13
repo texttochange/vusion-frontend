@@ -25,18 +25,6 @@ class Dialogue extends MongoModel
             );
     }
     
-    public $validate = array(
-        'name' => array(
-            'notempty' => array(
-                'rule' => array('notempty'),
-                'message' => 'Please enter a name for this dialogue.'
-                ),
-            'isDialogueUnique' => array(
-                'rule' => 'isDialogueUnique',
-                'message' => 'This name already exists. Please choose another.'
-                )
-            )
-        );
 
     var $findMethods = array(
         'draft' => true,
@@ -252,22 +240,6 @@ class Dialogue extends MongoModel
     {
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
-    }
-    
-    
-    public function isDialogueUnique($check)
-    {
-        
-        $conditions = array('name' => $this->data['Dialogue']['name'],
-            'dialogue-id' => $this->data['Dialogue']['dialogue-id']);
-        
-        if ($this->id) {
-            $conditions['id'] = array('$ne'=> $this->id);
-        }
-        $result = $this->find('count', array(
-            'conditions' => $conditions
-            ));
-        return $result < 1;
     }
 
 

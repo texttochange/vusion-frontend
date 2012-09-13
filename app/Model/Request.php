@@ -64,7 +64,7 @@ class Request extends MongoModel
                 $conditions = array('$or'=>$conditions);
             else
                 $conditions = $conditions[0];
-            if (isset($query['excludeRequest'])) {
+            if (isset($query['excludeRequest']) and $query['excludeRequest'] != '') {
                 $exclude = array('Request._id' => array('$ne' => new MongoId($query['excludeRequest'])));
                 $conditions = array(
                     '$and' =>  array($conditions, $exclude)
