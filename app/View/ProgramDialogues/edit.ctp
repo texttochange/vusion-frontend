@@ -1,7 +1,15 @@
 <div class="index">
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
-		<?php $this->Js->get('#button-save')->event('click', '$("#dynamic-generic-program-form").submit()' , true);?> 
+		<?php $this->Js->get('#button-save')->event('click',
+		    '$("#button-save").unbind("click");
+		     $(\'input[type="submit"]\').attr("disabled", true);
+		     $("#dynamic-generic-program-form").submit();' ,
+		    true);?>
+		<?php $this->Js->get('#dynamic-generic-program-form')->event('submit',
+		    '$("#button-save").unbind("click");
+		     $(\'input[type="submit"]\').attr("disabled",true);');
+		    ?>
         <?php 
         if (isset($dialogue)) {
             if (!$dialogue['Dialogue']['activated']) {
