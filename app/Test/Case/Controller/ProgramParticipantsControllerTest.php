@@ -39,7 +39,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participants = new TestProgramParticipantsController();
         $this->instanciateParticipantModel();
         $this->instanciateScheduleModel();
+        $this->instanciateProgramSettingModel();
         $this->dropData();
+        $this->Participants->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
     }
 
 
@@ -48,6 +51,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->instanciateParticipantModel();
         $this->Participants->Participant->deleteAll(true, false);
         $this->Participants->Schedule->deleteAll(true,false);
+        $this->Participants->ProgramSetting->deleteAll(true,false);
     }
 
 
@@ -63,6 +67,13 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $options = array('database' => $this->programData[0]['Program']['database']);   
 
         $this->Participants->Schedule = new Schedule($options);
+    }
+
+    protected function instanciateProgramSettingModel()
+    {
+        $options = array('database' => $this->programData[0]['Program']['database']);   
+
+        $this->Participants->ProgramSetting = new ProgramSetting($options);
     }
 
 
@@ -159,7 +170,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
         
-
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
         $this->Participants->Participant->save(
@@ -168,7 +178,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'name' => 'Gerald'
                 )
             );
-
 
         $this->testAction(
             "/testurl/participants/import", 
@@ -309,34 +318,28 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->mock_program_access();
         
         $participant = array(
-            'Participant' => array(
-                'phone' => '06',
-                'name' => 'oliv',
-                )
+            'phone' => '06'
             );
 
         $this->Participants->Participant->create();
         $participantDB = $this->Participants->Participant->save($participant);
 
         $scheduleToBeDeleted = array(
-            'Schedule' => array(
-                'participant-phone' => '+6',
-                )
+            'participant-phone' => '+6',
             );
 
         $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDeleted);
 
         $scheduleToStay = array(
-            'Schedule' => array(
-                'participant-phone' => '+7',
-                )
+            'participant-phone' => '+7',
             );
 
         $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToStay);
 
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']);
+        
         $this->assertEquals(
             0,
             $this->Participants->Participant->find('count')

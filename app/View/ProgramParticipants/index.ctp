@@ -9,47 +9,55 @@
 	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-	    <th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl))); ?></th> 
-	<?php
-	$headers = array();
-	foreach ($participants as $participant) {
-	    foreach ($participant['Participant'] as $key => $value) {
-	        if ($key!='modified' && $key!='created' && $key!='_id' && $key!='phone' && !in_array($key, $headers)) {
-	            array_push($headers, $key); 
-	            echo $this->Html->tag('th', null);
-	            echo $this->Paginator->sort($key, null, array('url'=> array('program' => $programUrl)));
-	        }
-	     }
-	}
-	?>
+	    <th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl))); ?></th>
+	    <th><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programUrl))); ?></th> 
+	    <th><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programUrl))); ?></th> 
+	    <th><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programUrl))); ?></th>
+	    <th><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programUrl))); ?></th>
 	<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php foreach ($participants as $participant): ?>
 	<tr>
-	    <td><?php echo $participant['Participant']['phone']; ?></td> 
-	    <?php 
-            foreach ($headers as $key) {
-                echo $this->Html->tag('td', null);
-                if (isset($participant['Participant'][$key])) {
-                    if (is_array($participant['Participant'][$key])) {
-                        foreach ($participant['Participant'][$key] as $item)
-                            if ($key=="enrolled") {
-                                 foreach ($dialogues as $dialogue) {
-                                     if ($dialogue['dialogue-id'] == $item) {
-                                         echo $this->Html->tag('div', __("%s", $dialogue['Active']['name']));
-                                         break;
-		                            }
-		                         }
-                            } else
-                                echo $this->Html->tag('div', $item);
-                    } else {
-                         echo $this->Html->tag('div', $participant['Participant'][$key]);
-                    }
-                } else {
-                    echo $this->Html->tag('div', '');
-                }
+	    <td><?php echo $participant['Participant']['phone']; ?></td>
+	    <td><?php 
+	    if ($participant['Participant']['last-optin-date']) {
+	        echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 
+	    } else {
+	        echo $this->Html->tag('div', ''); 
+	    }
+	    ?></td> 
+	    <td><?php
+  	    if (count($participant['Participant']['enrolled']) > 0) {
+  	        foreach ($participant['Participant']['enrolled'] as $enrolled) {
+  	            foreach ($dialogues as $dialogue) {
+  	                if ($dialogue['dialogue-id'] == $enrolled) {
+  	                    echo $this->Html->tag('div', __("%s", $dialogue['Active']['name']));
+  	                    break;
+  	                }
+  	            }
+  	        }
+        } else {
+            echo $this->Html->tag('div', ''); 
+        }
+	    ?></td> 
+	    <td><?php 
+	    if (count($participant['Participant']['tags']) > 0) {
+	        foreach ($participant['Participant']['tags'] as $tag) {
+	            echo $this->Html->tag('div', __("%s", $tag));
+	        }
+        } else {
+            echo $this->Html->tag('div', '');
+        }
+	    ?></td> 
+	    <td><?php 
+	    if (count($participant['Participant']['profile']) > 0) {
+	        foreach ($participant['Participant']['profile'] as $label => $value) {
+                echo $this->Html->tag('div', __("%s: %s", $label, $value));
             }
-            ?>
+         } else {
+            echo $this->Html->tag('div', ''); 
+         }
+        ?></td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); ?>
 			<?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
