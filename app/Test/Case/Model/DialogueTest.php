@@ -33,6 +33,7 @@ class DialogueTestCase extends CakeTestCase
     public function testSaveDialogue()
     {
         $data['Dialogue'] = array(
+                'name' => 'my dialogue',
                 'do' => 'something'
             );
     
