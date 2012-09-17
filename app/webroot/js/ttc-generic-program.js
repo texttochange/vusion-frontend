@@ -161,6 +161,7 @@ function saveFormOnServer(){
         contentType: 'application/json; charset=utf-8',
         dataType: 'json', 
         success: function(response) {
+            reactivateSaveButtons();
             if (response['status'] == 'fail') {
                 $("#flashMessage").attr('class', 'message error').show().text(response['message']);
                 return;
@@ -179,7 +180,7 @@ function saveFormOnServer(){
             }
         },
         timeout: 1000,
-        error: vusionAjaxError,
+        error: saveAjaxError,
         userAction: localized_actions['save_dialogue'],
     });
 }

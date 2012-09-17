@@ -279,9 +279,31 @@ function vusionAjaxError(jqXHR, textStatus, errorThrown){
         $('#flashMessage').show().text(localized_errors['vusion_ajax_action_failed']+this.userAction).attr('class', 'message failure');
     }
     if (textStatus == 'timeout') {
-    	    $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
-         return;
+        $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
     }
+}
+
+function saveAjaxError(jqXHR, textStatus, errorThrown){
+    if (this.userAction) {
+        $('#flashMessage').show().text(localized_errors['vusion_ajax_action_failed']+this.userAction).attr('class', 'message failure');
+    }
+    if (textStatus == 'timeout') {
+        $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
+    }
+    reactivateSaveButtons();
+}
+
+function disableSaveButtons(){
+    $("#button-save").unbind("click");
+    $('input[type="submit"]').attr("disabled", true);	
+}
+
+function reactivateSaveButtons(){
+    $('input[type="submit"]').removeAttr("disabled");
+    $("#button-save").bind("click", function(){
+        disableSaveButtons();        
+        $("#dynamic-generic-program-form").submit();
+    });
 }
 
 
