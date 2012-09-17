@@ -61,7 +61,8 @@ var localized_labels = {
     "action": "<?php echo __('Action')?>",
     "save": "<?php echo __('Save')?>",
     "reminder": "<?php echo __('Set Reminder')?>",
-    "number": "<?php echo __('Number')?>",
-    "every": "<?php echo __('Every')?>",
+    "number": "<?php echo __('Number')?>",    
+    "reminder-actions": "<?php echo __('Actions')?>",
+    "reminder-action": "<?php echo __('Action')?>",
 };
 

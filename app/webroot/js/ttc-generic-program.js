@@ -101,9 +101,11 @@ var program = {"script": [
     "feedback":["content"],
     "checkbox-set-reminder":"checkboxes",
     "set-reminder": {"reminder":"reminder"},
-    "reminder":["number","radio-type-schedule-reminder","add-action"],
+    "reminder":["number","radio-type-schedule-reminder","reminder-actions"],
     "number":"text",
-    "every":"text",
+    "reminder-actions": ["add-reminder-action"],
+    "add-reminder-action": "button",
+    "reminder-action": ["radio-type-action"],
 };
 
 (function($)
