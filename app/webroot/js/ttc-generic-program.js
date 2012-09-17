@@ -133,6 +133,14 @@ var program = {"script": [
             activeForm();
             //On load fold every element 
             $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
+            /*$("[name='Dialogue.interactions']").sortable({axis: 'y', cancel: 'button'});
+            $("[name='Dialogue.interactions'] input").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions'] textarea").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions']").disableSelection();*/
         },
     });
 })(jQuery);
@@ -217,6 +225,7 @@ function convertDateToIso(data) {
 function clickBasicButton(){
                     
     //alert("click on add element "+$(this).prev('legend'));
+    var object = null;
     var id = $(this).prevAll("fieldset").length;
     var eltLabel = $(this).attr('label');
     var tableLabel = $(this).parent().attr('name');
@@ -228,8 +237,11 @@ function clickBasicButton(){
     var parent = $(this).parent();
     
     var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
-        
-    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
+    
+    if (eltLable='interaction') {
+        object = {"interaction-id":guid()}
+    }    
+    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]", object);
     
     $(parent).formElement(expandedElt);
     
@@ -342,6 +354,8 @@ function activeForm(){
     });
     
     addContentFormHelp();
+
+    
 }
 
 function expandForm(){
@@ -390,7 +404,13 @@ function updateOffsetConditions(index, elt){
     } 
     //Removing deleted interactions
     for (var i=0; i<bucket.length; i++) {
-        $(this).children("[value='"+bucket[i]+"]'").remove();
+        //Do not delete the default choice
+        if (bucket[i]==0) {
+            continue
+        }
+        $(this).children("[value='"+bucket[i]+"']").remove();
+        defaultOptions = window.app['offset-condition-interaction-idOptions']
+        defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
     }
 }
 

@@ -59,6 +59,6 @@ var localized_labels = {
     "actions": "<?php echo __('Actions')?>",
     "action": "<?php echo __('Action')?>",
     "save": "<?php echo __('Save')?>",
-    "offset-condition": "<?php echo __('Conditional Offset')?>"
+    "offset-condition": "<?php echo __('Answer Required')?>"
 };
 
