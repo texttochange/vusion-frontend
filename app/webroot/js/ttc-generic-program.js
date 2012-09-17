@@ -74,7 +74,8 @@ var program = {"script": [
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
-        "offset-days":"offset-days"},
+        "offset-days":"offset-days",
+        "offset-condition": "offset-condition"},
     "content":"textarea",
     "date": "text",
     //"fixed-time":["date-time","year","month","day","hour","minute"],
@@ -87,6 +88,8 @@ var program = {"script": [
     //"minute":"text",
     //"wait":["days","minutes"],
     "offset-days":["days","at-time"],
+    "offset-condition": ["offset-condition-interaction-id"],
+    "offset-condition-interaction-id": "select",
     "wait-answer": ["minutes"],
     "days":"text",
     //"minutes":"text",
@@ -130,6 +133,14 @@ var program = {"script": [
             activeForm();
             //On load fold every element 
             $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
+            /*$("[name='Dialogue.interactions']").sortable({axis: 'y', cancel: 'button'});
+            $("[name='Dialogue.interactions'] input").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions'] textarea").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions']").disableSelection();*/
         },
     });
 })(jQuery);
@@ -214,6 +225,7 @@ function convertDateToIso(data) {
 function clickBasicButton(){
                     
     //alert("click on add element "+$(this).prev('legend'));
+    var object = null;
     var id = $(this).prevAll("fieldset").length;
     var eltLabel = $(this).attr('label');
     var tableLabel = $(this).parent().attr('name');
@@ -225,8 +237,11 @@ function clickBasicButton(){
     var parent = $(this).parent();
     
     var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
-        
-    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
+    
+    if (eltLable='interaction') {
+        object = {"interaction-id":guid()}
+    }    
+    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]", object);
     
     $(parent).formElement(expandedElt);
     
@@ -248,6 +263,11 @@ function activeForm(){
     $.each($("input[name*='type-']"),function (key, elt){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateRadioButtonSubmenu);
+            };
+    });
+    $.each($("select[name*='offset-condition-interaction-id']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).mouseover(updateOffsetConditions);
             };
     });
     $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
@@ -334,6 +354,8 @@ function activeForm(){
     });
     
     addContentFormHelp();
+
+    
 }
 
 function expandForm(){
@@ -358,6 +380,38 @@ function foldForm(){
         } 
     }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
+}
+
+//TODO need to generate a interaction id there.
+function updateOffsetConditions(index, elt){
+    var bucket = []; 
+    var i =0;
+    $(this).children().each(function(){bucket[i]=this.value; i++;});
+    if (!(bucket instanceof Array)) {
+        bucket = [bucket];
+    }
+    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"]').parent().parent();
+    //Adding present interaction if not already there
+    for (var i=0; i<currentQA.length; i++) {
+        var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
+        bucket.splice(bucket.indexOf(interactionId), 1);
+        if ($(this).children("[value='"+interactionId+"']").length==0)
+            $(this).append("<option class='ui-dform-option' value='"+
+                interactionId+"'>"+
+                $(currentQA[i]).find('[name$="content"]').val()+"</option>")
+        else
+            $(this).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
+    } 
+    //Removing deleted interactions
+    for (var i=0; i<bucket.length; i++) {
+        //Do not delete the default choice
+        if (bucket[i]==0) {
+            continue
+        }
+        $(this).children("[value='"+bucket[i]+"']").remove();
+        defaultOptions = window.app['offset-condition-interaction-idOptions']
+        defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
+    }
 }
 
 
