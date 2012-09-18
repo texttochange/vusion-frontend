@@ -472,3 +472,14 @@ function guid() {
    return (S4()+S4()+S4());
 }
 
+//Necessary for IE browser
+if (!Array.indexOf) {
+  Array.prototype.indexOf = function (obj, start) {
+    for (var i = (start || 0); i < this.length; i++) {
+      if (this[i] == obj) {
+        return i;
+      }
+    }
+    return -1;
+  }
+}
