@@ -52,6 +52,8 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
+        parent::beforeValidate();
+
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
         }
@@ -85,7 +87,7 @@ class Dialogue extends MongoModel
 
     
     public function makeActive($objectId)
-    {
+    {      
         $this->id = $objectId;
         if (!$this->exists())
             return false;
@@ -96,7 +98,11 @@ class Dialogue extends MongoModel
             foreach ($dialogue['Dialogue']['interactions'] as $interaction) {
                 $interactionIds[] = $interaction['interaction-id'];
             }
-            $this->Schedule->deleteAll(array('Schedule.interaction-id'=>array('$nin'=>$interactionIds)), false);
+            $this->Schedule->deleteAll(
+                array(
+                    'Schedule.dialogue-id'=>$dialogue['Dialogue']['dialogue-id'],
+                    'Schedule.interaction-id'=>array('$nin'=>$interactionIds)),
+                false);
         } 
         return $this->save($dialogue);
     }

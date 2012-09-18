@@ -30,6 +30,7 @@ class ScriptMaker
     {
         $dialogue['Dialogue'] = array(
             'name' => 'my dialogue',
+            'dialogue-id' => null,
             'interactions'=> array(
                 array(
                     'type-interaction' => 'question-answer', 
