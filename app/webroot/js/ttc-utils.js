@@ -1,8 +1,5 @@
 function getNewDateUsingTimezone(){
-    date = new Date.parse(Date.now().toString('dd/MM/yyyy')+ " "+$('.ttc-program-time').text().trim().substr(-8,5));
-    localTime = date.getTime(); // in milliseconds
-    newDate = new Date(localTime);
-    return newDate;
+    return moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(); 
 }
 
 function getCountryCodes(country){

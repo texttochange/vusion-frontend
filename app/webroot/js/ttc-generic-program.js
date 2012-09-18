@@ -255,6 +255,11 @@ function clickBasicButton(){
     
 };
 
+function hiddeUndisabled(key, item){
+    $(item).attr("disabled", true);
+    $(item).after("<input type='hidden' name='"+$(item).attr('name')+"' value='"+$(item).val()+"'/>")
+}
+
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
             if (!$.data(value,'events')) {
@@ -282,17 +287,6 @@ function activeForm(){
             $(elt).before(deleteButton);
             
     });
-    $.each($("input[name*='date-time']"), function (key,elt){
-            if (!$.data(elt,'events')){
-                $(elt).datetimepicker({
-                timeFormat: 'hh:mm',
-                timeOnly: false,
-                dateFormat:'dd/mm/yy',
-                onClose: function(){
-                    $("#dynamic-generic-program-form").valid()
-                }});
-            };
-    });
     $.each($("input[name*='at-time']"), function (key,elt){
             if (!$.data(elt,'events')){
                 $(elt).timepicker({
@@ -307,19 +301,30 @@ function activeForm(){
             onkeyup: false,
 //            validClass: "success",
     });
-    $("input[name*='date-time']").each(function (item) {
+    $("input[name*='date-time']").each(function (key, item) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
                 $(this).parent().parent().find("input").attr("readonly", true);
                 $(this).parent().parent().find("textarea").attr("readonly", true);
+                $(this).parent().parent().find("input[type='radio']").each(hiddeUndisabled);
+                $(this).parent().parent().find("input[type='checkbox']").each(hiddeUndisabled);
                 $(this).parent().parent().addClass("ttc-interaction-disabled");
             } else {
-                $(this).rules("add",{
-                    required:true,
-                    isInThePast: $("#local-date-time").html(),
-                    messages:{
-                        required: wrapErrorMessage(localized_errors.validation_required_error),
-                    }
-                });
+                if (!$.data(item,'events')){
+                    $(item).datetimepicker({
+                            timeFormat: 'hh:mm',
+                            timeOnly: false,
+                            dateFormat:'dd/mm/yy',
+                            onClose: function(){
+                                $("#dynamic-generic-program-form").valid()
+                    }});
+                    $(item).rules("add",{
+                            required:true,
+                            isInThePast: $("#local-date-time").html(),
+                            messages:{
+                                required: wrapErrorMessage(localized_errors.validation_required_error),
+                            }
+                    });
+                };
             } 
     });
     $("input[name*='at-time']").each(function (item) {
