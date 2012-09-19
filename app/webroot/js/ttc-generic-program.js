@@ -305,8 +305,8 @@ function activeForm(){
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
                 $(this).parent().parent().find("input").attr("readonly", true);
                 $(this).parent().parent().find("textarea").attr("readonly", true);
-                $(this).parent().parent().find("input[type='radio']").each(hiddeUndisabled);
-                $(this).parent().parent().find("input[type='checkbox']").each(hiddeUndisabled);
+                $(this).parent().parent().find("input[type='radio']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().find("input[type='checkbox']:checked").each(hiddeUndisabled);
                 $(this).parent().parent().addClass("ttc-interaction-disabled");
             } else {
                 if (!$.data(item,'events')){
@@ -314,6 +314,9 @@ function activeForm(){
                             timeFormat: 'hh:mm',
                             timeOnly: false,
                             dateFormat:'dd/mm/yy',
+                            defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
+                            onSelect:function(){
+                                $("#dynamic-generic-program-form").valid()},
                             onClose: function(){
                                 $("#dynamic-generic-program-form").valid()
                     }});
