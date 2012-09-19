@@ -56,7 +56,7 @@
 			<div class="ttc-left-header">
 		        <?php 
 		        echo $this->Html->image('vusion-logo-wide.png', array(
-		            'url' => array('controller'=> 'programs')
+		            'url' => array('controller'=> 'programs', 'action'=>'index')
 		        ));
 			?> 
 			</div>
