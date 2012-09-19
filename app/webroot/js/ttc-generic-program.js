@@ -16,11 +16,11 @@ var program = {"script": [
     "auto-enrollment": "select",
     "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "interactions":["add-interaction"],
-    "interaction":["radio-type-schedule", "radio-type-interaction","checkbox-set-reminder","interaction-id"],
+    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id"],
     "interaction-id":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "radio-type-question"],
+    "question-answer": ["content","keyword", "radio-type-question", "checkbox-set-reminder"],
     //"radio-type-reminder":"radiobuttons",
     //"type-reminder":{"no-reminder":"No reminder","reminder":"reminder"},
     //"reminder":["number","every"],
@@ -486,6 +486,9 @@ function updateRadioButtonSubmenu() {
     var elt = this;
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
+    if (name == null) {
+        name = $(elt).parent().parent().parent().attr("name");
+    }
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
         $(box).remove();
@@ -497,7 +500,7 @@ function updateRadioButtonSubmenu() {
          "radiochildren":"radiochildren",
          "name":name,
              "elements":[]};
-    var name = $(elt).parent().parent().attr('name');
+    //var name = $(elt).parent().parent().attr('name');
     configToForm($(elt).attr('value'), newContent, name);
     
     $(elt).parent().formElement(newContent);
