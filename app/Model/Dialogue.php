@@ -53,6 +53,8 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
+        parent::beforeValidate();
+
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
         }
@@ -63,10 +65,20 @@ class Dialogue extends MongoModel
 
         if (isset($this->data['Dialogue']['interactions'])) {
             foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
-                if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="")
-                    $interaction['interaction-id'] = uniqid();
+                if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="") {
+                    $interaction['interaction-id'] = uniqid();  
+                }   
+                if (!isset($interaction['activated']) or $interaction['activated']==null) {
+                    $interaction['activated'] = 0;
+                }
+                if (!isset($interaction['type-interaction'])) {
+                    $interaction['type-interaction'] = null;
+                }
+                if (!isset($interaction['type-schedule'])) {
+                    $interaction['type-schedule'] = null;
+                }
                 # do something in here.
-                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'wait') 
+                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'offset-days') 
                     and (!isset($interaction['days']) or $interaction['days'] == ""))
                     $interaction['days'] = '0';
             }
@@ -79,7 +91,7 @@ class Dialogue extends MongoModel
 
     
     public function makeActive($objectId)
-    {
+    {      
         $this->id = $objectId;
         if (!$this->exists())
             return false;
@@ -87,10 +99,16 @@ class Dialogue extends MongoModel
         $dialogue['Dialogue']['activated'] = 1;
         if (isset($dialogue['Dialogue']['interactions'])) {
             $interactionIds = array();
-            foreach ($dialogue['Dialogue']['interactions'] as $interaction) {
+            foreach ($dialogue['Dialogue']['interactions'] as &$interaction) {
                 $interactionIds[] = $interaction['interaction-id'];
+                $interaction['activated'] = 1;
             }
-            $this->Schedule->deleteAll(array('Schedule.interaction-id'=>array('$nin'=>$interactionIds)), false);
+            //Delete all interaction that have been deleted on the UI
+            $this->Schedule->deleteAll(
+                array(
+                    'Schedule.dialogue-id'=>$dialogue['Dialogue']['dialogue-id'],
+                    'Schedule.interaction-id'=>array('$nin'=>$interactionIds)),
+                false);
         } 
         return $this->save($dialogue);
     }

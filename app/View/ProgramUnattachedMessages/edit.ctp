@@ -34,7 +34,7 @@
 		echo $this->Form->radio('type-schedule', $options, $attributes);
 		if ($this->Form->isFieldError('type-schedule'))
 		    echo $this->Form->error('type-schedule');
-		echo "</div>";
+		echo "<br />";
 		if ($this->data['UnattachedMessage']['fixed-time'] != "")
 		    $fixedTime = $this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['fixed-time']);
 		else
@@ -42,7 +42,14 @@
 		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time',
 		    'label'=>false,
 		    'value'=>$fixedTime));
-		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
+		echo "</div>";
+		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker(
+		                                               {
+		                                               dateFormat: "dd/mm/yy",
+		                                               timeFormat: "hh:mm",
+		                                               timeOnly: false,
+		                                               defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate()}
+		                                               );
 		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");
 		                                           $("input").change()');
 		$this->Js->get('input')->event('change','

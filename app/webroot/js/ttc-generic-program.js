@@ -11,13 +11,14 @@ var program = {"script": [
     "phone":"text",
     "dialogues": ["add-dialogue"],
     "add-dialogue":"button",
-    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
+    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id", "activated"],
     "dialogue-id": "hidden",
     "auto-enrollment": "select",
     "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "interactions":["add-interaction"],
-    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id"],
+    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id", "activated"],
     "interaction-id":"hidden",
+    "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
     "question-answer": ["content","keyword", "radio-type-question", "checkbox-set-reminder"],
@@ -75,6 +76,7 @@ var program = {"script": [
     "type-schedule": {
         "fixed-time":"fixed-time",
         "offset-days":"offset-days"},
+        "offset-condition": "offset-condition"},
     "radio-type-schedule-reminder":"radiobuttons",
     "type-schedule-reminder": {
         "offset-time":"offset-time",
@@ -92,6 +94,8 @@ var program = {"script": [
     //"wait":["days","minutes"],
     "offset-time":["minutes"],
     "offset-days":["days","at-time"],
+    "offset-condition": ["offset-condition-interaction-id"],
+    "offset-condition-interaction-id": "select",
     "wait-answer": ["minutes"],
     "days":"text",
     "minutes":"text",
@@ -142,6 +146,14 @@ var program = {"script": [
             activeForm();
             //On load fold every element 
             $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
+            /*$("[name='Dialogue.interactions']").sortable({axis: 'y', cancel: 'button'});
+            $("[name='Dialogue.interactions'] input").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions'] textarea").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions']").disableSelection();*/
         },
     });
 })(jQuery);
@@ -227,6 +239,7 @@ function convertDateToIso(data) {
 function clickBasicButton(){
                     
     //alert("click on add element "+$(this).prev('legend'));
+    var object = null;
     var id = $(this).prevAll("fieldset").length;
     var eltLabel = $(this).attr('label');
     var tableLabel = $(this).parent().attr('name');
@@ -238,8 +251,11 @@ function clickBasicButton(){
     var parent = $(this).parent();
     
     var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
-        
-    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
+    
+    if (eltLable='interaction') {
+        object = {"interaction-id":guid()}
+    }    
+    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]", object);
     
     $(parent).formElement(expandedElt);
     
@@ -252,6 +268,11 @@ function clickBasicButton(){
     
 };
 
+function hiddeUndisabled(key, item){
+    $(item).attr("disabled", true);
+    $(item).after("<input type='hidden' name='"+$(item).attr('name')+"' value='"+$(item).val()+"'/>")
+}
+
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
             if (!$.data(value,'events')) {
@@ -261,6 +282,11 @@ function activeForm(){
     $.each($("input[name*='type-']"),function (key, elt){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateRadioButtonSubmenu);
+            };
+    });
+    $.each($("select[name*='offset-condition-interaction-id']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).mouseover(updateOffsetConditions);
             };
     });
     $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
@@ -273,14 +299,6 @@ function activeForm(){
             $(elt).before(foldButton);
             $(elt).before(deleteButton);
             
-    });
-    $.each($("input[name*='date-time']"), function (key,elt){
-            if (!$.data(elt,'events')){
-                $(elt).datetimepicker({
-                timeFormat: 'hh:mm',
-                timeOnly: false,
-                dateFormat:'dd/mm/yy'});
-            };
     });
     $.each($("input[name*='at-time']"), function (key,elt){
             if (!$.data(elt,'events')){
@@ -301,14 +319,34 @@ function activeForm(){
             onkeyup: false,
 //            validClass: "success",
     });
-    $("input[name*='date-time']").each(function (item) {
-            $(this).rules("add",{
-                required:true,
-                greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm"),
-                messages:{
-                    required: wrapErrorMessage(localized_errors.validation_required_error),
-                }
-            });
+    $("input[name*='date-time']").each(function (key, item) {
+            if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
+                $(this).parent().parent().find("input").attr("readonly", true);
+                $(this).parent().parent().find("textarea").attr("readonly", true);
+                $(this).parent().parent().find("input[type='radio']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().find("input[type='checkbox']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().addClass("ttc-interaction-disabled");
+            } else {
+                if (!$.data(item,'events')){
+                    $(item).datetimepicker({
+                            timeFormat: 'hh:mm',
+                            timeOnly: false,
+                            dateFormat:'dd/mm/yy',
+                            defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
+                            onSelect:function(){
+                                $("#dynamic-generic-program-form").valid()},
+                            onClose: function(){
+                                $("#dynamic-generic-program-form").valid()
+                    }});
+                    $(item).rules("add",{
+                            required:true,
+                            isInThePast: $("#local-date-time").html(),
+                            messages:{
+                                required: wrapErrorMessage(localized_errors.validation_required_error),
+                            }
+                    });
+                };
+            } 
     });
     $("input[name*='at-time']").each(function (item) {
             $(this).rules("add",{
@@ -352,6 +390,8 @@ function activeForm(){
     });
     
     addContentFormHelp();
+
+    
 }
 
 function expandForm(){
@@ -376,6 +416,38 @@ function foldForm(){
         } 
     }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
+}
+
+//TODO need to generate a interaction id there.
+function updateOffsetConditions(index, elt){
+    var bucket = []; 
+    var i =0;
+    $(this).children().each(function(){bucket[i]=this.value; i++;});
+    if (!(bucket instanceof Array)) {
+        bucket = [bucket];
+    }
+    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"]').parent().parent();
+    //Adding present interaction if not already there
+    for (var i=0; i<currentQA.length; i++) {
+        var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
+        bucket.splice(bucket.indexOf(interactionId), 1);
+        if ($(this).children("[value='"+interactionId+"']").length==0)
+            $(this).append("<option class='ui-dform-option' value='"+
+                interactionId+"'>"+
+                $(currentQA[i]).find('[name$="content"]').val()+"</option>")
+        else
+            $(this).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
+    } 
+    //Removing deleted interactions
+    for (var i=0; i<bucket.length; i++) {
+        //Do not delete the default choice
+        if (bucket[i]==0) {
+            continue
+        }
+        $(this).children("[value='"+bucket[i]+"']").remove();
+        defaultOptions = window.app['offset-condition-interaction-idOptions']
+        defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
+    }
 }
 
 
@@ -772,6 +844,16 @@ function wrapErrorMessage(error) {
      return '<span class="ttc-validation-error">'+error+'</span>';
 }
 
+function isInFuture(dateTime) {
+    if (dateTime=="")
+        return true;
+    var time = moment(dateTime, "DD/MM/YYYY HH:mm")
+    var localTime = moment($('#local-date-time').text(), "DD/MM/YYYY HH:mm:ss")
+    if (time.diff(localTime) > 0)
+        return true;
+    return false;
+}
+
 function fromBackendToFrontEnd(type, object, submitCall) {
     //alert("function called");
     
@@ -784,14 +866,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     
     $.validator.addMethod(
-        "greaterThanOrEqualTo", 
+        "isInThePast", 
         function(value, element, params) {
             //alert(element.id);    
-            if (!/Invalid|NaN/.test(Date.parse(value))) {
+            if (!/Invalid|NaN/.test(moment(value, "DD/MM/YYYY HH:mm"))) {
                 //if (Date.parse(value).compareTo(Date.now())>0)
-                if (Date.parseExact(value, "dd/MM/yyyy HH:mm").compareTo(Date.parseExact(Date.now().toString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm"))>0)
-                    return true;
-                return false;
+                return isInFuture(value);
             }
             
             return isNaN(value) && isNaN(params) 
