@@ -17,7 +17,7 @@ class Request extends MongoModel
         return array(
             'keyword',
             'actions',
-            'feedbacks'
+            'responses'
             );
     }
 
