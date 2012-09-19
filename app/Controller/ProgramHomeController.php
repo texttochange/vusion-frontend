@@ -55,8 +55,9 @@ class ProgramHomeController extends AppController
                 
         $activeInteractions = $this->Dialogue->getActiveInteractions();
 
+        $conditions = array('object-type'=>'dialogue-schedule');
         $schedules = $this->Schedule->generateSchedule(
-                                    $this->Schedule->summary(),
+                                    $this->Schedule->summary($conditions),
                                     $activeInteractions
                                 );
                 

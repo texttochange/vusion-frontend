@@ -20,7 +20,7 @@ class Schedule extends MongoModel
 
     function getRequiredFields($objectType='dialogue-schedule')
     {
-        if ($objectType=='dialogue-schedule'){
+        if ($objectType=='dialogue-schedule' or $objectType =='reminder-schedule'){
             return array(
                 'participant-phone',
                 'dialogue-id',
@@ -73,16 +73,18 @@ class Schedule extends MongoModel
     }
 
 
-    public function summary()
+    public function summary($conditions)
     {
         $scriptQuery = array(
             'key' => array(
                 'dialogue-id' => true,                
                 'interaction-id' => true,
                 'date-time' => true,
+                'object-type'=>true,
                 ),
             'initial' => array('csum' => 0),
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
+            'options' => array('condition'=> $conditions),
             );
 
         $tmp = $this->getDataSource()->group($this, $scriptQuery);
@@ -138,7 +140,7 @@ class Schedule extends MongoModel
     
     public function generateSchedule($schedules,$activeInteractions)
     {
-        foreach ($schedules as &$schedule) {
+        foreach ($schedules as &$schedule) {            
             if (isset($schedule['interaction-id'])) {
                 $interaction = $this->DialogueHelper->getInteraction(
                     $activeInteractions,
@@ -152,6 +154,7 @@ class Schedule extends MongoModel
                 if (isset($unattachedMessage['UnattachedMessage']['content']))
                     $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
             }
+            
         }
         return $schedules;
     }
