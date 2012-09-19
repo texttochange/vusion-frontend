@@ -60,13 +60,10 @@ var localized_labels = {
     "actions": "<?php echo __('Actions')?>",
     "action": "<?php echo __('Action')?>",
     "save": "<?php echo __('Save')?>",
-<<<<<<< HEAD
     "reminder": "<?php echo __('Set Reminder')?>",
     "number": "<?php echo __('Number')?>",    
     "reminder-actions": "<?php echo __('Actions')?>",
     "reminder-action": "<?php echo __('Action')?>",
-=======
     "offset-condition": "<?php echo __('Answer Required')?>"
->>>>>>> 095f0068c72f223254e68a24f38cc988d66d1390
 };
 
