@@ -1094,8 +1094,12 @@ $.datepicker._gotoToday = function(id) {
 	// ############## ttc-hack-to-get-program-specific-date/time #####################
 	// This function gives us the program specific time as set in the program settings
 	// for that program. uncomment the previous "var now" if you dont need this one.
-	var now = getNewDateUsingTimezone();
 	// ##############################################################################
+	var now = getNewDateUsingTimezone();
+    /*$('#'+inst.id).val(moment(now).format("DD/MM/YYYY HH:mm"));
+     $('#dateselector').datepicker("setDate", now );
+    inst.currentDay=now.getDate()+"";
+    inst.selectedDay=now.getDate()+"";*/
 	var tp_inst = this._get(inst, 'timepicker');
 	if (tp_inst && tp_inst._defaults.showTimezone && tp_inst.timezone_select) {
 		var tzoffset = now.getTimezoneOffset(); // If +0100, returns -60
@@ -1108,7 +1112,7 @@ $.datepicker._gotoToday = function(id) {
 		tp_inst.timezone_select.val(tzoffset);
 	}
 	this._setTime(inst, now);
-	$( '.ui-datepicker-today', $dp).click(); 
+	//$( '.ui-datepicker-today', $dp).click(); 
 };
 
 //#######################################################################################

@@ -11,13 +11,14 @@ var program = {"script": [
     "phone":"text",
     "dialogues": ["add-dialogue"],
     "add-dialogue":"button",
-    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
+    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id", "activated"],
     "dialogue-id": "hidden",
     "auto-enrollment": "select",
     "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "interactions":["add-interaction"],
-    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id"],
+    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id", "activated"],
     "interaction-id":"hidden",
+    "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
     "question-answer": ["content","keyword", "radio-type-question"],
@@ -254,6 +255,11 @@ function clickBasicButton(){
     
 };
 
+function hiddeUndisabled(key, item){
+    $(item).attr("disabled", true);
+    $(item).after("<input type='hidden' name='"+$(item).attr('name')+"' value='"+$(item).val()+"'/>")
+}
+
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
             if (!$.data(value,'events')) {
@@ -281,14 +287,6 @@ function activeForm(){
             $(elt).before(deleteButton);
             
     });
-    $.each($("input[name*='date-time']"), function (key,elt){
-            if (!$.data(elt,'events')){
-                $(elt).datetimepicker({
-                timeFormat: 'hh:mm',
-                timeOnly: false,
-                dateFormat:'dd/mm/yy'});
-            };
-    });
     $.each($("input[name*='at-time']"), function (key,elt){
             if (!$.data(elt,'events')){
                 $(elt).timepicker({
@@ -303,14 +301,34 @@ function activeForm(){
             onkeyup: false,
 //            validClass: "success",
     });
-    $("input[name*='date-time']").each(function (item) {
-            $(this).rules("add",{
-                required:true,
-                greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm"),
-                messages:{
-                    required: wrapErrorMessage(localized_errors.validation_required_error),
-                }
-            });
+    $("input[name*='date-time']").each(function (key, item) {
+            if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
+                $(this).parent().parent().find("input").attr("readonly", true);
+                $(this).parent().parent().find("textarea").attr("readonly", true);
+                $(this).parent().parent().find("input[type='radio']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().find("input[type='checkbox']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().addClass("ttc-interaction-disabled");
+            } else {
+                if (!$.data(item,'events')){
+                    $(item).datetimepicker({
+                            timeFormat: 'hh:mm',
+                            timeOnly: false,
+                            dateFormat:'dd/mm/yy',
+                            defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
+                            onSelect:function(){
+                                $("#dynamic-generic-program-form").valid()},
+                            onClose: function(){
+                                $("#dynamic-generic-program-form").valid()
+                    }});
+                    $(item).rules("add",{
+                            required:true,
+                            isInThePast: $("#local-date-time").html(),
+                            messages:{
+                                required: wrapErrorMessage(localized_errors.validation_required_error),
+                            }
+                    });
+                };
+            } 
     });
     $("input[name*='at-time']").each(function (item) {
             $(this).rules("add",{
@@ -735,6 +753,16 @@ function wrapErrorMessage(error) {
      return '<span class="ttc-validation-error">'+error+'</span>';
 }
 
+function isInFuture(dateTime) {
+    if (dateTime=="")
+        return true;
+    var time = moment(dateTime, "DD/MM/YYYY HH:mm")
+    var localTime = moment($('#local-date-time').text(), "DD/MM/YYYY HH:mm:ss")
+    if (time.diff(localTime) > 0)
+        return true;
+    return false;
+}
+
 function fromBackendToFrontEnd(type, object, submitCall) {
     //alert("function called");
     
@@ -747,14 +775,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     
     $.validator.addMethod(
-        "greaterThanOrEqualTo", 
+        "isInThePast", 
         function(value, element, params) {
             //alert(element.id);    
-            if (!/Invalid|NaN/.test(Date.parse(value))) {
+            if (!/Invalid|NaN/.test(moment(value, "DD/MM/YYYY HH:mm"))) {
                 //if (Date.parse(value).compareTo(Date.now())>0)
-                if (Date.parseExact(value, "dd/MM/yyyy HH:mm").compareTo(Date.parseExact(Date.now().toString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm"))>0)
-                    return true;
-                return false;
+                return isInFuture(value);
             }
             
             return isNaN(value) && isNaN(params) 

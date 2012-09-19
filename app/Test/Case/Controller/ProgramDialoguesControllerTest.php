@@ -110,15 +110,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     {
         $dialogue['Dialogue'] = array(
             'name' => 'my dialogue',
-            'dialogue' => array(
-                array(       
-                    'interactions'=> array(
-                        array(
-                            'type-interaction' => 'question-answer', 
-                            'content' => 'how are you', 
-                            'keyword' => $keyword, 
-                            )
-                        )
+            'dialogue-id' => null,
+            'interactions'=> array(
+                array(  
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'how are you', 
+                    'keyword' => $keyword, 
                     )
                 )
             );

@@ -1,8 +1,5 @@
 function getNewDateUsingTimezone(){
-    date = new Date.parse(Date.now().toString('dd/MM/yyyy')+ " "+$('.ttc-program-time').text().trim().substr(-8,5));
-    localTime = date.getTime(); // in milliseconds
-    newDate = new Date(localTime);
-    return newDate;
+    return moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(); 
 }
 
 function getCountryCodes(country){
@@ -326,34 +323,8 @@ function logMessageSent(){
 }
 
 function updateClock(){
-	originalTimeString = $('.ttc-program-time').text();
-	currentTime = $('.ttc-program-time').text().trim().substr(-8,8);
-	currentTimeArray = currentTime.split(':');
-	currentHours = Number(currentTimeArray[0]);
-	currentMinutes = Number(currentTimeArray[1]);
-	currentSeconds = Number(currentTimeArray[2]);
-	
-	currentSeconds = currentSeconds + 1;
-	if (currentSeconds > 59) {
-		currentMinutes += 1;
-		if (currentMinutes > 59) {
-			currentHours += 1;
-			if (currentHours > 23) {
-				currentHours = 0;
-			}
-			currentMinutes = 0;
-		}
-		currentSeconds = 0;
-	}
-	
-	// Pad the hours, minutes and seconds with leading zeros, if required
-	currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
-	currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
-	currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
-	
-	currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
-	newTimeString = originalTimeString.replace(currentTime, currentTimeString);
-	$('.ttc-program-time').text(newTimeString);
+	var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
+	$("#local-date-time").text(newTime);	
 }
 
 function addStackFilter(){

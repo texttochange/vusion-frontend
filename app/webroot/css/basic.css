@@ -116,12 +116,12 @@
 	margin :5px;	
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd):not(.ttc-interaction-disabled) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even):not(.ttc-interaction-disabled) {
 	/*background:#FDEEF4;*/
 	background: #FFCB4B;
 }
@@ -666,4 +666,8 @@
 	position: relative;
 	color: grey;
 	background: #EDEDED;
+}
+
+.ttc-interaction-disabled {
+    background: #CCCCCC;
 }

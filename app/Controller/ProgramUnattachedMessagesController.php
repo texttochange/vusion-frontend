@@ -91,7 +91,7 @@ class ProgramUnattachedMessagesController extends AppController
 
         if (!$this->UnattachedMessage->exists()) {
             throw new NotFoundException(__('Invalid Message.'));
-        }
+        }   
         if ($this->request->is('post') || $this->request->is('put')) {
             if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
                 $now = new DateTime('now');
@@ -122,6 +122,13 @@ class ProgramUnattachedMessagesController extends AppController
             }
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
+            $now = new DateTime('now');    
+            $programTimezone = $this->Session->read($this->params['program'].'_timezone');
+            date_timezone_set($now,timezone_open($programTimezone));      
+            $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
+            if ($now > $messageDate){   
+                throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
+            }
         }
         return $unattachedMessage;
     }
