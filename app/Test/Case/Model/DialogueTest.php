@@ -32,14 +32,7 @@ class DialogueTestCase extends CakeTestCase
 
     public function testSaveDialogue()
     {
-<<<<<<< HEAD
-        $data['Dialogue'] = array(
-                'name' => 'my dialogue',
-                'do' => 'something'
-            );
-=======
         $dialogue = $this->Maker->getOneDialogue();
->>>>>>> 095f0068c72f223254e68a24f38cc988d66d1390
     
         $saveDraftFirstVersion = $this->Dialogue->saveDialogue($dialogue['Dialogue']);
         $this->assertEquals(0, $saveDraftFirstVersion['Dialogue']['activated']);
