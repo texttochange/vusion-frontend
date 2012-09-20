@@ -36,10 +36,10 @@ class Program extends AppModel
                 'required' => true,
                 'message' => 'Another program is currently using this url, please choose another one.'
                 ),
-            'alphaNumeric'=> array(
-                'rule' => 'alphaNumeric',
+            'lowAlphaNumeric'=> array(
+                'rule' => array('custom','/[a-z0-9]+/'),
                 'required' => true,
-                'message' => 'The url can only be composed of letters and digits.'
+                'message' => 'The url can only be composed of lowercase letters and digits.'
                 ),
             ),
         'database' => array(
@@ -52,10 +52,10 @@ class Program extends AppModel
                 'required' => true,
                 'message' => 'Another program is currently using this database, please choose another one.'
                 ),
-            'alphaNumeric' => array(
-                'rule' => 'alphaNumeric',
+           'lowAlphaNumeric'=> array(
+                'rule' => array('custom','/[a-z0-9]+/'),
                 'required' => true,
-                'message' => 'The database can only be composed of letters and digits.'
+                'message' => 'The url can only be composed of lowercase letters and digits.'
                 ),
             )
         );
