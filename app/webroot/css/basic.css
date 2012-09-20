@@ -116,20 +116,12 @@
 	margin :5px;	
 }
 
-<<<<<<< HEAD
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([name*=\.action]):not([radiochildren]):nth-child(odd) {
-=======
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd):not(.ttc-interaction-disabled) {
->>>>>>> 095f0068c72f223254e68a24f38cc988d66d1390
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-<<<<<<< HEAD
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([name*=\.action]):not([radiochildren]):nth-child(even) {
-=======
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even):not(.ttc-interaction-disabled) {
->>>>>>> 095f0068c72f223254e68a24f38cc988d66d1390
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(even) {
 	/*background:#FDEEF4;*/
 	background: #FFCB4B;
 }
