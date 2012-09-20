@@ -75,7 +75,7 @@ var program = {"script": [
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
-        "offset-days":"offset-days"},
+        "offset-days":"offset-days",
         "offset-condition": "offset-condition"},
     "radio-type-schedule-reminder":"radiobuttons",
     "type-schedule-reminder": {
