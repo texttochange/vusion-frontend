@@ -42,7 +42,7 @@ class ProgramDialoguesController extends AppController
 
     public function save()
     {
-        if ($this->request->is('post')) {
+       if ($this->request->is('post')) {
             if ($this->Dialogue->saveDialogue($this->request->data)) {
                 $this->set(
                     'result', 

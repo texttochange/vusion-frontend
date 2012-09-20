@@ -57,6 +57,8 @@ class Dialogue extends MongoModel
 
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
+        } else {
+            $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
         }
 
         if (!isset($this->data['Dialogue']['dialogue-id'])) {
@@ -212,17 +214,17 @@ class Dialogue extends MongoModel
     {
         $dialogue = $this->DialogueHelper->objectToArray($dialogue);
 
-         if (!isset($dialogue['Dialogue']['dialogue-id'])) {
+         if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
             $this->create();
             return $this->save($dialogue);
         }
 
         $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
         $this->create();
-        if ($draft) {
+        if ($draft) { 
             $this->id                    = $draft[0]['Dialogue']['_id'];
             $dialogue['Dialogue']['_id'] = $draft[0]['Dialogue']['_id'];
-        } else {
+        } else { 
             unset($dialogue['Dialogue']['_id']);
             $dialogue['Dialogue']['activated'] = 0;
         }

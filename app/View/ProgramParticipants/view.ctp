@@ -59,6 +59,7 @@
 			<tr>
 				<th><?php echo __('time');?></th>
 				<th><?php echo __('source');?></th>
+				<th><?php echo __('schedule-type');?></th>
 				<th><?php echo __('message');?></th>
 			</tr>
 			<?php
@@ -72,6 +73,7 @@
 			} else { ?>
 			    <td></td>
 			<?php } ?>
+			<td><?php echo h($schedule['object-type']); ?></td>
 			<td>&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
 			</tr>
 			<?php endforeach; ?>

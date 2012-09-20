@@ -173,9 +173,9 @@ function saveFormOnServer(){
         contentType: 'application/json; charset=utf-8',
         dataType: 'json', 
         success: function(response) {
-            reactivateSaveButtons();
             if (response['status'] == 'fail') {
                 $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                reactivateSaveButtons();
                 return;
             }
             if (location.href.indexOf(response['dialogue-obj-id'])<0){
@@ -188,7 +188,8 @@ function saveFormOnServer(){
                     }, 3000);
             } else {
                 $("#flashMessage").attr('class', 'message success').show().text(response['message']);
-                $("#flashMessage").delay(3000).fadeOut(1000)
+                $("#flashMessage").delay(3000).fadeOut(1000);
+                reactivateSaveButtons();
             }
         },
         timeout: 1000,
@@ -559,7 +560,7 @@ function updateRadioButtonSubmenu() {
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null) {
-        name = $(elt).parent().parent().parent().attr("name");
+        name = $(elt).parent().parent().parent().parent().attr("name");
     }
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
