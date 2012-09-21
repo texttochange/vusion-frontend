@@ -125,8 +125,9 @@ class ShortCode extends MongoModel
 
     public function notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix($check)
     {
-        if ($this->data['ShortCode']['supported-internationally']==1) 
+        if ($this->data['ShortCode']['supported-internationally']==1)  {
             return true;
+        }
         
         $regex = '';
         $prefix = '';
