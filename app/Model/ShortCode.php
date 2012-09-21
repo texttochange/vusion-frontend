@@ -8,6 +8,10 @@ class ShortCode extends MongoModel
     var $name        = 'ShortCode';
     var $useDbConfig = 'mongo';
     var $useTable    = 'shortcodes';
+
+    var $localPrefixedShortCodePattern = '/^[0-9]+-[0-9]+/';
+    var $internationalShortCodePattern = '/^\+[0-9]+/';
+
     
     function getModelVersion()
     {
@@ -21,7 +25,8 @@ class ShortCode extends MongoModel
             'shortcode',
             'international-prefix',
             'error-template',
-            'support-customized-id');
+            'support-customized-id',
+            'supported-internationally');
     }
 
     var $findMethods = array(
@@ -34,9 +39,15 @@ class ShortCode extends MongoModel
     protected function _findPrefixShortCode($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $details = explode("-",$query['prefixShortCode']);
-            $query['conditions']['ShortCode.shortcode'] = $details[1];
-            $query['conditions']['ShortCode.international-prefix'] = $details[0];
+            if (preg_match($this->localPrefixedShortCodePattern, $query['prefixShortCode'])) {
+                $details = explode("-",$query['prefixShortCode']);
+                $query['conditions']['ShortCode.shortcode'] = $details[1];
+                $query['conditions']['ShortCode.international-prefix'] = $details[0];
+                return $query;
+            } elseif (preg_match($this->internationalShortCodePattern, $query['prefixShortCode'])) {
+                $query['conditions']['ShortCode.shortcode'] =  $query['prefixShortCode'];
+                return $query;
+            } 
             return $query;
         }
         return $results[0];
@@ -53,7 +64,12 @@ class ShortCode extends MongoModel
                 'rule' => 'isShortCodeCountryUnique',
                 'message' => 'There is already the same shortcode for this country.',
                 'required' => true
-                )   
+                ),
+            'hasToIncludePrefix' => array(
+                'rule' => 'hasToIncludePrefix',
+                'message' => 'An supported internationally shortcode should include the international prefix.',
+                'required' => true
+                )
             ),
         'country' => array(
             'notempty' => array(
@@ -77,15 +93,29 @@ class ShortCode extends MongoModel
                 'country' => $this->data['ShortCode']['country'], 
                 'shortcode' => $this->data['ShortCode']['shortcode']);
         } else {
-            $conditions = array(
-                'country' => $this->data['ShortCode']['country'], 
-                'shortcode' => $this->data['ShortCode']['shortcode']);
+            if (!isset($this->data['ShortCode']['supported-internationally']) or $this->data['ShortCode']['supported-internationally']==0) { 
+               $conditions = array(
+                   'country' => $this->data['ShortCode']['country'], 
+                   'shortcode' => $this->data['ShortCode']['shortcode']);
+            } else {
+                $conditions = array(
+                   'shortcode' => $this->data['ShortCode']['shortcode']);       
+            }
         }
         $result = $this->find('count', array(
             'conditions' => $conditions
             ));
 
         return $result < 1;            
+    }
+
+    public function hasToIncludePrefix($check)
+    {
+        if (isset($this->data['ShortCode']['supported-internationally']) and $this->data['ShortCode']['supported-internationally']==1) {
+                $pattern = "/\+".$this->data['ShortCode']['international-prefix'].'/';
+                return preg_match($pattern, $this->data['ShortCode']['shortcode']);
+        } 
+        return true;
     }
 
 }

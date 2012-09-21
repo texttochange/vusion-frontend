@@ -12,8 +12,13 @@
         <?php
             echo $this->Html->tag('label',__('Shortcode'));    
             foreach($shortcodes as $shortcode) {
-                $countyShortCode = trim($shortcode['ShortCode']['country'])." - ".$shortcode['ShortCode']['shortcode'];
-                $prefixShortCode = $shortcode['ShortCode']['international-prefix']."-".$shortcode['ShortCode']['shortcode'];
+                if ($shortcode['ShortCode']['supported-internationally']==0) {
+                    $countyShortCode = trim($shortcode['ShortCode']['country'])." - ".$shortcode['ShortCode']['shortcode'];
+                    $prefixShortCode = $shortcode['ShortCode']['international-prefix']."-".$shortcode['ShortCode']['shortcode'];
+                } else {
+                    $countyShortCode = $shortcode['ShortCode']['shortcode'];
+                    $prefixShortCode = $shortcode['ShortCode']['shortcode'];     
+                }
                 $shortcodeOptions[$prefixShortCode] = $countyShortCode;
                 $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
             }
@@ -23,10 +28,14 @@
             $this->Js->set('shortcodes', $shortcodeCompact);
             $this->Js->get('#shortcode')->event('change','
             			var countryShortcode = $("#shortcode option:selected").text();
-            			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-1);            			
-            			$("#international-prefix").val(getCountryCodes(countryname));
-            			var prefixShortcode = $("#shortcode").val();	
-            			if (window.app.shortcodes[prefixShortcode]["support-customized-id"]=="1") {
+            			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-1);
+                        var prefixShortcode = $("#shortcode").val();	            			
+            			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
+                            $("#international-prefix").val(getCountryCodes(countryname));
+                        } else {
+                            $("#international-prefix").val("All");
+                        }
+            			if (window.app.shortcodes[prefixShortcode]["support-customized-id"]==1) {
             			    $("#customized-id").prop("disabled", false);
             			} else {
             			    $("#customized-id").prop("disabled", true);
@@ -38,7 +47,7 @@
         <?php
             echo $this->Form->input('international-prefix',
             		array('id' => 'international-prefix',
-            		      'label' => 'International Prefix',
+            		      'label' => 'Supported International Prefix(es)',
             		      'readonly' => 'true',
             		      'style' => 'color:#AAAAAA')
             		);

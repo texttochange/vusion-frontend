@@ -5,7 +5,8 @@
 	<th><?php echo $this->Paginator->sort('shortcode', __('Shortcode'));?></th>
 			<th><?php echo $this->Paginator->sort('country', __('Country'));?></th>
 			<th><?php echo $this->Paginator->sort('international-prefix', __('International Prefix'));?></th>
-			<th><?php echo $this->Paginator->sort('support-customized id', __('Support Customized Id'));?></th>
+			<th><?php echo $this->Paginator->sort('support-customized-id', __('Support Customized Id'));?></th>
+			<th><?php echo $this->Paginator->sort('supported-internationally', __('Supported Internationally'));?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
@@ -15,6 +16,7 @@
 		<td><?php echo $shortcode['ShortCode']['country']; ?>&nbsp;</td>
 		<td><?php echo $shortcode['ShortCode']['international-prefix']; ?>&nbsp;</td>
 		<td><?php echo ($shortcode['ShortCode']['support-customized-id']? __('yes'):__('no')); ?>&nbsp;</td>
+    	<td><?php echo ($shortcode['ShortCode']['supported-internationally']? __('yes'):__('no')); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $shortcode['ShortCode']['_id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to delete the shortcode "%s"?', $shortcode['ShortCode']['shortcode'])); ?>
