@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2012-09-19 15:50+0000\n"
-"PO-Revision-Date: 2012-09-19 19:00+0300\n"
+"POT-Creation-Date: 2012-09-19 16:33+0000\n"
+"PO-Revision-Date: 2012-09-19 19:34+0300\n"
 "Last-Translator: Olivier Vernin <overnin@gmail.com>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -543,7 +543,7 @@ msgid "Admin"
 msgstr ""
 
 #: View/Admin/index.ctp:9
-#: View/Elements/localization.ctp:50;60;66
+#: View/Elements/localization.ctp:50;60;65
 #: View/Groups/add.ctp:14
 #: View/Groups/edit.ctp:15
 #: View/Groups/index.ctp:7;38
@@ -747,7 +747,7 @@ msgstr ""
 msgid "Feedback"
 msgstr ""
 
-#: View/Elements/localization.ctp:51;61;67
+#: View/Elements/localization.ctp:51;61;66
 msgid "Action"
 msgstr ""
 
@@ -796,15 +796,15 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: View/Elements/localization.ctp:64
+#: View/Elements/localization.ctp:63
 msgid "Set Reminder"
 msgstr ""
 
-#: View/Elements/localization.ctp:65
+#: View/Elements/localization.ctp:64
 msgid "Number"
 msgstr ""
 
-#: View/Elements/localization.ctp:69
+#: View/Elements/localization.ctp:67
 msgid "Answer Required"
 msgstr ""
 
@@ -1853,5 +1853,9 @@ msgstr ""
 #: Model/User.php:validation
 #: for field limited_program_access
 msgid "boolean"
+msgstr ""
+
+#: webroot/test.php:87
+msgid "Debug setting does not allow access to this url."
 msgstr ""
 
