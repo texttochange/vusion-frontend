@@ -1,7 +1,12 @@
 <div class="request form">
     <ul class="ttc-actions">
         <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#dynamic-generic-program-form").submit()' , true);?>
+        <?php $this->Js->get('#button-save')->event('click', '
+		    disableSaveButtons();
+		    $("#dynamic-generic-program-form")[0].submit()' , true);?>
+		<?php $this->Js->get('#dynamic-generic-program-form')->event('submit','
+		    disableSaveButtons();
+		    $("#dynamic-generic-program-form")[0].submit();'); ?>
     </ul>
     <h3><?php echo __('Add Request'); ?></h3>
     <div class="ttc-display-area">
