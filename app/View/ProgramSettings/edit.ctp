@@ -33,7 +33,7 @@
             			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
                             $("#international-prefix").val(getCountryCodes(countryname));
                         } else {
-                            $("#international-prefix").val("All");
+                            $("#international-prefix").val("all");
                         }
             			if (window.app.shortcodes[prefixShortcode]["support-customized-id"]==1) {
             			    $("#customized-id").prop("disabled", false);

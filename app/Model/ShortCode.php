@@ -69,6 +69,11 @@ class ShortCode extends MongoModel
                 'rule' => 'hasToIncludePrefix',
                 'message' => 'An supported internationally shortcode should include the international prefix.',
                 'required' => true
+                ),
+            'notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix' => array(
+                'rule' => 'notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix',
+                'message' => 'Same national shortcode number is used in a country with matching international prefix, the system cannot handle this.',
+                'required' => true
                 )
             ),
         'country' => array(
@@ -116,6 +121,30 @@ class ShortCode extends MongoModel
                 return preg_match($pattern, $this->data['ShortCode']['shortcode']);
         } 
         return true;
+    }
+
+    public function notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix($check)
+    {
+        if ($this->data['ShortCode']['supported-internationally']==1) 
+            return true;
+        
+        $regex = '';
+        $prefix = '';
+        foreach (str_split($this->data['ShortCode']['international-prefix']) as $digit) {
+            $prefix .= $digit;
+            $regex .= '('.$prefix.')';
+        }
+
+        $conditions = array(
+            'shortcode' => $this->data['ShortCode']['shortcode'],
+            'international-prefix' => new MongoRegex('/^['.$regex.']$/')
+            );
+
+         $result = $this->find('count', array(
+            'conditions' => $conditions
+            ));
+
+        return $result < 1;   
     }
 
 }

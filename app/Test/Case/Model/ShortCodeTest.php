@@ -71,6 +71,24 @@ class ShortCodeTestCase extends CakeTestCase
         $savedShortCode = $this->ShortCode->save($supportedInternationally);
         $this->assertFalse($savedShortCode);
 
+        # Cannot save an national shortcode in countries that share the same international prefix
+        $usShortCode = array(
+            'country' => 'United States',
+            'shortcode' => '8282',
+            'international-prefix' => '1',
+            );
+        
+        $caymanShortCode = array(
+            'country' => 'Cayman Islands',
+            'shortcode' => '8282',
+            'international-prefix' => '1345',
+            );
+
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($usShortCode);
+        $this->assertTrue(isset($savedShortCode['ShortCode']));
+        $this->ShortCode->create();
+        $this->assertFalse($this->ShortCode->save($caymanShortCode));
     }
 
 }
