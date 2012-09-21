@@ -55,7 +55,7 @@ abstract class MongoModel extends Model
 
 
     public function checkFields($object)
-    {
+    {        
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
@@ -66,6 +66,12 @@ abstract class MongoModel extends Model
                 unset($object[$field]);
             }
         }
+
+        foreach ($toCheck as $field) {
+            if (!isset($object[$field])){
+                $object[$field] = null;
+            }
+        };
 
         return $object;
     }

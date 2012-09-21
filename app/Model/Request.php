@@ -29,6 +29,21 @@ class Request extends MongoModel
         'keyphrase' => true,
         );
 
+    public function beforeValidate()
+    {
+        parent::beforeValidate();
+    
+        if ($this->data['Request']['actions'] == null) {
+            $this->data['Request']['actions'] = array();
+        }
+
+        if ($this->data['Request']['responses'] == null) {
+            $this->data['Request']['responses'] = array();
+        }
+
+    }
+
+
     protected function _findKeyword($state, $query, $results = array())
     {
         if ($state == 'before') {
