@@ -415,7 +415,16 @@ function foldForm(){
         var choice = $('[name="'+name+'.choice"]').val();
         if (choice && choice != "") {
             $(this).parent().append('<div class="ttc-fold-summary">'+choice+'</div>');
-        } 
+        } else {
+            var action = $('[name="'+name+'.type-action"]:checked').val();
+            if (action == null)
+                action = $('[name="'+name+'.type-answer-action"]:checked').val();
+            if (action == null)
+                action = $('[name="'+name+'.type-reminder-action"]:checked').val();
+            if (action && action != "") {
+                $(this).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
+            }
+        }
     }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
