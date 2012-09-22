@@ -1,0 +1,2 @@
+{ "keyword": "join","responses": [{"content": "Welcome to the C4C program.To optout from this progam, reply with STOP."}],"actions":[{"type-action":"enrolling","enroll":"505da2c469675"}]}
+{"keyword":"stop", "responses": [{ "content": "You have optout from C4C program,thank you for your participation."}],"actions": [{ "type-action": "optout"}]}
