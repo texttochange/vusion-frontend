@@ -41,8 +41,7 @@
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), array('name'=>'delete-program'), __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
 		</div>
 		<?php };
-		$this->Js->get("[name='delete-program']");
-		$this->Js->each('$(this).bind("click", function() {event.stopPropagation()});', true);
+		$this->Js->get("[name='delete-program']")->event("click", "event.stopPropagation()");
 		?>
 	</div>
     <?php endforeach; ?>
