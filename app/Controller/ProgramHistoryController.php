@@ -110,6 +110,8 @@ class ProgramHistoryController extends AppController
             $orConditions = array();
             if (isset($this->params['url']['dialogue_id']))
                 $conditions['dialogue-id'] = $this->params['url']['dialogue_id'];
+            if (isset($this->params['url']['interaction_id']))
+                $conditions['interaction-id'] = $this->params['url']['interaction_id'];
             if (isset($this->params['url']['filter_type']))
                 $conditions['message-direction'] = $this->params['url']['filter_type'];
             if (isset($this->params['url']['filter_status']))
