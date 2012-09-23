@@ -419,6 +419,7 @@ form .error-message {
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
+	z-index: 10;
 }
 
 .success,

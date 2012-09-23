@@ -224,6 +224,7 @@
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
+	z-index: 10;
 }
 
 .ttc-filter {
