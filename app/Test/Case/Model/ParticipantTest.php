@@ -1,6 +1,8 @@
 <?php 
 App::uses('Participant', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('Dialogue', 'Model');
+App::uses('ScriptMaker', 'Lib');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 
 class ParticipantTestCase extends CakeTestCase
@@ -10,9 +12,12 @@ class ParticipantTestCase extends CakeTestCase
     {
         parent::setUp();
 
-        $option            = array('database'=>'testdbprogram');
-        $this->Participant = new Participant($option);
+        $option               = array('database'=>'testdbprogram');
+        $this->Participant    = new Participant($option);
         $this->ProgramSetting = new ProgramSetting($option);
+        $this->Dialogue       = new Dialogue($option);
+        
+        $this->Maker = new ScriptMaker();
 
         $this->dropData();
     }
@@ -31,6 +36,7 @@ class ParticipantTestCase extends CakeTestCase
     {
         $this->Participant->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
+        $this->Dialogue->deleteAll(true, false);
     }
 
 
@@ -100,6 +106,54 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual("+788601467", $savedParticipant['Participant']['phone']);
+    }
+    
+    
+    public function testSave_auto_enrollment()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment'] = 'all';
+        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $participant = array(
+            'phone' => ' 07 ',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+
+        $this->assertEqual(
+            $savedParticipant['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+        );
+        $this->assertRegExp(
+            '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/',
+            $savedParticipant['Participant']['enrolled'][0]['date-time']);
+        
+    }
+    
+    
+    public function testAutoEnrollDialogue()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $participant = array(
+            'phone' => '+7',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $this->Participant->autoEnrollDialogue('01');
+        
+        $enrolledParticipant = $this->Participant->find('first', array(
+            'conditions' => $participant));
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
+            '01'
+            );
     }
 
 
