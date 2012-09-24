@@ -4,6 +4,7 @@ App::uses('Dialogue', 'Model');
 App::uses('Program', 'Model');
 App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
@@ -27,6 +28,7 @@ class ProgramDialoguesController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->Participant    = new Participant($options);
         $this->Request        = new Request($options);
         $this->VumiRabbitMQ   = new VumiRabbitMQ(
             Configure::read('vusion.rabbitmq')
@@ -90,7 +92,9 @@ class ProgramDialoguesController extends AppController
         $dialogueId = $this->params['id'];
 
         if ($this->_hasAllProgramSettings()) {
-            if ($this->Dialogue->makeActive($dialogueId)) {
+            $savedDialogue = $this->Dialogue->makeActive($dialogueId);
+            if ($savedDialogue) {
+                $this->Participant->autoEnrollDialogue($savedDialogue['Dialogue']['dialogue-id']);
                 $this->_notifyUpdateBackendWorker($programUrl);
                 $this->Session->setFlash(__('Dialogue activated.'), 
                 'default',

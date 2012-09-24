@@ -1,6 +1,7 @@
 <?php
 App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('Dialogue', 'Model');
 
 class Participant extends MongoModel
 {
@@ -35,6 +36,7 @@ class Participant extends MongoModel
         
         $options              = array('database'=>$id['database']);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->Dialogue       = new Dialogue($options);
     }
 
     public $validate = array(
@@ -99,7 +101,16 @@ class Participant extends MongoModel
             $this->data['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
             $this->data['Participant']['session-id'] = $this->gen_uuid();
             $this->data['Participant']['tags'] = array();
-            $this->data['Participant']['enrolled'] = array();
+            $condition = array('condition' => array('auto-enrollment'=>'all'));
+            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+            if ($autoEnrollDialogues == null)
+                $this->data['Participant']['enrolled'] = array();
+            foreach ($autoEnrollDialogues as $autoEnroll) {
+                $this->data['Participant']['enrolled'][] = array(
+                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'date-time' => $programNow->format("Y-m-d\TH:i:s")
+                    );
+            }
             $this->data['Participant']['profile'] = array();
         }
 
@@ -126,6 +137,22 @@ class Participant extends MongoModel
             // 48 bits for "node"
             mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
             );
+    }
+    
+    
+    public function autoEnrollDialogue($dialogueId)
+    {
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        $updateData = array(
+            '$push'=>array(
+                'enrolled'=>array(
+                    'dialogue-id'=>$dialogueId,
+                    'date-time'=>$programNow->format("Y-m-d\TH:i:s")
+                    )
+                )
+            );
+        $conditions = array('session-id'=>array('$ne'=>null));
+        $this->updateAll($updateData, $conditions);        
     }
 
     

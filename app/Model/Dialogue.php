@@ -35,6 +35,7 @@ class Dialogue extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
+        
         $this->DialogueHelper = new DialogueHelper();
         $this->Schedule = new Schedule($id, $table, $ds);
     }
@@ -111,7 +112,7 @@ class Dialogue extends MongoModel
                     'Schedule.dialogue-id'=>$dialogue['Dialogue']['dialogue-id'],
                     'Schedule.interaction-id'=>array('$nin'=>$interactionIds)),
                 false);
-        } 
+        }        
         return $this->save($dialogue);
     }
 
@@ -126,7 +127,7 @@ class Dialogue extends MongoModel
     }
 
 
-    public function getActiveDialogues()
+    public function getActiveDialogues($options=null)
     {
         $dialogueQuery = array(
             'key' => array(
@@ -137,6 +138,7 @@ class Dialogue extends MongoModel
                 if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
                     prev.Dialogue = obj;
                 }',
+            'options'=> $options
             );
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
         return array_filter(

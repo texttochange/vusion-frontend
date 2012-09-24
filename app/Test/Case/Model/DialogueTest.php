@@ -3,6 +3,8 @@ App::uses('Dialogue', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('Participant', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 
 class DialogueTestCase extends CakeTestCase
@@ -15,6 +17,8 @@ class DialogueTestCase extends CakeTestCase
         $option         = array('database'=>'testdbprogram');
         $this->Dialogue = new Dialogue($option);
         $this->Schedule = new Schedule($option);
+        $this->Participant = new Participant($option);
+        $this->ProgramSetting = new ProgramSetting($option);
 
         $this->Maker = new ScriptMaker();
     }
@@ -24,6 +28,8 @@ class DialogueTestCase extends CakeTestCase
     {
         $this->Dialogue->deleteAll(true, false);
         $this->Schedule->deleteAll(true, false);
+        $this->Participant->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
         unset($this->Dialogue);
         unset($this->Schedule);
         parent::tearDown();
@@ -88,7 +94,7 @@ class DialogueTestCase extends CakeTestCase
 
     }
 
-/*
+
     public function testMakeDialogueActive_deleteNonPresentInteractions()
     {
          $savedDialogue = $this->Dialogue->saveDialogue($this->Maker->getOneDialogue());
@@ -257,5 +263,5 @@ class DialogueTestCase extends CakeTestCase
 
          $this->assertEqual(0, $this->Schedule->find('count'));
     }
-*/
+
 }
