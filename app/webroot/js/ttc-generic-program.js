@@ -216,6 +216,7 @@ function saveRequestOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                reactivateSaveButtons();
                 return;
             }
             if (location.href.indexOf("add")>0 && location.href.indexOf(response['request-id'])<0){
@@ -226,6 +227,7 @@ function saveRequestOnServer(){
             } else {
                 $("#flashMessage").attr('class', 'message success').show().text(response['message']);
                 $("#flashMessage").delay(3000).fadeOut(1000)
+                reactivateSaveButtons();
             }
         },
         timeout: 1000,
@@ -312,14 +314,6 @@ function activeForm(){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateCheckboxSubmenu);
             };
-    });
-
-    $("#dynamic-generic-program-form").validate({
-            submitHandler: function(form) {
-                form.submit();
-            },
-            onkeyup: false,
-//            validClass: "success",
     });
     $("input[name*='date-time']").each(function (key, item) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
@@ -463,6 +457,7 @@ function updateOffsetConditions(index, elt){
 
 
 function duplicateKeywordValidation(value, element, param) {    
+    var isValid = false;
     var keywordInput = element;
     var isKeywordUsedInSameScript = false;
     var errors = {}
@@ -512,6 +507,22 @@ function duplicateKeywordValidation(value, element, param) {
         
     var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
     
+    function validateKeywordReply(data, textStatus) {
+        var elt = $("[name='"+this.inputName+"']");
+        $('#connectionState').hide();
+        if (data.status=='fail') { //not used
+            if ($(elt).prev("label").has('.ttc-ok')) {
+                $(elt).prev("label").children('img.ttc-ok').remove();
+            }
+                errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+                isValid = false;
+        } else {
+    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
+    	    isValid = true;
+    	}
+    };
+
+
     $.ajax({
             url: url,
             type: "POST",
@@ -524,25 +535,11 @@ function duplicateKeywordValidation(value, element, param) {
             timeout: 1000,
             error: vusionAjaxError,
     });
+    if (!isValid) {
+        this.showErrors(errors);
+    }   
     return true;
 }
-
-function validateKeywordReply(data, textStatus) {
-    var elt = $("[name='"+this.inputName+"']");
-    $('#connectionState').hide();
-    if (data.status=='fail') { //not used
-    //    $(elt).before("<p style='color:green'> ok </p>");
-        //else    //already used in another Program
-        if ($(elt).prev("label").has('.ttc-ok')) {
-        	$(elt).prev("label").children('img.ttc-ok').remove();
-        }
-            var errors = {};
-            errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
-            $("#dynamic-generic-program-form").validate().showErrors(errors);
-    } else {
-    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
-    }
-};
 
 
 function isArray(obj) {
@@ -920,6 +917,15 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     var myform = {
         "action": submitCall,
+        "validate": {
+             submitHandler: function(form) {
+                 form.submit();
+             }, 
+             invalidHandler: function(form, validator){
+                 reactivateSaveButtons();
+             },
+             onkeyup: false,
+        },  
         "method": "post",
                 "elements": 
                 [    

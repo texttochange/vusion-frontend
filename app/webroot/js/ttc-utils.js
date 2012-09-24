@@ -299,7 +299,7 @@ function reactivateSaveButtons(){
     $('input[type="submit"]').removeAttr("disabled");
     $("#button-save").bind("click", function(){
         disableSaveButtons();        
-        $("#dynamic-generic-program-form")[0].submit();
+        $("#dynamic-generic-program-form").submit();
     });
 }
 
