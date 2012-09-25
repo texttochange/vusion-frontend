@@ -12,7 +12,7 @@ main_database=('vusion')
 main_tables=('shortcodes' 'unmatchable_reply' 'templates')
 
 #program specific database
-specific_databases=('m4h' 'mrs' 'wiki' 'c4c')
+specific_databases=('m4rh' 'mrs' 'c4c')
 
 #program specific tables
 specific_tables=('participants' 'dialogues' 'schedules' 'history' 'program_settings' 'requests')
