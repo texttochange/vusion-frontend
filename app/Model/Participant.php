@@ -151,7 +151,10 @@ class Participant extends MongoModel
                     )
                 )
             );
-        $conditions = array('session-id'=>array('$ne'=>null));
+        $conditions = array(
+            'session-id' => array('$ne'=>null),
+            'enrolled.dialogue-id' => array('$ne'=>$dialogueId)
+            );
         $this->updateAll($updateData, $conditions);        
     }
 

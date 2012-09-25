@@ -145,11 +145,12 @@ class ParticipantTestCase extends CakeTestCase
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
-        
+
         $this->Participant->autoEnrollDialogue('01');
         
         $enrolledParticipant = $this->Participant->find('first', array(
             'conditions' => $participant));
+
         $this->assertEqual(
             $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
             '01'
