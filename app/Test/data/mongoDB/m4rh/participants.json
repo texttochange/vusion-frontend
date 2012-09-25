@@ -1,1 +1,1 @@
-{ "phone" : "+256788601462", "session-id" : "1", "last-optin-date" : "2012-08-09T10:46:00", "enrolled" : [], "tags" : [], "profile" : {} }
+{ "_id" : { "$oid" : "50617bd1b20b151b5cc57597" }, "session-id" : "e95631fb89ab41a9909539b6ceb938da", "profile" : {}, "tags" : [], "model-version" : 1, "last-optin-date" : "2012-09-25T12:39:29", "phone" : "+25678860462", "enrolled" : [] }
