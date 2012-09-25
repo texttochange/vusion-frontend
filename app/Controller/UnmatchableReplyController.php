@@ -29,6 +29,17 @@ class UnmatchableReplyController extends AppController
 
     public function index()
     {
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        } else {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
+         $this->paginate = array(
+                'all',
+                'order'=> $order,
+            );
+
         $unmatchableReplies = $this->paginate();
         $this->set(compact('unmatchableReplies'));
     }
