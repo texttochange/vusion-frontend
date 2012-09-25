@@ -156,8 +156,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $participantInDatabase = $this->Participants->Participant->find('count');
-        $this->assertEquals(2, $participantInDatabase);
+        $participants = $this->Participants->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['profile']['Name'], 'Olivier Vernin');
+        $this->assertEquals($participants[0]['Participant']['profile']['DoB'], '21st of July');
     }
 
 
@@ -200,11 +202,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         
         $this->assertEquals(
-            '+256788601462,"Olivier Vernin" Insert ok',
+            '+256788601462, Insert ok',
             $this->vars['entries'][1]
             );
         $this->assertEquals(
-            '+256712747841,"Gerald Ankunda" This phone number already exists in the participant list. line 3',
+            '256712747841, This phone number already exists in the participant list. line 3',
             $this->vars['entries'][2]
             );
     }
@@ -250,11 +252,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         
         $this->assertEquals(
-            '256788601462,Olivier Vernin Insert ok',
+            '+256788601462, Insert ok',
             $this->vars['entries'][2]
             );
         $this->assertEquals(
-            '256712747841,Gerald Ankunda This phone number already exists in the participant list. line 3',
+            '256712747841, This phone number already exists in the participant list. line 3',
             $this->vars['entries'][3]
             );
     }
@@ -284,34 +286,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $participantInDatabase = $this->Participants->Participant->find('count');
-        $this->assertEquals(2, $participantInDatabase);
-    }
-    
-    
-    public function testCheckPhoneNumber() 
-    {
-        $phoneNumber    = '+712 747.841';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('712747841', $newPhoneNumber);
-        
-        $phoneNumber    = '0774521459';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertFalse(strpos($newPhoneNumber, '0'));
-        
-        $phoneNumber    ='(0)782123123';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('782123123', $newPhoneNumber);
-        
-        $phoneNumber    ='782123023';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('782123023', $newPhoneNumber);
-        
-        $phoneNumber    ='782123044 ';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('782123044', $newPhoneNumber);
-    }
+        $participants = $this->Participants->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['profile']['Name'], 'Olivier Vernin');
 
+    }
+    
 
     public function testDeleteParticipant()
     {

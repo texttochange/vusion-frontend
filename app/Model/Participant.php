@@ -111,7 +111,8 @@ class Participant extends MongoModel
                     'date-time' => $programNow->format("Y-m-d\TH:i:s")
                     );
             }
-            $this->data['Participant']['profile'] = array();
+            if (!isset($this->data['Participant']['profile']))
+                $this->data['Participant']['profile'] = array();
         }
 
         return true;

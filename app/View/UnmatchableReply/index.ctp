@@ -2,10 +2,10 @@
 	<h3><?php echo __('Unmatchable Replies');?></h3>
 	<table cellpadding="0" cellspacing="0">
 	<tr>                                                                        
-			<th><?php echo $this->Paginator->sort('from');?></th>
-			<th><?php echo $this->Paginator->sort('to');?></th>
-			<th><?php echo $this->Paginator->sort('message');?></th>
-			<th><?php echo $this->Paginator->sort('time');?></th>
+			<th><?php echo $this->Paginator->sort('participant-phone', __('From'));?></th>
+			<th><?php echo $this->Paginator->sort('to', __('To'));?></th>
+			<th><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
+			<th><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
 	</tr>
 	<?php
 	    foreach($unmatchableReplies as $unmatchableReply):
