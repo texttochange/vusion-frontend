@@ -71,7 +71,13 @@ var program = {"script": [
     "radio-type-interaction":"radiobuttons",
     "type-interaction": {
         "announcement":"announcement",
-        "question-answer":"question"},
+        "question-answer":"question",
+        "question-answer-keyword": "question-multi-keyword"},
+    "question-answer-keyword": ["content", "closed-question", "checkbox-set-reminder"],
+    "closed-question": ["label-for-participant-profiling", "answer-keywords"],
+    "answer-keywords":["add-answer-keyword"],
+    "add-answer-keyword":"button",
+    "answer-keyword": ["keyword","feedbacks", "answer-actions"],
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
