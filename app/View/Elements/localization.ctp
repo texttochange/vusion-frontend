@@ -53,6 +53,7 @@ var localized_labels = {
     "optout": "<?php echo __('Opt-out')?>",
     "enrolling": "<?php echo __('Enroll in an active dialogue')?>",
     "tagging": "<?php echo __('Tag')?>",
+    "reset": "<?php echo __('Reset')?>",
     "add": "<?php echo __('Add')?>",
     "remove": "<?php echo __('Remove')?>",
     "responses": "<?php echo __('Responses')?>",
