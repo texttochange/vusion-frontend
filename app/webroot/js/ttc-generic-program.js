@@ -29,7 +29,9 @@ var program = {"script": [
     //"every":"text",
     "radio-type-question": "radiobuttons", 
     "type-question":{"closed-question":"closed-question","open-question":"open-question"},
-    "closed-question": ["label-for-participant-profiling", "answers"],
+    "closed-question": ["label-for-participant-profiling", "checkbox-set-answer-accept-no-space", "answers"],
+    "checkbox-set-answer-accept-no-space": "checkboxes",
+    "set-answer-accept-no-space": {"answer-accept-no-space": "answer-accept-no-space"},
     "label-for-participant-profiling": "text",
     "open-question": ["answer-label", "feedbacks"],
     "answer-label": "text",
@@ -455,6 +457,20 @@ function updateOffsetConditions(index, elt){
     }
 }
 
+function getAnswerAcceptNoSpaceKeywords(element, keywords){
+    if ($(element).parent().find("[name$='answer-accept-no-space']:checked").length == 0) {
+        return keywords;
+    }
+    var noSpacedKeywords = []
+    for(var i=0; i<keywords.length; i++) {
+        $(element).parent().find("input[name$='choice']").each(function(){ 
+                noSpacedKeywords.push(keywords[i]+$(this).val());
+        })
+    }
+
+    return keywords.concat(noSpacedKeywords);
+}
+
 
 function duplicateKeywordValidation(value, element, param) {    
     var isValid = false;
@@ -462,6 +478,7 @@ function duplicateKeywordValidation(value, element, param) {
     var isKeywordUsedInSameScript = false;
     var errors = {}
     var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
+    keywords = getAnswerAcceptNoSpaceKeywords(element, keywords);
     var pattern = /[^a-zA-Z0-9]/g;
     for(var x=0;x<keywords.length;x++) {
         if (pattern.test(keywords[x])) {
@@ -475,12 +492,11 @@ function duplicateKeywordValidation(value, element, param) {
             return true;
         }
     }
-    
     $.each($("input[name*='keyword']"), function(index, element){
         var elementWords = $(element).val().replace(/\s/g, '').split(',');
-        
         for(var x=0;x<keywords.length;x++) {
             if (!$(keywordInput).is(element)) {
+                elementWords = getAnswerAcceptNoSpaceKeywords(element, elementWords);
                 for (var y=0;y<elementWords.length;y++) {                
                     if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
                         errorMessage = wrapErrorMessage(elementWords[y]+ localized_errors.validation_keyword_used_same_script_error);
@@ -491,7 +507,7 @@ function duplicateKeywordValidation(value, element, param) {
                     if ($(element).hasClass('error')) { // a kind of re-validation 
                     	$(element).next("label").children('span.ttc-validation-error').remove();
                         $(element).removeClass('error').addClass('valid');
-		        $(element).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");                        
+                        $(element).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");                        
                     }
                 }
             }
@@ -527,7 +543,7 @@ function duplicateKeywordValidation(value, element, param) {
             url: url,
             type: "POST",
             async: false,
-            data: { 'keyword': $(keywordInput).val(), 
+            data: { 'keyword': keywords.join(", "), 
                 'dialogue-id': $("[name$=dialogue-id]").val(),
                 'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
