@@ -73,8 +73,7 @@ var program = {"script": [
         "announcement":"announcement",
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
-    "question-answer-keyword": ["content", "closed-question", "checkbox-set-reminder"],
-    "closed-question": ["label-for-participant-profiling", "answer-keywords"],
+    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -358,7 +357,7 @@ function activeForm(){
                 }
             });
     });
-    $("input[name*='keyword']").each(function (item) {
+    $("input[name*='\.keyword']").each(function (item) {
                $(this).rules("add",{
                      required:true,
                     keywordUnique:true,
