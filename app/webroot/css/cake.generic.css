@@ -341,7 +341,8 @@ option {
 input[type=checkbox] {
 	clear: left;
 	/*float: left;*/
-	margin: 6px 0px;
+	/*margin-top: 6px;
+	margin-left: 4px;*/
 	width: auto;
 }
 div.checkbox label {
