@@ -171,11 +171,12 @@ class ProgramParticipantsController extends AppController
             );
         
         $activeInteractions   = $this->Dialogue->getActiveInteractions();
-        $conditions           = array('participant-phone' => $participant['Participant']['phone']);
-        $schedules            = $this->Schedule->generateSchedule(
-                                    $this->Schedule->summary($conditions),
-                                    $activeInteractions
-                                );
+        $activeDialogues = $this->Dialogue->getActiveDialogues();
+        $schedules = $this->Schedule->getParticipantSchedules(
+                                    $participant['Participant']['phone'],
+                                    $activeDialogues,
+                                    $activeInteractions);
+       
         $this->set(compact('participant','histories', 'schedules'));
     }
 
