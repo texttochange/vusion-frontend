@@ -57,8 +57,6 @@ var localized_labels = {
     "enrolling": "<?php echo __('Enroll in an active dialogue')?>",
     "tagging": "<?php echo __('Tag')?>",
     "reset": "<?php echo __('Reset')?>",
-    "messaging": "<?php echo __('Send a message')?>",
-    "action-messaging-content": "<?php echo __('Content')?>",
     "add": "<?php echo __('Add')?>",
     "remove": "<?php echo __('Remove')?>",
     "responses": "<?php echo __('Responses')?>",
