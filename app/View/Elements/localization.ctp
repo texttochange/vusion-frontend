@@ -65,9 +65,14 @@ var localized_labels = {
     "action": "<?php echo __('Action')?>",
     "save": "<?php echo __('Save')?>",
     "reminder": "<?php echo __('Set Reminder')?>",
-    "number": "<?php echo __('Number')?>",    
+    "reminder-number": "<?php echo __('Number of Reminder(s)')?>",
+    "reminder-minutes": "<?php echo __('Reminder every x minutes')?>",        
+    "reminder-days": "<?php echo __('Reminder every x days')?>",
+    "reminder-at-time": "<?php echo __('At the time')?>",        
     "reminder-actions": "<?php echo __('Actions')?>",
     "reminder-action": "<?php echo __('Action')?>",
-    "offset-condition": "<?php echo __('Answer Required')?>"
+    "offset-condition": "<?php echo __('Answer Required')?>",
+    "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
+    "use-template": "<?php echo __("Use template from program settings")?>",
 };
 
