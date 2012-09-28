@@ -69,6 +69,7 @@ var localized_labels = {
     "reminder-actions": "<?php echo __('Actions')?>",
     "reminder-action": "<?php echo __('Action')?>",
     "offset-condition": "<?php echo __('Answer Required')?>",
-    "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>"
+    "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
+    "use-template": "<?php echo __("Use template from program settings")?>",
 };
 
