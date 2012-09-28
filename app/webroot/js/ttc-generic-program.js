@@ -444,7 +444,7 @@ function updateOffsetConditions(index, elt){
     if (!(bucket instanceof Array)) {
         bucket = [bucket];
     }
-    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"]').parent().parent();
+    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"],[name$="type-interaction"]:checked:[value="question-answer-keyword"]').parent().parent();
     //Adding present interaction if not already there
     for (var i=0; i<currentQA.length; i++) {
         var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();

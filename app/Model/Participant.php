@@ -112,7 +112,7 @@ class Participant extends MongoModel
                     );
             }
             if (!isset($this->data['Participant']['profile']))
-                $this->data['Participant']['profile'] = array();
+                $this->data['Participant']['profile'] = null;
         }
 
         return true;
