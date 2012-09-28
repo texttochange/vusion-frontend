@@ -90,7 +90,8 @@ class Schedule extends MongoModel
     public function getParticipantSchedules($phone, $activeDialogues, $activeInteractions)
     {
         $schedules = $this->find('all', array(
-            'conditions' => array('participant-phone' => $phone)
+            'conditions' => array('participant-phone' => $phone),
+            'order' => array('date-time' => 'asc')
             ));
 
         foreach($schedules as &$schedule) {
