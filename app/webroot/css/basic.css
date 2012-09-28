@@ -139,11 +139,11 @@
 	background: #FFCB4B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):nth-child(odd) {
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):nth-child(odd) {
 	background: #FFD97B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):nth-child(even) {
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):nth-child(even) {
 	background: #FFCB4B;
 }
 
