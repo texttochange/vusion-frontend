@@ -412,8 +412,20 @@ function foldForm(){
         $(this).parent().append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
     else {        
         var elt = $(this);
-        generateFieldSummary(elt, name, 'choice');
-        generateFieldSummary(elt, name, 'keyword');
+        if ($('[name="'+name+'"]').children('[name*=".choice"]').length > 0) {
+	    generateFieldSummary(elt, name, 'choice');
+        } else if ($('[name="'+name+'"]').children('[name*=".keyword"]').length > 0) {
+	    generateFieldSummary(elt, name, 'keyword');
+	} else {
+    	    var action = $('[name="'+name+'.type-action"]:checked').val();
+    	    if (action == null)
+    	    	    action = $('[name="'+name+'.type-answer-action"]:checked').val();
+    	    if (action == null)
+    	    	    action = $('[name="'+name+'.type-reminder-action"]:checked').val();
+    	    if (action && action != "") {
+    	    	    $(elt).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
+    	    }
+	}
     }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
@@ -423,15 +435,6 @@ function generateFieldSummary(elt, parentName, field)
     var fieldValue = $('[name="'+parentName+'.'+field+'"]').val();
     if (fieldValue && fieldValue != "") {
     	    $(elt).parent().append('<div class="ttc-fold-summary">'+fieldValue+'</div>');
-    } else {
-    	    var action = $('[name="'+parentName+'.type-action"]:checked').val();
-    	    if (action == null)
-    	    	    action = $('[name="'+parentName+'.type-answer-action"]:checked').val();
-    	    if (action == null)
-    	    	    action = $('[name="'+parentName+'.type-reminder-action"]:checked').val();
-    	    if (action && action != "") {
-    	    	    $(elt).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
-    	    }
     }
 }
 
