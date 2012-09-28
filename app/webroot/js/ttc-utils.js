@@ -255,7 +255,7 @@ function addContentFormHelp(baseUrl) {
             function (key, elt){
                     $("<img class='ttc-help' src='/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
             });
-    $.each($("[name*='keyword']").prev("label").not(":has(img)"),
+    $.each($("[name*='\.keyword']").prev("label").not(":has(img)"),
             function (key, elt){
                     $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
             });

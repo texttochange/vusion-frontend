@@ -71,7 +71,12 @@ var program = {"script": [
     "radio-type-interaction":"radiobuttons",
     "type-interaction": {
         "announcement":"announcement",
-        "question-answer":"question"},
+        "question-answer":"question",
+        "question-answer-keyword": "question-multi-keyword"},
+    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    "answer-keywords":["add-answer-keyword"],
+    "add-answer-keyword":"button",
+    "answer-keyword": ["keyword","feedbacks", "answer-actions"],
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
@@ -350,7 +355,7 @@ function activeForm(){
                 }
             });
     });
-    $("input[name*='keyword']").each(function (item) {
+    $("input[name*='\.keyword']").each(function (item) {
                $(this).rules("add",{
                      required:true,
                     keywordUnique:true,
@@ -403,22 +408,32 @@ function foldForm(){
     var summary = $('[name="'+name+'.content"]').val();
     if (summary && summary != "")
         $(this).parent().append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
-    else {
-        var choice = $('[name="'+name+'.choice"]').val();
-        if (choice && choice != "") {
-            $(this).parent().append('<div class="ttc-fold-summary">'+choice+'</div>');
-        } else {
-            var action = $('[name="'+name+'.type-action"]:checked').val();
-            if (action == null)
-                action = $('[name="'+name+'.type-answer-action"]:checked').val();
-            if (action == null)
-                action = $('[name="'+name+'.type-reminder-action"]:checked').val();
-            if (action && action != "") {
-                $(this).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
-            }
-        }
+    else {        
+        var elt = $(this);
+        if ($('[name="'+name+'"]').children('[name*=".choice"]').length > 0) {
+	    generateFieldSummary(elt, name, 'choice');
+        } else if ($('[name="'+name+'"]').children('[name*=".keyword"]').length > 0) {
+	    generateFieldSummary(elt, name, 'keyword');
+	} else {
+    	    var action = $('[name="'+name+'.type-action"]:checked').val();
+    	    if (action == null)
+    	    	    action = $('[name="'+name+'.type-answer-action"]:checked').val();
+    	    if (action == null)
+    	    	    action = $('[name="'+name+'.type-reminder-action"]:checked').val();
+    	    if (action && action != "") {
+    	    	    $(elt).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
+    	    }
+	}
     }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
+}
+
+function generateFieldSummary(elt, parentName, field)
+{
+    var fieldValue = $('[name="'+parentName+'.'+field+'"]').val();
+    if (fieldValue && fieldValue != "") {
+    	    $(elt).parent().append('<div class="ttc-fold-summary">'+fieldValue+'</div>');
+    }
 }
 
 //TODO need to generate a interaction id there.
