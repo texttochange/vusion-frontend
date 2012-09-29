@@ -175,7 +175,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
 
         $dialogue = $this->ScriptMaker->getOneDialogue(); 
 
-        $savedDialogue = $this->Home->Dialogue->saveDialogue($dialogue);
+        $savedDialogue = $this->Home->Dialogue->saveDialogue($dialogue['Dialogue']);
         $this->Home->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
         
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');

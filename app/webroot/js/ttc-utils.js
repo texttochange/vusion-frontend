@@ -1,8 +1,5 @@
 function getNewDateUsingTimezone(){
-    date = new Date.parse(Date.now().toString('dd/MM/yyyy')+ " "+$('.ttc-program-time').text().trim().substr(-8,5));
-    localTime = date.getTime(); // in milliseconds
-    newDate = new Date(localTime);
-    return newDate;
+    return moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(); 
 }
 
 function getCountryCodes(country){
@@ -258,7 +255,7 @@ function addContentFormHelp(baseUrl) {
             function (key, elt){
                     $("<img class='ttc-help' src='/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
             });
-    $.each($("[name*='keyword']").prev("label").not(":has(img)"),
+    $.each($("[name*='\.keyword']").prev("label").not(":has(img)"),
             function (key, elt){
                     $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
             });
@@ -279,9 +276,31 @@ function vusionAjaxError(jqXHR, textStatus, errorThrown){
         $('#flashMessage').show().text(localized_errors['vusion_ajax_action_failed']+this.userAction).attr('class', 'message failure');
     }
     if (textStatus == 'timeout') {
-    	    $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
-         return;
+        $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
     }
+}
+
+function saveAjaxError(jqXHR, textStatus, errorThrown){
+    if (this.userAction) {
+        $('#flashMessage').show().text(localized_errors['vusion_ajax_action_failed']+this.userAction).attr('class', 'message failure');
+    }
+    if (textStatus == 'timeout') {
+        $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
+    }
+    reactivateSaveButtons();
+}
+
+function disableSaveButtons(){
+    $("#button-save").unbind("click");
+    $('input[type="submit"]').attr("disabled", true);	
+}
+
+function reactivateSaveButtons(){
+    $('input[type="submit"]').removeAttr("disabled");
+    $("#button-save").bind("click", function(){
+        disableSaveButtons();        
+        $("#dynamic-generic-program-form").submit();
+    });
 }
 
 
@@ -326,34 +345,8 @@ function logMessageSent(){
 }
 
 function updateClock(){
-	originalTimeString = $('.ttc-program-time').text();
-	currentTime = $('.ttc-program-time').text().trim().substr(-8,8);
-	currentTimeArray = currentTime.split(':');
-	currentHours = Number(currentTimeArray[0]);
-	currentMinutes = Number(currentTimeArray[1]);
-	currentSeconds = Number(currentTimeArray[2]);
-	
-	currentSeconds = currentSeconds + 1;
-	if (currentSeconds > 59) {
-		currentMinutes += 1;
-		if (currentMinutes > 59) {
-			currentHours += 1;
-			if (currentHours > 23) {
-				currentHours = 0;
-			}
-			currentMinutes = 0;
-		}
-		currentSeconds = 0;
-	}
-	
-	// Pad the hours, minutes and seconds with leading zeros, if required
-	currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
-	currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
-	currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
-	
-	currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
-	newTimeString = originalTimeString.replace(currentTime, currentTimeString);
-	$('.ttc-program-time').text(newTimeString);
+	var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
+	$("#local-date-time").text(newTime);	
 }
 
 function addStackFilter(){
@@ -464,3 +457,22 @@ function supplyConditionOptions(fieldOption){
 	
 }
 
+
+function S4() {
+   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+}
+function guid() {
+   return (S4()+S4()+S4());
+}
+
+//Necessary for IE browser
+if (!Array.indexOf) {
+  Array.prototype.indexOf = function (obj, start) {
+    for (var i = (start || 0); i < this.length; i++) {
+      if (this[i] == obj) {
+        return i;
+      }
+    }
+    return -1;
+  }
+}

@@ -20,7 +20,7 @@ class Schedule extends MongoModel
 
     function getRequiredFields($objectType='dialogue-schedule')
     {
-        if ($objectType=='dialogue-schedule'){
+        if ($objectType=='dialogue-schedule' or $objectType =='reminder-schedule' or $objectType =='deadline-schedule'){
             return array(
                 'participant-phone',
                 'dialogue-id',
@@ -40,6 +40,12 @@ class Schedule extends MongoModel
                 'date-time',
                 'content',
                 );
+        } elseif ($objectType=='action-schedule'){
+            return array(
+                'participant-phone',
+                'date-time',
+                'action',
+                );
         }
         throw new Exception("Object-type not supported:".$objectType);
         
@@ -56,7 +62,6 @@ class Schedule extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $options                 = array('database'=>$id['database']);
-        //$this->Dialogue          = new Dialogue($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->DialogueHelper    = new DialogueHelper();
     }
@@ -72,17 +77,60 @@ class Schedule extends MongoModel
         return $results;
     }
 
+    protected function getDialogueName($dialogueId, $activeDialogues)
+    {
+        foreach($activeDialogues as $activeDialogue) {
+            if ($dialogueId == $activeDialogue['dialogue-id']) {
+                return $activeDialogue['Dialogue']['name'];
+            }
+        }
+        return __("Error: dialogue not found");
+    }
 
-    public function summary()
+    public function getParticipantSchedules($phone, $activeDialogues, $activeInteractions)
+    {
+        $schedules = $this->find('all', array(
+            'conditions' => array('participant-phone' => $phone),
+            'order' => array('date-time' => 'asc')
+            ));
+
+        foreach($schedules as &$schedule) {
+             if (isset($schedule['Schedule']['interaction-id'])) {
+                $interaction = $this->DialogueHelper->getInteraction(
+                    $activeInteractions,
+                    $schedule['Schedule']['interaction-id']
+                    );
+                if (isset($interaction['content']))
+                    $schedule['Schedule']['content'] = '"'.$interaction['content'].'"';
+            }
+            elseif (isset($schedule['Schedule']['unattach-id'])) {
+                $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
+                if (isset($unattachedMessage['UnattachedMessage']['content']))
+                    $schedule['Schedule']['content'] = '"'.$unattachedMessage['UnattachedMessage']['content'].'"';
+            }
+            if ($schedule['Schedule']['object-type']=='action-schedule') {
+                $details = $schedule['Schedule']['action']['type-action'];
+                if ($schedule['Schedule']['action']['type-action'] == 'enrolling') {
+                    $details = $details." in ".$this->getDialogueName($schedule['Schedule']['action']['enroll'], $activeDialogues);
+                }
+                 $schedule['Schedule']['content'] = $details;
+            }
+        }
+        return $schedules;
+    }
+
+    public function summary($conditions)
     {
         $scriptQuery = array(
             'key' => array(
                 'dialogue-id' => true,                
                 'interaction-id' => true,
                 'date-time' => true,
+                'object-type'=>true,
                 ),
             'initial' => array('csum' => 0),
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
+            'options' => array('condition'=> $conditions),
             );
 
         $tmp = $this->getDataSource()->group($this, $scriptQuery);
@@ -138,7 +186,7 @@ class Schedule extends MongoModel
     
     public function generateSchedule($schedules,$activeInteractions)
     {
-        foreach ($schedules as &$schedule) {
+        foreach ($schedules as &$schedule) {            
             if (isset($schedule['interaction-id'])) {
                 $interaction = $this->DialogueHelper->getInteraction(
                     $activeInteractions,
@@ -152,6 +200,7 @@ class Schedule extends MongoModel
                 if (isset($unattachedMessage['UnattachedMessage']['content']))
                     $schedule['content'] = $unattachedMessage['UnattachedMessage']['content'];
             }
+            
         }
         return $schedules;
     }

@@ -54,6 +54,12 @@
 	    echo $this->Form->checkbox('support-customized-id');
 	?>
 	</div>
+	<div>
+	<?php
+	    echo $this->Html->tag('label',__('Supported Internationally'));
+	    echo $this->Form->checkbox('supported-internationally');
+	?>
+	</div>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>

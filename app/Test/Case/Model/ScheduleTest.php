@@ -58,6 +58,13 @@ class ScheduleTestCase extends CakeTestCase
               array(
                   'object-type' => 'feedback-schedule',
                   'content-type' => 'feedback',
+                 ),
+             array(
+                 'object-type' => 'reminder-schedule',
+                 'dialogue-id' => 'someId',
+                 'interaction-id' => 'someOtherId2',
+                 'date-time' => '2013-04-12T13:10',
+                 'participant-phone' => '07'
                  )
              );
 
@@ -66,10 +73,12 @@ class ScheduleTestCase extends CakeTestCase
              $this->Schedule->save($schedule);
          }
 
-         $result = $this->Schedule->summary();
+         $conditions = array('object-type'=>'dialogue-schedule');
+         $result = $this->Schedule->summary($conditions);
          $this->assertEquals("2", $result[0]['csum']);
          $this->assertEquals("1", $result[1]['csum']);
          $this->assertEquals("1", $result[2]['csum']); 
     }
+    
 
 }

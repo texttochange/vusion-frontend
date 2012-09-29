@@ -340,8 +340,9 @@ option {
 }
 input[type=checkbox] {
 	clear: left;
-	float: left;
-	margin: 0px 6px 7px 2px;
+	/*float: left;*/
+	/*margin-top: 6px;
+	margin-left: 4px;*/
 	width: auto;
 }
 div.checkbox label {
@@ -419,6 +420,7 @@ form .error-message {
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
+	z-index: 10;
 }
 
 .success,

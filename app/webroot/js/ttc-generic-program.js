@@ -11,24 +11,24 @@ var program = {"script": [
     "phone":"text",
     "dialogues": ["add-dialogue"],
     "add-dialogue":"button",
-    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id"],
+    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id", "activated"],
     "dialogue-id": "hidden",
     "auto-enrollment": "select",
     "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "interactions":["add-interaction"],
-    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id"],
+    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id", "activated"],
     "interaction-id":"hidden",
+    "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "radio-type-question"],
-    "radio-type-reminder":"radiobuttons",
-    "type-reminder":{"no-reminder":"No reminder","reminder":"Reminder"},
-    "reminder":["number","every"],
-    "number":"text",
-    "every":"text",
+    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-reminder"],
+    "checkbox-set-use-template": "checkboxes",
+    "set-use-template": {"use-template": "use-template"},
     "radio-type-question": "radiobuttons", 
     "type-question":{"closed-question":"closed-question","open-question":"open-question"},
-    "closed-question": ["label-for-participant-profiling", "answers"],
+    "closed-question": ["label-for-participant-profiling", "checkbox-set-answer-accept-no-space", "answers"],
+    "checkbox-set-answer-accept-no-space": "checkboxes",
+    "set-answer-accept-no-space": {"answer-accept-no-space": "answer-accept-no-space"},
     "label-for-participant-profiling": "text",
     "open-question": ["answer-label", "feedbacks"],
     "answer-label": "text",
@@ -46,7 +46,7 @@ var program = {"script": [
     "add-answer-action": "button",
     "answer-action": ["radio-type-answer-action"],
     "radio-type-answer-action": "radiobuttons",
-    "type-answer-action": {"optin":"optin", "optout": "optout", "enrolling":"enrolling",  "tagging":"tagging"},
+    "type-answer-action": {"optin":"optin", "optout": "optout", "enrolling":"enrolling", "delayed-enrolling": "delayed-enrolling", "tagging":"tagging", "reset":"reset", "feedback":"feedback"},
     "add-request":"button",
     "Request": ["keyword", "responses", "actions"],
     "responses":["add-response"],
@@ -57,12 +57,13 @@ var program = {"script": [
     "add-action":"button",
     "add-feedback":"button",
     "action":["radio-type-action"],
-    "type-action": {"optin": "optin", "optout": "optout", "enrolling":"enrolling",  "tagging":"tagging"},
+    "type-action": {"optin": "optin", "optout": "optout", "enrolling":"enrolling", "delayed-enrolling": "delayed-enrolling", "tagging":"tagging", "reset":"reset", "feedback":"feedback"},
     "choice":"text",
     "tagging":["tag"],
     "tag":"text",
     "enrolling":["enroll"],
     "enroll":"select",
+    "delayed-enrolling":["enroll", "offset-days"],
     "add-request-reply":'button',
     "request-reply":["keyword","add-feedback","radio-type-action"],
     "id":"text",
@@ -70,30 +71,49 @@ var program = {"script": [
     "radio-type-interaction":"radiobuttons",
     "type-interaction": {
         "announcement":"announcement",
-        "question-answer":"question"},
+        "question-answer":"question",
+        "question-answer-keyword": "question-multi-keyword"},
+    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    "answer-keywords":["add-answer-keyword"],
+    "add-answer-keyword":"button",
+    "answer-keyword": ["keyword","feedbacks", "answer-actions"],
     "radio-type-schedule":"radiobuttons",
     "type-schedule": {
         "fixed-time":"fixed-time",
-        "offset-days":"offset-days"},
+        "offset-days":"offset-days",
+        "offset-time":"offset-time",
+        "offset-condition": "offset-condition"},
+    "radio-type-schedule-reminder":"radiobuttons",
+    "type-schedule-reminder": {
+        "reminder-offset-time":"offset-time",
+        "reminder-offset-days":"offset-days"},
     "content":"textarea",
     "date": "text",
-    //"fixed-time":["date-time","year","month","day","hour","minute"],
     "fixed-time":["date-time"],
     "date-time":"text",
-    //"year":"text",
-    //"month":"text",
-    //"day":"text",
-    //"hour":"text",
-    //"minute":"text",
-    //"wait":["days","minutes"],
+    "offset-time":["minutes"],
     "offset-days":["days","at-time"],
+    "reminder-offset-time":["reminder-minutes"],
+    "reminder-offset-days":["reminder-days","reminder-at-time"],
+    "reminder-days":"text",
+    "reminder-minutes":"text",
+    "reminder-at-time":"text",
+    "offset-condition": ["offset-condition-interaction-id"],
+    "offset-condition-interaction-id": "select",
     "wait-answer": ["minutes"],
     "days":"text",
-    //"minutes":"text",
+    "minutes":"text",
     "at-time":"text",
     "time": "text",
     "keyword":"text",
-    "feedback":["content"]
+    "feedback":["content"],
+    "checkbox-set-reminder":"checkboxes",
+    "set-reminder": {"reminder":"reminder"},
+    "reminder":["reminder-number","radio-type-schedule-reminder","reminder-actions"],
+    "reminder-number":"text",
+    "reminder-actions": ["add-reminder-action"],
+    "add-reminder-action": "button",
+    "reminder-action": ["radio-type-action"],
 };
 
 (function($)
@@ -130,6 +150,14 @@ var program = {"script": [
             activeForm();
             //On load fold every element 
             $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
+            /*$("[name='Dialogue.interactions']").sortable({axis: 'y', cancel: 'button'});
+            $("[name='Dialogue.interactions'] input").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions'] textarea").bind('click.sortable mousedown.sortable',function(ev){
+                ev.target.focus();
+            });
+            $("[name='Dialogue.interactions']").disableSelection();*/
         },
     });
 })(jQuery);
@@ -151,6 +179,7 @@ function saveFormOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                reactivateSaveButtons();
                 return;
             }
             if (location.href.indexOf(response['dialogue-obj-id'])<0){
@@ -163,11 +192,12 @@ function saveFormOnServer(){
                     }, 3000);
             } else {
                 $("#flashMessage").attr('class', 'message success').show().text(response['message']);
-                $("#flashMessage").delay(3000).fadeOut(1000)
+                $("#flashMessage").delay(3000).fadeOut(1000);
+                reactivateSaveButtons();
             }
         },
         timeout: 1000,
-        error: vusionAjaxError,
+        error: saveAjaxError,
         userAction: localized_actions['save_dialogue'],
     });
 }
@@ -189,6 +219,7 @@ function saveRequestOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                reactivateSaveButtons();
                 return;
             }
             if (location.href.indexOf("add")>0 && location.href.indexOf(response['request-id'])<0){
@@ -199,6 +230,7 @@ function saveRequestOnServer(){
             } else {
                 $("#flashMessage").attr('class', 'message success').show().text(response['message']);
                 $("#flashMessage").delay(3000).fadeOut(1000)
+                reactivateSaveButtons();
             }
         },
         timeout: 1000,
@@ -214,6 +246,7 @@ function convertDateToIso(data) {
 function clickBasicButton(){
                     
     //alert("click on add element "+$(this).prev('legend'));
+    var object = null;
     var id = $(this).prevAll("fieldset").length;
     var eltLabel = $(this).attr('label');
     var tableLabel = $(this).parent().attr('name');
@@ -225,8 +258,11 @@ function clickBasicButton(){
     var parent = $(this).parent();
     
     var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
-        
-    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
+    
+    if (eltLable='interaction') {
+        object = {"interaction-id":guid()}
+    }    
+    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]", object);
     
     $(parent).formElement(expandedElt);
     
@@ -239,6 +275,11 @@ function clickBasicButton(){
     
 };
 
+function hiddeUndisabled(key, item){
+    $(item).attr("disabled", true);
+    $(item).after("<input type='hidden' name='"+$(item).attr('name')+"' value='"+$(item).val()+"'/>")
+}
+
 function activeForm(){
     $.each($('.ui-dform-addElt'),function(item,value){
             if (!$.data(value,'events')) {
@@ -248,6 +289,11 @@ function activeForm(){
     $.each($("input[name*='type-']"),function (key, elt){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateRadioButtonSubmenu);
+            };
+    });
+    $.each($("select[name*='offset-condition-interaction-id']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).mouseover(updateOffsetConditions);
             };
     });
     $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
@@ -261,36 +307,45 @@ function activeForm(){
             $(elt).before(deleteButton);
             
     });
-    $.each($("input[name*='date-time']"), function (key,elt){
-            if (!$.data(elt,'events')){
-                $(elt).datetimepicker({
-                timeFormat: 'hh:mm',
-                timeOnly: false,
-                dateFormat:'dd/mm/yy'});
-            };
-    });
     $.each($("input[name*='at-time']"), function (key,elt){
             if (!$.data(elt,'events')){
                 $(elt).timepicker({
                 timeFormat: 'hh:mm'});
             };
     });
-
-    $("#dynamic-generic-program-form").validate({
-            submitHandler: function(form) {
-                form.submit();
-            },
-            onkeyup: false,
-//            validClass: "success",
+    $.each($("input[name*='reminder']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).change(updateCheckboxSubmenu);
+            };
     });
-    $("input[name*='date-time']").each(function (item) {
-            $(this).rules("add",{
-                required:true,
-                greaterThanOrEqualTo: Date.now().toString("dd/MM/yyyy HH:mm"),
-                messages:{
-                    required: wrapErrorMessage(localized_errors.validation_required_error),
-                }
-            });
+    $("input[name*='date-time']").each(function (key, item) {
+            if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
+                $(this).parent().parent().find("input").attr("readonly", true);
+                $(this).parent().parent().find("textarea").attr("readonly", true);
+                $(this).parent().parent().find("input[type='radio']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().find("input[type='checkbox']:checked").each(hiddeUndisabled);
+                $(this).parent().parent().addClass("ttc-interaction-disabled");
+            } else {
+                if (!$.data(item,'events')){
+                    $(item).datetimepicker({
+                            timeFormat: 'hh:mm',
+                            timeOnly: false,
+                            dateFormat:'dd/mm/yy',
+                            defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
+                            onSelect:function(){
+                                $("#dynamic-generic-program-form").valid()},
+                            onClose: function(){
+                                $("#dynamic-generic-program-form").valid()
+                    }});
+                    $(item).rules("add",{
+                            required:true,
+                            isInThePast: $("#local-date-time").html(),
+                            messages:{
+                                required: wrapErrorMessage(localized_errors.validation_required_error),
+                            }
+                    });
+                };
+            } 
     });
     $("input[name*='at-time']").each(function (item) {
             $(this).rules("add",{
@@ -300,7 +355,7 @@ function activeForm(){
                 }
             });
     });
-    $("input[name*='keyword']").each(function (item) {
+    $("input[name*='\.keyword']").each(function (item) {
                $(this).rules("add",{
                      required:true,
                     keywordUnique:true,
@@ -334,6 +389,8 @@ function activeForm(){
     });
     
     addContentFormHelp();
+
+    
 }
 
 function expandForm(){
@@ -351,21 +408,88 @@ function foldForm(){
     var summary = $('[name="'+name+'.content"]').val();
     if (summary && summary != "")
         $(this).parent().append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
-    else {
-        var choice = $('[name="'+name+'.choice"]').val();
-        if (choice && choice != "") {
-            $(this).parent().append('<div class="ttc-fold-summary">'+choice+'</div>');
-        } 
+    else {        
+        var elt = $(this);
+        if ($('[name="'+name+'"]').children('[name*=".choice"]').length > 0) {
+	    generateFieldSummary(elt, name, 'choice');
+        } else if ($('[name="'+name+'"]').children('[name*=".keyword"]').length > 0) {
+	    generateFieldSummary(elt, name, 'keyword');
+	} else {
+    	    var action = $('[name="'+name+'.type-action"]:checked').val();
+    	    if (action == null)
+    	    	    action = $('[name="'+name+'.type-answer-action"]:checked').val();
+    	    if (action == null)
+    	    	    action = $('[name="'+name+'.type-reminder-action"]:checked').val();
+    	    if (action && action != "") {
+    	    	    $(elt).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
+    	    }
+	}
     }
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
 
+function generateFieldSummary(elt, parentName, field)
+{
+    var fieldValue = $('[name="'+parentName+'.'+field+'"]').val();
+    if (fieldValue && fieldValue != "") {
+    	    $(elt).parent().append('<div class="ttc-fold-summary">'+fieldValue+'</div>');
+    }
+}
+
+//TODO need to generate a interaction id there.
+function updateOffsetConditions(index, elt){
+    var bucket = []; 
+    var i =0;
+    $(this).children().each(function(){bucket[i]=this.value; i++;});
+    if (!(bucket instanceof Array)) {
+        bucket = [bucket];
+    }
+    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"],[name$="type-interaction"]:checked:[value="question-answer-keyword"]').parent().parent();
+    //Adding present interaction if not already there
+    for (var i=0; i<currentQA.length; i++) {
+        var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
+        bucket.splice(bucket.indexOf(interactionId), 1);
+        if ($(this).children("[value='"+interactionId+"']").length==0)
+            $(this).append("<option class='ui-dform-option' value='"+
+                interactionId+"'>"+
+                $(currentQA[i]).find('[name$="content"]').val()+"</option>")
+        else
+            $(this).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
+    } 
+    //Removing deleted interactions
+    for (var i=0; i<bucket.length; i++) {
+        //Do not delete the default choice
+        if (bucket[i]==0) {
+            continue
+        }
+        $(this).children("[value='"+bucket[i]+"']").remove();
+        defaultOptions = window.app['offset-condition-interaction-idOptions']
+        defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
+    }
+}
+
+function getAnswerAcceptNoSpaceKeywords(element, keywords){
+    if ($(element).parent().find("[name$='answer-accept-no-space']:checked").length == 0) {
+        return keywords;
+    }
+    var noSpacedKeywords = []
+    for(var i=0; i<keywords.length; i++) {
+        $(element).parent().find("input[name$='choice']").each(function(){ 
+                noSpacedKeywords.push(keywords[i]+$(this).val());
+        })
+    }
+
+    return keywords.concat(noSpacedKeywords);
+}
+
 
 function duplicateKeywordValidation(value, element, param) {    
+    var isValid = false;
     var keywordInput = element;
     var isKeywordUsedInSameScript = false;
     var errors = {}
     var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
+    keywords = getAnswerAcceptNoSpaceKeywords(element, keywords);
     var pattern = /[^a-zA-Z0-9]/g;
     for(var x=0;x<keywords.length;x++) {
         if (pattern.test(keywords[x])) {
@@ -379,12 +503,11 @@ function duplicateKeywordValidation(value, element, param) {
             return true;
         }
     }
-    
     $.each($("input[name*='keyword']"), function(index, element){
         var elementWords = $(element).val().replace(/\s/g, '').split(',');
-        
         for(var x=0;x<keywords.length;x++) {
             if (!$(keywordInput).is(element)) {
+                elementWords = getAnswerAcceptNoSpaceKeywords(element, elementWords);
                 for (var y=0;y<elementWords.length;y++) {                
                     if (keywords[x].toLowerCase() == elementWords[y].toLowerCase()) {
                         errorMessage = wrapErrorMessage(elementWords[y]+ localized_errors.validation_keyword_used_same_script_error);
@@ -395,7 +518,7 @@ function duplicateKeywordValidation(value, element, param) {
                     if ($(element).hasClass('error')) { // a kind of re-validation 
                     	$(element).next("label").children('span.ttc-validation-error').remove();
                         $(element).removeClass('error').addClass('valid');
-		        $(element).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");                        
+                        $(element).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");                        
                     }
                 }
             }
@@ -411,11 +534,27 @@ function duplicateKeywordValidation(value, element, param) {
         
     var url = location.href.indexOf("edit/")<0 ? "./validateKeyword.json" : "../validateKeyword.json"; 
     
+    function validateKeywordReply(data, textStatus) {
+        var elt = $("[name='"+this.inputName+"']");
+        $('#connectionState').hide();
+        if (data.status=='fail') { //not used
+            if ($(elt).prev("label").has('.ttc-ok')) {
+                $(elt).prev("label").children('img.ttc-ok').remove();
+            }
+                errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+                isValid = false;
+        } else {
+    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
+    	    isValid = true;
+    	}
+    };
+
+
     $.ajax({
             url: url,
             type: "POST",
             async: false,
-            data: { 'keyword': $(keywordInput).val(), 
+            data: { 'keyword': keywords.join(", "), 
                 'dialogue-id': $("[name$=dialogue-id]").val(),
                 'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
@@ -423,25 +562,11 @@ function duplicateKeywordValidation(value, element, param) {
             timeout: 1000,
             error: vusionAjaxError,
     });
+    if (!isValid) {
+        this.showErrors(errors);
+    }   
     return true;
 }
-
-function validateKeywordReply(data, textStatus) {
-    var elt = $("[name='"+this.inputName+"']");
-    $('#connectionState').hide();
-    if (data.status=='fail') { //not used
-    //    $(elt).before("<p style='color:green'> ok </p>");
-        //else    //already used in another Program
-        if ($(elt).prev("label").has('.ttc-ok')) {
-        	$(elt).prev("label").children('img.ttc-ok').remove();
-        }
-            var errors = {};
-            errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
-            $("#dynamic-generic-program-form").validate().showErrors(errors);
-    } else {
-    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
-    }
-};
 
 
 function isArray(obj) {
@@ -468,6 +593,9 @@ function updateRadioButtonSubmenu() {
     var elt = this;
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
+    if (name == null) {
+        name = $(elt).parent().parent().parent().parent().attr("name");
+    }
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
         $(box).remove();
@@ -479,7 +607,7 @@ function updateRadioButtonSubmenu() {
          "radiochildren":"radiochildren",
          "name":name,
              "elements":[]};
-    var name = $(elt).parent().parent().attr('name');
+    //var name = $(elt).parent().parent().attr('name');
     configToForm($(elt).attr('value'), newContent, name);
     
     $(elt).parent().formElement(newContent);
@@ -494,6 +622,38 @@ function updateRadioButtonSubmenu() {
     activeForm();
 };
 
+function updateCheckboxSubmenu() {
+    //var elt = event.currentTarget;
+    var elt = this;
+    var box = $(elt).parent().next("fieldset"); 
+    var name = $(elt).parent().parent().attr("name");
+    var label = $(elt).next().text();
+    if (box && $(box).attr('radiochildren')){
+        $(box).remove();
+    }
+    
+    if ($(elt).attr('checked')) {
+        var newContent = {
+             "type":"fieldset",
+             "caption": label,
+             "radiochildren":"radiochildren",
+             "name":name,
+                "elements":[]};
+        var name = $(elt).parent().parent().attr('name');
+        configToForm($(elt).attr('value'), newContent, name);
+    
+        $(elt).parent().formElement(newContent);
+    
+        var newElt = $(elt).nextAll('fieldset');
+    
+        $(elt).parent().after($(newElt).clone());
+        //$(newElt).clone().appendTo($(elt).parent());
+        $(newElt).remove();
+        //$(elt).parent().after($(newElt).clone());
+    }
+    activeForm();
+};
+
 
 function configToForm(item,elt,id_prefix,configTree){
     if (!program[item]){
@@ -504,6 +664,7 @@ function configToForm(item,elt,id_prefix,configTree){
         alert("structure is wrong, no array for: "+item);
     }
     var rabioButtonAtThisIteration = false;
+    var checkBoxAtThisIteration = false;
     program[item].forEach(function (sub_item){
             if (!isArray(program[sub_item]))
             {
@@ -562,6 +723,43 @@ function configToForm(item,elt,id_prefix,configTree){
                             "name":id_prefix+"."+radio_type,
                             "type": program[sub_item],
                             "options": checkedRadio
+                    });
+                    if (checkedItem){
+                        if (program[checkedItem]){
+                            var box = {
+                                "type":"fieldset",
+                                "caption": localize_label(checkedItem),
+                                "radiochildren":"radiochildren",
+                                "elements":[]
+                            };
+                            configToForm(checkedItem, box,id_prefix,configTree);
+                            if (box['type'])
+                                elt["elements"].push(box);
+                        };
+                    }
+                } else if (program[sub_item]=="checkboxes") {
+                	checkBoxAtThisIteration = true;
+                	var checkbox_type = sub_item.substring(9);
+                	var checkedCheckBox = {};
+                	var checkedItem;
+                	var checkedItemLabel;
+                	$.each(program[checkbox_type],function(k,v) {
+                	        if (configTree && k==configTree[checkbox_type]) {
+                	            checkedCheckBox[k] = {
+                	                "value": k, 
+                	                "caption": localize_label(v),
+                	                "checked":"checked"
+                	            }
+                	            checkedItem = k;
+                	            checkedItemLabel = localize_label(v);
+                	        } else {
+                	            checkedCheckBox[k] = localize_label(v);
+                	        }     
+                	})
+                	elt["elements"].push({
+                            "name":id_prefix+"."+checkbox_type,
+                            "type": program[sub_item],
+                            "options": checkedCheckBox
                     });
                     if (checkedItem){
                         if (program[checkedItem]){
@@ -681,6 +879,16 @@ function wrapErrorMessage(error) {
      return '<span class="ttc-validation-error">'+error+'</span>';
 }
 
+function isInFuture(dateTime) {
+    if (dateTime=="")
+        return true;
+    var time = moment(dateTime, "DD/MM/YYYY HH:mm")
+    var localTime = moment($('#local-date-time').text(), "DD/MM/YYYY HH:mm:ss")
+    if (time.diff(localTime) > 0)
+        return true;
+    return false;
+}
+
 function fromBackendToFrontEnd(type, object, submitCall) {
     //alert("function called");
     
@@ -693,14 +901,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     
     $.validator.addMethod(
-        "greaterThanOrEqualTo", 
+        "isInThePast", 
         function(value, element, params) {
             //alert(element.id);    
-            if (!/Invalid|NaN/.test(Date.parse(value))) {
+            if (!/Invalid|NaN/.test(moment(value, "DD/MM/YYYY HH:mm"))) {
                 //if (Date.parse(value).compareTo(Date.now())>0)
-                if (Date.parseExact(value, "dd/MM/yyyy HH:mm").compareTo(Date.parseExact(Date.now().toString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm"))>0)
-                    return true;
-                return false;
+                return isInFuture(value);
             }
             
             return isNaN(value) && isNaN(params) 
@@ -738,6 +944,15 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     var myform = {
         "action": submitCall,
+        "validate": {
+             submitHandler: function(form) {
+                 form.submit();
+             }, 
+             invalidHandler: function(form, validator){
+                 reactivateSaveButtons();
+             },
+             onkeyup: false,
+        },  
         "method": "post",
                 "elements": 
                 [    

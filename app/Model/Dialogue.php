@@ -24,6 +24,7 @@ class Dialogue extends MongoModel
             'activated',
             );
     }
+    
 
     var $findMethods = array(
         'draft' => true,
@@ -34,6 +35,7 @@ class Dialogue extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
+        
         $this->DialogueHelper = new DialogueHelper();
         $this->Schedule = new Schedule($id, $table, $ds);
     }
@@ -52,8 +54,12 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
+        parent::beforeValidate();
+
         if (!isset($this->data['Dialogue']['activated'])) {
             $this->data['Dialogue']['activated'] = 0;
+        } else {
+            $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
         }
 
         if (!isset($this->data['Dialogue']['dialogue-id'])) {
@@ -62,10 +68,20 @@ class Dialogue extends MongoModel
 
         if (isset($this->data['Dialogue']['interactions'])) {
             foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
-                if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="")
-                    $interaction['interaction-id'] = uniqid();
+                if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="") {
+                    $interaction['interaction-id'] = uniqid();  
+                }   
+                if (!isset($interaction['activated']) or $interaction['activated']==null) {
+                    $interaction['activated'] = 0;
+                }
+                if (!isset($interaction['type-interaction'])) {
+                    $interaction['type-interaction'] = null;
+                }
+                if (!isset($interaction['type-schedule'])) {
+                    $interaction['type-schedule'] = null;
+                }
                 # do something in here.
-                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'wait') 
+                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'offset-days') 
                     and (!isset($interaction['days']) or $interaction['days'] == ""))
                     $interaction['days'] = '0';
             }
@@ -78,7 +94,7 @@ class Dialogue extends MongoModel
 
     
     public function makeActive($objectId)
-    {
+    {      
         $this->id = $objectId;
         if (!$this->exists())
             return false;
@@ -86,11 +102,17 @@ class Dialogue extends MongoModel
         $dialogue['Dialogue']['activated'] = 1;
         if (isset($dialogue['Dialogue']['interactions'])) {
             $interactionIds = array();
-            foreach ($dialogue['Dialogue']['interactions'] as $interaction) {
+            foreach ($dialogue['Dialogue']['interactions'] as &$interaction) {
                 $interactionIds[] = $interaction['interaction-id'];
+                $interaction['activated'] = 1;
             }
-            $this->Schedule->deleteAll(array('Schedule.interaction-id'=>array('$nin'=>$interactionIds)), false);
-        } 
+            //Delete all interaction that have been deleted on the UI
+            $this->Schedule->deleteAll(
+                array(
+                    'Schedule.dialogue-id'=>$dialogue['Dialogue']['dialogue-id'],
+                    'Schedule.interaction-id'=>array('$nin'=>$interactionIds)),
+                false);
+        }        
         return $this->save($dialogue);
     }
 
@@ -105,7 +127,7 @@ class Dialogue extends MongoModel
     }
 
 
-    public function getActiveDialogues()
+    public function getActiveDialogues($options=null)
     {
         $dialogueQuery = array(
             'key' => array(
@@ -116,6 +138,7 @@ class Dialogue extends MongoModel
                 if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
                     prev.Dialogue = obj;
                 }',
+            'options'=> $options
             );
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
         return array_filter(
@@ -193,17 +216,17 @@ class Dialogue extends MongoModel
     {
         $dialogue = $this->DialogueHelper->objectToArray($dialogue);
 
-         if (!isset($dialogue['Dialogue']['dialogue-id'])) {
+         if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
             $this->create();
             return $this->save($dialogue);
         }
 
         $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
         $this->create();
-        if ($draft) {
+        if ($draft) { 
             $this->id                    = $draft[0]['Dialogue']['_id'];
             $dialogue['Dialogue']['_id'] = $draft[0]['Dialogue']['_id'];
-        } else {
+        } else { 
             unset($dialogue['Dialogue']['_id']);
             $dialogue['Dialogue']['activated'] = 0;
         }

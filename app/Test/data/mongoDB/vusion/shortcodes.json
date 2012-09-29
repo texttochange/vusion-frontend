@@ -1,4 +1,4 @@
-{"country" : "Uganda", "shortcode" : "8282", "international-prefix" : "256", "support-customized-id": 1 }
-{"country" : "Uganda", "shortcode" : "8181", "international-prefix" : "256", "support-customized-id": 1 }
-{"country" : "Netherlands", "shortcode" : "642500021", "international-prefix" : "31","support-customized-id": 0 }
-{"country" : "Netherlands ", "shortcode" : "3669", "international-prefix" : "31", "support-customized-id": 0}
+{"country" : "Uganda", "shortcode" : "8282", "international-prefix" : "256", "support-customized-id": 1, "supported-internationally": 0, "error-template": "4fc343509fa4da5e13000000" }
+{"country" : "Uganda", "shortcode" : "8181", "international-prefix" : "256", "support-customized-id": 1, "supported-internationally": 0, "error-template": "4fc343509fa4da5e13000000" }
+{"country" : "Netherlands", "shortcode" : "+31642500021", "international-prefix" : "31","support-customized-id": 0, "supported-internationally": 1, "error-template": "4fc343509fa4da5e13000000" }
+{"country" : "Netherlands ", "shortcode" : "3669", "international-prefix" : "31", "support-customized-id": 0, "supported-internationally": 0, "error-template": "4fc343509fa4da5e13000000"}

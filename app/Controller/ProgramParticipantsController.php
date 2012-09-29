@@ -171,10 +171,12 @@ class ProgramParticipantsController extends AppController
             );
         
         $activeInteractions   = $this->Dialogue->getActiveInteractions();
-        $schedules            = $this->Schedule->generateSchedule(
-                                    $this->Schedule->summary(),
-                                    $activeInteractions
-                                );
+        $activeDialogues = $this->Dialogue->getActiveDialogues();
+        $schedules = $this->Schedule->getParticipantSchedules(
+                                    $participant['Participant']['phone'],
+                                    $activeDialogues,
+                                    $activeInteractions);
+       
         $this->set(compact('participant','histories', 'schedules'));
     }
 
@@ -239,23 +241,36 @@ class ProgramParticipantsController extends AppController
     {
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
         $entries              = array();
-        $participant          = array();
         $count                = 0;
+        $headers              = array();
+        
 
-        while (!feof($importedParticipants)) {                    
+        while (!feof($importedParticipants)) { 
             $entries[] = fgets($importedParticipants);
+            if ($count == 0) {
+                   $headers = explode(",", $entries[$count]); 
+            }
             if ($count > 0 && $entries[$count]) {
                 $this->Participant->create();
-                $entries[$count]      = str_replace("\n", "", $entries[$count]);
+                $participant          = array();
                 $explodeLine          = explode(",", $entries[$count]);
                 $participant['phone'] = $explodeLine[0];
-                $participant['phone'] = $this->checkPhoneNumber($participant['phone']);
-                $participant['name']  = $explodeLine[1];
-                //print_r($participant);
-                if ($this->Participant->save($participant)) {
-                    $entries[$count] .= __(" Insert ok"); 
+                $row = 0;
+                foreach ($headers as $label) {
+                    $label = trim($label);
+                    $label = trim($label, '"');
+                    if (strtolower($label) != 'phone') {
+                        $participant['profile'][] = array(
+                            'label' => $label, 
+                            'value' => trim(trim($explodeLine[$row]), '"'));
+                    }
+                    $row++;
+                }
+                $savedParticipant = $this->Participant->save($participant);
+                if ($savedParticipant) {
+                    $entries[$count] = $savedParticipant['Participant']['phone'].__(", Insert ok"); 
                 } else {
-                    $entries[$count] .= " ".$this->Participant->validationErrors['phone'][0]. " line ".($count+1);
+                    $entries[$count] = $participant['phone'].", ".$this->Participant->validationErrors['phone'][0]. " line ".($count+1);
                 }
                 
             }
@@ -267,29 +282,29 @@ class ProgramParticipantsController extends AppController
     
     private function processXls($filePath, $fileName)
     {
+        $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
+        for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
+            $headers[] = $data->val(1, $j);
+        }
         for ( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
-            $participant['phone'] = $data->val($i,'A');
-            $participant['phone'] = $this->checkPhoneNumber($participant['phone']);
-            $participant['name']  = $data->val($i,'B');
             $this->Participant->create();
+            $participant['phone'] = $data->val($i,'A');
+            $col = 2;
+            foreach ($headers as $header) {
+                $participant['profile'][] = array(
+                    'label' => $header,
+                    'value' => $data->val($i,$col));
+            }
             //for view report
-            $entries[$i] = $participant['phone'] . ','.$participant['name'];
-            if ($this->Participant->save($participant)) {
-                $entries[$i] .= " Insert ok"; 
+            $savedParticipant = $this->Participant->save($participant);
+            if ($savedParticipant) {
+                $entries[$i] = $savedParticipant['Participant']['phone'] . ", Insert ok"; 
             } else {
-                $entries[$i] .= " ".$this->Participant->validationErrors['phone'][0]. " line ".$i;
+                $entries[$i] = $participant['phone'].", ".$this->Participant->validationErrors['phone'][0]. " line ".$i;
             }
         }
         return $entries;
-    }
-    
-   
-    public function checkPhoneNumber($phoneNumber) 
-    {
-        $newPhoneNumber = preg_replace("/[^0-9\+]/", "", $phoneNumber);
-        $newPhoneNumber = preg_replace("/^0/", "", $newPhoneNumber);
-        return $newPhoneNumber;
     }
     
     

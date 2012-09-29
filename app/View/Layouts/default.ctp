@@ -25,6 +25,7 @@
 		echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
 		echo $this->Html->script('jqueryui/js/jquery.ui.datepicker.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
+		echo $this->Html->script('jquery.validate.js');
 		echo $this->Html->script('dform/dform.js');
 		echo $this->Html->script('dform/dform.extensions.js');
 		echo $this->Html->script('dform/dform.subscribers.js');
@@ -32,12 +33,11 @@
 		echo $this->Html->script('form2js/form2js.js');
 		echo $this->Html->script('ttc-generic-program.js');
 		echo $this->Html->script('ttc-utils.js');
-		echo $this->Html->script('datejs/date.js');
-		echo $this->Html->script('jquery.validate.js');
 		echo $this->Html->script('superfish-1.4.8/superfish.js');
 		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
 		echo $this->Html->script('superfish-1.4.8/supersubs.js');
-		          
+		echo $this->Html->script('datejs/date.js');
+		echo $this->Html->script('moment.js');          
                 ?><script><?php 
                 echo $this->element('localization');
 		?></script><?php 
@@ -56,7 +56,7 @@
 			<div class="ttc-left-header">
 		        <?php 
 		        echo $this->Html->image('vusion-logo-wide.png', array(
-		            'url' => array('controller'=> 'programs')
+		            'url' => array('controller'=> 'programs', 'action'=>'index')
 		        ));
 			?> 
 			</div>
@@ -115,8 +115,10 @@
 				        echo $this->Html->tag('span', $programTimezone.' - ');
 				        $now = new DateTime('now');
 				        date_timezone_set($now,timezone_open($programTimezone));
-				        echo $this->Html->tag('span', $now->format('H:i:s')  );
-				        $this->Js->get('document')->event('ready','setInterval("updateClock()", 1000);');
+				        echo $this->Html->tag('span', $now->format('d/m/Y H:i:s'), array("id"=>"local-date-time") );
+				        $this->Js->get('document')->event('ready',
+				            'setInterval("updateClock()", 1000);'
+				            );
 				    }
 				?>
 				</div>

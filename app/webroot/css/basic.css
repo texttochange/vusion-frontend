@@ -101,9 +101,14 @@
 	float: none;
 }
 
-.ui-dform-radiobuttons{
+.ui-dform-radiobuttons, .ui-dform-checkboxes{
 	margin-bottom: 0px;
 	padding-bottom: 0px;
+}
+
+.ui-dform-checkbox{
+    padding-top: 6px;
+    padding-left: 4px;
 }
 
 .ui-dform-text {
@@ -116,12 +121,12 @@
 	margin :5px;	
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(odd) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([radiochildren]):nth-child(even) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(even) {
 	/*background:#FDEEF4;*/
 	background: #FFCB4B;
 }
@@ -134,11 +139,11 @@
 	background: #FFCB4B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):nth-child(odd) {
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):nth-child(odd) {
 	background: #FFD97B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):nth-child(even) {
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):nth-child(even) {
 	background: #FFCB4B;
 }
 
@@ -224,6 +229,7 @@
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
+	z-index: 10;
 }
 
 .ttc-filter {
@@ -666,4 +672,8 @@
 	position: relative;
 	color: grey;
 	background: #EDEDED;
+}
+
+.ttc-interaction-disabled {
+    background: #CCCCCC;
 }

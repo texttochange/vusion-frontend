@@ -3,6 +3,7 @@ App::uses('ProgramDialoguesController', 'Controller');
 App::uses('Dialogue', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Request', 'Model');
+App::uses('Participant', 'Model');
 App::uses('ScriptMaker', 'Lib');
 
 
@@ -69,6 +70,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Dialogue->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
         $this->Request->deleteAll(true, false);
+        $this->Participant->deleteAll(true, false);
         
         foreach ($this->externalModels as $model) {
             $model->deleteAll(true, false);
@@ -84,6 +86,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Request        = new Request($options);
+        $this->Participant    = new Participant($options);
     }
 
 
@@ -110,15 +113,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     {
         $dialogue['Dialogue'] = array(
             'name' => 'my dialogue',
-            'dialogue' => array(
-                array(       
-                    'interactions'=> array(
-                        array(
-                            'type-interaction' => 'question-answer', 
-                            'content' => 'how are you', 
-                            'keyword' => $keyword, 
-                            )
-                        )
+            'dialogue-id' => null,
+            'interactions'=> array(
+                array(  
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'how are you', 
+                    'keyword' => $keyword, 
                     )
                 )
             );
@@ -272,13 +272,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             ->with('Dialogue activated.');  
 
         $this->instanciateModels();
-        $savedDialogue = $this->Dialogue->saveDialogue(
-            array('Dialogue' => 
-                array('dialogue' => 
-                    array('do' => 'something')
-                    )
-                )
-            );
+        
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment'] = 'all';
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         
         $this->ProgramSetting->create();
         $this->ProgramSetting->save(
@@ -294,8 +291,20 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'value'=>'Africa/Kampala'
                 )
             );
+        
+        $participant = array(
+            'phone' => '+8',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
 
-        $this->testAction('/testurl/programDialogues/activate/'.$savedDialogue['Dialogue']['_id']); 
+        $this->testAction('/testurl/programDialogues/activate/'.$savedDialogue['Dialogue']['_id']);
+        
+        $enrolledParticipant = $this->Participant->find('first');
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+        );
 
     }
 

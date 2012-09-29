@@ -99,7 +99,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->ShortCodes->ShortCode->save(array(
                 'country' => 'uganda',
                 'shortcode' => 8282,
-                'internationalprefix' => 256
+                'international-prefix' => 256
             ));
 
         $this->testAction("/shortCodes/index");

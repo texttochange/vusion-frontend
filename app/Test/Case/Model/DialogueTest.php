@@ -3,6 +3,8 @@ App::uses('Dialogue', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('Participant', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 
 class DialogueTestCase extends CakeTestCase
@@ -15,6 +17,8 @@ class DialogueTestCase extends CakeTestCase
         $option         = array('database'=>'testdbprogram');
         $this->Dialogue = new Dialogue($option);
         $this->Schedule = new Schedule($option);
+        $this->Participant = new Participant($option);
+        $this->ProgramSetting = new ProgramSetting($option);
 
         $this->Maker = new ScriptMaker();
     }
@@ -24,6 +28,8 @@ class DialogueTestCase extends CakeTestCase
     {
         $this->Dialogue->deleteAll(true, false);
         $this->Schedule->deleteAll(true, false);
+        $this->Participant->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
         unset($this->Dialogue);
         unset($this->Schedule);
         parent::tearDown();
@@ -32,11 +38,9 @@ class DialogueTestCase extends CakeTestCase
 
     public function testSaveDialogue()
     {
-        $data['Dialogue'] = array(
-                'do' => 'something'
-            );
+        $dialogue = $this->Maker->getOneDialogue();
     
-        $saveDraftFirstVersion = $this->Dialogue->saveDialogue($data);
+        $saveDraftFirstVersion = $this->Dialogue->saveDialogue($dialogue['Dialogue']);
         $this->assertEquals(0, $saveDraftFirstVersion['Dialogue']['activated']);
         $saveActiveFirstVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, $saveActiveFirstVersion['Dialogue']['activated']);
@@ -49,10 +53,10 @@ class DialogueTestCase extends CakeTestCase
         
         $saveActiveSecondVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
-
+        
         //adding a new Dialogue
-        unset($data['Dialogue']['dialogue-id']);
-        $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($data);
+        unset($dialogue['Dialogue']['dialogue-id']);
+        $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
         $this->assertEquals(2, count($this->Dialogue->getDialogues()));
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
@@ -61,6 +65,7 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue($activeAndDraft[0]['Draft']==0);
         $this->assertTrue($activeAndDraft[1]['Active']==0);
         $this->assertTrue($activeAndDraft[1]['Draft']!=0);
+        $this->assertTrue(isset($activeAndDraft[1]['Draft']['interactions'][0]['activated']));
 
         //active the new Dialogue
         $saveActiveOtherDialogue = $this->Dialogue->makeDraftActive($saveDraftOtherDialogue['Dialogue']['dialogue-id']);
@@ -70,16 +75,18 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue($activeAndDraft[0]['Active']!=0);
         $this->assertTrue($activeAndDraft[0]['Draft']==0);
         $this->assertTrue($activeAndDraft[1]['Active']!=0);
+        $this->assertTrue($activeAndDraft[1]['Active']['interactions'][0]['activated']==1);
         $this->assertTrue($activeAndDraft[1]['Draft']==0);
 
         //add new version of the dialogue and check we get the correct one
-        $data['Dialogue']['dialogue-id'] = $saveActiveOtherDialogue['Dialogue']['dialogue-id']; 
-        $data['Dialogue']['do'] = "something new";
-        $saveNewVersionOtherDialogue = $this->Dialogue->saveDialogue($data);
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['dialogue-id'] = $saveActiveOtherDialogue['Dialogue']['dialogue-id']; 
+        $dialogue['Dialogue']['interactions'][0]['content'] = "something new";
+        $saveNewVersionOtherDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($saveNewVersionOtherDialogue['Dialogue']['dialogue-id']);
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
+        $this->assertEquals("something new", $activeAndDraft[1]['Active']['interactions'][0]['content']);
         $this->assertEquals($saveNewVersionOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']."");
-        
         //reactivate the olderone
         $this->Dialogue->makeActive($saveActiveOtherDialogue['Dialogue']['_id']);
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
@@ -109,7 +116,7 @@ class DialogueTestCase extends CakeTestCase
     public function testValidate_date_ok()
     {
         $data['Dialogue'] = array(
-            'dialogue' => array(
+            'interactions' => array(
                 'date-time' => '04/06/2012 10:30',
                 'sub-tree' => array( 
             	   'date-time' => '04/06/2012 10:31',
@@ -129,62 +136,56 @@ class DialogueTestCase extends CakeTestCase
     
         $result = $this->Dialogue->find('all');
         $this->assertEqual(1, count($result));
-        $this->assertEqual($result[0]['Dialogue']['dialogue']['date-time'], '2012-06-04T10:30:00');
-        $this->assertEqual($result[0]['Dialogue']['dialogue']['sub-tree']['date-time'], '2012-06-04T10:31:00');
-        $this->assertEqual($result[0]['Dialogue']['dialogue']['another-sub-tree']['date-time'], '2012-06-04T10:32:00');
-        $this->assertEqual($result[0]['Dialogue']['dialogue']['again-sub-tree']['date-time'], '2012-06-04T10:33:00');
+        $this->assertEqual($result[0]['Dialogue']['interactions']['date-time'], '2012-06-04T10:30:00');
+        $this->assertEqual($result[0]['Dialogue']['interactions']['sub-tree']['date-time'], '2012-06-04T10:31:00');
+        $this->assertEqual($result[0]['Dialogue']['interactions']['another-sub-tree']['date-time'], '2012-06-04T10:32:00');
+        $this->assertEqual($result[0]['Dialogue']['interactions']['again-sub-tree']['date-time'], '2012-06-04T10:33:00');
     }
 
 
     public function testValidate_date_fail()
     {
         $data['Dialogue'] = array(
-            'dialogue' => array(
+            'interactions' => array(
                 'date-time' => '2012-06-04 10:30:00',
                 )
             );    
-        $saveResult = $this->Dialogue->saveDialogue($data);
+        $saveResult = $this->Dialogue->saveDialogue($data['Dialogue']);
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
     public function testFindAllKeywordInDialogues()
     {
         $dialogueOne['Dialogue'] = array(
-            'dialogue' => array(                
-                'interactions'=> array(
-                    array(
-                        'type-interaction' => 'question-answer', 
-                        'content' => 'how are you', 
-                        'keyword' => 'FEEL', 
-                        ),
-                    array( 
-                        'type-interaction'=> 'question-answer', 
-                        'content' => 'What is you name?', 
-                        'keyword'=> 'NAME', 
-                        )
+            'interactions'=> array(
+                array(
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'how are you', 
+                    'keyword' => 'FEEL', 
+                    ),
+                array( 
+                    'type-interaction'=> 'question-answer', 
+                    'content' => 'What is you name?', 
+                    'keyword'=> 'NAME', 
                     )
-                
                 )
             );
 
-        $dialogueTwo['Dialogue'] = array(
-            'dialogue' => array(
-                'interactions'=> array(
-                    array(
-                        'type-interaction' => 'question-answer', 
-                        'content' => 'how are you', 
-                        'keyword' => 'FEL', 
-                        )
+        $dialogueTwo['Dialogue'] = array(            
+            'interactions'=> array(
+                array(
+                    'type-interaction' => 'question-answer', 
+                    'content' => 'how are you', 
+                    'keyword' => 'FEL', 
                     )
-                
                 )
             );
 
       
-        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
+        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne['Dialogue']);
         $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);    
 
-        $saveDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
+        $saveDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo['Dialogue']);
         $this->Dialogue->makeDraftActive($saveDialogueTwo['Dialogue']['dialogue-id']);    
 
 

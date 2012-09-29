@@ -87,6 +87,13 @@ class DialogueHelper
         return $data;
     }
     
+    
+    public function clearAndExplode($stringValue)
+    {
+        $stringValue = str_replace(" ", "", $stringValue);
+        return explode(",", $stringValue);
+    }
+
 
     public function hasKeyword(&$currentLayer, $keyword)
     {
@@ -94,16 +101,26 @@ class DialogueHelper
             return false;
         }
         
-        foreach ($currentLayer as $key => &$value) {
+        foreach ($currentLayer as $key => $value) {
             if (!is_int($key) && ($key == 'keyword')) {
-                $value       = str_replace(" ", "", $value);
-                $valuesArray = explode(",", $value);
-                $keyword       = str_replace(" ", "", $keyword);
-                $keywordValues = explode(",", $keyword);
-                foreach ($valuesArray as $arrayValue) {
-                    foreach ($keywordValues as $keywordValue) {
-                        if (strtolower($arrayValue) == strtolower($keywordValue))
-                            return $keywordValue;   
+                $currentKeywords = $this->clearAndExplode($value);
+                $noSpacedCurrentKeywords = array();
+                if (isset($currentLayer['answer-accept-no-space']) 
+                        && $currentLayer['answer-accept-no-space'] != null 
+                        && $currentLayer['answers']) {
+                    foreach($currentLayer['answers'] as $answer) {
+                        foreach($currentKeywords as $currentKeyword) {
+                            $noSpacedCurrentKeywords[] = $currentKeyword.$answer['choice'];
+                        }
+                    }
+                }
+                $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
+                $toValidKeywords = $this->clearAndExplode($keyword);
+                foreach ($currentKeywords as $currentKeyword) {
+                    foreach ($toValidKeywords as $toValidKeyword) {
+                        if (strtolower($currentKeyword) == strtolower($toValidKeyword)) {
+                            return $toValidKeyword;   
+                        }
                     }
                 }
             }

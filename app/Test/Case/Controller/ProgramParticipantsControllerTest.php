@@ -39,7 +39,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participants = new TestProgramParticipantsController();
         $this->instanciateParticipantModel();
         $this->instanciateScheduleModel();
+        $this->instanciateProgramSettingModel();
         $this->dropData();
+        $this->Participants->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
     }
 
 
@@ -48,6 +51,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->instanciateParticipantModel();
         $this->Participants->Participant->deleteAll(true, false);
         $this->Participants->Schedule->deleteAll(true,false);
+        $this->Participants->ProgramSetting->deleteAll(true,false);
     }
 
 
@@ -63,6 +67,13 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $options = array('database' => $this->programData[0]['Program']['database']);   
 
         $this->Participants->Schedule = new Schedule($options);
+    }
+
+    protected function instanciateProgramSettingModel()
+    {
+        $options = array('database' => $this->programData[0]['Program']['database']);   
+
+        $this->Participants->ProgramSetting = new ProgramSetting($options);
     }
 
 
@@ -145,8 +156,14 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $participantInDatabase = $this->Participants->Participant->find('count');
-        $this->assertEquals(2, $participantInDatabase);
+        $participants = $this->Participants->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'DoB');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '21st of July');
+        $this->assertEquals($participants[1]['Participant']['profile'][0]['value'], 'Gerald Ankunda');
+        $this->assertEquals($participants[1]['Participant']['profile'][1]['value'], '30th of March');
     }
 
 
@@ -159,7 +176,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
         
-
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
         $this->Participants->Participant->save(
@@ -168,7 +184,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'name' => 'Gerald'
                 )
             );
-
 
         $this->testAction(
             "/testurl/participants/import", 
@@ -191,11 +206,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         
         $this->assertEquals(
-            '+256788601462,"Olivier Vernin" Insert ok',
+            '+256788601462, Insert ok',
             $this->vars['entries'][1]
             );
         $this->assertEquals(
-            '+256712747841,"Gerald Ankunda" This phone number already exists in the participant list. line 3',
+            '256712747841, This phone number already exists in the participant list. line 3',
             $this->vars['entries'][2]
             );
     }
@@ -241,11 +256,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         
         $this->assertEquals(
-            '256788601462,Olivier Vernin Insert ok',
+            '+256788601462, Insert ok',
             $this->vars['entries'][2]
             );
         $this->assertEquals(
-            '256712747841,Gerald Ankunda This phone number already exists in the participant list. line 3',
+            '256712747841, This phone number already exists in the participant list. line 3',
             $this->vars['entries'][3]
             );
     }
@@ -275,68 +290,40 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $participantInDatabase = $this->Participants->Participant->find('count');
-        $this->assertEquals(2, $participantInDatabase);
+        $participants = $this->Participants->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
     }
     
-    
-    public function testCheckPhoneNumber() 
-    {
-        $phoneNumber    = '+712 747.841';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('712747841', $newPhoneNumber);
-        
-        $phoneNumber    = '0774521459';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertFalse(strpos($newPhoneNumber, '0'));
-        
-        $phoneNumber    ='(0)782123123';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('782123123', $newPhoneNumber);
-        
-        $phoneNumber    ='782123023';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('782123023', $newPhoneNumber);
-        
-        $phoneNumber    ='782123044 ';
-        $newPhoneNumber = $this->Participants->checkPhoneNumber($phoneNumber);
-        $this->assertEquals('782123044', $newPhoneNumber);
-    }
-
 
     public function testDeleteParticipant()
     {
         $this->mock_program_access();
         
         $participant = array(
-            'Participant' => array(
-                'phone' => '06',
-                'name' => 'oliv',
-                )
+            'phone' => '06'
             );
 
         $this->Participants->Participant->create();
         $participantDB = $this->Participants->Participant->save($participant);
 
         $scheduleToBeDeleted = array(
-            'Schedule' => array(
-                'participant-phone' => '+6',
-                )
+            'participant-phone' => '+6',
             );
 
         $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToBeDeleted);
 
         $scheduleToStay = array(
-            'Schedule' => array(
-                'participant-phone' => '+7',
-                )
+            'participant-phone' => '+7',
             );
 
         $this->Participants->Schedule->create('dialogue-schedule');
         $this->Participants->Schedule->save($scheduleToStay);
 
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']);
+        
         $this->assertEquals(
             0,
             $this->Participants->Participant->find('count')

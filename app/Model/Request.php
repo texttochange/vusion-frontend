@@ -17,7 +17,7 @@ class Request extends MongoModel
         return array(
             'keyword',
             'actions',
-            'feedbacks'
+            'responses'
             );
     }
 
@@ -28,6 +28,21 @@ class Request extends MongoModel
         'keyword' => true,
         'keyphrase' => true,
         );
+
+    public function beforeValidate()
+    {
+        parent::beforeValidate();
+    
+        if ($this->data['Request']['actions'] == null) {
+            $this->data['Request']['actions'] = array();
+        }
+
+        if ($this->data['Request']['responses'] == null) {
+            $this->data['Request']['responses'] = array();
+        }
+
+    }
+
 
     protected function _findKeyword($state, $query, $results = array())
     {
@@ -64,7 +79,7 @@ class Request extends MongoModel
                 $conditions = array('$or'=>$conditions);
             else
                 $conditions = $conditions[0];
-            if (isset($query['excludeRequest'])) {
+            if (isset($query['excludeRequest']) and $query['excludeRequest'] != '') {
                 $exclude = array('Request._id' => array('$ne' => new MongoId($query['excludeRequest'])));
                 $conditions = array(
                     '$and' =>  array($conditions, $exclude)

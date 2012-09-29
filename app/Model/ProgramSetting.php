@@ -1,6 +1,7 @@
 <?php
 
 App::uses('MongoModel', 'Model');
+App::uses('DialogueHelper', 'Lib');
 
 
 class ProgramSetting extends MongoModel
@@ -31,6 +32,14 @@ class ProgramSetting extends MongoModel
         'hasProgramSetting' => true,
         'getProgramSetting' => true,
         );
+
+
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $this->DialogueHelper = new DialogueHelper();
+    }
 
     
     protected function _findProgramSetting($state, $query, $results = array())
@@ -63,7 +72,7 @@ class ProgramSetting extends MongoModel
         if (isset($results[0]))
             return $results[0]['ProgramSetting']['value'];
     	else
-            return array();
+            return null;
     }
 
     public function saveProgramSetting($key, $value) 
@@ -91,5 +100,29 @@ class ProgramSetting extends MongoModel
         }
         return $settings;
     }
+
+
+    public function isNotPast($time)
+    {      
+        $programNow = $this->getProgramTimeNow();
+        if ($programNow==null)
+            return __("The program settings are incomplete. Please specificy the Timezone.");
+        if ($time < $programNow)
+            return false;
+        return true;
+    }
+
+
+    public function getProgramTimeNow()
+    {
+        $now = new DateTime('now');
+        $programTimezone = $this->find('getProgramSetting', array('key' => 'timezone'));
+        if ($programTimezone == null)
+            return null;
+        
+        date_timezone_set($now, timezone_open($programTimezone));        
+        return $now;       
+    }
+
 
 }

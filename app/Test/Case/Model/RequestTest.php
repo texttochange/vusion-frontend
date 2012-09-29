@@ -104,6 +104,20 @@ class RequestTestCase extends CakeTestCase
         $this->assertEqual(null, $matchingKeywordRequest);
 
     }
+    
+    
+    public function testValidateKeyword_Fail_With_Invalid_Conditions()
+    {
+        $request['Request'] = array(
+            'keyword' => 'free'
+            );
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        
+        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'free',
+            'excludeRequest'=>'')); // 'excludeRequest'=>'' is an invalid condition //
+        $this->assertEqual('free', $matchingKeywordRequest);
+    }
 
 
 }

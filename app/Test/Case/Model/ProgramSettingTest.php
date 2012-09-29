@@ -66,7 +66,7 @@ class ProgramSettingTestCase extends CakeTestCase
             'value' => '8282'
             ));
         
-        $this->assertEquals(array(), $result);    
+        $this->assertNull($result);    
     }
     
 
@@ -77,7 +77,7 @@ class ProgramSettingTestCase extends CakeTestCase
             'value' => null
             ));
         
-        $this->assertEquals(array(), $result);    
+        $this->assertNull($result);    
     }
 
 
@@ -100,8 +100,34 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual(
             array('setting1' => 'value1', 'setting2'=>'value2'),
             $this->ProgramSetting->getProgramSettings()
-            );
+            ); 
+    }
+
+    public function testGetProgramTimeNow()
+    {
+        $this->assertNull($this->ProgramSetting->getProgramTimeNow());        
+
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->assertNotNull($this->ProgramSetting->getProgramTimeNow());
+       
+    }
+
+    public function testIsNotPast()
+    {
         
+        $now = new DateTime('now');
+        date_timezone_set($now, timezone_open('Africa/Kampala'));        
+        $past = $now->modify('-1 hours');        
+
+        $this->assertEqual(
+            "The program settings are incomplete. Please specificy the Timezone.", 
+            $this->ProgramSetting->isNotPast($past));        
+
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $this->assertFalse($this->ProgramSetting->isNotPast($past));
+        $future = $now->modify('+1 hours');
+        $this->assertTrue($this->ProgramSetting->isNotPast($future));
     }
 
     
