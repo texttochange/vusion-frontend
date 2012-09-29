@@ -1,1 +1,0 @@
-{ "_id" : { "$oid" : "506205c3b20b15122ec7c36e" }, "enrolled" : [ { "date-time" : "2012-09-25T22:28:03", "dialogue-id" : "1" }, { "date-time" : "2012-09-25T22:30:59", "dialogue-id" : "5061813a20bc5" } ], "last-optin-date" : null, "model-version" : 1, "phone" : "+256788601462", "profile" : { "age" : "33" }, "session-id" : null, "tags" : [] }

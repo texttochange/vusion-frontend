@@ -51,8 +51,8 @@
 	    ?></td> 
 	    <td><?php 
 	    if (count($participant['Participant']['profile']) > 0) {
-	        foreach ($participant['Participant']['profile'] as $label => $value) {
-                echo $this->Html->tag('div', __("%s: %s", $label, $value));
+	        foreach ($participant['Participant']['profile'] as $profileItem) {
+                echo $this->Html->tag('div', __("%s: %s", $profileItem['label'], $profileItem['value']));
             }
          } else {
             echo $this->Html->tag('div', ''); 

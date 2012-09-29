@@ -52,7 +52,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertRegExp('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $savedParticipant['Participant']['last-optin-date']);
         $this->assertTrue(is_array( $savedParticipant['Participant']['tags']));
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
-        $this->assertTrue($savedParticipant['Participant']['profile'] == null);
+        $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
     }
 
 

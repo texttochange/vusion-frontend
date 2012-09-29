@@ -241,7 +241,6 @@ class ProgramParticipantsController extends AppController
     {
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
         $entries              = array();
-        $participant          = array();
         $count                = 0;
         $headers              = array();
         
@@ -253,6 +252,7 @@ class ProgramParticipantsController extends AppController
             }
             if ($count > 0 && $entries[$count]) {
                 $this->Participant->create();
+                $participant          = array();
                 $explodeLine          = explode(",", $entries[$count]);
                 $participant['phone'] = $explodeLine[0];
                 $row = 0;
@@ -260,7 +260,9 @@ class ProgramParticipantsController extends AppController
                     $label = trim($label);
                     $label = trim($label, '"');
                     if (strtolower($label) != 'phone') {
-                        $participant['profile'][$label]  = trim(trim($explodeLine[$row]), '"');
+                        $participant['profile'][] = array(
+                            'label' => $label, 
+                            'value' => trim(trim($explodeLine[$row]), '"'));
                     }
                     $row++;
                 }
@@ -290,7 +292,9 @@ class ProgramParticipantsController extends AppController
             $participant['phone'] = $data->val($i,'A');
             $col = 2;
             foreach ($headers as $header) {
-                $participant['profile'][$header]  = $data->val($i,$col);
+                $participant['profile'][] = array(
+                    'label' => $header,
+                    'value' => $data->val($i,$col));
             }
             //for view report
             $savedParticipant = $this->Participant->save($participant);

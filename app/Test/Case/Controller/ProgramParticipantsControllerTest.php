@@ -158,8 +158,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $participants = $this->Participants->Participant->find('all');
         $this->assertEquals(2, count($participants));
-        $this->assertEquals($participants[0]['Participant']['profile']['Name'], 'Olivier Vernin');
-        $this->assertEquals($participants[0]['Participant']['profile']['DoB'], '21st of July');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'DoB');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '21st of July');
+        $this->assertEquals($participants[1]['Participant']['profile'][0]['value'], 'Gerald Ankunda');
+        $this->assertEquals($participants[1]['Participant']['profile'][1]['value'], '30th of March');
     }
 
 
@@ -288,8 +292,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $participants = $this->Participants->Participant->find('all');
         $this->assertEquals(2, count($participants));
-        $this->assertEquals($participants[0]['Participant']['profile']['Name'], 'Olivier Vernin');
-
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
     }
     
 
