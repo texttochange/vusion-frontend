@@ -168,8 +168,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $data = array(
             'Program' => array(
                 'name' => 'programName',
-                'url' => 'programUrl',
-                'database'=> 'programDatabase'
+                'url' => 'programurl',
+                'database'=> 'programdatabase'
                 )
             );
 
