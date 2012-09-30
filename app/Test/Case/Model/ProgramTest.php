@@ -64,9 +64,9 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->assertEquals($expected, $result);
-    }
-    
-    
+    }    
+
+
     public function testFindAuthorized()
     {
         $result   = $this->Program->find(
@@ -96,6 +96,67 @@ class ProgramTestCase extends CakeTestCase
             );
         $this->assertEquals(2, $result);
     }
+
+    public function testSaveProgram_ok()
+    {
+        $program['Program'] = array(
+            'id' => 3,
+            'name' => 'M4h',
+            'url' => 'm4h',
+            'database' => 'm4h',
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $savedProgram = $this->Program->save($program);
+        $this->assertEqual($this->Program->validationErrors, array());
+    }
+
+
+    public function testSaveProgram_fail()
+    {
+        $program = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7H',
+            'database' => 'm7h',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $this->assertFalse($this->Program->save($program));
+        $this->assertEqual(
+            $this->Program->validationErrors['url'], 
+            array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
+
+        $program['url'] = 'm 7h';
+
+        $this->Program->create();
+        $this->assertFalse($this->Program->save($program));
+        $this->assertEqual(
+            $this->Program->validationErrors['url'], 
+            array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
+
+        $program['url'] = 'm7h';
+        $program['database'] = 'M7h';
+
+        $this->Program->create();
+        $this->assertFalse($this->Program->save($program));
+        $this->assertEqual(
+            $this->Program->validationErrors['database'], 
+            array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
+
+        $program['database'] = 'm7 h';
+
+        $this->Program->create();
+        $this->assertFalse($this->Program->save($program));
+        $this->assertEqual(
+            $this->Program->validationErrors['database'], 
+            array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
+    }
+
 
     public function testDeleteProgram()
     {

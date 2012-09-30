@@ -37,9 +37,8 @@ class Program extends AppModel
                 'message' => 'Another program is currently using this url, please choose another one.'
                 ),
             'lowAlphaNumeric'=> array(
-                'rule' => array('custom','/[a-z0-9]+/'),
-                'required' => true,
-                'message' => 'The url can only be composed of lowercase letters and digits.'
+                'rule' => array('custom','/^[a-z0-9]{3,}$/'),
+                'message' => 'Minimum of 3 characters, can only be composed of lowercase letters and digits.'
                 ),
             ),
         'database' => array(
@@ -53,9 +52,8 @@ class Program extends AppModel
                 'message' => 'Another program is currently using this database, please choose another one.'
                 ),
            'lowAlphaNumeric'=> array(
-                'rule' => array('custom','/[a-z0-9]+/'),
-                'required' => true,
-                'message' => 'The url can only be composed of lowercase letters and digits.'
+               'rule' => array('custom','/^[a-z0-9]{3,}$/'),
+                'message' => 'Minimum of 3 characters, can only be composed of lowercase letters and digits.'
                 ),
             )
         );
