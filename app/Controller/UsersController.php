@@ -3,6 +3,7 @@
 App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
+App::uses('VusionError','Lib');
 
     /**
     *  Users Controller
@@ -159,6 +160,7 @@ class UsersController extends AppController
                 if($this->request->is('post')) {
                     $this->Session->setFlash(__('Invalid username or password, try again.'));
                 }
+                throw new Exception();
             }
         }
     }
