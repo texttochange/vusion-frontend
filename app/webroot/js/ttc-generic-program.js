@@ -276,7 +276,7 @@ function clickBasicButton(){
 };
 
 function hiddeUndisabled(key, item){
-    $(item).attr("disabled", true);
+    $("[name='"+$(item).attr('name')+"']").attr("disabled", true);
     $(item).after("<input type='hidden' name='"+$(item).attr('name')+"' value='"+$(item).val()+"'/>")
 }
 
