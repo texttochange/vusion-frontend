@@ -114,6 +114,14 @@ class ShortCode extends MongoModel
         return $result < 1;            
     }
 
+    public function beforeValidate()
+    {
+        parent::beforeValidate();
+        $this->data['ShortCode']['shortcode'] = trim($this->data['ShortCode']['shortcode']);
+        
+        return true;
+    }
+
     public function hasToIncludePrefix($check)
     {
         if (isset($this->data['ShortCode']['supported-internationally']) and $this->data['ShortCode']['supported-internationally']==1) {

@@ -8,7 +8,7 @@
 	    echo "<div class='ttc-issue-content'>";
 	    //echo $this->Html->tag('h3', 'unmatchable reply', array('onclick'=>'alert("hi");'));
 	    echo $this->Html->tag('h3', $this->Html->link('unmatchable reply',array('controller'=>'unmatchableReply','action' => 'index')));
-	    echo $this->Html->tag('p', $unmatchableReply['UnmatchableReply']['message-content']);
+	    echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
 	    echo "</div>";
 	?>
 	</li>

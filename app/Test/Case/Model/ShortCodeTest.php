@@ -30,7 +30,8 @@ class ShortCodeTestCase extends CakeTestCase
         $emptyShortCode = array();
 
         $wrongShortCode = array(
-            'shortcode' => '8282',
+            'shortcode' => '8282 ',
+            'international-prefix' => ' 256',
             'country' => 'uganda',
             'badfield' => 'something'
             );
@@ -42,6 +43,7 @@ class ShortCodeTestCase extends CakeTestCase
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($wrongShortCode);
         $this->assertFalse(array_key_exists('badfield', $savedShortCode['ShortCode']));
+        $this->assertEqual('8282',$savedShortCode['ShortCode']['shortcode']);
 
         ## Cannot save the same couple coutry/shortcode if not supported internationally
         $this->ShortCode->create();
