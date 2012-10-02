@@ -67,5 +67,3 @@ Cache::config('default', array('engine' => 'File'));
  CakePlugin::loadAll();
  
  Configure::load('vusion.php');
-
- App::uses('VusionExceptionHandler', 'Lib');
