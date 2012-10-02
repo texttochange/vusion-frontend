@@ -8,6 +8,7 @@ var localized_errors = {
     validation_keyword_invalid_character_error: "<?php echo __(" has some invalid characters. Keywords must contain only numbers or letters separated by a comma.")?>",
     validation_keyword_blank_error: "<?php echo __("You cannot have a blank keyword.")?>",
     validation_keyword_used_same_script_error: "<?php echo __(" already used by the same script in another question.")?>",
+    validation_choice_duplicate: "<?php echo __("This choice is already used in this interaction.")?>",
     vusion_ajax_action_failed: "<?php echo __("Action failed: ")?>",
 };
 

@@ -374,8 +374,10 @@ function activeForm(){
     $("input[name*='choice']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            choiceUnique: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
+                choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
             }
         });
     });
@@ -568,6 +570,17 @@ function duplicateKeywordValidation(value, element, param) {
     return true;
 }
 
+function duplicateChoiceValidation(value, element, param) {
+    var isValid = true;
+    var elementName = $(element).attr('name');
+    $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function(key, otherChoice) {
+            if (value == $(otherChoice).val()) { 
+                isValid = false;
+                return;
+            }
+    });
+    return isValid;
+}
 
 function isArray(obj) {
     if (obj.constructor.toString().indexOf("Array") == -1)
@@ -903,10 +916,8 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "isInThePast", 
         function(value, element, params) {
-            //alert(element.id);    
             if (!/Invalid|NaN/.test(moment(value, "DD/MM/YYYY HH:mm"))) {
-                //if (Date.parse(value).compareTo(Date.now())>0)
-                return isInFuture(value);
+               return isInFuture(value);
             }
             
             return isNaN(value) && isNaN(params) 
@@ -920,7 +931,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         duplicateKeywordValidation,
         wrapErrorMessage(Error)
         );
-    
+
+    $.validator.addMethod(
+        "choiceUnique",
+        duplicateChoiceValidation,
+        wrapErrorMessage(Error)
+        );
 
         
     $.dform.subscribe("alert", function(option, type) {
