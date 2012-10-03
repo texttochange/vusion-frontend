@@ -374,8 +374,10 @@ function activeForm(){
     $("input[name*='choice']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            choiceUnique: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
+                choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
             }
         });
     });
@@ -384,6 +386,82 @@ function activeForm(){
             required:true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
+            }
+        });
+    });
+    $("input[name*='type-schedule']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
+    $("input[name*='type-interaction']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
+    $("input[name*='type-question']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
+    $("input[name*='answer-label']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            messages:{
+                required: wrapErrorMessage(localized_errors.validation_required_answer_label),
+            }
+        });
+    });
+    $("textarea[name*='content']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            messages:{
+                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error"),
+            }
+        });
+    });
+    $("input[name$='days']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            min: 1,
+            messages:{
+                required: wrapErrorMessageInClass(localized_errors.validation_required_error, "ttc-input-validation-error"),
+                min: wrapErrorMessageInClass(localized_errors.validation_offset_days_min, "ttc-input-validation-error"),
+            }
+        });
+    });
+    $("input[name$='minutes']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            min: 0,
+            messages:{
+                required: wrapErrorMessage(localized_errors.validation_required_error),
+                min: wrapErrorMessage(localized_errors.validation_offset_time_min),
+            }
+        });
+    });
+    $("input[name$='reminder-number']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            min: 1,
+            messages:{
+                required: wrapErrorMessage(localized_errors.validation_required_error),
+                min: wrapErrorMessage(localized_errors.validation_reminder_min),
             }
         });
     });
@@ -568,6 +646,24 @@ function duplicateKeywordValidation(value, element, param) {
     return true;
 }
 
+function duplicateChoiceValidation(value, element, param) {
+    var isValid = true;
+    var elementName = $(element).attr('name');
+    $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function(key, otherChoice) {
+            if (value == $(otherChoice).val()) { 
+                isValid = false;
+                return;
+            }
+    });
+    return isValid;
+}
+
+function atLeastOneIsChecked(value, element, param) {
+    if ($("[name='"+$(element).attr('name')+"']:checked").length==0) {
+        return false;
+    }
+    return true;
+}
 
 function isArray(obj) {
     if (obj.constructor.toString().indexOf("Array") == -1)
@@ -876,8 +972,17 @@ function fromIsoDateToFormDate(dateString) {
 }
 
 function wrapErrorMessage(error) {
-     return '<span class="ttc-validation-error">'+error+'</span>';
+     return wrapErrorMessageInClass(error, null);
 }
+
+function wrapErrorMessageInClass(error, inClasses){
+    if (inClasses != null) {
+        inClasses = inClasses + " ttc-validation-error"
+    } else {
+        inClasses = "ttc-validation-error"
+    }
+    return '<span class="'+inClasses+'"><nobr>'+error+'</nobr></span>';
+} 
 
 function isInFuture(dateTime) {
     if (dateTime=="")
@@ -903,24 +1008,29 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "isInThePast", 
         function(value, element, params) {
-            //alert(element.id);    
             if (!/Invalid|NaN/.test(moment(value, "DD/MM/YYYY HH:mm"))) {
-                //if (Date.parse(value).compareTo(Date.now())>0)
-                return isInFuture(value);
+               return isInFuture(value);
             }
             
             return isNaN(value) && isNaN(params) 
             || (parseFloat(value) >= parseFloat(params)); 
         },
-        wrapErrorMessage(localized_errors.past_date_error)
-        );
+        wrapErrorMessage(localized_errors.past_date_error));
     
     $.validator.addMethod(
         "keywordUnique",
         duplicateKeywordValidation,
-        wrapErrorMessage(Error)
-        );
-    
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "choiceUnique",
+        duplicateChoiceValidation,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "atLeastOneIsChecked",
+        atLeastOneIsChecked,
+        wrapErrorMessage(Error));
 
         
     $.dform.subscribe("alert", function(option, type) {
