@@ -331,10 +331,27 @@
     font-size: 12px;
 }
 
+.ttc-radio-validation-error {
+    left: 30px;
+}
+
+.ttc-textarea-validation-error {
+    left: 40px;
+    top : -96px;
+}
+
+.ttc-input-validation-error {
+    top: -49px;
+}
+
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.ttc-validation-error{   top: -32px; }
+	.ttc-radio-validation-error{ top: -38px;}
+	.ttc-textarea-validation-error {top: -60px;}
+	.ttc-input-validation-error {left: 198px; top: -61px;}
 }
+
 
 .ttc-validation-error:after {
 	border-width: 12px;
@@ -346,6 +363,10 @@
 	position: absolute;
 	top: 27.5px;
 	left: 30px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.ttc-validation-error:after{   top: 26.5px; }
 }
 
 .ttc-login-title{
