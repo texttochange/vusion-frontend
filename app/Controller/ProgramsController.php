@@ -75,9 +75,11 @@ class ProgramsController extends AppController
             $program['Program']['schedule-count']    = $tempSchedule->find('count');  
         }
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
-        $this->set('unmatchableReplies', $tempUnmatchableReply->find('all', 
-            array('limit' => 8, 'order'=> array('timestamp' => 'DESC')))
-            );
+        $this->set('unmatchableReplies', $tempUnmatchableReply->find(
+            'all', 
+            array('conditions' => array('direction' => 'incoming'), 
+                'limit' => 8, 
+                'order'=> array('timestamp' => 'DESC'))));
         $this->set(compact('programs', 'isProgramEdit'));
     }
 
