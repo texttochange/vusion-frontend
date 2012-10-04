@@ -1,5 +1,5 @@
-{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-04T6:50:06", "message-content" : "FEE Good", "message-status" : null, "message-type" : "received", "to" : "8282" }
-{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-05T18:23:10", "message-content" : "FEL 1", "message-status" : null, "message-type" : "received", "to" : "8282" }
-{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-05T16:00:39", "message-content" : "FIL somethingelse", "message-status" : null, "message-type" : "received", "to" : "8282" }
-{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-06T15:00:39", "message-content" : "", "message-status" : null, "message-type" : "received", "to" : "8282" }
-{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-07T12:00:39", "message-content" : null, "message-status" : null, "message-type" : "received", "to" : "8282" }
+{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-04T6:50:06", "message-content" : "FEE Good", "direction" : "incoming", "message-status" : null, "message-type" : "received", "to" : "8282" }
+{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-05T18:23:10", "message-content" : "FEL 1", "direction" : "incoming", "message-status" : null, "message-type" : "received", "to" : "8282" }
+{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-05T16:00:39", "message-content" : "FIL somethingelse", "direction" : "incoming", "message-status" : null, "message-type" : "received", "to" : "8282" }
+{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-06T15:00:39", "message-content" : "", "message-status" : null, "direction" : "incoming", "message-type" : "received", "to" : "8282" }
+{ "participant-phone" : "+256788601462", "timestamp" : "2012-03-07T12:00:39", "message-content" : null, "direction" : "incoming", "message-status" : null, "message-type" : "received", "to" : "8282" }
