@@ -24,6 +24,7 @@ class ProgramParticipantsController extends AppController
         $this->Schedule          = new Schedule($options);
         $this->Dialogue          = new Dialogue($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ(
             Configure::read('vusion.rabbitmq')
             );
@@ -50,30 +51,47 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
     }
     
+    
+    protected function _hasAllProgramSettings()
+    {
+        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode'));
+        $timezone = $this->ProgramSetting->find('getProgramSetting', array('key'=>'timezone'));        
+        if ($shortCode and $timezone) {
+            return true;
+        }
+        return false;
+    }
+    
 
     public function add() 
     {
         $programUrl = $this->params['program'];
  
         if ($this->request->is('post')) {
-            $this->Participant->create();
-            if ($this->Participant->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl);
-                $this->Session->setFlash(__('The participant has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
-            } else {
-                $this->Session->setFlash(__('The participant could not be saved.'), 
+            if ($this->_hasAllProgramSettings()) {
+                $this->Participant->create();
+                if ($this->Participant->save($this->request->data)) {
+                    $this->_notifyUpdateBackendWorker($programUrl);
+                    $this->Session->setFlash(__('The participant has been saved.'),
+                        'default',
+                        array('class'=>'message success')
+                        );
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'
+                        ));
+                } else {
+                    $this->Session->setFlash(__('The participant could not be saved.'), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                }
+            } else 
+            $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',
                 array('class' => "message failure")
                 );
-            }
         }        
     }
 
@@ -190,48 +208,54 @@ class ProgramParticipantsController extends AppController
         $programUrl  = $this->params['program'];
 
         if ($this->request->is('post')) {
-            if (!$this->request->data['Import']['file']['error']) {
-                $fileName = $this->request->data['Import']['file']["name"];
-                $ext      = end(explode('.', $fileName));
-
-                if (!($ext == 'csv') and !($ext == 'xls') and !($ext == 'xlsx')) {
-                    $this->Session->setFlash(__('This file format is not supported'), 
-                        'default',
-                        array('class' => "message failure")
-                        );
-                    return;
+            if ($this->_hasAllProgramSettings()) {
+                if (!$this->request->data['Import']['file']['error']) {
+                    $fileName = $this->request->data['Import']['file']["name"];
+                    $ext      = end(explode('.', $fileName));
+                    
+                    if (!($ext == 'csv') and !($ext == 'xls') and !($ext == 'xlsx')) {
+                        $this->Session->setFlash(__('This file format is not supported'), 
+                            'default',
+                            array('class' => "message failure")
+                            );
+                        return;
+                    }
+                    
+                    $filePath = WWW_ROOT . "files/" . $programUrl; 
+                    
+                    if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
+                        //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
+                        mkdir($filePath);
+                        chmod($filePath, 0777);
+                    }
+                    
+                    /** in case the file has already been created, 
+                    * the chmod function should not be called.
+                    */
+                    $wasFileAlreadyThere = false;
+                    if(file_exists($filePath . DS . $fileName)) {
+                        $wasFileAlreadyThere = true;
+                    }
+                    
+                    copy($this->request->data['Import']['file']['tmp_name'],
+                        $filePath . DS . $fileName);
+                    
+                    if(!$wasFileAlreadyThere) {
+                        chmod($filePath . DS . $fileName, 0777);
+                    }
+                    
+                    if ($ext == 'csv') {
+                        $entries = $this->processCsv($filePath, $fileName);
+                    } else if ($ext == 'xls' || $ext == 'xlsx') {
+                        $entries = $this->processXls($filePath, $fileName);
+                    }
+                    $this->_notifyUpdateBackendWorker($programUrl);
                 }
-
-                $filePath = WWW_ROOT . "files/" . $programUrl; 
-
-                if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
-                    //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
-                    mkdir($filePath);
-                    chmod($filePath, 0777);
-                }
-                                
-                /** in case the file has already been created, 
-                * the chmod function should not be called.
-                */
-                $wasFileAlreadyThere = false;
-                if(file_exists($filePath . DS . $fileName)) {
-                    $wasFileAlreadyThere = true;
-                }
-
-                copy($this->request->data['Import']['file']['tmp_name'],
-                    $filePath . DS . $fileName);
-                
-                if(!$wasFileAlreadyThere) {
-                    chmod($filePath . DS . $fileName, 0777);
-                }
-                
-                if ($ext == 'csv') {
-                    $entries = $this->processCsv($filePath, $fileName);
-                } else if ($ext == 'xls' || $ext == 'xlsx') {
-                    $entries = $this->processXls($filePath, $fileName);
-                }
-                $this->_notifyUpdateBackendWorker($programUrl);
-            }
+            } else 
+            $this->Session->setFlash(__('Please set the program settings then try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
         } 
         $this->set(compact('entries'));
     }
