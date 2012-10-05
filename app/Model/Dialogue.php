@@ -85,6 +85,8 @@ class Dialogue extends MongoModel
                     and (!isset($interaction['days']) or $interaction['days'] == ""))
                     $interaction['days'] = '0';
             }
+        } else {
+            $this->data['Dialogue']['interactions'] = array();
         }
 
         $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
@@ -160,6 +162,23 @@ class Dialogue extends MongoModel
     }
 
 
+    public function getDialoguesInteractionsContent()
+    {
+        $content = array();
+        $dialogues = $this->getActiveDialogues();
+        foreach($dialogues as $dialogue) {
+            $interactionContent = array();
+            foreach($dialogue['Dialogue']['interactions'] as $interaction) {
+                $interactionContent[$interaction['interaction-id']] = $interaction['content'];
+            }
+            $content[$dialogue['dialogue-id']] = array(
+                'name'=>$dialogue['Dialogue']['name'],
+                'interactions'=> $interactionContent);
+        }
+        return $content;
+    }
+
+
     public function getDialogues()
     {
         $dialogueQuery = array(
@@ -175,6 +194,7 @@ class Dialogue extends MongoModel
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
         return $dialogues['retval'];
     }
+
 
     public function getActiveAndDraft()
     {
@@ -194,6 +214,7 @@ class Dialogue extends MongoModel
         uasort($dialogues['retval'], array($this, '_compareDialogue'));
         return $dialogues['retval'];
     }
+
 
     private function _compareDialogue($a, $b)
     {
@@ -263,6 +284,5 @@ class Dialogue extends MongoModel
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
     }
-
 
 }

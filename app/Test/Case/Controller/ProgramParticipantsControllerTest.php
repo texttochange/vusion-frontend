@@ -136,9 +136,36 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     * Test methods
     *
     */
+    public function testImport_csv_no_settings() 
+    {
+        $this->mock_program_access();
+
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+                            'name' => 'wellformattedparticipants.csv'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participants->Participant->find('all');
+        $this->assertEquals(0, count($participants));
+    }
+    
+    
     public function testImport_csv() 
     {
         $this->mock_program_access();
+        
+        $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');
 
         $this->testAction(
             "/testurl/participants/import", 
@@ -176,6 +203,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
         
+        $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');    
+            
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
         $this->Participants->Participant->save(
@@ -223,6 +252,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
+            
+        $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');
 
         $this->instanciateParticipantModel();
         $this->Participants->Participant->create();
@@ -273,6 +304,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
+            
+        $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');
         
         $this->testAction(
             "/testurl/participants/import", 
