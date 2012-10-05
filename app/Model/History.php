@@ -77,11 +77,11 @@ class History extends MongoModel
     public $fieldFilters = array(
         'message-direction'=>'message direction',
         'message-status'=>'message status',
-        'timestamp-from'=>'date from',
-        'timestamp-to'=>'date to',
+        'date-from'=>'date from',
+        'date-to'=>'date to',
         'participant-phone'=>'participant phone',
         'message-content'=>'message content',
-        'dialogue-id'=>'dialogue' 
+        'dialogue'=>'dialogue' 
         );
     
     public $typeConditionFilters = array(

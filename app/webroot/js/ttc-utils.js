@@ -414,7 +414,7 @@ function supplyConditionOptions(fieldOption){
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();		
 	}
 	
-	if(fieldOption == "message direction"){
+	if(fieldOption == "message-direction"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
@@ -424,7 +424,7 @@ function supplyConditionOptions(fieldOption){
 			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
 		});
 	}
-	if(fieldOption == "message status"){
+	if(fieldOption == "message-status"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
@@ -434,27 +434,47 @@ function supplyConditionOptions(fieldOption){
 			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
 		});
 	}
-	if(fieldOption == "date from"){
+	if(fieldOption == "date-from"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_from').attr('name','filter_from').show().datepicker();		
 	}
-	if(fieldOption == "date to"){
+	if(fieldOption == "date-to"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();// we need to change id because the dtae picker will recognize only the id.
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_to').attr('name','filter_to').show().datepicker();		
 	}
-	if(fieldOption == "participant phone"){
+	if(fieldOption == "participant-phone"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_phone').show().datepicker("destroy").removeClass("hasDatepicker");
 	}
-	if(fieldOption == "message content"){
+	if(fieldOption == "message-content"){
 		changeFilterConditionTextBoxID();
 		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
 		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_content').show().datepicker("destroy").removeClass("hasDatepicker");
 	}
+	if(fieldOption == "dialogue"){
+		changeFilterConditionTextBoxID();
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
+		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
+		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_status').append(new Option("", "")).on('click', { filterIndex: 1}, generateDropdown);
+		var dialogueConditionOptions = window.app.dialogueConditionOptions;
+		$.each(dialogueConditionOptions, function(val, text) {
+		        $("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text['name'], val));
+		});
+	}
 	
+}
+
+function generateDropdown(event) {
+    item = $(':focus');
+    if ($(item).val() != "") {
+        $(item).after("<select name='filter_condition["+event.data.filterIndex+"][3]'></select>");
+        $.each(window.app.dialogueConditionOptions[$(item).val()]['interactions'], function(id, content){
+                $("[name='filter_condition["+event.data.filterIndex+"][3]']").append(new Option(content, id));      
+        })
+    }
 }
 
 

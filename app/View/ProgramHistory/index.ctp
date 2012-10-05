@@ -59,9 +59,10 @@
        $this->Js->set('myOptions', $filterFieldOptions);
        $this->Js->set('typeConditionOptions', $filterTypeConditionsOptions);
        $this->Js->set('statusConditionOptions', $filterStatusConditionsOptions);
+       $this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
        
        $this->Js->get('$(\"#filter_field\"):focus')->event('change','
-               var fieldOption = $("$(\"#filter_field\"):focus option:selected").text();
+               var fieldOption = $("$(\"#filter_field\"):focus option:selected").val();
                if($(document.activeElement).attr("id") == "filter_field")
                    supplyConditionOptions(fieldOption);
            ');
@@ -76,7 +77,7 @@
                    $("select[name=\'filter_field['.$count.']\'] > option").each(function(){
                        if(this.value == "'.$this->params['url']['filter_field'][$key].'"){
                            $(this).attr("selected",true);
-                           supplyConditionOptions(this.text);
+                           supplyConditionOptions($(this).val());
                        }
                    });
                ');

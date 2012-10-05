@@ -2,6 +2,7 @@
 
 App::uses('AppController','Controller');
 App::uses('History','Model');
+App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
 
 class ProgramHistoryController extends AppController
@@ -20,6 +21,7 @@ class ProgramHistoryController extends AppController
         
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->History        = new History($options);
+        $this->Dialogue       = new Dialogue($options);
         $this->dialogueHelper = new DialogueHelper();
         
         $filterFields = $this->History->fieldFilters;
@@ -53,9 +55,15 @@ class ProgramHistoryController extends AppController
 
     public function index()
     {
-        $this->set('filterFieldOptions',$this->filterFieldOptions);
-        $this->set('filterTypeConditionsOptions',$this->filterTypeConditionsOptions);
-        $this->set('filterStatusConditionsOptions',$this->filterStatusConditionsOptions);
+        $this->set('filterFieldOptions',
+            $this->filterFieldOptions);
+        $this->set('filterTypeConditionsOptions',
+            $this->filterTypeConditionsOptions);
+        $this->set('filterStatusConditionsOptions',
+            $this->filterStatusConditionsOptions);
+        $this->set('filterDialogueConditionsOptions',
+            $this->Dialogue->getDialoguesInteractionsContent());
+        
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
         
         if (!isset($this->params['named']['sort'])) {
@@ -99,13 +107,56 @@ class ProgramHistoryController extends AppController
         $data = $this->History->find('all', $exportParams);
         $this->set(compact('data'));
     }
-    
-    
+  
     protected function _getConditions()
     {
         $conditions = array();
         
-        if (preg_grep('/^filter_/', array_keys($this->params['url']))) {    
+        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
+
+        if (!isset($onlyFilterParams['filter_param'])) 
+            return $conditions;
+        
+        foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
+             print_r($onlyFilterParam);
+            if ($onlyFilterParam[1] == 'dialogue') {
+                $conditions['dialogue-id'] = $onlyFilterParam[2];
+                $conditions['interaction-id'] = $onlyFilterParam[3];
+            } elseif ($onlyFilterParam[1] == 'date-from') { 
+                $conditions['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            } elseif ($onlyFilterParam[1] == 'date-to') {
+                $conditions['timestamp']['$lt'] = $this->dialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            } elseif ($onlyFilterParam[1] == 'participant-phone') {
+                $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
+                if ($phoneNumbers) {
+                    if (count($phoneNumbers) > 1) {
+                        $or = array();
+                        foreach ($phoneNumbers as $phoneNumber) {
+                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                            $or['participant-phone'] = $regex;
+                        }
+                        $conditions['$or'] = $or;
+                    } else {
+                        $conditions['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                    }
+                }
+            } elseif ($onlyFilterParam[1]=='non-matching-answers') {
+                $conditions['message-direction'] = 'incoming';
+                $conditions['matching-answer'] = null;
+            } elseif ($onlyFilterParam[1] == 'message-content') {
+                $conditions['message-content'] = new MongoRegex("/".$onlyFilterParam[2]."/i");
+            } elseif ($onlyFilterParam[1] == 'message-direction' or $onlyFilterParam[1] == 'message-status') {
+                $conditions[$onlyFilterParam[1]] = $onlyFilterParam[2];
+            } else {
+                $this->Session->setFlash(__('The filter "%s" is not supported.',$onlyFilterParam[1]), 
+                'default',
+                array('class' => "message failure")
+                );
+            }
+        }
+        
+        /*
+        if (preg_grep('/^filter_/', array_keys($this->params['url']))) {
             $or = array();
             $orConditions = array();
             if (isset($this->params['url']['dialogue_id']))
@@ -161,7 +212,7 @@ class ProgramHistoryController extends AppController
                 array('class' => "message failure")
                 );
             }
-        }
+        }*/
         return $conditions;
     }
     
