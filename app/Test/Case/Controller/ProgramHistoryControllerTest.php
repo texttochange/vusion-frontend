@@ -153,6 +153,15 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             ));
         $this->Status->History->create('dialogue-history');
         $this->Status->History->save(array(
+            'participant-phone' => '356774527842',
+            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+            'timestamp' => '2013-02-07T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'outgoing',
+            ));
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'feel good',
             'timestamp' => '2013-02-08T12:20:43',
@@ -175,7 +184,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->Status->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'name',
-            'timestamp' => '2013-02-10T12:20:43.882854',
+            'timestamp' => '2013-02-10T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'incoming',
@@ -183,18 +192,23 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             ));
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_param%5B1%5D%5B1%5D=dialogue&filter_param%5B1%5D%5B2%5D=1&filter_param%5B1%5D%5B3%5D=11&filter_param%5B2%5D%5B1%5D=date-from&filter_param%5B2%5D%5B2%5D=01/01/2012");
-        $this->assertEquals(2, count($this->vars['statuses']));
+        $this->assertEquals(3, count($this->vars['statuses']));
         $this->assertEquals('11', $this->vars['statuses'][0]['History']['interaction-id']);
 
         $this->mockProgramAccess();
-        $this->testAction("/testurl/history/index?filter_param%5B1%5D%5B1%5D=participant-phone&filter_param%5B1%5D%5B2%5D=356");
+        $this->testAction("/testurl/history/index?filter_param%5B1%5D%5B1%5D=participant-phone&filter_param%5B1%5D%5B2%5D=356774527841+,0777");
         $this->assertEquals(4, count($this->vars['statuses']));
         $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['participant-phone']);
 
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_param%5B1%5D%5B1%5D=non-matching-answers");
         $this->assertEquals(1, count($this->vars['statuses']));
-        $this->assertEquals('356774527842', $this->vars['statuses'][0]['History']['participant-phone']);
+        $this->assertEquals('name', $this->vars['statuses'][0]['History']['message-content']);
+
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/history/index?filter_param%5B1%5D%5B1%5D=date-from&filter_param%5B1%5D%5B2%5D=09/02/2013&filter_param%5B2%5D%5B1%5D=date-to&filter_param%5B2%5D%5B2%5D=10/02/2013");
+        $this->assertEquals(1, count($this->vars['statuses']));
+        $this->assertEquals('what is your name? send NAME <your name>', $this->vars['statuses'][0]['History']['message-content']);
 
 
     }

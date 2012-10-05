@@ -1,3 +1,16 @@
+jQuery.expr[':'].regex = function(elem, index, match) {
+    var matchParams = match[3].split(','),
+        validLabels = /^(data|css):/,
+        attr = {
+            method: matchParams[0].match(validLabels) ? 
+                        matchParams[0].split(':')[0] : 'attr',
+            property: matchParams.shift().replace(validLabels,'')
+        },
+        regexFlags = 'ig',
+        regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+    return regex.test(jQuery(elem)[attr.method](attr.property));
+}
+
 function getNewDateUsingTimezone(){
     return moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(); 
 }
@@ -353,7 +366,7 @@ function addStackFilter(){
 	var count = $('.ttc-stack-filter').length + 1;
 	var stackFilter = document.createElement("div");
 	//$(stackFilter).attr('class','ttc-stack-filter').insertBefore('.submit');
-	$(stackFilter).attr('class','ttc-stack-filter').attr('id','stack-filter['+count+']').appendTo('#advanced_filter_form > form').insertBefore('.submit');
+	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#advanced_filter_form > form').insertBefore('.submit');
 	
 	var addButton = document.createElement("img");
 	$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
@@ -367,26 +380,12 @@ function addStackFilter(){
 	var myOptions = window.app.myOptions;
 	// add dropdown for fields
 	var addFilterFieldDropDown = document.createElement("select");
-	$(addFilterFieldDropDown).attr('id','filter_field').attr('name','filter_field['+count+']');
-	$(addFilterFieldDropDown).append(new Option("", ""));
+	$(addFilterFieldDropDown).attr('name','filter_param['+count+'][1]');
+	$(addFilterFieldDropDown).append(new Option("", "")).on('click', function(){supplyConditionOptions(this)});
 	$.each(myOptions, function(val, text) {
 		$(addFilterFieldDropDown).append(new Option(text, val));
 	});
 	$(stackFilter).append(addFilterFieldDropDown);
-	
-	// add dropdown for fiiter options
-	var addFilterConditionDropDown = document.createElement("select");
-	$(addFilterConditionDropDown).attr('id','filter_condition').attr('name','filter_condition['+count+']').attr('style','display:none');
-	$(addFilterConditionDropDown).append(new Option("", ""));
-	/*$.each(conditionOptions, function(val, text) {
-		$(addFilterConditionDropDown).append(new Option(text, val));
-	});*/
-	$(stackFilter).append(addFilterConditionDropDown);
-	
-	// add textbox for fiiter options
-	var addFilterConditionTextBox = document.createElement("input");
-	$(addFilterConditionTextBox).attr('id','filter_condition_textbox').attr('name','filter_condition['+count+']').attr('type','text').attr('style','display:none');
-	$(stackFilter).append(addFilterConditionTextBox);
 }
 
 function removeStackFilter(){
@@ -400,79 +399,61 @@ function hasNoStackFilter(){
 	}
 }
 
-function changeFilterConditionTextBoxID(){	
-		$("#date_from", $('$("#filter_field"):focus').closest('div')).attr('id','filter_condition_textbox');
-		$("#date_to", $('$("#filter_field"):focus').closest('div')).attr('id','filter_condition_textbox');
-}
+function supplyConditionOptions(elt){
 
-function supplyConditionOptions(fieldOption){
-	$("#filter_condition", $('$("#filter_field"):focus').closest('div')).empty();
-	
-	if(fieldOption == ""){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();		
-	}
-	
-	if(fieldOption == "message-direction"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_type').append(new Option("", ""));
-		var typeConditionOptions = window.app.typeConditionOptions;
-		$.each(typeConditionOptions, function(val, text) {
-			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
-		});
-	}
-	if(fieldOption == "message-status"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_status').append(new Option("", ""));
-		var statusConditionOptions = window.app.statusConditionOptions;
-		$.each(statusConditionOptions, function(val, text) {
-			$("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text, val));
-		});
-	}
-	if(fieldOption == "date-from"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_from').attr('name','filter_from').show().datepicker();		
-	}
-	if(fieldOption == "date-to"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();// we need to change id because the dtae picker will recognize only the id.
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('id','date_to').attr('name','filter_to').show().datepicker();		
-	}
-	if(fieldOption == "participant-phone"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_phone').show().datepicker("destroy").removeClass("hasDatepicker");
-	}
-	if(fieldOption == "message-content"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).attr('name','filter_content').show().datepicker("destroy").removeClass("hasDatepicker");
-	}
-	if(fieldOption == "dialogue"){
-		changeFilterConditionTextBoxID();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).show();
-		$("#filter_condition_textbox", $('$("#filter_field"):focus').closest('div')).hide();
-		$("#filter_condition", $('$("#filter_field"):focus').closest('div')).attr('name','filter_status').append(new Option("", "")).on('click', { filterIndex: 1}, generateDropdown);
-		var dialogueConditionOptions = window.app.dialogueConditionOptions;
-		$.each(dialogueConditionOptions, function(val, text) {
-		        $("#filter_condition", $('$("#filter_field"):focus').closest('div')).append(new Option(text['name'], val));
-		});
-	}
-	
+    $(elt).siblings('input,select').remove();
+
+    var name = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
+
+    switch ($(elt).val()) 
+    {
+    case "message-direction":
+        $(elt).after("<select name='"+name+"[2]'></select>");
+        var options = window.app.typeConditionOptions;
+        $.each(options, function(key, value){
+                $("[name='"+name+"[2]']").append(new Option(value, key));      
+        })
+        break;
+    case "message-status":
+	    $(elt).after("<select name='"+name+"[2]'></select>");
+        $.each(window.app.statusConditionOptions, function(key, value){
+                $("[name='"+name+"[2]']").append(new Option(value, key));      
+        })
+        break;
+    case "date-from":
+	    $(elt).after("<input name='"+name+"[2]'></input>");
+	    $("[name='"+name+"[2]']").datepicker();
+	    break;
+    case "date-to":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+	    $("[name='"+name+"[2]']").datepicker();
+	    break;
+	case "participant-phone":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+	    break;
+	case "message-content":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+	    break;
+	case "dialogue":
+	    $(elt).after("<select name='"+name+"[2]'></select>");
+	    $("[name='"+name+"[2]']").on('click', { filterPrefix: name}, generateDropdown);
+        $.each(window.app.dialogueConditionOptions, function(key, value){
+                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
+        })
+        break;
+    }
 }
 
 function generateDropdown(event) {
-    item = $(':focus');
+    item = $("[name='"+event.data.filterPrefix+"[2]']");
     if ($(item).val() != "") {
-        $(item).after("<select name='filter_condition["+event.data.filterIndex+"][3]'></select>");
+        if ($("[name='"+event.data.filterPrefix+"[3]']").length > 0) {
+            $("[name='"+event.data.filterPrefix+"[3]']").empty();
+        } else {
+            $(item).after("<select name='"+event.data.filterPrefix+"[3]'></select>");
+        }
         $.each(window.app.dialogueConditionOptions[$(item).val()]['interactions'], function(id, content){
-                $("[name='filter_condition["+event.data.filterIndex+"][3]']").append(new Option(content, id));      
+                $("[name='"+event.data.filterPrefix+"[3]']").append(new Option(content, id));      
         })
     }
 }

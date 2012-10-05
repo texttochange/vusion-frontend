@@ -31,6 +31,7 @@ class History extends MongoModel
                 'message-direction',
                 'interaction-id',
                 'dialogue-id',
+                'matching-answer',
                 );
         } elseif ($objectType == 'unattach-history'){
              return array(
@@ -81,7 +82,8 @@ class History extends MongoModel
         'date-to'=>'date to',
         'participant-phone'=>'participant phone',
         'message-content'=>'message content',
-        'dialogue'=>'dialogue' 
+        'dialogue'=>'dialogue',
+        'non-matching-answers' => 'non matching answers'
         );
     
     public $typeConditionFilters = array(

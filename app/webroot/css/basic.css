@@ -177,18 +177,18 @@
 }
 
 .ttc-actions li div{
-    background:#62af56;
+    color: #003D4C;
+    /*background: #62af56;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#76BF6B), to(#3B8230));
     background-image: -webkit-linear-gradient(top, #76BF6B, #3B8230);
-    background-image: -moz-linear-gradient(top, #76BF6B, #3B8230);
+    background-image: -moz-linear-gradient(top, #76BF6B, #3B8230);*/
     border-color: #2d6324;
-    color: #fff;
-    text-shadow: rgba(0, 0, 0, 0.5) 0px -1px 0px;
     padding: 4px 5px;
 }
 
 .ttc-actions li div:hover{
-    background:#5BA150;
+    /*background:#5BA150;*/
+    color: #367889;
 }
 
 .ttc-info{
@@ -578,7 +578,8 @@
 .ttc-advanced-filter input{
     font-size: 90%;
     width: 50%;
-    padding:0.5%;
+    padding: 0.5%;
+    height: 9px;
 }
 
 .ttc-advanced-filter div{
@@ -587,7 +588,7 @@
 }
 
 .ttc-advanced-filter input[type="submit"]{
-	width: 15%;
+	width: 60px;
 }
 
 .ttc-advanced-filter div.submit {
