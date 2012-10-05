@@ -116,9 +116,12 @@ class ShortCode extends MongoModel
 
     public function beforeValidate()
     {
+        
         parent::beforeValidate();
         $this->data['ShortCode']['shortcode'] = trim($this->data['ShortCode']['shortcode']);
-        
+        $this->data['ShortCode']['international-prefix'] = trim($this->data['ShortCode']['international-prefix']);
+        $this->data['ShortCode']['supported-internationally'] = intval($this->data['ShortCode']['supported-internationally']);
+        $this->data['ShortCode']['support-customized-id'] = intval($this->data['ShortCode']['support-customized-id']);
         return true;
     }
 

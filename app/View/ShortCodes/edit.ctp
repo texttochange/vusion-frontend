@@ -50,14 +50,15 @@
 	</div>
 	<div>
 	<?php
-	    echo $this->Html->tag('label',__('Support Customized Id'));
 	    echo $this->Form->checkbox('support-customized-id');
+	    echo $this->Html->tag('label',__('Support Customized Id'));
 	?>
 	</div>
 	<div>
 	<?php
-	    echo $this->Html->tag('label',__('Supported Internationally'));
+	
 	    echo $this->Form->checkbox('supported-internationally');
+	    echo $this->Html->tag('label',__('Supported Internationally'));
 	?>
 	</div>
 	</fieldset>

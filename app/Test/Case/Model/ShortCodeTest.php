@@ -33,7 +33,9 @@ class ShortCodeTestCase extends CakeTestCase
             'shortcode' => '8282 ',
             'international-prefix' => ' 256',
             'country' => 'uganda',
-            'badfield' => 'something'
+            'badfield' => 'something',
+            'supported-internationally' => "0",
+            'support-customized-id' => "1"
             );
 
         $this->ShortCode->create();
@@ -44,6 +46,8 @@ class ShortCodeTestCase extends CakeTestCase
         $savedShortCode = $this->ShortCode->save($wrongShortCode);
         $this->assertFalse(array_key_exists('badfield', $savedShortCode['ShortCode']));
         $this->assertEqual('8282',$savedShortCode['ShortCode']['shortcode']);
+        $this->assertEqual(0, $savedShortCode['ShortCode']['supported-internationally']);
+        $this->assertEqual(1, $savedShortCode['ShortCode']['support-customized-id']);
 
         ## Cannot save the same couple coutry/shortcode if not supported internationally
         $this->ShortCode->create();
