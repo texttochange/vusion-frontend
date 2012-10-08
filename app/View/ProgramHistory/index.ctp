@@ -22,106 +22,60 @@
         <?php
 	   echo $this->Form->create(null);
 	   echo $this->Html->tag('span', 'Advanced Filter', array('id'=>'advFilter', 'class'=>'ttc-action-link'));
-	   $this->Js->get('#advFilter')->event(
-	    'click','
-	    $(".ttc-filter").hide();
-	    $("#advanced_filter_form").show(hasNoStackFilter());
-	    ');
+	   $this->Js->get('#advFilter')->event('click',
+	       '$(".ttc-filter").hide();
+	       $("#advanced_filter_form").show(hasNoStackFilter());');
 	   echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 	   $options = array(); 
-	   $options['non_matching_answers'] = "Non matching answers";
-	   if (isset($this->params['url']['filter']))
-	        echo $this->Form->select('filter', $options, array('id'=> 'filter', 'default' => $this->params['url']['filter'],'empty' => 'Quick Filter...'));
-	   else 
-	       	echo $this->Form->select('filter', $options, array('id'=> 'filter', 'empty' => 'Quick Filter...'));
-	   $this->Js->get('#filter')->event('change', '
-	     if ($("#filter option:selected").val())
-	         window.location.search = "?filter="+$("#filter option:selected").val();
+	   $options['non-matching-answers'] = __("Non matching answers");
+	   if (isset($this->params['url']['filter_param'])) {
+	       if (count($this->params['url']['filter_param'])==1 and isset($options[$this->params['url']['filter_param'][1][1]])) {
+	           echo $this->Form->select('filter', $options, array('id'=> 'quick-filter', 'default' => $this->params['url']['filter_param'][1][1],'empty' => 'Quick Filter...'));
+	       } else {
+	           $this->Js->get('document')->event('ready','
+	               $(".ttc-filter").hide();
+	               $("#advanced_filter_form").show(hasNoStackFilter());
+	               ');
+	           $count = 1;
+               foreach ($this->params['url']['filter_param'] as $filter) {
+                   $thirdDrop = (isset($filter[3]) ? '$("select[name=\'filter_param['.$count.'][3]\']").val("'.$filter[3].'").children("option[value='.$filter[3].']").click();' : '');
+                   $this->Js->get('document')->event('ready',
+                       'addStackFilter();
+                       $("select[name=\'filter_param['.$count.'][1]\']").val("'.$filter[1].'").children("option[value=\''.$filter[1].'\']").click();
+                       if ($("input[name=\'filter_param['.$count.'][2]\']").length > 0) {
+                            $("input[name=\'filter_param['.$count.'][2]\']").val("'.(isset($filter[2])? $filter[2]:'').'");
+                       } else {
+                           $("select[name=\'filter_param['.$count.'][2]\']").val("'.(isset($filter[2])? $filter[2]:'').'").children("option[value='.(isset($filter[2])? $filter[2]:'').']").click();
+                           '. $thirdDrop .'
+                       }',
+                       true);
+                   $count++;
+               }	           
+	       }   
+	   } else { 
+	       	echo $this->Form->select('filter', $options, array('id'=> 'quick-filter', 'empty' => 'Quick Filter...'));
+	   }
+	   $this->Js->get('#quick-filter')->event('change', '
+	     if ($(this).val())
+	         window.location.search = "?filter_param[1][1]="+$(this).val();
          else
-             window.location.search = "?";
-	   ');
-	   $this->Js->get('document')->event('ready','
-           $("#filter_from").datepicker();
-           $("#filter_to").datepicker();
-       ');
+             window.location.search = "?";');
 	   echo $this->Form->end(); ?>
    </div>
-   <?php
-       if (preg_grep('/^filter_/', array_keys($this->params['url']))) {
-           $this->Js->get('document')->event('ready','
-               $(".ttc-filter").hide();
-               $("#advanced_filter_form").show(hasNoStackFilter());
-           ');
-       }
-   ?>
    <div id="advanced_filter_form" class="ttc-advanced-filter">
    <?php
        $this->Js->set('myOptions', $filterFieldOptions);
        $this->Js->set('typeConditionOptions', $filterTypeConditionsOptions);
        $this->Js->set('statusConditionOptions', $filterStatusConditionsOptions);
+       $this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
        
-       $this->Js->get('$(\"#filter_field\"):focus')->event('change','
-               var fieldOption = $("$(\"#filter_field\"):focus option:selected").text();
-               if($(document.activeElement).attr("id") == "filter_field")
-                   supplyConditionOptions(fieldOption);
-           ');
+       //Add the behavior to all filterstack 
+       $this->Js->get(':regex(name,^filter_param\\\[\\\d+\\\]\\\[1\\\])')->event('change','supplyConditionOptions(this);', true);
+       //Create the strack that have been previsously send
        echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
-       //echo "<h5>Filter Options</h5>";
        echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
-       if (isset($this->params['url']['filter_field'])) {
-           $count = 1; // the stack filters and filter fields will always have names begining with index 1.
-           foreach (array_keys($this->params['url']['filter_field']) as $key) {
-               $this->Js->get('document')->event('ready','addStackFilter();
-                   $("select[name=\'filter_field['.$count.']\']").focus();
-                   $("select[name=\'filter_field['.$count.']\'] > option").each(function(){
-                       if(this.value == "'.$this->params['url']['filter_field'][$key].'"){
-                           $(this).attr("selected",true);
-                           supplyConditionOptions(this.text);
-                       }
-                   });
-               ');
-               $count++;
-           }
-       }
-       if (isset($this->params['url']['filter_type'])) {
-           $this->Js->get('document')->event('ready','
-               $("select[name=\'filter_type\'] > option").each(function(){
-                   if(this.value == "'.$this->params['url']['filter_type'].'"){
-                       $(this).attr("selected",true);
-                   }
-               });
-           ');
-       }
-       if (isset($this->params['url']['filter_status'])) {
-           $this->Js->get('document')->event('ready','
-               $("select[name=\'filter_status\'] > option").each(function(){
-                   if(this.value == "'.$this->params['url']['filter_status'].'"){
-                       $(this).attr("selected",true);
-                   }
-               });
-           ');
-       }
-       if (isset($this->params['url']['filter_from'])) {
-           $this->Js->get('document')->event('ready','
-               $("input[name=\'filter_from\']").val("'.$this->params['url']['filter_from'].'");
-           ');
-       }
-       if (isset($this->params['url']['filter_to'])) {
-           $this->Js->get('document')->event('ready','
-               $("input[name=\'filter_to\']").val("'.$this->params['url']['filter_to'].'");
-           ');
-       }
-       if (isset($this->params['url']['filter_phone'])) {
-           $this->Js->get('document')->event('ready','
-               $("input[name=\'filter_phone\']").val("'.$this->params['url']['filter_phone'].'");
-           ');
-       }
-       if (isset($this->params['url']['filter_content'])) {
-           $this->Js->get('document')->event('ready','
-               $("input[name=\'filter_content\']").val("'.$this->params['url']['filter_content'].'");
-           ');
-       }
-       echo $this->Form->end(__('Filter'));       
+     
+       echo $this->Form->end(array("label" => "Filter"));       
        $this->Js->get('#advanced_filter_form')->event('submit','
            $(":input[value=\"\"]").attr("disabled", true);
            return true;
