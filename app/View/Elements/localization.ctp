@@ -82,5 +82,6 @@ var localized_labels = {
     "offset-condition": "<?php echo __('Answer Required')?>",
     "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
     "use-template": "<?php echo __("Use template from program settings")?>",
+    "no-request-matching-try-keyword-only": "<?php echo __("In case no matching on other requests, try to match only the message first word.")?>",
 };
 
