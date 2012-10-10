@@ -29,8 +29,10 @@
 	   $options = array(); 
 	   $options['non-matching-answers'] = __("Non matching answers");
 	   if (isset($this->params['url']['filter_param'])) {
-	       if (count($this->params['url']['filter_param'])==1 and isset($options[$this->params['url']['filter_param'][1][1]])) {
-	           echo $this->Form->select('filter', $options, array('id'=> 'quick-filter', 'default' => $this->params['url']['filter_param'][1][1],'empty' => 'Quick Filter...'));
+	       echo $this->Form->select('filter', $options, array('id'=> 'quick-filter', 'empty' => 'Quick Filter...'));
+	       $index = array_keys($this->params['url']['filter_param']);
+	       if (count($this->params['url']['filter_param'])==1 and isset($options[$this->params['url']['filter_param'][$index[0]][1]])) {
+	           $this->Js->get('document')->event('ready','$("#quick-filter").val("'.$this->params['url']['filter_param'][$index[0]][1].'")');
 	       } else {
 	           $this->Js->get('document')->event('ready','
 	               $(".ttc-filter").hide();
