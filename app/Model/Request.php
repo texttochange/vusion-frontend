@@ -9,7 +9,7 @@ class Request extends MongoModel
 
      function getModelVersion()
     {
-        return '1';
+        return '2';
     }
 
     function getRequiredFields($objectType=null)
