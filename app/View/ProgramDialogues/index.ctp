@@ -6,7 +6,8 @@
 	<div class="ttc-display-area">    
 
         <?php
-        $draftOnlySeparator = false;        
+        $draftOnlySeparator = false;
+        uasort($dialogues, array('dialogueHelper', 'compareDialogueByName'));
         foreach ($dialogues as $dialogue) {
             $dialogueName = "";
             $actions = "";
