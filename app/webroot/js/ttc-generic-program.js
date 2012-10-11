@@ -973,7 +973,12 @@ function wrapErrorMessageInClass(error, inClasses){
         inClasses = "ttc-validation-error"
     }
     return '<span class="'+inClasses+'"><nobr>'+error+'</nobr></span>';
-} 
+}
+
+//TODO: consider renaming radiochildren so that the names are not the same as those for the interactions 
+function showSummaryError() {
+	$.each(":regex(name,^Dialogue.interactions\\[\\d+\\]$):not([radiochildren='radiochildren'])");
+}
 
 function isInFuture(dateTime) {
     if (dateTime=="")
@@ -1053,6 +1058,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
                  reactivateSaveButtons();
              },
              onkeyup: false,
+             ignore: '',
         },  
         "method": "post",
                 "elements": 
