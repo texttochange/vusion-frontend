@@ -9,13 +9,14 @@ class Request extends MongoModel
 
      function getModelVersion()
     {
-        return '1';
+        return '2';
     }
 
     function getRequiredFields($objectType=null)
     {
         return array(
             'keyword',
+            'set-no-request-matching-try-keyword-only',
             'actions',
             'responses'
             );
@@ -32,7 +33,9 @@ class Request extends MongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-    
+
+        $this->data['Request']['object-type'] = strtolower($this->name);
+
         if ($this->data['Request']['actions'] == null) {
             $this->data['Request']['actions'] = array();
         }
@@ -40,6 +43,13 @@ class Request extends MongoModel
         if ($this->data['Request']['responses'] == null) {
             $this->data['Request']['responses'] = array();
         }
+
+        if ($this->data['Request']['set-no-request-matching-try-keyword-only'] == null) {
+            $this->data['Request']['set-no-request-matching-try-keyword-only'] = 0;
+        } else {
+            $this->data['Request']['set-no-request-matching-try-keyword-only'] = 'no-request-matching-try-keyword-only';
+        }
+
 
     }
 
