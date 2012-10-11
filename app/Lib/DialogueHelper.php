@@ -218,5 +218,18 @@ class DialogueHelper
         return implode(", ",$requests);
     }
     
+    
+    public function compareDialogueByName($a, $b)
+    {
+        if ($a['Active'] && $b['Active'])
+            return strcasecmp($a['Active']['name'],$b['Active']['name']);
+        if ($a['Active'] && !$b['Active'])
+            return -1;
+        if (!$a['Active'] && $b['Active'])
+            return 1;
+        if ($a['Draft'] && $b['Draft'])
+            return strcasecmp($a['Draft']['name'],$b['Draft']['name']);
+    }
+    
 
 }
