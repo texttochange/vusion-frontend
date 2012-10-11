@@ -21,9 +21,16 @@ var program = {"script": [
     "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-reminder"],
+    "question-answer": ["content","keyword", "checkbox-set-use-template", "checkbox-set-max-unmatching-answers", "radio-type-question", "checkbox-set-reminder"],
     "checkbox-set-use-template": "checkboxes",
     "set-use-template": {"use-template": "use-template"},
+    "checkbox-set-max-unmatching-answers": "checkboxes",
+    "set-max-unmatching-answers": {"max-unmatching-answers": "max-unmatching-answers"},
+    "max-unmatching-answers": ["max-unmatching-answer-number", "max-unmatching-answer-actions"],
+    "max-unmatching-answer-number": "text",
+    "max-unmatching-answer-actions": ["add-max-unmatching-answer-action"],
+    "add-max-unmatching-answer-action": "button",
+    "max-unmatching-answer-action": ["radio-type-action"],
     "radio-type-question": "radiobuttons", 
     "type-question":{"closed-question":"closed-question","open-question":"open-question"},
     "closed-question": ["label-for-participant-profiling", "checkbox-set-answer-accept-no-space", "answers"],
@@ -322,6 +329,11 @@ function activeForm(){
                 $(elt).change(updateCheckboxSubmenu);
             };
     });
+    $.each($("input[name*='max-unmatching-answers']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).change(updateCheckboxSubmenu);
+            };
+    });
     $("input[name*='date-time']").each(function (key, item) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
                 $(this).parent().parent().find("input").attr("readonly", true);
@@ -459,13 +471,13 @@ function activeForm(){
             }
         });
     });
-    $("input[name$='reminder-number']").each(function (item) {
+    $("input[name$='number']").each(function (item) {
         $(this).rules("add",{
             required:true,
             min: 1,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                min: wrapErrorMessage(localized_errors.validation_reminder_min),
+                min: wrapErrorMessage(localized_errors.validation_number_min),
             }
         });
     });
