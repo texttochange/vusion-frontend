@@ -83,5 +83,9 @@ var localized_labels = {
     "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
     "use-template": "<?php echo __("Use template from program settings")?>",
     "no-request-matching-try-keyword-only": "<?php echo __("In case no matching on other requests, try to match only the message first word.")?>",
+    "no-unmatching-error-message": "<?php echo __('No unmatching feedback')?>",
+    "program-unmatching-error-message":  "<?php echo __('Default program umatching feedback')?>",
+    "interaction-unmatching-error-message":  "<?php echo __('Custom umatching message')?>",
+    "unmatching-feedback-content": "<?php echo __('Content')?>",
 };
 

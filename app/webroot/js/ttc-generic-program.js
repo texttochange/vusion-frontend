@@ -21,7 +21,14 @@ var program = {"script": [
     "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-reminder"],
+    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    "radio-type-unmatching-feedback" : "radiobuttons",
+    "type-unmatching-feedback": {
+        "no-unmatching-error-message": "no-unmatching-error-message",
+        "program-unmatching-error-message":"program-unmatching-error-message",
+        "interaction-unmatching-error-message":"interaction-unmatching-error-message"},
+    "interaction-unmatching-error-message": ["unmatching-feedback-content"],
+    "unmatching-feedback-content": "textarea",
     "checkbox-set-use-template": "checkboxes",
     "set-use-template": {"use-template": "use-template"},
     "radio-type-question": "radiobuttons", 
@@ -77,7 +84,7 @@ var program = {"script": [
         "announcement":"announcement",
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
-    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "radio-type-unmatching-feedback", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -414,6 +421,16 @@ function activeForm(){
         });
     });
     $("input[name*='type-question']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
+    $("input[name*='type-unmatching-feedback']").each(function (item) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
