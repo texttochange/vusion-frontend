@@ -369,6 +369,16 @@
 	.ttc-validation-error:after{   top: 26.5px; }
 }
 
+.ttc-summary-error{
+	background:pink;
+	position:absolute;
+	border: solid white;
+	padding: 5px;
+	font-size: 12px;
+	right: 90px;
+	top: 26px;
+}
+
 .ttc-login-title{
 }
 

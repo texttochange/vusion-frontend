@@ -25,7 +25,7 @@
 		echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
 		echo $this->Html->script('jqueryui/js/jquery.ui.datepicker.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
-		echo $this->Html->script('jquery.validate.js');
+		echo $this->Html->script('jquery.validate-1.9.0.js');
 		echo $this->Html->script('dform/dform.js');
 		echo $this->Html->script('dform/dform.extensions.js');
 		echo $this->Html->script('dform/dform.subscribers.js');
