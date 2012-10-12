@@ -981,7 +981,7 @@ function showSummaryError() {
     $.each($(":regex(name,^Dialogue.interactions\\[\\d+\\]$):not([radiochildren='radiochildren'])"),
         function(key, elt){
 	    if ($(elt).children(':has(".error")').length > 0) {
-	    	    $(elt).children('.ttc-fold-summary').append('<span style="background:pink; position:relative"><nobr>'+localized_errors.interaction_summary_error+'</nobr></span>');
+	    	    $(elt).children('.ttc-fold-summary').append('<span class="ttc-summary-error"><nobr>'+localized_errors.interaction_summary_error+'</nobr></span>');
     	    }
     	});
 }
