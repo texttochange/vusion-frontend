@@ -1,7 +1,8 @@
 <?php
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
-App::Uses('Schedule', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('MissingField', 'Lib');
 
 class Dialogue extends MongoModel
 {
@@ -66,8 +67,12 @@ class Dialogue extends MongoModel
             $this->data['Dialogue']['dialogue-id'] = uniqid();
         }   
 
+        $interactionModel = new Interaction();
+
         if (isset($this->data['Dialogue']['interactions'])) {
             foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
+                $interaction = $interactionModel->beforeValidate($interaction);
+                /*
                 if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="") {
                     $interaction['interaction-id'] = uniqid();  
                 }   
@@ -84,6 +89,7 @@ class Dialogue extends MongoModel
                 if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'offset-days') 
                     and (!isset($interaction['days']) or $interaction['days'] == ""))
                     $interaction['days'] = '0';
+                */
             }
         } else {
             $this->data['Dialogue']['interactions'] = array();
@@ -105,7 +111,7 @@ class Dialogue extends MongoModel
         if (isset($dialogue['Dialogue']['interactions'])) {
             $interactionIds = array();
             foreach ($dialogue['Dialogue']['interactions'] as &$interaction) {
-                $interactionIds[] = $interaction['interaction-id'];
+                 $interactionIds[] = $interaction['interaction-id'];
                 $interaction['activated'] = 1;
             }
             //Delete all interaction that have been deleted on the UI
@@ -283,6 +289,80 @@ class Dialogue extends MongoModel
     {
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
+    }
+
+}
+
+class Interaction
+{
+    var $modelName = 'interaction';
+    var $modelVersion = '1'; 
+
+    var $payload = array();
+
+    var $fields = array(
+        'interaction-id',
+        'type-schedule',
+        'type-interaction',
+        'activated');
+
+    public function beforeValidate($interaction)
+    {
+        
+        $SCHEDULE_TYPE = array(
+            'fixed-time' => array('date-time' => function($v) {return true;}),
+            'offset-days'=> array(
+                'days' => function($v) { return ($v!=null);},
+                'at-time'=> function($v) { return ($v!=null);}),
+            'offset-time'=> array('minutes'=> function($v) { return ($v!=null);}),
+            'offset-condition'=> array( 
+                'offset-condition-interaction-id' => function($v) { return ($v!=null);}));
+        
+        $INTERACTION_TYPE = array(
+            'announcement' => array('content' => function($v) {return ($v!=null);}),
+            'question-answer'=> array(
+                'content'=> function($v) {return ($v!=null);},
+                'keyword'=> function($v) {return ($v!=null);},
+                'set-use-template'=> function($v) {return true;},
+                'type-question'=> function($v) {return ($v!=null);},
+                'type-unmatching-feedback'=> function($v) {return ($v!=null);},
+                'set-reminder'=> function($v) {return true;}),
+            'question-answer-keyword'=> array(
+                'content'=> function($v) {return ($v!=null);},
+                'label-for-participant-profiling'=> function($v) {return ($v!=null);},
+                'answer-keywords'=> function($v) {return ($v!=null);},
+                'type-unmatching-feedback'=> function($v) {return ($v!=null);},
+                'set-reminder'=> function($v) {return true;}));
+
+
+       
+        $interaction['model-name'] = $this->modelName;        
+        $interaction['model-version'] = $this->modelVersion;
+
+        foreach($this->fields as $field) {
+            if (!isset($interaction[$field])) {
+                if ($field=='interaction-id') {
+                    $interaction['interaction-id'] = uniqid();  
+                } elseif ($field=='activated') {
+                    $interaction['activated'] = 0;
+                }else {
+                    throw new MissingField("$field is missing");
+                }
+            }
+            foreach($SCHEDULE_TYPE[$interaction['type-schedule']] as $field => $check) {
+                if (!call_user_func($check, $interaction[$field])){
+                    throw new MissingField("$field is missing");
+                }
+            }
+            foreach($SCHEDULE_TYPE[$interaction['type-schedule']] as $field => $check) {
+                if (!call_user_func($check, $interaction[$field])){
+                    throw new MissingField("$field is missing");
+                }
+            }
+        }
+
+        return $interaction;
+
     }
 
 }

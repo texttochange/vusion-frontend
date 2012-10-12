@@ -71,6 +71,7 @@ class ScriptMaker
             'interactions'=> array(
                 array(
                     'type-schedule' => 'fixed-time',
+                    'date-time' => '20/10/2013 20:20',
                     'type-interaction' => 'question-answer', 
                     'content' => 'how are you', 
                     'keyword' => 'keyword', 
