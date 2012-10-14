@@ -108,24 +108,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
 
-    
-    protected function getOneDialogue($keyword)
-    {
-        $dialogue['Dialogue'] = array(
-            'name' => 'my dialogue',
-            'dialogue-id' => null,
-            'interactions'=> array(
-                array(  
-                    'type-interaction' => 'question-answer', 
-                    'content' => 'how are you', 
-                    'keyword' => $keyword, 
-                    )
-                )
-            );
-
-        return $dialogue;
-    }
-
 
     protected function mockProgramAccess_withoutProgram()
     {
@@ -200,11 +182,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
     public function testAdd()
     {
-        $dialogue = array(
-            'dialogue' => array(
-                'do' => 'something',
-                )
-            );
+        $dialogue = $this->Maker->getOneDialogue();
 
         $this->mockProgramAccess();
         $this->testAction(
@@ -316,7 +294,9 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->instanciateModels();
         $this->instanciateExternalModels('testdbprogram2');
 
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
+        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
         $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
 
         $this->externalModels['programSetting']->create();
@@ -398,7 +378,9 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->instanciateModels(); 
         $this->instanciateExternalModels('testdbprogram2');
 
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $dialogue = $this->getOneDialogue('usedKeyword');
+
+        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
         $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
 
         $this->externalModels['programSetting']->create();
@@ -445,8 +427,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     )
                 );
 
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
         $this->instanciateModels();
-        $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
 
         $this->ProgramSetting->create();
@@ -484,8 +468,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     )
                 );
 
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
         $this->instanciateModels();
-        $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
 
         $this->ProgramSetting->create();
@@ -554,8 +540,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
 
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
         $this->instanciateModels();
-        $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         
         $this->ProgramSetting->create();
@@ -594,8 +582,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 );
         $this->instanciateExternalModels('testdbprogram2');
 
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
         $this->instanciateModels();
-        $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
 
         $newDialogue = $this->getOneDialogue('anotherKeyword');
@@ -632,8 +622,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             ->method('_notifySendAllMessagesBackendWorker')
             ->will($this->returnValue(true));
 
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
         $this->instanciateModels();
-        $saveDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($saveDialogue['Dialogue']['dialogue-id']);
  
         $this->ProgramSetting->create();
@@ -677,8 +669,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             ->method('_notifyUpdateBackendWorker')
             ->will($this->returnValue(true));
 
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+
         $this->instanciateModels();
-        $savedDialogue = $this->Dialogue->saveDialogue($this->getOneDialogue('usedKeyword'));
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         
         $this->testAction('/testurl/programDialogues/delete/'.$savedDialogue['Dialogue']['dialogue-id']);
 

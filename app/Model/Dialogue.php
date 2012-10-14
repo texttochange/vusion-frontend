@@ -354,7 +354,16 @@ class Interaction
                     throw new MissingField("$field is missing");
                 }
             }
-            foreach($SCHEDULE_TYPE[$interaction['type-schedule']] as $field => $check) {
+            foreach($INTERACTION_TYPE[$interaction['type-interaction']] as $field => $check) {
+                if (!isset($interaction[$field])) {
+                    if ($field=='set-use-template') {
+                        $interaction['set-use-template'] = null;
+                    } elseif ($field=='type-unmatching-feedback') {
+                        $interaction['type-unmatching-feedback'] = 'none';                        
+                    } elseif ($field=='set-reminder') {
+                        $interaction['set-reminder'] = null;
+                    }
+                }
                 if (!call_user_func($check, $interaction[$field])){
                     throw new MissingField("$field is missing");
                 }

@@ -63,7 +63,7 @@ class ScriptMaker
     }
 
 
-    public function getOneDialogue()
+    public function getOneDialogue($keyword='keyword')
     {
         $dialogue['Dialogue'] = array(
             'name' => 'my dialogue',
@@ -72,9 +72,10 @@ class ScriptMaker
                 array(
                     'type-schedule' => 'fixed-time',
                     'date-time' => '20/10/2013 20:20',
-                    'type-interaction' => 'question-answer', 
-                    'content' => 'how are you', 
-                    'keyword' => 'keyword', 
+                    'type-interaction' => 'question-answer',
+                    'type-question' => 'open-question',
+                    'content' => 'how are you?', 
+                    'keyword' => $keyword, 
                     )
                 )
             );
