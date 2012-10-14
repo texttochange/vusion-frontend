@@ -24,9 +24,9 @@ var program = {"script": [
     "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "radio-type-unmatching-feedback","checkbox-set-reminder"],
     "radio-type-unmatching-feedback" : "radiobuttons",
     "type-unmatching-feedback": {
-        "no-unmatching-error-message": "no-unmatching-error-message",
-        "program-unmatching-error-message":"program-unmatching-error-message",
-        "interaction-unmatching-error-message":"interaction-unmatching-error-message"},
+        "no-unmatching-feedback": "no-unmatching-feedback",
+        "program-unmatching-feedback":"program-unmatching-feedback",
+        "interaction-unmatching-feedback":"interaction-unmatching-feedback"},
     "interaction-unmatching-error-message": ["unmatching-feedback-content"],
     "unmatching-feedback-content": "textarea",
     "checkbox-set-use-template": "checkboxes",

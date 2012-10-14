@@ -143,34 +143,6 @@ class DialogueTestCase extends CakeTestCase
 
         $dialogueTwo = $this->Maker->getOneDialogue();
         $dialogueTwo['Dialogue']['interactions'][0]['keyword'] = 'FEL';
-
-
-        /*
-        $dialogueOne['Dialogue'] = array(
-            'interactions'=> array(
-                array(
-                    'type-interaction' => 'question-answer', 
-                    'content' => 'how are you', 
-                    'keyword' => 'FEEL', 
-                    ),
-                array( 
-                    'type-interaction'=> 'question-answer', 
-                    'content' => 'What is you name?', 
-                    'keyword'=> 'NAME', 
-                    )
-                )
-            );
-
-        $dialogueTwo['Dialogue'] = array(            
-            'interactions'=> array(
-                array(
-                    'type-interaction' => 'question-answer', 
-                    'content' => 'how are you', 
-                    'keyword' => 'FEL', 
-                    )
-                )
-            );
-           */
       
         $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
         $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);    
@@ -229,6 +201,7 @@ class DialogueTestCase extends CakeTestCase
     {
          $dialogueOne['Dialogue'] = array(
              'name'=> 'mydialgoue',
+             'auto-enrollment' => 'none',
              'dialogue-id'=> '01'
              );
          $schedule['Schedule'] = array(
@@ -237,6 +210,7 @@ class DialogueTestCase extends CakeTestCase
              );   
          $dialogueTwo['Dialogue'] = array(
              'name'=> 'mydialgoue',
+             'auto-enrollment' => 'none',
              'dialogue-id'=> '02'
              );
          $this->Dialogue->saveDialogue($dialogueOne);

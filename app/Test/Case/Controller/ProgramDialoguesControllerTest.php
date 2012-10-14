@@ -378,7 +378,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->instanciateModels(); 
         $this->instanciateExternalModels('testdbprogram2');
 
-        $dialogue = $this->getOneDialogue('usedKeyword');
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
 
         $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
         $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
@@ -588,7 +588,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
 
-        $newDialogue = $this->getOneDialogue('anotherKeyword');
+        $newDialogue = $this->Maker->getOneDialogue('anotherKeyword');
         $newDialogue['Dialogue']['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
         $newDialogue['Dialogue']['name'] = "my newer dialogue";
         $savedDialogue = $this->Dialogue->saveDialogue($newDialogue);

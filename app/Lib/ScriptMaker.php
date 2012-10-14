@@ -67,6 +67,7 @@ class ScriptMaker
     {
         $dialogue['Dialogue'] = array(
             'name' => 'my dialogue',
+            'auto-enrollment' => 'none',
             'dialogue-id' => null,
             'interactions'=> array(
                 array(
