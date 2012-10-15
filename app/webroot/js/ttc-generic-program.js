@@ -27,7 +27,7 @@ var program = {"script": [
         "no-unmatching-feedback": "no-unmatching-feedback",
         "program-unmatching-feedback":"program-unmatching-feedback",
         "interaction-unmatching-feedback":"interaction-unmatching-feedback"},
-    "interaction-unmatching-error-message": ["unmatching-feedback-content"],
+    "interaction-unmatching-feedback": ["unmatching-feedback-content"],
     "unmatching-feedback-content": "textarea",
     "checkbox-set-use-template": "checkboxes",
     "set-use-template": {"use-template": "use-template"},

@@ -59,7 +59,7 @@ class ProgramDialoguesController extends AppController
                     'result', 
                     array(
                         'status'=>'fail',
-                        'message' => __('Saving failed.')
+                        'message' => $this->Dialogue->validationErrors['dialogue'],
                         )
                     );
             }

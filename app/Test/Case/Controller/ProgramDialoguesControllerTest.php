@@ -197,6 +197,24 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     }
 
 
+    public function testAdd_fail()
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        unset($dialogue['Dialogue']['interactions'][0]['type-schedule']);
+        
+        $this->mockProgramAccess();
+        $this->testAction(
+            "/testurl/programDialogues/save", 
+            array(
+                'method' => 'post',
+                'data' => $dialogue
+                )
+            );
+        $this->assertEqual('fail', $this->vars['result']['status']);
+        $this->assertEqual('type-schedule is missing in an Interaction.', $this->vars['result']['message']);        
+    }
+
+
     public function testActivate_missingProgramSettings()
     {
         $dialogues = $this->mockProgramAccess();
@@ -578,8 +596,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     $this->programData, 
                     array(
                         $this->otherProgramData[0])
-                    )
-                );
+                    ));
         $this->instanciateExternalModels('testdbprogram2');
 
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
@@ -678,6 +695,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
         $this->assertEqual(0, $this->Dialogue->find('count'));
     }
-        
+
 
 }

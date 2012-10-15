@@ -4,6 +4,8 @@ App::uses('DialogueHelper', 'Lib');
 App::uses('Schedule', 'Model');
 App::uses('MissingField', 'Lib');
 App::uses('FieldValueIncorrect', 'Lib');
+App::uses('VusionException', 'Lib');
+App::uses('Interaction', 'Model');
 
 class Dialogue extends MongoModel
 {
@@ -60,35 +62,40 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
-        parent::beforeValidate();
-
-        if (!isset($this->data['Dialogue']['activated'])) {
-            $this->data['Dialogue']['activated'] = 0;
-        } else {
-            $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
-        }
-
-        if (!isset($this->data['Dialogue']['dialogue-id'])) {
-            $this->data['Dialogue']['dialogue-id'] = uniqid();
-        }   
-
-        if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
-            throw new FieldValueIncorrect("Auto Enrollment cannot be $this->data['Dialogue']['auto-enrollment']");
-        }
-
-        $interactionModel = new Interaction();
-
-        if (isset($this->data['Dialogue']['interactions'])) {
-            foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
-                $interaction = $interactionModel->beforeValidate($interaction);
+        try {
+            parent::beforeValidate();
+    
+            if (!isset($this->data['Dialogue']['activated'])) {
+                $this->data['Dialogue']['activated'] = 0;
+            } else {
+                $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
             }
-        } else {
-            $this->data['Dialogue']['interactions'] = array();
+    
+            if (!isset($this->data['Dialogue']['dialogue-id'])) {
+                $this->data['Dialogue']['dialogue-id'] = uniqid();
+            }   
+    
+            if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
+                throw new FieldValueIncorrect("Auto Enrollment cannot be $this->data['Dialogue']['auto-enrollment']");
+            }
+    
+            $interactionModel = new Interaction();
+    
+            if (isset($this->data['Dialogue']['interactions'])) {
+                foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
+                    $interaction = $interactionModel->beforeValidate($interaction);
+                }
+            } else {
+                $this->data['Dialogue']['interactions'] = array();
+            }
+    
+            $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
+    
+            return $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
+        } catch (Exception $e) {
+            $this->validationErrors['dialogue'] = $e->getMessage();
+            return false;
         }
-
-        $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
-
-        return $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
     }
 
     
@@ -284,203 +291,5 @@ class Dialogue extends MongoModel
 
 }
 
-class Interaction
-{
-    var $modelName = 'interaction';
-    var $modelVersion = '1'; 
-
-    var $payload = array();
-
-    var $fields = array(
-        'interaction-id',
-        'type-schedule',
-        'type-interaction',
-        'activated');
 
 
-    public function beforeValidate($interaction)
-    {
-
-        $unmatchingFeedbackFct = function($v) { 
-             if (in_array($v, array('no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback')))
-                 return true;
-             else 
-                 throw new FieldValueIncorrect("Unmatching feedback cannot be $v"); 
-        };
-        
-        $SCHEDULE_TYPE = array(
-            'fixed-time' => array('date-time' => function($v) {return true;}),
-            'offset-days'=> array(
-                'days' => function($v) { return ($v!=null);},
-                'at-time'=> function($v) { return ($v!=null);}),
-            'offset-time'=> array('minutes'=> function($v) { return ($v!=null);}),
-            'offset-condition'=> array( 
-                'offset-condition-interaction-id' => function($v) { return ($v!=null);}));
-        
-        $INTERACTION_TYPE = array(
-            'announcement' => array('content' => function($v) {return ($v!=null);}),
-            'question-answer'=> array(
-                'content'=> function($v) {return ($v!=null);},
-                'keyword'=> function($v) {return ($v!=null);},
-                'set-use-template'=> function($v) {return true;},
-                'type-question'=> function($v) {return ($v!=null);},
-                'type-unmatching-feedback'=> $unmatchingFeedbackFct,
-                'set-reminder'=> function($v) {return true;}),
-            'question-answer-keyword'=> array(
-                'content'=> function($v) {return ($v!=null);},
-                'label-for-participant-profiling'=> function($v) {return ($v!=null);},
-                'answer-keywords'=> function($v) {return ($v!=null);},
-                'type-unmatching-feedback'=> $unmatchingFeedbackFct,
-                'set-reminder'=> function($v) {return true;}));
-        
-        $QUESTION_TYPE = array(
-            'closed-question'=> array(
-                'label-for-participant-profiling'=> function($v) {return ($v!=null);},
-                'set-answer-accept-no-space'=> function($v) {return true;},
-                'answers'=> function($v) {return true;}),
-            'open-question'=> array(
-                'answer-label'=> function($v) {return ($v!=null);},
-                'feedbacks' => function($v) {return ($v!=null);}));
-
-        $REMINDER_TYPE = array();
-
-        $interaction['model-name'] = $this->modelName;        
-        $interaction['model-version'] = $this->modelVersion;
-
-        foreach($this->fields as $field) {
-            if (!isset($interaction[$field])) {
-                if ($field=='interaction-id') {
-                    $interaction['interaction-id'] = uniqid();  
-                } elseif ($field=='activated') {
-                    $interaction['activated'] = 0;
-                } else {
-                    throw new MissingField("$field is missing in an Interaction.");
-                }
-            }
-            foreach($SCHEDULE_TYPE[$interaction['type-schedule']] as $field => $check) {
-                if (!call_user_func($check, $interaction[$field])){
-                    throw new MissingField("$field is missing in an Interaction.");
-                }
-            }
-            foreach($INTERACTION_TYPE[$interaction['type-interaction']] as $field => $check) {
-                if (!isset($interaction[$field])) {
-                    if ($field=='set-use-template') {
-                        $interaction['set-use-template'] = null;
-                    } elseif ($field=='type-unmatching-feedback') {
-                        $interaction['type-unmatching-feedback'] = 'none';                        
-                    } elseif ($field=='set-reminder') {
-                        $interaction['set-reminder'] = null;
-                    }
-                }
-                if (!call_user_func($check, $interaction[$field])){
-                    throw new MissingField("$field is missing in a Interaction.");
-                }
-            }
-        }
-
-        $this->actionModel = new Action();
-
-        $ANSWER_KEYWORD = array(
-            'keyword' => function($v) {return ($v!=null);},
-            'feedbacks' => function($v) {return true;},
-            'answer-actions' => function(&$actions) {foreach($actions as &$action) {$actionModel->beforeValidate($action);};});
-
-        $ANSWER = array(
-            'choice' => function($v) {return ($v!=null);},
-            'feedbacks' => function($v) {return true;},
-            'answer-actions' => function(&$actions) {foreach($actions as &$action) {$actionModel->beforeValidate($action);};});
-
-        //Specific Answer check for closed and multikeyword question
-        if ($interaction['type-interaction'] == 'question-answer-keyword') {
-            if (is_array($interaction['answer-keywords'])) {
-                $interaction['answer-keywords'] = $this->beforeValidateAnswers($interaction['answer-keywords'], $ANSWER_KEYWORD);
-            } else {
-                $interaction['answer-keywords'] = array();                
-            }
-        } elseif ($interaction['type-interaction'] == 'question-answer' && $interaction['type-question'] == 'closed-question') {
-            if (is_array($interaction['answers'])) {
-                $interaction['answers'] = $this->beforeValidateAnswers($interaction['answers'], $ANSWER);
-            } else {
-                $interaction['answers'] = array();                
-            }
-        }
-        
-        return $interaction;
-    }
-
-    private function beforeValidateAnswers(&$answers, $validateRules) 
-    {
-        foreach($answers as &$answer) {
-            foreach($validateRules as $field => $check) {
-                if (!isset($answer[$field])) {
-                    if ($field == 'feedbacks' or $field == 'answer-action') { 
-                        $answer[$field] = array();
-                    }
-                }
-                if (!call_user_func($check, &$answer[$field])){
-                    throw new MissingField("$field is missing in an Answer.");
-                }
-            }
-        }
-        return $answers;
-    }
-
-
-}
-
-
-class Action
-{
-
-    var $modelName = 'action';
-    var $modelVersion = '1'; 
-
-    var $payload = array();
-
-    var $field = array('type-answer-actions');
-   
-    public function __construct() {
-
-        $this->ACTION_TYPE = array(
-            'optin' => null,
-            'optout' => null,
-            'enrolling' => array('enroll' => function($v) {return true;}),
-            'delays-enrolling' => array(
-                'enroll' => function($v) {return true;},
-                'offset-days' => array(
-                    'days' => function($v) { return ($v!=null);},
-                    'at-time'=> function($v) { return ($v!=null);}),
-            'tagging' => array('tag' =>  function($v) {return ($v!=null);}),
-            'reset' => null,
-            'feedback' => null));
-
-    }
-
-    public function beforeValidate(&$action)
-    {
-        foreach($this->fields as $field) {
-            throw new MissingField("$field is missing in an Interaction.");    
-        }
-        if ($this->ACTION_TYPE[$action['type-answer-actions']] == null) {
-            return $action;
-        }
-        foreach($this->ACTION_TYPE[$action['type-answer-actions']] as $field => $check) {
-            if (is_callable($check)) { 
-                if (!call_user_func($check, $action[$field])){
-                    throw new FieldValueIncorrect("Action Field:$field Value:$action[$field] is incorrect.");
-                }
-            } else {
-                foreach($check as $fieldMore => $checkMore) {
-                    if (!call_user_func($checkMore, $action[$field][$fieldMore])){
-                        throw new FieldValueIncorrect("Action Field:$fieldMore Value:$action[$field][$fieldMore] is incorrect.");
-                    }   
-                }
-            }
-        }
-        echo "action is valid";
-        $action['object-type'] = $this->modelName;
-        $action['model-version'] = $this->modelVersion;
-        return $action;
-    }
-
-}
