@@ -15,7 +15,7 @@ class VumiRabbitMQ {
             array(
                 'message_type' => 'add_worker',
                 'worker_name' => $database_name,
-                'worker_class' => 'vusion.TtcGenericWorker',
+                'worker_class' => 'vusion.DialogueWorker',
                 'config' => array(
                     'application_name' =>  $database_name,
                     'transport_name' => $database_name,

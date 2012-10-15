@@ -16,6 +16,7 @@ var localized_errors = {
     validation_keyword_used_same_script_error: "<?php echo __(" already used by the same script in another question.")?>",
     validation_choice_duplicate: "<?php echo __("This choice is already used in this interaction.")?>",
     vusion_ajax_action_failed: "<?php echo __("Action failed: ")?>",
+    interaction_summary_error: "<?php echo __("There is an error inside this interaction.") ?>",
 };
 
 var localized_messages = {
