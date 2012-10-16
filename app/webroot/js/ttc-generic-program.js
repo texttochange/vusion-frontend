@@ -698,7 +698,10 @@ function updateRadioButtonSubmenu() {
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null) {
-        name = $(elt).parent().parent().parent().parent().attr("name");
+        name = $(elt).parent().parent().parent().attr("name");
+        if (name == null) {
+            name = $(elt).parent().parent().parent().parent().attr("name");
+        }
     }
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
@@ -731,6 +734,8 @@ function updateCheckboxSubmenu() {
     var elt = this;
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
+    if (name == null)
+        name = $(elt).parent().parent().parent().attr("name");
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
         $(box).remove();
@@ -743,7 +748,7 @@ function updateCheckboxSubmenu() {
              "radiochildren":"radiochildren",
              "name":name,
                 "elements":[]};
-        var name = $(elt).parent().parent().attr('name');
+        //var name = $(elt).parent().parent().attr('name');
         configToForm($(elt).attr('value'), newContent, name);
     
         $(elt).parent().formElement(newContent);

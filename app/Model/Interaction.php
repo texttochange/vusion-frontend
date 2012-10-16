@@ -53,7 +53,7 @@ class Interaction
         
         $this->QUESTION_TYPE = array(
             'closed-question'=> array(
-                'label-for-participant-profiling'=> function($v) {return ($v!=null);},
+                'label-for-participant-profiling'=> function($v) {return true;},
                 'set-answer-accept-no-space'=> function($v) {return true;},
                 'answers'=> function($v) {return true;}),
             'open-question'=> array(
@@ -112,7 +112,7 @@ class Interaction
         
         foreach($this->SCHEDULE_TYPE[$interaction['type-schedule']] as $field => $check) {
             if (!call_user_func($check, $interaction[$field])){
-                throw new MissingField("$field is missing in an Interaction.");
+                throw new MissingField("$field has incorrect value in an interaction.");
             }
         }
         foreach($this->INTERACTION_TYPE[$interaction['type-interaction']] as $field => $check) {
@@ -123,17 +123,42 @@ class Interaction
                     $interaction['type-unmatching-feedback'] = 'none';                        
                 } elseif ($field=='set-reminder') {
                     $interaction['set-reminder'] = null;
+                } else {
+                    throw new MissingField("$field is missing in an Interaction.");
                 }
             }
             if (!call_user_func($check, $interaction[$field])){
                 throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
             }
         }
+        if ($interaction['type-interaction'] == 'announcement') {
+            return $interaction;
+        }
+        if ($interaction['type-interaction'] == 'question-answer') {
+            foreach($this->QUESTION_TYPE[$interaction['type-question']] as $field => $check) {
+                if (!isset($interaction[$field])) {
+                    if ($field=='set-answer-accept-no-space') {
+                        $interaction['set-answer-accept-no-space'] = null;
+                    } elseif ($field=='label-for-participant-profiling') {
+                        $interaction['label-for-participant-profiling'] = null;
+                    } else {
+                        throw new MissingField("$field is missing in an Interaction.");
+                    }    
+                } 
+                if (!call_user_func($check, $interaction[$field])){
+                    throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
+                }
+            }
+        }
 
         if ($interaction['set-reminder'] == 'reminder') {
             foreach($this->REMINDER_FIELDS as $field => $check) {
                 if (!isset($interaction[$field])){
-                    throw new MissingField("$field is missing in the interaction.");
+                    if ($field == 'reminder-actions') {
+                        $interaction['reminder-actions'] = array();
+                    } else {
+                        throw new MissingField("$field is missing in the interaction.");
+                    }
                 }
                 if (is_callable($check) && !call_user_func($check, &$interaction[$field])) {
                     throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
