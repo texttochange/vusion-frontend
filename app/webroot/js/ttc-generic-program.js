@@ -995,7 +995,18 @@ function wrapErrorMessageInClass(error, inClasses){
         inClasses = "ttc-validation-error"
     }
     return '<span class="'+inClasses+'"><nobr>'+error+'</nobr></span>';
-} 
+}
+
+//TODO: consider renaming radiochildren so that the names are not the same as those for the interactions 
+function showSummaryError() {
+    errors = {};
+    $.each($(":regex(name,^Dialogue.interactions\\[\\d+\\]$):not([radiochildren='radiochildren'])"),
+        function(key, elt){
+	    if ($(elt).children(':has(".error")').length > 0) {
+	    	    $(elt).children('.ttc-fold-summary').append('<span class="ttc-summary-error"><nobr>'+localized_errors.interaction_summary_error+'</nobr></span>');
+    	    }
+    	});
+}
 
 function isInFuture(dateTime) {
     if (dateTime=="")
@@ -1073,8 +1084,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
              }, 
              invalidHandler: function(form, validator){
                  reactivateSaveButtons();
+                 validator.showErrors();
+                 showSummaryError();
              },
              onkeyup: false,
+             ignore: '',
         },  
         "method": "post",
                 "elements": 
