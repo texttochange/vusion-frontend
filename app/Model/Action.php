@@ -29,7 +29,7 @@ class Action
 
     }
 
-    public function beforeValidate(&$action)
+    public function beforeValidate($action)
     {
         foreach($this->fields as $field) {
             if (!isset($action[$field])){

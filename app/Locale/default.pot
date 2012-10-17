@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2012-10-12 09:32+0000\n"
+"POT-Creation-Date: 2012-10-17 12:43+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -36,10 +36,6 @@ msgstr ""
 
 #: Controller/ProgramDialoguesController.php:54
 msgid "Dialogue saved as draft."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:62
-msgid "Saving failed."
 msgstr ""
 
 #: Controller/ProgramDialoguesController.php:79
@@ -549,7 +545,7 @@ msgid "Admin"
 msgstr ""
 
 #: View/Admin/index.ctp:9
-#: View/Elements/localization.ctp:60;72;80
+#: View/Elements/localization.ctp:61;73;81
 #: View/Groups/add.ctp:14
 #: View/Groups/edit.ctp:15
 #: View/Groups/index.ctp:7;38
@@ -658,180 +654,184 @@ msgstr ""
 msgid "Action failed: "
 msgstr ""
 
-#: View/Elements/localization.ctp:22
+#: View/Elements/localization.ctp:19
+msgid "There is an error inside this interaction."
+msgstr ""
+
+#: View/Elements/localization.ctp:23
 msgid "Wait for redirection."
 msgstr ""
 
-#: View/Elements/localization.ctp:26
+#: View/Elements/localization.ctp:27
 msgid "Save dialogue."
 msgstr ""
 
-#: View/Elements/localization.ctp:27
+#: View/Elements/localization.ctp:28
 msgid "Save request."
 msgstr ""
 
-#: View/Elements/localization.ctp:31
+#: View/Elements/localization.ctp:32
 #: View/Groups/view.ctp:9
 #: View/Programs/view.ctp:9
 #: View/Users/view.ctp:45
 msgid "Name"
 msgstr ""
 
-#: View/Elements/localization.ctp:32
+#: View/Elements/localization.ctp:33
 msgid "Automatic enrollment"
 msgstr ""
 
-#: View/Elements/localization.ctp:33
+#: View/Elements/localization.ctp:34
 #: View/ProgramHome/index.ctp:29
 #: View/ProgramParticipants/view.ctp:70
 msgid "Dialogue"
 msgstr ""
 
-#: View/Elements/localization.ctp:34
+#: View/Elements/localization.ctp:35
 msgid "Interactions"
 msgstr ""
 
-#: View/Elements/localization.ctp:35
+#: View/Elements/localization.ctp:36
 msgid "Interaction"
 msgstr ""
 
-#: View/Elements/localization.ctp:36
+#: View/Elements/localization.ctp:37
 msgid "Keyword"
 msgstr ""
 
-#: View/Elements/localization.ctp:37
+#: View/Elements/localization.ctp:38
 msgid "Choice"
 msgstr ""
 
-#: View/Elements/localization.ctp:38
+#: View/Elements/localization.ctp:39;90
 #: View/ProgramHome/index.ctp:22
 msgid "Content"
 msgstr ""
 
-#: View/Elements/localization.ctp:39
+#: View/Elements/localization.ctp:40
 #: View/ProgramHistory/index.ctp:101
 #: View/ProgramParticipants/view.ctp:60
 #: View/UnmatchableReply/index.ctp:8
 msgid "Time"
 msgstr ""
 
-#: View/Elements/localization.ctp:40
+#: View/Elements/localization.ctp:41
 msgid "Immediately"
 msgstr ""
 
-#: View/Elements/localization.ctp:41
+#: View/Elements/localization.ctp:42
 msgid "Fixed time"
 msgstr ""
 
-#: View/Elements/localization.ctp:42
+#: View/Elements/localization.ctp:43
 msgid "Offset days"
 msgstr ""
 
-#: View/Elements/localization.ctp:43
+#: View/Elements/localization.ctp:44
 msgid "Offset time"
 msgstr ""
 
-#: View/Elements/localization.ctp:44
+#: View/Elements/localization.ctp:45
 msgid "Minutes"
 msgstr ""
 
-#: View/Elements/localization.ctp:45
+#: View/Elements/localization.ctp:46
 msgid "At Time"
 msgstr ""
 
-#: View/Elements/localization.ctp:46
+#: View/Elements/localization.ctp:47
 msgid "Days"
 msgstr ""
 
-#: View/Elements/localization.ctp:47
+#: View/Elements/localization.ctp:48
 msgid "Announcement"
 msgstr ""
 
-#: View/Elements/localization.ctp:48
+#: View/Elements/localization.ctp:49
 msgid "Question"
 msgstr ""
 
-#: View/Elements/localization.ctp:49
+#: View/Elements/localization.ctp:50
 msgid "Question multi-keyword"
 msgstr ""
 
-#: View/Elements/localization.ctp:50
+#: View/Elements/localization.ctp:51
 msgid "Open question"
 msgstr ""
 
-#: View/Elements/localization.ctp:51
+#: View/Elements/localization.ctp:52
 msgid "Closed question"
 msgstr ""
 
-#: View/Elements/localization.ctp:52;54
+#: View/Elements/localization.ctp:53;55
 msgid "Answers"
 msgstr ""
 
-#: View/Elements/localization.ctp:53;55
+#: View/Elements/localization.ctp:54;56
 msgid "Answer"
 msgstr ""
 
-#: View/Elements/localization.ctp:56
+#: View/Elements/localization.ctp:57
 msgid "Profile participant's reply with label"
 msgstr ""
 
-#: View/Elements/localization.ctp:57
+#: View/Elements/localization.ctp:58
 msgid "Answer label"
 msgstr ""
 
-#: View/Elements/localization.ctp:58
+#: View/Elements/localization.ctp:59
 msgid "Feedbacks"
 msgstr ""
 
-#: View/Elements/localization.ctp:59
+#: View/Elements/localization.ctp:60
 msgid "Feedback"
 msgstr ""
 
-#: View/Elements/localization.ctp:61;73;81
+#: View/Elements/localization.ctp:62;74;82
 msgid "Action"
 msgstr ""
 
-#: View/Elements/localization.ctp:62
+#: View/Elements/localization.ctp:63
 msgid "Opt-in"
 msgstr ""
 
-#: View/Elements/localization.ctp:63
+#: View/Elements/localization.ctp:64
 msgid "Opt-out"
 msgstr ""
 
-#: View/Elements/localization.ctp:64
+#: View/Elements/localization.ctp:65
 msgid "Enroll"
 msgstr ""
 
-#: View/Elements/localization.ctp:65
+#: View/Elements/localization.ctp:66
 msgid "Delayed Enroll"
 msgstr ""
 
-#: View/Elements/localization.ctp:66
+#: View/Elements/localization.ctp:67
 msgid "Tag"
 msgstr ""
 
-#: View/Elements/localization.ctp:67
+#: View/Elements/localization.ctp:68
 msgid "Reset"
 msgstr ""
 
-#: View/Elements/localization.ctp:68
+#: View/Elements/localization.ctp:69
 msgid "Add"
 msgstr ""
 
-#: View/Elements/localization.ctp:69
+#: View/Elements/localization.ctp:70
 msgid "Remove"
 msgstr ""
 
-#: View/Elements/localization.ctp:70
+#: View/Elements/localization.ctp:71
 msgid "Responses"
 msgstr ""
 
-#: View/Elements/localization.ctp:71
+#: View/Elements/localization.ctp:72
 msgid "Response"
 msgstr ""
 
-#: View/Elements/localization.ctp:74
+#: View/Elements/localization.ctp:75
 #: View/ProgramDialogues/edit.ctp:3
 #: View/ProgramParticipants/add.ctp:3;16
 #: View/ProgramParticipants/edit.ctp:3;14
@@ -844,40 +844,52 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: View/Elements/localization.ctp:75
+#: View/Elements/localization.ctp:76
 msgid "Set Reminder"
 msgstr ""
 
-#: View/Elements/localization.ctp:76
+#: View/Elements/localization.ctp:77
 msgid "Number of Reminder(s)"
 msgstr ""
 
-#: View/Elements/localization.ctp:77
+#: View/Elements/localization.ctp:78
 msgid "Reminder every x minutes"
 msgstr ""
 
-#: View/Elements/localization.ctp:78
+#: View/Elements/localization.ctp:79
 msgid "Reminder every x days"
 msgstr ""
 
-#: View/Elements/localization.ctp:79
+#: View/Elements/localization.ctp:80
 msgid "At the time"
 msgstr ""
 
-#: View/Elements/localization.ctp:82
+#: View/Elements/localization.ctp:83
 msgid "Answer Required"
 msgstr ""
 
-#: View/Elements/localization.ctp:83
+#: View/Elements/localization.ctp:84
 msgid "Accept no space between the keyword and the choice"
 msgstr ""
 
-#: View/Elements/localization.ctp:84
+#: View/Elements/localization.ctp:85
 msgid "Use template from program settings"
 msgstr ""
 
-#: View/Elements/localization.ctp:85
+#: View/Elements/localization.ctp:86
 msgid "In case no matching on other requests, try to match only the message first word."
+msgstr ""
+
+#: View/Elements/localization.ctp:87
+msgid "No unmatching feedback"
+msgstr ""
+
+#: View/Elements/localization.ctp:88
+msgid "Default program umatching feedback"
+msgstr ""
+
+#: View/Elements/localization.ctp:89
+msgid "Custom umatching message"
 msgstr ""
 
 #: View/Elements/navigation_menu.ctp:17

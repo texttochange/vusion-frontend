@@ -54,7 +54,8 @@ class ScriptMaker
                     'date-time' => '20/10/2013 20:20',
                     'type-interaction' => 'question-answer',
                     'type-question' => 'open-question',
-                    'content' => 'how are you?', 
+                    'content' => 'how are you?',
+                    'answer-label' => 'feel',
                     'keyword' => $keyword, 
                     'type-unmatching-feedback' => 'no-unmatching-feedback'
                     )
@@ -73,6 +74,7 @@ class ScriptMaker
             "type-interaction" => "question-answer",
             "content" => "What is your name?",
             "keyword" => "name",
+            "answer-label" => "name",
             "set-use-template" => "use-template",
             "type-question" => "open-question",
             "type-unmatching-feedback" => "program-unmatching-feedback",

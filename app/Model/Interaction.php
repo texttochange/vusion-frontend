@@ -58,12 +58,12 @@ class Interaction
                 'answers'=> function($v) {return true;}),
             'open-question'=> array(
                 'answer-label'=> function($v) {return ($v!=null);},
-                'feedbacks' => function($v) {return ($v!=null);}));
+                'feedbacks' => function($v) {return true;}));
 
         $actionsFct = function(&$actions) {
             $actionModel = new Action(); 
             foreach($actions as &$action) {
-                $actionModel->beforeValidate($action);
+               $action = $actionModel->beforeValidate($action);
             };
             return true;
         };
@@ -141,6 +141,8 @@ class Interaction
                         $interaction['set-answer-accept-no-space'] = null;
                     } elseif ($field=='label-for-participant-profiling') {
                         $interaction['label-for-participant-profiling'] = null;
+                    } elseif ($field=='feedbacks') {
+                        $interaction['feedbacks'] = array();
                     } else {
                         throw new MissingField("$field is missing in an Interaction.");
                     }    
