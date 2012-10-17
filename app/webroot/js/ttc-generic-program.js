@@ -21,7 +21,14 @@ var program = {"script": [
     "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-reminder"],
+    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    "radio-type-unmatching-feedback" : "radiobuttons",
+    "type-unmatching-feedback": {
+        "no-unmatching-feedback": "no-unmatching-feedback",
+        "program-unmatching-feedback":"program-unmatching-feedback",
+        "interaction-unmatching-feedback":"interaction-unmatching-feedback"},
+    "interaction-unmatching-feedback": ["unmatching-feedback-content"],
+    "unmatching-feedback-content": "textarea",
     "checkbox-set-use-template": "checkboxes",
     "set-use-template": {"use-template": "use-template"},
     "radio-type-question": "radiobuttons", 
@@ -77,7 +84,7 @@ var program = {"script": [
         "announcement":"announcement",
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
-    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "radio-type-unmatching-feedback", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -423,6 +430,16 @@ function activeForm(){
             }
         });
     });
+    $("input[name*='type-unmatching-feedback']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
     $("input[name*='answer-label']").each(function (item) {
         $(this).rules("add",{
             required:true,
@@ -681,7 +698,10 @@ function updateRadioButtonSubmenu() {
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null) {
-        name = $(elt).parent().parent().parent().parent().attr("name");
+        name = $(elt).parent().parent().parent().attr("name");
+        if (name == null) {
+            name = $(elt).parent().parent().parent().parent().attr("name");
+        }
     }
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
@@ -714,6 +734,8 @@ function updateCheckboxSubmenu() {
     var elt = this;
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
+    if (name == null)
+        name = $(elt).parent().parent().parent().attr("name");
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
         $(box).remove();
@@ -726,7 +748,7 @@ function updateCheckboxSubmenu() {
              "radiochildren":"radiochildren",
              "name":name,
                 "elements":[]};
-        var name = $(elt).parent().parent().attr('name');
+        //var name = $(elt).parent().parent().attr('name');
         configToForm($(elt).attr('value'), newContent, name);
     
         $(elt).parent().formElement(newContent);

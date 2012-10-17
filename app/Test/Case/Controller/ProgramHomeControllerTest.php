@@ -213,7 +213,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/home", array('method' => 'get'));
 
         $this->assertEquals(2, count($this->vars['schedules']));
-        $this->assertEquals("how are you", $this->vars['schedules'][0]['content']);
+        $this->assertEquals("how are you?", $this->vars['schedules'][0]['content']);
         $this->assertEquals(1, $this->vars['schedules'][0]['csum']);
         $this->assertEquals("Hello", $this->vars['schedules'][1]['content']);
         $this->assertEquals(1, $this->vars['schedules'][1]['csum']);
