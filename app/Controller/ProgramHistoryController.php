@@ -120,7 +120,8 @@ class ProgramHistoryController extends AppController
         foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
             if ($onlyFilterParam[1] == 'dialogue') {
                 $conditions['dialogue-id'] = $onlyFilterParam[2];
-                $conditions['interaction-id'] = $onlyFilterParam[3];
+                if ($onlyFilterParam[3]!='all')
+                    $conditions['interaction-id'] = $onlyFilterParam[3];
             } elseif ($onlyFilterParam[1] == 'date-from') { 
                 $conditions['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
             } elseif ($onlyFilterParam[1] == 'date-to') {
