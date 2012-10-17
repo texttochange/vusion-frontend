@@ -48,7 +48,6 @@ class Interaction
                 'content'=> function($v) {return ($v!=null);},
                 'label-for-participant-profiling'=> function($v) {return ($v!=null);},
                 'answer-keywords'=> function($v) {return ($v!=null);},
-                'type-unmatching-feedback'=> $unmatchingFeedbackFct,
                 'set-reminder'=> function($v) {return true;}));
         
         $this->QUESTION_TYPE = array(
