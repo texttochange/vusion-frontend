@@ -97,6 +97,12 @@
             		      'disabled' => $customizedIdDisabled)
             		);
         ?>
+        <div>
+        <?php
+            echo $this->Form->checkbox('unmatching-answer-remove-reminder');
+            echo $this->Html->tag('label',__('Unmacthing answer remove reminders.'));
+        ?>
+        </div>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>
   </div>
