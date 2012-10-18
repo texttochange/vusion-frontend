@@ -88,5 +88,9 @@ var localized_labels = {
     "max-unmatching-answer-number": "<?php echo __('Maximum number of accepted unmatching answers')?>",        
     "max-unmatching-answer-actions": "<?php echo __('Actions')?>",
     "max-unmatching-answer-action": "<?php echo __('Action')?>",
+    "no-unmatching-feedback": "<?php echo __('No unmatching feedback')?>",
+    "program-unmatching-feedback":  "<?php echo __('Default program umatching feedback')?>",
+    "interaction-unmatching-feedback":  "<?php echo __('Custom umatching message')?>",
+    "unmatching-feedback-content": "<?php echo __('Content')?>",
 };
 
