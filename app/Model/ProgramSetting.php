@@ -12,7 +12,18 @@ class ProgramSetting extends MongoModel
     var $name        = 'ProgramSetting';
     var $useDbConfig = 'mongo';
 
-     function getModelVersion()
+    var $settings = array(
+        'shortcode',
+        'timezone',
+        'international-prefix',
+        'default-template-closed-question',
+        'default-template-open-question',
+        'default-template-unmatching-answer',
+        'unmatching-answer-remove-reminder', 
+        'customized-id'
+        );
+
+    function getModelVersion()
     {
         return "1";
     }
@@ -39,6 +50,25 @@ class ProgramSetting extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $this->DialogueHelper = new DialogueHelper();
+    }
+
+
+    public function beforeValidate()
+    {
+        parent::beforeValidate();
+
+        if (!in_array($this->data['ProgramSetting']['key'], $this->settings)) {
+            return false;
+        } 
+
+        if ($this->data['ProgramSetting']['value'] == '') {
+            $this->data['ProgramSetting']['value'] = null;
+        }
+
+        if ($this->data['ProgramSetting']['key'] == 'unmatching-answer-remove-reminder') {
+            $this->data['ProgramSetting']['value'] = intval($this->data['ProgramSetting']['value']);
+        } 
+    
     }
 
     
