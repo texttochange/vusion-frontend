@@ -18,7 +18,7 @@ class Action
             'optin' => null,
             'optout' => null,
             'enrolling' => array('enroll' => function($v) {return true;}),
-            'delays-enrolling' => array(
+            'delayed-enrolling' => array(
                 'enroll' => function($v) {return true;},
                 'offset-days' => array(
                     'days' => function($v) { return ($v!=null);},
