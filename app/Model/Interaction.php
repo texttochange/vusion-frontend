@@ -43,6 +43,7 @@ class Interaction
                 'set-use-template'=> function($v) {return true;},
                 'type-question'=> function($v) {return ($v!=null);},
                 'type-unmatching-feedback'=> $unmatchingFeedbackFct,
+                'set-max-unmatching-answers'=> function($v) {return true;},
                 'set-reminder'=> function($v) {return true;}),
             'question-answer-keyword'=> array(
                 'content'=> function($v) {return ($v!=null);},
@@ -66,6 +67,10 @@ class Interaction
             };
             return true;
         };
+        
+        $this->MAX_UNMATCHING_ANSWER_FIELDS = array(
+            'max-unmatching-answer-number'=> function($v) {return ($v>=1);},
+            'max-unmatching-answer-actions'=> $actionsFct);
 
         $this->REMINDER_FIELDS = array(
             'type-schedule-reminder' => null,
@@ -122,6 +127,8 @@ class Interaction
                     $interaction['type-unmatching-feedback'] = 'none';                        
                 } elseif ($field=='set-reminder') {
                     $interaction['set-reminder'] = null;
+                } elseif ($field=='set-max-unmatching-answers') {
+                    $interaction['set-max-unmatching-answers'] = null;
                 } else {
                     throw new MissingField("$field is missing in an Interaction.");
                 }
@@ -148,6 +155,20 @@ class Interaction
                 } 
                 if (!call_user_func($check, $interaction[$field])){
                     throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
+                }
+            }
+            if ($interaction['set-max-unmatching-answers'] == 'max-unmatching-answers') {
+                foreach($this->MAX_UNMATCHING_ANSWER_FIELDS as $field => $check) {
+                    if (!isset($interaction[$field])) {
+                        if ($field == 'max-unmatching-answer-actions') {
+                            $interaction['max-unmatching-answer-actions'] = array();
+                        } else {
+                            throw new MissingField("$field is missing in the interaction.");
+                        }
+                    }
+                    if (is_callable($check) && !call_user_func($check, &$interaction[$field])) {
+                        throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
+                    }
                 }
             }
         }

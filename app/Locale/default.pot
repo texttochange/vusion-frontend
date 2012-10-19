@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2012-10-17 12:43+0000\n"
+"POT-Creation-Date: 2012-10-17 16:59+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -340,7 +340,7 @@ msgstr ""
 msgid "Password saving failed."
 msgstr ""
 
-#: Model/ProgramSetting.php:109
+#: Model/ProgramSetting.php:139
 #: Model/UnattachedMessage.php:113
 msgid "The program settings are incomplete. Please specificy the Timezone."
 msgstr ""
@@ -837,7 +837,7 @@ msgstr ""
 #: View/ProgramParticipants/edit.ctp:3;14
 #: View/ProgramRequests/add.ctp:3
 #: View/ProgramRequests/edit.ctp:3
-#: View/ProgramSettings/edit.ctp:3;101
+#: View/ProgramSettings/edit.ctp:3;107
 #: View/ProgramUnattachedMessages/add.ctp:3;51
 #: View/ProgramUnattachedMessages/edit.ctp:3;65
 #: View/Users/change_password.ctp:8
@@ -1433,6 +1433,10 @@ msgstr ""
 msgid "Default template for unmatching answers"
 msgstr ""
 
+#: View/ProgramSettings/edit.ctp:103
+msgid "Unmacthing answer remove reminders."
+msgstr ""
+
 #: View/ProgramSettings/view.ctp:2
 msgid "View Program Settings"
 msgstr ""
@@ -1527,6 +1531,10 @@ msgstr ""
 
 #: View/Programs/index.ctp:2
 msgid "Recent Issues"
+msgstr ""
+
+#: View/Programs/index.ctp:10
+msgid "unmatchable reply"
 msgstr ""
 
 #: View/Programs/index.ctp:20
