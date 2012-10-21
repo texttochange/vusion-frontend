@@ -20,7 +20,8 @@ class ProgramSetting extends MongoModel
         'default-template-open-question',
         'default-template-unmatching-answer',
         'unmatching-answer-remove-reminder', 
-        'customized-id'
+        'customized-id',
+        'double-matching-answer-feedback'
         );
 
     function getModelVersion()
