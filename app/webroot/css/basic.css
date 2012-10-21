@@ -708,3 +708,8 @@
 .ttc-interaction-disabled {
     background: #CCCCCC;
 }
+
+.message a {
+    color : white;
+    text-decoration: none;
+}

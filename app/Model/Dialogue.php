@@ -118,8 +118,15 @@ class Dialogue extends MongoModel
                     'Schedule.dialogue-id'=>$dialogue['Dialogue']['dialogue-id'],
                     'Schedule.interaction-id'=>array('$nin'=>$interactionIds)),
                 false);
-        }        
-        return $this->save($dialogue);
+        }
+        // we make sure no other version is activated
+        $result = $this->save($dialogue);
+        $this->updateAll(
+            array('activated' => 2),
+            array('activated' => 1, 
+                'dialogue-id' => $result['Dialogue']['dialogue-id'],
+                '_id' => array('$ne' => new MongoId($result['Dialogue']['_id']))));
+        return $result;
     }
 
 
@@ -132,6 +139,12 @@ class Dialogue extends MongoModel
         return false;
     }
 
+    public function getActiveDialogue($dialogueId) {
+        return $this->find('first', array(
+            'conditions'=>array(
+                'activated' => 1,
+                'dialogue-id' => $dialogueId)));
+    }
 
     public function getActiveDialogues($options=null)
     {
@@ -141,7 +154,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Dialogue' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
+                if (obj.activated==1 && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
                     prev.Dialogue = obj;
                 }',
             'options'=> $options
@@ -208,7 +221,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Active' => 0, 'Draft' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && (!prev.Active || prev.Active.modified <= obj.modified)) 
+                if (obj.activated==1 && (!prev.Active || prev.Active.modified <= obj.modified)) 
                     prev.Active = obj;
                 else if (!obj.activated)
                     prev.Draft = obj;

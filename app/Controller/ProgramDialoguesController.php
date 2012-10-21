@@ -83,7 +83,21 @@ class ProgramDialoguesController extends AppController
             return;
         }
 
-        $this->set('dialogue', $this->Dialogue->read(null, $id));
+        $dialogue = $this->Dialogue->read(null, $id);
+        if ($dialogue['Dialogue']['activated'] == 2) {
+            $currentDialogue = $this->Dialogue->getActiveDialogue($dialogue['Dialogue']['dialogue-id']);
+            $link = Router::url(array(
+                'program'=> $this->params['program'],
+                'controller'=>'programDialogues', 
+                'action' => 'edit',
+                'id' => $currentDialogue['Dialogue']['_id'].''));
+           $this->Session->setFlash(
+                "<a href='".$link."'>".__("This is an old version of this dialogue. Get the current version.")."</a>", 
+                'default',
+                array('class' => "message failure"));
+        }
+
+        $this->set('dialogue', $dialogue);
     }
 
     public function activate()

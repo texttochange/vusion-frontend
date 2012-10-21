@@ -84,9 +84,14 @@ class DialogueTestCase extends CakeTestCase
         $dialogue['Dialogue']['interactions'][0]['content'] = "something new";
         $saveNewVersionOtherDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($saveNewVersionOtherDialogue['Dialogue']['dialogue-id']);
+
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
         $this->assertEquals("something new", $activeAndDraft[1]['Active']['interactions'][0]['content']);
         $this->assertEquals($saveNewVersionOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']."");
+        // check that older dialogue have activated switch to 2
+        $saveActiveOtherDialogue = $this->Dialogue->read(null, $saveActiveOtherDialogue['Dialogue']['_id']);
+        $this->assertEqual(2, $saveActiveOtherDialogue['Dialogue']['activated']);        
+
         //reactivate the olderone
         $this->Dialogue->makeActive($saveActiveOtherDialogue['Dialogue']['_id']);
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
