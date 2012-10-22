@@ -92,7 +92,7 @@ class ProgramDialoguesController extends AppController
                 'action' => 'edit',
                 'id' => $currentDialogue['Dialogue']['_id'].''));
            $this->Session->setFlash(
-                "<a href='".$link."'>".__("This is an old version of this dialogue. Get the current version.")."</a>", 
+                "<a href='".$link."'>".__("This is an old version of this dialogue. Click here to get the current version.")."</a>", 
                 'default',
                 array('class' => "message failure"));
         }

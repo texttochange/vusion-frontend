@@ -712,4 +712,5 @@
 .message a {
     color : white;
     text-decoration: none;
+    font-weight: normal; 
 }
