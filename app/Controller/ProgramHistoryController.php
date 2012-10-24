@@ -84,7 +84,9 @@ class ProgramHistoryController extends AppController
                 'order'=> $order,
             );
             
-            $statuses = $this->paginate();
+            $histories = $this->paginate();
+            $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
+            $statuses = $this->History->addDialogueContent($histories, $dialoguesInteractionsContent);
             $this->set(compact('statuses'));
         }
     }

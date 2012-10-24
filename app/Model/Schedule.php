@@ -87,7 +87,7 @@ class Schedule extends MongoModel
         return __("Error: dialogue not found");
     }
 
-    public function getParticipantSchedules($phone, $activeDialogues, $activeInteractions)
+    public function getParticipantSchedules($phone, $dialoguesInteractionsContent)
     {
         $schedules = $this->find('all', array(
             'conditions' => array('participant-phone' => $phone),
@@ -96,12 +96,11 @@ class Schedule extends MongoModel
 
         foreach($schedules as &$schedule) {
              if (isset($schedule['Schedule']['interaction-id'])) {
-                $interaction = $this->DialogueHelper->getInteraction(
-                    $activeInteractions,
-                    $schedule['Schedule']['interaction-id']
-                    );
-                if (isset($interaction['content']))
-                    $schedule['Schedule']['content'] = '"'.$interaction['content'].'"';
+                 if (isset($dialoguesInteractionsContent[$schedule['Schedule']['dialogue-id']]['interactions'][$schedule['Schedule']['interaction-id']])) {
+                    $schedule['Schedule']['content'] = $dialoguesInteractionsContent[$schedule['Schedule']['dialogue-id']]['interactions'][$schedule['Schedule']['interaction-id']];
+                } else {
+                    $schedule['Schedule']['content'] = 'unknown interaction';
+                }
             }
             elseif (isset($schedule['Schedule']['unattach-id'])) {
                 $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
@@ -111,9 +110,9 @@ class Schedule extends MongoModel
             if ($schedule['Schedule']['object-type']=='action-schedule') {
                 $details = $schedule['Schedule']['action']['type-action'];
                 if ($schedule['Schedule']['action']['type-action'] == 'enrolling') {
-                    $details = $details." in ".$this->getDialogueName($schedule['Schedule']['action']['enroll'], $activeDialogues);
+                    $details = $details." in ".$dialoguesInteractionsContent[$schedule['Schedule']['action']]['enroll'];
                 }
-                 $schedule['Schedule']['content'] = $details;
+                $schedule['Schedule']['content'] = $details;
             }
         }
         return $schedules;

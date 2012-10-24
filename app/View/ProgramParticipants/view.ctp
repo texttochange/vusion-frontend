@@ -85,22 +85,46 @@
 	
 			<table cellpadding="0" cellspacing="0">
 			<tr>
-				<th><?php echo __('time');?></th>
-				<th><?php echo __('direction');?></th>
-				<th><?php echo __('message');?></th>
+				<th><?php echo __('Time');?></th>
+				<th><?php echo __('Type');?></th>
+				<th><?php echo __('Status');?></th>
+				<th><?php echo __('Details');?></th>
 			</tr>
 			<?php
 			foreach ($histories as $history): ?>
-			
 			<tr>
 			<td>
 			    <?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
-			    <td><?php echo h($history['History']['message-direction']); ?>&nbsp;</td>
-			    <?php if (isset($history['History']['content'])) { ?>
-			    <td><?php echo h($history['History']['content']); ?>&nbsp;</td>
-			    <?php } else { ?>
-			    <td><?php echo h($history['History']['message-content']); ?>&nbsp;</td>
-			    <?php } ?>
+			    <?php 
+			        $messageType = array('dialogue-history', 'request-history', 'unattach-history', 'unmatching-history');
+			        $markerType = array('datepassed-marker-history', 'oneway-marker-history');
+			        if (in_array($history['History']['object-type'], $messageType)) { ?>
+			             <td><?php echo __(ucfirst($history['History']['message-direction'])); ?>&nbsp;</td>
+			             <td><?php 
+			             if (isset($history['History']['message-status'])) {
+			                     echo __($history['History']['message-status']);
+			                 } 
+			             ?>&nbsp;</td>
+	 		             <?php if (isset($history['History']['content'])) { ?>
+	 		                 <td><?php echo $history['History']['content']; ?>&nbsp;</td>
+	 		             <?php } else { ?>
+	 		                 <td><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+	 		             <?php }; ?>
+	 		        <?php } elseif (in_array($history['History']['object-type'], $markerType)) { ?>
+	 		             <td><?php echo __("Marker"); ?>&nbsp;</td>
+			             <td>&nbsp;</td>
+			             <td>
+			             <?php if ($history['History']['object-type'] == 'oneway-marker-history') {
+			                 echo __("One way marker on interaction <i>%s</i>", $history['History']['details']);
+			             } elseif ($history['History']['object-type'] == 'datepassed-marker-history') {
+			                 echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']); 
+			             } ?> 
+			             </td>
+	 		        <?php } else {?>
+	 		            <td><?php echo __("Error cannot display %s", $history['History']['object-type']); ?>&nbsp;</td>
+			             <td>&nbsp;</td>
+			             <td>&nbsp;</td>
+	 		        <?php } ?>
 			</tr>
 			<?php endforeach; ?>
 			</table>

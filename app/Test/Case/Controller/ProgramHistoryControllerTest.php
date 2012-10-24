@@ -114,17 +114,21 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     {
 
         $this->instanciateHistoryModel();
-        $this->Status->History->create('default-history');
+        $this->Status->History->create('unattach-history');
         $this->Status->History->save(array(
             'participant-phone' => '256712747841',
             'message-content' => 'Hello everyone!',
-            'timestamp' => '2012-02-08T12:20:43.882854'
+            'timestamp' => '2012-02-08T12:20:43.882854',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered',
             ));
-        $this->Status->History->create('default-history');
+        $this->Status->History->create('unattach-history');
         $this->Status->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'Hello there!',
-            'timestamp' => '2013-02-08T12:20:43.882854'
+            'timestamp' => '2013-02-08T12:20:43.882854',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered',
             ));
 
         $this->mockProgramAccess();        
@@ -150,6 +154,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
             ));
         $this->Status->History->create('dialogue-history');
         $this->Status->History->save(array(
@@ -159,6 +164,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
             ));
         $this->Status->History->create('dialogue-history');
         $this->Status->History->save(array(
@@ -178,6 +184,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'outgoing',
+            'message-status' => 'pending' 
             ));
 
         $this->Status->History->create('dialogue-history');
