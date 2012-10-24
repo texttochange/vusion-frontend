@@ -102,13 +102,16 @@
             echo $this->Form->checkbox('unmatching-answer-remove-reminder');
             echo $this->Html->tag('label',__('Unmacthing answer remove reminders.'));
         ?>
-        </div><div>
+        </div>
         <?php
             echo $this->Form->input('double-matching-answer-feedback', 
                     array('rows' => 3,
                         'label' => 'Double matching answer feedback'));
+
+            echo $this->Form->input('double-optin-error-feedback', 
+                    array('rows' => 3,
+                        'label' => 'Double optin error feedback'));
         ?>
-        </div>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>
   </div>

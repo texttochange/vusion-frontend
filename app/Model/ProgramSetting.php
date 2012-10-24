@@ -21,7 +21,8 @@ class ProgramSetting extends MongoModel
         'default-template-unmatching-answer',
         'unmatching-answer-remove-reminder', 
         'customized-id',
-        'double-matching-answer-feedback'
+        'double-matching-answer-feedback',
+        'double-optin-error-feedback'
         );
 
     function getModelVersion()
