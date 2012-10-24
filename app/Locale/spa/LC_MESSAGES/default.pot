@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2012-10-12 09:32+0000\n"
+"POT-Creation-Date: 2012-10-24 14:02+0000\n"
 "PO-Revision-Date: 2012-09-30 22:23-0400\n"
 "Last-Translator: sandra chavez <schavez@texttochange.com>\n"
 "Language-Team: \n"
@@ -39,64 +39,66 @@ msgstr "El grupo no pude ser eliminado."
 msgid "Dialogue saved as draft."
 msgstr "Interacción guardada como Borrador."
 
-#: Controller/ProgramDialoguesController.php:62
-msgid "Saving failed."
-msgstr "Falla al guardar."
-
 #: Controller/ProgramDialoguesController.php:79
 msgid "Dialogue doesn't exist."
 msgstr "No existe la Interacción."
 
-#: Controller/ProgramDialoguesController.php:100
+#: Controller/ProgramDialoguesController.php:95
+msgid ""
+"This is an old version of this dialogue. Click here to get the current "
+"version."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:114
 msgid "Dialogue activated."
 msgstr "Interacción activada."
 
-#: Controller/ProgramDialoguesController.php:105
+#: Controller/ProgramDialoguesController.php:119
 msgid "Dialogue unknown reload the page and try again."
 msgstr "Interacción no reconocida. Recargue la página e intentelo de nuevo."
 
-#: Controller/ProgramDialoguesController.php:110
-#: Controller/ProgramParticipantsController.php:91;255
+#: Controller/ProgramDialoguesController.php:124
+#: Controller/ProgramParticipantsController.php:91;254
 msgid "Please set the program settings then try again."
 msgstr ""
 "Por favor, establece la configuración del programa y intentalo de nuevo."
 
-#: Controller/ProgramDialoguesController.php:126
+#: Controller/ProgramDialoguesController.php:140
 #: Controller/ProgramRequestsController.php:131
 msgid "Program shortcode has not been defined, please go to program settings."
 msgstr ""
 "Codigo corto del programa no ha sido definido. Por favor, vaya a "
 "configuración de programa"
 
-#: Controller/ProgramDialoguesController.php:141
+#: Controller/ProgramDialoguesController.php:155
 msgid "'%s' already used in dialogue '%s' of the same program."
 msgstr "'%s' ya ha sido utilizado en la interacción '%s' del mismo programa."
 
-#: Controller/ProgramDialoguesController.php:153
+#: Controller/ProgramDialoguesController.php:167
 msgid "'%s' already used by a request of the same program."
 msgstr "'%s' ya ha sido utilizado por una solicitud del mismo programa."
 
-#: Controller/ProgramDialoguesController.php:175
+#: Controller/ProgramDialoguesController.php:189
 msgid "'%s' already used by a dialogue of program '%s'."
 msgstr "'%s' ya ha sido utilizado por la interacción del programa '%s'."
 
-#: Controller/ProgramDialoguesController.php:186
+#: Controller/ProgramDialoguesController.php:200
 msgid "'%s' already used by a request of program '%s'."
 msgstr "'%s' ya ha sido utilizado por una solicitud del programa '%s'."
 
-#: Controller/ProgramDialoguesController.php:211
+#: Controller/ProgramDialoguesController.php:225
 msgid "Message(s) being sent, should arrive shortly..."
 msgstr "Mensaje (s) se estan enviando y deberian llegar en breve."
 
-#: Controller/ProgramDialoguesController.php:254
+#: Controller/ProgramDialoguesController.php:268
 msgid "Dialogue deleted."
 msgstr "Interacción eliminada."
 
-#: Controller/ProgramDialoguesController.php:264
+#: Controller/ProgramDialoguesController.php:278
 msgid "Delete dialogue failed."
 msgstr "Fallo al eliminar Interacción."
 
-#: Controller/ProgramHistoryController.php:150
+#: Controller/ProgramHistoryController.php:151
 msgid "The filter \"%s\" is not supported."
 msgstr ""
 
@@ -132,11 +134,11 @@ msgstr "Participante y su esquema ha sido eliminado."
 msgid "Participant was not deleted"
 msgstr "El Participante no fue eliminado."
 
-#: Controller/ProgramParticipantsController.php:217
+#: Controller/ProgramParticipantsController.php:216
 msgid "This file format is not supported"
 msgstr "El formato del archivo no es compatible."
 
-#: Controller/ProgramParticipantsController.php:295
+#: Controller/ProgramParticipantsController.php:294
 #, fuzzy
 msgid ", Insert ok"
 msgstr "Inserción correcta"
@@ -352,7 +354,7 @@ msgstr "Clave has sido cambiado con exito."
 msgid "Password saving failed."
 msgstr "Fallo a guardar la clave"
 
-#: Model/ProgramSetting.php:109 Model/UnattachedMessage.php:113
+#: Model/ProgramSetting.php:140 Model/UnattachedMessage.php:113
 msgid "The program settings are incomplete. Please specificy the Timezone."
 msgstr ""
 "La configuración del programa es incompleta. Por favor, especifiue la zona "
@@ -561,7 +563,7 @@ msgstr ""
 msgid "Admin"
 msgstr "Admin"
 
-#: View/Admin/index.ctp:9 View/Elements/localization.ctp:60;72;80
+#: View/Admin/index.ctp:9 View/Elements/localization.ctp:61;73;81;89
 #: View/Groups/add.ctp:14 View/Groups/edit.ctp:15 View/Groups/index.ctp:7;38
 #: View/Groups/view.ctp:32 View/ProgramParticipants/index.ctp:17
 #: View/ProgramRequests/index.ctp:12
@@ -635,7 +637,7 @@ msgid "Offset time minutes cannot be negative."
 msgstr "Hora fija no puede ser en el pasado"
 
 #: View/Elements/localization.ctp:13
-msgid "Require at least 1 reminder."
+msgid "Must be at least 1."
 msgstr ""
 
 #: View/Elements/localization.ctp:14
@@ -661,222 +663,251 @@ msgstr "Este nombre ya existe en otra plantilla. Por favor, escoga otro."
 msgid "Action failed: "
 msgstr "Acción fallada:"
 
-#: View/Elements/localization.ctp:22
+#: View/Elements/localization.ctp:19
+#, fuzzy
+msgid "There is an error inside this interaction."
+msgstr "Este nombre ya existe en otra plantilla. Por favor, escoga otro."
+
+#: View/Elements/localization.ctp:23
 msgid "Wait for redirection."
 msgstr "Espere un momento"
 
-#: View/Elements/localization.ctp:26
+#: View/Elements/localization.ctp:27
 msgid "Save dialogue."
 msgstr "Guardar Interacción."
 
-#: View/Elements/localization.ctp:27
+#: View/Elements/localization.ctp:28
 msgid "Save request."
 msgstr "Guardar solicitud."
 
-#: View/Elements/localization.ctp:31 View/Groups/view.ctp:9
+#: View/Elements/localization.ctp:32 View/Groups/view.ctp:9
 #: View/Programs/view.ctp:9 View/Users/view.ctp:45
 msgid "Name"
 msgstr "Nombre"
 
-#: View/Elements/localization.ctp:32
+#: View/Elements/localization.ctp:33
 msgid "Automatic enrollment"
 msgstr "Registración automática"
 
-#: View/Elements/localization.ctp:33 View/ProgramHome/index.ctp:29
+#: View/Elements/localization.ctp:34 View/ProgramHome/index.ctp:29
 #: View/ProgramParticipants/view.ctp:70
 msgid "Dialogue"
 msgstr "Interacción"
 
-#: View/Elements/localization.ctp:34
+#: View/Elements/localization.ctp:35
 msgid "Interactions"
 msgstr ""
 
-#: View/Elements/localization.ctp:35
+#: View/Elements/localization.ctp:36
 msgid "Interaction"
 msgstr ""
 
-#: View/Elements/localization.ctp:36
+#: View/Elements/localization.ctp:37
 msgid "Keyword"
 msgstr "Palabra Clave"
 
-#: View/Elements/localization.ctp:37
+#: View/Elements/localization.ctp:38
 msgid "Choice"
 msgstr "Opción"
 
-#: View/Elements/localization.ctp:38 View/ProgramHome/index.ctp:22
+#: View/Elements/localization.ctp:39;94 View/ProgramHome/index.ctp:22
 msgid "Content"
 msgstr "Contenido"
 
-#: View/Elements/localization.ctp:39 View/ProgramHistory/index.ctp:101
-#: View/ProgramParticipants/view.ctp:60 View/UnmatchableReply/index.ctp:8
+#: View/Elements/localization.ctp:40 View/ProgramHistory/index.ctp:101
+#: View/ProgramParticipants/view.ctp:60;88 View/UnmatchableReply/index.ctp:8
 msgid "Time"
 msgstr "Hora"
 
-#: View/Elements/localization.ctp:40
+#: View/Elements/localization.ctp:41
 msgid "Immediately"
 msgstr "Inmediatamente"
 
-#: View/Elements/localization.ctp:41
+#: View/Elements/localization.ctp:42
 msgid "Fixed time"
 msgstr "Hora Fija"
 
-#: View/Elements/localization.ctp:42
+#: View/Elements/localization.ctp:43
 msgid "Offset days"
 msgstr "Fijar días"
 
-#: View/Elements/localization.ctp:43
+#: View/Elements/localization.ctp:44
 msgid "Offset time"
 msgstr "Fijar Minutos"
 
-#: View/Elements/localization.ctp:44
+#: View/Elements/localization.ctp:45
 msgid "Minutes"
 msgstr "Minutos"
 
-#: View/Elements/localization.ctp:45
+#: View/Elements/localization.ctp:46
 msgid "At Time"
 msgstr "A hora"
 
-#: View/Elements/localization.ctp:46
+#: View/Elements/localization.ctp:47
 msgid "Days"
 msgstr "Días"
 
-#: View/Elements/localization.ctp:47
+#: View/Elements/localization.ctp:48
 msgid "Announcement"
 msgstr "Aviso"
 
-#: View/Elements/localization.ctp:48
+#: View/Elements/localization.ctp:49
 msgid "Question"
 msgstr "Pregunta"
 
-#: View/Elements/localization.ctp:49
+#: View/Elements/localization.ctp:50
 msgid "Question multi-keyword"
 msgstr ""
 
-#: View/Elements/localization.ctp:50
+#: View/Elements/localization.ctp:51
 msgid "Open question"
 msgstr "Pregunta abierta"
 
-#: View/Elements/localization.ctp:51
+#: View/Elements/localization.ctp:52
 msgid "Closed question"
 msgstr "Pregunta Cerrada"
 
-#: View/Elements/localization.ctp:52;54
+#: View/Elements/localization.ctp:53;55
 msgid "Answers"
 msgstr "Respuestas"
 
-#: View/Elements/localization.ctp:53;55
+#: View/Elements/localization.ctp:54;56
 msgid "Answer"
 msgstr "Respuesta"
 
-#: View/Elements/localization.ctp:56
+#: View/Elements/localization.ctp:57
 msgid "Profile participant's reply with label"
 msgstr "Anadir etiqueta a la respuesta del perfil del participante"
 
-#: View/Elements/localization.ctp:57
+#: View/Elements/localization.ctp:58
 msgid "Answer label"
 msgstr "Etiqueta de la respuesta"
 
-#: View/Elements/localization.ctp:58
+#: View/Elements/localization.ctp:59
 msgid "Feedbacks"
 msgstr "Autorespuestas"
 
-#: View/Elements/localization.ctp:59
+#: View/Elements/localization.ctp:60
 msgid "Feedback"
 msgstr "Autorespuesta"
 
-#: View/Elements/localization.ctp:61;73;81
+#: View/Elements/localization.ctp:62;74;82;90
 msgid "Action"
 msgstr "Acción"
 
-#: View/Elements/localization.ctp:62
+#: View/Elements/localization.ctp:63
 msgid "Opt-in"
 msgstr "Adentro"
 
-#: View/Elements/localization.ctp:63
+#: View/Elements/localization.ctp:64
 msgid "Opt-out"
 msgstr "Afuera"
 
-#: View/Elements/localization.ctp:64
+#: View/Elements/localization.ctp:65
 #, fuzzy
 msgid "Enroll"
 msgstr "Registrado"
 
-#: View/Elements/localization.ctp:65
+#: View/Elements/localization.ctp:66
 msgid "Delayed Enroll"
 msgstr ""
 
-#: View/Elements/localization.ctp:66
+#: View/Elements/localization.ctp:67
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: View/Elements/localization.ctp:67
+#: View/Elements/localization.ctp:68
 msgid "Reset"
 msgstr ""
 
-#: View/Elements/localization.ctp:68
+#: View/Elements/localization.ctp:69
 msgid "Add"
 msgstr "Añadir"
 
-#: View/Elements/localization.ctp:69
+#: View/Elements/localization.ctp:70
 msgid "Remove"
 msgstr "Quitar"
 
-#: View/Elements/localization.ctp:70
+#: View/Elements/localization.ctp:71
 msgid "Responses"
 msgstr "Respuestas"
 
-#: View/Elements/localization.ctp:71
+#: View/Elements/localization.ctp:72
 msgid "Response"
 msgstr "Respuesta"
 
-#: View/Elements/localization.ctp:74 View/ProgramDialogues/edit.ctp:3
+#: View/Elements/localization.ctp:75 View/ProgramDialogues/edit.ctp:3
 #: View/ProgramParticipants/add.ctp:3;16
 #: View/ProgramParticipants/edit.ctp:3;14 View/ProgramRequests/add.ctp:3
-#: View/ProgramRequests/edit.ctp:3 View/ProgramSettings/edit.ctp:3;101
+#: View/ProgramRequests/edit.ctp:3 View/ProgramSettings/edit.ctp:3;113
 #: View/ProgramUnattachedMessages/add.ctp:3;51
 #: View/ProgramUnattachedMessages/edit.ctp:3;65
 #: View/Users/change_password.ctp:8
 msgid "Save"
 msgstr "Guardar"
 
-#: View/Elements/localization.ctp:75
+#: View/Elements/localization.ctp:76
 msgid "Set Reminder"
 msgstr "Recordatorio"
 
-#: View/Elements/localization.ctp:76
+#: View/Elements/localization.ctp:77
 #, fuzzy
 msgid "Number of Reminder(s)"
 msgstr "Recordatorio"
 
-#: View/Elements/localization.ctp:77
+#: View/Elements/localization.ctp:78
 msgid "Reminder every x minutes"
 msgstr ""
 
-#: View/Elements/localization.ctp:78
+#: View/Elements/localization.ctp:79
 msgid "Reminder every x days"
 msgstr ""
 
-#: View/Elements/localization.ctp:79
+#: View/Elements/localization.ctp:80
 msgid "At the time"
 msgstr ""
 
-#: View/Elements/localization.ctp:82
+#: View/Elements/localization.ctp:83
 msgid "Answer Required"
 msgstr "Respuesta requerida"
 
-#: View/Elements/localization.ctp:83
+#: View/Elements/localization.ctp:84
 msgid "Accept no space between the keyword and the choice"
 msgstr ""
 
-#: View/Elements/localization.ctp:84
+#: View/Elements/localization.ctp:85
 #, fuzzy
 msgid "Use template from program settings"
 msgstr "Pantilla predeterminada para preguntas abiertas"
 
-#: View/Elements/localization.ctp:85
+#: View/Elements/localization.ctp:86
 msgid ""
 "In case no matching on other requests, try to match only the message first "
 "word."
+msgstr ""
+
+#: View/Elements/localization.ctp:87
+#, fuzzy
+msgid "Set maximum number of accepted unmatching answers"
+msgstr "Plantillas predeterminadas para respuestas no reconocidas"
+
+#: View/Elements/localization.ctp:88
+#, fuzzy
+msgid "Maximum number of accepted unmatching answers"
+msgstr "Plantillas predeterminadas para respuestas no reconocidas"
+
+#: View/Elements/localization.ctp:91
+#, fuzzy
+msgid "No unmatching feedback"
+msgstr "Plantillas predeterminadas para respuestas no reconocidas"
+
+#: View/Elements/localization.ctp:92
+#, fuzzy
+msgid "Default program umatching feedback"
+msgstr "Plantillas predeterminadas para respuestas no reconocidas"
+
+#: View/Elements/localization.ctp:93
+msgid "Custom umatching message"
 msgstr ""
 
 #: View/Elements/navigation_menu.ctp:17
@@ -1144,7 +1175,7 @@ msgstr "Teléfono"
 msgid "Direction"
 msgstr "Dirección"
 
-#: View/ProgramHistory/index.ctp:98
+#: View/ProgramHistory/index.ctp:98 View/ProgramParticipants/view.ctp:90
 msgid "Status"
 msgstr "Estado"
 
@@ -1254,11 +1285,11 @@ msgstr "Perfil"
 msgid "Participant's Scheduled Messages"
 msgstr "Mensajes Programados del Participante"
 
-#: View/ProgramParticipants/view.ctp:62
+#: View/ProgramParticipants/view.ctp:62;89
 msgid "Type"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:63
+#: View/ProgramParticipants/view.ctp:63;91
 msgid "Details"
 msgstr ""
 
@@ -1266,17 +1297,21 @@ msgstr ""
 msgid "Participant's History"
 msgstr "Historial del Participante"
 
-#: View/ProgramParticipants/view.ctp:88
-msgid "time"
-msgstr "Hora"
+#: View/ProgramParticipants/view.ctp:114
+msgid "Marker"
+msgstr ""
 
-#: View/ProgramParticipants/view.ctp:89
-msgid "direction"
-msgstr "Dirección"
+#: View/ProgramParticipants/view.ctp:118
+msgid "One way marker on interaction <i>%s</i>"
+msgstr ""
 
-#: View/ProgramParticipants/view.ctp:90
-msgid "message"
-msgstr "Mensaje"
+#: View/ProgramParticipants/view.ctp:120
+msgid "Date passed marker on interaction <i>%s</i>"
+msgstr ""
+
+#: View/ProgramParticipants/view.ctp:124
+msgid "Error cannot display %s"
+msgstr ""
 
 #: View/ProgramRequests/add.ctp:10
 msgid "Add Request"
@@ -1340,6 +1375,10 @@ msgstr "Plantillas predeterminadas para preguntas cerradas"
 #: View/ProgramSettings/edit.ctp:83
 msgid "Default template for unmatching answers"
 msgstr "Plantillas predeterminadas para respuestas no reconocidas"
+
+#: View/ProgramSettings/edit.ctp:103
+msgid "Unmacthing answer remove reminders."
+msgstr ""
 
 #: View/ProgramSettings/view.ctp:2
 msgid "View Program Settings"
@@ -1429,6 +1468,11 @@ msgstr "Esta seguro que desea eliminar el programa  \"%s\" ?"
 #: View/Programs/index.ctp:2
 msgid "Recent Issues"
 msgstr "Asuntos recientes"
+
+#: View/Programs/index.ctp:10
+#, fuzzy
+msgid "unmatchable reply"
+msgstr "Respuestas no coincidentes"
 
 #: View/Programs/index.ctp:20
 msgid "Create Program"
@@ -1812,6 +1856,18 @@ msgstr ""
 #: Model/User.php:validation for field limited_program_access
 msgid "boolean"
 msgstr ""
+
+#~ msgid "Saving failed."
+#~ msgstr "Falla al guardar."
+
+#~ msgid "time"
+#~ msgstr "Hora"
+
+#~ msgid "direction"
+#~ msgstr "Dirección"
+
+#~ msgid "message"
+#~ msgstr "Mensaje"
 
 #~ msgid "Enroll in an active dialogue"
 #~ msgstr "Registrarse a una interacción activa"

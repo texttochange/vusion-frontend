@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2012-10-17 16:59+0000\n"
+"POT-Creation-Date: 2012-10-24 14:02+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -42,53 +42,57 @@ msgstr ""
 msgid "Dialogue doesn't exist."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:100
+#: Controller/ProgramDialoguesController.php:95
+msgid "This is an old version of this dialogue. Click here to get the current version."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:114
 msgid "Dialogue activated."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:105
+#: Controller/ProgramDialoguesController.php:119
 msgid "Dialogue unknown reload the page and try again."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:110
-#: Controller/ProgramParticipantsController.php:91;255
+#: Controller/ProgramDialoguesController.php:124
+#: Controller/ProgramParticipantsController.php:91;254
 msgid "Please set the program settings then try again."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:126
+#: Controller/ProgramDialoguesController.php:140
 #: Controller/ProgramRequestsController.php:131
 msgid "Program shortcode has not been defined, please go to program settings."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:141
+#: Controller/ProgramDialoguesController.php:155
 msgid "'%s' already used in dialogue '%s' of the same program."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:153
+#: Controller/ProgramDialoguesController.php:167
 msgid "'%s' already used by a request of the same program."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:175
+#: Controller/ProgramDialoguesController.php:189
 msgid "'%s' already used by a dialogue of program '%s'."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:186
+#: Controller/ProgramDialoguesController.php:200
 msgid "'%s' already used by a request of program '%s'."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:211
+#: Controller/ProgramDialoguesController.php:225
 msgid "Message(s) being sent, should arrive shortly..."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:254
+#: Controller/ProgramDialoguesController.php:268
 msgid "Dialogue deleted."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:264
+#: Controller/ProgramDialoguesController.php:278
 msgid "Delete dialogue failed."
 msgstr ""
 
-#: Controller/ProgramHistoryController.php:150
+#: Controller/ProgramHistoryController.php:151
 msgid "The filter \"%s\" is not supported."
 msgstr ""
 
@@ -124,11 +128,11 @@ msgstr ""
 msgid "Participant was not deleted"
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:217
+#: Controller/ProgramParticipantsController.php:216
 msgid "This file format is not supported"
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:295
+#: Controller/ProgramParticipantsController.php:294
 msgid ", Insert ok"
 msgstr ""
 
@@ -340,7 +344,7 @@ msgstr ""
 msgid "Password saving failed."
 msgstr ""
 
-#: Model/ProgramSetting.php:139
+#: Model/ProgramSetting.php:140
 #: Model/UnattachedMessage.php:113
 msgid "The program settings are incomplete. Please specificy the Timezone."
 msgstr ""
@@ -545,7 +549,7 @@ msgid "Admin"
 msgstr ""
 
 #: View/Admin/index.ctp:9
-#: View/Elements/localization.ctp:61;73;81
+#: View/Elements/localization.ctp:61;73;81;89
 #: View/Groups/add.ctp:14
 #: View/Groups/edit.ctp:15
 #: View/Groups/index.ctp:7;38
@@ -631,7 +635,7 @@ msgid "Offset time minutes cannot be negative."
 msgstr ""
 
 #: View/Elements/localization.ctp:13
-msgid "Require at least 1 reminder."
+msgid "Must be at least 1."
 msgstr ""
 
 #: View/Elements/localization.ctp:14
@@ -703,14 +707,14 @@ msgstr ""
 msgid "Choice"
 msgstr ""
 
-#: View/Elements/localization.ctp:39;90
+#: View/Elements/localization.ctp:39;94
 #: View/ProgramHome/index.ctp:22
 msgid "Content"
 msgstr ""
 
 #: View/Elements/localization.ctp:40
 #: View/ProgramHistory/index.ctp:101
-#: View/ProgramParticipants/view.ctp:60
+#: View/ProgramParticipants/view.ctp:60;88
 #: View/UnmatchableReply/index.ctp:8
 msgid "Time"
 msgstr ""
@@ -787,7 +791,7 @@ msgstr ""
 msgid "Feedback"
 msgstr ""
 
-#: View/Elements/localization.ctp:62;74;82
+#: View/Elements/localization.ctp:62;74;82;90
 msgid "Action"
 msgstr ""
 
@@ -837,7 +841,7 @@ msgstr ""
 #: View/ProgramParticipants/edit.ctp:3;14
 #: View/ProgramRequests/add.ctp:3
 #: View/ProgramRequests/edit.ctp:3
-#: View/ProgramSettings/edit.ctp:3;107
+#: View/ProgramSettings/edit.ctp:3;113
 #: View/ProgramUnattachedMessages/add.ctp:3;51
 #: View/ProgramUnattachedMessages/edit.ctp:3;65
 #: View/Users/change_password.ctp:8
@@ -881,14 +885,22 @@ msgid "In case no matching on other requests, try to match only the message firs
 msgstr ""
 
 #: View/Elements/localization.ctp:87
-msgid "No unmatching feedback"
+msgid "Set maximum number of accepted unmatching answers"
 msgstr ""
 
 #: View/Elements/localization.ctp:88
+msgid "Maximum number of accepted unmatching answers"
+msgstr ""
+
+#: View/Elements/localization.ctp:91
+msgid "No unmatching feedback"
+msgstr ""
+
+#: View/Elements/localization.ctp:92
 msgid "Default program umatching feedback"
 msgstr ""
 
-#: View/Elements/localization.ctp:89
+#: View/Elements/localization.ctp:93
 msgid "Custom umatching message"
 msgstr ""
 
@@ -1216,6 +1228,7 @@ msgid "Direction"
 msgstr ""
 
 #: View/ProgramHistory/index.ctp:98
+#: View/ProgramParticipants/view.ctp:90
 msgid "Status"
 msgstr ""
 
@@ -1339,11 +1352,11 @@ msgstr ""
 msgid "Participant's Scheduled Messages"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:62
+#: View/ProgramParticipants/view.ctp:62;89
 msgid "Type"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:63
+#: View/ProgramParticipants/view.ctp:63;91
 msgid "Details"
 msgstr ""
 
@@ -1351,16 +1364,20 @@ msgstr ""
 msgid "Participant's History"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:88
-msgid "time"
+#: View/ProgramParticipants/view.ctp:114
+msgid "Marker"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:89
-msgid "direction"
+#: View/ProgramParticipants/view.ctp:118
+msgid "One way marker on interaction <i>%s</i>"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:90
-msgid "message"
+#: View/ProgramParticipants/view.ctp:120
+msgid "Date passed marker on interaction <i>%s</i>"
+msgstr ""
+
+#: View/ProgramParticipants/view.ctp:124
+msgid "Error cannot display %s"
 msgstr ""
 
 #: View/ProgramRequests/add.ctp:10
