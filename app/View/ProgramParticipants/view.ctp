@@ -98,7 +98,7 @@
 			    <?php 
 			        $messageType = array('dialogue-history', 'request-history', 'unattach-history', 'unmatching-history');
 			        $markerType = array('datepassed-marker-history', 'oneway-marker-history');
-			        if (in_array($history['History']['object-type'], $messageType)) { ?>
+			        if (!isset($history['History']['object-type']) || in_array($history['History']['object-type'], $messageType)) { ?>
 			             <td><?php echo __(ucfirst($history['History']['message-direction'])); ?>&nbsp;</td>
 			             <td><?php 
 			             if (isset($history['History']['message-status'])) {

@@ -195,13 +195,16 @@ class History extends MongoModel
     public function addDialogueContent($histories, $dialoguesInteractionsContent)
     {
         foreach ($histories as &$history) {
-             if (in_array($history['History']['object-type'], $this->markerType)) {
-                 if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
-                     $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
-                 } else {
-                     $history['History']['details'] = 'unknown interaction';
-                 }
-             }
+            if (!isset($history['History']['object-type'])) {
+                continue;
+            }   
+            if (in_array($history['History']['object-type'], $this->markerType)) {
+                if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
+                    $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
+                } else {
+                    $history['History']['details'] = 'unknown interaction';
+                }
+            }
          }
          return $histories;
     }
