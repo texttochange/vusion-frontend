@@ -93,6 +93,7 @@ class Schedule extends MongoModel
             'conditions' => array('participant-phone' => $phone),
             'order' => array('date-time' => 'asc')
             ));
+        
 
         foreach($schedules as &$schedule) {
              if (isset($schedule['Schedule']['interaction-id'])) {
@@ -109,8 +110,9 @@ class Schedule extends MongoModel
             }
             if ($schedule['Schedule']['object-type']=='action-schedule') {
                 $details = $schedule['Schedule']['action']['type-action'];
+              
                 if ($schedule['Schedule']['action']['type-action'] == 'enrolling') {
-                    $details = $details." in ".$dialoguesInteractionsContent[$schedule['Schedule']['action']]['enroll'];
+                    $details = $details." in ".$dialoguesInteractionsContent[$schedule['Schedule']['action']['enroll']]['name'];
                 }
                 $schedule['Schedule']['content'] = $details;
             }

@@ -66,10 +66,10 @@
 			foreach ($schedules as $schedule): ?>
 			<tr>
 			<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['Schedule']['date-time']); ?>&nbsp;</td>
-			<?php if (isset($schedule['Schedule']['dialogue-id'])) { 
+			<?php if (isset($schedule['Schedule']['dialogue-id']) or isset($schedule['Schedule']['context']['dialogue-id']) ) { 
 			    echo $this->Html->tag('td', __('Dialogue'));
 			} elseif (isset($schedule['Schedule']['unattach-id'])) {
-			    echo $this->Html->tag('td', __('Separate Msg'));   
+			    echo $this->Html->tag('td', __('Separate Msg') or isset($schedule['Schedule']['context']));   
 			} else { ?>
 			    <td></td>
 			<?php } ?>
