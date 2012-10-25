@@ -104,7 +104,9 @@ class ProgramHistoryController extends AppController
         }
 
         // Only get messages and avoid other stuff like markers
-        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
+        $defaultConditions = array('$or' => array(
+            array('object-type' => array('$in' => $this->History->messageType)),
+            array('object-type' => array('$exists' => false))));
 
         $exportParams = array(
             'fields' => array('participant-phone','message-direction','message-status','message-content','timestamp'),
