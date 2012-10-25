@@ -44,13 +44,12 @@ class HistoryTestCase extends CakeTestCase
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
-            'message-status' => null,
             'message-direction' => 'incoming',
             'interaction-id'=>'script.dialogues[0].interactions[0]',
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create('default-history');
+        $this->History->create('dialogue-history');
         $history = $this->History->save($participantsState);
         
               
@@ -66,7 +65,6 @@ class HistoryTestCase extends CakeTestCase
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
-            'message-status' => null,
             'message-direction' => 'incoming',
             'interaction-id'=>'script.dialogues[0].interactions[0]',
             'dialogue-id'=>'script.dialogues[0]'
@@ -85,15 +83,14 @@ class HistoryTestCase extends CakeTestCase
     public function testFindCount()
     {
         $participantsState = array(
-            'object-type' => 'default-history',
+            'object-type' => 'dialogue-history',
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL Good',
-            'message-status' => null,
             'message-direction' => 'incoming' 
             );
         
-        $this->History->create('default-history');
+        $this->History->create('dialogue-history');
         $history = $this->History->save($participantsState);
               
         $result   = $this->History->find(
@@ -110,7 +107,6 @@ class HistoryTestCase extends CakeTestCase
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
-            'message-status' => null,
             'message-direction' => 'incoming',
             'dialogue-id'=>'script.dialogues[0]',
             'interaction-id'=>'script.dialogues[0].interactions[0]'

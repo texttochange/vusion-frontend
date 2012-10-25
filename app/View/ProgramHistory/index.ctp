@@ -97,7 +97,7 @@
 			<th><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			<th><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			<th><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('message-content', __('Message'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			<th><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			<th><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 	</tr>
 	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $statuses == null) { ?>
@@ -106,15 +106,15 @@
 	    </tr>
 	<?php } else {?>    
 	<?php
-	foreach ($statuses as $status): ?>
+	foreach ($statuses as $history): ?>
 	<tr>
-		<td><?php echo h($status['History']['participant-phone']); ?>&nbsp;</td>
-		<td><?php echo h($status['History']['message-direction']); ?>&nbsp;</td>
-		<td><?php echo h($status['History']['message-status']); ?>&nbsp;</td>
-		<td><?php if (isset($status['History']['failure-reason'])) echo h($status['History']['failure-reason']); ?>&nbsp;</td>
-		<td><?php echo h($status['History']['message-content']); ?>&nbsp;</td>
-		<td><?php echo $this->Time->format('d/m/Y H:i:s', $status['History']['timestamp']); ?>&nbsp;</td>		
-	</tr>
+		<td><?php echo $history['History']['participant-phone']; ?>&nbsp;</td>
+		    <td><?php echo ucfirst($history['History']['message-direction']); ?>&nbsp;</td>
+		    <td><?php if (isset($history['History']['message-status'])) echo $history['History']['message-status']; ?>&nbsp;</td>
+		    <td><?php if (isset($history['History']['failure-reason'])) echo $history['History']['failure-reason']; ?>&nbsp;</td>
+		    <td><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+		    <td><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+		</tr>
 	<?php endforeach; ?>
 	<?php } ?>
 	</table>

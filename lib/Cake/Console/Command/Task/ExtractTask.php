@@ -356,9 +356,16 @@ class ExtractTask extends AppShell {
 		foreach ($models as $model) {
 			App::uses($model, $plugin . 'Model');
 			$reflection = new ReflectionClass($model);
+			//print_r($model);
+			try {
 			if (!$reflection->isSubClassOf('Model')) {
 				continue;
+			} 
+			} catch (Exception $e) {
+			    echo "cannot extract on $model\n";
+			    continue;
 			}
+
 			$properties = $reflection->getDefaultProperties();
 			$validate = $properties['validate'];
 			if (empty($validate)) {

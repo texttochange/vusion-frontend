@@ -89,7 +89,11 @@ abstract class MongoModel extends Model
             }
         };
         $this->data[$this->alias]['model-version'] = $this->getModelVersion();
-        $this->data[$this->alias]['object-type'] = $objectType;
+        if ($objectType==null) {
+            $this->data[$this->alias]['object-type'] = strtolower($this->name);  
+        } else {
+            $this->data[$this->alias]['object-type'] = $objectType;
+        }
     }
 
     

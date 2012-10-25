@@ -10,7 +10,7 @@ var program = {"script": [
     "participant":["phone","name"],
     "phone":"text",
     "dialogues": ["add-dialogue"],
-    "add-dialogue":"button",
+    "add-dialogue":"button",                    
     "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id", "activated"],
     "dialogue-id": "hidden",
     "auto-enrollment": "select",
@@ -21,9 +21,23 @@ var program = {"script": [
     "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-reminder"],
+    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    "radio-type-unmatching-feedback" : "radiobuttons",
+    "type-unmatching-feedback": {
+        "no-unmatching-feedback": "no-unmatching-feedback",
+        "program-unmatching-feedback":"program-unmatching-feedback",
+        "interaction-unmatching-feedback":"interaction-unmatching-feedback"},
+    "interaction-unmatching-feedback": ["unmatching-feedback-content"],
+    "unmatching-feedback-content": "textarea",
     "checkbox-set-use-template": "checkboxes",
     "set-use-template": {"use-template": "use-template"},
+    "checkbox-set-max-unmatching-answers": "checkboxes",
+    "set-max-unmatching-answers": {"max-unmatching-answers": "max-unmatching-answers"},
+    "max-unmatching-answers": ["max-unmatching-answer-number", "max-unmatching-answer-actions"],
+    "max-unmatching-answer-number": "text",
+    "max-unmatching-answer-actions": ["add-max-unmatching-answer-action"],
+    "add-max-unmatching-answer-action": "button",
+    "max-unmatching-answer-action": ["radio-type-action"],
     "radio-type-question": "radiobuttons", 
     "type-question":{"closed-question":"closed-question","open-question":"open-question"},
     "closed-question": ["label-for-participant-profiling", "checkbox-set-answer-accept-no-space", "answers"],
@@ -322,6 +336,11 @@ function activeForm(){
                 $(elt).change(updateCheckboxSubmenu);
             };
     });
+    $.each($("input[name*='max-unmatching-answers']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).change(updateCheckboxSubmenu);
+            };
+    });
     $("input[name*='date-time']").each(function (key, item) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
                 $(this).parent().parent().find("input").attr("readonly", true);
@@ -423,6 +442,16 @@ function activeForm(){
             }
         });
     });
+    $("input[name*='type-unmatching-feedback']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
     $("input[name*='answer-label']").each(function (item) {
         $(this).rules("add",{
             required:true,
@@ -459,13 +488,13 @@ function activeForm(){
             }
         });
     });
-    $("input[name$='reminder-number']").each(function (item) {
+    $("input[name$='number']").each(function (item) {
         $(this).rules("add",{
             required:true,
             min: 1,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                min: wrapErrorMessage(localized_errors.validation_reminder_min),
+                min: wrapErrorMessage(localized_errors.validation_number_min),
             }
         });
     });
@@ -681,7 +710,10 @@ function updateRadioButtonSubmenu() {
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null) {
-        name = $(elt).parent().parent().parent().parent().attr("name");
+        name = $(elt).parent().parent().parent().attr("name");
+        if (name == null) {
+            name = $(elt).parent().parent().parent().parent().attr("name");
+        }
     }
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
@@ -714,6 +746,8 @@ function updateCheckboxSubmenu() {
     var elt = this;
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
+    if (name == null)
+        name = $(elt).parent().parent().parent().attr("name");
     var label = $(elt).next().text();
     if (box && $(box).attr('radiochildren')){
         $(box).remove();
@@ -726,7 +760,7 @@ function updateCheckboxSubmenu() {
              "radiochildren":"radiochildren",
              "name":name,
                 "elements":[]};
-        var name = $(elt).parent().parent().attr('name');
+        //var name = $(elt).parent().parent().attr('name');
         configToForm($(elt).attr('value'), newContent, name);
     
         $(elt).parent().formElement(newContent);
@@ -973,7 +1007,18 @@ function wrapErrorMessageInClass(error, inClasses){
         inClasses = "ttc-validation-error"
     }
     return '<span class="'+inClasses+'"><nobr>'+error+'</nobr></span>';
-} 
+}
+
+//TODO: consider renaming radiochildren so that the names are not the same as those for the interactions 
+function showSummaryError() {
+    errors = {};
+    $.each($(":regex(name,^Dialogue.interactions\\[\\d+\\]$):not([radiochildren='radiochildren'])"),
+        function(key, elt){
+	    if ($(elt).children(':has(".error")').length > 0) {
+	    	    $(elt).children('.ttc-fold-summary').append('<span class="ttc-summary-error"><nobr>'+localized_errors.interaction_summary_error+'</nobr></span>');
+    	    }
+    	});
+}
 
 function isInFuture(dateTime) {
     if (dateTime=="")
@@ -1051,8 +1096,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
              }, 
              invalidHandler: function(form, validator){
                  reactivateSaveButtons();
+                 validator.showErrors();
+                 showSummaryError();
              },
              onkeyup: false,
+             ignore: '',
         },  
         "method": "post",
                 "elements": 

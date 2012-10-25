@@ -1,18 +1,25 @@
 <?php
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
-App::Uses('Schedule', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('MissingField', 'Lib');
+App::uses('FieldValueIncorrect', 'Lib');
+App::uses('VusionException', 'Lib');
+App::uses('Interaction', 'Model');
 
 class Dialogue extends MongoModel
 {
 
     var $specific = true;
     var $name     = 'Dialogue';
+    
+    var $AUTOENROLLMENT_VALUES = array('none', 'all');
 
     function getModelVersion()
     {
         return '1';
     }
+
 
     function getRequiredFields($objectType=null)
     {
@@ -31,6 +38,7 @@ class Dialogue extends MongoModel
         'first' => true,
         'count' => true,
         );
+
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -54,44 +62,40 @@ class Dialogue extends MongoModel
 
     public function beforeValidate()
     {
-        parent::beforeValidate();
-
-        if (!isset($this->data['Dialogue']['activated'])) {
-            $this->data['Dialogue']['activated'] = 0;
-        } else {
-            $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
-        }
-
-        if (!isset($this->data['Dialogue']['dialogue-id'])) {
-            $this->data['Dialogue']['dialogue-id'] = uniqid();
-        }   
-
-        if (isset($this->data['Dialogue']['interactions'])) {
-            foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
-                if (!isset($interaction['interaction-id']) || $interaction['interaction-id']=="") {
-                    $interaction['interaction-id'] = uniqid();  
-                }   
-                if (!isset($interaction['activated']) or $interaction['activated']==null) {
-                    $interaction['activated'] = 0;
-                }
-                if (!isset($interaction['type-interaction'])) {
-                    $interaction['type-interaction'] = null;
-                }
-                if (!isset($interaction['type-schedule'])) {
-                    $interaction['type-schedule'] = null;
-                }
-                # do something in here.
-                if ((isset($interaction['type-schedule']) and $interaction['type-schedule'] == 'offset-days') 
-                    and (!isset($interaction['days']) or $interaction['days'] == ""))
-                    $interaction['days'] = '0';
+        try {
+            parent::beforeValidate();
+    
+            if (!isset($this->data['Dialogue']['activated'])) {
+                $this->data['Dialogue']['activated'] = 0;
+            } else {
+                $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
             }
-        } else {
-            $this->data['Dialogue']['interactions'] = array();
+    
+            if (!isset($this->data['Dialogue']['dialogue-id'])) {
+                $this->data['Dialogue']['dialogue-id'] = uniqid();
+            }   
+    
+            if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
+                throw new FieldValueIncorrect("Auto Enrollment cannot be $this->data['Dialogue']['auto-enrollment']");
+            }
+    
+            $interactionModel = new Interaction();
+    
+            if (isset($this->data['Dialogue']['interactions'])) {
+                foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
+                    $interaction = $interactionModel->beforeValidate($interaction);
+                }
+            } else {
+                $this->data['Dialogue']['interactions'] = array();
+            }
+    
+            $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
+    
+            return $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
+        } catch (Exception $e) {
+            $this->validationErrors['dialogue'] = $e->getMessage();
+            return false;
         }
-
-        $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
-
-        return $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
     }
 
     
@@ -105,7 +109,7 @@ class Dialogue extends MongoModel
         if (isset($dialogue['Dialogue']['interactions'])) {
             $interactionIds = array();
             foreach ($dialogue['Dialogue']['interactions'] as &$interaction) {
-                $interactionIds[] = $interaction['interaction-id'];
+                 $interactionIds[] = $interaction['interaction-id'];
                 $interaction['activated'] = 1;
             }
             //Delete all interaction that have been deleted on the UI
@@ -114,8 +118,15 @@ class Dialogue extends MongoModel
                     'Schedule.dialogue-id'=>$dialogue['Dialogue']['dialogue-id'],
                     'Schedule.interaction-id'=>array('$nin'=>$interactionIds)),
                 false);
-        }        
-        return $this->save($dialogue);
+        }
+        // we make sure no other version is activated
+        $result = $this->save($dialogue);
+        $this->updateAll(
+            array('activated' => 2),
+            array('activated' => 1, 
+                'dialogue-id' => $result['Dialogue']['dialogue-id'],
+                '_id' => array('$ne' => new MongoId($result['Dialogue']['_id']))));
+        return $result;
     }
 
 
@@ -128,6 +139,12 @@ class Dialogue extends MongoModel
         return false;
     }
 
+    public function getActiveDialogue($dialogueId) {
+        return $this->find('first', array(
+            'conditions'=>array(
+                'activated' => 1,
+                'dialogue-id' => $dialogueId)));
+    }
 
     public function getActiveDialogues($options=null)
     {
@@ -137,7 +154,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Dialogue' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
+                if (obj.activated==1 && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
                     prev.Dialogue = obj;
                 }',
             'options'=> $options
@@ -204,7 +221,7 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Active' => 0, 'Draft' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated && (!prev.Active || prev.Active.modified <= obj.modified)) 
+                if (obj.activated==1 && (!prev.Active || prev.Active.modified <= obj.modified)) 
                     prev.Active = obj;
                 else if (!obj.activated)
                     prev.Draft = obj;
@@ -286,3 +303,6 @@ class Dialogue extends MongoModel
     }
 
 }
+
+
+

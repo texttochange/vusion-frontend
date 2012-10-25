@@ -181,19 +181,17 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read(null, $id);
-        $histories   = $this->History->find(
-            'participant', 
-            array(
-                'phone' => $participant['Participant']['phone']
-                )
-            );
-        
-        $activeInteractions   = $this->Dialogue->getActiveInteractions();
-        $activeDialogues = $this->Dialogue->getActiveDialogues();
+        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $histories   = $this->History->getParticipantHistory(
+                                    $participant['Participant']['phone'],
+                                    $dialoguesInteractionsContent);
+
+        //TODO: refactor to use similar $dialogueInteractionsContent
+        #$activeInteractions   = $this->Dialogue->getActiveInteractions();
+        #$activeDialogues = $this->Dialogue->getActiveDialogues();
         $schedules = $this->Schedule->getParticipantSchedules(
                                     $participant['Participant']['phone'],
-                                    $activeDialogues,
-                                    $activeInteractions);
+                                    $dialoguesInteractionsContent);
        
         $this->set(compact('participant','histories', 'schedules'));
     }

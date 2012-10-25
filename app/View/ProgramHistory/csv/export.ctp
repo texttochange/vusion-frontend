@@ -1,27 +1,34 @@
 <?php
 
-    foreach ($data[0]['History'] as $key => &$value)
+    $fields = array(
+        'participant-phone',
+        'message-direction',
+        'message-status',
+        'message-content',
+        'timestamp');        
+
+    foreach ($fields as $field)
     {
-        // Generating Headers 
-        if($key != '_id') 
-            echo "\"".$key."\",";
+        echo '"'.$field.'",';
     }
-    
     echo "\n";
-    foreach ($data as $row)
+
+    foreach ($data as $history)
     {
         // Loop through every value in a row
-        foreach ($row['History'] as $key => &$value)
+        $values = array();
+        foreach ($fields as $field)
         {
+            if (!isset($history['History'][$field])) {
+               $values[] = '""';
+               continue;
+            }   
             // Apply opening and closing text delimiters to every value
-            if ($key == 'timestamp')
-                $value = "\"".$this->Time->format('d/m/Y H:i:s', $value)."\"";
-            else               
-                $value = "\"".$value."\"";           
+            if ($field == 'timestamp')
+                $values[] = '"'.$this->Time->format('d/m/Y H:i:s', $history['History'][$field]).'"';
+            else
+                $values[] = '"'.$history['History'][$field].'"';
         }
-        //remove the id from the array
-        $id =array_shift($row['History']);
-        // Echo all values in a row comma separated
-        echo implode(",",$row['History'])."\n";
+        echo implode(",",$values)."\n";
     }
 ?>
