@@ -72,21 +72,22 @@ class ProgramHistoryController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
 
+        // Only get messages and avoid other stuff like markers
+        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
+
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
-            $statuses = $this->History->find('all', array('conditions' => $this->_getConditions(),
-                'order'=> $order,
-                ));
+            $statuses = $this->History->find(
+                'all', 
+                array('conditions' => $this->_getConditions($defaultConditions)),
+                array('order'=> $order));
             $this->set(compact('statuses')); 
         } else {   
             $this->paginate = array(
                 'all',
-                'conditions' => $this->_getConditions(),
-                'order'=> $order,
-            );
+                'conditions' => $this->_getConditions($defaultConditions),
+                'order'=> $order);
             
-            $histories = $this->paginate();
-            $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-            $statuses = $this->History->addDialogueContent($histories, $dialoguesInteractionsContent);
+            $statuses = $this->paginate();
             $this->set(compact('statuses'));
         }
     }
@@ -99,10 +100,13 @@ class ProgramHistoryController extends AppController
         } else {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-    
+
+        // Only get messages and avoid other stuff like markers
+        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
+
         $exportParams = array(
             'fields' => array('participant-phone','message-direction','message-status','message-content','timestamp'),
-            'conditions' => $this->_getConditions(),
+            'conditions' => $this->_getConditions($defaultConditions),
             'order'=> $order,
         );
         
@@ -110,10 +114,8 @@ class ProgramHistoryController extends AppController
         $this->set(compact('data'));
     }
   
-    protected function _getConditions()
+    protected function _getConditions($conditions)
     {
-        $conditions = array();
-        
         $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
 
         if (!isset($onlyFilterParams['filter_param'])) 
