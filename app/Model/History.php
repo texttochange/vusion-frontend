@@ -195,6 +195,7 @@ class History extends MongoModel
     public function addDialogueContent($histories, $dialoguesInteractionsContent)
     {
         foreach ($histories as &$history) {
+            // manage old history objects
             if (!isset($history['History']['object-type'])) {
                 continue;
             }   
