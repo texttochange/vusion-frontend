@@ -67,7 +67,7 @@ class AppController extends Controller
         }
         if (isset($programUrl)) {            
             $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
-            $unattachedMessages = $unattachedMessageModel->find('all');
+            $unattachedMessages = $unattachedMessageModel->find('future');
             if (isset($unattachedMessages))
                 $programUnattachedMessages = $unattachedMessages;
             else

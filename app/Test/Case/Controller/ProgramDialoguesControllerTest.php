@@ -182,9 +182,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
     public function testAdd()
     {
-        $dialogue = $this->Maker->getOneDialogue();
-
+        
         $this->mockProgramAccess();
+
+        $dialogue = $this->Maker->getOneDialogue();
         $this->testAction(
             "/testurl/programDialogues/save", 
             array(
@@ -258,9 +259,13 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     public function testActivate_ok()
     {
         $dialogues = $this->mockProgramAccess();
+
+        $regexId = $this->matchesRegularExpression('/^.{13}$/');
+ 
         $dialogues
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexId)
             ->will($this->returnValue(true));
         $dialogues->Session
             ->expects($this->once())
@@ -269,9 +274,9 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
         $this->instanciateModels();
         
-        $dialogue = $this->Maker->getOneDialogue();
-        $dialogue['Dialogue']['auto-enrollment'] = 'all';
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $testDialogue = $this->Maker->getOneDialogue();
+        $testDialogue['Dialogue']['auto-enrollment'] = 'all';
+        $savedDialogue = $this->Dialogue->saveDialogue($testDialogue);
         
         $this->ProgramSetting->create();
         $this->ProgramSetting->save(
@@ -637,6 +642,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues
             ->expects($this->once())
             ->method('_notifySendAllMessagesBackendWorker')
+            ->with('testurl')
             ->will($this->returnValue(true));
 
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');

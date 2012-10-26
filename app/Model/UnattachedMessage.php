@@ -71,6 +71,24 @@ class UnattachedMessage extends MongoModel
             )
         );
 
+    var $findMethods = array(
+        'all' => true,
+        'first' => true,
+        'count' => true,
+        'future' => true);
+
+    protected function _findFuture($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $query['conditions']['fixed-time'] = array('$gt' => $programNow->format("Y-m-d\TH:i:s"));
+            }
+            return $query;
+        }
+        return $results;
+    }
+
 
     public function __construct($id = false, $table = null, $ds = null)
     {

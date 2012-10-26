@@ -36,9 +36,9 @@ class ProgramUnattachedMessagesController extends AppController
         $this->DialogueHelper    = new DialogueHelper();
     }
 
-    protected function _notifyUpdateBackendWorker($workerName)
+    protected function _notifyUpdateBackendWorker($workerName, $unattach_id)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
     }
 
 
@@ -62,7 +62,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
             }
             if ($this->UnattachedMessage->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl);
+                $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
                 $this->Session->setFlash(__('The Message has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -100,7 +100,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
             }
             if ($this->UnattachedMessage->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl);
+                $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
                 $unattachedMessage = $this->request->data;
                 $this->Session->setFlash(
                     __('The Message has been saved.'),

@@ -40,11 +40,16 @@ class VumiRabbitMQ {
             );
     }
 
-    public function sendMessageToUpdateSchedule($to)
+    public function sendMessageToUpdateSchedule($to, $schedule_type, $object_id)
     {
+        $message = array(
+            'action' => 'update_schedule',
+            'schedule_type' => $schedule_type,
+            'object_id' => $object_id );
+        
         return $this->sendMessageTo(
             $to.'.control',
-            array('action' => 'update-schedule')
+            $message
             );
     }
 

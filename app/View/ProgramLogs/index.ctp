@@ -14,7 +14,7 @@
 	 <tr>
 	   <td><?php echo substr($newKey, 1, 19); ?>
 	   </td>
-	   <td><?php echo substr($newKey, 21); ?></td>
+	   <td><?php echo htmlspecialchars(substr($newKey, 21)); ?></td>
 	 </tr>
 	 <?php endforeach; ?>
 	 </table>
