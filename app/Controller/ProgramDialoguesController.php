@@ -240,7 +240,13 @@ class ProgramDialoguesController extends AppController
 
     protected function _notifyUpdateBackendWorker($workerName, $dialogueId)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'dialogue', $dialogueId);
+        return $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'dialogue', $dialogueId);
+    }
+
+
+    protected function _notifyUpdateRegisteredKeywords($workerName)
+    {
+        return $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
     }
 
     
@@ -263,7 +269,7 @@ class ProgramDialoguesController extends AppController
             throw new MethodNotAllowedException();
          }
          if ($this->Dialogue->deleteDialogue($dialogueId)) {
-             $this->_notifyUpdateBackendWorker($programUrl);
+             $result = $this->_notifyUpdateRegisteredKeywords($programUrl);
              $this->Session->setFlash(
                  __('Dialogue deleted.'),
                  'default',

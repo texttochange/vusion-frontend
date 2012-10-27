@@ -4,6 +4,7 @@ App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('ShortCode', 'Model');
 App::uses('Template', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramSettingsController extends AppController
 {
@@ -27,9 +28,11 @@ class ProgramSettingsController extends AppController
         
         $this->ProgramSetting = new ProgramSetting($options);
         
-        $optionVisionDb = array('database' => 'vusion');
-        $this->ShortCode  = new ShortCode($optionVisionDb);
-        $this->Template   = new Template($optionVisionDb);
+        $optionVisionDb     = array('database' => 'vusion');
+        $this->ShortCode    = new ShortCode($optionVisionDb);
+        $this->Template     = new Template($optionVisionDb);
+        $this->VumiRabbitMQ = new VumiRabbitMQ(
+            Configure::read('vusion.rabbitmq'));
     }
 
 
@@ -72,6 +75,8 @@ class ProgramSettingsController extends AppController
 
     public function edit()
     {    	
+        $programUrl = $this->params['program'];
+
         if ($this->request->is('post') || $this->request->is('put')) {
             foreach ($this->request->data['ProgramSettings'] as $key => $value) {
                 if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
@@ -86,6 +91,7 @@ class ProgramSettingsController extends AppController
                     );
                 }
             }
+            $this->_notifyUpdateProgramSettings($programUrl);
         }
         $shortcodes = $this->ShortCode->find('all');
         $this->set(compact('shortcodes'));
@@ -106,8 +112,13 @@ class ProgramSettingsController extends AppController
     	    
             $this->request->data = $programSettings;
         }
-
        
+    }
+
+
+    protected function _notifyUpdateProgramSettings($workerName)
+    {
+        return $this->VumiRabbitMQ->sendMessageToReloadProgramSettings($workerName);
     }
 
 

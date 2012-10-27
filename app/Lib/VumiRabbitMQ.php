@@ -53,6 +53,27 @@ class VumiRabbitMQ {
             );
     }
 
+    public function sendMessageToUpdateRegisteredKeywords($to)
+    {
+        $message = array(
+            'action' => 'update_registered_keywords');
+        
+        return $this->sendMessageTo(
+            $to.'.control',
+            $message
+            );
+    }
+
+    public function sendMessageToReloadProgramSettings($to)
+    {
+        $message = array(
+            'action' => 'reload_program_settings');
+        
+        return $this->sendMessageTo(
+            $to.'.control',
+            $message
+            );
+    }
 
     public function sendMessageToSendAllMessages($to, $phone, $dialogueObjId)
     {

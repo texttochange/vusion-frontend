@@ -124,7 +124,8 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     ),
                 'methods' => array(
                     '_notifyUpdateBackendWorker',
-                    '_notifySendAllMessagesBackendWorker'
+                    '_notifySendAllMessagesBackendWorker',
+                    '_notifyUpdateRegisteredKeywords'
                     )
                 )
             );
@@ -686,10 +687,11 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function testDeleteDialogue()
     {        
-        $dialogues = $this->mockProgramAccess();
-        $dialogues
+        $dialogueController = $this->mockProgramAccess();
+        $dialogueController
             ->expects($this->once())
-            ->method('_notifyUpdateBackendWorker')
+            ->method('_notifyUpdateRegisteredKeywords')
+            ->with('testurl')
             ->will($this->returnValue(true));
 
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
