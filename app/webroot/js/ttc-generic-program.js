@@ -214,7 +214,7 @@ function saveFormOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 1000,
+        timeout: 3000,
         error: saveAjaxError,
         userAction: localized_actions['save_dialogue'],
     });
