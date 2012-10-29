@@ -49,7 +49,7 @@ class ProgramRequestsController extends AppController
             //print_r($saveData);
             $this->Request->create();
             if ($this->Request->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl);
+                $this->_notifyUpdateRegisteredKeywords($programUrl);
                 $this->set(
                     'result', array(
                         'status' => 'ok',
@@ -70,7 +70,7 @@ class ProgramRequestsController extends AppController
             $this->Request->create();
             $this->Request->id = $id;
             if ($this->Request->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl);
+                $this->_notifyUpdateRegisteredKeywords($programUrl);
                 $this->set(
                     'result', array(
                         'status' => 'ok',
@@ -104,7 +104,7 @@ class ProgramRequestsController extends AppController
             throw new NotFoundException(__('Invalid request') . $id);
         }
         if ($this->Request->delete()) {
-            $this->_notifyUpdateBackendWorker($programUrl);
+            $this->_notifyUpdateRegisteredKeywords($programUrl);
             $this->Session->setFlash(
                 __('The request has been deleted.'),
                 'default',
@@ -208,9 +208,9 @@ class ProgramRequestsController extends AppController
     }
     
 
-    protected function _notifyUpdateBackendWorker($workerName)
+    protected function _notifyUpdateRegisteredKeywords($workerName)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
+        $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
     }
 
 

@@ -153,10 +153,13 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $unattachedMessages = $this->mock_program_access();
         
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $regexId = $this->matchesRegularExpression('/^.{24}$/');
         
         $unattachedMessages
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexId)
             ->will($this->returnValue(true));
 
         $date = new DateTime('tomorrow');    
@@ -187,12 +190,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $unattachedMessages = $this->mock_program_access();
         
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-        
-        $unattachedMessages
-            ->expects($this->once())
-            ->method('_notifyUpdateBackendWorker')
-            ->will($this->returnValue(true));
-        
+                
         $date = new DateTime('tomorrow');  
         //in case it's midnight
         $date->modify("+3 hour");
@@ -208,6 +206,13 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->UnattachedMessage->create();
         $data = $this->UnattachedMessage->save($unattachedMessage);
         
+        $unattachedMessages
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $this->UnattachedMessage->id)
+            ->will($this->returnValue(true));
+
+
         $this->testAction("/testurl/programUnattachedMessages/edit/".$data['UnattachedMessage']['_id'],
             array(
             'method' => 'post',

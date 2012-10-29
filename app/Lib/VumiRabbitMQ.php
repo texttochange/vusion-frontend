@@ -40,14 +40,40 @@ class VumiRabbitMQ {
             );
     }
 
-    public function sendMessageToUpdateSchedule($to)
+    public function sendMessageToUpdateSchedule($to, $schedule_type, $object_id)
     {
+        $message = array(
+            'action' => 'update_schedule',
+            'schedule_type' => $schedule_type,
+            'object_id' => $object_id );
+        
         return $this->sendMessageTo(
             $to.'.control',
-            array('action' => 'update-schedule')
+            $message
             );
     }
 
+    public function sendMessageToUpdateRegisteredKeywords($to)
+    {
+        $message = array(
+            'action' => 'update_registered_keywords');
+        
+        return $this->sendMessageTo(
+            $to.'.control',
+            $message
+            );
+    }
+
+    public function sendMessageToReloadProgramSettings($to)
+    {
+        $message = array(
+            'action' => 'reload_program_settings');
+        
+        return $this->sendMessageTo(
+            $to.'.control',
+            $message
+            );
+    }
 
     public function sendMessageToSendAllMessages($to, $phone, $dialogueObjId)
     {

@@ -75,7 +75,10 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             'models' => array(
                 'Program' => array('find', 'count'),
                 'Group' => array()
-             )
+             ),
+            'methods' => array(
+                '_notifyUpdateProgramSettings',
+                )
          ));
         
         $programSettings->Acl
@@ -109,6 +112,12 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     public function testEdit() 
     {
         $programSettingsController = $this->mockProgramAccess();
+        $programSettingsController
+            ->expects($this->once())
+            ->method('_notifyUpdateProgramSettings')
+            ->with('testurl')
+            ->will($this->returnValue(true));
+
 
         $programSettings = array(
             'ProgramSettings' => array(

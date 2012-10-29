@@ -121,7 +121,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     'Group' => array()
                     ),
                  'methods' => array(
-                    '_notifyUpdateBackendWorker',
+                    '_notifyUpdateRegisteredKeywords',
                     )
                 )
             );
@@ -163,7 +163,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $requests = $this->mockProgramAccess();
         $requests
             ->expects($this->once())
-            ->method('_notifyUpdateBackendWorker')
+            ->method('_notifyUpdateRegisteredKeywords')
+            ->with('testurl')
             ->will($this->returnValue(true));
       
         $request = $this->Maker->getOneRequest();
@@ -183,7 +184,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $requests = $this->mockProgramAccess();
         $requests
             ->expects($this->once())
-            ->method('_notifyUpdateBackendWorker')
+            ->method('_notifyUpdateRegisteredKeywords')
+            ->with('testurl')
             ->will($this->returnValue(true));
       
         $request = $this->Maker->getOneRequest();
@@ -236,7 +238,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             ->with('The request has been deleted.');
         $requests
             ->expects($this->once())
-            ->method('_notifyUpdateBackendWorker')
+            ->method('_notifyUpdateRegisteredKeywords')
+            ->with('testurl')
             ->will($this->returnValue(true));
 
         $request = $this->Maker->getOneRequest();

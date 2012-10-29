@@ -110,7 +110,7 @@ class ProgramDialoguesController extends AppController
             if ($savedDialogue) {
                 if ($savedDialogue['Dialogue']['auto-enrollment'] == 'all')
                     $this->Participant->autoEnrollDialogue($savedDialogue['Dialogue']['dialogue-id']);
-                $this->_notifyUpdateBackendWorker($programUrl);
+                $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
                 'default',
                 array('class' => "message success")
@@ -238,9 +238,15 @@ class ProgramDialoguesController extends AppController
     }
 
 
-    protected function _notifyUpdateBackendWorker($workerName)
+    protected function _notifyUpdateBackendWorker($workerName, $dialogueId)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
+        return $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'dialogue', $dialogueId);
+    }
+
+
+    protected function _notifyUpdateRegisteredKeywords($workerName)
+    {
+        return $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
     }
 
     
@@ -263,7 +269,7 @@ class ProgramDialoguesController extends AppController
             throw new MethodNotAllowedException();
          }
          if ($this->Dialogue->deleteDialogue($dialogueId)) {
-             $this->_notifyUpdateBackendWorker($programUrl);
+             $result = $this->_notifyUpdateRegisteredKeywords($programUrl);
              $this->Session->setFlash(
                  __('Dialogue deleted.'),
                  'default',
