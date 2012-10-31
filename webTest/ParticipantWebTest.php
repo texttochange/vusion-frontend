@@ -31,7 +31,7 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->verifyTextPresent("+256783255632");
     $this->click("xpath=(//a[contains(text(),'Delete')])[2]");
     $this->waitForPageToLoad("30000");
-    $this->assertTrue((bool)preg_match('/^Are you sure you want to delete participant +256783255632 [\s\S]$/',$this->getConfirmation()));
+    $this->assertTrue((bool)preg_match('/^Are you sure you want to delete participant \+\d* [\s\S]$/',$this->getConfirmation()));
     $this->chooseOkOnNextConfirmation();
     try {
         $this->assertFalse($this->isTextPresent("+256783255632"));
