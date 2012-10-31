@@ -2,9 +2,8 @@
 
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 
-class Login extends PHPUnit_Extensions_SeleniumTestCase
+class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
 {
-
 
   protected function setUp()
   {
