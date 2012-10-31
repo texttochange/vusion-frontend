@@ -46,9 +46,9 @@ class ProgramParticipantsController extends AppController
     }
 
 
-    protected function _notifyUpdateBackendWorker($workerName)
+    protected function _notifyUpdateBackendWorker($workerName, $participantPhone)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName);
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
     
     
@@ -71,7 +71,8 @@ class ProgramParticipantsController extends AppController
             if ($this->_hasAllProgramSettings()) {
                 $this->Participant->create();
                 if ($this->Participant->save($this->request->data)) {
-                    $this->_notifyUpdateBackendWorker($programUrl);
+                    $participant = $this->Participant->read();
+                    $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                     $this->Session->setFlash(__('The participant has been saved.'),
                         'default',
                         array('class'=>'message success')
@@ -96,6 +97,7 @@ class ProgramParticipantsController extends AppController
     }
 
     
+    ##we should not be able to edit a phone number
     public function edit() 
     {
         $programUrl = $this->params['program'];
@@ -112,7 +114,7 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false
                     );
-                $this->_notifyUpdateBackendWorker($programUrl);
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -243,11 +245,10 @@ class ProgramParticipantsController extends AppController
                     }
                     
                     if ($ext == 'csv') {
-                        $entries = $this->processCsv($filePath, $fileName);
+                        $entries = $this->processCsv($programUrl, $filePath, $fileName);
                     } else if ($ext == 'xls' || $ext == 'xlsx') {
-                        $entries = $this->processXls($filePath, $fileName);
+                        $entries = $this->processXls($programUrl, $filePath, $fileName);
                     }
-                    $this->_notifyUpdateBackendWorker($programUrl);
                 }
             } else 
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
@@ -259,7 +260,7 @@ class ProgramParticipantsController extends AppController
     }
 
     
-    private function processCsv($filePath, $fileName)
+    private function processCsv($programUrl, $filePath, $fileName)
     {
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
         $entries              = array();
@@ -290,7 +291,8 @@ class ProgramParticipantsController extends AppController
                 }
                 $savedParticipant = $this->Participant->save($participant);
                 if ($savedParticipant) {
-                    $entries[$count] = $savedParticipant['Participant']['phone'].__(", Insert ok"); 
+                    $entries[$count] = $savedParticipant['Participant']['phone'].__(", Insert ok");
+                    $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);    
                 } else {
                     $entries[$count] = $participant['phone'].", ".$this->Participant->validationErrors['phone'][0]. " line ".($count+1);
                 }
@@ -302,7 +304,7 @@ class ProgramParticipantsController extends AppController
     }
 
     
-    private function processXls($filePath, $fileName)
+    private function processXls($programUrl, $filePath, $fileName)
     {
         $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
@@ -322,6 +324,7 @@ class ProgramParticipantsController extends AppController
             $savedParticipant = $this->Participant->save($participant);
             if ($savedParticipant) {
                 $entries[$i] = $savedParticipant['Participant']['phone'] . ", Insert ok"; 
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);    
             } else {
                 $entries[$i] = $participant['phone'].", ".$this->Participant->validationErrors['phone'][0]. " line ".$i;
             }

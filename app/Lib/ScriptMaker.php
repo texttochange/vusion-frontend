@@ -178,5 +178,10 @@ class ScriptMaker
             ));
     }
 
+    public function getParticipant($phone='+256788601462')
+    {
+        return array('Participant' => array('phone' => $phone));
+    }
+
 
 }
