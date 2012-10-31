@@ -290,12 +290,20 @@ function vusionAjaxError(jqXHR, textStatus, errorThrown){
     }
     if (textStatus == 'timeout') {
         $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
-    }
+    }  
 }
 
 function saveAjaxError(jqXHR, textStatus, errorThrown){
     if (this.userAction) {
-        $('#flashMessage').show().text(localized_errors['vusion_ajax_action_failed']+this.userAction).attr('class', 'message failure');
+        if (textStatus == 'timeout') {
+            message = localized_errors['vusion_ajax_action_failed_due'];
+            message = message.replace(/\{0\}/g, this.userAction);
+            message = message.replace(/\{1\}/g, localized_errors["timeout"]);
+        } else {
+            message = localized_errors['vusion_ajax_action_failed']+this.userAction;
+            message = message.replace(/\{0\}/g, this.userAction)
+        }
+        $('#flashMessage').show().text(message).attr('class', 'message failure');
     }
     if (textStatus == 'timeout') {
         $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);

@@ -3,6 +3,8 @@
 var localized_errors = {
     past_date_error: "<?php echo __("Scheduling time cannot be in the past {0}.")?>",
     vusion_ajax_error: "<?php echo __("Error: action failed.")?>",
+    vusion_ajax_action_failed: "<?php echo __("Action {0} failed.")?>",
+    vusion_ajax_action_failed_due: "<?php echo __("Action {0} failed due to {1}.")?>",
     vusion_ajax_timeout_error: "<?php echo __("Poor network connection (request timed out).")?>",
     validation_required_error: "<?php echo __("This field is required.")?>",
     validation_required_checked: "<?php echo __("Select one of the choices")?>",
@@ -15,8 +17,8 @@ var localized_errors = {
     validation_keyword_blank_error: "<?php echo __("You cannot have a blank keyword.")?>",
     validation_keyword_used_same_script_error: "<?php echo __(" already used by the same script in another question.")?>",
     validation_choice_duplicate: "<?php echo __("This choice is already used in this interaction.")?>",
-    vusion_ajax_action_failed: "<?php echo __("Action failed: ")?>",
     interaction_summary_error: "<?php echo __("There is an error inside this interaction.") ?>",
+    timeout: "<?php echo __("timeout") ?>",
 };
 
 var localized_messages = {
@@ -24,8 +26,8 @@ var localized_messages = {
 };
 
 var localized_actions= {
-    save_dialogue: "<?php echo __('Save dialogue.')?>",
-    save_request: "<?php echo __('Save request.')?>",
+    save_dialogue: "<?php echo __('save dialogue')?>",
+    save_request: "<?php echo __('save request')?>",
 };
 
 var localized_labels = {
