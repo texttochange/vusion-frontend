@@ -179,7 +179,10 @@
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+	    'defaults' => 'php',
+		'timeout' => 60,
+		'cookie' => 'vusion',
+		'cookieTimeout' => 0
 	));
 
 /**
