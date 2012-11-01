@@ -2,6 +2,7 @@
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramParticipantsController', 'Controller');
 App::uses('Schedule', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
 class TestProgramParticipantsController extends ProgramParticipantsController
 {
@@ -42,6 +43,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->instanciateProgramSettingModel();
         $this->dropData();
         $this->Participants->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->Maker = new ScriptMaker();
 
     }
 
@@ -132,10 +134,29 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
 
 
-    /**
-    * Test methods
-    *
-    */
+    public function testAdd()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256788601462')
+            ->will($this->returnValue(true));
+
+         
+        $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');    
+
+        $participant = $this->Maker->getParticipant();
+        $this->testAction(
+            "/testurl/participants/add", 
+            array(
+                'method' => 'post',
+                'data' => $participant
+                )
+            );
+     
+    }
+
     public function testImport_csv_no_settings() 
     {
         $this->mock_program_access();
@@ -201,6 +222,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256788601462')
             ->will($this->returnValue(true));
         
         $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');    
@@ -251,6 +273,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256788601462')
             ->will($this->returnValue(true));
             
         $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -299,10 +322,13 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
     public function testImport_xls() 
     {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
         $participants = $this->mock_program_access();
         $participants
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
             ->will($this->returnValue(true));
             
         $this->Participants->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -374,11 +400,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
             ->will($this->returnValue(true));
         
         $participant = array(
             'Participant' => array(
-                'phone' => '06',
+                'phone' => '+256712747841',
              )
         );
 
@@ -387,7 +414,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $scheduleToBeDeleted = array(
             'Schedule' => array(
-                'participant-phone' => '+6',
+                'participant-phone' => '+256712747841',
                 )
             );
 

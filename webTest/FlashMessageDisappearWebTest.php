@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 
-class Flash extends PHPUnit_Extensions_SeleniumTestCase
+class FlashWebTest extends PHPUnit_Extensions_SeleniumTestCase
 {
   protected function setUp()
   {

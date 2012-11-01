@@ -252,7 +252,7 @@ function saveRequestOnServer(){
             }
         },
         timeout: 1000,
-        error: vusionAjaxError,
+        error: saveAjaxError,
         userAction: localized_actions['save_request'],
     });
 }
