@@ -38,20 +38,5 @@ class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->assertTrue((bool)preg_match('/^[\s\S]*\/edit$/',$this->getLocation()));
   }
 
-  public function testPartnerCannotEditProgramSettings()
-  {
-    $this->open("/users/login");
-    $this->type("id=UserEmail", "unilever@texttochange.com");
-    $this->type("id=UserPassword", "unilever");
-    $this->click("css=input[type=\"submit\"]");
-    $this->waitForPageToLoad("30000");
-    $this->click("css=div.ttc-program-box");
-    $this->waitForPageToLoad("30000");
-    $this->click("link=Settings");
-    $this->waitForPageToLoad("30000");
-    $this->assertTrue((bool)preg_match('/^[\s\S]*\/view$/',$this->getLocation()));
-  }
-
-
 
 }
