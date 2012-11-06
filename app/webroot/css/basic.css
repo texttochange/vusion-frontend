@@ -164,8 +164,8 @@
 }
 .ttc-actions li a{
     border: 1px solid #BBBBBB;
-    border-radius: 4px 4px 4px 4px;    
-    padding: 4px 8px;
+   /* border-radius: 4px 4px 4px 4px; */    
+  /*  padding: 4px 8px; */
     display: block;
     background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
     text-decoration: none;

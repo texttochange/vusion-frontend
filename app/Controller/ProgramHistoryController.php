@@ -124,6 +124,9 @@ class ProgramHistoryController extends AppController
 
         if (!isset($onlyFilterParams['filter_param'])) 
             return $conditions;
+       
+        $urlParams = http_build_query($onlyFilterParams);
+        $this->set('urlParams', $urlParams);
         
         foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
             if ($onlyFilterParam[1] == 'dialogue') {
@@ -164,6 +167,34 @@ class ProgramHistoryController extends AppController
         }
         
         return $conditions;
+    }
+
+    public function delete() {
+        
+        $programUrl = $this->params['program'];
+     
+        // Only get messages and avoid other stuff like markers
+        $defaultConditions = array('$or' => array(
+            array('object-type' => array('$in' => $this->History->messageType)),
+            array('object-type' => array('$exists' => false))));
+
+        $conditions = $this->_getConditions($defaultConditions);
+        $result = $this->History->deleteAll(
+            $conditions, 
+            false);
+
+        $this->Session->setFlash(
+                __('Histories have been deleted.'),
+                'default',
+                array('class'=>'message success')
+                );
+                
+        $this->redirect(array(
+                    'program' => $programUrl,
+                    'controller' => 'programHistory',
+                    'action' => 'index',
+                    '?' => $this->viewVars['urlParams']));
+                   
     }
     
 

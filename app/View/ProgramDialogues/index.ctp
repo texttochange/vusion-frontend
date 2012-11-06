@@ -1,6 +1,6 @@
 <div class="Dialogue index">
 	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Dialogue'), array('program'=>$programUrl, 'action' => 'edit')); ?></li>
+		<li><?php echo $this->Html->link(__('New Dialogue'), array('program'=>$programUrl, 'action' => 'edit'), array('class' => 'ttc-button')); ?></li>
 	</ul>
     <h3><?php echo __('Dialogue Index');?></h3>
 	<div class="ttc-display-area">    
