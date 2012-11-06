@@ -1,15 +1,21 @@
 <div class="status index">    
     <ul class="ttc-actions">
         <li>
-            <?php
-            if (!isset($urlParams)) {
-                $urlParams = "";
-            }
-                echo $this->Form->postLink(__('Delete Histories'),
-                                            array('program' => $programUrl, 'controller' => 'programHistory', 'action' => 'delete', '?' => $urlParams),
-                                            array('class' => 'ttc-button'),
-                                            __('Are you sure you want to delete %s histories?', $this->Paginator->counter(array(
-                                                   'format' => __('{:count}'))))); ?>
+        <?php
+        if (!isset($urlParams)) {
+            $urlParams = "";
+        }
+        echo $this->AclLink->generatePostLink(
+                __('Delete Histories'),
+                $programUrl, 
+                'programHistory',
+                'delete', 
+                __('Are you sure you want to delete %s histories?', $this->Paginator->counter(array(
+                    'format' => __('{:count}')))),
+                array('class' => 'ttc-button'),
+                null,
+                $urlParams); 
+        ?>
         </li>
 		<li>
 		    <?php

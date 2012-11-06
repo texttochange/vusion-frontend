@@ -1,9 +1,14 @@
 <div class="participant view">
-    <?php if ($this->Session->read('Auth.User.group_id') != 4) { ?>
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('Edit Participant'), array('program'=>$programUrl, 'action' => 'edit', $participant['Participant']['_id'])); ?> </li>
+		<li><?php 
+		    echo $this->AclLink->generateButton(
+		        'Edit Participant',
+		        $programUrl,
+		        'programParticipants',
+		        'edit',
+		        array('class'=>'ttc-button'));
+		    ?> </li>
 	</ul>
-	<?php } ?>
     <h3><?php echo __('Participant'); ?></h3>
 	<dl>
 		<dt><?php echo __('Phone'); ?></dt>
