@@ -217,7 +217,68 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['statuses']));
         $this->assertEquals('what is your name? send NAME <your name>', $this->vars['statuses'][0]['History']['message-content']);
 
+    }
 
+    public function testDelete() {
+        
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527841',
+            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+            'timestamp' => '2013-02-07T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
+            ));
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527842',
+            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+            'timestamp' => '2013-02-07T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
+            ));
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527841',
+            'message-content' => 'feel good',
+            'timestamp' => '2013-02-08T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'incoming',
+            'matching-answer' => 'good'
+            ));
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527841',
+            'message-content' => 'what is your name? send NAME <your name>',
+            'timestamp' => '2013-02-09T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '12',
+            'message-direction' => 'outgoing',
+            'message-status' => 'pending' 
+            ));
+
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527841',
+            'message-content' => 'name',
+            'timestamp' => '2013-02-10T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '12',
+            'message-direction' => 'incoming',
+            'matching-answer' => null
+            ));
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/programHistory/delete?filter_param%5B1%5D%5B1%5D=message-direction&filter_param%5B1%5D%5B2%5D=outgoing");
+        $this->assertEquals(2, $this->Status->History->find('count'));
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/programHistory/delete?filter_param%5B1%5D%5B1%5D=message-direction&filter_param%5B1%5D%5B2%5D=incoming");
+        $this->assertEquals(0, $this->Status->History->find('count'));
+       
     }
 
 

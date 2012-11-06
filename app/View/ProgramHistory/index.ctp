@@ -1,5 +1,16 @@
 <div class="status index">    
     <ul class="ttc-actions">
+        <li>
+            <?php
+            if (!isset($urlParams)) {
+                $urlParams = "";
+            }
+                echo $this->Form->postLink(__('Delete Histories'),
+                                            array('program' => $programUrl, 'controller' => 'programHistory', 'action' => 'delete', '?' => $urlParams),
+                                            array('class' => 'ttc-button'),
+                                            __('Are you sure you want to delete %s histories?', $this->Paginator->counter(array(
+                                                   'format' => __('{:count}'))))); ?>
+        </li>
 		<li>
 		    <?php
 		        echo $this->Form->create(null);
@@ -7,7 +18,7 @@
 		        $exportOptions['export.csv'] = 'Export CSV'; 
 		        $exportOptions['index.csv'] = 'Export Raw CSV';
 		        $exportOptions['index.json'] = 'Export Json';
-		        echo $this->Form->select('export',$exportOptions, array('id'=>'export-type', 'empty' => 'Export History...'));
+		        echo $this->Form->select('export',$exportOptions, array('id'=>'export-type', 'class'=> 'ttc-button', 'empty' => 'Export History...'));
 		        echo $this->Form->end();
 		        $url = $programUrl.'/programHistory/';
 		        $filterParams = 

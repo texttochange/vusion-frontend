@@ -1,8 +1,12 @@
 <div class="participants index">
     <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
+		<li><?php echo $this->Html->link(__('Add Participant'), 
+		                                array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add'),
+		                                array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('Import Participant(s)'), 
+		                                array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import'),
+		                                array('class' => 'ttc-button')); ?></li>
 	</ul>
 	<?php } ?>
 	<h3><?php echo __('Participants'); ?></h3>
