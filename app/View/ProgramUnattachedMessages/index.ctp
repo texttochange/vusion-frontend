@@ -1,6 +1,6 @@
 <div class="unattached_messages index">
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Separate Message'), array('program'=>$programUrl, 'action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('New Separate Message'), array('program'=>$programUrl, 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>
 	<h3><?php echo __('Separate Messages');?></h3>
 	<div class="ttc-display-area"> 
