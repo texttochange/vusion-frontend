@@ -248,9 +248,11 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramParticipants');
         $this->Acl->allow($group, 'controllers/ProgramDialogues');
         $this->Acl->allow($group, 'controllers/ProgramHistory');
-        $this->Acl->deny($group, 'controllers/ProgramSettings');
-        $this->Acl->allow($group, 'controllers/ProgramSettings/index');
+        $this->Acl->allow($group, 'controllers/ProgramSettings');
         $this->Acl->allow($group, 'controllers/ProgramSettings/view');
+        $this->Acl->allow($group, 'controllers/ProgramSettings/edit');
+        //$this->Acl->allow($group, 'controllers/ProgramSettings/index');
+        //$this->Acl->allow($group, 'controllers/ProgramSettings/view');
         $this->Acl->allow($group, 'controllers/ProgramSimulator');        
         $this->Acl->allow($group, 'controllers/ProgramRequests');
         $this->Acl->allow($group, 'controllers/ShortCodes');
@@ -271,7 +273,11 @@ class UsersController extends AppController
         $this->Acl->deny($group, 'controllers/ProgramParticipants/add');
         $this->Acl->allow($group, 'controllers/ProgramParticipants/index');
         $this->Acl->allow($group, 'controllers/ProgramParticipants/view');
-        $this->Acl->allow($group, 'controllers/ProgramHistory');
+        $this->Acl->allow($group, 'controllers/ProgramHistory/index');
+        $this->Acl->allow($group, 'controllers/ProgramHistory/export');
+        $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
+
+
 
         echo 'AllDone';
         exit;
