@@ -1,13 +1,27 @@
 <div class="participant view">
     <ul class="ttc-actions">
+        <li>
+        <?php 
+		    echo $this->AclLink->generatePostLink(
+		        __('Delete Participant and Clear History'),
+		        $programUrl,
+		        'programParticipants',
+		        'delete',
+		         __('Are you sure you want to delete the participant %s and all his histories?', $participant['Participant']['phone']),
+		        array('class'=>'ttc-button'),
+		        $participant['Participant']['_id'],
+		        array('include'=>'history'));
+	    ?>
+        </li>
 		<li><?php 
 		    echo $this->AclLink->generateButton(
-		        'Edit Participant',
+		        __('Edit Participant'),
 		        $programUrl,
 		        'programParticipants',
 		        'edit',
 		        array('class'=>'ttc-button'));
-		    ?> </li>
+		    ?> 
+		</li>
 	</ul>
     <h3><?php echo __('Participant'); ?></h3>
 	<dl>

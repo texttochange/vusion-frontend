@@ -38,11 +38,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         parent::setUp();
 
         $this->Participants = new TestProgramParticipantsController();
-        $this->instanciateParticipantModel();
-        $this->instanciateScheduleModel();
-        $this->instanciateProgramSettingModel();
+
+        $options = array('database' => $this->programData[0]['Program']['database']);   
+        $this->Participant = new Participant($options);
+        $this->Schedule = new Schedule($options);
+        $this->ProgramSetting = new ProgramSetting($options);
+        $this->History = new History($options);
+
         $this->dropData();
-        $this->Participants->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $this->Maker = new ScriptMaker();
 
     }
@@ -50,34 +54,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
     protected function dropData()
     {
-        $this->instanciateParticipantModel();
-        $this->Participants->Participant->deleteAll(true, false);
-        $this->Participants->Schedule->deleteAll(true,false);
-        $this->Participants->ProgramSetting->deleteAll(true,false);
+        $this->Participant->deleteAll(true, false);
+        $this->Schedule->deleteAll(true,false);
+        $this->ProgramSetting->deleteAll(true,false);
+        $this->History->deleteAll(true, false);
     }
-
-
-    protected function instanciateParticipantModel() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);   
-
-        $this->Participants->Participant = new Participant($options);
-    }
-
-    protected function instanciateScheduleModel()
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);   
-
-        $this->Participants->Schedule = new Schedule($options);
-    }
-
-    protected function instanciateProgramSettingModel()
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);   
-
-        $this->Participants->ProgramSetting = new ProgramSetting($options);
-    }
-
 
     public function tearDown()
     {
@@ -133,7 +114,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-
+/*
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -392,8 +373,36 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->Participants->Schedule->find('count')
             );
     }
+*/
 
+    public function testDeleteParticipant_withHistory()
+    {
+        $this->mock_program_access();
+        
+        $participant = array(
+            'phone' => '06');
 
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+
+        $historyToBeDeleted = array(
+            'participant-phone' => '+6',
+            'message-direction' => 'incoming');
+
+        $this->History->create('dialogue-history');
+        $this->History->save($historyToBeDeleted);
+            
+        $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']."?include=history");
+        
+        $this->assertEquals(
+            0,
+            $this->Participant->find('count'));
+        $this->assertEquals(
+            0,
+            $this->History->find('count'));
+    }
+
+/*
     public function testEditParticipant()
     {
         $participants = $this->mock_program_access();
@@ -479,6 +488,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->Participants->Schedule->find('count')
             );
     }
-
+*/
 
 }
