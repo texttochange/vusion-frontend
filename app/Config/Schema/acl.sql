@@ -36,16 +36,6 @@ INSERT INTO `acos` VALUES (31,28,'',0,'add',43,44),(3,2,'',0,'index',3,4),(4,2,'
 UNLOCK TABLES;
 
 --
--- Dumping data for table `aros`
---
-
-LOCK TABLES `aros` WRITE;
-/*!40000 ALTER TABLE `aros` DISABLE KEYS */;
-INSERT INTO `aros` VALUES (1,0,'Group',1,'',1,10),(8,1,'User',8,'',2,3),(5,0,'Group',2,'',11,16),(18,5,'User',17,NULL,14,15),(10,6,'User',10,'',18,19),(11,7,'User',11,'',22,23),(12,7,'User',12,'',24,25),(6,0,'Group',3,'',17,20),(7,0,'Group',4,'',21,26),(13,1,'User',13,NULL,4,5),(14,1,'User',14,NULL,6,7),(15,1,'User',1,NULL,8,9),(17,5,'User',16,NULL,12,13);
-/*!40000 ALTER TABLE `aros` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `aros_acos`
 --
 
@@ -64,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-11-06 16:22:27
+-- Dump completed on 2012-11-07 10:19:57
