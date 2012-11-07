@@ -675,6 +675,8 @@
 
 .ttc-stack-filter select{
 	margin-right: 3px;
+	width: 200px;
+	text-overflow: ellipsis;
 }
 
 .ttc-fold-summary{

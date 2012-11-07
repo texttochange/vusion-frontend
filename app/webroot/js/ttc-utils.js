@@ -460,6 +460,10 @@ function generateDropdown(event) {
         } else {
             $(item).after("<select name='"+event.data.filterPrefix+"[3]'></select>");
         }
+        if (window.app.dialogueConditionOptions[$(item).val()]['interactions'] == null) {
+            $("[name='"+event.data.filterPrefix+"[3]']").remove();
+            return;
+        }
         $.each(window.app.dialogueConditionOptions[$(item).val()]['interactions'], function(id, content){
                 $("[name='"+event.data.filterPrefix+"[3]']").append(new Option(content, id));      
         })

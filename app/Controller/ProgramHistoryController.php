@@ -61,8 +61,12 @@ class ProgramHistoryController extends AppController
             $this->filterTypeConditionsOptions);
         $this->set('filterStatusConditionsOptions',
             $this->filterStatusConditionsOptions);
-        $this->set('filterDialogueConditionsOptions',
-            $this->Dialogue->getDialoguesInteractionsContent());
+        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
+        foreach($dialoguesInteractionsContent as &$dialogue) {
+            $dialogue['interactions'] = array('all'=> __('All'))+$dialogue['interactions']; 
+        }
+        $dialoguesInteractionsContent = array('all'=> array('name' => __('All'))) + $dialoguesInteractionsContent;
+        $this->set('filterDialogueConditionsOptions', $dialoguesInteractionsContent);
         
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
         
@@ -130,9 +134,13 @@ class ProgramHistoryController extends AppController
         
         foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
             if ($onlyFilterParam[1] == 'dialogue') {
-                $conditions['dialogue-id'] = $onlyFilterParam[2];
-                if ($onlyFilterParam[3]!='all')
-                    $conditions['interaction-id'] = $onlyFilterParam[3];
+                if ($onlyFilterParam[2]=='all') {
+                    $conditions['dialogue-id'] = array('$exists' => true);
+                } else {
+                    $conditions['dialogue-id'] = $onlyFilterParam[2];
+                    if ($onlyFilterParam[3]!='all')
+                        $conditions['interaction-id'] = $onlyFilterParam[3];
+                }
             } elseif ($onlyFilterParam[1] == 'date-from') { 
                 $conditions['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
             } elseif ($onlyFilterParam[1] == 'date-to') {

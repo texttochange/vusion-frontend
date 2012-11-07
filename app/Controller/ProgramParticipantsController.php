@@ -136,7 +136,12 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
-        
+
+        if (isset($this->params['url']['include'])) {
+            $include = $this->params['url']['include'];
+            echo $include;
+        }
+
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
@@ -148,8 +153,12 @@ class ProgramParticipantsController extends AppController
         if ($this->Participant->delete()) {
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
-                false
-                );
+                false);
+            if (isset($include) && $include=="history") {
+                $this->History->deleteAll(
+                    array('participant-phone' => $participant['Participant']['phone']),
+                    false);
+            }
             $this->Session->setFlash(
                 __('Participant and related schedule deleted.'),
                 'default',
