@@ -111,6 +111,7 @@ class Template extends MongoModel
                     return __("Please use 'ANSWERS' in the template.");
             }
         } else {
+            /*
             if ($this->data['Template']['type-template'] == 'unmatching-answer') {
                 if (!preg_match('/ANSWER/', $check['template'])) 
                     return __("Please use 'ANSWER' in the template.");
@@ -118,7 +119,7 @@ class Template extends MongoModel
             if ($this->data['Template']['type-template'] == 'unmatching-keyword') {
                 if (!preg_match('/KEYWORD/', $check['template'])) 
                     return __("Please use 'KEYWORD' in the template.");
-            }
+            }*/
         }
 
         return true;
