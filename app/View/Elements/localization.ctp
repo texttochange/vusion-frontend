@@ -10,6 +10,7 @@ var localized_errors = {
     validation_required_checked: "<?php echo __("Select one of the choices")?>",
     validation_required_answer_label: "<?php echo __("Required in order to label the participant when he is answering.")?>",
     validation_required_content: "<?php echo __("Required a message content.")?>",
+    validation_required_letter_digit_space: "<?php echo __("Only letters, digits and spaces are allowed.")?>",
     validation_offset_days_min: "<?php echo __("Offset day is minimun 1 otherwise use offset-time.")?>",
     validation_offset_time_min: "<?php echo __("Offset time minutes cannot be negative.")?>",
     validation_number_min: "<?php echo __("Must be at least 1.")?>",
