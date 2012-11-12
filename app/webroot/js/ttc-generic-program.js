@@ -455,8 +455,18 @@ function activeForm(){
     $("input[name*='answer-label']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            requireLetterDigitSpace: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_answer_label),
+                requireLetterDigitSpace: wrapErrorMessage(localized_errors.validation_required_letter_digit_space),
+            }
+        });
+    });
+    $("input[name$='label-for-participant-profiling']").each(function (item) {
+        $(this).rules("add",{
+            requireLetterDigitSpace: true,
+            messages:{
+                requireLetterDigitSpace: wrapErrorMessage(localized_errors.validation_required_letter_digit_space),
             }
         });
     });
@@ -696,6 +706,14 @@ function atLeastOneIsChecked(value, element, param) {
         return false;
     }
     return true;
+}
+
+function requireLetterDigitSpace(value, element, param) {
+    r = new RegExp('^[\\w\\s]*$')
+    if (r.test(value)) {
+        return true;
+    }
+    return false;
 }
 
 function isArray(obj) {
@@ -1066,6 +1084,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "atLeastOneIsChecked",
         atLeastOneIsChecked,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "requireLetterDigitSpace",
+        requireLetterDigitSpace,
         wrapErrorMessage(Error));
 
         
