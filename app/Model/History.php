@@ -136,6 +136,7 @@ class History extends MongoModel
     {
         if ($state == 'before') {
             $query['conditions'] = array('participant-phone' => $query['phone']);
+            $query['order']['timestamp'] = 'asc';
             return $query;
         }
         return $results;
