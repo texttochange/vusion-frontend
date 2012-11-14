@@ -491,10 +491,10 @@ function activeForm(){
     $("input[name$='minutes']").each(function (item) {
         $(this).rules("add",{
             required:true,
-            min: 0,
+            minutesSeconds: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                min: wrapErrorMessage(localized_errors.validation_offset_time_min),
+                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),
             }
         });
     });
@@ -710,6 +710,14 @@ function atLeastOneIsChecked(value, element, param) {
 
 function requireLetterDigitSpace(value, element, param) {
     r = new RegExp('^[\\w\\s]*$')
+    if (r.test(value)) {
+        return true;
+    }
+    return false;
+}
+
+function minutesSeconds(value, element, param) {
+    r = new RegExp('^([0-9]{1,4}|[0-9]{2,4}:[0-9]{1,2})$')
     if (r.test(value)) {
         return true;
     }
@@ -1089,6 +1097,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "requireLetterDigitSpace",
         requireLetterDigitSpace,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "minutesSeconds",
+        minutesSeconds,
         wrapErrorMessage(Error));
 
         

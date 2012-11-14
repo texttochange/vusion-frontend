@@ -12,7 +12,7 @@ var localized_errors = {
     validation_required_content: "<?php echo __("Required a message content.")?>",
     validation_required_letter_digit_space: "<?php echo __("Only letters, digits and spaces are allowed.")?>",
     validation_offset_days_min: "<?php echo __("Offset day is minimun 1 otherwise use offset-time.")?>",
-    validation_offset_time_min: "<?php echo __("Offset time minutes cannot be negative.")?>",
+    validation_offset_time_min: "<?php echo __("Offset time not valid, you can express only minutes '10' or minutes and seconds '00:30'.")?>",
     validation_number_min: "<?php echo __("Must be at least 1.")?>",
     validation_keyword_invalid_character_error: "<?php echo __(" has some invalid characters. Keywords must contain only numbers or letters separated by a comma.")?>",
     validation_keyword_blank_error: "<?php echo __("You cannot have a blank keyword.")?>",

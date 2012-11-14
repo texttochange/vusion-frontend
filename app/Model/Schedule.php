@@ -104,7 +104,7 @@ class Schedule extends MongoModel
                 }
             }
             elseif (isset($schedule['Schedule']['unattach-id'])) {
-                $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['unattach-id']);
+                $unattachedMessage = $this->UnattachedMessage->read(null, $schedule['Schedule']['unattach-id']);
                 if (isset($unattachedMessage['UnattachedMessage']['content']))
                     $schedule['Schedule']['content'] = '"'.$unattachedMessage['UnattachedMessage']['content'].'"';
             }
