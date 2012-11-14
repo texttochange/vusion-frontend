@@ -88,7 +88,7 @@
 			<?php if (isset($schedule['Schedule']['dialogue-id']) or isset($schedule['Schedule']['context']['dialogue-id']) ) { 
 			    echo $this->Html->tag('td', __('Dialogue'));
 			} elseif (isset($schedule['Schedule']['unattach-id'])) {
-			    echo $this->Html->tag('td', __('Separate Msg') or isset($schedule['Schedule']['context']));   
+			    echo $this->Html->tag('td', __('Separate Msg'));   
 			} else { ?>
 			    <td></td>
 			<?php } ?>
