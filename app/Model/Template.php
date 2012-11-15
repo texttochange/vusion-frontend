@@ -76,6 +76,8 @@ class Template extends MongoModel
 
     public function beforeValidate()
     {
+        parent::beforeValidate();
+        $this->data['Template']['template'] = trim($this->data['Template']['template'], ' \t\n\r\0\x0B');
         return true;
     }
 

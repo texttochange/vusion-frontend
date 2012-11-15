@@ -50,6 +50,21 @@ class TemplateTestCase extends CakeTestCase
     }
 
 
+    public function testSave_trimed()
+    {
+        $template = array(
+            'name'=>'my open template',
+            'type-template'=>'open-question',
+            'template' => ' \0QUESTION, SHORTCODE, ANSWER, KEYWORD\t\t\n'
+            );
+  
+        $this->Template->create();
+        $saveTemplate = $this->Template->save($template);
+        $this->assertEqual('QUESTION, SHORTCODE, ANSWER, KEYWORD', $saveTemplate['Template']['template']);
+
+    }   
+    
+
     public function testGetTemplateOptions()
     {
 
