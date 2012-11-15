@@ -116,7 +116,7 @@
 			    <?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
 			    <?php 
 			        $messageType = array('dialogue-history', 'request-history', 'unattach-history', 'unmatching-history');
-			        $markerType = array('datepassed-marker-history', 'oneway-marker-history');
+			        $markerType = array('datepassed-marker-history', 'oneway-marker-history', 'datepassed-action-marker-history');
 			        if (!isset($history['History']['object-type']) || in_array($history['History']['object-type'], $messageType)) { ?>
 			             <td><?php echo __(ucfirst($history['History']['message-direction'])); ?>&nbsp;</td>
 			             <td><?php 
@@ -137,7 +137,11 @@
 			                 echo __("One way marker on interaction <i>%s</i>", $history['History']['details']);
 			             } elseif ($history['History']['object-type'] == 'datepassed-marker-history') {
 			                 echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']); 
-			             } ?> 
+			             } elseif ($history['History']['object-type'] == 'datepassed-action-marker-history') {
+			                 echo __("Date passed marker on action <i>%s</i> scheduled at %s", 
+			                         $history['History']['action-type'], 
+			                         $this->Time->format('d/m/Y H:i:s', $history['History']['scheduled-date-time'])); 
+			             }?> 
 			             </td>
 	 		        <?php } else {?>
 	 		            <td><?php echo __("Error cannot display %s", $history['History']['object-type']); ?>&nbsp;</td>

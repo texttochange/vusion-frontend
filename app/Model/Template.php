@@ -76,6 +76,7 @@ class Template extends MongoModel
 
     public function beforeValidate()
     {
+        parent::beforeValidate();
         return true;
     }
 

@@ -22,6 +22,7 @@ class History extends MongoModel
    
     var $markerType = array(
         'datepassed-marker-history',
+        'datepassed-action-marker-history',
         'oneway-marker-history');
 
     function getModelVersion()
@@ -200,7 +201,7 @@ class History extends MongoModel
             if (!isset($history['History']['object-type'])) {
                 continue;
             }   
-            if (in_array($history['History']['object-type'], $this->markerType)) {
+            if (in_array($history['History']['object-type'], array('oneway-marker-history', 'datepassed-marker-history'))) {
                 if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
                     $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
                 } else {
