@@ -55,7 +55,7 @@ class TemplateTestCase extends CakeTestCase
         $template = array(
             'name'=>'my open template',
             'type-template'=>'open-question',
-            'template' => ' \0QUESTION, SHORTCODE, ANSWER, KEYWORD\t\t\n'
+            'template' => ' \tQUESTION, SHORTCODE, ANSWER, KEYWORD\t \t \n'
             );
   
         $this->Template->create();

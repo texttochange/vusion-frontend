@@ -95,9 +95,21 @@ class Interaction
             'answer-actions' => $actionsFct);
     }
 
+    public function trimArray($Input){
+ 
+        if (!is_array($Input)) {
+            if ($Input == null || $Input == ''){
+                return null;
+            }
+            return trim(stripcslashes($Input));
+        }
+        return array_map(array($this,'TrimArray'), $Input);
+    }
+
 
     public function beforeValidate($interaction)
     {
+        $interaction = $this->trimArray($interaction);
 
         $interaction['object-type'] = $this->modelName;        
         $interaction['model-version'] = $this->modelVersion;
@@ -207,7 +219,7 @@ class Interaction
                 $interaction['answers'] = array();                
             }
         }
-        
+            
         return $interaction;
     }
 

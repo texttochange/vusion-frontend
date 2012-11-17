@@ -29,8 +29,19 @@ class Action
 
     }
 
+    public function trimArray($Input){
+ 
+        if (!is_array($Input))
+            return trim(stripcslashes($Input));
+ 
+        return array_map(array($this,'TrimArray'), $Input);
+    }
+
     public function beforeValidate($action)
     {
+
+        $action = $this->trimArray($action);
+
         foreach($this->fields as $field) {
             if (!isset($action[$field])){
                 if (isset($action['type-answer-action'])) {
