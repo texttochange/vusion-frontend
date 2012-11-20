@@ -294,7 +294,8 @@ class ProgramParticipantsController extends AppController
                     if (strtolower($label) != 'phone') {
                         $participant['profile'][] = array(
                             'label' => $label, 
-                            'value' => trim(trim($explodeLine[$row]), '"'));
+                            'value' => trim(trim($explodeLine[$row]), '"'),
+                            'raw' => null);
                     }
                     $row++;
                 }
@@ -320,14 +321,19 @@ class ProgramParticipantsController extends AppController
         for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
             $headers[] = $data->val(1, $j);
         }
+        print_r($headers);
         for ( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
+            if ($data->val($i,'A')==null){
+                break;
+            }
             $this->Participant->create();
             $participant['phone'] = $data->val($i,'A');
             $col = 2;
             foreach ($headers as $header) {
                 $participant['profile'][] = array(
                     'label' => $header,
-                    'value' => $data->val($i,$col));
+                    'value' => $data->val($i,$col),
+                    'raw' => null);
             }
             //for view report
             $savedParticipant = $this->Participant->save($participant);
