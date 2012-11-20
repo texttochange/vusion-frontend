@@ -136,6 +136,8 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
+        $currentPage = $this->params['url']['current_page'];
+        print_r($this->params);
 
         if (isset($this->params['url']['include'])) {
             $include = $this->params['url']['include'];
@@ -166,7 +168,8 @@ class ProgramParticipantsController extends AppController
             );
             $this->redirect(
                 array('program' => $programUrl,
-                    'action' => 'index'
+                    'action' => 'index',
+                    'page' => $currentPage
                     )
                 );
         }
