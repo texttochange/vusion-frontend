@@ -2,8 +2,8 @@
     <ul class="ttc-actions">
         <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
         <?php $this->Js->get('#button-save')->event('click', '$("#ParticipantAddForm").submit()' , true);?>
-		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import')); ?></li>
-		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'));?></li>
+		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import'), array('class'=>'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'), array('class'=>'ttc-button'));?></li>
 	</ul>
 	<h3><?php echo __('Add Participant'); ?></h3>
 	<div class="ttc-display-area">

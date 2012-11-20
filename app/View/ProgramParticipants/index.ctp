@@ -66,7 +66,15 @@
 			<?php echo $this->Html->link(__('View'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); ?>
 			<?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
 			<?php echo $this->Html->link(__('Edit'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'edit', $participant['Participant']['_id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'delete', $participant['Participant']['_id']), null, __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
+			<?php echo $this->Form->postLink(
+			        __('Delete'), 
+			        array('program' => $programUrl,
+			            'controller' => 'programParticipants',
+			            'action' => 'delete',
+			            $participant['Participant']['_id'],
+			            '?' => array( 'current_page' => $this->Paginator->counter(array('format' => '{:page}')))),
+			        null,
+			        __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
 			<?php } ?>
 		</td>
 	</tr>
