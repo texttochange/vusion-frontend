@@ -136,9 +136,8 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
-        $currentPage = $this->params['url']['current_page'];
-        print_r($this->params);
-
+        $currentPage = (isset($this->params['url']['current_page'])) ? $this->params['url']['current_page'] : '1';
+        
         if (isset($this->params['url']['include'])) {
             $include = $this->params['url']['include'];
             echo $include;
