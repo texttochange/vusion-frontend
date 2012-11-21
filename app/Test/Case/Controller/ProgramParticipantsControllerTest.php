@@ -246,8 +246,145 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->vars['entries'][2]
             );
     }
-    
-    
+
+
+   public function testImport_csv_emptyColumn() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/empty_column.csv',
+                            'name' => 'empty_column.csv'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals(isset($participants[0]['Participant']['profile'][0]), false);
+        $this->assertEquals(isset($participants[1]['Participant']['profile'][0]), true);
+    }
+
+
+    public function testImport_csv_noLabelOneColumn_ok() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/no_label_one_column.csv',
+                            'name' => 'no_label_one_column.csv'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+    public function testImport_csv_noLabelTwoColumns_fail() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/no_label_two_columns.csv',
+                            'name' => 'no_label_two_columns.csv'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(0, count($participants));
+    }
+
+
+    public function testImport_csv_labelwrongline() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/label_wrong_line.csv',
+                            'name' => 'label_wrong_line.csv'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+
     public function testImport_xls_duplicate() 
     {
         $participants = $this->mock_program_access();
@@ -277,8 +414,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Import'=> array(
                         'file' => array(
                             'error' => 0,
-                            'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
-                            'name' => 'wellformattedparticipants.xls'
+                            'tmp_name' => TESTS . 'files/well_formatted_participants.xls',
+                            'name' => 'well_formatted_participants.xls'
                             )
                         )
                     )
@@ -301,7 +438,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testImport_xls() 
+    public function testImport_xls_wellFromated() 
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
 
@@ -322,8 +459,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Import'=> array(
                         'file' => array(
                             'error' => 0,
-                            'tmp_name' => TESTS . 'files/wellformattedparticipants.xls',
-                            'name' => 'wellformattedparticipants.xls'
+                            'tmp_name' => TESTS . 'files/well_formatted_participants.xls',
+                            'name' => 'well_formatted_participants.xls'
                             )
                         )
                     )
@@ -334,8 +471,150 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(2, count($participants));
         $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
         $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['raw'], '');  
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'Age');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '33');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['raw'], '');
     }
-    
+ 
+
+    public function testImport_xls_emptyColumn() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/empty_column.xls',
+                            'name' => 'empty_column.xls'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals(isset($participants[0]['Participant']['profile'][0]), false);
+        $this->assertEquals(isset($participants[1]['Participant']['profile'][0]), true);
+    }
+
+
+    public function testImport_xls_noLabelOneColumn_ok() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/no_label_one_column.xls',
+                            'name' => 'no_label_one_column.xls'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+
+    public function testImport_xls_noLabelTwoColumns_fail() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/no_label_two_columns.xls',
+                            'name' => 'no_label_two_columns.xls'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(0, count($participants));
+    }
+
+
+    public function testImport_xls_labelwrongline() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+            
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/label_wrong_line.xls',
+                            'name' => 'label_wrong_line.xls'
+                            )
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
 
     public function testDeleteParticipant()
     {
@@ -391,7 +670,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $this->History->create('dialogue-history');
         $this->History->save($historyToBeDeleted);
-            
+        
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']."?include=history");
         
         $this->assertEquals(
@@ -488,5 +767,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->Schedule->find('count')
             );
     }
+
 
 }

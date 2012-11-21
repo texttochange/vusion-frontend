@@ -140,7 +140,6 @@ class ProgramParticipantsController extends AppController
         
         if (isset($this->params['url']['include'])) {
             $include = $this->params['url']['include'];
-            echo $include;
         }
 
         if (!$this->request->is('post')) {
@@ -276,30 +275,47 @@ class ProgramParticipantsController extends AppController
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
         $entries              = array();
         $count                = 0;
+        $hasHeaders           = false;
         $headers              = array();
         
 
         while (!feof($importedParticipants)) { 
             $entries[] = fgets($importedParticipants);
             if ($count == 0) {
-                   $headers = explode(",", $entries[$count]); 
+                   $headers = explode(",", $entries[$count]);
+                   if (strcasecmp(trim(trim($headers[0],'"')), 'phone') ==0) {
+                       $hasHeaders = true;
+                       $count++;
+                       continue;
+                   } else {
+                       if (count($headers) > 1) {
+                            $this->Session->setFlash(__("The file cannot be imported. The first line should be label names, the first label must be 'phone'."), 
+                                'default',
+                                array('class' => "message failure")
+                                );
+                           return;
+                       }
+                   }
             }
-            if ($count > 0 && $entries[$count]) {
+            if ($entries[$count]) {
                 $this->Participant->create();
                 $participant          = array();
-                $explodeLine          = explode(",", $entries[$count]);
-                $participant['phone'] = $explodeLine[0];
-                $row = 0;
+                $explodeLine          = explode(',', $entries[$count]);
+                $participant['phone'] = trim(trim($explodeLine[0]), '"');
+                $col = 0;
                 foreach ($headers as $label) {
-                    $label = trim($label);
-                    $label = trim($label, '"');
+                    $label = trim(trim($label), '"');
+                    $value = trim(trim($explodeLine[$col]), '"');
+                    if ($value == '') {
+                        continue;
+                    }
                     if (strtolower($label) != 'phone') {
                         $participant['profile'][] = array(
                             'label' => $label, 
-                            'value' => trim(trim($explodeLine[$row]), '"'),
+                            'value' => $value,
                             'raw' => null);
                     }
-                    $row++;
+                    $col++;
                 }
                 $savedParticipant = $this->Participant->save($participant);
                 if ($savedParticipant) {
@@ -320,11 +336,25 @@ class ProgramParticipantsController extends AppController
     {
         $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
-        for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
-            $headers[] = $data->val(1, $j);
+        $hasLabels = false;
+        if (strcasecmp('phone', $data->val(1,'A')) == 0) {
+            $hasLabels = true;
+            for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
+                if ($data->val(1, $j)==null){
+                    break;
+                }
+                $headers[] = $data->val(1, $j);
+            }
+        } else {
+            if ($data->val(1, 'B')!=null){
+                $this->Session->setFlash(__("The file cannot be imported. The first line should be label names, the first label must be 'phone'."), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+                return;
+            } 
         }
-        print_r($headers);
-        for ( $i = 2; $i <= $data->rowcount($sheet_index=0); $i++) {
+        for ( $i = ($hasLabels) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
             if ($data->val($i,'A')==null){
                 break;
             }
@@ -332,10 +362,13 @@ class ProgramParticipantsController extends AppController
             $participant['phone'] = $data->val($i,'A');
             $col = 2;
             foreach ($headers as $header) {
+                if ($data->val($i,$col)==null) 
+                    continue;
                 $participant['profile'][] = array(
                     'label' => $header,
                     'value' => $data->val($i,$col),
                     'raw' => null);
+                $col++;
             }
             //for view report
             $savedParticipant = $this->Participant->save($participant);

@@ -16,10 +16,12 @@
 
 	<div>
 	   <?php 
-	   if (isset($entries)) {
+	   if (isset($entries) && is_array($entries)) {
 	       foreach($entries as $entry){ 
 	           echo $entry."<br />";
 	       }
+	   } else {
+	       echo "$entries";
 	   }
 	   ?>
 	</div>
