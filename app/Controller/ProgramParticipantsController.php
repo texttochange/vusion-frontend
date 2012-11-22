@@ -41,8 +41,71 @@ class ProgramParticipantsController extends AppController
     
     public function index() 
     {
+        $this->set('filterFieldOptions', $this->Participant->fieldFilters);
+        $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $this->set('filterDialogueConditionsOptions', $dialoguesContent);
+     
+        $paginate = array('all');
+
+        if (isset($this->params['named']['sort'])) {
+            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
+        $conditions = $this->_getConditions();
+        if ($conditions != null) {
+            $paginate['conditions'] = $conditions;
+        }
+  
+        $this->paginate = $paginate;
         $participants = $this->paginate();
-        $this->set(compact('participants'));        
+        $this->set(compact('participants')); 
+    }
+
+    protected function _getConditions()
+    {
+        $conditions = null;
+        
+        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
+
+        if (!isset($onlyFilterParams['filter_param'])) 
+            return $conditions;
+       
+        $urlParams = http_build_query($onlyFilterParams);
+        $this->set('urlParams', $urlParams);
+        
+        foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
+            if ($onlyFilterParam[1] == 'enrolled' && isset($onlyFilterParam[2])) {
+                $conditions['enrolled.dialogue-id'] = $onlyFilterParam[2];
+            } elseif ($onlyFilterParam[1] == 'optin') { 
+                $conditions['session-id'] = array('$ne' => null);
+            } elseif ($onlyFilterParam[1] == 'phone' && isset($onlyFilterParam[2])) {
+                $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
+                if ($phoneNumbers) {
+                    if (count($phoneNumbers) > 1) {
+                        $or = array();
+                        foreach ($phoneNumbers as $phoneNumber) {
+                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                            $or[] = array('phone' => $regex);
+                        }
+                        $conditions['$or'] = $or;
+                    } else {
+                        $conditions['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                    }
+                }
+            } elseif ($onlyFilterParam[1]=='tag' && isset($onlyFilterParam[2])) {
+                $conditions['tags'] = $onlyFilterParam[2];
+            } elseif ($onlyFilterParam[1] == 'label' && isset($onlyFilterParam[2]) && isset($onlyFilterParam[3])) {
+                $conditions['profile.label'] = $onlyFilterParam[2];
+                $conditions['profile.value'] = $onlyFilterParam[3];
+            } else {
+                $this->Session->setFlash(__('The parameter(s) for "%s" filtering are missing.',$onlyFilterParam[1]), 
+                'default',
+                array('class' => "message failure")
+                );
+            }
+        }
+        
+        return $conditions;
     }
 
 
@@ -167,7 +230,8 @@ class ProgramParticipantsController extends AppController
             $this->redirect(
                 array('program' => $programUrl,
                     'action' => 'index',
-                    'page' => $currentPage
+                    'page' => $currentPage,
+                    '?' => $this->params['url'],
                     )
                 );
         }
@@ -178,7 +242,8 @@ class ProgramParticipantsController extends AppController
         $this->redirect(
             array(
                 'program' => $programUrl,
-                'action' => 'index'
+                'action' => 'index',
+                'page' => $currentPage,
                 )
             );
     }

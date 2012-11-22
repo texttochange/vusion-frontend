@@ -141,11 +141,11 @@ class ProgramHistoryController extends AppController
                     if ($onlyFilterParam[3]!='all')
                         $conditions['interaction-id'] = $onlyFilterParam[3];
                 }
-            } elseif ($onlyFilterParam[1] == 'date-from') { 
+            } elseif ($onlyFilterParam[1] == 'date-from' && isset($onlyFilterParam[2])) { 
                 $conditions['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1] == 'date-to') {
+            } elseif ($onlyFilterParam[1] == 'date-to' && isset($onlyFilterParam[2])) {
                 $conditions['timestamp']['$lt'] = $this->dialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1] == 'participant-phone') {
+            } elseif ($onlyFilterParam[1] == 'participant-phone' && isset($onlyFilterParam[2])) {
                 $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
                 if ($phoneNumbers) {
                     if (count($phoneNumbers) > 1) {
@@ -162,12 +162,12 @@ class ProgramHistoryController extends AppController
             } elseif ($onlyFilterParam[1]=='non-matching-answers') {
                 $conditions['message-direction'] = 'incoming';
                 $conditions['matching-answer'] = null;
-            } elseif ($onlyFilterParam[1] == 'message-content') {
+            } elseif ($onlyFilterParam[1] == 'message-content' && isset($onlyFilterParam[2])) {
                 $conditions['message-content'] = new MongoRegex("/".$onlyFilterParam[2]."/i");
             } elseif ($onlyFilterParam[1] == 'message-direction' or $onlyFilterParam[1] == 'message-status') {
                 $conditions[$onlyFilterParam[1]] = $onlyFilterParam[2];
             } else {
-                $this->Session->setFlash(__('The filter "%s" is not supported.',$onlyFilterParam[1]), 
+                $this->Session->setFlash(__('The parameter(s) for filter "%s" is not provided.',$onlyFilterParam[1]), 
                 'default',
                 array('class' => "message failure")
                 );
