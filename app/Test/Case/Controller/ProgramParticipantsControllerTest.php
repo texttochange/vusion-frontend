@@ -769,4 +769,95 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
 
 
+    public function testIndex_filter()
+    {
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+26',
+            'session-id' => '1',
+            'last-optin-date' => '2012-12-01T18:30:10',
+            'enrolled' => array(),
+            'tags' => array('Geek'),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'male',
+                'raw' => null))
+            ));
+
+        $savedParticipant['Participant']['enrolled'] = array(
+                'dialogue-id' => '1',
+                'date-time'=> '2012-12-01T18:30:10');
+        $this->Participant->save($savedParticipant);
+
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+27',
+            'session-id' => null,
+            'last-optin-date' => null,
+            'enrolled' => array(array(
+                'dialogue-id' => '1',
+                'date-time'=> '2012-12-01T18:30:10')),
+            'tags' => array('Geek'),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'male',
+                'raw' => null))
+            ));
+
+        $savedParticipant['Participant']['session-id'] = null;
+        $savedParticipant['Participant']['last-optin-date'] = null;
+        $savedParticipant['Participant']['enrolled'] = array(
+            'dialogue-id' => '1',
+            'date-time'=> '2012-12-01T18:30:10');    
+        $this->Participant->save($savedParticipant);
+
+        $this->Participant->create();
+        $this->Participant->save(array(
+            'phone' => '+28',
+            'session-id' => '2',
+            'last-optin-date' => '2012-12-01T18:30:10',
+            'enrolled' => array(),
+            'tags' => array('Super Geek'),
+            'profile' => array()
+            ));
+
+        $this->Participant->create();
+        $this->Participant->save(array(
+            'phone' => '+29',
+            'session-id' => '3',
+            'last-optin-date' => '2012-12-01T18:30:10',
+            'enrolled' => array(),
+            'tags' => array(),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'female',
+                'raw' => null))
+            ));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=%2B2");
+        $this->assertEquals(4, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=%2B27");
+        $this->assertEquals(1, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=optin");
+        $this->assertEquals(3, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=enrolled&filter_param%5B1%5D%5B2%5D=1");
+        $this->assertEquals(2, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=tag&filter_param%5B1%5D%5B2%5D=Geek");
+        $this->assertEquals(2, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=label&filter_param%5B1%5D%5B2%5D=gender&filter_param%5B1%5D%5B3%5D=female");
+        $this->assertEquals(1, count($this->vars['participants']));
+
+    }
+
 }

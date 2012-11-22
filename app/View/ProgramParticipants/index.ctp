@@ -7,9 +7,50 @@
 		<li><?php echo $this->Html->link(__('Import Participant(s)'), 
 		                                array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import'),
 		                                array('class' => 'ttc-button')); ?></li>
-	</ul>
+		<li><?php echo $this->Html->tag('span', 
+		                                __('Add Filter'), 
+		                                array('class' => 'ttc-button', 'name' => 'add-filter')); 
+		          $this->Js->get('[name=add-filter]')->event('click',
+		              '$("#advanced_filter_form").show();
+		              addStackFilter();');
+		?> </li>
+		</ul>
 	<?php } ?>
 	<h3><?php echo __('Participants'); ?></h3>
+	<?php
+	   $this->Js->set('myOptions', $filterFieldOptions);
+	   $this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
+	   echo $this->Form->create('Participant', array('type'=>'get', 
+	                                               'url'=>array('program'=>$programUrl, 'controller' => 'programParticipants', 'action'=>'index'), 
+	                                               'id' => 'advanced_filter_form', 
+	                                               'class' => 'ttc-advanced-filter'));
+	   if (isset($this->params['url']['filter_param'])) {
+	       $this->Js->get('document')->event('ready','
+	           $("#quick_filter_form").hide();
+	           $("#advanced_filter_form").show();
+	           ');
+	       $count = 1;
+	       foreach ($this->params['url']['filter_param'] as $filter) {
+	           $thirdDrop = (isset($filter[3]) ? '$("select[name=\'filter_param['.$count.'][3]\']").val("'.$filter[3].'").children("option[value='.$filter[3].']").click();' : '');
+	           $this->Js->get('document')->event('ready',
+	               'addStackFilter();
+	               $("select[name=\'filter_param['.$count.'][1]\']").val("'.$filter[1].'").children("option[value=\''.$filter[1].'\']").click();
+	               if ($("input[name=\'filter_param['.$count.'][2]\']").length > 0) {
+	               $("input[name=\'filter_param['.$count.'][2]\']").val("'.(isset($filter[2])? $filter[2]:'').'");
+	               } else {
+	               $("select[name=\'filter_param['.$count.'][2]\']").val("'.(isset($filter[2])? $filter[2]:'').'").children("option[value='.(isset($filter[2])? $filter[2]:'').']").click();
+	               '. $thirdDrop .'
+	               }',
+	               true);
+	           $count++;
+	       }	  
+	   }
+       echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       
+       $this->Js->get('#advanced_filter_form')->event(
+           'submit',
+           '$(":input[value=\"\"]").attr("disabled", true);
+           return true;');
+	?>
 	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
@@ -66,13 +107,15 @@
 			<?php echo $this->Html->link(__('View'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); ?>
 			<?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
 			<?php echo $this->Html->link(__('Edit'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'edit', $participant['Participant']['_id'])); ?>
-			<?php echo $this->Form->postLink(
+			<?php 
+			     $queryParams = $this->params['url'] + array( 'current_page' => $this->Paginator->counter(array('format' => '{:page}')));
+			     echo $this->Form->postLink(
 			        __('Delete'), 
 			        array('program' => $programUrl,
 			            'controller' => 'programParticipants',
 			            'action' => 'delete',
 			            $participant['Participant']['_id'],
-			            '?' => array( 'current_page' => $this->Paginator->counter(array('format' => '{:page}')))),
+			            '?' => $queryParams),
 			        null,
 			        __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
 			<?php } ?>
@@ -89,9 +132,9 @@
 	        'format' => __('{:start} - {:end} of {:count}')
 	    ));
 	    echo "</span>";
-		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl)), null, array('class' => 'prev disabled'));
+		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
 		//echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl)));
-		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl)), null, array('class' => 'next disabled'));
+		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
 	?>
 	</div>
 	

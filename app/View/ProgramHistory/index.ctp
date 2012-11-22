@@ -33,15 +33,27 @@
 	            ');
 		    ?>
 		</li>
+		<li>
+		    <?php
+		    echo $this->Html->tag('span', 
+		        __('Add Filter'), 
+		        array('class' => 'ttc-button', 'name' => 'add-filter')); 
+		    $this->Js->get('[name=add-filter]')->event('click',
+		        '$("#advanced_filter_form").show();
+		        $("#quick_filter_form").hide()
+		        addStackFilter();');
+		    ?>
+		</li>
 	</ul>
     <h3><?php echo __('Program History'); ?></h3>	
-   <div class="ttc-filter">
+   <div id="quick_filter_form" class="ttc-filter">
         <?php
 	   echo $this->Form->create(null);
 	   echo $this->Html->tag('span', 'Advanced Filter', array('id'=>'advFilter', 'class'=>'ttc-action-link'));
 	   $this->Js->get('#advFilter')->event('click',
-	       '$(".ttc-filter").hide();
-	       $("#advanced_filter_form").show(hasNoStackFilter());');
+	       '$("#quick_filter_form").hide();
+	       $("#advanced_filter_form").show();
+	       hasNoStackFilter();');
 	   echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 	   $options = array(); 
 	   $options['non-matching-answers'] = __("Non matching answers");
@@ -52,8 +64,8 @@
 	           $this->Js->get('document')->event('ready','$("#quick-filter").val("'.$this->params['url']['filter_param'][$index[0]][1].'")');
 	       } else {
 	           $this->Js->get('document')->event('ready','
-	               $(".ttc-filter").hide();
-	               $("#advanced_filter_form").show(hasNoStackFilter());
+	               $("#quick_filter_form").hide();
+	               $("#advanced_filter_form").show();
 	               ');
 	           $count = 1;
                foreach ($this->params['url']['filter_param'] as $filter) {
@@ -71,7 +83,7 @@
                    $count++;
                }	           
 	       }   
-	   } else { 
+	   } else {
 	       	echo $this->Form->select('filter', $options, array('id'=> 'quick-filter', 'empty' => 'Quick Filter...'));
 	   }
 	   $this->Js->get('#quick-filter')->event('change', '
@@ -94,14 +106,14 @@
        echo $this->Html->tag('span', 'Hide', array('id'=>'hideAdvFilter', 'class'=>'ttc-action-link', 'style'=>'float:right'));
        echo $this->Form->create('History', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index')));
      
-       echo $this->Form->end(array("label" => "Filter"));       
+       echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       
        $this->Js->get('#advanced_filter_form')->event('submit','
            $(":input[value=\"\"]").attr("disabled", true);
            return true;
            ');
        $this->Js->get('#hideAdvFilter')->event(
 	    'click','
-	    $(".ttc-filter").show();
+	    $("#quick_filter_form").show();
 	    $("#advanced_filter_form").hide();
 	    ');
    ?>
@@ -145,9 +157,7 @@
 	    ));
 	    echo "</span>";
 		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'prev disabled'));
-		//echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl, '?'=>$this->params['url'])));
-		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'next disabled'));
-		//echo $this->Paginator->next(__('last') . ' >|', array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'next disabled'));
+		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'next disabled'));		
 	?>
     </div>
 </div>	
