@@ -106,9 +106,12 @@ class Participant extends MongoModel
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             if ($programNow==null)
                 return false;
-            $this->data['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
-            $this->data['Participant']['session-id'] = $this->gen_uuid();
-            $this->data['Participant']['tags'] = array();
+            $lastOptinDate = (isset($this->data['Participant']['last-optin-date'])) ? $this->data['Participant']['last-optin-date'] : $programNow->format("Y-m-d\TH:i:s"); 
+            $this->data['Participant']['last-optin-date'] = $lastOptinDate;
+            $sessionId = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
+            $this->data['Participant']['session-id'] = $sessionId;
+            $tags = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
+            $this->data['Participant']['tags'] = $tags;
             $condition = array('condition' => array('auto-enrollment'=>'all'));
             $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
             if ($autoEnrollDialogues == null)

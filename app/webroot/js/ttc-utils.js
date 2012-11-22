@@ -403,7 +403,6 @@ function removeStackFilter(){
 	    $('#advanced_filter_form').hide();
 	    $('#quick_filter_form').show();
 	}
-	//hasNoStackFilter();
 }
 
 function hasNoStackFilter(){
@@ -444,6 +443,9 @@ function supplyConditionOptions(elt){
 	case "participant-phone":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
+	case "phone":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+	    break;
 	case "message-content":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
@@ -452,8 +454,21 @@ function supplyConditionOptions(elt){
 	    $("[name='"+name+"[2]']").on('click', { filterPrefix: name}, generateDropdown);
         $.each(window.app.dialogueConditionOptions, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        })
+        });
         break;
+    case "enrolled":
+        $(elt).after("<select name='"+name+"[2]'></select>");
+        $.each(window.app.dialogueConditionOptions, function(key, value){
+                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
+        });
+	    break;
+	case "tag":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+	    break;
+	case "label":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+        $(elt).after("<input name='"+name+"[3]'></input>");
+	    break;
     }
 }
 
