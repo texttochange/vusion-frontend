@@ -31,15 +31,15 @@
 	           ');
 	       $count = 1;
 	       foreach ($this->params['url']['filter_param'] as $filter) {
-	           $thirdDrop = (isset($filter[3]) ? '$("select[name=\'filter_param['.$count.'][3]\']").val("'.$filter[3].'").children("option[value='.$filter[3].']").click();' : '');
+	           $thirdParam = (isset($filter[3]) ? '$("input[name=\'filter_param['.$count.'][3]\']").val("'.$filter[3].'");' : '');
 	           $this->Js->get('document')->event('ready',
 	               'addStackFilter();
 	               $("select[name=\'filter_param['.$count.'][1]\']").val("'.$filter[1].'").children("option[value=\''.$filter[1].'\']").click();
 	               if ($("input[name=\'filter_param['.$count.'][2]\']").length > 0) {
 	               $("input[name=\'filter_param['.$count.'][2]\']").val("'.(isset($filter[2])? $filter[2]:'').'");
+	               '.$thirdParam.'
 	               } else {
 	               $("select[name=\'filter_param['.$count.'][2]\']").val("'.(isset($filter[2])? $filter[2]:'').'").children("option[value='.(isset($filter[2])? $filter[2]:'').']").click();
-	               '. $thirdDrop .'
 	               }',
 	               true);
 	           $count++;
@@ -61,6 +61,11 @@
 	    <th><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programUrl))); ?></th>
 	<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
+	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $participants == null) { ?>
+	    <tr>
+	        <td colspan=6><?php echo __("No results found.") ?></td>
+	    </tr>
+	<?php } else {?>   
 	<?php foreach ($participants as $participant): ?>
 	<tr>
 	    <td><?php echo $participant['Participant']['phone']; ?></td>
@@ -122,6 +127,7 @@
 		</td>
 	</tr>
     <?php endforeach; ?>
+    <?php } ?>
 	</table>
 	</div>
 

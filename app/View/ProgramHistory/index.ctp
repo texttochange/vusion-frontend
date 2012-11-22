@@ -131,7 +131,7 @@
 	</tr>
 	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $statuses == null) { ?>
 	    <tr>
-	        <td colspan=6>No results found</td>
+	        <td colspan=6><?php echo __("No results found.") ?></td>
 	    </tr>
 	<?php } else {?>    
 	<?php

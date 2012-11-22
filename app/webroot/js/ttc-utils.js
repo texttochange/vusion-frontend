@@ -466,8 +466,8 @@ function supplyConditionOptions(elt){
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
 	case "label":
-        $(elt).after("<input name='"+name+"[2]'></input>");
         $(elt).after("<input name='"+name+"[3]'></input>");
+        $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
     }
 }

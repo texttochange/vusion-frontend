@@ -42,12 +42,8 @@ class ProgramParticipantsController extends AppController
     public function index() 
     {
         $this->set('filterFieldOptions', $this->Participant->fieldFilters);
-        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-        foreach($dialoguesInteractionsContent as &$dialogue) {
-            $dialogue['interactions'] = array('all'=> __('All'))+$dialogue['interactions']; 
-        }
-        $dialoguesInteractionsContent = array('all'=> array('name' => __('All'))) + $dialoguesInteractionsContent;
-        $this->set('filterDialogueConditionsOptions', $dialoguesInteractionsContent);
+        $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $this->set('filterDialogueConditionsOptions', $dialoguesContent);
      
         $paginate = array('all');
 
@@ -67,10 +63,12 @@ class ProgramParticipantsController extends AppController
 
     protected function _getConditions()
     {
+        $conditions = null;
+        
         $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
 
         if (!isset($onlyFilterParams['filter_param'])) 
-            return null;
+            return $conditions;
        
         $urlParams = http_build_query($onlyFilterParams);
         $this->set('urlParams', $urlParams);
@@ -100,7 +98,7 @@ class ProgramParticipantsController extends AppController
                 $conditions['profile.label'] = $onlyFilterParam[2];
                 $conditions['profile.value'] = $onlyFilterParam[3];
             } else {
-                $this->Session->setFlash(__('The filter "%s" is not supported.',$onlyFilterParam[1]), 
+                $this->Session->setFlash(__('The parameter(s) for "%s" filtering are missing.',$onlyFilterParam[1]), 
                 'default',
                 array('class' => "message failure")
                 );
