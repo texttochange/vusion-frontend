@@ -11,15 +11,20 @@
 		                                __('Add Filter'), 
 		                                array('class' => 'ttc-button', 'name' => 'add-filter')); 
 		          $this->Js->get('[name=add-filter]')->event('click',
-		              '$("#advanced_filter_form").show(hasNoStackFilter());');
+		              '$("#advanced_filter_form").show();
+		              addStackFilter();');
 		          $this->Js->set('myOptions', $filterFieldOptions);
 		?> </li>
 		</ul>
 	<?php } ?>
 	<h3><?php echo __('Participants'); ?></h3>
 	<?php
-	   echo $this->Form->create('Participant', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index'), 'id' => 'advanced_filter_form', 'class' => 'ttc-advance-filter'));
-       echo $this->Form->end(array('label' => 'Filter'));       
+	   echo $this->Form->create('Participant', array('type'=>'get', 
+	                                               'url'=>array('program'=>$programUrl, 'action'=>'index'), 
+	                                               'id' => 'advanced_filter_form', 
+	                                               'class' => 'ttc-advanced-filter',
+	                                               'style' => 'display: none;'));
+       echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       
        $this->Js->get('#advanced_filter_form')->event(
            'submit',
            '$(":input[value=\"\"]").attr("disabled", true);

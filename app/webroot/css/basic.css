@@ -35,6 +35,7 @@
 
 .ttc-button{
 	font-weight:normal;
+	font-size: 14px;
 	padding: 4px 8px;
 	background: #dcdcdc;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#dcdcdc));
@@ -65,6 +66,7 @@
 	text-decoration: none;
 	cursor: pointer;
 }
+
 
 .ui-dform-legend {
 	color : gray;
@@ -149,7 +151,7 @@
 
 .ttc-actions {
     float: right;
-    padding: 3px 0px 3px 3px;
+    padding: 7px 0px 3px 3px;
     margin-top: -8px;
     margin-left: 0;
     margin-right: -25px;
@@ -166,10 +168,14 @@
     border: 1px solid #BBBBBB;
    /* border-radius: 4px 4px 4px 4px; */    
   /*  padding: 4px 8px; */
-    display: block;
+  /*  display: block; */
     background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
     text-decoration: none;
     font-weight: normal;
+}
+
+.ttc-actions li select{
+    margin-top: -5px;
 }
 
 .ttc-actions form{
@@ -585,32 +591,33 @@
     display: none;
 }
 
-.ttc-advanced-filter input{
+.ttc-stack-filter input{
     font-size: 90%;
     width: 50%;
     padding: 0.5%;
     height: 9px;
 }
 
-.ttc-advanced-filter div{
-    margin-bottom: 2px;
-    padding: 0.2em;
+
+.ttc-filter-submit {
+    font-size : 13px;
+    padding: 4px;
+    width: 60px;
+    margin: 0px;
+    padding-left: 0px;
 }
 
-.ttc-advanced-filter input[type="submit"]{
-	width: 60px;
-}
 
-.ttc-advanced-filter div.submit {
-	margin: 0;
-	padding-left: 0;
+.ttc-advanced-filter .submit {
+    margin-top: -7px;
+    margin-left: -7px;
+    margin-bottom: 5px;
 }
 
 .ttc-advanced-filter form{
 	width: 90%;
 	float: left;
 	clear: none;
-	padding-bottom: 10px;
 }
 
 .ttc-action-link {
@@ -670,8 +677,11 @@
 
 .ttc-stack-filter {
 	background: #FFCB4B;
-	border: 1px solid grey;
+	border: 1px dashed grey;
+	margin-bottom: 2px;
+	padding: 3px;
 }
+
 
 .ttc-stack-filter select{
 	margin-right: 3px;
