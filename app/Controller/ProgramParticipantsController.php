@@ -76,11 +76,11 @@ class ProgramParticipantsController extends AppController
         $this->set('urlParams', $urlParams);
         
         foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
-            if ($onlyFilterParam[1] == 'enrolled') {
+            if ($onlyFilterParam[1] == 'enrolled' && isset($onlyFilterParam[2])) {
                 $conditions['enrolled.dialogue-id'] = $onlyFilterParam[2];
             } elseif ($onlyFilterParam[1] == 'optin') { 
                 $conditions['session-id'] = array('$ne' => null);
-            } elseif ($onlyFilterParam[1] == 'phone') {
+            } elseif ($onlyFilterParam[1] == 'phone' && isset($onlyFilterParam[2])) {
                 $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
                 if ($phoneNumbers) {
                     if (count($phoneNumbers) > 1) {
@@ -94,9 +94,9 @@ class ProgramParticipantsController extends AppController
                         $conditions['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
                     }
                 }
-            } elseif ($onlyFilterParam[1]=='tag') {
+            } elseif ($onlyFilterParam[1]=='tag' && isset($onlyFilterParam[2])) {
                 $conditions['tags'] = $onlyFilterParam[2];
-            } elseif ($onlyFilterParam[1] == 'label') {
+            } elseif ($onlyFilterParam[1] == 'label' && isset($onlyFilterParam[2]) && isset($onlyFilterParam[3])) {
                 $conditions['profile.label'] = $onlyFilterParam[2];
                 $conditions['profile.value'] = $onlyFilterParam[3];
             } else {
