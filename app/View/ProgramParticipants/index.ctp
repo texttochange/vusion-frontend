@@ -7,9 +7,24 @@
 		<li><?php echo $this->Html->link(__('Import Participant(s)'), 
 		                                array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import'),
 		                                array('class' => 'ttc-button')); ?></li>
-	</ul>
+		<li><?php echo $this->Html->tag('span', 
+		                                __('Add Filter'), 
+		                                array('class' => 'ttc-button', 'name' => 'add-filter')); 
+		          $this->Js->get('[name=add-filter]')->event('click',
+		              '$("#advanced_filter_form").show(hasNoStackFilter());');
+		          $this->Js->set('myOptions', $filterFieldOptions);
+		?> </li>
+		</ul>
 	<?php } ?>
 	<h3><?php echo __('Participants'); ?></h3>
+	<?php
+	   echo $this->Form->create('Participant', array('type'=>'get', 'url'=>array('program'=>$programUrl, 'action'=>'index'), 'id' => 'advanced_filter_form', 'class' => 'ttc-advance-filter'));
+       echo $this->Form->end(array('label' => 'Filter'));       
+       $this->Js->get('#advanced_filter_form')->event(
+           'submit',
+           '$(":input[value=\"\"]").attr("disabled", true);
+           return true;');
+	?>
 	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>

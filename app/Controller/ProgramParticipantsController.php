@@ -41,8 +41,10 @@ class ProgramParticipantsController extends AppController
     
     public function index() 
     {
+        $this->set('filterFieldOptions', $this->Participant->fieldFilters);
+        
         $participants = $this->paginate();
-        $this->set(compact('participants'));        
+        $this->set(compact('participants')); 
     }
 
 

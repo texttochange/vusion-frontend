@@ -29,6 +29,14 @@ class Participant extends MongoModel
             'profile',
             );
     }
+
+    public $fieldFilters = array(
+        'phone' => 'phone',
+        'optin' => 'optin',
+        'enrolled' => 'enrolled',
+        'tag'=>'tag',
+        'label'=>'label',
+    );
     
     public function __construct($id = false, $table = null, $ds = null)
     {
