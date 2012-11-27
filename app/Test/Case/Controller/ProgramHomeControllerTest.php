@@ -179,28 +179,30 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->Home->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
         
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $timeNow = $this->ProgramSetting->getProgramTimeNow();
         
+        $timeToSend = $timeNow->modify("+6 hour");
         $unattachedMessage = array(
             'type-schedule' => 'fixed-time',
-            'fixed-time' => '12/06/2021 12:30',
+            'fixed-time' => $timeToSend->format('d/m/Y H:i'),
             'content' => 'Hello',
             'name' => 'test',
             'to' => 'all participant'
             );        
-
+       
         $this->Home->UnattachedMessage->create();
         $savedUnattachMessage = $this->Home->UnattachedMessage->save($unattachedMessage);
  
         $schedules = array(
             array(
                 'object-type' => 'dialogue-schedule',
-                'date-time' => '2021-06-12T12:30',
+                'date-time' => $timeToSend->format(DateTime::ISO8601),
                 'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
                 'interaction-id' => $savedDialogue['Dialogue']['interactions'][0]['interaction-id'],
                 ),
             array(
                 'object-type' => 'unattach-schedule',
-                'date-time' => '2021-06-12T12:30',
+                'date-time' => $timeToSend->format(DateTime::ISO8601),
                 'unattach-id' => $savedUnattachMessage['UnattachedMessage']['_id'],
                 )
             );

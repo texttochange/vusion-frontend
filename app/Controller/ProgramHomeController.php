@@ -7,6 +7,7 @@ App::uses('Dialogue', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
+App::uses('ProgramSetting', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
@@ -31,6 +32,7 @@ class ProgramHomeController extends AppController
         $this->Schedule          = new Schedule($options);
         $this->Dialogue          = new Dialogue($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting   = new ProgramSetting($options);
 
         $this->VumiRabbitMQ = new VumiRabbitMQ(
             Configure::read('vusion.rabbitmq')
@@ -55,9 +57,11 @@ class ProgramHomeController extends AppController
                 
         $activeInteractions = $this->Dialogue->getActiveInteractions();
 
-        $conditions = array('object-type'=>'dialogue-schedule');
+        $timeNow = $this->ProgramSetting->getProgramTimeNow();
+        if (isset($timeNow)) 
+            $timeNow->modify('+1 day');
         $schedules = $this->Schedule->generateSchedule(
-                                    $this->Schedule->summary($conditions),
+                                    $this->Schedule->summary($timeNow),
                                     $activeInteractions
                                 );
                 
