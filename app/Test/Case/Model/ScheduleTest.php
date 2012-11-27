@@ -73,11 +73,20 @@ class ScheduleTestCase extends CakeTestCase
              $this->Schedule->save($schedule);
          }
 
-         $conditions = array('object-type'=>'dialogue-schedule');
-         $result = $this->Schedule->summary($conditions);
+         $dateTime = new DateTime("2014-04-12T12:00:00");
+
+         $result = $this->Schedule->summary($dateTime);
          $this->assertEquals("2", $result[0]['csum']);
          $this->assertEquals("1", $result[1]['csum']);
-         $this->assertEquals("1", $result[2]['csum']); 
+         $this->assertEquals("1", $result[2]['csum']);
+
+         $dateTime = new DateTime("2013-04-12T12:00:00");
+
+         $result = $this->Schedule->summary($dateTime);
+         $this->assertEquals("2", $result[0]['csum']);
+         $this->assertEquals("1", $result[1]['csum']);
+         $this->assertEquals(2, count($result)); 
+
     }
     
 

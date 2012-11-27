@@ -120,8 +120,18 @@ class Schedule extends MongoModel
         return $schedules;
     }
 
-    public function summary($conditions)
+    public function summary($dateTime)
     {
+        $defaultDialogueConditions = array('object-type'=>'dialogue-schedule');
+
+        $defaultUnattachConditions = array();
+
+        if (isset($dateTime)) {
+            $dateCondition = array('date-time' => array('$lt' => $dateTime->format(DateTime::ISO8601)));
+            $defaultDialogueConditions += $dateCondition;
+            $defaultUnattachConditions += $dateCondition;
+        }
+
         $scriptQuery = array(
             'key' => array(
                 'dialogue-id' => true,                
@@ -131,7 +141,7 @@ class Schedule extends MongoModel
                 ),
             'initial' => array('csum' => 0),
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
-            'options' => array('condition'=> $conditions),
+            'options' => array( 'condition'=> $defaultDialogueConditions),
             );
 
         $tmp = $this->getDataSource()->group($this, $scriptQuery);
@@ -148,6 +158,7 @@ class Schedule extends MongoModel
                 ),
             'initial' => array('csum' => 0),
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
+            'options' => array( 'condition'=> $defaultUnattachConditions)
             );
         
         
