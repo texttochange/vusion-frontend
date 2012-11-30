@@ -822,10 +822,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ));
 
         $this->Participant->create();
-        $this->Participant->save(array(
+        $savedParticipant = $this->Participant->save(array(
             'phone' => '+29',
             'session-id' => '3',
-            'last-optin-date' => '2012-12-01T18:30:10',
+            'last-optin-date' => '2012-12-02T18:30:10',
             'enrolled' => array(),
             'tags' => array(),
             'profile' => array(array(
@@ -833,6 +833,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'value' => 'female',
                 'raw' => null))
             ));
+        $savedParticipant['Participant']['last-optin-date'] = '2012-12-02T18:30:10';
+        $this->Participant->save($savedParticipant);
 
         $this->mock_program_access();
         $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=%2B2");
@@ -845,6 +847,18 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->mock_program_access();
         $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=optin");
         $this->assertEquals(3, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=optin-date-from&filter_param%5B1%5D%5B2%5D=02%2F12%2F2012");
+        $this->assertEquals(1, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=optin-date-to&filter_param%5B1%5D%5B2%5D=02%2F12%2F2012");
+        $this->assertEquals(2, count($this->vars['participants']));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=optout");
+        $this->assertEquals(1, count($this->vars['participants']));
 
         $this->mock_program_access();
         $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=enrolled&filter_param%5B1%5D%5B2%5D=1");
