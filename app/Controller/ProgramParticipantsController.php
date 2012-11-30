@@ -4,6 +4,7 @@ App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('Dialogue', 'Model');
+App::uses('DialogueHelper', 'Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
@@ -23,6 +24,7 @@ class ProgramParticipantsController extends AppController
         $this->History           = new History($options);
         $this->Schedule          = new Schedule($options);
         $this->Dialogue          = new Dialogue($options);
+        $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ(
@@ -76,8 +78,16 @@ class ProgramParticipantsController extends AppController
         foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
             if ($onlyFilterParam[1] == 'enrolled' && isset($onlyFilterParam[2])) {
                 $conditions['enrolled.dialogue-id'] = $onlyFilterParam[2];
+            } elseif ($onlyFilterParam[1] == 'not-enrolled' && isset($onlyFilterParam[2])) {
+                $conditions['enrolled.dialogue-id']['$ne'] = $onlyFilterParam[2];
             } elseif ($onlyFilterParam[1] == 'optin') { 
                 $conditions['session-id'] = array('$ne' => null);
+            } elseif ($onlyFilterParam[1]=='optin-date-from' && isset($onlyFilterParam[2])) {
+                $conditions['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            } elseif ($onlyFilterParam[1]=='optin-date-to' && isset($onlyFilterParam[2])) {
+                $conditions['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            }elseif ($onlyFilterParam[1] == 'optout') { 
+                $conditions['session-id'] = null;
             } elseif ($onlyFilterParam[1] == 'phone' && isset($onlyFilterParam[2])) {
                 $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
                 if ($phoneNumbers) {

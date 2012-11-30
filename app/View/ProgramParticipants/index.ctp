@@ -1,21 +1,26 @@
 <div class="participants index">
-    <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('Add Participant'), 
-		                                array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'add'),
-		                                array('class' => 'ttc-button')); ?></li>
-		<li><?php echo $this->Html->link(__('Import Participant(s)'), 
-		                                array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import'),
-		                                array('class' => 'ttc-button')); ?></li>
-		<li><?php echo $this->Html->tag('span', 
-		                                __('Add Filter'), 
-		                                array('class' => 'ttc-button', 'name' => 'add-filter')); 
+		<li><?php echo $this->AclLink->generateButton(
+		                    __('Add Participant'), 
+		                    $programUrl,
+		                    'programParticipants',
+		                    'add',
+		                    array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		                     __('Import Participant(s)'), 
+		                     $programUrl,
+		                     'programParticipants',
+		                     'import',
+		                     array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->Html->tag(
+		                'span', 
+		                __('Add Filter'), 
+		                array('class' => 'ttc-button', 'name' => 'add-filter')); 
 		          $this->Js->get('[name=add-filter]')->event('click',
 		              '$("#advanced_filter_form").show();
 		              addStackFilter();');
 		?> </li>
-		</ul>
-	<?php } ?>
+	</ul>
 	<h3><?php echo __('Participants'); ?></h3>
 	<?php
 	   $this->Js->set('myOptions', $filterFieldOptions);
