@@ -33,9 +33,17 @@ class Participant extends MongoModel
     public $fieldFilters = array(
         'phone' => 'phone',
         'optin' => 'optin',
+        'optin-date-from' => 'optin date from',
+        'optin-date-to' => 'optin date to',
+        'optout' => 'optout',
+        //require to modify the model to add the last optout date
+        //'optout-date-from' => 'optout date from',
+        //'optout-date-to' => 'optout date to',
         'enrolled' => 'enrolled',
+        'not-enrolled' => 'not enrolled',
         'tag'=>'tag',
         'label'=>'label',
+        
     );
     
     public function __construct($id = false, $table = null, $ds = null)

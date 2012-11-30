@@ -462,12 +462,26 @@ function supplyConditionOptions(elt){
                 $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
         });
 	    break;
+	case "not-enrolled":
+        $(elt).after("<select name='"+name+"[2]'></select>");
+        $.each(window.app.dialogueConditionOptions, function(key, value){
+                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
+        });
+	    break;
 	case "tag":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
 	case "label":
         $(elt).after("<input name='"+name+"[3]'></input>");
         $(elt).after("<input name='"+name+"[2]'></input>");
+	    break;
+	 case "optin-date-from":
+	    $(elt).after("<input name='"+name+"[2]'></input>");
+	    $("[name='"+name+"[2]']").datepicker();
+	    break;
+    case "optin-date-to":
+        $(elt).after("<input name='"+name+"[2]'></input>");
+	    $("[name='"+name+"[2]']").datepicker();
 	    break;
     }
 }
