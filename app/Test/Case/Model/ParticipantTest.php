@@ -48,6 +48,7 @@ class ParticipantTestCase extends CakeTestCase
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual($savedParticipant['Participant']['model-version'], '3');  
         $this->assertRegExp('/^[0-9a-fA-F]{32}/', $savedParticipant['Participant']['session-id']);
         $this->assertRegExp('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $savedParticipant['Participant']['last-optin-date']);
         $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null);    
