@@ -24,6 +24,7 @@ class Participant extends MongoModel
             'phone',
             'session-id',
             'last-optin-date',
+            'last-optout-date',
             'enrolled',
             'tags',
             'profile',
@@ -116,6 +117,7 @@ class Participant extends MongoModel
                 return false;
             $lastOptinDate = (isset($this->data['Participant']['last-optin-date'])) ? $this->data['Participant']['last-optin-date'] : $programNow->format("Y-m-d\TH:i:s"); 
             $this->data['Participant']['last-optin-date'] = $lastOptinDate;
+            $this->data['Participant']['last-optout-date'] = null;
             $sessionId = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
             $this->data['Participant']['session-id'] = $sessionId;
             $tags = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
