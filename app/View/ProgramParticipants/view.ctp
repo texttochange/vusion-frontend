@@ -38,7 +38,7 @@
 		</dd>
 		<dt><?php echo __('Last Optout Date'); ?></dt>
 		<dd><?php 
-			if ($participant['Participant']['last-optout-date']) {
+			if (isset($participant['Participant']['last-optout-date'])) {
 			    echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optout-date']); 
 			} else {
 			    echo "&nbsp;"; 
