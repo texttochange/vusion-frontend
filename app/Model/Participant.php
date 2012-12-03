@@ -14,7 +14,7 @@ class Participant extends MongoModel
     
     function getModelVersion()
     {
-        return '2';
+        return '3';
     }
 
     
