@@ -86,8 +86,12 @@ class ProgramParticipantsController extends AppController
                 $conditions['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
             } elseif ($onlyFilterParam[1]=='optin-date-to' && isset($onlyFilterParam[2])) {
                 $conditions['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            }elseif ($onlyFilterParam[1] == 'optout') { 
+            } elseif ($onlyFilterParam[1] == 'optout') { 
                 $conditions['session-id'] = null;
+            } elseif ($onlyFilterParam[1]=='optout-date-from' && isset($onlyFilterParam[2])) {
+                $conditions['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            } elseif ($onlyFilterParam[1]=='optout-date-to' && isset($onlyFilterParam[2])) {
+                $conditions['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
             } elseif ($onlyFilterParam[1] == 'phone' && isset($onlyFilterParam[2])) {
                 $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
                 if ($phoneNumbers) {

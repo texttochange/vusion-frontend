@@ -417,71 +417,62 @@ function supplyConditionOptions(elt){
 
     var name = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
 
-    switch ($(elt).val()) 
+    var reg_date = /.*-date-.*/;
+
+    var condition_type = $(elt).val();
+    switch (true) 
     {
-    case "message-direction":
+    case condition_type=="message-direction":
         $(elt).after("<select name='"+name+"[2]'></select>");
         var options = window.app.typeConditionOptions;
         $.each(options, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value, key));      
         })
         break;
-    case "message-status":
+    case condition_type=="message-status":
 	    $(elt).after("<select name='"+name+"[2]'></select>");
         $.each(window.app.statusConditionOptions, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value, key));      
         })
         break;
-    case "date-from":
+    case reg_date.test(condition_type):
 	    $(elt).after("<input name='"+name+"[2]'></input>");
 	    $("[name='"+name+"[2]']").datepicker();
 	    break;
-    case "date-to":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    $("[name='"+name+"[2]']").datepicker();
-	    break;
-	case "participant-phone":
+	case condition_type=="participant-phone":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
-	case "phone":
+	case condition_type=="phone":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
-	case "message-content":
+	case condition_type=="message-content":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
-	case "dialogue":
+	case condition_type=="dialogue":
 	    $(elt).after("<select name='"+name+"[2]'></select>");
 	    $("[name='"+name+"[2]']").on('click', { filterPrefix: name}, generateDropdown);
         $.each(window.app.dialogueConditionOptions, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
         });
         break;
-    case "enrolled":
+    case condition_type=="enrolled":
         $(elt).after("<select name='"+name+"[2]'></select>");
         $.each(window.app.dialogueConditionOptions, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
         });
 	    break;
-	case "not-enrolled":
+	case condition_type=="not-enrolled":
         $(elt).after("<select name='"+name+"[2]'></select>");
         $.each(window.app.dialogueConditionOptions, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
         });
 	    break;
-	case "tag":
+	case condition_type=="tag":
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
-	case "label":
+	case condition_type=="label":
         $(elt).after("<input name='"+name+"[3]'></input>");
         $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	 case "optin-date-from":
-	    $(elt).after("<input name='"+name+"[2]'></input>");
-	    $("[name='"+name+"[2]']").datepicker();
-	    break;
-    case "optin-date-to":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    $("[name='"+name+"[2]']").datepicker();
 	    break;
     }
 }
