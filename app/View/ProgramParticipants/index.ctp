@@ -60,7 +60,8 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 	    <th><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl))); ?></th>
-	    <th><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programUrl))); ?></th> 
+	    <th><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programUrl))); ?></th>
+	    <th><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programUrl))); ?></th>
 	    <th><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programUrl))); ?></th> 
 	    <th><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programUrl))); ?></th>
 	    <th><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programUrl))); ?></th>
@@ -68,7 +69,7 @@
 	</tr>
 	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $participants == null) { ?>
 	    <tr>
-	        <td colspan=6><?php echo __("No results found.") ?></td>
+	        <td colspan=7><?php echo __("No results found.") ?></td>
 	    </tr>
 	<?php } else {?>   
 	<?php foreach ($participants as $participant): ?>
@@ -80,7 +81,14 @@
 	    } else {
 	        echo $this->Html->tag('div', ''); 
 	    }
-	    ?></td> 
+	    ?></td>
+	    <td><?php 
+	    if ($participant['Participant']['last-optout-date']) {
+	        echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optout-date']); 
+	    } else {
+	        echo $this->Html->tag('div', ''); 
+	    }
+	    ?></td>  
 	    <td><?php
   	    if (count($participant['Participant']['enrolled']) > 0) {
   	        foreach ($participant['Participant']['enrolled'] as $enrolled) {
