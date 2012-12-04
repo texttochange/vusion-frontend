@@ -1,5 +1,22 @@
 <div class="participants index">
     <ul class="ttc-actions">
+        <li>
+       <?php
+        if (!isset($urlParams)) {
+            $urlParams = "";
+        }
+        echo $this->AclLink->generatePostLink(
+                __('Delete Participants'),
+                $programUrl, 
+                'programParticipants',
+                'massDelete', 
+                __('Are you sure you want to delete %s participants?', $this->Paginator->counter(array(
+                    'format' => __('{:count}')))),
+                array('class' => 'ttc-button'),
+                null,
+                $urlParams); 
+        ?>
+        </li>
 		<li><?php echo $this->AclLink->generateButton(
 		                    __('Add Participant'), 
 		                    $programUrl,

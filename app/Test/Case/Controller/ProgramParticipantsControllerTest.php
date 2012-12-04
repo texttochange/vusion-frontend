@@ -114,7 +114,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -165,8 +164,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testImport_csv() 
     {
-        $this->mock_program_access();
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+                
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
 
         $this->testAction(
@@ -187,12 +193,50 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $participants = $this->Participant->find('all');
         $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported'));
         $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
         $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
         $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'DoB');
         $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '21st of July');
         $this->assertEquals($participants[1]['Participant']['profile'][0]['value'], 'Gerald Ankunda');
         $this->assertEquals($participants[1]['Participant']['profile'][1]['value'], '30th of March');
+    }
+
+    public function testImport_csv_tag() 
+    {
+
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+        
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+        
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+                            'name' => 'wellformattedparticipants.csv'
+                            ),
+                        'tags' => "1tag, other tag, still'Another Tag"
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "still'Another Tag"));
+        
     }
 
 
@@ -476,7 +520,43 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '33');
         $this->assertEquals($participants[0]['Participant']['profile'][1]['raw'], '');
     }
- 
+
+    public function testImport_xls_tag() 
+    {
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+        
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));        
+
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/well_formatted_participants.xls',
+                            'name' => 'well_formatted_participants.xls'
+                            ),
+                        'tags' => "1tag, other tag, still'Another Tag"
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "still'Another Tag"));
+        
+    }
+
 
     public function testImport_xls_emptyColumn() 
     {
@@ -679,6 +759,53 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(
             0,
             $this->History->find('count'));
+    }
+
+
+    public function testMassDeleteParticipant()
+    {
+        $this->mock_program_access();
+        
+        $participant = array(
+            'phone' => '+6');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $scheduleToBeDeleted = array(
+            'participant-phone' => '+6',
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleToBeDeleted);
+
+        $participant = array(
+            'phone' => '+7');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $participant = array(
+            'phone' => '+8');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $scheduleToStay = array(
+            'participant-phone' => '+8',
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleToStay);
+
+        $this->testAction("/testurl/programParticipants/massDelete?filter_param[1][1]=phone&filter_param[1][2]=%2B6,%2B7");
+        
+        $this->assertEquals(
+            1,
+            $this->Participant->find('count'));
+        $this->assertEquals(
+            1,
+            $this->Schedule->find('count'));
     }
 
 
