@@ -25,5 +25,11 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
+    
+    public $fieldFilters =array(
+        'participant-phone' => 'participant phone',
+        'date-from' => 'date from',
+        'date-to' => 'date to'
+    );
 
 }
