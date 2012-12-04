@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
+App::uses('DialogueHelper', 'Lib');
 
 class UnmatchableReplyController extends AppController
 {
@@ -24,6 +25,7 @@ class UnmatchableReplyController extends AppController
             );
         
         $this->UnmatchableReply = new UnmatchableReply($options);
+        $this->DialogueHelper   = new DialogueHelper();
     }
 
 
