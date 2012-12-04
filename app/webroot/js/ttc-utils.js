@@ -402,6 +402,8 @@ function removeStackFilter(){
 	if($(".ttc-stack-filter").length == 0){
 	    $('#advanced_filter_form').hide();
 	    $('#quick_filter_form').show();
+	    if (window.search != "")
+	        window.location.replace("index")
 	}
 }
 
@@ -417,7 +419,7 @@ function supplyConditionOptions(elt){
 
     var name = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
 
-    var reg_date = /.*-date-.*/;
+    var reg_date = /.*date-.*/;
 
     var condition_type = $(elt).val();
     switch (true) 

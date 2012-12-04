@@ -277,8 +277,6 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
 
-
-
         echo 'AllDone';
         exit;
     }

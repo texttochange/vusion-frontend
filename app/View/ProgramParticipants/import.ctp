@@ -5,12 +5,12 @@
 	</ul>
     <h3>Import Participants</h3>
 	<?php
-	//echo $this->Form->create('Import', array('enctype' => 'multipart/form-data'));	
 	echo $this->Form->create('Import', array('type' => 'file'));
 		echo $this->Form->input('Import.file', array(
 		    'between' => '<br />',
 		    'type' => 'file'
 		));
+		echo $this->Form->input('tags', array("label" => __("Tag imported participants")));
 		echo $this->Form->end(__('Upload'));
 	?>
 

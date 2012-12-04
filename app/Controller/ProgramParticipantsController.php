@@ -207,8 +207,45 @@ class ProgramParticipantsController extends AppController
             $this->request->data = $this->Participant->read(null, $id);
         } 
     }
-
     
+    public function massDelete() {
+        
+        $programUrl = $this->params['program'];
+     
+        // Only get messages and avoid other stuff like markers
+        $defaultConditions = array();
+        $params = array('fields' => array('phone'));
+
+        $conditions = $this->_getConditions($defaultConditions);
+        if ($conditions) {
+            $params += array('conditions' => $conditions);
+        }        
+
+        //print_r($params);
+        $participants = $this->Participant->find('all', $params);
+        foreach($participants as $participant) {
+             $this->Schedule->deleteAll(
+                array('participant-phone' => $participant['Participant']['phone']),
+                false);
+        };
+        $result = $this->Participant->deleteAll(
+            $conditions, 
+            false);
+
+        $this->Session->setFlash(
+                __('Participants have been deleted.'),
+                'default',
+                array('class'=>'message success')
+                );
+                
+        $this->redirect(array(
+                    'program' => $programUrl,
+                    'controller' => 'programParticipants',
+                    'action' => 'index',
+                    '?' => $this->viewVars['urlParams']));  
+    }
+
+
     public function delete() 
     {
         $programUrl = $this->params['program'];
@@ -277,9 +314,6 @@ class ProgramParticipantsController extends AppController
                                     $participant['Participant']['phone'],
                                     $dialoguesInteractionsContent);
 
-        //TODO: refactor to use similar $dialogueInteractionsContent
-        #$activeInteractions   = $this->Dialogue->getActiveInteractions();
-        #$activeDialogues = $this->Dialogue->getActiveDialogues();
         $schedules = $this->Schedule->getParticipantSchedules(
                                     $participant['Participant']['phone'],
                                     $dialoguesInteractionsContent);
@@ -287,69 +321,101 @@ class ProgramParticipantsController extends AppController
         $this->set(compact('participant','histories', 'schedules'));
     }
 
-    
+    protected function _getTags($tags) 
+    {
+        $tags = trim(stripcslashes($tags));
+        return explode(", ", $tags);
+    }
+
+    protected function _validateTag($tag)
+    {
+        return preg_match("/^[a-zA-Z0-9\s\']*$/", $tag);
+    }
+
     public function import()
     {
-        require_once 'excel_reader2.php';
-        //$data = new Spreadsheet_Excel_Reader("example.xls");
-
         $programName = $this->Session->read($this->params['program'].'_name');
         $programUrl  = $this->params['program'];
 
         if ($this->request->is('post')) {
-            if ($this->_hasAllProgramSettings()) {
-                if (!$this->request->data['Import']['file']['error']) {
-                    $fileName = $this->request->data['Import']['file']["name"];
-                    $ext      = end(explode('.', $fileName));
-                    
-                    if (!($ext == 'csv') and !($ext == 'xls') and !($ext == 'xlsx')) {
-                        $this->Session->setFlash(__('This file format is not supported'), 
+            if (!$this->_hasAllProgramSettings()) {
+                $this->Session->setFlash(__('Please set the program settings then try again.'), 
+                    'default',
+                    array('class' => "message failure"));
+                return;
+            }
+            
+            if ($this->request->data['Import']['file']['error'] != 0) {
+                if ($this->request->data['Import']['file']['error'] == 4) 
+                    $message = __("Please select a file.");
+                else 
+                    $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
+                $this->Session->setFlash($message, 
+                    'default',
+                    array('class' => "message failure"));
+                return;
+            }
+
+            $tags = array('imported');
+            if (isset($this->request->data['Import']['tags'])) {
+                $userTags = $this->_getTags($this->request->data['Import']['tags']);
+                foreach($userTags as $userTag) {
+                    if (!$this->_validateTag($userTag)) {
+                        $this->Session->setFlash(__('Error a tag is not valide: %s.', $userTag), 
                             'default',
-                            array('class' => "message failure")
-                            );
+                            array('class' => "message failure"));
                         return;
                     }
-                    
-                    $filePath = WWW_ROOT . "files/" . $programUrl; 
-                    
-                    if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
-                        //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
-                        mkdir($filePath);
-                        chmod($filePath, 0777);
-                    }
-                    
-                    /** in case the file has already been created, 
-                    * the chmod function should not be called.
-                    */
-                    $wasFileAlreadyThere = false;
-                    if(file_exists($filePath . DS . $fileName)) {
-                        $wasFileAlreadyThere = true;
-                    }
-                    
-                    copy($this->request->data['Import']['file']['tmp_name'],
-                        $filePath . DS . $fileName);
-                    
-                    if(!$wasFileAlreadyThere) {
-                        chmod($filePath . DS . $fileName, 0777);
-                    }
-                    
-                    if ($ext == 'csv') {
-                        $entries = $this->processCsv($programUrl, $filePath, $fileName);
-                    } else if ($ext == 'xls' || $ext == 'xlsx') {
-                        $entries = $this->processXls($programUrl, $filePath, $fileName);
-                    }
                 }
-            } else 
-            $this->Session->setFlash(__('Please set the program settings then try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
-        } 
+                $tags = array_merge($tags, $userTags);
+            }
+            
+            $fileName = $this->request->data['Import']['file']["name"];
+            $ext      = end(explode('.', $fileName));
+            
+            if (!($ext == 'csv') and !($ext == 'xls')) {
+                $this->Session->setFlash(__('This file format is not supported'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+                return;
+            }
+            
+            $filePath = WWW_ROOT . "files/" . $programUrl; 
+            
+            if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
+                //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
+                mkdir($filePath);
+                chmod($filePath, 0777);
+            }
+            
+            /** in case the file has already been created, 
+            * the chmod function should not be called.
+            */
+            $wasFileAlreadyThere = false;
+            if(file_exists($filePath . DS . $fileName)) {
+                $wasFileAlreadyThere = true;
+            }
+            
+            copy($this->request->data['Import']['file']['tmp_name'],
+                $filePath . DS . $fileName);
+            
+            if(!$wasFileAlreadyThere) {
+                chmod($filePath . DS . $fileName, 0777);
+            }
+            
+            if ($ext == 'csv') {
+                $entries = $this->processCsv($programUrl, $filePath, $fileName, $tags);
+            } else if ($ext == 'xls') {
+                $entries = $this->processXls($programUrl, $filePath, $fileName, $tags);
+            }
+
+        }
         $this->set(compact('entries'));
     }
 
     
-    private function processCsv($programUrl, $filePath, $fileName)
+    private function processCsv($programUrl, $filePath, $fileName, $tags)
     {
         $importedParticipants = fopen($filePath . DS . $fileName,"r");
         $entries              = array();
@@ -396,6 +462,7 @@ class ProgramParticipantsController extends AppController
                     }
                     $col++;
                 }
+                $participant['tags'] = $tags;
                 $savedParticipant = $this->Participant->save($participant);
                 if ($savedParticipant) {
                     $entries[$count] = $savedParticipant['Participant']['phone'].__(", Insert ok");
@@ -411,8 +478,10 @@ class ProgramParticipantsController extends AppController
     }
 
     
-    private function processXls($programUrl, $filePath, $fileName)
+    private function processXls($programUrl, $filePath, $fileName, $tags)
     {
+        require_once 'excel_reader2.php';
+
         $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
         $hasLabels = false;
@@ -449,7 +518,7 @@ class ProgramParticipantsController extends AppController
                     'raw' => null);
                 $col++;
             }
-            //for view report
+            $participant['tags'] = $tags;
             $savedParticipant = $this->Participant->save($participant);
             if ($savedParticipant) {
                 $entries[$i] = $savedParticipant['Participant']['phone'] . ", Insert ok"; 
