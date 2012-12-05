@@ -20,9 +20,15 @@ class UnmatchableReplyController extends AppController
     {
         parent::constructClasses();
         
-        $options = array(
-            'database' => 'vusion'
-            );
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
         
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
@@ -45,7 +51,7 @@ class UnmatchableReplyController extends AppController
                 'order'=> $order,
             );
 
-        $unmatchableReplies = $this->paginate();
+        $unmatchableReplies = $this->paginate();//print_r($unmatchableReplies);
         $this->set(compact('unmatchableReplies'));
     }
     
@@ -81,6 +87,8 @@ class UnmatchableReplyController extends AppController
                         $conditions['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
                     }
                 }
+            } elseif ($onlyFilterParam[1] == 'message-content' && isset($onlyFilterParam[2])) {
+                $conditions['message-content'] = new MongoRegex("/".$onlyFilterParam[2]."/i");
             } else {
                 $this->Session->setFlash(__('The parameter(s) for "%s" filtering are missing.',$onlyFilterParam[1]), 
                 'default',
