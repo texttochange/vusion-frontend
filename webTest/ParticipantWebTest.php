@@ -29,7 +29,7 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->click("css=input[type=\"submit\"]");
     $this->waitForPageToLoad("30000");
     $this->verifyTextPresent("+256783255632");
-    $this->click("xpath=(//a[contains(text(),'Delete')])[3]");
+    $this->click("xpath=(//a[contains(text(),'Delete')])[4]");
     $this->waitForPageToLoad("30000");
     $this->assertTrue((bool)preg_match('/^Are you sure you want to delete participant \+\d* [\s\S]$/',$this->getConfirmation()));
     $this->chooseOkOnNextConfirmation();
