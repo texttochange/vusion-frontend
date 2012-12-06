@@ -9,6 +9,10 @@
 	    <fieldset>
 	        <?php
 	            echo $this->Form->input('phone');
+	            echo $this->Form->input(__('Profile'), array('rows'=>5));
+	            $retrieved_tags = implode(",", $this->data['Participant']['tags']);
+	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$retrieved_tags));
+	            
 	        ?>
 	    </fieldset>
 	<?php echo $this->Form->end(__('Save'));?>

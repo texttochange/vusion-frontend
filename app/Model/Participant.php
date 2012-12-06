@@ -134,6 +134,12 @@ class Participant extends MongoModel
             }
             if (!isset($this->data['Participant']['profile']))
                 $this->data['Participant']['profile'] = array();
+        } else {
+            if(!isset($this->data['Participant']['tags']))
+                $this->data['Participant']['tags'] = array();
+            $tags = trim(stripcslashes($this->data['Participant']['tags']));
+            $tags = array_filter(explode(", ", $tags));
+            $this->data['Participant']['tags'] = $tags;
         }
 
         return true;
