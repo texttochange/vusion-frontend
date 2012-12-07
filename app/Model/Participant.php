@@ -140,6 +140,20 @@ class Participant extends MongoModel
             $tags = trim(stripcslashes($this->data['Participant']['tags']));
             $tags = array_filter(explode(", ", $tags));
             $this->data['Participant']['tags'] = $tags;
+            
+            if(!isset($this->data['Participant']['profile']))
+                $this->data['Participant']['profile'] = array();
+            $profiles = trim(stripcslashes($this->data['Participant']['profile']));
+            $profiles = array_filter(explode(",", $profiles));
+            //$profiles = explode(", ", $this->data['Participant']['profile']);
+            /*foreach ($profiles as $profile) {
+                list($label,$value) = explode(":", $profile);
+                $newProfile = array();
+                $newProfile['label'] = $key;
+                $newProfile['value'] = $value;
+                $newProfile['raw'] = null;
+                $this->data['Participant']['profile'][] = $newProfile;
+            }*/
         }
 
         return true;

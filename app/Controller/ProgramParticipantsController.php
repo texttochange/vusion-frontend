@@ -185,7 +185,7 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read();
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post') || $this->request->is('put')) {print_r($this->request->data);
             if ($this->Participant->save($this->request->data)) {
                 $this->Schedule->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),

@@ -1,7 +1,7 @@
 <div class="participants index">
     <ul class="ttc-actions">
         <li>
-       <?php print_r($participants[2]);
+       <?php print_r($participants[1]);
         if (!isset($urlParams)) {
             $urlParams = "";
         }

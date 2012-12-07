@@ -9,10 +9,15 @@
 	    <fieldset>
 	        <?php
 	            echo $this->Form->input('phone');
-	            echo $this->Form->input(__('Profile'), array('rows'=>5));
+	            $profileArray = array();
+	            $profiles = $this->data['Participant']['profile'];
+	            foreach ($profiles as $key => $value) {
+	                $profileArray[] = $key.":".$value;
+	            }
+	            $profileData = implode(",", $profileArray);
+	            echo $this->Form->input(__('Profile'), array('rows'=>5, 'value'=>$profileData));
 	            $retrieved_tags = implode(",", $this->data['Participant']['tags']);
 	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$retrieved_tags));
-	            
 	        ?>
 	    </fieldset>
 	<?php echo $this->Form->end(__('Save'));?>
