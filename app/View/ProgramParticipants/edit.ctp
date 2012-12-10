@@ -23,8 +23,9 @@
 	            }
 	            $profileData = implode(",", $profileArray);
 	            echo $this->Form->input(__('profile'), array('rows'=>5, 'value'=>$profileData));
-	            $retrieved_tags = implode(",", $this->data['Participant']['tags']);
-	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$retrieved_tags));
+	            $tagsArray = explode(",",implode(",", $this->data['Participant']['tags']));
+	            $tagsString = implode(", ",$tagsArray);
+	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$tagsString));
 	        ?>
 	    </fieldset>
 	<?php echo $this->Form->end(__('Save'));?>

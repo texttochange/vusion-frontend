@@ -885,7 +885,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Participant' => array(
                         'phone' => '+256712747841',
                         'profile' => 'gender:male',
-                        //'tags' => '',
                         )
                     )
                 )
@@ -895,6 +894,45 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
         $this->assertEqual($participantFromDb['Participant']['profile'][0]['label'], 'gender');
         $this->assertEqual($participantFromDb['Participant']['profile'][0]['value'], 'male');
+    }
+    
+    
+    public function testEditParticipantTags()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'tags' => 'me,you, him',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['tags'][0], 'me');
+        $this->assertEqual($participantFromDb['Participant']['tags'][1], 'you');
+        $this->assertEqual($participantFromDb['Participant']['tags'][2], 'him');
     }
     
     
