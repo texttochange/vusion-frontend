@@ -10,12 +10,19 @@
 	        <?php
 	            echo $this->Form->input('phone');
 	            $profileArray = array();
-	            $profiles = $this->data['Participant']['profile'];
-	            foreach ($profiles as $key => $value) {
-	                $profileArray[] = $key.":".$value;
+	            $profiles = $this->data['Participant']['profile'];	            
+	            foreach ($profiles as $profile) {
+	                $result = null;
+	                foreach ($profile as $key => $value) {
+	                    if ($value != null)
+	                        $result.= $value.":";
+	                    else
+	                        $result=substr_replace($result, "", -1);
+	                }
+	                $profileArray[] = $result;
 	            }
 	            $profileData = implode(",", $profileArray);
-	            echo $this->Form->input(__('Profile'), array('rows'=>5, 'value'=>$profileData));
+	            echo $this->Form->input(__('profile'), array('rows'=>5, 'value'=>$profileData));
 	            $retrieved_tags = implode(",", $this->data['Participant']['tags']);
 	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$retrieved_tags));
 	        ?>

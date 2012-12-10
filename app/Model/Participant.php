@@ -137,23 +137,28 @@ class Participant extends MongoModel
         } else {
             if(!isset($this->data['Participant']['tags']))
                 $this->data['Participant']['tags'] = array();
-            $tags = trim(stripcslashes($this->data['Participant']['tags']));
-            $tags = array_filter(explode(", ", $tags));
-            $this->data['Participant']['tags'] = $tags;
+            else if (isset($this->data['Participant']['tags']) and !is_array($this->data['Participant']['tags'])) {
+                $tags = trim(stripcslashes($this->data['Participant']['tags']));
+                $tags = array_filter(explode(", ", $tags));
+                $this->data['Participant']['tags'] = $tags;
+            }
             
             if(!isset($this->data['Participant']['profile']))
                 $this->data['Participant']['profile'] = array();
-            $profiles = trim(stripcslashes($this->data['Participant']['profile']));
-            $profiles = array_filter(explode(",", $profiles));
-            //$profiles = explode(", ", $this->data['Participant']['profile']);
-            /*foreach ($profiles as $profile) {
-                list($label,$value) = explode(":", $profile);
-                $newProfile = array();
-                $newProfile['label'] = $key;
-                $newProfile['value'] = $value;
-                $newProfile['raw'] = null;
-                $this->data['Participant']['profile'][] = $newProfile;
-            }*/
+            else if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {
+                $profiles = trim(stripcslashes($this->data['Participant']['profile']));
+                $profiles = array_filter(explode(",", $profiles));
+                $profileList = array();
+                foreach ($profiles as $profile) {
+                    list($label,$value) = explode(":", $profile);
+                    $newProfile = array();
+                    $newProfile['label'] = $label;
+                    $newProfile['value'] = $value;
+                    $newProfile['raw'] = null;
+                    $profileList[] = $newProfile;
+                }
+                $this->data['Participant']['profile'] = $profileList;
+            }
         }
 
         return true;
