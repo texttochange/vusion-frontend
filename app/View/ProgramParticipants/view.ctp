@@ -19,7 +19,8 @@
 		        $programUrl,
 		        'programParticipants',
 		        'edit',
-		        array('class'=>'ttc-button'));
+		        array('class'=>'ttc-button'),
+		        $participant['Participant']['_id']);
 		    ?> 
 		</li>
 	</ul>

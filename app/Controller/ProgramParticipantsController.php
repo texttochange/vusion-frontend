@@ -440,6 +440,7 @@ class ProgramParticipantsController extends AppController
                                 );
                            return;
                        }
+                       $headers = array();
                    }
             }
             if ($entries[$count]) {
@@ -468,7 +469,10 @@ class ProgramParticipantsController extends AppController
                     $entries[$count] = $savedParticipant['Participant']['phone'].__(", Insert ok");
                     $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);    
                 } else {
-                    $entries[$count] = $participant['phone'].", ".$this->Participant->validationErrors['phone'][0]. " line ".($count+1);
+                    $entries[$count] = $participant['phone'].", ";
+                    foreach ($this->Participant->validationErrors as $key => $error) {
+                        $entries[$count] .= $this->Participant->validationErrors[$key][0]. " line ".($count+1)."<br />";
+                    }
                 }
                 
             }
@@ -524,7 +528,10 @@ class ProgramParticipantsController extends AppController
                 $entries[$i] = $savedParticipant['Participant']['phone'] . ", Insert ok"; 
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);    
             } else {
-                $entries[$i] = $participant['phone'].", ".$this->Participant->validationErrors['phone'][0]. " line ".$i;
+                $entries[$i] = $participant['phone'].", ";
+                foreach ($this->Participant->validationErrors as $key => $error) {
+                    $entries[$i] .= $this->Participant->validationErrors[$key][0]. " line ".$i."<br />";
+                }
             }
         }
         return $entries;
