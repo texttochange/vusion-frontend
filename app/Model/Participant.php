@@ -72,9 +72,44 @@ class Participant extends MongoModel
                 'message' => 'This phone number already exists in the participant list.',
                 'required' => true
                 )
-            ));
+            ),
+        'profile' => array(
+            'rule' => 'validateProfile',
+            'message' => 'Invalid format. Must be label:value, label:value, ... e.g gender:male, ..'
+            ),
+        'tags' => array(
+            'rule' => 'validateTags',
+            'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
+            )
+        );
 
+    public function validateTags($check)
+    {
+        $regex = '/^[a-z0-9A-Z\s]+$/';
+        foreach ($check['tags'] as $tag) {
+            if (!preg_match($regex,$tag)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
+    
+    public function validateProfile($check)
+    {
+        $regex = '/^[a-zA-Z0-9\s]+:[a-zA-Z0-9\s]+$/';
+        foreach ($check['profile'] as $profile) {
+            foreach ($profile as $key => $value) {
+                $result = $profile['label'].":".$profile['value'];
+                if (!preg_match($regex,$result)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+        
     public function isReallyUnique($check)
     {
         if ($this->id) {
