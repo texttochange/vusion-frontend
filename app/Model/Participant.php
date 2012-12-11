@@ -139,7 +139,40 @@ class Participant extends MongoModel
         return true;
     }
 
-    function gen_uuid() {
+    public function getDistinctTagsAndLabels()
+    {
+        $tagsQuery = array(
+            'distinct'=>'participants',
+            'key'=> 'tags');
+        $distinctTags = $this->query($tagsQuery);
+        
+        $map = new MongoCode("function() { 
+            for(var i = 0; i < this.profile.length; i++) {
+                emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
+                }
+            }");
+        $reduce = new MongoCode("function(k, vals) { 
+            return vals.length; }");
+        $labelsQuery = array(
+            'mapreduce' => 'participants',
+            'map'=> $map,
+            'reduce' => $reduce,
+            'query' => array(),
+            'out' => 'map_reduce_tagsandlabels');
+
+        $mongo = $this->getDataSource();
+        $cusor = $mongo->mapReduce($labelsQuery);
+        foreach($cusor as $distinctLabel) {
+            $distinctLabels[] = $distinctLabel['_id'];    
+        }
+        
+        return array_merge($distinctTags['values'], $distinctLabels);
+        
+    }
+
+
+    function gen_uuid() 
+    {
         return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
             // 32 bits for "time_low"
             mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),

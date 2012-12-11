@@ -16,7 +16,7 @@ class UnattachedMessage extends MongoModel
     
     function getModelVersion()
     {
-        return "1";
+        return "2";
     }
 
     function getRequiredFields($objectType)
@@ -43,8 +43,8 @@ class UnattachedMessage extends MongoModel
             ),
         'to' => array(
             'notempty' => array(
-                'rule' => array('notempty'),
-                'message' => 'Please select an option for Send To.'
+                'rule' => array('selectors'),
+                'message' => 'Please select message recipient.'
                 )
             ),
         'content' => array(
@@ -102,12 +102,8 @@ class UnattachedMessage extends MongoModel
 
     public function beforeValidate()
     {
-            	
-    }
-    
-    
-    public function beforeSave()
-    {
+        parent::beforeValidate();
+
         if (isset($this->data['UnattachedMessage']['fixed-time'])) {
             if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['fixed-time']))
                 return true;
@@ -116,12 +112,9 @@ class UnattachedMessage extends MongoModel
                 return false;
             
             $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
-            return true;
-        } else {
-            return true;
-        }
-    }
-    
+        } 
+        return true;           	
+    }    
     
     public function isNotPast()
     {
@@ -153,5 +146,26 @@ class UnattachedMessage extends MongoModel
         return $result < 1;
     }
     
+    public function selectors($check)
+    {
+        $regex = '/^[a-zA-Z0-9\s]+(:[a-zA-Z0-9\s]+)?$/';
+        
+        if (!isset($check['to']) || !is_array($check['to'])) {
+            return false;
+        }
+
+        foreach($check['to'] as $selector) {
+            if ($selector == 'all-participants') {
+                continue;
+            } elseif (preg_match($regex, $selector)) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     
 }
