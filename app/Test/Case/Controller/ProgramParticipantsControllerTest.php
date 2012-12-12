@@ -227,7 +227,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                             'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
                             'name' => 'wellformattedparticipants.csv'
                             ),
-                        'tags' => "1tag, other tag, still'Another Tag"
+                        'tags' => "1tag, other tag, stillAnother Tag"
                         )
                     )
                 )
@@ -235,7 +235,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $participants = $this->Participant->find('all');
         $this->assertEquals(2, count($participants));
-        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "still'Another Tag"));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "stillAnother Tag"));
         
     }
 
@@ -286,7 +286,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->vars['entries'][1]
             );
         $this->assertEquals(
-            '256712747841, This phone number already exists in the participant list. line 3',
+            '256712747841, This phone number already exists in the participant list. line 3<br />',
             $this->vars['entries'][2]
             );
     }
@@ -476,7 +476,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->vars['entries'][2]
             );
         $this->assertEquals(
-            '256712747841, This phone number already exists in the participant list. line 3',
+            '256712747841, This phone number already exists in the participant list. line 3<br />',
             $this->vars['entries'][3]
             );
     }
@@ -545,7 +545,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                             'tmp_name' => TESTS . 'files/well_formatted_participants.xls',
                             'name' => 'well_formatted_participants.xls'
                             ),
-                        'tags' => "1tag, other tag, still'Another Tag"
+                        'tags' => "1tag, other tag, stillAnother Tag"
                         )
                     )
                 )
@@ -553,7 +553,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $participants = $this->Participant->find('all');
         $this->assertEquals(2, count($participants));
-        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "still'Another Tag"));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "stillAnother Tag"));
         
     }
 
@@ -856,6 +856,147 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             0,
             $this->Schedule->find('count')
             );
+    }
+    
+    
+    public function testEditParticipantProfile()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'profile' => 'gender:male',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['profile'][0]['label'], 'gender');
+        $this->assertEqual($participantFromDb['Participant']['profile'][0]['value'], 'male');
+    }
+    
+    
+    public function testEditParticipantProfile_noCommaSeparator_fail()
+    {
+        $participants = $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'profile' => 'food:+=[/',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['profile'], array());
+    }
+    
+    
+    public function testEditParticipantTags()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'tags' => 'me,you, him',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['tags'][0], 'me');
+        $this->assertEqual($participantFromDb['Participant']['tags'][1], 'you');
+        $this->assertEqual($participantFromDb['Participant']['tags'][2], 'him');
+    }
+    
+    
+    public function testEditParticipantTags_notAlphaNumeric_fail()
+    {
+        $participants = $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'tags' => 'me,you, |"him',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['tags'], array());
     }
     
     
