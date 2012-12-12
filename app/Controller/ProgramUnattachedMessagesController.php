@@ -3,6 +3,7 @@
 App::uses('AppController', 'Controller');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
+App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
@@ -31,6 +32,7 @@ class ProgramUnattachedMessagesController extends AppController
         
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule          = new Schedule($options);
+        $this->Participant       = new Participant($options);
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->DialogueHelper    = new DialogueHelper();
@@ -54,7 +56,7 @@ class ProgramUnattachedMessagesController extends AppController
         $programUrl = $this->params['program'];
         
         if ($this->request->is('post')) {
-            $this->UnattachedMessage->create();
+            $this->UnattachedMessage->create('unattached-message');
             if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
                 $now = new DateTime('now');
                 $programSettings = $this->ProgramSetting->getProgramSettings();
@@ -77,7 +79,22 @@ class ProgramUnattachedMessagesController extends AppController
             } else {
                 $this->Session->setFlash(__('The Message could not be saved.'));
             }
-        }            
+        }
+        
+        $selectors = $this->_getSelectors();
+        $this->set(compact('selectors'));
+        
+    }
+
+    protected function _getSelectors()
+    {
+        $selectors = array('all-participants' => __('All participants'));
+        $distinctTagsAndLabels = $this->Participant->getDistinctTagsAndLabels();
+        if (count($distinctTagsAndLabels) == 0) {
+            return $selectors;
+        }
+        $selectorTagAndLabels = array_combine($distinctTagsAndLabels, $distinctTagsAndLabels);
+        return array_merge($selectors, $selectorTagAndLabels);
     }
     
     
@@ -91,7 +108,9 @@ class ProgramUnattachedMessagesController extends AppController
 
         if (!$this->UnattachedMessage->exists()) {
             throw new NotFoundException(__('Invalid Message.'));
-        }   
+        }
+
+        $this->UnattachedMessage->read();
         if ($this->request->is('post') || $this->request->is('put')) {
             if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
                 $now = new DateTime('now');
@@ -126,10 +145,17 @@ class ProgramUnattachedMessagesController extends AppController
             $programTimezone = $this->Session->read($this->params['program'].'_timezone');
             date_timezone_set($now,timezone_open($programTimezone));      
             $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
+            if (!is_array($this->request->data['UnattachedMessage']['to'])) {
+                $this->request->data['UnattachedMessage']['to'] = 'all-participants';
+            }
             if ($now > $messageDate){   
                 throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
             }
         }
+
+        $selectors = $this->_getSelectors();
+        $this->set(compact('selectors'));
+
         return $unattachedMessage;
     }
     

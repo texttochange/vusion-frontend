@@ -10,7 +10,7 @@
 	
 	<?php
         $options = array();
-        $options['all participants'] = "all participants";
+        $options = $selectors;
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $error = "";
         $errorSchedule = "";
@@ -19,7 +19,7 @@
         echo "<div class='input-text required ".$error."'>";
         echo $this->Html->tag('label',__('Send To'));
         echo "<br />";
-		echo $this->Form->select('to', $options, array('empty'=>'....'));
+		echo $this->Form->select('to', $options, array('multiple'=>true, 'style'=>'margin-bottom:0px'));
 		if ($this->Form->isFieldError('to'))
 		    echo $this->Form->error('to');
 		echo "</div>";
@@ -51,7 +51,8 @@
 		                                               defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate()}
 		                                               );
 		                                           addContentFormHelp("http://'.env("HTTP_HOST").'");
-		                                           $("input").change()');
+		                                           $("input").change();
+		                                           $("#UnattachedMessageTo").chosen();');
 		$this->Js->get('input')->event('change','
 		    if ($("input:checked").val() == "fixed-time") {
 		        $("#fixed-time").attr("disabled",false);

@@ -37,7 +37,6 @@ class Participant extends MongoModel
         'optin-date-from' => 'optin date from',
         'optin-date-to' => 'optin date to',
         'optout' => 'optout',
-        //require to modify the model to add the last optout date
         'optout-date-from' => 'optout date from',
         'optout-date-to' => 'optout date to',
         'enrolled' => 'enrolled',
@@ -203,7 +202,43 @@ class Participant extends MongoModel
         return true;
     }
 
-    function gen_uuid() {
+    public function getDistinctTagsAndLabels()
+    {
+        $result = array();
+        
+        $tagsQuery = array(
+            'distinct'=>'participants',
+            'key'=> 'tags');
+        $distinctTags = $this->query($tagsQuery);
+        $results = $distinctTags['values'];
+
+        $map = new MongoCode("function() { 
+            for(var i = 0; i < this.profile.length; i++) {
+                emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
+                }
+            }");
+        $reduce = new MongoCode("function(k, vals) { 
+            return vals.length; }");
+        $labelsQuery = array(
+            'mapreduce' => 'participants',
+            'map'=> $map,
+            'reduce' => $reduce,
+            'query' => array(),
+            'out' => 'map_reduce_participantLabels');
+
+        $mongo = $this->getDataSource();
+        $cusor = $mongo->mapReduce($labelsQuery);
+        foreach($cusor as $distinctLabel) {
+            $results[] = $distinctLabel['_id'];    
+        }
+        
+        return $results;
+        
+    }
+
+
+    function gen_uuid() 
+    {
         return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
             // 32 bits for "time_low"
             mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
