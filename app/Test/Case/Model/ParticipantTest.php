@@ -159,5 +159,44 @@ class ParticipantTestCase extends CakeTestCase
             );
     }
 
+    public function testGetDistinctTagsAndLabels()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant_08 = array(
+            'phone' => '08',
+            'tags' => array('geek', 'cool'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'kampala',
+                    'raw'=> null),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> null),
+                ));
+        $this->Participant->create();
+        $this->Participant->save($participant_08);
+
+        $participant_09 = array(
+            'phone' => '09',
+            'tags' => array('geek', 'another tag'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'jinja',
+                    'raw'=> 'live in jinja'),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> 'gender M'),
+                )
+            );
+
+        $this->Participant->create();
+        $this->Participant->save($participant_09);
+
+        $results = $this->Participant->getDistinctTagsAndLabels();
+        $this->assertEqual(array('cool', 'geek', 'another tag', 'city:jinja', 'city:kampala', 'gender:Male' ), $results);
+        
+    }
+
 
 }

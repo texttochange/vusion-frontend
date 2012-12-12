@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
+App::uses('DialogueHelper', 'Lib');
 
 class UnmatchableReplyController extends AppController
 {
@@ -19,16 +20,25 @@ class UnmatchableReplyController extends AppController
     {
         parent::constructClasses();
         
-        $options = array(
-            'database' => 'vusion'
-            );
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
         
         $this->UnmatchableReply = new UnmatchableReply($options);
+        $this->DialogueHelper   = new DialogueHelper();
     }
 
 
     public function index()
     {
+        $this->set('filterFieldOptions', $this->UnmatchableReply->fieldFilters);
+        
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
         } else {
@@ -37,11 +47,57 @@ class UnmatchableReplyController extends AppController
 
          $this->paginate = array(
                 'all',
+                'conditions' => $this->_getConditions(),
                 'order'=> $order,
             );
 
-        $unmatchableReplies = $this->paginate();
+        $unmatchableReplies = $this->paginate();//print_r($unmatchableReplies);
         $this->set(compact('unmatchableReplies'));
+    }
+    
+    
+    protected function _getConditions()
+    {
+        $conditions = null;
+        
+        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
+
+        if (!isset($onlyFilterParams['filter_param'])) 
+            return $conditions;
+       
+        $urlParams = http_build_query($onlyFilterParams);
+        $this->set('urlParams', $urlParams);
+        
+        foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
+            if ($onlyFilterParam[1]=='date-from' && isset($onlyFilterParam[2])) {
+                $conditions['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            } elseif ($onlyFilterParam[1]=='date-to' && isset($onlyFilterParam[2])) {
+                $conditions['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
+            } elseif ($onlyFilterParam[1] == 'participant-phone' && isset($onlyFilterParam[2])) {
+                $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
+                if ($phoneNumbers) {
+                    if (count($phoneNumbers) > 1) {
+                        $or = array();
+                        foreach ($phoneNumbers as $phoneNumber) {
+                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                            $or[] = array('participant-phone' => $regex);
+                        }
+                        $conditions['$or'] = $or;
+                    } else {
+                        $conditions['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                    }
+                }
+            } elseif ($onlyFilterParam[1] == 'message-content' && isset($onlyFilterParam[2])) {
+                $conditions['message-content'] = new MongoRegex("/".$onlyFilterParam[2]."/i");
+            } else {
+                $this->Session->setFlash(__('The parameter(s) for "%s" filtering are missing.',$onlyFilterParam[1]), 
+                'default',
+                array('class' => "message failure")
+                );
+            }
+        }
+        
+        return $conditions;
     }
 
     

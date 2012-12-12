@@ -5,9 +5,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2012-10-17 16:59+0000\n"
-"PO-Revision-Date: 2012-11-01 17:39-0000\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-12-12 11:26+0300\n"
+"Last-Translator: Olivier Vernin <overnin@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,9 +59,7 @@ msgstr "Veuiller régler les paramètres du programme, puis essayer de nouveau."
 #: Controller/ProgramDialoguesController.php:126
 #: Controller/ProgramRequestsController.php:131
 msgid "Program shortcode has not been defined, please go to program settings."
-msgstr ""
-"Numéro court de programme n´a pas été defini, veuiller aller au paramètres "
-"du programme."
+msgstr "Numéro court de programme n´a pas été defini, veuiller aller au paramètres du programme."
 
 #: Controller/ProgramDialoguesController.php:141
 msgid "'%s' already used in dialogue '%s' of the same program."
@@ -180,8 +179,7 @@ msgstr "Enregistration des paramètres de programme échoué."
 
 #: Controller/ProgramSimulatorController.php:43
 msgid "This Dialogue id is not in the database, please choose one available."
-msgstr ""
-"Ce dialogue ID n´est pas dans la base de données, SVP choisir un autre ID"
+msgstr "Ce dialogue ID n´est pas dans la base de données, SVP choisir un autre ID"
 
 #: Controller/ProgramUnattachedMessagesController.php:66;106
 msgid "The Message has been saved."
@@ -237,9 +235,7 @@ msgstr "L´utilisateur de programme a été enregistré."
 
 #: Controller/ProgramsUsersController.php:57;88
 msgid "The programs user could not be saved. Please, try again."
-msgstr ""
-"L´utilisateur de programme n´a pas été enregistré. Veuiller essayer de "
-"nouveau."
+msgstr "L´utilisateur de programme n´a pas été enregistré. Veuiller essayer de nouveau."
 
 #: Controller/ProgramsUsersController.php:117
 msgid "Programs user deleted."
@@ -263,8 +259,7 @@ msgstr "Numéro court non valide"
 
 #: Controller/ShortCodesController.php:91
 msgid "The shortcode could not be saved. Please, try again."
-msgstr ""
-"Le numéro court n´a pas pu être enregistré. Veuiller essayer de nouveau."
+msgstr "Le numéro court n´a pas pu être enregistré. Veuiller essayer de nouveau."
 
 #: Controller/ShortCodesController.php:116
 msgid "ShortCode deleted."
@@ -346,11 +341,10 @@ msgstr "Mot de passe modifié avec succés"
 msgid "Password saving failed."
 msgstr "Modification de mot de passe échouée"
 
-#: Model/ProgramSetting.php:139 Model/UnattachedMessage.php:113
+#: Model/ProgramSetting.php:139
+#: Model/UnattachedMessage.php:113
 msgid "The program settings are incomplete. Please specificy the Timezone."
-msgstr ""
-"Les paramètres du programme sont incomplètes. Veuiller spécifier le fuseau "
-"horaire."
+msgstr "Les paramètres du programme sont incomplètes. Veuiller spécifier le fuseau horaire."
 
 #: Model/Schedule.php:87
 msgid "Error: dialogue not found"
@@ -401,16 +395,11 @@ msgid "Better manage, and easily synchronize you application's ACO tree"
 msgstr ""
 
 #: Plugin/AclExtras/Console/Command/AclExtrasShell.php:244
-msgid ""
-"Add new ACOs for new controllers and actions. Does not remove nodes from the "
-"ACO table."
+msgid "Add new ACOs for new controllers and actions. Does not remove nodes from the ACO table."
 msgstr ""
 
 #: Plugin/AclExtras/Console/Command/AclExtrasShell.php:246
-msgid ""
-"Perform a full sync on the ACO table.Will create new ACOs or missing "
-"controllers and actions.Will also remove orphaned entries that no longer "
-"have a matching controller/action"
+msgid "Perform a full sync on the ACO table.Will create new ACOs or missing controllers and actions.Will also remove orphaned entries that no longer have a matching controller/action"
 msgstr ""
 
 #: Plugin/AclExtras/Console/Command/AclExtrasShell.php:250
@@ -551,23 +540,38 @@ msgstr ""
 msgid "Edit Subdocument"
 msgstr "Modifier sub document"
 
-#: View/Admin/index.ctp:2 View/Programs/index.ctp:39
+#: View/Admin/index.ctp:2
+#: View/Programs/index.ctp:39
 msgid "Admin"
 msgstr "Admin"
 
-#: View/Admin/index.ctp:9 View/Elements/localization.ctp:61;73;81
-#: View/Groups/add.ctp:14 View/Groups/edit.ctp:15 View/Groups/index.ctp:7;38
-#: View/Groups/view.ctp:32 View/ProgramParticipants/index.ctp:17
+#: View/Admin/index.ctp:9
+#: View/Elements/localization.ctp:61;73;81
+#: View/Groups/add.ctp:14
+#: View/Groups/edit.ctp:15
+#: View/Groups/index.ctp:7;38
+#: View/Groups/view.ctp:32
+#: View/ProgramParticipants/index.ctp:17
 #: View/ProgramRequests/index.ctp:12
-#: View/ProgramUnattachedMessages/index.ctp:13 View/Programs/add.ctp:15
-#: View/Programs/edit.ctp:16 View/Programs/view.ctp:37
-#: View/ProgramsUsers/add.ctp:13 View/ProgramsUsers/edit.ctp:14
-#: View/ProgramsUsers/index.ctp:8;44 View/ProgramsUsers/view.ctp:22
-#: View/ShortCodes/add.ctp:70 View/ShortCodes/edit.ctp:68
-#: View/ShortCodes/index.ctp:10;43 View/Templates/add.ctp:22
-#: View/Templates/edit.ctp:21 View/Templates/index.ctp:8;39
-#: View/UnmatchableReply/index.ctp:38 View/Users/add.ctp:17
-#: View/Users/edit.ctp:19 View/Users/index.ctp:7;38 View/Users/view.ctp:46;64
+#: View/ProgramUnattachedMessages/index.ctp:13
+#: View/Programs/add.ctp:15
+#: View/Programs/edit.ctp:16
+#: View/Programs/view.ctp:37
+#: View/ProgramsUsers/add.ctp:13
+#: View/ProgramsUsers/edit.ctp:14
+#: View/ProgramsUsers/index.ctp:8;44
+#: View/ProgramsUsers/view.ctp:22
+#: View/ShortCodes/add.ctp:70
+#: View/ShortCodes/edit.ctp:68
+#: View/ShortCodes/index.ctp:10;43
+#: View/Templates/add.ctp:22
+#: View/Templates/edit.ctp:21
+#: View/Templates/index.ctp:8;39
+#: View/UnmatchableReply/index.ctp:38
+#: View/Users/add.ctp:17
+#: View/Users/edit.ctp:19
+#: View/Users/index.ctp:7;38
+#: View/Users/view.ctp:46;64
 msgid "Actions"
 msgstr "Actions"
 
@@ -592,9 +596,8 @@ msgid "Templates Management"
 msgstr "Gestion des modèles"
 
 #: View/Elements/localization.ctp:4
-#, fuzzy
 msgid "Scheduling time cannot be in the past {0}."
-msgstr "Heure de calendrier ne peut être dans le passé"
+msgstr "Heure d'envoi {0} ne peut être dans le passé."
 
 #: View/Elements/localization.ctp:5
 msgid "Error: action failed."
@@ -613,7 +616,6 @@ msgid "Select one of the choices"
 msgstr "Sélectioner un des choix"
 
 #: View/Elements/localization.ctp:9
-#, fuzzy
 msgid "Required in order to label the participant when he is answering."
 msgstr "Obligatoire afin de marquer le participant quand il répond."
 
@@ -634,12 +636,8 @@ msgid "Require at least 1 reminder."
 msgstr "Requi au moins 1 rappel"
 
 #: View/Elements/localization.ctp:14
-msgid ""
-" has some invalid characters. Keywords must contain only numbers or letters "
-"separated by a comma."
-msgstr ""
-" contient des caractères non valides. Mots-clés doit contenir que des "
-"chiffres ou des lettres séparées par une virgule."
+msgid " has some invalid characters. Keywords must contain only numbers or letters separated by a comma."
+msgstr " contient des caractères non valides. Mots-clés doit contenir que des chiffres ou des lettres séparées par une virgule."
 
 #: View/Elements/localization.ctp:15
 msgid "You cannot have a blank keyword."
@@ -673,8 +671,10 @@ msgstr "Enregistrer dialogue"
 msgid "Save request."
 msgstr "Enregistrer requête"
 
-#: View/Elements/localization.ctp:32 View/Groups/view.ctp:9
-#: View/Programs/view.ctp:9 View/Users/view.ctp:45
+#: View/Elements/localization.ctp:32
+#: View/Groups/view.ctp:9
+#: View/Programs/view.ctp:9
+#: View/Users/view.ctp:45
 msgid "Name"
 msgstr "Nom"
 
@@ -682,7 +682,8 @@ msgstr "Nom"
 msgid "Automatic enrollment"
 msgstr "Enregistrement automatique"
 
-#: View/Elements/localization.ctp:34 View/ProgramHome/index.ctp:29
+#: View/Elements/localization.ctp:34
+#: View/ProgramHome/index.ctp:29
 #: View/ProgramParticipants/view.ctp:70
 msgid "Dialogue"
 msgstr "Dialogue"
@@ -703,12 +704,15 @@ msgstr "Mot-clé"
 msgid "Choice"
 msgstr "Choix"
 
-#: View/Elements/localization.ctp:39;90 View/ProgramHome/index.ctp:22
+#: View/Elements/localization.ctp:39;90
+#: View/ProgramHome/index.ctp:22
 msgid "Content"
 msgstr "Contenu"
 
-#: View/Elements/localization.ctp:40 View/ProgramHistory/index.ctp:101
-#: View/ProgramParticipants/view.ctp:60 View/UnmatchableReply/index.ctp:8
+#: View/Elements/localization.ctp:40
+#: View/ProgramHistory/index.ctp:101
+#: View/ProgramParticipants/view.ctp:60
+#: View/UnmatchableReply/index.ctp:8
 msgid "Time"
 msgstr "Heure"
 
@@ -789,14 +793,12 @@ msgid "Action"
 msgstr "Action"
 
 #: View/Elements/localization.ctp:63
-#, fuzzy
 msgid "Opt-in"
-msgstr "Entrer"
+msgstr "Opt-in"
 
 #: View/Elements/localization.ctp:64
-#, fuzzy
 msgid "Opt-out"
-msgstr "Sortir"
+msgstr "Opt-out"
 
 #: View/Elements/localization.ctp:65
 msgid "Enroll"
@@ -807,14 +809,12 @@ msgid "Delayed Enroll"
 msgstr "Inscription retardée"
 
 #: View/Elements/localization.ctp:67
-#, fuzzy
 msgid "Tag"
-msgstr "Balise"
+msgstr "Tag"
 
 #: View/Elements/localization.ctp:68
-#, fuzzy
 msgid "Reset"
-msgstr "Remettre"
+msgstr "Initialiser"
 
 #: View/Elements/localization.ctp:69
 msgid "Add"
@@ -832,10 +832,13 @@ msgstr "Réponses"
 msgid "Response"
 msgstr "Réponse"
 
-#: View/Elements/localization.ctp:75 View/ProgramDialogues/edit.ctp:3
+#: View/Elements/localization.ctp:75
+#: View/ProgramDialogues/edit.ctp:3
 #: View/ProgramParticipants/add.ctp:3;16
-#: View/ProgramParticipants/edit.ctp:3;14 View/ProgramRequests/add.ctp:3
-#: View/ProgramRequests/edit.ctp:3 View/ProgramSettings/edit.ctp:3;107
+#: View/ProgramParticipants/edit.ctp:3;14
+#: View/ProgramRequests/add.ctp:3
+#: View/ProgramRequests/edit.ctp:3
+#: View/ProgramSettings/edit.ctp:3;107
 #: View/ProgramUnattachedMessages/add.ctp:3;51
 #: View/ProgramUnattachedMessages/edit.ctp:3;65
 #: View/Users/change_password.ctp:8
@@ -875,9 +878,7 @@ msgid "Use template from program settings"
 msgstr "User modèle de paramètres du programme"
 
 #: View/Elements/localization.ctp:86
-msgid ""
-"In case no matching on other requests, try to match only the message first "
-"word."
+msgid "In case no matching on other requests, try to match only the message first word."
 msgstr ""
 
 #: View/Elements/localization.ctp:87
@@ -896,7 +897,8 @@ msgstr ""
 msgid "Dialogues"
 msgstr "Dialogues"
 
-#: View/Elements/navigation_menu.ctp:22 View/ProgramDialogues/index.ctp:3
+#: View/Elements/navigation_menu.ctp:22
+#: View/ProgramDialogues/index.ctp:3
 msgid "New Dialogue"
 msgstr "Nouveau dialogue"
 
@@ -908,16 +910,19 @@ msgstr "Actif"
 msgid "Draft"
 msgstr "Brouillon"
 
-#: View/Elements/navigation_menu.ctp:50 View/ProgramDialogues/edit.ctp:14
+#: View/Elements/navigation_menu.ctp:50
+#: View/ProgramDialogues/edit.ctp:14
 #: View/ProgramDialogues/index.ctp:42
 msgid "Activate"
 msgstr "Activer"
 
-#: View/Elements/navigation_menu.ctp:63 View/ProgramRequests/index.ctp:5
+#: View/Elements/navigation_menu.ctp:63
+#: View/ProgramRequests/index.ctp:5
 msgid "Requests"
 msgstr "Requêtes"
 
-#: View/Elements/navigation_menu.ctp:68 View/ProgramRequests/index.ctp:3
+#: View/Elements/navigation_menu.ctp:68
+#: View/ProgramRequests/index.ctp:3
 msgid "New Request"
 msgstr "Nouveau demande"
 
@@ -930,7 +935,8 @@ msgstr "Simple message"
 msgid "New Message"
 msgstr "Nouveau message"
 
-#: View/Elements/navigation_menu.ctp:111 View/ProgramParticipants/index.ctp:8
+#: View/Elements/navigation_menu.ctp:111
+#: View/ProgramParticipants/index.ctp:8
 msgid "Participants"
 msgstr "Participants"
 
@@ -974,37 +980,58 @@ msgstr "Liste de programmes"
 msgid "Add Group"
 msgstr "Ajouter groupe"
 
-#: View/Groups/add.ctp:11 View/Groups/edit.ctp:12 View/Programs/add.ctp:12
-#: View/Programs/edit.ctp:13 View/ProgramsUsers/add.ctp:10
-#: View/ProgramsUsers/edit.ctp:11 View/ShortCodes/add.ctp:67
-#: View/ShortCodes/edit.ctp:65 View/Templates/add.ctp:18
-#: View/Templates/edit.ctp:18 View/Users/add.ctp:14 View/Users/edit.ctp:16
+#: View/Groups/add.ctp:11
+#: View/Groups/edit.ctp:12
+#: View/Programs/add.ctp:12
+#: View/Programs/edit.ctp:13
+#: View/ProgramsUsers/add.ctp:10
+#: View/ProgramsUsers/edit.ctp:11
+#: View/ShortCodes/add.ctp:67
+#: View/ShortCodes/edit.ctp:65
+#: View/Templates/add.ctp:18
+#: View/Templates/edit.ctp:18
+#: View/Users/add.ctp:14
+#: View/Users/edit.ctp:16
 msgid "Submit"
 msgstr "Soumettre"
 
-#: View/Groups/add.ctp:16 View/Groups/edit.ctp:18 View/Groups/view.ctp:36
+#: View/Groups/add.ctp:16
+#: View/Groups/edit.ctp:18
+#: View/Groups/view.ctp:36
 msgid "List Groups"
 msgstr ""
 
-#: View/Groups/add.ctp:17 View/Groups/edit.ctp:19 View/Groups/index.ctp:41
-#: View/Programs/add.ctp:18 View/Programs/edit.ctp:20
-#: View/ShortCodes/add.ctp:73 View/ShortCodes/edit.ctp:71
-#: View/ShortCodes/index.ctp:46 View/Templates/add.ctp:25
-#: View/Templates/edit.ctp:24 View/Templates/index.ctp:42
-#: View/Users/add.ctp:20 View/Users/edit.ctp:24 View/Users/index.ctp:41
+#: View/Groups/add.ctp:17
+#: View/Groups/edit.ctp:19
+#: View/Groups/index.ctp:41
+#: View/Programs/add.ctp:18
+#: View/Programs/edit.ctp:20
+#: View/ShortCodes/add.ctp:73
+#: View/ShortCodes/edit.ctp:71
+#: View/ShortCodes/index.ctp:46
+#: View/Templates/add.ctp:25
+#: View/Templates/edit.ctp:24
+#: View/Templates/index.ctp:42
+#: View/Users/add.ctp:20
+#: View/Users/edit.ctp:24
+#: View/Users/index.ctp:41
 #: View/Users/view.ctp:68
 msgid "Back to Admin menu"
 msgstr "Retour au menu Admin"
 
-#: View/Groups/edit.ctp:2 View/Groups/view.ctp:34
+#: View/Groups/edit.ctp:2
+#: View/Groups/view.ctp:34
 msgid "Edit Group"
 msgstr "Modifier Groupe"
 
-#: View/Groups/edit.ctp:17 View/Groups/view.ctp:35
+#: View/Groups/edit.ctp:17
+#: View/Groups/view.ctp:35
 msgid "Delete Group"
 msgstr "Supprimer groupe"
 
-#: View/Groups/edit.ctp:17 View/Groups/index.ctp:17 View/Groups/view.ctp:35
+#: View/Groups/edit.ctp:17
+#: View/Groups/index.ctp:17
+#: View/Groups/view.ctp:35
 msgid "Are you sure you want to delete \"%s\" group?"
 msgstr "Etes-vous sûr de suprimer \"%s\" group?"
 
@@ -1012,64 +1039,90 @@ msgstr "Etes-vous sûr de suprimer \"%s\" group?"
 msgid "Groups"
 msgstr "Groupes"
 
-#: View/Groups/index.ctp:15 View/ProgramParticipants/index.ctp:62
-#: View/ProgramsUsers/index.ctp:21 View/Users/index.ctp:15
+#: View/Groups/index.ctp:15
+#: View/ProgramParticipants/index.ctp:62
+#: View/ProgramsUsers/index.ctp:21
+#: View/Users/index.ctp:15
 #: View/Users/view.ctp:54
 msgid "View"
 msgstr "Afficher"
 
-#: View/Groups/index.ctp:16 View/ProgramParticipants/index.ctp:64
+#: View/Groups/index.ctp:16
+#: View/ProgramParticipants/index.ctp:64
 #: View/ProgramRequests/index.ctp:43
-#: View/ProgramUnattachedMessages/index.ctp:28 View/ProgramsUsers/index.ctp:22
-#: View/ShortCodes/index.ctp:21 View/Templates/index.ctp:17
-#: View/Users/index.ctp:16 View/Users/view.ctp:55
+#: View/ProgramUnattachedMessages/index.ctp:28
+#: View/ProgramsUsers/index.ctp:22
+#: View/ShortCodes/index.ctp:21
+#: View/Templates/index.ctp:17
+#: View/Users/index.ctp:16
+#: View/Users/view.ctp:55
 msgid "Edit"
 msgstr "Modifier"
 
-#: View/Groups/index.ctp:17 View/ProgramDialogues/index.ctp:44
-#: View/ProgramParticipants/index.ctp:65 View/ProgramRequests/index.ctp:44
-#: View/ProgramUnattachedMessages/index.ctp:31 View/Programs/index.ctp:41
-#: View/ProgramsUsers/edit.ctp:17 View/ProgramsUsers/index.ctp:23
-#: View/ShortCodes/index.ctp:22 View/Templates/index.ctp:18
+#: View/Groups/index.ctp:17
+#: View/ProgramDialogues/index.ctp:44
+#: View/ProgramParticipants/index.ctp:65
+#: View/ProgramRequests/index.ctp:44
+#: View/ProgramUnattachedMessages/index.ctp:31
+#: View/Programs/index.ctp:41
+#: View/ProgramsUsers/edit.ctp:17
+#: View/ProgramsUsers/index.ctp:23
+#: View/ShortCodes/index.ctp:22
+#: View/Templates/index.ctp:18
 #: View/Users/index.ctp:17
 msgid "Delete"
 msgstr "Supprimer"
 
-#: View/Groups/index.ctp:25 View/ProgramRequests/index.ctp:54
-#: View/ProgramsUsers/index.ctp:31 View/ShortCodes/index.ctp:30
-#: View/Templates/index.ctp:26 View/UnmatchableReply/index.ctp:24
+#: View/Groups/index.ctp:25
+#: View/ProgramRequests/index.ctp:54
+#: View/ProgramsUsers/index.ctp:31
+#: View/ShortCodes/index.ctp:30
+#: View/Templates/index.ctp:26
+#: View/UnmatchableReply/index.ctp:24
 #: View/Users/index.ctp:25
-msgid ""
-"Page {:page} of {:pages}, showing {:current} records out of {:count} total, "
-"starting on record {:start}, ending on {:end}"
+msgid "Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}"
 msgstr ""
 
-#: View/Groups/index.ctp:31 View/ProgramHistory/index.ctp:130
-#: View/ProgramParticipants/index.ctp:80 View/ProgramRequests/index.ctp:60
-#: View/ProgramUnattachedMessages/index.ctp:46 View/ProgramsUsers/index.ctp:37
-#: View/ShortCodes/index.ctp:36 View/Templates/index.ctp:32
-#: View/UnmatchableReply/index.ctp:31 View/Users/index.ctp:31
+#: View/Groups/index.ctp:31
+#: View/ProgramHistory/index.ctp:130
+#: View/ProgramParticipants/index.ctp:80
+#: View/ProgramRequests/index.ctp:60
+#: View/ProgramUnattachedMessages/index.ctp:46
+#: View/ProgramsUsers/index.ctp:37
+#: View/ShortCodes/index.ctp:36
+#: View/Templates/index.ctp:32
+#: View/UnmatchableReply/index.ctp:31
+#: View/Users/index.ctp:31
 msgid "previous"
 msgstr "précédent"
 
-#: View/Groups/index.ctp:33 View/ProgramHistory/index.ctp:132
-#: View/ProgramParticipants/index.ctp:82 View/ProgramRequests/index.ctp:62
-#: View/ProgramUnattachedMessages/index.ctp:48 View/ProgramsUsers/index.ctp:39
-#: View/ShortCodes/index.ctp:38 View/Templates/index.ctp:34
-#: View/UnmatchableReply/index.ctp:33 View/Users/index.ctp:33
+#: View/Groups/index.ctp:33
+#: View/ProgramHistory/index.ctp:132
+#: View/ProgramParticipants/index.ctp:82
+#: View/ProgramRequests/index.ctp:62
+#: View/ProgramUnattachedMessages/index.ctp:48
+#: View/ProgramsUsers/index.ctp:39
+#: View/ShortCodes/index.ctp:38
+#: View/Templates/index.ctp:34
+#: View/UnmatchableReply/index.ctp:33
+#: View/Users/index.ctp:33
 msgid "next"
 msgstr "suivant"
 
-#: View/Groups/index.ctp:40 View/Groups/view.ctp:37
+#: View/Groups/index.ctp:40
+#: View/Groups/view.ctp:37
 msgid "New Group"
 msgstr "Nouveau Groupe"
 
-#: View/Groups/view.ctp:2 View/Users/view.ctp:23
+#: View/Groups/view.ctp:2
+#: View/Users/view.ctp:23
 msgid "Group"
 msgstr "Groupe"
 
-#: View/Groups/view.ctp:4 View/Programs/view.ctp:4
-#: View/ProgramsUsers/view.ctp:4 View/Users/view.ctp:4
+#: View/Groups/view.ctp:4
+#: View/Programs/view.ctp:4
+#: View/ProgramsUsers/view.ctp:4
+#: View/Users/view.ctp:4
 msgid "Id"
 msgstr "Id"
 
@@ -1077,11 +1130,15 @@ msgstr "Id"
 msgid "Specific Program Access"
 msgstr ""
 
-#: View/Groups/view.ctp:19 View/Programs/view.ctp:24 View/Users/view.ctp:29
+#: View/Groups/view.ctp:19
+#: View/Programs/view.ctp:24
+#: View/Users/view.ctp:29
 msgid "Created"
 msgstr "Creé"
 
-#: View/Groups/view.ctp:24 View/Programs/view.ctp:29 View/Users/view.ctp:34
+#: View/Groups/view.ctp:24
+#: View/Programs/view.ctp:29
+#: View/Users/view.ctp:34
 msgid "Modified"
 msgstr "Modifié"
 
@@ -1093,7 +1150,8 @@ msgstr "Se déconnecter"
 msgid "admin"
 msgstr "admin"
 
-#: View/ProgramDialogues/edit.ctp:22 View/ProgramScripts/active.ctp:5
+#: View/ProgramDialogues/edit.ctp:22
+#: View/ProgramScripts/active.ctp:5
 #: View/ProgramScripts/draft.ctp:5
 msgid "Test send all messages"
 msgstr "Teste, envoyer tous les messages"
@@ -1126,7 +1184,8 @@ msgstr "Activer brouilin"
 msgid "Only draft"
 msgstr "Brouillon seulement"
 
-#: View/ProgramDialogues/index.ctp:44 View/ProgramRequests/index.ctp:45
+#: View/ProgramDialogues/index.ctp:44
+#: View/ProgramRequests/index.ctp:45
 #: View/Programs/index.ctp:41
 msgid "Are you sure you want to delete %s?"
 msgstr "Etes-vous sûr de suprimer %s?"
@@ -1145,11 +1204,11 @@ msgid "Program History"
 msgstr "Historique de programme"
 
 #: View/ProgramHistory/index.ctp:30
-#, fuzzy
 msgid "Non matching answers"
 msgstr "Réponses non-concordantes"
 
-#: View/ProgramHistory/index.ctp:96 View/ProgramParticipants/view.ctp:9
+#: View/ProgramHistory/index.ctp:96
+#: View/ProgramParticipants/view.ctp:9
 msgid "Phone"
 msgstr "Telephone"
 
@@ -1165,19 +1224,20 @@ msgstr "Statut"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: View/ProgramHistory/index.ctp:100 View/UnmatchableReply/index.ctp:7
+#: View/ProgramHistory/index.ctp:100
+#: View/UnmatchableReply/index.ctp:7
 msgid "Message"
 msgstr "Message"
 
-#: View/ProgramHistory/index.ctp:127 View/ProgramParticipants/index.ctp:77
+#: View/ProgramHistory/index.ctp:127
+#: View/ProgramParticipants/index.ctp:77
 #: View/ProgramUnattachedMessages/index.ctp:43
 msgid "{:start} - {:end} of {:count}"
 msgstr ""
 
 #: View/ProgramHome/index.ctp:4
-#, fuzzy
 msgid "Restart Worker"
-msgstr "Reprendre"
+msgstr "Redemmager le backend"
 
 #: View/ProgramHome/index.ctp:15
 msgid "Sending Next"
@@ -1187,19 +1247,23 @@ msgstr "Envoyer suivant"
 msgid "At"
 msgstr "à"
 
-#: View/ProgramHome/index.ctp:20 View/ProgramParticipants/view.ctp:61
+#: View/ProgramHome/index.ctp:20
+#: View/ProgramParticipants/view.ctp:61
 msgid "Source"
 msgstr "Source"
 
-#: View/ProgramHome/index.ctp:21 View/UnmatchableReply/index.ctp:6
+#: View/ProgramHome/index.ctp:21
+#: View/UnmatchableReply/index.ctp:6
 msgid "To"
 msgstr "A"
 
-#: View/ProgramHome/index.ctp:31 View/ProgramParticipants/view.ctp:72
+#: View/ProgramHome/index.ctp:31
+#: View/ProgramParticipants/view.ctp:72
 msgid "Separate Msg"
 msgstr "Simple message"
 
-#: View/ProgramHome/index.ctp:35 View/Programs/index.ctp:33
+#: View/ProgramHome/index.ctp:35
+#: View/Programs/index.ctp:33
 msgid " participant(s)"
 msgstr " participant(s)"
 
@@ -1207,20 +1271,24 @@ msgstr " participant(s)"
 msgid "Program Logs"
 msgstr "Journaux de program"
 
-#: View/ProgramParticipants/add.ctp:5 View/ProgramParticipants/index.ctp:5
+#: View/ProgramParticipants/add.ctp:5
+#: View/ProgramParticipants/index.ctp:5
 msgid "Import Participant(s)"
 msgstr "Importation Participant(s)"
 
-#: View/ProgramParticipants/add.ctp:6 View/ProgramParticipants/import.ctp:4
+#: View/ProgramParticipants/add.ctp:6
+#: View/ProgramParticipants/import.ctp:4
 msgid "View Participant(s)"
 msgstr "Afficher participant"
 
-#: View/ProgramParticipants/add.ctp:8 View/ProgramParticipants/import.ctp:3
+#: View/ProgramParticipants/add.ctp:8
+#: View/ProgramParticipants/import.ctp:3
 #: View/ProgramParticipants/index.ctp:4
 msgid "Add Participant"
 msgstr "Ajouter Participant"
 
-#: View/ProgramParticipants/edit.ctp:6 View/ProgramParticipants/view.ctp:4
+#: View/ProgramParticipants/edit.ctp:6
+#: View/ProgramParticipants/view.ctp:4
 msgid "Edit Participant"
 msgstr "Modifier Participant"
 
@@ -1228,19 +1296,23 @@ msgstr "Modifier Participant"
 msgid "Upload"
 msgstr "Télécharger"
 
-#: View/ProgramParticipants/index.ctp:13 View/ProgramParticipants/view.ctp:12
+#: View/ProgramParticipants/index.ctp:13
+#: View/ProgramParticipants/view.ctp:12
 msgid "Last Optin Date"
 msgstr "Date de la dernière enregistrement"
 
-#: View/ProgramParticipants/index.ctp:34 View/ProgramParticipants/view.ctp:26
+#: View/ProgramParticipants/index.ctp:34
+#: View/ProgramParticipants/view.ctp:26
 msgid "%s at %s"
 msgstr "%s a %s"
 
-#: View/ProgramParticipants/index.ctp:46 View/ProgramParticipants/view.ctp:38
+#: View/ProgramParticipants/index.ctp:46
+#: View/ProgramParticipants/view.ctp:38
 msgid "%s"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:55 View/ProgramParticipants/view.ctp:48
+#: View/ProgramParticipants/index.ctp:55
+#: View/ProgramParticipants/view.ctp:48
 msgid "%s: %s"
 msgstr ""
 
@@ -1257,9 +1329,8 @@ msgid "Enrolled"
 msgstr "Enregistré"
 
 #: View/ProgramParticipants/view.ctp:34
-#, fuzzy
 msgid "Tags"
-msgstr "Balises"
+msgstr "Tags"
 
 #: View/ProgramParticipants/view.ctp:44
 msgid "Profile"
@@ -1305,12 +1376,14 @@ msgstr "Modifier demande"
 msgid "Enrolling dialogue %s"
 msgstr "Enregistrer dialogue %s"
 
-#: View/ProgramScripts/activate_draft.ctp:2 View/ProgramScripts/active.ctp:8
+#: View/ProgramScripts/activate_draft.ctp:2
+#: View/ProgramScripts/active.ctp:8
 #: View/ProgramScripts/draft.ctp:7
 msgid "Script"
 msgstr "Scénario"
 
-#: View/ProgramScripts/active.ctp:3 View/ProgramScripts/draft.ctp:3
+#: View/ProgramScripts/active.ctp:3
+#: View/ProgramScripts/draft.ctp:3
 msgid "Save as draft"
 msgstr "Enregistrer comme brouillon"
 
@@ -1330,35 +1403,38 @@ msgstr "Envoyer tous les messages à "
 msgid "Edit Program Settings"
 msgstr "Modifier parametres de programme"
 
-#: View/ProgramSettings/edit.ctp:13 View/ProgramSettings/view.ctp:5
+#: View/ProgramSettings/edit.ctp:13
+#: View/ProgramSettings/view.ctp:5
 #: View/ShortCodes/index.ctp:5
 msgid "Shortcode"
 msgstr "Numéro court"
 
-#: View/ProgramSettings/edit.ctp:57 View/ProgramSettings/view.ctp:9
+#: View/ProgramSettings/edit.ctp:57
+#: View/ProgramSettings/view.ctp:9
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: View/ProgramSettings/edit.ctp:69 View/ProgramSettings/view.ctp:11
+#: View/ProgramSettings/edit.ctp:69
+#: View/ProgramSettings/view.ctp:11
 msgid "Default template for open questions"
 msgstr "Modèle par défaut pour questions ouverts"
 
-#: View/ProgramSettings/edit.ctp:72;79;86 View/ShortCodes/add.ctp:49
+#: View/ProgramSettings/edit.ctp:72;79;86
+#: View/ShortCodes/add.ctp:49
 #: View/ShortCodes/edit.ctp:46
 msgid "Template..."
 msgstr "Modèle..."
 
-#: View/ProgramSettings/edit.ctp:76 View/ProgramSettings/view.ctp:13
+#: View/ProgramSettings/edit.ctp:76
+#: View/ProgramSettings/view.ctp:13
 msgid "Default template for closed questions"
 msgstr "modèle par défaut pour questions fermées"
 
 #: View/ProgramSettings/edit.ctp:83
-#, fuzzy
 msgid "Default template for unmatching answers"
 msgstr "Modèle par défaut pour réponses non-concordantes"
 
 #: View/ProgramSettings/edit.ctp:103
-#, fuzzy
 msgid "Unmacthing answer remove reminders."
 msgstr "Réponses non-concordantes, supprimer rappels."
 
@@ -1383,7 +1459,8 @@ msgid "Add Separate Message"
 msgstr "Ajouter message séparé"
 
 #: View/ProgramUnattachedMessages/add.ctp:11
-#: View/ProgramUnattachedMessages/edit.ctp:14 View/Templates/add.ctp:4
+#: View/ProgramUnattachedMessages/edit.ctp:14
+#: View/Templates/add.ctp:4
 #: View/Templates/edit.ctp:4
 msgid "name"
 msgstr "nom"
@@ -1428,27 +1505,32 @@ msgstr "Etes-vous sûr que de supprimer le message séparé \"%s\" ?"
 msgid "Add Program"
 msgstr "Ajouter programme"
 
-#: View/Programs/add.ctp:17 View/Programs/edit.ctp:19
-#: View/Programs/view.ctp:41 View/ProgramsUsers/add.ctp:17
-#: View/ProgramsUsers/edit.ctp:19 View/ProgramsUsers/index.ctp:47
+#: View/Programs/add.ctp:17
+#: View/Programs/edit.ctp:19
+#: View/Programs/view.ctp:41
+#: View/ProgramsUsers/add.ctp:17
+#: View/ProgramsUsers/edit.ctp:19
+#: View/ProgramsUsers/index.ctp:47
 #: View/ProgramsUsers/view.ctp:28
 msgid "List Programs"
 msgstr "Liste Programmes"
 
-#: View/Programs/edit.ctp:2 View/Programs/view.ctp:39
+#: View/Programs/edit.ctp:2
+#: View/Programs/view.ctp:39
 msgid "Edit Program"
 msgstr "Modifier Programme"
 
-#: View/Programs/edit.ctp:18 View/Programs/view.ctp:40
+#: View/Programs/edit.ctp:18
+#: View/Programs/view.ctp:40
 msgid "Delete Program"
 msgstr "Supprimer Programme"
 
-#: View/Programs/edit.ctp:18 View/Programs/view.ctp:40
+#: View/Programs/edit.ctp:18
+#: View/Programs/view.ctp:40
 msgid "Are you sure you want to delete program \"%s\" ?"
 msgstr "Etes-vous sûr que de supprimer le programme \"%s\" ?"
 
 #: View/Programs/index.ctp:2
-#, fuzzy
 msgid "Recent Issues"
 msgstr "Problemes récents"
 
@@ -1472,7 +1554,8 @@ msgstr " histoire(s)"
 msgid " schedule(s)"
 msgstr " Planning(s)"
 
-#: View/Programs/view.ctp:2 View/ProgramsUsers/view.ctp:9
+#: View/Programs/view.ctp:2
+#: View/ProgramsUsers/view.ctp:9
 msgid "Program"
 msgstr "Programme"
 
@@ -1484,8 +1567,10 @@ msgstr "URL"
 msgid "Database"
 msgstr "Base de données"
 
-#: View/Programs/view.ctp:42 View/ProgramsUsers/add.ctp:18
-#: View/ProgramsUsers/edit.ctp:20 View/ProgramsUsers/index.ctp:48
+#: View/Programs/view.ctp:42
+#: View/ProgramsUsers/add.ctp:18
+#: View/ProgramsUsers/edit.ctp:20
+#: View/ProgramsUsers/index.ctp:48
 #: View/ProgramsUsers/view.ctp:29
 msgid "New Program"
 msgstr "Nouveau Programme"
@@ -1494,28 +1579,37 @@ msgstr "Nouveau Programme"
 msgid "Add Programs User"
 msgstr "Ajouter utilisateur de programme"
 
-#: View/ProgramsUsers/add.ctp:16 View/ProgramsUsers/edit.ctp:18
+#: View/ProgramsUsers/add.ctp:16
+#: View/ProgramsUsers/edit.ctp:18
 #: View/ProgramsUsers/view.ctp:26
 msgid "List Programs Users"
 msgstr "Liste utilisateurs de programmes"
 
-#: View/ProgramsUsers/add.ctp:19 View/ProgramsUsers/edit.ctp:21
-#: View/ProgramsUsers/index.ctp:49 View/ProgramsUsers/view.ctp:30
-#: View/Users/add.ctp:19 View/Users/edit.ctp:23 View/Users/view.ctp:67
+#: View/ProgramsUsers/add.ctp:19
+#: View/ProgramsUsers/edit.ctp:21
+#: View/ProgramsUsers/index.ctp:49
+#: View/ProgramsUsers/view.ctp:30
+#: View/Users/add.ctp:19
+#: View/Users/edit.ctp:23
+#: View/Users/view.ctp:67
 msgid "List Users"
 msgstr "Liste des utilisateurs"
 
-#: View/ProgramsUsers/add.ctp:20 View/ProgramsUsers/edit.ctp:22
-#: View/ProgramsUsers/index.ctp:50 View/ProgramsUsers/view.ctp:31
+#: View/ProgramsUsers/add.ctp:20
+#: View/ProgramsUsers/edit.ctp:22
+#: View/ProgramsUsers/index.ctp:50
+#: View/ProgramsUsers/view.ctp:31
 #: View/Users/index.ctp:40
 msgid "New User"
 msgstr "Nouveau utilisateur"
 
-#: View/ProgramsUsers/edit.ctp:4 View/ProgramsUsers/view.ctp:24
+#: View/ProgramsUsers/edit.ctp:4
+#: View/ProgramsUsers/view.ctp:24
 msgid "Edit Programs User"
 msgstr "Modifier utilisateur de programmes"
 
-#: View/ProgramsUsers/edit.ctp:17 View/ProgramsUsers/index.ctp:23
+#: View/ProgramsUsers/edit.ctp:17
+#: View/ProgramsUsers/index.ctp:23
 #: View/ProgramsUsers/view.ctp:25
 msgid "Are you sure you want to delete # %s?"
 msgstr "Etes-vous sûr de suprimer # %s?"
@@ -1524,7 +1618,8 @@ msgstr "Etes-vous sûr de suprimer # %s?"
 msgid "Programs Users"
 msgstr "Utilisateur de programme"
 
-#: View/ProgramsUsers/index.ctp:46 View/ProgramsUsers/view.ctp:27
+#: View/ProgramsUsers/index.ctp:46
+#: View/ProgramsUsers/view.ctp:27
 msgid "New Programs User"
 msgstr "Nouveau utilisateur programme"
 
@@ -1532,7 +1627,8 @@ msgstr "Nouveau utilisateur programme"
 msgid "Programs User"
 msgstr "Utilisateur de programme"
 
-#: View/ProgramsUsers/view.ctp:14 View/Users/view.ctp:2
+#: View/ProgramsUsers/view.ctp:14
+#: View/Users/view.ctp:2
 msgid "User"
 msgstr "Utilisateur"
 
@@ -1544,29 +1640,35 @@ msgstr "Supprimer utilisateur de programme"
 msgid "Add ShortCode"
 msgstr "Ajouter numéro court"
 
-#: View/ShortCodes/add.ctp:27 View/ShortCodes/edit.ctp:24
+#: View/ShortCodes/add.ctp:27
+#: View/ShortCodes/edit.ctp:24
 #: View/ShortCodes/index.ctp:6
 msgid "Country"
 msgstr "Pays"
 
-#: View/ShortCodes/add.ctp:36 View/ShortCodes/edit.ctp:33
+#: View/ShortCodes/add.ctp:36
+#: View/ShortCodes/edit.ctp:33
 msgid "shortcode"
 msgstr "numéro court"
 
-#: View/ShortCodes/add.ctp:39 View/ShortCodes/index.ctp:7
+#: View/ShortCodes/add.ctp:39
+#: View/ShortCodes/index.ctp:7
 msgid "International Prefix"
 msgstr "Préfixe international"
 
-#: View/ShortCodes/add.ctp:45 View/ShortCodes/edit.ctp:42
+#: View/ShortCodes/add.ctp:45
+#: View/ShortCodes/edit.ctp:42
 msgid "Error Template"
 msgstr "Erreur modèle"
 
-#: View/ShortCodes/add.ctp:56 View/ShortCodes/edit.ctp:54
+#: View/ShortCodes/add.ctp:56
+#: View/ShortCodes/edit.ctp:54
 #: View/ShortCodes/index.ctp:8
 msgid "Support Customized Id"
 msgstr ""
 
-#: View/ShortCodes/add.ctp:62 View/ShortCodes/edit.ctp:61
+#: View/ShortCodes/add.ctp:62
+#: View/ShortCodes/edit.ctp:61
 #: View/ShortCodes/index.ctp:9
 msgid "Supported Internationally"
 msgstr ""
@@ -1611,19 +1713,23 @@ msgstr "Nouveau numéro court"
 msgid "Add Template"
 msgstr "Ajouter modèle"
 
-#: View/Templates/add.ctp:7 View/Templates/edit.ctp:7
+#: View/Templates/add.ctp:7
+#: View/Templates/edit.ctp:7
 msgid "Template type"
 msgstr "Genre modèle "
 
-#: View/Templates/add.ctp:10 View/Templates/edit.ctp:10
+#: View/Templates/add.ctp:10
+#: View/Templates/edit.ctp:10
 msgid "Template type..."
 msgstr "Genre modèle "
 
-#: View/Templates/add.ctp:16 View/Templates/edit.ctp:16
+#: View/Templates/add.ctp:16
+#: View/Templates/edit.ctp:16
 msgid "template"
 msgstr "modèle"
 
-#: View/Templates/add.ctp:24 View/Templates/edit.ctp:23
+#: View/Templates/add.ctp:24
+#: View/Templates/edit.ctp:23
 msgid "View Templates"
 msgstr "Afficher modèle"
 
@@ -1659,16 +1765,19 @@ msgstr "Retour au menu programmes"
 msgid "Add User"
 msgstr "Ajouter utilisateur"
 
-#: View/Users/change_password.ctp:1 View/Users/edit.ctp:10
+#: View/Users/change_password.ctp:1
+#: View/Users/edit.ctp:10
 #: View/Users/view.ctp:16
 msgid "Change Password"
 msgstr "Changer mot de passe"
 
-#: View/Users/edit.ctp:2 View/Users/view.ctp:66
+#: View/Users/edit.ctp:2
+#: View/Users/view.ctp:66
 msgid "Edit User"
 msgstr "modifier utilisateur"
 
-#: View/Users/edit.ctp:9 View/Users/view.ctp:14
+#: View/Users/edit.ctp:9
+#: View/Users/view.ctp:14
 msgid "Password"
 msgstr "mot de passe"
 
@@ -1676,7 +1785,8 @@ msgstr "mot de passe"
 msgid "Delete User"
 msgstr "Supprimer utilisateur"
 
-#: View/Users/edit.ctp:22 View/Users/index.ctp:17
+#: View/Users/edit.ctp:22
+#: View/Users/index.ctp:17
 msgid "Are you sure you want to delete the user \"%s\" ?"
 msgstr "Etes-vous sûr que de supprimer l´utilisateur \"%s\" ?"
 
@@ -1700,147 +1810,162 @@ msgstr "E-mail"
 msgid "Accessible Programs"
 msgstr "Programmes accesibles"
 
-#: Model/Group.php:validation for field name Model/ProgramsUser.php:validation
-#: program_id Model/User.php:validation username;validation password
+#: Model/Group.php:validation
+#: for field name Model/ProgramsUser.php:validation
+#: program_id Model/User.php:validation
+#: username;validation password
 msgid "notempty"
 msgstr ""
 
-#: Model/Participant.php:validation for field phone
+#: Model/Participant.php:validation
+#: for field phone
 msgid "Please enter a phone number."
 msgstr "Veuiller saisir un numéro de telephone."
 
-#: Model/Participant.php:validation for field phone
-msgid ""
-"A phone number must begin with a '+' sign and end with a serie of digits "
-"such as +3345678733."
-msgstr ""
-"Un numéro de téléphone doit commencer par un signe \"+\" et terminer avec "
-"une série de chiffres tels que 3345678733."
+#: Model/Participant.php:validation
+#: for field phone
+msgid "A phone number must begin with a '+' sign and end with a serie of digits such as +3345678733."
+msgstr "Un numéro de téléphone doit commencer par un signe \"+\" et terminer avec une série de chiffres tels que 3345678733."
 
-#: Model/Participant.php:validation for field phone
+#: Model/Participant.php:validation
+#: for field phone
 msgid "This phone number already exists in the participant list."
 msgstr "Ce numéro de téléphone existe déjà dans la liste des participants."
 
-#: Model/Program.php:validation for field name
+#: Model/Program.php:validation
+#: for field name
 msgid "Please give a name to the program."
 msgstr "Veuiller donner un nom au programme."
 
-#: Model/Program.php:validation for field name
-msgid ""
-"Another program is currently using this name, please choose another one."
-msgstr ""
-"Un autre programme utilise actuellement ce nom, Veuiller choisir un autre."
+#: Model/Program.php:validation
+#: for field name
+msgid "Another program is currently using this name, please choose another one."
+msgstr "Un autre programme utilise actuellement ce nom, Veuiller choisir un autre."
 
-#: Model/Program.php:validation for field url
+#: Model/Program.php:validation
+#: for field url
 msgid "Please give a url to the program."
 msgstr "Veuiller donner un URL au programme."
 
-#: Model/Program.php:validation for field url
+#: Model/Program.php:validation
+#: for field url
 msgid "Another program is currently using this url, please choose another one."
-msgstr ""
-"Un autre programme utilise actuellement cette URL, veuiller choisir un autre."
+msgstr "Un autre programme utilise actuellement cette URL, veuiller choisir un autre."
 
-#: Model/Program.php:validation for field url;validation database
-msgid ""
-"Minimum of 3 characters, can only be composed of lowercase letters and "
-"digits."
+#: Model/Program.php:validation
+#: for field url;validation database
+msgid "Minimum of 3 characters, can only be composed of lowercase letters and digits."
 msgstr ""
 
-#: Model/Program.php:validation for field database
+#: Model/Program.php:validation
+#: for field database
 msgid "Please give a database to the program."
 msgstr "Veuiller donner une base de donnée au programme."
 
-#: Model/Program.php:validation for field database
-msgid ""
-"Another program is currently using this database, please choose another one."
-msgstr ""
-"Un autre programme utilise actuellement cette base de données, Veuiller "
-"choisir un autre."
+#: Model/Program.php:validation
+#: for field database
+msgid "Another program is currently using this database, please choose another one."
+msgstr "Un autre programme utilise actuellement cette base de données, Veuiller choisir un autre."
 
-#: Model/ProgramsUser.php:validation for field user_id
-#: Model/User.php:validation group_id
+#: Model/ProgramsUser.php:validation
+#: for field user_id
+#: Model/User.php:validation
+#: group_id
 msgid "numeric"
 msgstr "numérique"
 
-#: Model/ShortCode.php:validation for field shortcode
+#: Model/ShortCode.php:validation
+#: for field shortcode
 msgid "Please enter a shortcode."
 msgstr "Veuiller saisir un numéro court."
 
-#: Model/ShortCode.php:validation for field shortcode;validation country
+#: Model/ShortCode.php:validation
+#: for field shortcode;validation country
 msgid "There is already the same shortcode for this country."
 msgstr "Il existe déjà un même numéro court pour ce pays."
 
-#: Model/ShortCode.php:validation for field shortcode
-msgid ""
-"An supported internationally shortcode should include the international "
-"prefix."
-msgstr ""
-"Un numéro court international devrait inclure le préfixe international."
+#: Model/ShortCode.php:validation
+#: for field shortcode
+msgid "An supported internationally shortcode should include the international prefix."
+msgstr "Un numéro court international devrait inclure le préfixe international."
 
-#: Model/ShortCode.php:validation for field shortcode
-msgid ""
-"Same national shortcode number is used in a country with matching "
-"international prefix, the system cannot handle this."
-msgstr ""
-"Le même numéro court national est utilisé dans un pays avec un même préfixe "
-"international, le système ne peut pas gérer cela."
+#: Model/ShortCode.php:validation
+#: for field shortcode
+msgid "Same national shortcode number is used in a country with matching international prefix, the system cannot handle this."
+msgstr "Le même numéro court national est utilisé dans un pays avec un même préfixe international, le système ne peut pas gérer cela."
 
-#: Model/ShortCode.php:validation for field country
+#: Model/ShortCode.php:validation
+#: for field country
 msgid "Please choose a country."
 msgstr "Veuillez choisir un pays."
 
-#: Model/Template.php:validation for field name
+#: Model/Template.php:validation
+#: for field name
 msgid "Please give a name to the template."
 msgstr "Veuiller donner un nom au modèle."
 
-#: Model/Template.php:validation for field name
+#: Model/Template.php:validation
+#: for field name
 msgid "This name is already used by another template, choose another one."
 msgstr "Ce nom est déjà utilisé par un autre modèle, svp choisir un autre nom."
 
-#: Model/Template.php:validation for field type-template
+#: Model/Template.php:validation
+#: for field type-template
 msgid "Please select a template type."
 msgstr "Veuiller choisir un type de modèle."
 
-#: Model/Template.php:validation for field template
+#: Model/Template.php:validation
+#: for field template
 msgid "Please write a template."
 msgstr "Veuiller écrire un modèle."
 
-#: Model/Template.php:validation for field template
+#: Model/Template.php:validation
+#: for field template
 msgid "hasAllTemplateKeyword"
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation for field name
+#: Model/UnattachedMessage.php:validation
+#: for field name
 msgid "Please enter a name for this separate message."
 msgstr "Veuiller saisir un nom pour ce simple message"
 
-#: Model/UnattachedMessage.php:validation for field name
+#: Model/UnattachedMessage.php:validation
+#: for field name
 msgid "This name already exists. Please choose another."
 msgstr "Ce nom existe déjà. SVP choisir un autre nom."
 
-#: Model/UnattachedMessage.php:validation for field to
+#: Model/UnattachedMessage.php:validation
+#: for field to
 msgid "Please select an option for Send To."
 msgstr "Veuiller choisir une option pour Envoyer A"
 
-#: Model/UnattachedMessage.php:validation for field content
+#: Model/UnattachedMessage.php:validation
+#: for field content
 msgid "Please enter some content for this message."
 msgstr "Veuiller saisir du contenu pour ce message?"
 
-#: Model/UnattachedMessage.php:validation for field type_schedule
+#: Model/UnattachedMessage.php:validation
+#: for field type_schedule
 msgid "Please choose a type of schedule for this message."
 msgstr "Veuiller saisir un type de calendrier pour ce message."
 
-#: Model/UnattachedMessage.php:validation for field fixed-time
+#: Model/UnattachedMessage.php:validation
+#: for field fixed-time
 msgid "Please enter a fixed time for this message."
 msgstr "Veuillez entrer une heure exacte pour ce message."
 
-#: Model/UnattachedMessage.php:validation for field fixed-time
+#: Model/UnattachedMessage.php:validation
+#: for field fixed-time
 msgid "isNotPast"
 msgstr ""
 
-#: Model/User.php:validation for field email
+#: Model/User.php:validation
+#: for field email
 msgid "Invalid email address"
 msgstr "Email non valide"
 
-#: Model/User.php:validation for field limited_program_access
+#: Model/User.php:validation
+#: for field limited_program_access
 msgid "boolean"
 msgstr ""
+

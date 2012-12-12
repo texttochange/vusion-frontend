@@ -187,10 +187,10 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             'fixed-time' => $timeToSend->format('d/m/Y H:i'),
             'content' => 'Hello',
             'name' => 'test',
-            'to' => 'all participant'
+            'to' => array('all-participants')
             );        
        
-        $this->Home->UnattachedMessage->create();
+        $this->Home->UnattachedMessage->create('unattached-message');
         $savedUnattachMessage = $this->Home->UnattachedMessage->save($unattachedMessage);
  
         $schedules = array(
