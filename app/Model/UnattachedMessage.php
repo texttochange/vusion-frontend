@@ -1,4 +1,4 @@
-git<?php
+<?php
 App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('DialogueHelper', 'Lib');
@@ -16,7 +16,7 @@ class UnattachedMessage extends MongoModel
     
     function getModelVersion()
     {
-        return "2";
+        return '2';
     }
 
     function getRequiredFields($objectType)

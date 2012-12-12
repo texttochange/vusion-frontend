@@ -204,11 +204,14 @@ class Participant extends MongoModel
 
     public function getDistinctTagsAndLabels()
     {
+        $result = array();
+        
         $tagsQuery = array(
             'distinct'=>'participants',
             'key'=> 'tags');
         $distinctTags = $this->query($tagsQuery);
-        
+        $results = $distinctTags['values'];
+
         $map = new MongoCode("function() { 
             for(var i = 0; i < this.profile.length; i++) {
                 emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
@@ -226,10 +229,10 @@ class Participant extends MongoModel
         $mongo = $this->getDataSource();
         $cusor = $mongo->mapReduce($labelsQuery);
         foreach($cusor as $distinctLabel) {
-            $distinctLabels[] = $distinctLabel['_id'];    
+            $results[] = $distinctLabel['_id'];    
         }
         
-        return array_merge($distinctTags['values'], $distinctLabels);
+        return $results;
         
     }
 

@@ -52,10 +52,12 @@ class UnattachedMessageTestCase extends CakeTestCase
             'type-schedule'=>'fixed-time',
             'fixed-time'=> $date->format('d/m/Y H:i')
             );
-        $this->UnattachedMessage->create();
-        $this->UnattachedMessage->save($unattachedMessage);
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
 
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
+        $this->assertEquals('2', $savedUnattachedMessage['UnattachedMessage']['model-version']);
+        $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
     }
 
     public function testSave_okTagAndLabel()
@@ -71,7 +73,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'type-schedule'=>'fixed-time',
             'fixed-time'=> $date->format('d/m/Y H:i')
             );
-        $this->UnattachedMessage->create();
+        $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($unattachedMessage);
 
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
@@ -89,7 +91,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'type-schedule'=>'fixed-time',
             'fixed-time'=>'05/04/2012 14:30'
             );
-        $this->UnattachedMessage->create();
+        $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($otherUnattachedMessage);
         
         //1st assertion, count does not increase, remains 1
@@ -112,7 +114,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'type-schedule'=>'fixed-time',
             'fixed-time'=> $date->format('d/m/Y H:i')
             );
-        $this->UnattachedMessage->create();
+        $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
         //print_r($savedUnattachedMessage);
         $this->assertFalse($savedUnattachedMessage);
