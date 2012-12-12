@@ -10,13 +10,7 @@
 	<?php 
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $otions = array();
-        $options = array(
-            'all-participants' => __("All participants"),
-            'geek' => 'geek',
-            'cool' => 'cool',
-            'gender:female' => 'gender:female',
-            'gender:male' => 'gender:male',
-            'city:kampala' => 'city:kampala');
+        $options = $selectors;
         $error = "";
         $errorSchedule = "";
         if ($this->Form->isFieldError('to')) 

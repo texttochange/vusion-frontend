@@ -3,6 +3,7 @@
 App::uses('AppController', 'Controller');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
+App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
@@ -31,6 +32,7 @@ class ProgramUnattachedMessagesController extends AppController
         
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule          = new Schedule($options);
+        $this->Participant       = new Participant($options);
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->DialogueHelper    = new DialogueHelper();
@@ -77,7 +79,19 @@ class ProgramUnattachedMessagesController extends AppController
             } else {
                 $this->Session->setFlash(__('The Message could not be saved.'));
             }
-        }            
+        }
+        
+        $selectors = $this->_getSelectors();
+        $this->set(compact('selectors'));
+        
+    }
+
+    protected function _getSelectors()
+    {
+        $selectors = array('all-participants' => __('All participants'));
+        $distinctTagsAndLabels = $this->Participant->getDistinctTagsAndLabels();
+        $selectorTagAndLabels = array_combine($distinctTagsAndLabels, $distinctTagsAndLabels);
+        return array_merge($selectors, $selectorTagAndLabels);
     }
     
     
@@ -130,6 +144,10 @@ class ProgramUnattachedMessagesController extends AppController
                 throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
             }
         }
+
+        $selectors = $this->_getSelectors();
+        $this->set(compact('selectors'));
+
         return $unattachedMessage;
     }
     

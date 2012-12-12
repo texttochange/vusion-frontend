@@ -37,7 +37,6 @@ class Participant extends MongoModel
         'optin-date-from' => 'optin date from',
         'optin-date-to' => 'optin date to',
         'optout' => 'optout',
-        //require to modify the model to add the last optout date
         'optout-date-from' => 'optout date from',
         'optout-date-to' => 'optout date to',
         'enrolled' => 'enrolled',
@@ -222,7 +221,7 @@ class Participant extends MongoModel
             'map'=> $map,
             'reduce' => $reduce,
             'query' => array(),
-            'out' => 'map_reduce_tagsandlabels');
+            'out' => 'map_reduce_participantLabels');
 
         $mongo = $this->getDataSource();
         $cusor = $mongo->mapReduce($labelsQuery);
