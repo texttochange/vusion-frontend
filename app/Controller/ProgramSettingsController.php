@@ -10,7 +10,7 @@ class ProgramSettingsController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'));
-
+    public $components = array('Keyword');
 
     public function beforeFilter()
     {
@@ -78,6 +78,9 @@ class ProgramSettingsController extends AppController
         $programUrl = $this->params['program'];
 
         if ($this->request->is('post') || $this->request->is('put')) {
+                    
+            print_r($this->Keyword->validateProgramKeywords($this->params['program'], $this->request->data['ProgramSettings']['shortcode']));
+
             foreach ($this->request->data['ProgramSettings'] as $key => $value) {
                 if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
                     $this->Session->setFlash(__("Program Settings saved."),

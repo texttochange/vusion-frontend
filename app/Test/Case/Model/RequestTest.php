@@ -61,6 +61,26 @@ class RequestTestCase extends CakeTestCase
         
     }
 
+    public function testGetKeywords()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request, keyword, otherkeyword request'
+            );
+        $this->Request->create();
+        $this->Request->save($request);
+
+        $request['Request'] = array(
+            'keyword' => 'k'
+            );
+        $this->Request->create();
+        $this->Request->save($request);
+        
+        $this->assertEqual(
+            array('key', 'keyword', 'otherkeyword', 'k'),
+            $this->Request->getKeywords());
+    }
+
+
 
     public function testFindKeyphrase()
     {

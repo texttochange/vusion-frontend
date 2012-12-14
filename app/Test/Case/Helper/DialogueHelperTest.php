@@ -55,9 +55,17 @@ class DialogueHelperTestCase extends CakeTestCase
             false,
             $DialogueHelper->hasKeyword($dialogue, "felOk")
             );
-
     }
-    
+
+    public function testGetKeywork()
+    {
+        $DialogueHelper = new DialogueHelper();
+        $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fel');
+        $this->assertEquals(
+            array('feel', 'fel', 'felGood','felBad'), 
+            $DialogueHelper->getKeywords($dialogue, array())
+            );
+    }
     
     public function testHasNoMatchingAnswers()
     {

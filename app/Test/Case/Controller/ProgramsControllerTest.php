@@ -1,6 +1,8 @@
 <?php
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramsController', 'Controller');
+App::uses('Dialogue', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
 
 class TestProgramsController extends ProgramsController 
@@ -174,6 +176,54 @@ class ProgramsControllerTestCase extends ControllerTestCase
             );
 
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+    }
+
+    public function testAdd_import() 
+    {
+        $Programs = $this->generate('Programs', array(
+            'methods' => array(
+                '_startBackendWorker'
+            )
+            ));
+
+        $Programs
+            ->expects($this->once())
+            ->method('_startBackendWorker')
+            ->will($this->returnValue(true));
+
+        $maker = new ScriptMaker();
+        $importFromDialogue = new Dialogue(array('database' => 'testdbprogram'));
+        $importFromDialogue->deleteAll(true, false);
+        $importFromDialogue->create();
+        $dialogue = $maker->getOneDialogue();
+        $dialogue['Dialogue']['activated'] = 1;
+        $savedDialogue = $importFromDialogue->save($dialogue['Dialogue']);
+        
+        $importFromRequest = new Request(array('database' => 'm6h'));
+        $importFromRequest->deleteAll(true, false);
+        $importFromRequest->create();
+        $importFromRequest->save($maker->getOneRequest());
+       
+        $programDialogue = new Dialogue(array('database' => 'programdatabase'));
+        $programDialogue->deleteAll(true, false);
+        $programRequest = new Request(array('database' => 'programdatabase'));
+        $programRequest->deleteAll(true, false);
+
+        $data = array(
+            'Program' => array(
+                'name' => 'programName',
+                'url' => 'programurl',
+                'database'=> 'programdatabase',
+                'import-dialogues-from' => '1',
+                'import-requests-from' => '2',
+                )
+            );
+
+        $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+
+        $this->assertEqual(1, $programDialogue->find('count'));
+        $this->assertEqual(1, $programRequest->find('count'));
+
     }
 
 
