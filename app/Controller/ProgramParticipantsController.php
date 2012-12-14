@@ -196,7 +196,7 @@ class ProgramParticipantsController extends AppController
                     'default',
                     array('class'=>'message success')
                 );
-                $this->redirect(array('program' => $programUrl, 'action' => 'index'));
+                //$this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The participant could not be saved. Please, try again.'), 
                 'default',
@@ -205,7 +205,9 @@ class ProgramParticipantsController extends AppController
             }
         } else {
             $this->request->data = $this->Participant->read(null, $id);
-        } 
+        }
+        $dialogues = $this->Dialogue->getDialoguesInteractionsContent();
+        $this->set(compact('participant', 'dialogues'));
     }
     
     public function massDelete() {

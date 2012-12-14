@@ -37,6 +37,27 @@
 	                $tagsString = $tags;
 	            }
 	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$tagsString));
+	            $enrolled = $participant['Participant']['enrolled'];
+	            $dialogueOptions = array();
+	            $selected = array();
+	            foreach ($dialogues as $key => $value) {
+	                $dialogueOptions[$key] = $value['name'];
+	                if (is_array($enrolled)) {
+	                    foreach ($enrolled as $enrolledIn) {
+	                        if ($key == $enrolledIn['dialogue-id']) {
+	                            $selected[] = $key;
+	                        }
+	                    }
+                    }
+	            }
+	            echo $this->Form->input('Participant.enrolled',
+	                array('type' => 'select',
+	                    'multiple' => true,
+	                    'options' => $dialogueOptions,
+	                    'selected' => $selected,
+	                    'empty' => 'None'
+	                    )
+	                );
 	        ?>
 	    </fieldset>
 	<?php echo $this->Form->end(__('Save'));?>
