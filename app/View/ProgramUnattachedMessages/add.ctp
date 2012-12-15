@@ -10,7 +10,7 @@
 	<?php 
         echo $this->Form->input(__('name'), array('id' => 'name'));
         $otions = array();
-        $options['all participants'] = "all participants";
+        $options = $selectors;
         $error = "";
         $errorSchedule = "";
         if ($this->Form->isFieldError('to')) 
@@ -18,7 +18,7 @@
         echo "<div class='input-text required ".$error."'>";
         echo $this->Html->tag('label',__('Send To'));
         echo "<br />";
-		echo $this->Form->select('to', $options, array('empty'=>'....'));
+		echo $this->Form->select('to', $options, array('multiple'=>true, 'style'=>'margin-bottom:0px'));
 		if ($this->Form->isFieldError('to'))
 		    echo $this->Form->error('to');
 		echo "</div>";
@@ -33,11 +33,12 @@
 		echo $this->Form->radio('type-schedule', $options, $attributes);
 		if ($this->Form->isFieldError('type-schedule'))
 		    echo $this->Form->error('type-schedule');
-		echo "</div>";
 		echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time', 'label'=>false));
+		echo "</div>";
 		$this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker();
 		                                           addContentFormHelp();
-		                                           $("input").change();');
+		                                           $("input").change();
+		                                           $("#UnattachedMessageTo").chosen();');
 		$this->Js->get('input')->event('change','
 		    if ($("input:checked").val() == "fixed-time") {
 		        $("#fixed-time").attr("disabled",false);

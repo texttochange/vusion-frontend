@@ -16,7 +16,8 @@
 		    'basic',
 		    'jquery-ui-1.8.16.custom',
 		    'superfish',
-		    'superfish-vertical'
+		    'superfish-vertical',
+		    'chosen'
 		    ));
 
 		echo $scripts_for_layout;
@@ -37,7 +38,8 @@
 		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
 		echo $this->Html->script('superfish-1.4.8/supersubs.js');
 		echo $this->Html->script('datejs/date.js');
-		echo $this->Html->script('moment.js');          
+		echo $this->Html->script('moment.js');
+		echo $this->Html->script('chosen.jquery.min.js')
                 ?><script><?php 
                 echo $this->element('localization');
 		?></script><?php 

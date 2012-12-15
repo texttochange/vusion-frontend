@@ -15,9 +15,15 @@
 	<?php
 	foreach ($unattachedMessages as $unattachedMessage): ?>
 	<tr>
-		<td><?php echo h($unattachedMessage['UnattachedMessage']['name']); ?>&nbsp;</td>
-		<td><?php echo h($unattachedMessage['UnattachedMessage']['to']); ?>&nbsp;</td>
-		<td><?php echo h($unattachedMessage['UnattachedMessage']['content']); ?>&nbsp;</td>
+		<td><?php echo $unattachedMessage['UnattachedMessage']['name']; ?>&nbsp;</td>
+		<td><?php
+		if (is_array($unattachedMessage['UnattachedMessage']['to'])) {
+		    echo implode($unattachedMessage['UnattachedMessage']['to'], "<br/>");
+		} else {
+		  echo $unattachedMessage['UnattachedMessage']['to'];
+		}
+		    ?>&nbsp;</td>
+		<td><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>
 		<td><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php
