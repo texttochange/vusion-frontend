@@ -283,6 +283,8 @@ class Participant extends MongoModel
             $this->data['Participant']['enrolled'] = array();
         else if (isset($participantUpdateData['Participant']['enrolled'])
             and $participantUpdateData['Participant']['enrolled'] != array()) {
+            //$this->data['Participant']['enrolled'] = array();
+            //print_r($participantUpdateData['Participant']['enrolled']);
             foreach ($participantUpdateData['Participant']['enrolled'] as $key => $dialogueId) {
                 if ($originalParticipantData['Participant']['enrolled'] != array()) {
                     foreach ($originalParticipantData['Participant']['enrolled'] as $oldEnroll) {
