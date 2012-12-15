@@ -73,7 +73,7 @@
 			}
 			?> 
 			</div>
-<div class="ttc-central-header">
+            <div class="ttc-central-header">
 			<?php
 			if ($this->Session->read('Auth.User.id')) {	
 			    echo $this->Html->link(
@@ -90,7 +90,11 @@
 			}
 			?>
 			</div> 
-		</div>     
+		</div>    
+		<div class="status">
+		    <table class="status-table" cellpadding="0" cellspacing="0" align="centered">
+		    <tr>
+		    <td>
 			<?php 
 			     echo $this->Session->flash(); 
 			     if (!$this->Session->flash()) {
@@ -107,7 +111,10 @@
 			         );
 			     
 			     ?>
-			
+			   </td>
+			   </tr>
+			   </table>
+			</div>
 			<!-- To be refact with all the Controllers and views -->
 			<?php if (isset($programName)) { ?>
 				<div class='ttc-program-header'>
