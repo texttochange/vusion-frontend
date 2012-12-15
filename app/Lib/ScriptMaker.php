@@ -8,6 +8,8 @@ class ScriptMaker
     {
         $dialogue['Dialogue'] = array(
             'dialogue-id'=> 'script.dialogues[0]',
+            'activated' => 1,
+            'auto-enrollment' => 'none',
             'interactions'=> array(
                 array(
                     'type-interaction' => 'annoucement', 

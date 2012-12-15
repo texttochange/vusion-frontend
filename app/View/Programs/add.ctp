@@ -7,6 +7,9 @@
 		echo $this->Form->input('name');		
 		echo $this->Form->input('url');
 		echo $this->Form->input('database');
+		echo $this->Html->tag('label',__('Import Dialogues and Request From'));
+		echo "<br/>";
+		echo $this->Form->select('import-dialogues-requests-from', $programOptions);
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>

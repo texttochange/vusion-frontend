@@ -29,7 +29,7 @@ class ProgramLogsController extends AppController
     
     public function index()
     {
-        $programLogs = $this->_getRedisZRange(0,200);
+        $programLogs = $this->_getRedisZRange(-200,-1);
         $programLogs = array_reverse($programLogs);
         $this->set(compact('programLogs'));
     } 

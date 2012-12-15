@@ -144,8 +144,8 @@ table {
 	border-right:0;
 	clear: both;
 	color: #333;
-	margin-bottom: 10px;
-	width: 100%;
+	/*margin-bottom: 10px;*/
+	/*width: 100%;*/
 }
 th {
 	border:0;
@@ -165,8 +165,8 @@ th a.desc:after {
 	content: ' ⇡';
 }
 table tr td {
-	padding: 6px;
-	text-align: left;
+	/*padding: 6px;
+	text-align: left;*/
 	vertical-align: top;
 	border-bottom:1px solid #ddd;
 }
@@ -417,7 +417,7 @@ form .error-message {
 	margin: 0 0 1em 0;
 	padding: 5px;*/
 	position: fixed;
-	top: 35px;
+	top: -15px;
 	left: 37%;
 	background: yellow;
 	padding-left: 10px;
@@ -470,6 +470,8 @@ p.error,
 	background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
 	background-image: linear-gradient(top, #ee5f5b, #c43c35);
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+	position: relative;
+	display: inline-bloc;
 }
 .success {
 	clear: both;
