@@ -79,22 +79,31 @@ class ProgramSettingsController extends AppController
 
         if ($this->request->is('post') || $this->request->is('put')) {
                     
-            print_r($this->Keyword->validateProgramKeywords($this->params['program'], $this->request->data['ProgramSettings']['shortcode']));
-
-            foreach ($this->request->data['ProgramSettings'] as $key => $value) {
-                if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
-                    $this->Session->setFlash(__("Program Settings saved."),
-                        'default',
-                        array('class'=>'message success')
+            $keywordValidation = $this->Keyword->validateProgramKeywords(
+                $this->Session->read($programUrl.'_db'), 
+                $this->request->data['ProgramSettings']['shortcode']);
+            if ($keywordValidation['status'] == 'fail') {
+                $this->Session->setFlash(
+                    __("Keyword already used on this shortcode: %s", $keywordValidation['message']),
+                    'default',
+                    array('class'=>'message failure')
                     );
-                } else {
-                    $this->Session->setFlash(__("Save Program Settings failed."),
-                        'default',
-                        array('class'=>'message failure')
-                    );
+            } else {   
+                foreach ($this->request->data['ProgramSettings'] as $key => $value) {
+                    if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
+                        $this->Session->setFlash(__("Program Settings saved."),
+                            'default',
+                            array('class'=>'message success')
+                            );
+                    } else {
+                        $this->Session->setFlash(__("Save settings failed."),
+                            'default',
+                            array('class'=>'message failure')
+                            );
+                    }
                 }
+                $this->_notifyUpdateProgramSettings($programUrl);
             }
-            $this->_notifyUpdateProgramSettings($programUrl);
         }
         $shortcodes = $this->ShortCode->find('all');
         $this->set(compact('shortcodes'));

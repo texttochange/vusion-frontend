@@ -141,8 +141,8 @@ class ProgramsController extends AppController
                     $this->request->data['Program']['url'],
                     $this->request->data['Program']['database']
                     );
-                if (isset($this->request->data['Program']['import-dialogues-from'])) {
-                    $importFromProgramId = $this->request->data['Program']['import-dialogues-from'];
+                if (isset($this->request->data['Program']['import-dialogues-requests-from'])) {
+                    $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram = $this->_getProgram($importFromProgramId);
                     if (isset($importFromProgram)) {
                          $importFromDialogueModel = new Dialogue(array('database' => $importFromProgram['Program']['database']));
@@ -153,12 +153,6 @@ class ProgramsController extends AppController
                              unset($dialogue['Dialogue']['_id']);
                              $importToDialogueModel->save($dialogue['Dialogue']);
                          }
-                    }
-                }
-                if (isset($this->request->data['Program']['import-requests-from'])) {
-                    $importFromProgramId = $this->request->data['Program']['import-requests-from'];
-                    $importFromProgram = $this->_getProgram($importFromProgramId);
-                    if (isset($importFromProgram)) {
                          $importFromRequestModel = new Request(array('database' => $importFromProgram['Program']['database']));
                          $requests = $importFromRequestModel->find('all');
                          $importToRequestModel = new Request(array('database' => $this->request->data['Program']['database']));

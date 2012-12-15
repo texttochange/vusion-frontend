@@ -63,7 +63,13 @@ class DialogueHelperTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fel');
         $this->assertEquals(
             array('feel', 'fel', 'felGood','felBad'), 
-            $DialogueHelper->getKeywords($dialogue, array())
+            $DialogueHelper->getKeywords($dialogue)
+            );
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        $this->assertEquals(
+            array('usedKeyword'), 
+            $DialogueHelper->getKeywords($dialogue)
             );
     }
     

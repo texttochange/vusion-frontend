@@ -199,7 +199,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $dialogue['Dialogue']['activated'] = 1;
         $savedDialogue = $importFromDialogue->save($dialogue['Dialogue']);
         
-        $importFromRequest = new Request(array('database' => 'm6h'));
+        $importFromRequest = new Request(array('database' => 'testdbprogram'));
         $importFromRequest->deleteAll(true, false);
         $importFromRequest->create();
         $importFromRequest->save($maker->getOneRequest());
@@ -214,8 +214,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'name' => 'programName',
                 'url' => 'programurl',
                 'database'=> 'programdatabase',
-                'import-dialogues-from' => '1',
-                'import-requests-from' => '2',
+                'import-dialogues-requests-from' => '1',
                 )
             );
 

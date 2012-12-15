@@ -12,27 +12,27 @@ class KeywordComponent extends Component {
     public function __construct($collection, $settings = array())
     {
         parent::__construct($collection, $settings);
-
-        $this->Program        = new Program();
+        
+        $this->Program = new Program();
     }
 
-
-    public function validateProgramKeywords($programUrl, $shortCode) 
+    public function validateProgramKeywords($programDb, $shortCode) 
     {   
-        $options              = array('database' => ($this->Session->read($programUrl."_db")));
+        $options              = array('database' => ($programDb));
         $this->Dialogue       = new Dialogue($options);
         $this->Request        = new Request($options);
 
         $keywords = $this->Dialogue->getKeywords();
         $keywordToValidates = array_merge($keywords, $this->Request->getKeywords());
-         
+
         foreach($keywordToValidates as $keywordToValidate) {
     
             /**Is the keyword used by another program*/
+            
             $programs = $this->Program->find(
                 'all', 
                 array('conditions'=> 
-                    array('Program.url !='=> $programUrl)
+                    array('Program.database !='=> $programDb)
                     )
                 );
             foreach ($programs as $program) {
