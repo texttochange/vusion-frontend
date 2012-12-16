@@ -77,6 +77,19 @@ class Request extends MongoModel
         return null;
     }
 
+    public function getKeywords()
+    {
+        $requests = $this->find('all');
+        $keywords = array();
+        foreach($requests as $request) {
+            $keyphrases = explode(', ', $request['Request']['keyword']);
+            foreach($keyphrases as $keyphrase) {
+                $words = explode(' ', $keyphrase);
+                array_push($keywords, $words[0]);
+            }
+        }
+        return $keywords;
+    }
 
     protected function _findKeyphrase($state, $query, $results = array())
     {

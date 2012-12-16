@@ -76,7 +76,8 @@ class Dialogue extends MongoModel
             }   
     
             if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
-                throw new FieldValueIncorrect("Auto Enrollment cannot be $this->data['Dialogue']['auto-enrollment']");
+                $errorValue = $this->data['Dialogue']['auto-enrollment'];
+                throw new FieldValueIncorrect("Auto Enrollment cannot be $errorValue");
             }
     
             $interactionModel = new Interaction();
@@ -281,6 +282,16 @@ class Dialogue extends MongoModel
             }
         }
         return array();
+    }
+
+
+    public function getKeywords()
+    {
+        $keywords = array();
+        foreach ($this->getActiveDialogues() as $activeDialogue) {
+            $keywords = array_merge($keywords, $this->DialogueHelper->getKeywords($activeDialogue));
+        }
+        return $keywords;
     }
 
 

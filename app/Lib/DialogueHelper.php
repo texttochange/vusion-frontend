@@ -132,6 +132,36 @@ class DialogueHelper
         }
         return false;
     }
+
+    public function getKeywords(&$currentLayer)
+    {
+        $keywords = array();
+        if (!is_array($currentLayer)) {
+            return $keywords;
+        }
+        
+        foreach ($currentLayer as $key => $value) {
+            if (!is_int($key) && ($key == 'keyword')) {
+                $currentKeywords = $this->clearAndExplode($value);
+                $noSpacedCurrentKeywords = array();
+                if (isset($currentLayer['answer-accept-no-space']) 
+                        && $currentLayer['answer-accept-no-space'] != null 
+                        && $currentLayer['answers']) {
+                    foreach($currentLayer['answers'] as $answer) {
+                        foreach($currentKeywords as $currentKeyword) {
+                            $noSpacedCurrentKeywords[] = $currentKeyword.$answer['choice'];
+                        }
+                    }
+                }
+                $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
+                $keywords = array_merge($keywords, $currentKeywords);
+            }
+            else if (is_array($value)) {
+                $keywords = array_merge($keywords, $this->getKeywords($value));
+            }
+        }
+        return $keywords;
+    }
     
 
     public function hasNoMatchingAnswers(&$currentLayer, $status)

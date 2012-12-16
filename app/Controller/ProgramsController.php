@@ -6,6 +6,8 @@ App::uses('Participant', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('History', 'Model');
 App::uses('UnmatchableReply', 'Model');
+App::uses('Dialogue', 'Model');
+App::uses('Request', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('ShortCode', 'Model');
 
@@ -37,11 +39,32 @@ class ProgramsController extends AppController
     }
 
 
-    /**
-    * index method
-    *
-    * @return void
-    */
+    protected function _getPrograms()
+    {
+        $this->Program->recursive = -1;
+        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+           return  $this->Program->find('authorized', array(
+               'specific_program_access' => 'true',
+               'user_id' => $this->Session->read('Auth.User.id')));
+
+        }
+        return $this->Program->find('all');
+    }
+
+    protected function _getProgram($programId)
+    {
+        $this->Program->recursive = -1;
+        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+           return  $this->Program->find('authorized', array(
+               'specific_program_access' => 'true',
+               'user_id' => $this->Session->read('Auth.User.id'),
+               'conditions' => array('id' => $programId)));
+
+        }
+        $this->Program->id = $programId;
+        return $this->Program->read();
+    }
+
     public function index() 
     {
         $this->Program->recursive = -1;
@@ -118,6 +141,28 @@ class ProgramsController extends AppController
                     $this->request->data['Program']['url'],
                     $this->request->data['Program']['database']
                     );
+                if (isset($this->request->data['Program']['import-dialogues-requests-from'])) {
+                    $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
+                    $importFromProgram = $this->_getProgram($importFromProgramId);
+                    if (isset($importFromProgram)) {
+                         $importFromDialogueModel = new Dialogue(array('database' => $importFromProgram['Program']['database']));
+                         $dialogues = $importFromDialogueModel->getActiveDialogues();
+                         $importToDialogueModel = new Dialogue(array('database' => $this->request->data['Program']['database']));
+                         foreach($dialogues as $dialogue){
+                             $importToDialogueModel->create();
+                             unset($dialogue['Dialogue']['_id']);
+                             $importToDialogueModel->save($dialogue['Dialogue']);
+                         }
+                         $importFromRequestModel = new Request(array('database' => $importFromProgram['Program']['database']));
+                         $requests = $importFromRequestModel->find('all');
+                         $importToRequestModel = new Request(array('database' => $this->request->data['Program']['database']));
+                         foreach($requests as $request){
+                             $importToRequestModel->create();
+                             unset($request['Request']['_id']);
+                             $importToRequestModel->save($request['Request']);
+                         }
+                    }
+                }
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'), 
@@ -126,6 +171,14 @@ class ProgramsController extends AppController
                 );
             }
         }
+        
+        $programs = $this->_getPrograms();
+        $programOptions = array();
+        foreach($programs as $program) 
+            $programOptions[$program['Program']['id']] = $program['Program']['name']; 
+        //print_r($programOptions);
+        $this->set(compact('programOptions'));
+        
     }
 
 
