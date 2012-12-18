@@ -39,7 +39,7 @@
 		?> </li>
 	</ul>
 	<h3><?php echo __('Participants'); ?></h3>
-	<?php
+	<?php print_r($participants[3]['Participant']['enrolled']);
 	   $this->Js->set('myOptions', $filterFieldOptions);
 	   $this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
 	   echo $this->Form->create('Participant', array('type'=>'get', 

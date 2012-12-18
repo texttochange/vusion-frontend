@@ -176,11 +176,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual($savedParticipant['Participant']['enrolled'],array());
         
-        $programNow = $this->ProgramSetting->getProgramTimeNow();
-        
-        $savedParticipant['Participant']['enrolled'] = array(array(
-            'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
-            'date-time' => $programNow->format("Y-m-d\TH:i:s")));
+        $savedParticipant['Participant']['enrolled'][0] = $savedDialogue['Dialogue']['dialogue-id'];
 
         $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $resavedParticipant = $this->Participant->save($savedParticipant);
@@ -216,10 +212,9 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);        
         
-        $savedParticipant['Participant']['enrolled'][0] = array(
-            'dialogue-id'=>$savedDialogue['Dialogue']['dialogue-id'],
-            'date-time'=>'2012-12-12T18:30:00'
-            );
+        $savedParticipant['Participant']['enrolled'][0]['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
+        $savedParticipant['Participant']['enrolled'][0]['date-time'] = '2012-12-12T18:30:00';
+        
         $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $savedAgainParticipant = $this->Participant->save($savedParticipant);
         
@@ -248,6 +243,7 @@ class ParticipantTestCase extends CakeTestCase
             $enrolledParticipant['Participant']['enrolled'][1]['date-time'],
             $programNow->format("Y-m-d\TH:i:s")
             );
+        $this->assertEqual(2, count($enrolledParticipant['Participant']['enrolled']));
     }
 
     public function testGetDistinctTagsAndLabels()

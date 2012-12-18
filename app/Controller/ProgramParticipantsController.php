@@ -172,6 +172,17 @@ class ProgramParticipantsController extends AppController
                 );
         }        
     }
+    
+    
+    protected function _getSelectOptions()
+    {
+        $selectOptions = array();
+        $dialogues = $this->Dialogue->getDialoguesInteractionsContent();
+        foreach ($dialogues as $key => $value) {
+            $selectOptions[$key] = $value['name'];
+        }
+        return $selectOptions;
+    }
 
     
     ##we should not be able to edit a phone number
@@ -185,8 +196,9 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read();
+
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->Participant->save($this->request->data)) {print_r($this->request->data);
+            if ($this->Participant->save($this->request->data)) {
                 $this->Schedule->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false
@@ -196,7 +208,7 @@ class ProgramParticipantsController extends AppController
                     'default',
                     array('class'=>'message success')
                 );
-                //$this->redirect(array('program' => $programUrl, 'action' => 'index'));
+                $this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The participant could not be saved. Please, try again.'), 
                 'default',
@@ -206,8 +218,16 @@ class ProgramParticipantsController extends AppController
         } else {
             $this->request->data = $this->Participant->read(null, $id);
         }
-        $dialogues = $this->Dialogue->getDialoguesInteractionsContent();
-        $this->set(compact('participant', 'dialogues'));
+        $selectOptions = $this->_getSelectOptions();
+        $oldEnrolls = array();
+        $enrolled = $participant['Participant']['enrolled'];
+        foreach ($selectOptions as $key => $option) {
+            foreach ($enrolled as $enrolledIn) {
+                if ($key == $enrolledIn['dialogue-id'])
+                    $oldEnrolls[] = $enrolledIn['dialogue-id'];
+            }
+        }
+        $this->set(compact('oldEnrolls', 'selectOptions'));
     }
     
     public function massDelete() {

@@ -114,7 +114,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-    /*
+    
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -1041,11 +1041,16 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participantFromDb = $this->Participant->find();
         $this->assertEqual(2,count($participantFromDb['Participant']['enrolled']));
     }
-    */
+
     
     public function testEditParticipantEnrolls_deleteSchedule()
     {
         $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
+            ->will($this->returnValue(true));
         
         $participant = array(
             'Participant' => array(
@@ -1059,7 +1064,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             'dialogue-id'=>'abc123',
             'date-time'=>'2012-12-12T15:15:00'
             );
-        $participantDB['Participant']['enrolled'][0] = array(
+        $participantDB['Participant']['enrolled'][1] = array(
             'dialogue-id'=>'def456',
             'date-time'=>'2012-12-12T15:15:00'
             );
@@ -1104,16 +1109,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $participantFromDb = $this->Participant->find();
         $this->assertEqual(1,count($participantFromDb['Participant']['enrolled']));
-        
-        print_r($this->Schedule->find('count'));
-        
-        $this->testAction(
-            "/testurl/programParticipants/view/".$participantDB['Participant']['_id']
-            );
-        $this->assertEquals(1, $this->Schedule->find('count'));
+        $this->assertEquals(0, $this->Schedule->find('count'));
     }
     
-    /*
+    
     public function testView_displayScheduled()
     {
         $participants = $this->mock_program_access();
@@ -1258,5 +1257,5 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['participants']));
 
     }
-*/
+
 }

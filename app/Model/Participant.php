@@ -131,7 +131,7 @@ class Participant extends MongoModel
     
     
     public function beforeValidate()
-    {
+    {;
         parent::beforeValidate();
 
         if (!isset($this->data['Participant']['phone']) or $this->data['Participant']['phone'] == "" )
@@ -316,31 +316,68 @@ class Participant extends MongoModel
         
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         
-        if(!isset($participantUpdateData['Participant']['enrolled']))
+        if(!isset($participantUpdateData['Participant']['enrolled']) or 
+            !is_array($participantUpdateData['Participant']['enrolled'])) {
             $this->data['Participant']['enrolled'] = array();
-        else if (isset($participantUpdateData['Participant']['enrolled'])
+        } else if (isset($participantUpdateData['Participant']['enrolled'])
             and $participantUpdateData['Participant']['enrolled'] != array()) {
-            //$this->data['Participant']['enrolled'] = array();
-            //print_r($participantUpdateData['Participant']['enrolled']);
-            foreach ($participantUpdateData['Participant']['enrolled'] as $key => $dialogueId) {
+            $this->data['Participant']['enrolled'] = array();
+            foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
+                $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
+                $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
+
                 if ($originalParticipantData['Participant']['enrolled'] != array()) {
                     foreach ($originalParticipantData['Participant']['enrolled'] as $oldEnroll) {
-                        if ($dialogueId != $oldEnroll['dialogue-id']) {
+                        if ($dialogueId != $oldEnroll['dialogue-id'] and
+                            !$this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled'])) {
+                            if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
+                                $index = $this->_getDialogueIndex($dialogueId,
+                                    $originalParticipantData['Participant']['enrolled']);
+                                if ($index) {
+                                    $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
+                                }
+                            } else {
+                                $dateTime = $programNow->format("Y-m-d\TH:i:s");
+                            }
                             $this->data['Participant']['enrolled'][] = array(
                                 'dialogue-id' => $dialogueId,
-                                'date-time' => $programNow->format("Y-m-d\TH:i:s")
+                                'date-time' => $dateTime
                                 );
+                            break;
+                        } else if ($dialogueId == $oldEnroll['dialogue-id'] and 
+                            !$this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled'])){
+                            $this->data['Participant']['enrolled'][] = $oldEnroll;
                         }
                     }
                 } else {
                     $this->data['Participant']['enrolled'][] = array(
                                 'dialogue-id' => $dialogueId,
-                                'date-time' => $programNow->format("Y-m-d\TH:i:s")
+                                'date-time' => $enrollTime
                                 );
                 }
             }
         }
         return $this->data['Participant']['enrolled'];
+    }
+    
+    
+    protected function _alreadyInArray($param, $check)
+    {
+        foreach ($check as $checked) {
+            if (in_array($param, $checked))
+                return true;
+        }
+        return false;
+    }
+    
+    
+    protected function _getDialogueIndex($param, $check)
+    {
+        foreach ($check as $key => $value) {
+            if ($param == $value['dialogue-id'])
+                return $key;
+        }
+        return false;
     }
 
     
