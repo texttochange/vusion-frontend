@@ -70,7 +70,8 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         $programSettings = $this->generate('ProgramSettings', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
+                'Keyword' => array('validateProgramKeywords') 
             ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -105,10 +106,6 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
          return $programSettings;
     }
 
-
-/**
- * Test Methods
- */
     public function testEdit() 
     {
         $programSettingsController = $this->mockProgramAccess();
@@ -118,6 +115,37 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             ->with('testurl')
             ->will($this->returnValue(true));
 
+        $programSettingsController->Keyword
+            ->expects($this->once())
+            ->method('validateProgramKeywords')
+            ->will($this->returnValue(array('status' =>'ok')));
+
+        $programSettings = array(
+            'ProgramSettings' => array(
+                'shortcode'=>'8282',
+                'international-prefix'=>'256',
+                'timezone'=> 'EAT'
+                )
+            );
+            
+        $this->testAction("/testurl/programSettings/edit", array(
+            'method' => 'post',
+            'data' => $programSettings
+            ));
+            
+        $this->assertEquals($programSettings, $programSettingsController->data);
+    }
+
+
+    public function testEdit_fail() 
+    {
+        $programSettingsController = $this->mockProgramAccess();
+
+        $programSettingsController->Keyword
+            ->expects($this->once())
+            ->method('validateProgramKeywords')
+            ->will($this->returnValue(array('status' =>'fail',
+                                            'message' => 'keyword already used')));
 
         $programSettings = array(
             'ProgramSettings' => array(

@@ -290,7 +290,10 @@ function vusionAjaxError(jqXHR, textStatus, errorThrown){
     }
     if (textStatus == 'timeout') {
         $('#connectionState').show().text(localized_errors['vusion_ajax_timeout_error']);
-    }  
+    }
+    if (textStatus == 'error') {
+        $('#connectionState').show().text(localized_errors['vusion_ajax_connection_error']);
+    }
 }
 
 function saveAjaxError(jqXHR, textStatus, errorThrown){
