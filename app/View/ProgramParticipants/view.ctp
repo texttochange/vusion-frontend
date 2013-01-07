@@ -22,6 +22,37 @@
 		        array('class'=>'ttc-button'),
 		        $participant['Participant']['_id']);
 		    ?> 
+		</li>		
+		<li><?php 
+		    echo $this->AclLink->generatePostLink(
+		        __('Reset'),
+		        $programUrl,
+		        'programParticipants',
+		        'reset',
+		         __('Are you sure you want to reset the participant %s?', $participant['Participant']['phone']),
+		        array('class'=>'ttc-button'),
+		        $participant['Participant']['_id']);
+		    ?> 
+		</li>
+		<li><?php
+		    if ($participant['Participant']['session-id'] != null) {
+		        echo $this->AclLink->generateButton(
+		            __('Optout'),
+		            $programUrl,
+		            'programParticipants',
+		            'edit',
+		            array('class'=>'ttc-button'),
+		            $participant['Participant']['_id']);
+		    } else {
+		        echo $this->AclLink->generateButton(
+		            __('Optin'),
+		            $programUrl,
+		            'programParticipants',
+		            'edit',
+		            array('class'=>'ttc-button'),
+		            $participant['Participant']['_id']);
+		    }
+		    ?> 
 		</li>
 	</ul>
     <h3><?php echo __('Participant'); ?></h3>

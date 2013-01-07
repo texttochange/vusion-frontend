@@ -320,6 +320,53 @@ class ProgramParticipantsController extends AppController
                 )
             );
     }
+    
+    public function reset()
+    {
+        $programUrl = $this->params['program'];
+        $id = $this->params['id'];
+
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {
+            $this->Schedule->deleteAll(
+                array('participant-phone' => $participant['Participant']['phone']),
+                false);
+            $this->History->deleteAll(
+                array('participant-phone' => $participant['Participant']['phone']),
+                false);
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            $resetParticipant = array(
+                'phone'=> $participant['Participant']['phone'],
+                'session-id'=> $this->Participant->gen_uuid(),
+                'enrolled'=> null,
+                'last-optin-date'=> $programNow->format("Y-m-d\TH:i:s"),
+                'last-optout-date'=> null,
+                'tags'=> array(),
+                'profile'=> array(),
+                );
+            if ($this->Participant->save($resetParticipant)) {
+                    $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
+                    $this->Session->setFlash(__('The participant has been reset.'),
+                        'default',
+                        array('class'=>'message success')
+                        );
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'
+                        ));
+                } else {
+                    $this->Session->setFlash(__('The participant could not be reset.'), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                }
+        }
+    }
 
     
     public function view() 
