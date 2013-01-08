@@ -338,17 +338,35 @@ class ProgramParticipantsController extends AppController
             $this->History->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            $programNow = $this->ProgramSetting->getProgramTimeNow();            
+
             $resetParticipant = array(
                 'phone'=> $participant['Participant']['phone'],
                 'session-id'=> $this->Participant->gen_uuid(),
-                'enrolled'=> null,
                 'last-optin-date'=> $programNow->format("Y-m-d\TH:i:s"),
                 'last-optout-date'=> null,
                 'tags'=> array(),
                 'profile'=> array(),
                 );
-            if ($this->Participant->save($resetParticipant)) {
+            if ($participant['Participant']['enrolled'] != null or $participant['Participant']['enrolled'] != array()) {
+                $resetParticipant['enrolled'] = null;
+                $this->Participant->save($resetParticipant);
+                $this->reset();
+            } else {
+                $condition = array('condition' => array('auto-enrollment'=>'all'));
+                $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+                if ($autoEnrollDialogues == null) {
+                    $enrolled = array();
+                } else {
+                    foreach ($autoEnrollDialogues as $autoEnroll) {
+                        $enrolled[] = array(
+                            'dialogue-id' => $autoEnroll['dialogue-id'],
+                            'date-time' => $programNow->format("Y-m-d\TH:i:s")
+                            );
+                    }
+                }
+                $resetParticipant['enrolled'] = $enrolled;
+                if ($this->Participant->save($resetParticipant)) {
                     $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
                     $this->Session->setFlash(__('The participant has been reset.'),
                         'default',
@@ -365,6 +383,7 @@ class ProgramParticipantsController extends AppController
                         array('class' => "message failure")
                         );
                 }
+            }  
         }
     }
 

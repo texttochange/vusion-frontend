@@ -356,6 +356,8 @@ class Participant extends MongoModel
                                 );
                 }
             }
+        } else {
+            $this->data['Participant']['enrolled'] = $participantUpdateData['Participant']['enrolled'];
         }
         return $this->data['Participant']['enrolled'];
     }
