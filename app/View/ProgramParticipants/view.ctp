@@ -36,19 +36,21 @@
 		</li>
 		<li><?php
 		    if ($participant['Participant']['session-id'] != null) {
-		        echo $this->AclLink->generateButton(
+		        echo $this->AclLink->generatePostLink(
 		            __('Optout'),
 		            $programUrl,
 		            'programParticipants',
-		            'edit',
+		            'optout',
+		            __('Are you sure you want to optout the participant %s?', $participant['Participant']['phone']),
 		            array('class'=>'ttc-button'),
 		            $participant['Participant']['_id']);
 		    } else {
-		        echo $this->AclLink->generateButton(
+		        echo $this->AclLink->generatePostLink(
 		            __('Optin'),
 		            $programUrl,
 		            'programParticipants',
-		            'edit',
+		            'optin',
+		            __('Are you sure you want to optin the participant %s?', $participant['Participant']['phone']),
 		            array('class'=>'ttc-button'),
 		            $participant['Participant']['_id']);
 		    }

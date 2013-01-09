@@ -321,6 +321,111 @@ class ProgramParticipantsController extends AppController
             );
     }
     
+    
+    protected function _getAutoEnrollments($programTime)
+    {
+        $condition = array('condition' => array('auto-enrollment'=>'all'));
+        $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+        if ($autoEnrollDialogues == null) {
+            $enrolled = array();
+        } else {
+            foreach ($autoEnrollDialogues as $autoEnroll) {
+                $enrolled[] = array(
+                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'date-time' => $programTime->format("Y-m-d\TH:i:s")
+                    );
+            }
+        }
+        return $enrolled;
+    }
+    
+    
+    public function optin()
+    {
+        $programUrl = $this->params['program'];
+        $id = $this->params['id'];
+
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            
+            $tags = $participant['Participant']['tags'];
+            $profile = $participant['Participant']['profile'];
+            
+            $this->Participant->reset($participant['Participant']);
+            
+            $participant['Participant']['session-id'] = $this->Participant->gen_uuid();
+            $participant['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+            $participant['Participant']['last-optout-date'] = null;
+            $participant['Participant']['enrolled'] = $this->_getAutoEnrollments($programNow);
+            $participant['Participant']['tags'] = $tags;
+            $participant['Participant']['profile'] = $profile;
+            
+            if ($this->Participant->save($participant['Participant'])) {
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+                $this->Session->setFlash(__('The participant has been optin.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
+            } else {
+                $this->Session->setFlash(__('The participant could not be reset.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+        }
+    }
+    
+    
+    public function optout()
+    {
+        $programUrl = $this->params['program'];
+        $id = $this->params['id'];
+
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {
+            $this->Schedule->deleteAll(
+                array('participant-phone' => $participant['Participant']['phone']),
+                false);
+            
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            
+            $participant['Participant']['session-id'] = null;
+            $participant['Participant']['last-optout-date'] = $programNow->format("Y-m-d\TH:i:s");
+            if ($this->Participant->save($participant['Participant'])) {
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+                $this->Session->setFlash(__('The participant has been optout.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
+            } else {
+                $this->Session->setFlash(__('The participant could not be reset.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+        }
+    }
+    
+    
     public function reset()
     {
         $programUrl = $this->params['program'];
@@ -335,54 +440,26 @@ class ProgramParticipantsController extends AppController
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
-            $this->History->deleteAll(
-                array('participant-phone' => $participant['Participant']['phone']),
-                false);
             $programNow = $this->ProgramSetting->getProgramTimeNow();            
 
-            $resetParticipant = array(
-                'phone'=> $participant['Participant']['phone'],
-                'session-id'=> $this->Participant->gen_uuid(),
-                'last-optin-date'=> $programNow->format("Y-m-d\TH:i:s"),
-                'last-optout-date'=> null,
-                'tags'=> array(),
-                'profile'=> array(),
-                );
-            if ($participant['Participant']['enrolled'] != null or $participant['Participant']['enrolled'] != array()) {
-                $resetParticipant['enrolled'] = null;
-                $this->Participant->save($resetParticipant);
-                $this->reset();
+            $resetParticipant = $this->Participant->reset($participant['Participant']);            
+            $resetParticipant['enrolled'] = $this->_getAutoEnrollments($programNow);
+            if ($this->Participant->save($resetParticipant)) {
+                $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
+                $this->Session->setFlash(__('The participant has been reset.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
             } else {
-                $condition = array('condition' => array('auto-enrollment'=>'all'));
-                $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
-                if ($autoEnrollDialogues == null) {
-                    $enrolled = array();
-                } else {
-                    foreach ($autoEnrollDialogues as $autoEnroll) {
-                        $enrolled[] = array(
-                            'dialogue-id' => $autoEnroll['dialogue-id'],
-                            'date-time' => $programNow->format("Y-m-d\TH:i:s")
-                            );
-                    }
-                }
-                $resetParticipant['enrolled'] = $enrolled;
-                if ($this->Participant->save($resetParticipant)) {
-                    $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
-                    $this->Session->setFlash(__('The participant has been reset.'),
-                        'default',
-                        array('class'=>'message success')
-                        );
-                    $this->redirect(array(
-                        'program' => $programUrl,  
-                        'controller' => 'programParticipants',
-                        'action' => 'index'
-                        ));
-                } else {
-                    $this->Session->setFlash(__('The participant could not be reset.'), 
-                        'default',
-                        array('class' => "message failure")
-                        );
-                }
+                $this->Session->setFlash(__('The participant could not be reset.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
             }  
         }
     }

@@ -284,6 +284,32 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual(array('cool', 'geek', 'another tag', 'city:jinja', 'city:kampala', 'gender:Male' ), $results);
         
     }
+    
+    
+    public function testReset()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $participant = array(
+            'phone' => '08',
+            'tags' => array('geek', 'cool'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'kampala',
+                    'raw'=> null),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> null),
+                ));
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $resetParticipant =$this->Participant->reset($savedParticipant['Participant']);
+        
+        $this->assertNotEqual($resetParticipant['session-id'], null);
+        $this->assertEqual($resetParticipant['tags'], array());
+        $this->assertEqual($resetParticipant['profile'], array());
+    }
 
 
 }

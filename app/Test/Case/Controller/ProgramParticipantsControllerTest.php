@@ -1262,7 +1262,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testResetParticipant()
+    public function testReset()
     {
         $participants = $this->mock_program_access();
         $participants
@@ -1312,12 +1312,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Schedule->create('dialogue-schedule');
         $this->Schedule->save($scheduleTwo);
         
-        $history = array(
-            'participant-phone' => '+256712747841',
-            'message-direction' => 'incoming');
-        $this->History->create('dialogue-history');
-        $this->History->save($history);
-        
         $this->testAction(
             "/testurl/programParticipants/reset/".$participantDB['Participant']['_id']
             );
@@ -1325,12 +1319,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participantFromDb = $this->Participant->find();
         $this->assertEqual(0,count($participantFromDb['Participant']['enrolled']));
         $this->assertEquals(0, $this->Schedule->find('count'));
-        $this->assertEquals(0,$this->History->find('count'));
         $this->assertNotEqual($participantFromDb['Participant']['last-optin-date'], '2012-12-02T18:30:10');
     }
     
     
-    public function testResetParticipant_with_auto_enrollment()
+    public function testReset_with_auto_enrollment()
     {
         $participants = $this->mock_program_access();
         $participants
@@ -1371,6 +1364,92 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $this->assertNotEqual($participantFromDb['Participant']['enrolled'][0]['date-time'], $firstEnrollTime);
         $this->assertEquals(1, count($participantFromDb['Participant']['enrolled']));
+    }
+    
+    
+    public function testOptout()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+7')
+            ->will($this->returnValue(true));
+            
+        $participant = array(
+            'phone' => ' 07 ',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $schedule = array(
+            'Schedule' => array(
+                'participant-phone' => '+7',
+                'dialogue-id' => 'abc123',
+                )
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($schedule);
+        
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        
+        $this->testAction(
+            "/testurl/programParticipants/optout/".$savedParticipant['Participant']['_id']
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual(
+            $participantFromDb['Participant']['session-id'],
+            null
+        );
+        $this->assertEqual(
+            $participantFromDb['Participant']['last-optout-date'],
+            $programNow->format("Y-m-d\TH:i:s")
+        );
+        $this->assertEquals(0, $this->Schedule->find('count'));
+    }
+    
+    
+    public function testOptin()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+7')
+            ->will($this->returnValue(true));
+            
+        $participant = array(
+            'phone' => ' 07 ',
+            'session-id' => null
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment'] = 'all';
+        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        
+        $this->testAction(
+            "/testurl/programParticipants/optin/".$savedParticipant['Participant']['_id']
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertNotEqual(
+            $participantFromDb['Participant']['session-id'],
+            null
+        );
+        $this->assertEqual(
+            $participantFromDb['Participant']['last-optout-date'],
+            null
+        );
+        $this->assertEqual(
+            $participantFromDb['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+        );
     }
 
 }
