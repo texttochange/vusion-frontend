@@ -207,6 +207,7 @@ class ProgramParticipantsController extends AppController
             $this->request->data = $this->Participant->read(null, $id);
         } 
     }
+
     
     public function massDelete() {
         
@@ -219,30 +220,40 @@ class ProgramParticipantsController extends AppController
         $conditions = $this->_getConditions($defaultConditions);
         if ($conditions) {
             $params += array('conditions' => $conditions);
-        }        
+        } else {
+            $conditions = true;
+        }
 
-        //print_r($params);
+        $count = 0;
         $participants = $this->Participant->find('all', $params);
         foreach($participants as $participant) {
              $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
+             $count++;
         };
         $result = $this->Participant->deleteAll(
             $conditions, 
             false);
-
+ 
         $this->Session->setFlash(
-                __('Participants have been deleted.'),
+                __('%s Participants have been deleted.', $count),
                 'default',
                 array('class'=>'message success')
                 );
-                
-        $this->redirect(array(
-                    'program' => $programUrl,
-                    'controller' => 'programParticipants',
-                    'action' => 'index',
-                    '?' => $this->viewVars['urlParams']));  
+        
+        if (isset($this->viewVars['urlParams'])) {
+            $this->redirect(array(  
+                'program' => $programUrl,
+                'controller' => 'programParticipants',
+                'action' => 'index',
+                '?' => $this->viewVars['urlParams']));
+        } else {
+               $this->redirect(array(  
+                'program' => $programUrl,
+                'controller' => 'programParticipants',
+                'action' => 'index'));
+        }
     }
 
 
