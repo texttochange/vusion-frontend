@@ -418,11 +418,14 @@ form .error-message {
 	padding: 5px;*/
 	position: fixed;
 	top: -15px;
-	left: 37%;
+	/*left: 37%;*/
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
 	z-index: 10;
+	margin-left: auto;
+	margin-right: auto;
+	display: inline;
 }
 
 .success,

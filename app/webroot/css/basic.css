@@ -42,6 +42,7 @@
     text-align: center;
     border-spacing: 0px;
     border-collapse: collapse;
+    width: 100%;
 }
 
 .ttc-button{
