@@ -172,6 +172,17 @@ class ProgramParticipantsController extends AppController
                 );
         }        
     }
+    
+    
+    protected function _getSelectOptions()
+    {
+        $selectOptions = array();
+        $dialogues = $this->Dialogue->getDialoguesInteractionsContent();
+        foreach ($dialogues as $key => $value) {
+            $selectOptions[$key] = $value['name'];
+        }
+        return $selectOptions;
+    }
 
     
     ##we should not be able to edit a phone number
@@ -185,6 +196,7 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read();
+
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Participant->save($this->request->data)) {
                 $this->Schedule->deleteAll(
@@ -205,7 +217,17 @@ class ProgramParticipantsController extends AppController
             }
         } else {
             $this->request->data = $this->Participant->read(null, $id);
-        } 
+        }
+        $selectOptions = $this->_getSelectOptions();
+        $oldEnrolls = array();
+        $enrolled = $participant['Participant']['enrolled'];
+        foreach ($selectOptions as $key => $option) {
+            foreach ($enrolled as $enrolledIn) {
+                if ($key == $enrolledIn['dialogue-id'])
+                    $oldEnrolls[] = $enrolledIn['dialogue-id'];
+            }
+        }
+        $this->set(compact('oldEnrolls', 'selectOptions'));
     }
     
     public function massDelete() {
@@ -297,6 +319,149 @@ class ProgramParticipantsController extends AppController
                 'page' => $currentPage,
                 )
             );
+    }
+    
+    
+    protected function _getAutoEnrollments($programTime)
+    {
+        $condition = array('condition' => array('auto-enrollment'=>'all'));
+        $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+        if ($autoEnrollDialogues == null) {
+            $enrolled = array();
+        } else {
+            foreach ($autoEnrollDialogues as $autoEnroll) {
+                $enrolled[] = array(
+                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'date-time' => $programTime->format("Y-m-d\TH:i:s")
+                    );
+            }
+        }
+        return $enrolled;
+    }
+    
+    
+    public function optin()
+    {
+        $programUrl = $this->params['program'];
+        $id = $this->params['id'];
+
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            
+            $tags = $participant['Participant']['tags'];
+            $profile = $participant['Participant']['profile'];
+            
+            $this->Participant->reset($participant['Participant']);
+            
+            $participant['Participant']['session-id'] = $this->Participant->gen_uuid();
+            $participant['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+            $participant['Participant']['last-optout-date'] = null;
+            $participant['Participant']['enrolled'] = $this->_getAutoEnrollments($programNow);
+            $participant['Participant']['tags'] = $tags;
+            $participant['Participant']['profile'] = $profile;
+            
+            if ($this->Participant->save($participant['Participant'])) {
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+                $this->Session->setFlash(__('The participant has been optin.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
+            } else {
+                $this->Session->setFlash(__('The participant could not be reset.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+        }
+    }
+    
+    
+    public function optout()
+    {
+        $programUrl = $this->params['program'];
+        $id = $this->params['id'];
+
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {
+            $this->Schedule->deleteAll(
+                array('participant-phone' => $participant['Participant']['phone']),
+                false);
+            
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            
+            $participant['Participant']['session-id'] = null;
+            $participant['Participant']['last-optout-date'] = $programNow->format("Y-m-d\TH:i:s");
+            if ($this->Participant->save($participant['Participant'])) {
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+                $this->Session->setFlash(__('The participant has been optout.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
+            } else {
+                $this->Session->setFlash(__('The participant could not be reset.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+        }
+    }
+    
+    
+    public function reset()
+    {
+        $programUrl = $this->params['program'];
+        $id = $this->params['id'];
+
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {
+            $this->Schedule->deleteAll(
+                array('participant-phone' => $participant['Participant']['phone']),
+                false);
+            $programNow = $this->ProgramSetting->getProgramTimeNow();            
+
+            $resetParticipant = $this->Participant->reset($participant['Participant']);            
+            $resetParticipant['enrolled'] = $this->_getAutoEnrollments($programNow);
+            if ($this->Participant->save($resetParticipant)) {
+                $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
+                $this->Session->setFlash(__('The participant has been reset.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
+            } else {
+                $this->Session->setFlash(__('The participant could not be reset.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }  
+        }
     }
 
     

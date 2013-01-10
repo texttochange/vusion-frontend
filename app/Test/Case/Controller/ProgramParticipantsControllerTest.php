@@ -3,6 +3,7 @@
 App::uses('ProgramParticipantsController', 'Controller');
 App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('Dialogue', 'Model');
 
 class TestProgramParticipantsController extends ProgramParticipantsController
 {
@@ -40,10 +41,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participants = new TestProgramParticipantsController();
 
         $options = array('database' => $this->programData[0]['Program']['database']);   
-        $this->Participant = new Participant($options);
-        $this->Schedule = new Schedule($options);
+        $this->Participant    = new Participant($options);
+        $this->Schedule       = new Schedule($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        $this->History = new History($options);
+        $this->History        = new History($options);
+        $this->Dialogue       = new Dialogue($options);
 
         $this->dropData();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -58,6 +60,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Schedule->deleteAll(true,false);
         $this->ProgramSetting->deleteAll(true,false);
         $this->History->deleteAll(true, false);
+        $this->Dialogue->deleteAll(true, false);
     }
 
     public function tearDown()
@@ -114,6 +117,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
+    
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -877,7 +881,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participant->create();
         $participantDB = $this->Participant->save($participant);
         
-        $this->testAction(
+        $editedParticipant = $this->testAction(
             "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
             array(
                 'method' => 'post',
@@ -897,7 +901,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testEditParticipantProfile_noCommaSeparator_fail()
+    public function testEditParticipantProfile_specialCharacters_fail()
     {
         $participants = $this->mock_program_access();
         
@@ -1000,6 +1004,118 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
+    public function testEditParticipantEnrolls()
+    {
+        $participants = $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        $participantDB['Participant']['enrolled'][0] = array(
+            'dialogue-id'=>'abc123',
+            'date-time'=>'2012-12-12T15:15:00'
+            );
+        
+        $this->Participant->id = $participantDB['Participant']['_id']."";
+        $savedParticipant = $this->Participant->save($participantDB);
+        
+        $this->assertEqual(1,count($savedParticipant['Participant']['enrolled']));
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'enrolled' => array(
+                            '0'=>'abc123',
+                            '1'=>'def456'),
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual(2,count($participantFromDb['Participant']['enrolled']));
+    }
+
+    
+    public function testEditParticipantEnrolls_deleteSchedule()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        $participantDB['Participant']['enrolled'][0] = array(
+            'dialogue-id'=>'abc123',
+            'date-time'=>'2012-12-12T15:15:00'
+            );
+        $participantDB['Participant']['enrolled'][1] = array(
+            'dialogue-id'=>'def456',
+            'date-time'=>'2012-12-12T15:15:00'
+            );
+        
+        $this->Participant->id = $participantDB['Participant']['_id']."";
+        $savedParticipant = $this->Participant->save($participantDB);
+        
+        $scheduleToBeDeleted = array(
+            'Schedule' => array(
+                'participant-phone' => '+256712747841',
+                'dialogue-id' => 'def456',
+                )
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleToBeDeleted);
+        
+        $scheduleToStay = array(
+            'Schedule' => array(
+                'participant-phone' => '+256712747841',
+                'dialogue-id' => 'abc123',
+                )
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleToStay);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'enrolled' => array(
+                            '0'=>'abc123'
+                            ),
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual(1,count($participantFromDb['Participant']['enrolled']));
+        $this->assertEquals(0, $this->Schedule->find('count'));
+    }
+    
+    
     public function testView_displayScheduled()
     {
         $participants = $this->mock_program_access();
@@ -1052,9 +1168,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'raw' => null))
             ));
 
-        $savedParticipant['Participant']['enrolled'] = array(
+        $savedParticipant['Participant']['enrolled'][0] = array(
                 'dialogue-id' => '1',
                 'date-time'=> '2012-12-01T18:30:10');
+        $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $this->Participant->save($savedParticipant);
 
         $this->Participant->create();
@@ -1074,9 +1191,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $savedParticipant['Participant']['session-id'] = null;
         $savedParticipant['Participant']['last-optin-date'] = null;
-        $savedParticipant['Participant']['enrolled'] = array(
+        $savedParticipant['Participant']['enrolled'][0] = array(
             'dialogue-id' => '1',
-            'date-time'=> '2012-12-01T18:30:10');    
+            'date-time'=> '2012-12-01T18:30:10');
+        $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $this->Participant->save($savedParticipant);
 
         $this->Participant->create();
@@ -1102,6 +1220,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'raw' => null))
             ));
         $savedParticipant['Participant']['last-optin-date'] = '2012-12-02T18:30:10';
+        $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $this->Participant->save($savedParticipant);
 
         $this->mock_program_access();
@@ -1140,6 +1259,197 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=label&filter_param%5B1%5D%5B2%5D=gender&filter_param%5B1%5D%5B3%5D=female");
         $this->assertEquals(1, count($this->vars['participants']));
 
+    }
+    
+    
+    public function testReset()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+256712747841')
+            ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        $participantDB['Participant']['enrolled'][0] = array(
+            'dialogue-id'=>'abc123',
+            'date-time'=>'2012-12-12T15:15:00'
+            );
+        $participantDB['Participant']['enrolled'][1] = array(
+            'dialogue-id'=>'def456',
+            'date-time'=>'2012-12-12T15:15:00'
+            );
+        $participantDB['Participant']['last-optin-date'] = '2012-12-02T18:30:10';
+        
+        $this->Participant->id = $participantDB['Participant']['_id']."";
+        $savedParticipant = $this->Participant->save($participantDB);
+        
+        $scheduleOne = array(
+            'Schedule' => array(
+                'participant-phone' => '+256712747841',
+                'dialogue-id' => 'def456',
+                )
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleOne);
+        
+        $scheduleTwo = array(
+            'Schedule' => array(
+                'participant-phone' => '+256712747841',
+                'dialogue-id' => 'abc123',
+                )
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleTwo);
+        
+        $this->testAction(
+            "/testurl/programParticipants/reset/".$participantDB['Participant']['_id']
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual(0,count($participantFromDb['Participant']['enrolled']));
+        $this->assertEquals(0, $this->Schedule->find('count'));
+        $this->assertNotEqual($participantFromDb['Participant']['last-optin-date'], '2012-12-02T18:30:10');
+    }
+    
+    
+    public function testReset_with_auto_enrollment()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+7')
+            ->will($this->returnValue(true));
+            
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment'] = 'all';
+        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $participant = array(
+            'phone' => ' 07 ',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $this->assertEqual(
+            $savedParticipant['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+        );
+        
+        $firstEnrollTime = $savedParticipant['Participant']['enrolled'][0]['date-time'];
+        sleep(2);
+
+        $this->testAction(
+            "/testurl/programParticipants/reset/".$savedParticipant['Participant']['_id']
+            );
+
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual(
+            $participantFromDb['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+        );
+
+        $this->assertNotEqual($participantFromDb['Participant']['enrolled'][0]['date-time'], $firstEnrollTime);
+        $this->assertEquals(1, count($participantFromDb['Participant']['enrolled']));
+    }
+    
+    
+    public function testOptout()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+7')
+            ->will($this->returnValue(true));
+            
+        $participant = array(
+            'phone' => ' 07 ',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $schedule = array(
+            'Schedule' => array(
+                'participant-phone' => '+7',
+                'dialogue-id' => 'abc123',
+                )
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($schedule);
+        
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        
+        $this->testAction(
+            "/testurl/programParticipants/optout/".$savedParticipant['Participant']['_id']
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual(
+            $participantFromDb['Participant']['session-id'],
+            null
+        );
+        $this->assertEqual(
+            $participantFromDb['Participant']['last-optout-date'],
+            $programNow->format("Y-m-d\TH:i:s")
+        );
+        $this->assertEquals(0, $this->Schedule->find('count'));
+    }
+    
+    
+    public function testOptin()
+    {
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', '+7')
+            ->will($this->returnValue(true));
+            
+        $participant = array(
+            'phone' => ' 07 ',
+            'session-id' => null
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment'] = 'all';
+        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        
+        $this->testAction(
+            "/testurl/programParticipants/optin/".$savedParticipant['Participant']['_id']
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertNotEqual(
+            $participantFromDb['Participant']['session-id'],
+            null
+        );
+        $this->assertEqual(
+            $participantFromDb['Participant']['last-optout-date'],
+            null
+        );
+        $this->assertEqual(
+            $participantFromDb['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+        );
     }
 
 }
