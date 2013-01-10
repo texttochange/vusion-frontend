@@ -117,7 +117,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-    
+
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -766,7 +766,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testMassDeleteParticipant()
+    public function testMassDeleteFilteredParticipant()
     {
         $this->mock_program_access();
         
@@ -809,6 +809,53 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->Participant->find('count'));
         $this->assertEquals(
             1,
+            $this->Schedule->find('count'));
+    }
+
+
+    public function testMassDeleteParticipant()
+    {
+        $this->mock_program_access();
+        
+        $participant = array(
+            'phone' => '+6');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $scheduleToBeDeleted = array(
+            'participant-phone' => '+6',
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleToBeDeleted);
+
+        $participant = array(
+            'phone' => '+7');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $participant = array(
+            'phone' => '+8');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $scheduleToStay = array(
+            'participant-phone' => '+8',
+            );
+
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($scheduleToStay);
+
+        $this->testAction("/testurl/programParticipants/massDelete");
+        
+        $this->assertEquals(
+            0,
+            $this->Participant->find('count'));
+        $this->assertEquals(
+            0,
             $this->Schedule->find('count'));
     }
 
@@ -1451,5 +1498,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $savedDialogue['Dialogue']['dialogue-id']
         );
     }
+
 
 }

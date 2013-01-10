@@ -17,9 +17,9 @@ class VumiRabbitMQ {
                 'worker_name' => $database_name,
                 'worker_class' => 'vusion.DialogueWorker',
                 'config' => array(
-                    'application_name' =>  $database_name,
-                    'transport_name' => $database_name,
-                    'control_name' => $database_name,
+                    'application_name' =>  $application_name,
+                    'transport_name' => $application_name,
+                    'control_name' => $application_name,
                     'database_name' => $database_name,
                     'vusion_database_name' => 'vusion',
                     'dispatcher_name' => $dispatcher_name,
