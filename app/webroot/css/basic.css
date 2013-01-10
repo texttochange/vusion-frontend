@@ -562,6 +562,15 @@
     padding: 1%;
 }
 
+.ttc-table-subelement {
+    width: 100%;
+}
+
+.ttc-table-subelement tr td{
+    padding: 6px;
+    text-align: left;
+}
+
 .ttc-display-area table{
     margin-bottom: 10px;
     width: 100%;
