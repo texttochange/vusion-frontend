@@ -37,6 +37,17 @@
 	                $tagsString = $tags;
 	            }
 	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$tagsString));
+	            $options = $selectOptions;
+	            //print_r($options);
+	            $selected = $oldEnrolls;
+	            echo $this->Form->input('enrolled', array('options'=>$options,
+	                'type'=>'select',
+	                'multiple'=>true,
+	                'label'=>'Enrolled In',
+	                'selected'=>$selected,
+                    'style'=>'margin-bottom:0px'
+                    ));
+	            $this->Js->get('document')->event('ready','$("#ParticipantEnrolled").chosen();');
 	        ?>
 	    </fieldset>
 	<?php echo $this->Form->end(__('Save'));?>
