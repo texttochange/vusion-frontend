@@ -114,7 +114,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-
+/*
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -1189,6 +1189,31 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['participants']));
 
     }
+*/
 
+    public function testExport()
+    {
+
+        $participants = $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256788601462',
+             )
+        );
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction("/testurl/programParticipants/export");
+
+    }
 
 }

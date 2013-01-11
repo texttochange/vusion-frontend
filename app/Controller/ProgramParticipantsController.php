@@ -13,7 +13,6 @@ class ProgramParticipantsController extends AppController
 
     public $uses = array('Participant', 'History');
 
-
     function constructClasses() 
     {
         parent::constructClasses();
@@ -62,6 +61,59 @@ class ProgramParticipantsController extends AppController
         $participants = $this->paginate();
         $this->set(compact('participants')); 
     }
+
+
+    public function export() 
+    {
+        $programUrl = $this->params['program'];
+
+        $this->set('filterFieldOptions', $this->Participant->fieldFilters);
+        $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $this->set('filterDialogueConditionsOptions', $dialoguesContent);
+     
+        $paginate = array(
+                    'all', 
+                    'limit' => 1);
+
+        if (isset($this->params['named']['sort'])) {
+            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
+        $conditions = $this->_getConditions();
+        if ($conditions != null) {
+            $paginate['conditions'] = $conditions;
+        }
+  
+        ##First a tmp file is created
+        $filePath = WWW_ROOT . "files/" . $programUrl . "/export"; 
+            
+        if (!file_exists($filePath)) {
+            //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
+            mkdir($filePath);
+            chmod($filePath, 0777);
+        }
+
+        $fileFullPath = $filePath . "/" . $programUrl . "_Participants_2013-01-10_12:12.csv";  
+        
+        $handle = fopen($fileFullPath, "w");
+
+        ##Second we extract the data and copy them in the file
+        $participantCount = $this->Participant->find('count');
+        $pageCount = intval(ceil($participantCount / $paginate['limit']));
+        for($count = 1; $count <= $pageCount; $count++){
+            $paginate['page'] = $count;
+            $this->paginate = $paginate;
+            $participants = $this->paginate();
+            foreach($participants as $participant) {
+                fwrite($handle, utf8_encode($participant['Participant']['phone']));
+            }
+        }
+
+        ##Third the download is activated by redirecting to the tmp file url
+        
+        $this->set(compact('participants')); 
+    }
+
 
     protected function _getConditions()
     {
