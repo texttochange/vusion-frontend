@@ -535,6 +535,13 @@ class ProgramParticipantsController extends AppController
             $tags = array('imported');
             if (isset($this->request->data['Import']['tags'])) {
                 $userTags = $this->_getTags($this->request->data['Import']['tags']);
+                $userTags = array_filter($userTags);
+                if (empty($userTags)) {
+                    $this->Session->setFlash(__('Error: tag must not be empty.'), 
+                        'default',
+                        array('class' => "message failure"));
+                    return;
+                }
                 foreach($userTags as $userTag) {
                     if (!$this->_validateTag($userTag)) {
                         $this->Session->setFlash(__('Error a tag is not valide: %s.', $userTag), 
