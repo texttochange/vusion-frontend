@@ -1,5 +1,15 @@
 <div class="participants index">
     <ul class="ttc-actions">
+        <li><?php 
+		          $exportUrl = $this->Html->url(array('program' =>$programUrl, 'controller' => 'programParticipants', 'action'=>'export'));
+		          echo $this->Html->tag(
+		                'span', 
+		                __('Export'), 
+		                array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
+		          $this->Js->get('[name=export]')->event('click',
+		              'generateExportDialogue(this);');
+		?>
+		</li>
         <li>
        <?php
         if (!isset($urlParams)) {
@@ -36,7 +46,7 @@
 		          $this->Js->get('[name=add-filter]')->event('click',
 		              '$("#advanced_filter_form").show();
 		              addStackFilter();');
-		?> </li>
+		?> </li> 
 	</ul>
 	<h3><?php echo __('Participants'); ?></h3>
 	<?php

@@ -189,10 +189,18 @@ class Participant extends MongoModel
         $distinctTags = $this->query($tagsQuery);
         $results = $distinctTags['values'];
 
+        $distinctLabels = $this->getDistinctLabels();
+
+        return array_merge($results, $distinctLabels);
+    }
+
+    public function getDistinctLabels()
+    {
+        $results = array();
         $map = new MongoCode("function() { 
             for(var i = 0; i < this.profile.length; i++) {
-                emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
-                }
+            emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
+            }
             }");
         $reduce = new MongoCode("function(k, vals) { 
             return vals.length; }");
@@ -202,17 +210,30 @@ class Participant extends MongoModel
             'reduce' => $reduce,
             'query' => array(),
             'out' => 'map_reduce_participantLabels');
-
+        
         $mongo = $this->getDataSource();
         $cursor = $mongo->mapReduce($labelsQuery);
-        if ($cursor == null)
-            return  $results;
         foreach($cursor as $distinctLabel) {
-            $results[] = $distinctLabel['_id'];    
+            $results[] = $distinctLabel['_id'];
         }
-        
-        return $results;
-        
+        return $results;  
+    }
+
+    public function getExportHeaders()
+    {
+        $headers = array(
+            "phone",
+            //"last-optin-date",
+            //"last-optout-date",
+            "tags");
+
+        $distinctLabels = $this->getDistinctLabels();
+        foreach($distinctLabels as $distinctLabel) {
+            $label = explode(':', $distinctLabel);
+            if (!in_array($label[0], $headers))
+                $headers[] = $label[0];
+        }
+        return $headers;
     }
 
 

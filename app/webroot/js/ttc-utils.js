@@ -519,3 +519,31 @@ if (!Array.indexOf) {
     return -1;
   }
 }
+
+
+function generateExportDialogue(obj) {
+    var url = $(obj).attr("url") + ".json" + window.location.search;
+    var dialog = $('<div id="export-dialogue" style="display:none" >'+localized_messages['generating_file']+'</div>').appendTo('body');
+        dialog.dialog({
+                title: localized_actions['export'],
+                close: function(event, ui) {
+                    dialog.remove();
+                },
+                modal: true
+        });
+        $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                success : function(response) {
+                    if (response["status"]=="fail") {
+                        $("#export-dialogue").html("fail: "+ response["message"]);
+                        return;
+                    }
+                    $("#export-dialogue").html(localized_messages['download_should_start']);
+                    setTimeout(function() {
+                            window.location.replace("download?file="+response["file"])
+                    }, 1000);
+                }
+        });
+} 
