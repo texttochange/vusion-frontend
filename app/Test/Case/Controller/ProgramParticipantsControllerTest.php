@@ -252,6 +252,43 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "stillAnother Tag"));
         
     }
+    
+    
+    public function testImport_csv_no_tag_fail() 
+    {
+
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
+        
+        $participants = $this->mock_program_access();
+        $participants
+            ->expects($this->any())
+            ->method('_notifyUpdateBackendWorker')
+            ->with('testurl', $regexPhone)
+            ->will($this->returnValue(true));
+        
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+
+        $this->testAction(
+            "/testurl/participants/import", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'file' => array(
+                            'error' => 0,
+                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
+                            'name' => 'wellformattedparticipants.csv'
+                            ),
+                        'tags' => ""
+                        )
+                    )
+                )
+            );
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(0, count($participants));
+        
+    }
 
 
     public function testImport_csv_duplicate() 
