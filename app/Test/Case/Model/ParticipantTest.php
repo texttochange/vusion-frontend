@@ -321,7 +321,15 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->save($participant_09);
 
         $results = $this->Participant->getExportHeaders();
-        $this->assertEqual(array('phone', 'last-optin-date', 'last-optout-date', 'tags', 'city', 'gender' ), $results);
+        $this->assertEqual(
+            array(
+                'phone', 
+            //    'last-optin-date', 
+            //    'last-optout-date', 
+                'tags', 
+                'city', 
+                'gender'),
+            $results);
         
     }
     
