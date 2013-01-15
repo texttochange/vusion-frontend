@@ -694,6 +694,7 @@ class ProgramParticipantsController extends AppController
                 break;
             }
             $this->Participant->create();
+            $participant          = array();
             $participant['phone'] = $data->val($i,'A');
             $col = 2;
             foreach ($headers as $header) {

@@ -560,6 +560,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'Age');
         $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '33');
         $this->assertEquals($participants[0]['Participant']['profile'][1]['raw'], '');
+        $this->assertEquals($participants[1]['Participant']['profile'][0]['value'], 'Gerald Ankunda');
+        $this->assertEquals($participants[1]['Participant']['profile'][1]['value'], '26');
     }
 
     public function testImport_xls_tag() 
