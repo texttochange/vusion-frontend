@@ -1,9 +1,8 @@
 <IfModule mod_rewrite.c>
-    XSendFile on
     RewriteEngine on
     RewriteRule    ^$    webroot/    [L]
     RewriteRule    (.*) webroot/$1    [L]
 </IfModule>
 <IfModule mod_xsendfile.c>
- XSendFile on
+    XSendFile on
 </IfModule>
