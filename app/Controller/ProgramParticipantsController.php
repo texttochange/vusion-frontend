@@ -537,10 +537,11 @@ class ProgramParticipantsController extends AppController
                 $userTags = $this->_getTags($this->request->data['Import']['tags']);
                 $userTags = array_filter($userTags);
                 if (empty($userTags)) {
-                    $this->Session->setFlash(__('Error: tag must not be empty.'), 
+                    /*$this->Session->setFlash(__('Error: tag must not be empty.'), 
                         'default',
                         array('class' => "message failure"));
-                    return;
+                    return;*/
+                    $userTags = array();
                 }
                 foreach($userTags as $userTag) {
                     if (!$this->_validateTag($userTag)) {
@@ -694,6 +695,7 @@ class ProgramParticipantsController extends AppController
                 break;
             }
             $this->Participant->create();
+            $participant          = array();
             $participant['phone'] = $data->val($i,'A');
             $col = 2;
             foreach ($headers as $header) {
