@@ -3,5 +3,7 @@
     RewriteEngine on
     RewriteRule    ^$    webroot/    [L]
     RewriteRule    (.*) webroot/$1    [L]
- </IfModule>
-XSendFile on
+</IfModule>
+<IfModule mod_xsendfile.c>
+ XSendFile on
+</IfModule>
