@@ -12,6 +12,10 @@ class ProgramParticipantsController extends AppController
 {
 
     public $uses = array('Participant', 'History');
+    var $components = array('RequestHandler');
+    var $helpers    = array(
+        'Js' => array('Jquery')
+        );
 
 
     function constructClasses() 
@@ -62,6 +66,111 @@ class ProgramParticipantsController extends AppController
         $participants = $this->paginate();
         $this->set(compact('participants')); 
     }
+
+    public function download()
+    {
+        $programUrl = $this->params['program'];
+        $fileName = $this->params['url']['file'];
+        
+        $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
+            
+        if (!file_exists($fileFullPath)) {
+            throw new NotFoundException();
+        }
+
+        $this->response->header("X-Sendfile: $fileFullPath");
+        $this->response->header("Content-type: application/octet-stream");
+        $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
+        $this->response->send();
+    }
+
+
+    public function export() 
+    {
+        $programUrl = $this->params['program'];
+
+        $this->set('filterFieldOptions', $this->Participant->fieldFilters);
+        $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $this->set('filterDialogueConditionsOptions', $dialoguesContent);
+     
+        $paginate = array(
+                    'all', 
+                    'limit' => 500);
+
+        if (isset($this->params['named']['sort'])) {
+            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
+        $conditions = $this->_getConditions();
+        if ($conditions != null) {
+            $paginate['conditions'] = $conditions;
+        }
+        
+        try{
+            ##First a tmp file is created
+            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
+            
+            ##TODO: the folder creation should be managed at program creation
+            if (!file_exists($filePath)) {
+                //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
+                mkdir($filePath);
+                chmod($filePath, 0777);
+            }
+            
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            $programName = $this->Session->read($programUrl.'_name');
+            $fileName = $programName . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
+            
+            $fileFullPath = $filePath . "/" . $fileName;  
+            
+            $handle = fopen($fileFullPath, "w");
+            
+            $headers = $this->Participant->getExportHeaders();
+            ##Second we write the headers
+            fputcsv($handle, $headers,',' , '"' );
+
+            ##Third we extract the data and copy them in the file
+            $participantCount = $this->Participant->find('count');
+            $pageCount = intval(ceil($participantCount / $paginate['limit']));
+            for($count = 1; $count <= $pageCount; $count++){
+                $paginate['page'] = $count;
+                $this->paginate = $paginate;
+                $participants = $this->paginate();
+                foreach($participants as $participant) {
+                    $line = array();
+                    foreach($headers as $header) {
+                        if (in_array($header, array('phone', 'last-optin-date', 'last-optout-date'))) {
+                                $line[] = $participant['Participant'][$header];
+                        } else if ($header == 'tags') {
+                            $line[] = implode(', ', $participant['Participant'][$header]);         
+                        } else {
+                            $value = $this->_searchProfile($participant['Participant']['profile'], $header);
+                            $line[] = $value;
+                        }
+                    }
+                    fputcsv($handle, $line,',' , '"' );
+                }
+            }
+            
+            $this->set(compact('fileName'));
+        } catch (Exception $e) {
+            $this->set('errorMessage', $e->getMessage()); 
+        }
+    }
+
+
+    protected function _searchProfile($array, $labelKey)
+    {
+        $results = array();
+
+        foreach($array as $label) {
+            if ($label['label'] == $labelKey)
+                return $label['value'];
+        }
+        
+        return null;
+    }
+
 
     protected function _getConditions()
     {

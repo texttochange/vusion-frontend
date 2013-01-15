@@ -16,7 +16,6 @@ class TestProgramParticipantsController extends ProgramParticipantsController
         $this->redirectUrl = $url;
     }
 
-
 }
 
 
@@ -73,10 +72,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
 
-
-    public function mock_program_access()
+    public function mock_program_access_withoutSession()
     {
-        $participants = $this->generate(
+           $participants = $this->generate(
             'ProgramParticipants', array(
                 'components' => array(
                     'Acl' => array('check'),
@@ -102,6 +100,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->method('find')
             ->will($this->returnValue($this->programData));
             
+        return $participants;
+
+    }
+
+
+    public function mock_program_access()
+    {
+        $participants = $this->mock_program_access_withoutSession();
+        
         $participants->Session
             ->expects($this->any())
             ->method('read')
@@ -111,9 +118,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 $this->programData[0]['Program']['database'],
                 $this->programData[0]['Program']['name'],
                 'Africa/Kampala',
-                'testdbprogram'
+                'testdbprogram',
+                'name1', #?
+                'name2', #?
+                $this->programData[0]['Program']['name'] #only for export test
                 ));
-     
+
         return $participants;
     }
 
@@ -1346,6 +1356,57 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['participants']));
 
     }
+
+
+    public function testExport()
+    {
+
+        $participants = $this->mock_program_access_withoutSession();
+
+        $participants->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->onConsecutiveCalls(
+                '4', 
+                '2',
+                $this->programData[0]['Program']['database'],
+                $this->programData[0]['Program']['name'],
+                'Africa/Kampala',
+                'testdbprogram',
+                'name1', #?
+                'name2', #?
+                $this->programData[0]['Program']['name'] #only for export test to get program name
+                ));
+        
+
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+                'tags' => array('geek', 'cool'),
+             )
+        );
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256788601462',
+                'profile' => array( 
+                    array( 'label' => 'name', 
+                        'value' => 'olivier', 
+                        'raw' => null))
+             )
+        );
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction("/testurl/programParticipants/export");
+
+        $this->assertTrue(isset($this->vars['fileName']));
+        $this->assertFileEquals(
+            TESTS . 'files/exported_participants.csv',
+            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+    }
     
     
     public function testReset()
@@ -1356,12 +1417,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             ->method('_notifyUpdateBackendWorker')
             ->with('testurl', '+256712747841')
             ->will($this->returnValue(true));
-        
+
         $participant = array(
             'Participant' => array(
                 'phone' => '+256712747841',
              )
-        );
+        );        
 
         $this->Participant->create();
         $participantDB = $this->Participant->save($participant);

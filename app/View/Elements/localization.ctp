@@ -24,12 +24,15 @@ var localized_errors = {
 };
 
 var localized_messages = {
-    vait_redirection: "<?php echo __('Wait for redirection.')?>",
+    wait_redirection: "<?php echo __('Wait for redirection.')?>",
+    generating_file: "<?php echo __('Generating export file...')?>",
+    download_should_start: "<?php echo __('The export file has been generated. The download should start shortly.')?>",
 };
 
 var localized_actions= {
     save_dialogue: "<?php echo __('save dialogue')?>",
     save_request: "<?php echo __('save request')?>",
+    export: "<?php echo __('Export')?>",
 };
 
 var localized_labels = {

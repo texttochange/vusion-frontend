@@ -26,34 +26,6 @@
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
 	//Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'programHome'));
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
-	//Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
-/*
-	Router::connect(
-		'/:program/:controller/:action/*',
-		array(
-			'controller' => 'programHome',
-			'action' => 'index'
-			),
-		array(
-			'program' => '[a-zA-Z0-9]+'
-			)
-		);
-
-	
-	Router::connect(
-		'/:program/:controller',
-		array(
-			'controller' => 'programHome',
-			'action' => 'index'
-			),
-		array(
-			'program' => '[a-zA-Z0-9]+'
-			)
-		);
-*/
 
 /**
 *  get the local language form the subdomain such as fre.domain.com
@@ -69,6 +41,7 @@
 	//Router::parseExtensions('json');
 	Router::mapResources('programHistory', array('prefix' => '/:program/'));
 	Router::mapResources('programRequests', array('prefix' => '/:program/'));
+	//Router::mapResources('programParticipants', array('prefix'=> '/:program/'));
 	Router::mapResources('Programs');
 	//Router::mapResources('users');
 	Router::parseExtensions('json', 'csv');
@@ -76,6 +49,8 @@
 /**
 *  route for static controllers
 */
+    Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+
 	Router::connect(
 		'/programs/:action/*',
 		array(
