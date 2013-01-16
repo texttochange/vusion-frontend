@@ -194,7 +194,7 @@ class Participant extends MongoModel
         return array_merge($results, $distinctLabels);
     }
 
-    public function getDistinctLabels()
+    public function getDistinctLabels($conditions = null)
     {
         $results = array();
         $map = new MongoCode("function() { 
@@ -211,6 +211,10 @@ class Participant extends MongoModel
             'query' => array(),
             'out' => 'map_reduce_participantLabels');
         
+        if (isset($conditions)) {
+            $labelsQuery['query'] = $conditions;
+        }
+
         $mongo = $this->getDataSource();
         $cursor = $mongo->mapReduce($labelsQuery);
         foreach($cursor as $distinctLabel) {
@@ -219,7 +223,7 @@ class Participant extends MongoModel
         return $results;  
     }
 
-    public function getExportHeaders()
+    public function getExportHeaders($conditions = null)
     {
         $headers = array(
             "phone",
@@ -227,7 +231,7 @@ class Participant extends MongoModel
             //"last-optout-date",
             "tags");
 
-        $distinctLabels = $this->getDistinctLabels();
+        $distinctLabels = $this->getDistinctLabels($conditions);
         foreach($distinctLabels as $distinctLabel) {
             $label = explode(':', $distinctLabel);
             if (!in_array($label[0], $headers))
