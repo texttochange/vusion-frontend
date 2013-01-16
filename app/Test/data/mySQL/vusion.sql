@@ -45,7 +45,6 @@ CREATE TABLE `acos` (
 --
 -- Dumping data for table `acos`
 --
-
 LOCK TABLES `acos` WRITE;
 /*!40000 ALTER TABLE `acos` DISABLE KEYS */;
 INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES

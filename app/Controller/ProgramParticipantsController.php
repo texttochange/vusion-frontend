@@ -116,7 +116,7 @@ class ProgramParticipantsController extends AppController
                 mkdir($filePath);
                 chmod($filePath, 0777);
             }
-            
+
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             $programName = $this->Session->read($programUrl.'_name');
             $fileName = $programName . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
@@ -125,14 +125,15 @@ class ProgramParticipantsController extends AppController
             
             $handle = fopen($fileFullPath, "w");
             
-            $headers = $this->Participant->getExportHeaders();
+            $headers = $this->Participant->getExportHeaders($conditions);
             ##Second we write the headers
             fputcsv($handle, $headers,',' , '"' );
 
             ##Third we extract the data and copy them in the file
-            $participantCount = $this->Participant->find('count');
+            
+            $participantCount = $this->Participant->find('count', array('conditions'=> $conditions));
             $pageCount = intval(ceil($participantCount / $paginate['limit']));
-            for($count = 1; $count <= $pageCount; $count++){
+            for($count = 1; $count <= $pageCount; $count++) {
                 $paginate['page'] = $count;
                 $this->paginate = $paginate;
                 $participants = $this->paginate();
