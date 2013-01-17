@@ -33,6 +33,11 @@ var localized_actions= {
     save_dialogue: "<?php echo __('save dialogue')?>",
     save_request: "<?php echo __('save request')?>",
     export: "<?php echo __('Export')?>",
+    filter: "<?php echo __('Filter')?>",
+    stack_operator_prefix: "<?php echo __('Match')?>",
+    stack_operator_suffix: "<?php echo __('of the following rules:')?>",
+    stack_operator_any: "<?php echo __('any')?>",
+    stack_operator_all: "<?php echo __('all')?>",
 };
 
 var localized_labels = {

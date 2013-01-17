@@ -373,15 +373,109 @@ function updateClock(){
 	$("#local-date-time").text(newTime);	
 }
 
+function createFilter(minimize, selectedStackOperator, stackRules){
+
+    if(typeof(minimize)==='undefined') minimize = false;    
+    if(typeof(selectedStackOperator)==='undefined') selectedStackOperator = 'all';
+    if(typeof(stackRules)==='undefined') stackRules = {};
+
+    if ($('#filter-stack').length != 0) {
+        return;
+    }
+
+   var stack = document.createElement("div");
+   $(stack).attr('id', 'filter-stack').attr('class', 'ttc-filter-stack');
+   $('#advanced_filter_form').prepend(stack);
+
+   //The operator between the stack rules
+   var stackOperatorPrefix = document.createElement("p");
+   $(stackOperatorPrefix).html(localized_actions['stack_operator_prefix']);
+
+   var stackOperatorSuffix = document.createElement("p");
+   $(stackOperatorSuffix).html(localized_actions['stack_operator_suffix']);
+
+   var stackOperatorSelect = document.createElement("select");
+   $(stackOperatorSelect).attr('name', 'stack_operator');
+
+   var stackOperatorOptions = {
+       all: localized_actions['stack_operator_all'],
+       any: localized_actions['stack_operator_any']
+   }
+
+   $.each(stackOperatorOptions, function(val, text) {
+        var option = new Option(text, val);
+        if (val==selectedStackOperator) {
+            $(option).attr('selected', true);
+        }
+		$(stackOperatorSelect).append(option);
+   });
+
+   var stackOperator = document.createElement("div");
+   $(stackOperator).attr('id', 'filter-stack-operator').attr('class', 'ttc-filter-stack-operator');
+   $(stackOperator).append(stackOperatorPrefix).append(stackOperatorSelect).append(stackOperatorSuffix);
+   $('#advanced_filter_form').prepend(stackOperator);
+
+   var title = document.createElement("div");
+   $(title).attr('class','ttc-filter-title').html(localized_actions['filter']);
+   $('#advanced_filter_form').prepend(title);
+
+   var minimizeButton = document.createElement("img");
+   $(minimizeButton).attr('class','ttc-add-icon').attr('src', '/img/minimize-icon-16.png').on('click', minimizeFilter);
+   $('#advanced_filter_form').prepend(minimizeButton);
+
+   var deleteButton = document.createElement("img");
+   $(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/delete-icon-16.png').on('click', removeFilter);
+   $('#advanced_filter_form').prepend(deleteButton);
+
+   $.each(stackRules, function(i, rule) {
+       addStackFilter();
+       $("select[name='filter_param["+i+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
+       if (typeof(rule[2]) === 'undefined') return true;
+       if ($("input[name='filter_param["+i+"][2]']").length > 0 ) {
+           $("input[name='filter_param["+i+"][2]']").val(rule[2]).children("option[value="+rule[2]+"]");
+       } else {
+           $("select[name='filter_param["+i+"][2]']").val(rule[2]).children("option[value="+rule[2]+"]").click();
+       }
+	   if (typeof(rule[3]) === 'undefined') return true;
+	   $("input[name='filter_param["+i+"][2]']").val(rule[3]).children("option[value="+rule[3]+"]");
+	   
+	   });
+    
+   if (minimize) {
+       $(minimizeButton).click();
+   }    
+    
+}
+
+function minimizeFilter() {
+    $(this).parent().children(":not(img):not([class='ttc-filter-title'])").slideUp('fast');
+    $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', expandFilter);
+}
+
+function expandFilter() {
+    $(this).parent().children().each(function(){ 
+        if ($(this).attr('type')=='text')
+            $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
+        $(this).slideDown('fast')});
+    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', minimizeFilter);    
+}
+
+function removeFilter() {
+    $(this).parent().hide().children(':not(.submit)').remove();
+    if (window.location.search != "")
+        window.location.replace("index")
+}
+
 function addStackFilter(){
+
 	var count = $('.ttc-stack-filter').length + 1;
 	var stackFilter = document.createElement("div");
 	//$(stackFilter).attr('class','ttc-stack-filter').insertBefore('.submit');
-	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#advanced_filter_form').insertBefore('.submit');
+	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#filter-stack');
 	
-	//var addButton = document.createElement("img");
-	//$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
-	//$(stackFilter).append(addButton);
+	var addButton = document.createElement("img");
+	$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
+	$(stackFilter).append(addButton);
 	
 	var deleteButton = document.createElement("img");
 	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/remove-icon-16.png').on('click', removeStackFilter);
