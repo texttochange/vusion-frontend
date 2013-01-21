@@ -2,7 +2,7 @@ var program = {"script": [
         "dialogues",
         ],
     "name" : "text",
-    "customer": "text",
+    "partner": "text",
     "shortcode" : "text",
     "participants":["add-participant"],
     "add-group":"button",
