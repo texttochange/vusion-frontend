@@ -158,6 +158,93 @@ class ParticipantTestCase extends CakeTestCase
             '01'
             );
     }
+    
+    
+    public function testEditParticipantEnroll_notEnrolled_Ok()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $dialogue = $this->Maker->getOneDialogue();
+        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        
+        $participant = array(
+            'phone' => '+7',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual($savedParticipant['Participant']['enrolled'],array());
+        
+        $savedParticipant['Participant']['enrolled'][0] = $savedDialogue['Dialogue']['dialogue-id'];
+
+        $this->Participant->id = $savedParticipant['Participant']['_id']."";
+        $resavedParticipant = $this->Participant->save($savedParticipant);
+        
+        $enrolledParticipant = $this->Participant->find('first', array(
+            'conditions' => $participant));
+        
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+            );
+        $this->assertEqual($this->Participant->find('count'), 1);
+    }
+    
+ 
+    public function testEditParticipantEnroll_alreadyEnrolled_date_unchanged()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+                      
+        $dialogue = $this->Maker->getOneDialogue();        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);        
+        
+        $otherDialogue = $this->Maker->getOneDialogue();
+        $otherSavedDialogue = $this->Dialogue->saveDialogue($otherDialogue);
+        $this->Dialogue->makeActive($otherSavedDialogue['Dialogue']['_id']);
+        
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        
+        $participant = array(
+            'phone' => '+7',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);        
+        
+        $savedParticipant['Participant']['enrolled'][0]['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
+        $savedParticipant['Participant']['enrolled'][0]['date-time'] = '2012-12-12T18:30:00';
+        
+        $this->Participant->id = $savedParticipant['Participant']['_id']."";
+        $savedAgainParticipant = $this->Participant->save($savedParticipant);
+        
+        $savedAgainParticipant['Participant']['enrolled'][0] = $savedDialogue['Dialogue']['dialogue-id'];
+        $savedAgainParticipant['Participant']['enrolled'][1] = $otherSavedDialogue['Dialogue']['dialogue-id'];
+        
+        $this->Participant->id = $savedAgainParticipant['Participant']['_id']."";
+        $resavedParticipant = $this->Participant->save($savedAgainParticipant);
+        
+        $enrolledParticipant = $this->Participant->find('first', array(
+            'conditions' => $participant));
+        
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
+            $savedDialogue['Dialogue']['dialogue-id']
+            );
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][0]['date-time'],
+            '2012-12-12T18:30:00'
+            );
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][1]['dialogue-id'],
+            $otherSavedDialogue['Dialogue']['dialogue-id']
+            );
+        $this->assertEqual(
+            $enrolledParticipant['Participant']['enrolled'][1]['date-time'],
+            $programNow->format("Y-m-d\TH:i:s")
+            );
+        $this->assertEqual(2, count($enrolledParticipant['Participant']['enrolled']));
+    }
 
     public function testGetDistinctTagsAndLabels()
     {
@@ -196,6 +283,80 @@ class ParticipantTestCase extends CakeTestCase
         $results = $this->Participant->getDistinctTagsAndLabels();
         $this->assertEqual(array('cool', 'geek', 'another tag', 'city:jinja', 'city:kampala', 'gender:Male' ), $results);
         
+    }
+
+
+    public function testGetHeaderExport()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant_08 = array(
+            'phone' => '08',
+            'tags' => array('geek', 'cool'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'kampala',
+                    'raw'=> null),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> null),
+                ));
+        $this->Participant->create();
+        $this->Participant->save($participant_08);
+
+        $participant_09 = array(
+            'phone' => '09',
+            'tags' => array('geek', 'another tag'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'jinja',
+                    'raw'=> 'live in jinja'),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> 'gender M'),
+                )
+            );
+
+        $this->Participant->create();
+        $this->Participant->save($participant_09);
+
+        $results = $this->Participant->getExportHeaders();
+        $this->assertEqual(
+            array(
+                'phone', 
+            //    'last-optin-date', 
+            //    'last-optout-date', 
+                'tags', 
+                'city', 
+                'gender'),
+            $results);
+        
+    }
+    
+    
+    public function testReset()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $participant = array(
+            'phone' => '08',
+            'tags' => array('geek', 'cool'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'kampala',
+                    'raw'=> null),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> null),
+                ));
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $resetParticipant =$this->Participant->reset($savedParticipant['Participant']);
+        
+        $this->assertNotEqual($resetParticipant['session-id'], null);
+        $this->assertEqual($resetParticipant['tags'], array());
+        $this->assertEqual($resetParticipant['profile'], array());
     }
 
 

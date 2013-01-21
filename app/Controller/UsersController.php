@@ -260,7 +260,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/ProgramLogs');
         
-        //allow customer to 
+        //allow partner to 
         $group->id = 4;
         $this->Acl->deny($group, 'controllers');
         $this->Acl->allow($group, 'controllers/Programs/index');
@@ -273,9 +273,26 @@ class UsersController extends AppController
         $this->Acl->deny($group, 'controllers/ProgramParticipants/add');
         $this->Acl->allow($group, 'controllers/ProgramParticipants/index');
         $this->Acl->allow($group, 'controllers/ProgramParticipants/view');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants/export');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants/download');
+        $this->Acl->deny($group, 'controllers/ProgramParticipants/reset');
+        $this->Acl->deny($group, 'controllers/ProgramParticipants/optin');
+        $this->Acl->deny($group, 'controllers/ProgramParticipants/optout');
         $this->Acl->allow($group, 'controllers/ProgramHistory/index');
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
+        
+        //allow program messager to 
+        $group->id = 5;
+        $this->Acl->deny($group, 'controllers');
+        $this->Acl->allow($group, 'controllers/Programs/index');
+        $this->Acl->allow($group, 'controllers/Programs/view');
+        $this->Acl->allow($group, 'controllers/ProgramHome');
+        $this->Acl->allow($group, 'controllers/ProgramParticipants');
+        $this->Acl->allow($group, 'controllers/ProgramHistory/index');
+        $this->Acl->allow($group, 'controllers/ProgramHistory/export');
+        $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
+        $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
 
         echo 'AllDone';
         exit;

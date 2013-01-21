@@ -6,7 +6,6 @@
 	<?php	    
 	    echo $this->Html->tag('div', $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']), array('class' => 'ttc-issue-time'));
 	    echo "<div class='ttc-issue-content'>";
-	    //echo $this->Html->tag('h3', 'unmatchable reply', array('onclick'=>'alert("hi");'));
 	    echo $this->Html->tag('h3', $this->Html->link(__('unmatchable reply'),array('controller'=>'unmatchableReply','action' => 'index')));
 	    echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
 	    echo "</div>";
@@ -16,9 +15,12 @@
 	</ul>
 </div>
 <div class="ttc-program-index">
-    <?php if ($this->Session->read('Auth.User.group_id') != 3 && $this->Session->read('Auth.User.group_id') != 4) { ?>
-    <?php echo $this->Html->link(__('Create Program'), array('action' => 'add'), array('class' => 'ttc-button', 'style'=>'float:right')); ?>    
-	<?php } ?>
+    <?php echo $this->AclLink->generateButton(
+            __('Create Program'), 
+            null,
+            'programs',
+            'add',
+            array('class' => 'ttc-button', 'style'=>'float:right')); ?>
     <h3><?php echo __('Programs');?></h3>
 	<?php
 	foreach ($programs as $program): ?>

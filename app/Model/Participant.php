@@ -169,34 +169,11 @@ class Participant extends MongoModel
             if (!isset($this->data['Participant']['profile']))
                 $this->data['Participant']['profile'] = array();
         } else {
-            if(!isset($this->data['Participant']['tags']))
-                $this->data['Participant']['tags'] = array();
-            else if (isset($this->data['Participant']['tags']) and !is_array($this->data['Participant']['tags'])) {
-                $tags = trim(stripcslashes($this->data['Participant']['tags']));
-                $tags = array_filter(explode(",", $tags));
-                $cleanTags = array();
-                foreach ($tags as $tag) {
-                    $cleanTags[] = trim($tag);
-                }
-                $this->data['Participant']['tags'] = $cleanTags;
-            }
+            $this->_editTags();
             
-            if(!isset($this->data['Participant']['profile']))
-                $this->data['Participant']['profile'] = array();
-            else if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {
-                $profiles = trim(stripcslashes($this->data['Participant']['profile']));
-                $profiles = array_filter(explode(",", $profiles));
-                $profileList = array();
-                foreach ($profiles as $profile) {
-                    list($label,$value) = explode(":", $profile);
-                    $newProfile = array();
-                    $newProfile['label'] = $label;
-                    $newProfile['value'] = $value;
-                    $newProfile['raw'] = null;
-                    $profileList[] = $newProfile;
-                }
-                $this->data['Participant']['profile'] = $profileList;
-            }
+            $this->_editProfile();
+            
+            $this->_editEnrolls();            
         }
 
         return true;
@@ -212,10 +189,18 @@ class Participant extends MongoModel
         $distinctTags = $this->query($tagsQuery);
         $results = $distinctTags['values'];
 
+        $distinctLabels = $this->getDistinctLabels();
+
+        return array_merge($results, $distinctLabels);
+    }
+
+    public function getDistinctLabels($conditions = null)
+    {
+        $results = array();
         $map = new MongoCode("function() { 
             for(var i = 0; i < this.profile.length; i++) {
-                emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
-                }
+            emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
+            }
             }");
         $reduce = new MongoCode("function(k, vals) { 
             return vals.length; }");
@@ -225,17 +210,34 @@ class Participant extends MongoModel
             'reduce' => $reduce,
             'query' => array(),
             'out' => 'map_reduce_participantLabels');
+        
+        if (isset($conditions)) {
+            $labelsQuery['query'] = $conditions;
+        }
 
         $mongo = $this->getDataSource();
         $cursor = $mongo->mapReduce($labelsQuery);
-        if ($cursor == null)
-            return  $results;
         foreach($cursor as $distinctLabel) {
-            $results[] = $distinctLabel['_id'];    
+            $results[] = $distinctLabel['_id'];
         }
-        
-        return $results;
-        
+        return $results;  
+    }
+
+    public function getExportHeaders($conditions = null)
+    {
+        $headers = array(
+            "phone",
+            //"last-optin-date",
+            //"last-optout-date",
+            "tags");
+
+        $distinctLabels = $this->getDistinctLabels($conditions);
+        foreach($distinctLabels as $distinctLabel) {
+            $label = explode(':', $distinctLabel);
+            if (!in_array($label[0], $headers))
+                $headers[] = $label[0];
+        }
+        return $headers;
     }
 
 
@@ -279,6 +281,144 @@ class Participant extends MongoModel
             'enrolled.dialogue-id' => array('$ne'=>$dialogueId)
             );
         $this->updateAll($updateData, $conditions);        
+    }
+    
+    
+    protected function _editTags()
+    {
+        if(!isset($this->data['Participant']['tags']))
+            $this->data['Participant']['tags'] = array();
+        else if (isset($this->data['Participant']['tags']) and !is_array($this->data['Participant']['tags'])) {
+            $tags = trim(stripcslashes($this->data['Participant']['tags']));
+            $tags = array_filter(explode(",", $tags));
+            $cleanTags = array();
+            foreach ($tags as $tag) {
+                $cleanTags[] = trim($tag);
+            }
+            $this->data['Participant']['tags'] = $cleanTags;
+        }
+        return $this->data['Participant']['tags'];
+    }
+    
+    
+    protected function _editProfile()
+    {
+        if(!isset($this->data['Participant']['profile']))
+            $this->data['Participant']['profile'] = array();
+        else if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {
+            $profiles = trim(stripcslashes($this->data['Participant']['profile']));
+            $profiles = array_filter(explode(",", $profiles));
+            $profileList = array();
+            foreach ($profiles as $profile) {
+                list($label,$value) = explode(":", $profile);
+                $newProfile = array();
+                $newProfile['label'] = $label;
+                $newProfile['value'] = $value;
+                $newProfile['raw'] = null;
+                $profileList[] = $newProfile;
+            }
+            $this->data['Participant']['profile'] = $profileList;
+        }
+        return $this->data['Participant']['profile'];
+    }
+    
+    
+    protected function _editEnrolls()
+    {
+        $participantUpdateData = $this->data;
+        
+        $originalParticipantData = $this->read(); // $this->read() deletes already processed info and
+                                                  // and they must all be re-initialized.
+        
+        // ******** re-initialize already processed information *********/////
+        $this->data['Participant'] = $participantUpdateData['Participant'];
+        // ******************************************************************////
+        
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        
+        if(!isset($participantUpdateData['Participant']['enrolled']) or 
+            !is_array($participantUpdateData['Participant']['enrolled'])) {
+            $this->data['Participant']['enrolled'] = array();
+            return; 
+        }
+        
+        if (isset($participantUpdateData['Participant']['enrolled'])
+            and $participantUpdateData['Participant']['enrolled'] == array()) {
+            $this->data['Participant']['enrolled'] = array();
+            return;
+        }
+        
+        $this->data['Participant']['enrolled'] = array();
+        foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
+            $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
+            $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
+
+            if ($originalParticipantData['Participant']['enrolled'] == array()) {
+                $this->data['Participant']['enrolled'][] = array(
+                            'dialogue-id' => $dialogueId,
+                            'date-time' => $enrollTime
+                            );
+                continue;
+            }
+            foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
+                if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
+                    continue;
+               
+                if ($dialogueId == $orignalEnroll['dialogue-id']) {
+                    $this->data['Participant']['enrolled'][] = $orignalEnroll;
+                } else {
+                    $dateTime = $programNow->format("Y-m-d\TH:i:s");                            
+                    if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
+                        $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
+                        if ($index) {
+                            $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
+                        }
+                    }
+                    $this->data['Participant']['enrolled'][] = array(
+                        'dialogue-id' => $dialogueId,
+                        'date-time' => $dateTime
+                        );
+                    break;
+                }
+            }
+        }
+    }
+    
+    
+    protected function _alreadyInArray($param, $check)
+    {
+        foreach ($check as $checked) {
+            if (in_array($param, $checked))
+                return true;
+        }
+        return false;
+    }
+    
+    
+    protected function _getDialogueIndex($param, $check)
+    {
+        foreach ($check as $key => $value) {
+            if ($param == $value['dialogue-id'])
+                return $key;
+        }
+        return false;
+    }
+    
+    
+    public function reset($check)
+    {
+        $check['enrolled'] = null;
+        $this->save($check);
+                
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        
+        $check['session-id'] = $this->gen_uuid();
+        $check['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+        $check['last-optout-date'] = null;
+        $check['tags'] = array();
+        $check['profile'] = array();
+        
+        return $check;
     }
 
     

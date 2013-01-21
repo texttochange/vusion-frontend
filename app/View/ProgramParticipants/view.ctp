@@ -22,6 +22,39 @@
 		        array('class'=>'ttc-button'),
 		        $participant['Participant']['_id']);
 		    ?> 
+		</li>		
+		<li><?php 
+		    echo $this->AclLink->generatePostLink(
+		        __('Reset'),
+		        $programUrl,
+		        'programParticipants',
+		        'reset',
+		         __('Are you sure you want to reset the participant %s?', $participant['Participant']['phone']),
+		        array('class'=>'ttc-button'),
+		        $participant['Participant']['_id']);
+		    ?> 
+		</li>
+		<li><?php
+		    if ($participant['Participant']['session-id'] != null) {
+		        echo $this->AclLink->generatePostLink(
+		            __('Optout'),
+		            $programUrl,
+		            'programParticipants',
+		            'optout',
+		            __('Are you sure you want to optout the participant %s?', $participant['Participant']['phone']),
+		            array('class'=>'ttc-button'),
+		            $participant['Participant']['_id']);
+		    } else {
+		        echo $this->AclLink->generatePostLink(
+		            __('Optin'),
+		            $programUrl,
+		            'programParticipants',
+		            'optin',
+		            __('Are you sure you want to optin the participant %s?', $participant['Participant']['phone']),
+		            array('class'=>'ttc-button'),
+		            $participant['Participant']['_id']);
+		    }
+		    ?> 
 		</li>
 	</ul>
     <h3><?php echo __('Participant'); ?></h3>
@@ -82,8 +115,7 @@
 	</dl>
 	<br/>
 			<h3><?php echo __("Participant's Scheduled Messages"); ?></h3>
-	
-			<table cellpadding="0" cellspacing="0">
+			<table class="ttc-table-subelement" cellpadding="0" cellspacing="0">
 			<tr>
 				<th><?php echo __('Time');?></th>
 				<th><?php echo __('Source');?></th>
@@ -110,8 +142,7 @@
 			</table>
 	<br/>
 			<h3><?php echo __("Participant's History"); ?></h3>
-	
-			<table cellpadding="0" cellspacing="0">
+			<table class="ttc-table-subelement" cellpadding="0" cellspacing="0">
 			<tr>
 				<th><?php echo __('Time');?></th>
 				<th><?php echo __('Type');?></th>
@@ -160,7 +191,6 @@
 			</tr>
 			<?php endforeach; ?>
 			</table>
-
 </div>
 
 
