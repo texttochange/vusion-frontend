@@ -104,6 +104,10 @@
 			             'style' => 'display: none')
 			             );
 			     }
+			     ?>
+			     </td></tr>
+			     <tr><td>
+			     <?php
 			     echo $this->Html->tag('div', '', array(
 			         'id' => 'connectionState',
 			         'class' => 'connection-message',
