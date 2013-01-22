@@ -522,8 +522,8 @@ function supplyOperatorOptions(elt) {
     var operatorDropDown = document.createElement("select");
 	$(operatorDropDown).attr('name', operatorDropDownName + '[2]');
 	$(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
-	$.each(operators, function(value, label) {
-	        $(operatorDropDown).append(new Option(label, value));
+	$.each(operators, function(operator, details) {
+	        $(operatorDropDown).append(new Option(details['label'], operator));
 	});
 	$(elt).after(operatorDropDown);
 	supplyParameterOptions(operatorDropDown);
@@ -535,8 +535,9 @@ function supplyParameterOptions(operatorElt) {
     $(operatorElt).nextAll('input,select').remove();
 
     var name = $(operatorElt).attr('name').replace(new RegExp("\\[2\\]$","gm"), "");
+    var field = $('[name="'+name+'[1]"]').val()
     var operator = $(operatorElt).val();
-    var operatorType = window.app.filterParameterTypes[operator];
+    var operatorType = window.app.filterFieldOptions[field]['operators'][operator]['parameter-type'];
 
     switch (operatorType) 
     {
@@ -551,76 +552,20 @@ function supplyParameterOptions(operatorElt) {
 	    break;
 	case "dialogue":
 	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
-	    var options = window.app.filterParameterChoices[operatorType];
+	    var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value['name'], key));      
         })
         break;
+    case "interaction":
+        break;
 	default:
 	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
-	    var options = window.app.filterParameterChoices[operatorType];
+	    var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value, value));      
         })
     }
-    /*
-    case operator == "message-direction":
-        $(operatorElt).after("<select name='"+name+"[3]'></select>");
-        var options = window.app.typeConditionOptions;
-        $.each(options, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value, key));      
-        })
-        break;
-    case condition_type=="message-status":
-	    $(elt).after("<select name='"+name+"[2]'></select>");
-        $.each(window.app.statusConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value, key));      
-        })
-        break;
-    
-    case reg_in.test(operator):
-
-    case 
-	    $(elt).after("<input name='"+name+"[2]'></input>");
-	    $("[name='"+name+"[2]']").datepicker();
-	    break;
-	case condition_type=="participant-phone":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="phone":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="message-content":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="dialogue":
-	    $(elt).after("<select name='"+name+"[2]'></select>");
-	    $("[name='"+name+"[2]']").on('click', { filterPrefix: name}, generateDropdown);
-        $.each(window.app.dialogueConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        });
-        break;
-    case condition_type=="enrolled":
-        $(elt).after("<select name='"+name+"[2]'></select>");
-        $.each(window.app.dialogueConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        });
-	    break;
-	case condition_type=="not-enrolled":
-        $(elt).after("<select name='"+name+"[2]'></select>");
-        $.each(window.app.dialogueConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        });
-	    break;
-	case condition_type=="tag":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="label":
-        $(elt).after("<input name='"+name+"[3]'></input>");
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-    }
-    */
 }
 
 function generateDropdown(event) {

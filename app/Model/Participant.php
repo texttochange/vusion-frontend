@@ -414,7 +414,7 @@ class Participant extends MongoModel
         return $check;
     }
 
-    #Filter Functions
+    #Filter variables and functions
     public $fieldFilters = array(
         'phone' => array(
             'label' => 'phone',
@@ -544,7 +544,7 @@ class Participant extends MongoModel
                 } elseif ($filterParam[2] == 'start-with') {
                     $conditions['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
                 } elseif ($filterParam[2] == 'equal-to') {
-                    $conditions['phone'] = $filterParam[3];        
+                    $conditions[] = array('phone' => $filterParam[3]);        
                 }
             } elseif ($filterParam[1]=='tagged') {
                 if ($filterParam[2] == 'in-tag') {

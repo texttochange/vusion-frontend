@@ -42,7 +42,8 @@
         'import',
         array('class' => 'ttc-button')); 
     ?></li>
-    <li><?php echo $this->Html->tag(
+    <li><?php 
+    echo $this->Html->tag(
         'span', 
         __('Filter'), 
         array('class' => 'ttc-button', 'name' => 'add-filter')); 
