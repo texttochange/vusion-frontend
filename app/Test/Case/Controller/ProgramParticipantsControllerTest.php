@@ -992,6 +992,56 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
+    public function testEditParticipantProfile_only_label_fail()
+    {
+        $participants = $this->mock_program_access();
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+             )
+        );
+
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'profile' => 'food',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['profile'], array());
+        
+        $participants = $this->mock_program_access();
+        $this->testAction(
+            "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'profile' => 'town:',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['profile'], array());
+    }
+    
+    
     public function testEditParticipantTags()
     {
         $participants = $this->mock_program_access();
