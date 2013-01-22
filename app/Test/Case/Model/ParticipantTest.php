@@ -4,6 +4,7 @@ App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('ScriptMaker', 'Lib');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
+App::uses('FilterException', 'Lib');
 
 class ParticipantTestCase extends CakeTestCase
 {
@@ -359,5 +360,334 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual($resetParticipant['profile'], array());
     }
 
+
+    public function testFromFilterToQueryConditions_phone() 
+    {
+        $stackOperator = 'all';
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "phone", 
+                    2 => "equal-to", 
+                    3 => "+255")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array("phone" => "+255"));
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "phone", 
+                    2 => "start-with", 
+                    3 => "+255")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array("phone" => new MongoRegex("/^\\+255/")));
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "phone", 
+                    2 => "start-with-any", 
+                    3 => "+255, +256")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('$or' => 
+                array(
+                    array("phone" => new MongoRegex("/^\\+255/")),
+                    array("phone" => new MongoRegex("/^\\+256/"))
+                    )
+                )
+            );
+    }
+
+    public function testFromFilterToQueryConditions_enrolled()
+    {
+        $stackOperator = 'all';
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "enrolled", 
+                    2 => "in-dialogue", 
+                    3 => "1")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('enrolled.dialogue-id' => '1')
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "enrolled", 
+                    2 => "not-in-dialogue", 
+                    3 => "1")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('enrolled.dialogue-id' => array('$ne' => '1'))
+            );
+
+    }
+
+    public function testFromFilterToQueryConditions_optin()
+    {
+        $stackOperator = 'all';
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "optin", 
+                    2 => "now")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('session-id' => array('$ne' => null))
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "optin", 
+                    2 => "date-from",
+                    3 => "21/01/2013")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('last-optin-date' => array('$gt' => '2013-01-21T00:00:00'))
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "optin", 
+                    2 => "date-to",
+                    3 => "21/01/2013")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('last-optin-date' => array('$lt' => '2013-01-21T00:00:00'))
+            );
+    }
+
+    public function testFromFilterToQueryConditions_optout()
+    {
+        $stackOperator = 'all';
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "optout", 
+                    2 => "now")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('session-id' => null)
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "optout", 
+                    2 => "date-from",
+                    3 => "21/01/2013")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('last-optout-date' => array('$gt' =>  '2013-01-21T00:00:00'))
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "optout", 
+                    2 => "date-to",
+                    3 => "21/01/2013")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('last-optout-date' => array('$lt' =>  '2013-01-21T00:00:00'))
+            );
+
+    }
+
+
+    public function testFromFilterToQueryConditions_tag()
+    {
+        $stackOperator = 'all';
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "tagged", 
+                    2 => "in-tag",
+                    3 => "geek")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('tags' => "geek")
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "tagged", 
+                    2 => "not-in-tag",
+                    3 => "geek")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('tags' => array('$ne' => 'geek'))
+            );
+    }
+
+    public function testFromFilterToQueryConditions_label()
+    {
+        $stackOperator = 'all';
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "labelled", 
+                    2 => "in-label",
+                    3 => "gender:male")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('profile' => array(
+                '$elemMatch' => array(
+                    'label' => 'gender',
+                    'value' => 'male')
+                ))
+            );
+
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "labelled", 
+                    2 => "not-in-label",
+                    3 => "gender:male")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('profile' => array(
+                '$elemMatch' => array(
+                    '$or' => array(
+                        array('label' => array('$ne' => 'gender')),
+                        array('value' => array('$ne' => 'male')))
+                )))
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_validationFail()
+    {
+
+        $filterParam = array();
+        try {        
+            $this->Participant->validateFilter($filterParam);
+            $this->failed('Missing field should rise an exception');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Field is missing.");
+        }
+
+        $filterParam = array(
+            1 => "somefield");
+        try {
+            $this->Participant->validateFilter($filterParam);
+            $this->failed('Not supported field should rise an exception');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Field 'somefield' is not supported.");
+        }
+
+        $filterParam = array(
+            1 => "labelled");
+        try {
+            $this->Participant->validateFilter($filterParam);
+            $this->failed('Missing Operator should rise an exception');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Operator is missing for field 'labelled'.");
+        }
+
+        $filterParam = array(
+            1 => "labelled", 
+            2 => "someoperator");
+        try {
+            $this->Participant->validateFilter($filterParam);
+            $this->failed('Not supported operator should rise an exception');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Operator 'someoperator' not supported for field 'labelled'.");
+        }
+
+        $filterParam = array(
+            1 => "labelled", 
+            2 => "in-label");
+        try {
+            $this->Participant->validateFilter($filterParam);
+            $this->failed('Not supported operator should rise an exception');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Parameter is missing for field 'labelled'.");
+        }
+        
+    }
+
+
+    public function testFromFilterToQueryConditions_OR() 
+    {
+        $stackOperator = 'any';
+        
+        $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "phone", 
+                    2 => "equal-to", 
+                    3 => "+255")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array("phone" => "+255"));
+
+           $filterParams = array(
+            "filter_param" => array(
+                array(
+                    1 => "phone", 
+                    2 => "equal-to", 
+                    3 => "+255"),
+                array(
+                    1 => "optin", 
+                    2 => "now")
+                )
+            );        
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            array('$or' => 
+                array(
+                    array("phone" => "+255"),
+                    array("session-id" => array('$ne'=>null))
+                    )
+                )
+            );
+    }
 
 }

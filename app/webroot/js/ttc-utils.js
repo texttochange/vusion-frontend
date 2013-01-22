@@ -432,14 +432,14 @@ function createFilter(minimize, selectedStackOperator, stackRules){
        $("select[name='filter_param["+i+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
        if (typeof(rule[2]) === 'undefined') return true;
        if ($("input[name='filter_param["+i+"][2]']").length > 0 ) {
-           $("input[name='filter_param["+i+"][2]']").val(rule[2]).children("option[value="+rule[2]+"]");
+           $("input[name='filter_param["+i+"][2]']").val(rule[2]);
        } else {
            $("select[name='filter_param["+i+"][2]']").val(rule[2]).children("option[value="+rule[2]+"]").click();
        }
 	   if (typeof(rule[3]) === 'undefined') return true;
-	   $("input[name='filter_param["+i+"][2]']").val(rule[3]).children("option[value="+rule[3]+"]");
+	   $("input[name='filter_param["+i+"][3]']").val(rule[3]).children("option[value="+rule[3]+"]");
 	   
-	   });
+    });
     
    if (minimize) {
        $(minimizeButton).click();
@@ -470,7 +470,6 @@ function addStackFilter(){
 
 	var count = $('.ttc-stack-filter').length + 1;
 	var stackFilter = document.createElement("div");
-	//$(stackFilter).attr('class','ttc-stack-filter').insertBefore('.submit');
 	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#filter-stack');
 	
 	var addButton = document.createElement("img");
@@ -482,15 +481,16 @@ function addStackFilter(){
 	$(stackFilter).append(deleteButton);
 	
 	// retrieve the contents of the array stored by javascript in window.app
-	var myOptions = window.app.myOptions;
+	var fieldOptions = window.app.filterFieldOptions;
 	// add dropdown for fields
-	var addFilterFieldDropDown = document.createElement("select");
-	$(addFilterFieldDropDown).attr('name','filter_param['+count+'][1]');
-	$(addFilterFieldDropDown).append(new Option("", "")).on('click', function(){supplyConditionOptions(this)});
-	$.each(myOptions, function(val, text) {
-		$(addFilterFieldDropDown).append(new Option(text, val));
+	var filterFieldDropDown = document.createElement("select");
+	$(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
+	$(filterFieldDropDown).append(new Option("", ""))
+	    .on('click', function(event){supplyOperatorOptions(this);});
+	$.each(fieldOptions, function(value, details) {
+	        $(filterFieldDropDown).append(new Option(details['label'], value));
 	});
-	$(stackFilter).append(addFilterFieldDropDown);
+	$(stackFilter).append(filterFieldDropDown);
 	
 }
 
@@ -510,19 +510,62 @@ function hasNoStackFilter(){
 	}
 }
 
-function supplyConditionOptions(elt){
+function supplyOperatorOptions(elt) {
+    $(elt).nextAll('input,select').remove();
+    var field = $(elt).val();
+    if (field == "")
+        return;
+    var operators = window.app.filterFieldOptions[field]['operators'];
 
-    $(elt).siblings('input,select').remove();
+    var operatorDropDownName = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
+ 
+    var operatorDropDown = document.createElement("select");
+	$(operatorDropDown).attr('name', operatorDropDownName + '[2]');
+	$(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
+	$.each(operators, function(value, label) {
+	        $(operatorDropDown).append(new Option(label, value));
+	});
+	$(elt).after(operatorDropDown);
+	supplyParameterOptions(operatorDropDown);
+}
 
-    var name = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
 
-    var reg_date = /.*date-.*/;
+function supplyParameterOptions(operatorElt) {
 
-    var condition_type = $(elt).val();
-    switch (true) 
+    $(operatorElt).nextAll('input,select').remove();
+
+    var name = $(operatorElt).attr('name').replace(new RegExp("\\[2\\]$","gm"), "");
+    var operator = $(operatorElt).val();
+    var operatorType = window.app.filterParameterTypes[operator];
+
+    switch (operatorType) 
     {
-    case condition_type=="message-direction":
-        $(elt).after("<select name='"+name+"[2]'></select>");
+    case "none":
+        break;
+    case "date":
+	    $(operatorElt).after("<input name='"+name+"[3]'></input>");
+	    $("[name='"+name+"[3]']").datepicker();
+        break;
+    case "text":
+        $(operatorElt).after("<input name='"+name+"[3]'></input>");
+	    break;
+	case "dialogue":
+	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    var options = window.app.filterParameterChoices[operatorType];
+        $.each(options, function(key, value){
+                $("[name='"+name+"[3]']").append(new Option(value['name'], key));      
+        })
+        break;
+	default:
+	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    var options = window.app.filterParameterChoices[operatorType];
+        $.each(options, function(key, value){
+                $("[name='"+name+"[3]']").append(new Option(value, value));      
+        })
+    }
+    /*
+    case operator == "message-direction":
+        $(operatorElt).after("<select name='"+name+"[3]'></select>");
         var options = window.app.typeConditionOptions;
         $.each(options, function(key, value){
                 $("[name='"+name+"[2]']").append(new Option(value, key));      
@@ -534,7 +577,10 @@ function supplyConditionOptions(elt){
                 $("[name='"+name+"[2]']").append(new Option(value, key));      
         })
         break;
-    case reg_date.test(condition_type):
+    
+    case reg_in.test(operator):
+
+    case 
 	    $(elt).after("<input name='"+name+"[2]'></input>");
 	    $("[name='"+name+"[2]']").datepicker();
 	    break;
@@ -574,6 +620,7 @@ function supplyConditionOptions(elt){
         $(elt).after("<input name='"+name+"[2]'></input>");
 	    break;
     }
+    */
 }
 
 function generateDropdown(event) {

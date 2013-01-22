@@ -2,6 +2,7 @@
 App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
+App::uses('DialogueHelper', 'Lib');
 
 class Participant extends MongoModel
 {
@@ -31,21 +32,7 @@ class Participant extends MongoModel
             );
     }
 
-    public $fieldFilters = array(
-        'phone' => 'phone',
-        'optin' => 'optin',
-        'optin-date-from' => 'optin date from',
-        'optin-date-to' => 'optin date to',
-        'optout' => 'optout',
-        'optout-date-from' => 'optout date from',
-        'optout-date-to' => 'optout date to',
-        'enrolled' => 'enrolled',
-        'not-enrolled' => 'not enrolled',
-        'tag'=>'tag',
-        'label'=>'label',
-        
-    );
-    
+   
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
@@ -53,7 +40,9 @@ class Participant extends MongoModel
         $options              = array('database'=>$id['database']);
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
+        $this->DialogueHelper = new DialogueHelper();
     }
+
 
     public $validate = array(
         'phone' => array(
@@ -81,6 +70,7 @@ class Participant extends MongoModel
             'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
             )
         );
+
 
     public function validateTags($check)
     {
@@ -181,17 +171,20 @@ class Participant extends MongoModel
 
     public function getDistinctTagsAndLabels()
     {
-        $result = array();
-        
-        $tagsQuery = array(
-            'distinct'=>'participants',
-            'key'=> 'tags');
-        $distinctTags = $this->query($tagsQuery);
-        $results = $distinctTags['values'];
+        $results = $this->getDistinctTags();
 
         $distinctLabels = $this->getDistinctLabels();
 
         return array_merge($results, $distinctLabels);
+    }
+
+    public function getDistinctTags()
+    {
+        $tagsQuery = array(
+            'distinct'=>'participants',
+            'key'=> 'tags');
+        $distinctTags = $this->query($tagsQuery);
+        return $distinctTags['values'];
     }
 
     public function getDistinctLabels($conditions = null)
@@ -421,5 +414,174 @@ class Participant extends MongoModel
         return $check;
     }
 
+    #Filter Functions
+    public $fieldFilters = array(
+        'phone' => array(
+            'label' => 'phone',
+            'operators'=> array(
+                'start-with' => 'start with',
+                'equal-to' => 'equal to',
+                'start-with-any' => 'start with any of')),
+        'optin' => array(
+            'label' => 'optin',
+            'operators' => array(
+                'now' => 'now',
+                'date-from' => 'date from',
+                'date-to' => 'date to')),
+        'optout' => array(
+            'label' => 'optout',
+            'operators' => array(
+                'now' => 'now',
+                'date-from' => 'date from',
+                'date-to' => 'date to')),
+        'enrolled' => array(
+            'label' => 'enrolled',
+            'operators' => array(
+                'in-dialogue' => 'in',
+                'not-in-dialogue' => 'not in')),
+        'tagged' => array(
+            'label' => 'tagged',
+            'operators' => array(
+                'in-tag' => 'with',
+                'not-in-tag' => 'not with')),
+        'labelled' => array(
+            'label' => 'labelled',
+            'operators' => array(
+                'in-label' => 'with',
+                'not-in-label' => 'not with')),
+    );
     
+
+    public $filterParameterTypes = array(
+        'start-with' => 'text',
+        'equal-to' => 'text',
+        'start-with-any' => 'text',
+        'now' => 'none',
+        'date-from' => 'date',
+        'date-to' => 'date',
+        'in-dialogue' => 'dialogue',
+        'not-in-dialogue' => 'dialogue',
+        'in-tag' => 'tag',
+        'not-in-tag' => 'tag',
+        'in-label' => 'label',
+        'not-in-label' => 'label',
+        );        
+ 
+
+    public function validateFilter($filterParam)
+    {
+        if (!isset($filterParam[1])) {
+            throw new FilterException("Field is missing.");
+        }
+
+        if (!isset($this->fieldFilters[$filterParam[1]])) {
+            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
+        }
+
+        if (!isset($filterParam[2])) {
+            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
+        }
+        
+        if (!isset($this->fieldFilters[$filterParam[1]]['operators'][$filterParam[2]])) {
+            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
+        }
+
+        if (!isset($this->filterParameterTypes[$filterParam[2]])) {
+            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
+        }
+        
+        if ($this->filterParameterTypes[$filterParam[2]] != 'none' && !isset($filterParam[3])) {
+            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
+        }
+    }
+    
+
+    public function fromFilterToQueryConditions($stackOperator, $filterParams) {
+
+        $conditions = array();
+
+        foreach($filterParams['filter_param'] as $filterParam) {
+        
+            $this->validateFilter($filterParam);
+       
+            if ($filterParam[1] == 'enrolled') {
+                if ($filterParam[2] == 'in-dialogue') {
+                    $conditions['enrolled.dialogue-id'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-in-dialogue') {
+                    $conditions['enrolled.dialogue-id'] = array('$ne'=> $filterParam[3]);
+                } 
+            } elseif ($filterParam[1] == 'optin') {
+                if ($filterParam[2] == 'now') {
+                    $conditions['session-id'] = array('$ne' => null);
+                } elseif ($filterParam[2] == 'date-from') {
+                    $conditions['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                } elseif ($filterParam[2] == 'date-to') {
+                    $conditions['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                }
+            } elseif ($filterParam[1] == 'optout') {
+                if ($filterParam[2] == 'now') { 
+                    $conditions['session-id'] = null;
+                } elseif ($filterParam[2] =='date-from') {
+                    $conditions['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                } elseif ($filterParam[2] =='date-to') {
+                    $conditions['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                }
+            } elseif ($filterParam[1] == 'phone') {
+                if ($filterParam[2] == 'start-with-any') {
+                    $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
+                    if ($phoneNumbers) {
+                        if (count($phoneNumbers) > 1) {
+                            $or = array();
+                            foreach ($phoneNumbers as $phoneNumber) {
+                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                                $or[] = array('phone' => $regex);
+                            }
+                            $conditions['$or'] = $or;
+                        } else {
+                            $conditions['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                        }
+                    } 
+                } elseif ($filterParam[2] == 'start-with') {
+                    $conditions['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
+                } elseif ($filterParam[2] == 'equal-to') {
+                    $conditions['phone'] = $filterParam[3];        
+                }
+            } elseif ($filterParam[1]=='tagged') {
+                if ($filterParam[2] == 'in-tag') {
+                    $conditions['tags'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-in-tag') {
+                    $conditions['tags'] = array('$ne' => $filterParam[3]);
+                }
+            } elseif ($filterParam[1] == 'labelled') {
+                $label = explode(":", $filterParam[3]);   
+                if ($filterParam[2] == 'in-label') {
+                    $conditions['profile'] = array(
+                        '$elemMatch' => array(
+                            'label' => $label[0],
+                            'value' => $label[1])
+                        );
+                } elseif (($filterParam[2] == 'not-in-label')) {
+                    $conditions['profile'] = array(
+                        '$elemMatch' => array(
+                            '$or' => array(
+                                array('label' => array('$ne' => $label[0])),
+                                array('value' => array('$ne' => $label[1]))
+                                )
+                            )
+                        );
+                }
+            }
+        }
+        
+        if ($stackOperator=="any" && count($conditions) > 1) {
+            $or = array();  
+            foreach ($conditions as $key => $value) {
+                $or[] = array($key => $value);
+            }
+            $conditions = array();
+            $conditions['$or'] = $or; 
+        }
+        
+        return $conditions;
+    }
 }

@@ -650,7 +650,7 @@
 .ttc-filter-title {
     margin-bottom: 0px;
     clear: none;
-    font-size: 150%;
+    font-size: 18px;
     padding: 0px 0px 3px 0px;
     color: #666;
 }
@@ -658,6 +658,7 @@
 
 .ttc-paging {
     float: right;
+    margin-right: -23px;
 }
 
 .ttc-stack-filter input{
@@ -703,7 +704,7 @@
 	clear: both;
 	color: white;
 	position: relative;
-	top: -50px;
+	top: -69px;
 	padding-left: 8px;
 	padding-right: 8px;
 	border: 1.5px solid white;
@@ -747,7 +748,7 @@
 
 .ttc-stack-filter {
 	background: #FFCB4B;
-	border: 1px dashed grey;
+	border: 1px dotted grey;
 	margin-bottom: 2px;
 	padding: 3px;
 }
@@ -755,7 +756,7 @@
 
 .ttc-stack-filter select{
 	margin-right: 3px;
-	width: 200px;
+	max-width: 200px;
 	text-overflow: ellipsis;
 }
 

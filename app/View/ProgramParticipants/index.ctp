@@ -5,16 +5,18 @@
     if (!isset($urlParams)) {
         $urlParams = "";
     }
-    echo $this->AclLink->generatePostLink(
-        __('Delete'),
-        $programUrl, 
-        'programParticipants',
-        'massDelete', 
-        __('Are you sure you want to delete %s participants?', $this->Paginator->counter(array(
-            'format' => __('{:count}')))),
-        array('class' => 'ttc-button'),
-        null,
-        $urlParams); 
+    if (isset($this->Paginator)) {
+        echo $this->AclLink->generatePostLink(
+            __('Delete'),
+            $programUrl, 
+            'programParticipants',
+            'massDelete', 
+            __('Are you sure you want to delete %s participants?', $this->Paginator->counter(array(
+                'format' => __('{:count}')))),
+            array('class' => 'ttc-button'),
+            null,
+            $urlParams);
+    } 
     ?>
     </li>
     <li><?php echo $this->AclLink->generateButton(
@@ -55,23 +57,28 @@
 	<div class="ttc-data-control">
     <div id="data-control-nav" class="ttc-paging paging">
 	<?php
-	    echo "<span class='ttc-page-count'>";
+	echo "<span class='ttc-page-count'>";
+	if (isset($this->Paginator)) {
 	    echo $this->Paginator->counter(array(
 	        'format' => __('{:start} - {:end} of {:count}')
-	    ));
+	        ));
 	    echo "</span>";
 		echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
 		echo $this->Paginator->next('>', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+	}
 	?>
 	</div>
 	<?php
-	   $this->Js->set('myOptions', $filterFieldOptions);
-	   $this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
+	   $this->Js->set('filterFieldOptions', $filterFieldOptions);
+	   $this->Js->set('filterParameterTypes', $filterParameterTypes);
+	   $this->Js->set('filterParameterChoices', $filterParameterChoices);
+	   
+	   //$this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
 	   echo $this->Form->create('Participant', array('type'=>'get', 
 	                                               'url'=>array('program'=>$programUrl, 'controller' => 'programParticipants', 'action'=>'index'), 
 	                                               'id' => 'advanced_filter_form', 
 	                                               'class' => 'ttc-advanced-filter'));
-	   if (isset($this->params['url']['stack_operator'])) {
+	   if (isset($this->params['url']['stack_operator']) && isset($this->params['url']['filter_param'])) {
 	       $this->Js->get('document')->event(
 	           'ready',
 	           '$("#advanced_filter_form").show();
