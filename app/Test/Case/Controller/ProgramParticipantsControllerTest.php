@@ -127,7 +127,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-/*
+
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -814,7 +814,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Schedule->create('dialogue-schedule');
         $this->Schedule->save($scheduleToStay);
 
-        $this->testAction("/testurl/programParticipants/massDelete?filter_param[1][1]=phone&filter_param[1][2]=%2B6,%2B7");
+        $this->testAction("/testurl/programParticipants/massDelete?stack_operator=all&filter_param[1][1]=phone&filter_param[1][2]=start-with-any&filter_param[1][3]=%2B6,%2B7");
         
         $this->assertEquals(
             1,
@@ -1210,7 +1210,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->Schedule->find('count')
             );
     }
-*/
+
 
     public function testIndex_filter_fail()
     {
@@ -1315,20 +1315,20 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['participants']));
 
         $this->mock_program_access();
-        $this->testAction("/testurl/programParticipants/index?stack_operator=all&filter_param%5B1%5D%5B1%5D=enrolled&filter_param%5B1%5D%5B2%5D=in-dialogue&filter_param%5B1%5D%5B3%5D=1");
+        $this->testAction("/testurl/programParticipants/index?stack_operator=all&filter_param%5B1%5D%5B1%5D=enrolled&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=1");
         $this->assertEquals(2, count($this->vars['participants']));
 
         $this->mock_program_access();
-        $this->testAction("/testurl/programParticipants/index?stack_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=in-tag&filter_param%5B1%5D%5B3%5D=Geek");
+        $this->testAction("/testurl/programParticipants/index?stack_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=Geek");
         $this->assertEquals(2, count($this->vars['participants']));
 
         $this->mock_program_access();
-        $this->testAction("/testurl/programParticipants/index?stack_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=in-label&filter_param%5B1%5D%5B3%5D=gender:female");
+        $this->testAction("/testurl/programParticipants/index?stack_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=gender:female");
         $this->assertEquals(1, count($this->vars['participants']));
 
     }
 
-/*
+
     public function testExport()
     {
 
@@ -1569,6 +1569,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $savedDialogue['Dialogue']['dialogue-id']
         );
     }
-*/
+
 
 }

@@ -372,7 +372,7 @@ class ParticipantTestCase extends CakeTestCase
                     2 => "equal-to", 
                     3 => "+255")
                 )
-            );        
+            );
         $this->assertEqual(
             $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
             array("phone" => "+255"));
@@ -416,7 +416,7 @@ class ParticipantTestCase extends CakeTestCase
             "filter_param" => array(
                 array(
                     1 => "enrolled", 
-                    2 => "in-dialogue", 
+                    2 => "in", 
                     3 => "1")
                 )
             );        
@@ -429,7 +429,7 @@ class ParticipantTestCase extends CakeTestCase
             "filter_param" => array(
                 array(
                     1 => "enrolled", 
-                    2 => "not-in-dialogue", 
+                    2 => "not-in", 
                     3 => "1")
                 )
             );        
@@ -536,7 +536,7 @@ class ParticipantTestCase extends CakeTestCase
             "filter_param" => array(
                 array(
                     1 => "tagged", 
-                    2 => "in-tag",
+                    2 => "in",
                     3 => "geek")
                 )
             );        
@@ -549,7 +549,7 @@ class ParticipantTestCase extends CakeTestCase
             "filter_param" => array(
                 array(
                     1 => "tagged", 
-                    2 => "not-in-tag",
+                    2 => "not-in",
                     3 => "geek")
                 )
             );        
@@ -567,7 +567,7 @@ class ParticipantTestCase extends CakeTestCase
             "filter_param" => array(
                 array(
                     1 => "labelled", 
-                    2 => "in-label",
+                    2 => "in",
                     3 => "gender:male")
                 )
             );        
@@ -584,7 +584,7 @@ class ParticipantTestCase extends CakeTestCase
             "filter_param" => array(
                 array(
                     1 => "labelled", 
-                    2 => "not-in-label",
+                    2 => "not-in",
                     3 => "gender:male")
                 )
             );        
@@ -641,7 +641,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $filterParam = array(
             1 => "labelled", 
-            2 => "in-label");
+            2 => "in");
         try {
             $this->Participant->validateFilter($filterParam);
             $this->failed('Not supported operator should rise an exception');

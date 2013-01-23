@@ -427,18 +427,15 @@ function createFilter(minimize, selectedStackOperator, stackRules){
    $(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/delete-icon-16.png').on('click', removeFilter);
    $('#advanced_filter_form').prepend(deleteButton);
 
+   var count = 1;
    $.each(stackRules, function(i, rule) {
        addStackFilter();
-       $("select[name='filter_param["+i+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
+       $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
        if (typeof(rule[2]) === 'undefined') return true;
-       if ($("input[name='filter_param["+i+"][2]']").length > 0 ) {
-           $("input[name='filter_param["+i+"][2]']").val(rule[2]);
-       } else {
-           $("select[name='filter_param["+i+"][2]']").val(rule[2]).children("option[value="+rule[2]+"]").click();
-       }
-	   if (typeof(rule[3]) === 'undefined') return true;
-	   $("input[name='filter_param["+i+"][3]']").val(rule[3]).children("option[value="+rule[3]+"]");
-	   
+       $("[name='filter_param["+count+"][2]']").val(rule[2]).click();
+ 	   if (typeof(rule[3]) === 'undefined') return true;
+	   $("[name='filter_param["+count+"][3]']").val(rule[3]);
+       count++;	   
     });
     
    if (minimize) {
@@ -558,6 +555,13 @@ function supplyParameterOptions(operatorElt) {
         })
         break;
     case "interaction":
+        $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    var options = window.app.filterParameterOptions['dialogue'];
+        $.each(options, function(dialogueId, details){
+                $.each(details['interactions'], function(interactionId, content) { 
+                        $("[name='"+name+"[3]']").append(new Option(details['name']+" - "+content, interactionId));
+                });      
+        })
         break;
 	default:
 	    $(operatorElt).after("<select name='"+name+"[3]'></select>");

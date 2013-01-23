@@ -415,66 +415,80 @@ class Participant extends MongoModel
     }
 
     #Filter variables and functions
-    public $fieldFilters = array(
+    public $filterFields = array(
         'phone' => array(
             'label' => 'phone',
             'operators'=> array(
-                'start-with' => 'start with',
-                'equal-to' => 'equal to',
-                'start-with-any' => 'start with any of')),
+                'start-with' => array(
+                    'label' => 'start with',
+                    'parameter-type' => 'text'),
+                'equal-to' => array(
+                    'label' => 'equal to',
+                    'parameter-type' => 'text'),
+                'start-with-any' => array(
+                    'label' => 'start with any of',
+                    'parameter-type' => 'text'))),
         'optin' => array(
             'label' => 'optin',
             'operators' => array(
-                'now' => 'now',
-                'date-from' => 'date from',
-                'date-to' => 'date to')),
+                'now' => array(
+                    'label' => 'now',
+                    'parameter-type' => 'none'),
+                'date-from' => array(
+                    'label' => 'date from',
+                    'parameter-type' => 'date'),
+                'date-to' => array(
+                    'label' => 'date to',
+                    'parameter-type' => 'date'))),
         'optout' => array(
             'label' => 'optout',
             'operators' => array(
-                'now' => 'now',
-                'date-from' => 'date from',
-                'date-to' => 'date to')),
+                'now' =>array(
+                    'label' => 'now',
+                    'parameter-type' => 'none'),
+                'date-from' => array(
+                    'label' => 'date from',
+                    'parameter-type' => 'date'),
+                'date-to' => array(
+                    'label' => 'date to',
+                    'parameter-type' => 'date'))),
         'enrolled' => array(
             'label' => 'enrolled',
             'operators' => array(
-                'in-dialogue' => 'in',
-                'not-in-dialogue' => 'not in')),
+                'in' => array(
+                    'label' => 'in',
+                    'parameter-type' => 'dialogue'),
+                'not-in' =>  array(
+                    'label' => 'not in',
+                    'parameter-type' => 'dialogue'))),
         'tagged' => array(
             'label' => 'tagged',
             'operators' => array(
-                'in-tag' => 'with',
-                'not-in-tag' => 'not with')),
+                'in' =>  array(
+                    'label' => 'with',
+                    'parameter-type' => 'tag'),
+                'not-in' =>  array(
+                    'label' => 'not with',
+                    'parameter-type' => 'tag'))),
         'labelled' => array(
             'label' => 'labelled',
             'operators' => array(
-                'in-label' => 'with',
-                'not-in-label' => 'not with')),
+                'in' =>  array(
+                    'label' => 'with',
+                    'parameter-type' => 'label'),
+                'not-in' =>  array(
+                    'label' => 'not with',
+                    'parameter-type' => 'label')))
     );
-    
+     
 
-    public $filterParameterTypes = array(
-        'start-with' => 'text',
-        'equal-to' => 'text',
-        'start-with-any' => 'text',
-        'now' => 'none',
-        'date-from' => 'date',
-        'date-to' => 'date',
-        'in-dialogue' => 'dialogue',
-        'not-in-dialogue' => 'dialogue',
-        'in-tag' => 'tag',
-        'not-in-tag' => 'tag',
-        'in-label' => 'label',
-        'not-in-label' => 'label',
-        );        
- 
-
-    public function validateFilter($filterParam)
+   public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException("Field is missing.");
         }
 
-        if (!isset($this->fieldFilters[$filterParam[1]])) {
+        if (!isset($this->filterFields[$filterParam[1]])) {
             throw new FilterException("Field '".$filterParam[1]."' is not supported.");
         }
 
@@ -482,15 +496,15 @@ class Participant extends MongoModel
             throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
         }
         
-        if (!isset($this->fieldFilters[$filterParam[1]]['operators'][$filterParam[2]])) {
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
         }
 
-        if (!isset($this->filterParameterTypes[$filterParam[2]])) {
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
             throw new FilterException("Operator type missing '".$filterParam[2]."'.");
         }
         
-        if ($this->filterParameterTypes[$filterParam[2]] != 'none' && !isset($filterParam[3])) {
+        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
             throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
         }
     }
@@ -502,29 +516,31 @@ class Participant extends MongoModel
 
         foreach($filterParams['filter_param'] as $filterParam) {
         
+            $condition = null;
+
             $this->validateFilter($filterParam);
        
             if ($filterParam[1] == 'enrolled') {
-                if ($filterParam[2] == 'in-dialogue') {
-                    $conditions['enrolled.dialogue-id'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-in-dialogue') {
-                    $conditions['enrolled.dialogue-id'] = array('$ne'=> $filterParam[3]);
+                if ($filterParam[2] == 'in') {
+                    $condition['enrolled.dialogue-id'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-in') {
+                    $condition['enrolled.dialogue-id'] = array('$ne'=> $filterParam[3]);
                 } 
             } elseif ($filterParam[1] == 'optin') {
                 if ($filterParam[2] == 'now') {
-                    $conditions['session-id'] = array('$ne' => null);
+                    $condition['session-id'] = array('$ne' => null);
                 } elseif ($filterParam[2] == 'date-from') {
-                    $conditions['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'date-to') {
-                    $conditions['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'optout') {
                 if ($filterParam[2] == 'now') { 
-                    $conditions['session-id'] = null;
+                    $condition['session-id'] = null;
                 } elseif ($filterParam[2] =='date-from') {
-                    $conditions['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] =='date-to') {
-                    $conditions['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'phone') {
                 if ($filterParam[2] == 'start-with-any') {
@@ -536,32 +552,32 @@ class Participant extends MongoModel
                                 $regex = new MongoRegex("/^\\".$phoneNumber."/");
                                 $or[] = array('phone' => $regex);
                             }
-                            $conditions['$or'] = $or;
+                            $condition['$or'] = $or;
                         } else {
-                            $conditions['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                            $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
                         }
                     } 
                 } elseif ($filterParam[2] == 'start-with') {
-                    $conditions['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
+                    $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
                 } elseif ($filterParam[2] == 'equal-to') {
-                    $conditions[] = array('phone' => $filterParam[3]);        
+                    $condition['phone'] = $filterParam[3];        
                 }
             } elseif ($filterParam[1]=='tagged') {
-                if ($filterParam[2] == 'in-tag') {
-                    $conditions['tags'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-in-tag') {
-                    $conditions['tags'] = array('$ne' => $filterParam[3]);
+                if ($filterParam[2] == 'in') {
+                    $condition['tags'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-in') {
+                    $condition['tags'] = array('$ne' => $filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'labelled') {
                 $label = explode(":", $filterParam[3]);   
-                if ($filterParam[2] == 'in-label') {
-                    $conditions['profile'] = array(
+                if ($filterParam[2] == 'in') {
+                    $condition['profile'] = array(
                         '$elemMatch' => array(
                             'label' => $label[0],
                             'value' => $label[1])
                         );
-                } elseif (($filterParam[2] == 'not-in-label')) {
-                    $conditions['profile'] = array(
+                } elseif (($filterParam[2] == 'not-in')) {
+                    $condition['profile'] = array(
                         '$elemMatch' => array(
                             '$or' => array(
                                 array('label' => array('$ne' => $label[0])),
@@ -571,15 +587,26 @@ class Participant extends MongoModel
                         );
                 }
             }
-        }
-        
-        if ($stackOperator=="any" && count($conditions) > 1) {
-            $or = array();  
-            foreach ($conditions as $key => $value) {
-                $or[] = array($key => $value);
+            
+            if ($stackOperator=="all") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$and'])) {
+                    $conditions = array('$and' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$and'], $condition);
+                }
+            }  elseif ($stackOperator=="any") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$or'])) {
+                    $conditions = array('$or' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$or'], $condition);
+                }
             }
-            $conditions = array();
-            $conditions['$or'] = $or; 
+
+
         }
         
         return $conditions;

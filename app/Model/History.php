@@ -357,7 +357,7 @@ class History extends MongoModel
                 } elseif ($filterParam[2] == 'contain') {
                      $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
                 } elseif ($filterParam[2] == 'has-keyword') {
-                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."/i");
+                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
                 }
             } elseif ($filterParam[1] == 'dialogue-source') {
                 if ($filterParam[2] == 'is') {
@@ -380,10 +380,10 @@ class History extends MongoModel
             if ($stackOperator=="all") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
-                } elseif (count($conditions) == 1) {
-                    $conditions = array($conditions, $condition);
+                } elseif (!isset($conditions['$and'])) {
+                    $conditions = array('$and' => array($conditions, $condition));
                 } else {
-                    array_push($conditions, $condition);
+                    array_push($conditions['$and'], $condition);
                 }
             }  elseif ($stackOperator=="any") {
                 if (count($conditions) == 0) {

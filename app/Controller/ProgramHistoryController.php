@@ -108,13 +108,28 @@ class ProgramHistoryController extends AppController
 
         if (!isset($onlyFilterParams['filter_param'])) 
             return $conditions;
-       
+
+        if (!isset($this->params['url']['stack_operator'])) {
+            $this->Session->setFlash(
+                __('The stack operator is missing.'), 
+                'default',
+                array('class' => "message failure"));
+            return null;
+        }
+
+        $stackOperator = $this->params['url']['stack_operator'];
+        if (!in_array($stackOperator, array('all', 'any'))) {
+                $this->Session->setFlash(
+                    __("The stack operator \"$stackOperator\" is not allowed, by default using \"all\"."), 
+                    'default',
+                    array('class' => "message failure"));
+                $stackOperator = 'all';
+        }
+
         $urlParams = http_build_query($onlyFilterParams);
         $this->set('urlParams', $urlParams);
         
-        foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
-        
-        }
+        $conditions = $this->History->fromFilterToQueryConditions($stackOperator, $onlyFilterParams);
         
         return $conditions;
     }

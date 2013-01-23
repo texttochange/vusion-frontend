@@ -51,13 +51,9 @@ class ProgramParticipantsController extends AppController
     public function index() 
     {
         
-        $this->set('filterFieldOptions', $this->Participant->fieldFilters);
-        $this->set('filterParameterTypes', $this->Participant->filterParameterTypes);
-        $this->set('filterParameterChoices', $this->_getFilterParameterChoices());
-        
-        // $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
-        //$this->set('filterDialogueConditionsOptions', $dialoguesContent);
-        
+        $this->set('filterFieldOptions', $this->Participant->filterFields);
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+                
         $paginate = array('all');
         
         if (isset($this->params['named']['sort'])) {
@@ -76,7 +72,7 @@ class ProgramParticipantsController extends AppController
     }
 
 
-    protected function _getFilterParameterChoices()
+    protected function _getFilterParameterOptions()
     {
         return array(
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
@@ -205,6 +201,7 @@ class ProgramParticipantsController extends AppController
                 array('class' => "message failure"));
             return null;
         }
+
         $stackOperator = $this->params['url']['stack_operator'];
         if (!in_array($stackOperator, array('all', 'any'))) {
                 $this->Session->setFlash(

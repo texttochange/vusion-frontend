@@ -71,14 +71,14 @@
 	</div>
 	<?php
 	   $this->Js->set('filterFieldOptions', $filterFieldOptions);
-	   $this->Js->set('filterParameterTypes', $filterParameterTypes);
-	   $this->Js->set('filterParameterChoices', $filterParameterChoices);
+	   $this->Js->set('filterParameterOptions', $filterParameterOptions);
 	   
 	   //$this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
-	   echo $this->Form->create('Participant', array('type'=>'get', 
-	                                               'url'=>array('program'=>$programUrl, 'controller' => 'programParticipants', 'action'=>'index'), 
-	                                               'id' => 'advanced_filter_form', 
-	                                               'class' => 'ttc-advanced-filter'));
+	   echo $this->Form->create('Participant', array(
+	       'type'=>'get', 
+	       'url'=>array('program'=>$programUrl, 'controller' => 'programParticipants', 'action'=>'index'), 
+	       'id' => 'advanced_filter_form', 
+	       'class' => 'ttc-advanced-filter'));
 	   if (isset($this->params['url']['stack_operator']) && isset($this->params['url']['filter_param'])) {
 	       $this->Js->get('document')->event(
 	           'ready',

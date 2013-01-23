@@ -307,7 +307,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
-            array('message-content' => new MongoRegex('/^keyword/i'))
+            array('message-content' => new MongoRegex('/^keyword($| )/i'))
             );
     }
 
@@ -403,11 +403,11 @@ class HistoryTestCase extends CakeTestCase
             )); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
-            array(
+            array('$and' => array(
                 array('participant-phone' => "+255"),
                 array('participant-phone' => "+256"),
                 array('participant-phone' => "+257"),
-                )
+                ))
             );       
     }
 
