@@ -1,5 +1,6 @@
 <div class="shortcodes index">
 	<h3><?php echo __('ShortCodes');?></h3>
+	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 	<th><?php echo $this->Paginator->sort('shortcode', __('Shortcode'));?></th>
@@ -24,6 +25,7 @@
 	</tr>
 <?php endforeach; ?>
 	</table>
+	</div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(
