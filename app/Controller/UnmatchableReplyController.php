@@ -52,7 +52,7 @@ class UnmatchableReplyController extends AppController
                 'order'=> $order,
             );
 
-        $unmatchableReplies = $this->paginate();//print_r($unmatchableReplies);
+        $unmatchableReplies = $this->paginate();
         $this->set(compact('unmatchableReplies'));
     }
 
