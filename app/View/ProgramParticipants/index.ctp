@@ -55,44 +55,10 @@
     ?> </li> 
 	</ul>
 	<h3><?php echo __('Participants'); ?></h3>
-	<div class="ttc-data-control">
-    <div id="data-control-nav" class="ttc-paging paging">
 	<?php
-	echo "<span class='ttc-page-count'>";
-	if (isset($this->Paginator)) {
-	    echo $this->Paginator->counter(array(
-	        'format' => __('{:start} - {:end} of {:count}')
-	        ));
-	    echo "</span>";
-		echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->next('>', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
-	}
+    echo $this->element('filter_box', array(
+        'controller' => 'programParticipants'));
 	?>
-	</div>
-	<?php
-	   $this->Js->set('filterFieldOptions', $filterFieldOptions);
-	   $this->Js->set('filterParameterOptions', $filterParameterOptions);
-	   
-	   //$this->Js->set('dialogueConditionOptions', $filterDialogueConditionsOptions);
-	   echo $this->Form->create('Participant', array(
-	       'type'=>'get', 
-	       'url'=>array('program'=>$programUrl, 'controller' => 'programParticipants', 'action'=>'index'), 
-	       'id' => 'advanced_filter_form', 
-	       'class' => 'ttc-advanced-filter'));
-	   if (isset($this->params['url']['stack_operator']) && isset($this->params['url']['filter_param'])) {
-	       $this->Js->get('document')->event(
-	           'ready',
-	           '$("#advanced_filter_form").show();
-	           createFilter(true, "'.$this->params['url']['stack_operator'].'",'.$this->Js->object($this->params['url']['filter_param']).');
-	           ');
-	   }
-       echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       
-       $this->Js->get('#advanced_filter_form')->event(
-           'submit',
-           '$(":input[value=\"\"]").attr("disabled", true);
-           return true;');
-	?>
-	</div>
 	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>

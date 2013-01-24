@@ -389,20 +389,20 @@ function createFilter(minimize, selectedStackOperator, stackRules){
 
    //The operator between the stack rules
    var stackOperatorPrefix = document.createElement("p");
-   $(stackOperatorPrefix).html(localized_actions['stack_operator_prefix']);
+   $(stackOperatorPrefix).html(localized_actions['filter_operator_prefix']);
 
    var stackOperatorSuffix = document.createElement("p");
-   $(stackOperatorSuffix).html(localized_actions['stack_operator_suffix']);
+   $(stackOperatorSuffix).html(localized_actions['filter_operator_suffix']);
 
    var stackOperatorSelect = document.createElement("select");
-   $(stackOperatorSelect).attr('name', 'stack_operator');
+   $(stackOperatorSelect).attr('name', 'filter_operator');
 
-   var stackOperatorOptions = {
+   var filterOperatorOptions = {
        all: localized_actions['stack_operator_all'],
        any: localized_actions['stack_operator_any']
    }
 
-   $.each(stackOperatorOptions, function(val, text) {
+   $.each(filterOperatorOptions, function(val, text) {
         var option = new Option(text, val);
         if (val==selectedStackOperator) {
             $(option).attr('selected', true);

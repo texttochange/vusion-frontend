@@ -510,7 +510,7 @@ class Participant extends MongoModel
     }
     
 
-    public function fromFilterToQueryConditions($stackOperator, $filterParams) {
+    public function fromFilterToQueryConditions($filterOperator, $filterParams) {
 
         $conditions = array();
 
@@ -588,7 +588,7 @@ class Participant extends MongoModel
                 }
             }
             
-            if ($stackOperator=="all") {
+            if ($filterOperator=="all") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$and'])) {
@@ -596,7 +596,7 @@ class Participant extends MongoModel
                 } else {
                     array_push($conditions['$and'], $condition);
                 }
-            }  elseif ($stackOperator=="any") {
+            }  elseif ($filterOperator=="any") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$or'])) {

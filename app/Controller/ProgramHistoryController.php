@@ -67,6 +67,7 @@ class ProgramHistoryController extends AppController
         }
     }
 
+
     protected function _getFilterParameterOptions()
     {
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
@@ -77,8 +78,7 @@ class ProgramHistoryController extends AppController
             'message-status' => $this->History->filterMessageStatusOptions);
     }
 
-    
-    
+        
     public function export()
     {    
         if (!isset($this->params['named']['sort'])) {
@@ -101,7 +101,7 @@ class ProgramHistoryController extends AppController
         $data = $this->History->find('all', $exportParams);
         $this->set(compact('data'));
     }
-  
+
     protected function _getConditions($conditions)
     {
         $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
@@ -109,27 +109,27 @@ class ProgramHistoryController extends AppController
         if (!isset($onlyFilterParams['filter_param'])) 
             return $conditions;
 
-        if (!isset($this->params['url']['stack_operator'])) {
+        if (!isset($this->params['url']['filter_operator'])) {
             $this->Session->setFlash(
-                __('The stack operator is missing.'), 
+                __('The filter operator is missing.'), 
                 'default',
                 array('class' => "message failure"));
             return null;
         }
 
-        $stackOperator = $this->params['url']['stack_operator'];
-        if (!in_array($stackOperator, array('all', 'any'))) {
+        $filterOperator = $this->params['url']['filter_operator'];
+        if (!in_array($filterOperator, array('all', 'any'))) {
                 $this->Session->setFlash(
-                    __("The stack operator \"$stackOperator\" is not allowed, by default using \"all\"."), 
+                    __("The filter operator \"$filterOperator\" is not allowed, by default using \"all\"."), 
                     'default',
                     array('class' => "message failure"));
-                $stackOperator = 'all';
+                $filterOperator = 'all';
         }
 
         $urlParams = http_build_query($onlyFilterParams);
         $this->set('urlParams', $urlParams);
         
-        $conditions = $this->History->fromFilterToQueryConditions($stackOperator, $onlyFilterParams);
+        $conditions = $this->History->fromFilterToQueryConditions($filterOperator, $onlyFilterParams);
         
         return $conditions;
     }

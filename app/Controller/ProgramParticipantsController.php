@@ -194,7 +194,7 @@ class ProgramParticipantsController extends AppController
         if (!isset($onlyFilterParams['filter_param'])) 
             return null;
        
-        if (!isset($this->params['url']['stack_operator'])) {
+        if (!isset($this->params['url']['filter_operator'])) {
             $this->Session->setFlash(
                 __('The stack operator is missing.'), 
                 'default',
@@ -202,19 +202,19 @@ class ProgramParticipantsController extends AppController
             return null;
         }
 
-        $stackOperator = $this->params['url']['stack_operator'];
-        if (!in_array($stackOperator, array('all', 'any'))) {
+        $filterOperator = $this->params['url']['filter_operator'];
+        if (!in_array($filterOperator, array('all', 'any'))) {
                 $this->Session->setFlash(
-                    __("The stack operator \"$stackOperator\" is not allowed, by default using \"all\"."), 
+                    __("The stack operator \"$filterOperator\" is not allowed, by default using \"all\"."), 
                     'default',
                     array('class' => "message failure"));
-                $stackOperator = 'all';
+                $filterOperator = 'all';
         }
 
         $urlParams = http_build_query($onlyFilterParams);
         $this->set('urlParams', $urlParams);
 
-        return $this->Participant->fromFilterToQueryConditions($stackOperator, $onlyFilterParams);
+        return $this->Participant->fromFilterToQueryConditions($filterOperator, $onlyFilterParams);
     }
 
 

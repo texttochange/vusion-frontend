@@ -123,7 +123,7 @@ class HistoryTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_messageDirection()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -134,7 +134,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-direction' => 'incoming')
             );
 
@@ -147,7 +147,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-direction' => array('$ne' => 'incoming'))
             );
     }
@@ -155,7 +155,7 @@ class HistoryTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_messageStatus()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -166,7 +166,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-status' => 'pending')
             );
 
@@ -179,7 +179,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-status' => array('$ne' => 'pending'))
             );
     }
@@ -187,7 +187,7 @@ class HistoryTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_time()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -198,7 +198,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('timestamp' => array('$gt' => '2012-01-21T00:00:00'))
             );
 
@@ -211,7 +211,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('timestamp' => array('$lt' => '2012-01-21T00:00:00'))
             );
     }
@@ -219,7 +219,7 @@ class HistoryTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_participantPhone()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -230,7 +230,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('participant-phone' => new MongoRegex("/^\\+255/"))
             );
 
@@ -243,7 +243,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('participant-phone' => "+255")
             );
 
@@ -257,7 +257,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('$or' => array(
                 array('participant-phone' => new MongoRegex("/^\\+255/")),
                 array('participant-phone' => new MongoRegex("/^\\+256/"))
@@ -269,7 +269,7 @@ class HistoryTestCase extends CakeTestCase
     
     public function testFromFilterToQueryConditions_messageContent()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -280,7 +280,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-content' => 'content')
             );
 
@@ -293,7 +293,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-content' => new MongoRegex('/content/i'))
             );
 
@@ -306,14 +306,14 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('message-content' => new MongoRegex('/^keyword($| )/i'))
             );
     }
 
     public function testFromFilterToQueryConditions_dialogueSource()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -324,14 +324,14 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('dialogue-id' => '1')
             );
     }
 
     public function testFromFilterToQueryConditions_interactionSource()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -342,7 +342,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('interaction-id' => '1')
             );
     }
@@ -350,7 +350,7 @@ class HistoryTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_answer()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -360,7 +360,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array(
                 'message-direction' => 'incoming',
                 'matching-answer' => array('$ne' => null))
@@ -374,7 +374,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array(
                 'message-direction' => 'incoming',
                 'matching-answer' => null)
@@ -384,7 +384,7 @@ class HistoryTestCase extends CakeTestCase
     
     public function testFromFilterToQueryConditions_AND()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -402,7 +402,7 @@ class HistoryTestCase extends CakeTestCase
                     3 => "+257"),
             )); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('$and' => array(
                 array('participant-phone' => "+255"),
                 array('participant-phone' => "+256"),
@@ -413,7 +413,7 @@ class HistoryTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_OR()
     {
-        $stackOperator = 'any';
+        $filterOperator = 'any';
 
         $filterParams = array(
             "filter_param" => array(
@@ -432,7 +432,7 @@ class HistoryTestCase extends CakeTestCase
                 )
             ); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->History->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('$or' => array(
                 array('participant-phone' => "+255"),
                 array('participant-phone' => "+256"),

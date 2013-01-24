@@ -363,7 +363,7 @@ class ParticipantTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_phone() 
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -374,7 +374,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array("phone" => "+255"));
 
         $filterParams = array(
@@ -386,7 +386,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array("phone" => new MongoRegex("/^\\+255/")));
 
         $filterParams = array(
@@ -398,7 +398,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('$or' => 
                 array(
                     array("phone" => new MongoRegex("/^\\+255/")),
@@ -410,7 +410,7 @@ class ParticipantTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_enrolled()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -421,7 +421,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('enrolled.dialogue-id' => '1')
             );
 
@@ -434,7 +434,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('enrolled.dialogue-id' => array('$ne' => '1'))
             );
 
@@ -442,7 +442,7 @@ class ParticipantTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_optin()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -452,7 +452,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('session-id' => array('$ne' => null))
             );
 
@@ -465,7 +465,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('last-optin-date' => array('$gt' => '2013-01-21T00:00:00'))
             );
 
@@ -478,14 +478,14 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('last-optin-date' => array('$lt' => '2013-01-21T00:00:00'))
             );
     }
 
     public function testFromFilterToQueryConditions_optout()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -495,7 +495,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('session-id' => null)
             );
 
@@ -508,7 +508,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('last-optout-date' => array('$gt' =>  '2013-01-21T00:00:00'))
             );
 
@@ -521,7 +521,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('last-optout-date' => array('$lt' =>  '2013-01-21T00:00:00'))
             );
 
@@ -530,7 +530,7 @@ class ParticipantTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_tag()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -541,7 +541,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('tags' => "geek")
             );
 
@@ -554,14 +554,14 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('tags' => array('$ne' => 'geek'))
             );
     }
 
     public function testFromFilterToQueryConditions_label()
     {
-        $stackOperator = 'all';
+        $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
@@ -572,7 +572,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('profile' => array(
                 '$elemMatch' => array(
                     'label' => 'gender',
@@ -589,7 +589,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('profile' => array(
                 '$elemMatch' => array(
                     '$or' => array(
@@ -654,7 +654,7 @@ class ParticipantTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_OR() 
     {
-        $stackOperator = 'any';
+        $filterOperator = 'any';
         
         $filterParams = array(
             "filter_param" => array(
@@ -665,7 +665,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array("phone" => "+255"));
 
            $filterParams = array(
@@ -680,7 +680,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );        
         $this->assertEqual(
-            $this->Participant->fromFilterToQueryConditions($stackOperator, $filterParams),
+            $this->Participant->fromFilterToQueryConditions($filterOperator, $filterParams),
             array('$or' => 
                 array(
                     array("phone" => "+255"),
