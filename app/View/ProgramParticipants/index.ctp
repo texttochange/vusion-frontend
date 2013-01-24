@@ -5,14 +5,14 @@
     if (!isset($urlParams)) {
         $urlParams = "";
     }
-    if (isset($this->Paginator)) {
+    if (isset($this->Paginator) && $this->Paginator->counter(array('format' => '{:count}')) != 0) {
         echo $this->AclLink->generatePostLink(
             __('Delete'),
             $programUrl, 
             'programParticipants',
             'massDelete', 
             __('Are you sure you want to delete %s participants?', $this->Paginator->counter(array(
-                'format' => __('{:count}')))),
+                'format' => '{:count}'))),
             array('class' => 'ttc-button'),
             null,
             $urlParams);
