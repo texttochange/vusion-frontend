@@ -1571,9 +1571,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $participantFromDb['Participant']['session-id'],
             null
         );
-        $this->assertEqual(
-            $participantFromDb['Participant']['last-optout-date'],
-            $programNow->format("Y-m-d\TH:i:s")
+        $this->assertRegex(
+            "/^".$programNow->format("Y-m-d\TH:i:")."\d\d$/",
+            $participantFromDb['Participant']['last-optout-date']
         );
         $this->assertEquals(0, $this->Schedule->find('count'));
     }
