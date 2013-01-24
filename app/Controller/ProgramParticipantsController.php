@@ -135,7 +135,7 @@ class ProgramParticipantsController extends AppController
             if (!file_exists($filePath)) {
                 //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
-                chmod($filePath, 0777);
+                chmod($filePath, 0764);
             }
 
             $programNow = $this->ProgramSetting->getProgramTimeNow();
@@ -668,7 +668,7 @@ class ProgramParticipantsController extends AppController
             if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
                 //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
-                chmod($filePath, 0777);
+                chmod($filePath, 0764);
             }
             
             /** in case the file has already been created, 
@@ -683,7 +683,7 @@ class ProgramParticipantsController extends AppController
                 $filePath . DS . $fileName);
             
             if(!$wasFileAlreadyThere) {
-                chmod($filePath . DS . $fileName, 0777);
+                chmod($filePath . DS . $fileName, 0664);
             }
             
             if ($ext == 'csv') {

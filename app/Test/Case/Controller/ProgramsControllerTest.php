@@ -176,6 +176,11 @@ class ProgramsControllerTestCase extends ControllerTestCase
             );
 
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+        
+        $this->assertFileExist(
+            WWW_ROOT . 'files/programs/programurl/');
+        ##clean up
+        rmdir(WWW_ROOT . 'files/programs/programurl');
     }
 
     public function testAdd_import() 
@@ -234,19 +239,22 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     public function testDelete() 
     {
-
         $Programs = $this->generate('Programs', array(
             'methods' => array(
                 '_stopBackendWorker'
             )
             ));
-        
+        mkdir(WWW_ROOT . 'files/programs/test/');
+   
         $Programs
             ->expects($this->once())
             ->method('_stopBackendWorker')
             ->will($this->returnValue(true));
         
         $this->testAction('/programs/delete/1');
+
+        $this->assertFileNotExist(
+            WWW_ROOT . 'files/programs/test/');
 
     }
 

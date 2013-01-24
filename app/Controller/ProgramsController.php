@@ -11,11 +11,7 @@ App::uses('Request', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('ShortCode', 'Model');
 
-/**
- * Programs Controller
- *
- * @property Program $Program
- */
+
 class ProgramsController extends AppController
 {
 
@@ -107,12 +103,6 @@ class ProgramsController extends AppController
     }
 
 
-    /**
-    * view method
-    *
-    * @param string $id
-    * @return void
-    */
     public function view($id = null)
     {
         $this->Program->id = $id;
@@ -123,11 +113,6 @@ class ProgramsController extends AppController
     }
 
 
-    /**
-    * add method
-    *
-    * @return void
-    */
     public function add()
     {
         if ($this->request->is('post')) {
@@ -137,10 +122,18 @@ class ProgramsController extends AppController
                     'default',
                     array('class'=>'message success')
                 );
+                ##Start the backend
                 $this->_startBackendWorker(
                     $this->request->data['Program']['url'],
                     $this->request->data['Program']['database']
                     );
+                ##Create necessary folders
+                $programDirPath = WWW_ROOT . "files/programs/". $this->request->data['Program']['url'];
+                if (!file_exists($programDirPath)) {
+                    mkdir($programDirPath);
+                    chmod($programDirPath, 0764);
+                }
+                ##Importing Dialogue and Request from another Program
                 if (isset($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram = $this->_getProgram($importFromProgramId);
@@ -176,7 +169,6 @@ class ProgramsController extends AppController
         $programOptions = array();
         foreach($programs as $program) 
             $programOptions[$program['Program']['id']] = $program['Program']['name']; 
-        //print_r($programOptions);
         $this->set(compact('programOptions'));
         
     }
@@ -196,12 +188,6 @@ class ProgramsController extends AppController
     }
 
 
-    /**
-    * edit method
-    *
-    * @param string $id
-    * @return void
-    */
     public function edit($id = null)
     {
         $this->Program->id = $id;
@@ -237,6 +223,7 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
+            rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
             $this->Session->setFlash(__('Program deleted.'),
                 'default',
                 array('class'=>'message success')
