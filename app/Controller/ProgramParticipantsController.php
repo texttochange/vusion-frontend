@@ -639,10 +639,6 @@ class ProgramParticipantsController extends AppController
                 $userTags = $this->_getTags($this->request->data['Import']['tags']);
                 $userTags = array_filter($userTags);
                 if (empty($userTags)) {
-                    /*$this->Session->setFlash(__('Error: tag must not be empty.'), 
-                        'default',
-                        array('class' => "message failure"));
-                    return;*/
                     $userTags = array();
                 }
                 foreach($userTags as $userTag) {
@@ -667,9 +663,9 @@ class ProgramParticipantsController extends AppController
                 return;
             }
             
-            $filePath = WWW_ROOT . "files/" . $programUrl; 
+            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
             
-            if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
+            if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
                 //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
                 chmod($filePath, 0777);
@@ -695,7 +691,8 @@ class ProgramParticipantsController extends AppController
             } else if ($ext == 'xls') {
                 $entries = $this->processXls($programUrl, $filePath, $fileName, $tags);
             }
-
+            ##Remove file at the end of the import
+            unlink($filePath . DS . $fileName);
         }
         $this->set(compact('entries'));
     }
