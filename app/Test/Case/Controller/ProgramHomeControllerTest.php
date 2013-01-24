@@ -86,7 +86,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $home = $this->generate('ProgramHome', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
+                'LocalizeUtils' => array('localizeLabelInArray')
             ),
             'models' => array(
                 'Program' => array('find', 'count'),

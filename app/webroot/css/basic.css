@@ -620,6 +620,45 @@
 
 .ttc-advanced-filter {
     display: none;
+    float: left;
+    width: 80%;
+    clear: none;
+    border: 1px dashed grey;
+    background: #FFCB4B;
+    padding: 3px 2px 0px 3px;
+    margin-bottom: 3px;
+}
+
+.ttc-advanced-filter p {
+    margin: 0px 2px;
+    display: inline-block;
+}
+
+.ttc-advanced-filter select {
+}
+
+.ttc-filter-stack-operator {
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.ttc-filter-stack {
+    margin-bottom: 0px;
+    padding-top: 0px;
+}
+
+.ttc-filter-title {
+    margin-bottom: 0px;
+    clear: none;
+    font-size: 18px;
+    padding: 0px 0px 3px 0px;
+    color: #666;
+}
+
+
+.ttc-paging {
+    float: right;
+    margin-right: -23px;
 }
 
 .ttc-stack-filter input{
@@ -641,7 +680,7 @@
 .ttc-advanced-filter .submit {
     margin-top: -7px;
     margin-left: -7px;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
 .ttc-advanced-filter form{
@@ -709,7 +748,7 @@
 
 .ttc-stack-filter {
 	background: #FFCB4B;
-	border: 1px dashed grey;
+	border: 1px dotted grey;
 	margin-bottom: 2px;
 	padding: 3px;
 }
@@ -717,7 +756,7 @@
 
 .ttc-stack-filter select{
 	margin-right: 3px;
-	width: 200px;
+	max-width: 200px;
 	text-overflow: ellipsis;
 }
 

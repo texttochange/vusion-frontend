@@ -16,6 +16,6 @@
 /app/tmp/cache/persistent
 /app/webroot/files/testurl/
 /things to note
-empty
+#empty
 /lib/Cake
 .vagrant
