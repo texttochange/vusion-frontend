@@ -115,7 +115,8 @@ class ProgramParticipantsController extends AppController
      
         $paginate = array(
                     'all', 
-                    'limit' => 500);
+                    'limit' => 500,
+                    'maxLimit' => 500);
 
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
