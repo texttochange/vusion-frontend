@@ -8,7 +8,7 @@ class UnmatchableReplyController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
-
+    var $components = array('LocalizeUtils');
 
     public function beforeFilter()
     {
@@ -37,7 +37,7 @@ class UnmatchableReplyController extends AppController
 
     public function index()
     {
-        $this->set('filterFieldOptions', $this->UnmatchableReply->filterFields);
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         if (!isset($this->params['named']['sort'])) {
@@ -54,6 +54,13 @@ class UnmatchableReplyController extends AppController
 
         $unmatchableReplies = $this->paginate();//print_r($unmatchableReplies);
         $this->set(compact('unmatchableReplies'));
+    }
+
+
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->UnmatchableReply->filterFields);
     }
 
 

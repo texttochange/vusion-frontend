@@ -15,7 +15,7 @@ class ProgramParticipantsController extends AppController
 {
 
     public $uses = array('Participant', 'History');
-    var $components = array('RequestHandler');
+    var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery')
         );
@@ -50,8 +50,7 @@ class ProgramParticipantsController extends AppController
     
     public function index() 
     {
-        
-        $this->set('filterFieldOptions', $this->Participant->filterFields);
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
                 
         $paginate = array('all');
@@ -68,7 +67,13 @@ class ProgramParticipantsController extends AppController
         $this->paginate = $paginate;
         $participants = $this->paginate();
         $this->set(compact('participants'));
-        
+    }
+
+
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->Participant->filterFields);
     }
 
 

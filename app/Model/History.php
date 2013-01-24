@@ -2,10 +2,8 @@
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
-/**
- * Program Model
- *
- */
+
+
 class History extends MongoModel
 {
 

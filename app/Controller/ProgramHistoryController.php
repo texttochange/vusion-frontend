@@ -1,15 +1,15 @@
 <?php
-
 App::uses('AppController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
 
+
 class ProgramHistoryController extends AppController
 {
 
     public $uses    = array('History');
-    var $components = array('RequestHandler');
+    var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time'
@@ -35,7 +35,7 @@ class ProgramHistoryController extends AppController
 
     public function index()
     {
-        $this->set('filterFieldOptions', $this->History->filterFields);
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
         
@@ -68,10 +68,17 @@ class ProgramHistoryController extends AppController
     }
 
 
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->History->filterFields);
+    }
+
+
     protected function _getFilterParameterOptions()
     {
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-  
+
         return array(
             'operator' => $this->History->filterOperatorOptions,
             'dialogue' => $dialoguesInteractionsContent,
