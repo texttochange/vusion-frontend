@@ -201,7 +201,7 @@ function saveFormOnServer(){
                 return;
             }
             if (location.href.indexOf(response['dialogue-obj-id'])<0){
-                $("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['vait_redirection']);
+                $("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['wait_redirection']);
                 setTimeout( function() { 
                     if (location.href.indexOf("edit/")<0) 
                         window.location.replace("edit/" + response['dialogue-obj-id']);
