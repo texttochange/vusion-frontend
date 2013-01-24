@@ -185,15 +185,15 @@ class HistoryTestCase extends CakeTestCase
     }
 
 
-    public function testFromFilterToQueryConditions_time()
+    public function testFromFilterToQueryConditions_date()
     {
         $filterOperator = 'all';
 
         $filterParams = array(
             "filter_param" => array(
                 array(
-                    1 => "time", 
-                    2 => "date-from", 
+                    1 => "date", 
+                    2 => "from", 
                     3 => "21/01/2012"),
                 )
             ); 
@@ -205,8 +205,8 @@ class HistoryTestCase extends CakeTestCase
         $filterParams = array(
             "filter_param" => array(
                 array(
-                    1 => "time", 
-                    2 => "date-to", 
+                    1 => "date", 
+                    2 => "to", 
                     3 => "21/01/2012"),
                 )
             ); 

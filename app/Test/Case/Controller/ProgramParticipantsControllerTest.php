@@ -1215,7 +1215,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testIndex_filter_fail()
     {
         $this->mock_program_access();
-        $this->testAction("/testurl/programParticipants/index?filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=%2B2");
+        $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=%2B2");
         $this->assertEquals(0, count($this->vars['participants']));
     }
   

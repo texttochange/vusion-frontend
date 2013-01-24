@@ -397,12 +397,7 @@ function createFilter(minimize, selectedStackOperator, stackRules){
    var stackOperatorSelect = document.createElement("select");
    $(stackOperatorSelect).attr('name', 'filter_operator');
 
-   var filterOperatorOptions = {
-       all: localized_actions['stack_operator_all'],
-       any: localized_actions['stack_operator_any']
-   }
-
-   $.each(filterOperatorOptions, function(val, text) {
+   $.each(window.app.filterParameterOptions['operator'], function(val, text) {
         var option = new Option(text, val);
         if (val==selectedStackOperator) {
             $(option).attr('selected', true);

@@ -210,13 +210,13 @@ class History extends MongoModel
                 'not-is' => array(
                     'label' => 'is not',
                     'parameter-type' => 'message-status'))),
-        'time' => array(
-            'label' => 'time',
+        'date' => array(
+            'label' => 'date',
             'operators' => array(
-                'date-from' => array(
+                'from' => array(
                     'label' => 'since',
                     'parameter-type' => 'date'),
-                'date-to' => array(
+                'to' => array(
                     'label' => 'until',
                     'parameter-type' => 'date'))),
         'participant-phone' => array(
@@ -267,6 +267,11 @@ class History extends MongoModel
                 )) 
         );
 
+    public $filterOperatorOptions = array(
+        'all' => 'all',
+        'any' => 'any'
+        );
+
     public $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
@@ -312,7 +317,7 @@ class History extends MongoModel
     public function fromFilterToQueryConditions($filterOperator, $filterParams) {
 
         $conditions = array();
-
+        
         foreach($filterParams['filter_param'] as $filterParam) {
         
             $condition = null;
@@ -325,10 +330,10 @@ class History extends MongoModel
                 } elseif ($filterParam[2] == 'not-is') {
                     $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
                 }
-            } elseif ($filterParam[1] == 'time') {
-                if ($filterParam[2] == 'date-from') { 
+            } elseif ($filterParam[1] == 'date') {
+                if ($filterParam[2] == 'from') { 
                     $condition['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
-                } elseif ($filterParam[2] == 'date-to') {
+                } elseif ($filterParam[2] == 'to') {
                     $condition['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'participant-phone') {

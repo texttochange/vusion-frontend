@@ -38,7 +38,7 @@ class UnmatchableReplyController extends AppController
     public function index()
     {
         $this->set('filterFieldOptions', $this->UnmatchableReply->filterFields);
-        $this->set('filterParameterOptions', array());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
@@ -55,7 +55,14 @@ class UnmatchableReplyController extends AppController
         $unmatchableReplies = $this->paginate();//print_r($unmatchableReplies);
         $this->set(compact('unmatchableReplies'));
     }
-    
+
+
+    protected function _getFilterParameterOptions()
+    {
+        return array(
+            'operator' => $this->UnmatchableReply->filterOperatorOptions);
+    }
+
     
     protected function _getConditions($conditions = null)
     {

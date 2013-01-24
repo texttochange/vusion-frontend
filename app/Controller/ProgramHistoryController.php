@@ -73,6 +73,7 @@ class ProgramHistoryController extends AppController
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
   
         return array(
+            'operator' => $this->History->filterOperatorOptions,
             'dialogue' => $dialoguesInteractionsContent,
             'message-direction' => $this->History->filterMessageDirectionOptions,
             'message-status' => $this->History->filterMessageStatusOptions);

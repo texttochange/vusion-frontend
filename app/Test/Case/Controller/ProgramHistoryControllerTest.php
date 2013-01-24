@@ -198,7 +198,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'matching-answer' => null
             ));
         $this->mockProgramAccess();
-        $this->testAction("/testurl/history/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=interaction-source&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=11&filter_param%5B2%5D%5B1%5D=time&filter_param%5B2%5D%5B2%5D=date-from&filter_param%5B2%5D%5B3%5D=01/01/2012");
+        $this->testAction("/testurl/history/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=interaction-source&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=11&filter_param%5B2%5D%5B1%5D=date&filter_param%5B2%5D%5B2%5D=from&filter_param%5B2%5D%5B3%5D=01/01/2012");
         $this->assertEquals(3, count($this->vars['statuses']));
         $this->assertEquals('11', $this->vars['statuses'][0]['History']['interaction-id']);
 
@@ -213,7 +213,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->assertEquals('name', $this->vars['statuses'][0]['History']['message-content']);
 
         $this->mockProgramAccess();
-        $this->testAction("/testurl/history/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=time&filter_param%5B1%5D%5B2%5D=date-from&filter_param%5B1%5D%5B3%5D=09/02/2013&filter_param%5B2%5D%5B1%5D=time&filter_param%5B2%5D%5B2%5D=date-to&filter_param%5B2%5D%5B3%5D=10/02/2013");
+        $this->testAction("/testurl/history/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=date&filter_param%5B1%5D%5B2%5D=from&filter_param%5B1%5D%5B3%5D=09/02/2013&filter_param%5B2%5D%5B1%5D=date&filter_param%5B2%5D%5B2%5D=to&filter_param%5B2%5D%5B3%5D=10/02/2013");
         $this->assertEquals(1, count($this->vars['statuses']));
         $this->assertEquals('what is your name? send NAME <your name>', $this->vars['statuses'][0]['History']['message-content']);
 

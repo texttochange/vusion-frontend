@@ -480,6 +480,12 @@ class Participant extends MongoModel
                     'label' => 'not with',
                     'parameter-type' => 'label')))
     );
+
+    public $filterOperatorOptions = array(
+        'all' => 'all',
+        'any' => 'any'
+        );
+
      
 
    public function validateFilter($filterParam)

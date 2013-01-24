@@ -72,6 +72,11 @@ class UnmatchableReply extends MongoModel
                     'parameter-type' => 'text'))), 
     );
 
+    public $filterOperatorOptions = array(
+        'all' => 'all',
+        'any' => 'any'
+        );
+
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
