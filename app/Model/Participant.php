@@ -303,6 +303,7 @@ class Participant extends MongoModel
             $profiles = array_filter(explode(",", $profiles));
             $profileList = array();
             foreach ($profiles as $profile) {
+                $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
                 list($label,$value) = explode(":", $profile);
                 $newProfile = array();
                 $newProfile['label'] = $label;
