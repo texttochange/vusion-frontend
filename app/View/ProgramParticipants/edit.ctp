@@ -13,16 +13,7 @@
 	            if (is_array($profiles)) {
 	                $profileArray = array();
 	                foreach ($profiles as $profile) {
-	                    $result = null;
-	                    foreach ($profile as $key => $value) {
-	                        if ($value != null)
-	                            $result.= $value.":";
-	                        else {
-	                            if (strrpos($result,':') == strlen($result)-1)
-	                                $result=substr_replace($result, "", -1);
-	                        }
-	                    }
-	                    $profileArray[] = $result;
+	                    $profileArray[] = $profile['label'].":".$profile['value'];
 	                }
 	                $profileData = implode(",", $profileArray);
 	            } else {
@@ -38,7 +29,6 @@
 	            }
 	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$tagsString));
 	            $options = $selectOptions;
-	            //print_r($options);
 	            $selected = $oldEnrolls;
 	            echo $this->Form->input('enrolled', array('options'=>$options,
 	                'type'=>'select',

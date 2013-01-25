@@ -10,7 +10,18 @@ Installation
 	$ git clone <this repository>
 	# Then retrive the Plugins and the Backend
 	$ git submodule init
-	$ git submodule update   
+	$ git submodule update
+
+You need to add the following folders
+::
+	$ mkdir app/tmp/cache
+	$ mkdir app/tmp/cache/persistent
+	$ mkdir app/tmp/cache/model
+
+You must change the permissions of the cache folder and it's subfolders to use www-data user
+who is the apache user.
+::
+	$ chown -R www-data app/tmp/cache
 
 Web Server Configuration
 ------------------------
@@ -21,13 +32,26 @@ Second make app/tmp file writable by the webserver.
 Databases
 ---------
 Vusion is using 2 database engines. 
-The first one is the Relational Database for authentication, Access Control List, User management. The default relational database is PostGres, but anyother can be used by modifying app/config/database.php. 
-The second one is the Document Database MongoDB for the business data.
-(installation of MongoDB Server) http://www.mongodb.org/display/DOCS/Quickstart
+The first one is the Relational Database for authentication, Access Control List, User management. The default relational database is PostGres, but anyother can be used by modifying **app/config/database.php**. 
+The second one is the Document Database MongoDB  for the business data.
+(installation of MongoDB version2.x Server) http://www.mongodb.org/display/DOCS/Quickstart
 
 Relational Database Configuration:
-You can create the relational database schema from file app/Config/Schema/schema.php with the cake console 
-./lib/Cake/Console/cake schema create
+You can create the relational database schema from file **app/Config/Schema/schema.php** with the cake console
+::
+	$ ./lib/Cake/Console/cake schema create
+	
+If file schema.php is not found, you can also create the database using Mysql by importing a file **app/Config/Schema/schema.sql** with phpmyadmin tool.
+::
+	1.On your phpmyadmin home go to more tab and in the drop dpwn select import
+	2.Browse the file you went to import in this case schema.sql 
+	3.Tick the checkbox with donot auto increment and press go
+	
+Create a userLogin and password in the Mysql account database which must correspond to ones in the **app/Config/database.php** 
+::
+	1.On your phpmyadmin home go to phpmyadmin tab 
+	2.Click on add a new user
+	3.Feelin the infromation but on Host select local and Global privileges check all then press go
 
 PHP Modules
 -----------
@@ -47,3 +71,26 @@ To run the different build task from build.xml, you need to install
 
 - Jdk6
 - Ant
+
+Apache configuration for mod_xsendfile(export)
+--------------------------------
+You need to frist install apache2-prefork-dev
+::
+  $ sudo apt-get install apache2-prefork-dev
+
+Then you clone the clone-xsendfile file from github
+::
+	$ git clone http://github.com/nmaier/mod_xsendfile /opt/mod_xsendfile 
+
+**Note /opt/mod_xsendfile is destination whereyou are storeing the cloned file **
+
+Compile your file you have clone. Run this command in the */opt/mod_xsendfile* 
+::
+ 	$apxs2 -cia mod_xsendfile.c
+
+
+Add this command **XSendFilePath <%= docroot %>/files/programs/** for :
+ Lamp server add it at *httpd.config*
+ Apache add it at * /etc/apache/sites-available *
+
+Don't forget to change permissions on the */files/programs/ * directory

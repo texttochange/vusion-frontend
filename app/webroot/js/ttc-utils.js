@@ -373,30 +373,116 @@ function updateClock(){
 	$("#local-date-time").text(newTime);	
 }
 
+function createFilter(minimize, selectedStackOperator, stackRules){
+
+    if(typeof(minimize)==='undefined') minimize = false;    
+    if(typeof(selectedStackOperator)==='undefined') selectedStackOperator = 'all';
+    if(typeof(stackRules)==='undefined') stackRules = {};
+
+    if ($('#filter-stack').length != 0) {
+        return;
+    }
+
+   var stack = document.createElement("div");
+   $(stack).attr('id', 'filter-stack').attr('class', 'ttc-filter-stack');
+   $('#advanced_filter_form').prepend(stack);
+
+   //The operator between the stack rules
+   var stackOperatorPrefix = document.createElement("p");
+   $(stackOperatorPrefix).html(localized_actions['filter_operator_prefix']);
+
+   var stackOperatorSuffix = document.createElement("p");
+   $(stackOperatorSuffix).html(localized_actions['filter_operator_suffix']);
+
+   var stackOperatorSelect = document.createElement("select");
+   $(stackOperatorSelect).attr('name', 'filter_operator');
+
+   $.each(window.app.filterParameterOptions['operator'], function(val, text) {
+        var option = new Option(text, val);
+        if (val==selectedStackOperator) {
+            $(option).attr('selected', true);
+        }
+		$(stackOperatorSelect).append(option);
+   });
+
+   var stackOperator = document.createElement("div");
+   $(stackOperator).attr('id', 'filter-stack-operator').attr('class', 'ttc-filter-stack-operator');
+   $(stackOperator).append(stackOperatorPrefix).append(stackOperatorSelect).append(stackOperatorSuffix);
+   $('#advanced_filter_form').prepend(stackOperator);
+
+   var title = document.createElement("div");
+   $(title).attr('class','ttc-filter-title').html(localized_actions['filter']);
+   $('#advanced_filter_form').prepend(title);
+
+   var minimizeButton = document.createElement("img");
+   $(minimizeButton).attr('class','ttc-add-icon').attr('src', '/img/minimize-icon-16.png').on('click', minimizeFilter);
+   $('#advanced_filter_form').prepend(minimizeButton);
+
+   var deleteButton = document.createElement("img");
+   $(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/delete-icon-16.png').on('click', removeFilter);
+   $('#advanced_filter_form').prepend(deleteButton);
+
+   var count = 1;
+   $.each(stackRules, function(i, rule) {
+       addStackFilter();
+       $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
+       if (typeof(rule[2]) === 'undefined') return true;
+       $("[name='filter_param["+count+"][2]']").val(rule[2]).click();
+ 	   if (typeof(rule[3]) === 'undefined') return true;
+	   $("[name='filter_param["+count+"][3]']").val(rule[3]);
+       count++;	   
+    });
+    
+   if (minimize) {
+       $(minimizeButton).click();
+   }    
+    
+}
+
+function minimizeFilter() {
+    $(this).parent().children(":not(img):not([class='ttc-filter-title'])").slideUp('fast');
+    $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', expandFilter);
+}
+
+function expandFilter() {
+    $(this).parent().children().each(function(){ 
+        if ($(this).attr('type')=='text')
+            $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
+        $(this).slideDown('fast')});
+    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', minimizeFilter);    
+}
+
+function removeFilter() {
+    $(this).parent().hide().children(':not(.submit)').remove();
+    if (window.location.search != "")
+        window.location.replace("index")
+}
+
 function addStackFilter(){
+
 	var count = $('.ttc-stack-filter').length + 1;
 	var stackFilter = document.createElement("div");
-	//$(stackFilter).attr('class','ttc-stack-filter').insertBefore('.submit');
-	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#advanced_filter_form').insertBefore('.submit');
+	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#filter-stack');
 	
-	//var addButton = document.createElement("img");
-	//$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
-	//$(stackFilter).append(addButton);
+	var addButton = document.createElement("img");
+	$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
+	$(stackFilter).append(addButton);
 	
 	var deleteButton = document.createElement("img");
 	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/remove-icon-16.png').on('click', removeStackFilter);
 	$(stackFilter).append(deleteButton);
 	
 	// retrieve the contents of the array stored by javascript in window.app
-	var myOptions = window.app.myOptions;
+	var fieldOptions = window.app.filterFieldOptions;
 	// add dropdown for fields
-	var addFilterFieldDropDown = document.createElement("select");
-	$(addFilterFieldDropDown).attr('name','filter_param['+count+'][1]');
-	$(addFilterFieldDropDown).append(new Option("", "")).on('click', function(){supplyConditionOptions(this)});
-	$.each(myOptions, function(val, text) {
-		$(addFilterFieldDropDown).append(new Option(text, val));
+	var filterFieldDropDown = document.createElement("select");
+	$(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
+	$(filterFieldDropDown).append(new Option("", ""))
+	    .on('click', function(event){supplyOperatorOptions(this);});
+	$.each(fieldOptions, function(value, details) {
+	        $(filterFieldDropDown).append(new Option(details['label'], value));
 	});
-	$(stackFilter).append(addFilterFieldDropDown);
+	$(stackFilter).append(filterFieldDropDown);
 	
 }
 
@@ -416,69 +502,68 @@ function hasNoStackFilter(){
 	}
 }
 
-function supplyConditionOptions(elt){
+function supplyOperatorOptions(elt) {
+    $(elt).nextAll('input,select').remove();
+    var field = $(elt).val();
+    if (field == "")
+        return;
+    var operators = window.app.filterFieldOptions[field]['operators'];
 
-    $(elt).siblings('input,select').remove();
+    var operatorDropDownName = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
+ 
+    var operatorDropDown = document.createElement("select");
+	$(operatorDropDown).attr('name', operatorDropDownName + '[2]');
+	$(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
+	$.each(operators, function(operator, details) {
+	        $(operatorDropDown).append(new Option(details['label'], operator));
+	});
+	$(elt).after(operatorDropDown);
+	supplyParameterOptions(operatorDropDown);
+}
 
-    var name = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
 
-    var reg_date = /.*date-.*/;
+function supplyParameterOptions(operatorElt) {
 
-    var condition_type = $(elt).val();
-    switch (true) 
+    $(operatorElt).nextAll('input,select').remove();
+
+    var name = $(operatorElt).attr('name').replace(new RegExp("\\[2\\]$","gm"), "");
+    var field = $('[name="'+name+'[1]"]').val()
+    var operator = $(operatorElt).val();
+    var operatorType = window.app.filterFieldOptions[field]['operators'][operator]['parameter-type'];
+
+    switch (operatorType) 
     {
-    case condition_type=="message-direction":
-        $(elt).after("<select name='"+name+"[2]'></select>");
-        var options = window.app.typeConditionOptions;
+    case "none":
+        break;
+    case "date":
+	    $(operatorElt).after("<input name='"+name+"[3]'></input>");
+	    $("[name='"+name+"[3]']").datepicker();
+        break;
+    case "text":
+        $(operatorElt).after("<input name='"+name+"[3]'></input>");
+	    break;
+	case "dialogue":
+	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value, key));      
+                $("[name='"+name+"[3]']").append(new Option(value['name'], key));      
         })
         break;
-    case condition_type=="message-status":
-	    $(elt).after("<select name='"+name+"[2]'></select>");
-        $.each(window.app.statusConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value, key));      
+    case "interaction":
+        $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    var options = window.app.filterParameterOptions['dialogue'];
+        $.each(options, function(dialogueId, details){
+                $.each(details['interactions'], function(interactionId, content) { 
+                        $("[name='"+name+"[3]']").append(new Option(details['name']+" - "+content, interactionId));
+                });      
         })
         break;
-    case reg_date.test(condition_type):
-	    $(elt).after("<input name='"+name+"[2]'></input>");
-	    $("[name='"+name+"[2]']").datepicker();
-	    break;
-	case condition_type=="participant-phone":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="phone":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="message-content":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="dialogue":
-	    $(elt).after("<select name='"+name+"[2]'></select>");
-	    $("[name='"+name+"[2]']").on('click', { filterPrefix: name}, generateDropdown);
-        $.each(window.app.dialogueConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        });
-        break;
-    case condition_type=="enrolled":
-        $(elt).after("<select name='"+name+"[2]'></select>");
-        $.each(window.app.dialogueConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        });
-	    break;
-	case condition_type=="not-enrolled":
-        $(elt).after("<select name='"+name+"[2]'></select>");
-        $.each(window.app.dialogueConditionOptions, function(key, value){
-                $("[name='"+name+"[2]']").append(new Option(value['name'], key));      
-        });
-	    break;
-	case condition_type=="tag":
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
-	case condition_type=="label":
-        $(elt).after("<input name='"+name+"[3]'></input>");
-        $(elt).after("<input name='"+name+"[2]'></input>");
-	    break;
+	default:
+	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    var options = window.app.filterParameterOptions[operatorType];
+        $.each(options, function(key, value){
+                $("[name='"+name+"[3]']").append(new Option(value, value));      
+        })
     }
 }
 

@@ -8,7 +8,7 @@ class UnmatchableReplyController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
-
+    var $components = array('LocalizeUtils');
 
     public function beforeFilter()
     {
@@ -37,7 +37,8 @@ class UnmatchableReplyController extends AppController
 
     public function index()
     {
-        $this->set('filterFieldOptions', $this->UnmatchableReply->fieldFilters);
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
@@ -51,54 +52,40 @@ class UnmatchableReplyController extends AppController
                 'order'=> $order,
             );
 
-        $unmatchableReplies = $this->paginate();//print_r($unmatchableReplies);
+        $unmatchableReplies = $this->paginate();
         $this->set(compact('unmatchableReplies'));
     }
-    
-    
-    protected function _getConditions()
-    {
-        $conditions = null;
-        
-        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
 
-        if (!isset($onlyFilterParams['filter_param'])) 
-            return $conditions;
-       
-        $urlParams = http_build_query($onlyFilterParams);
-        $this->set('urlParams', $urlParams);
-        
-        foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
-            if ($onlyFilterParam[1]=='date-from' && isset($onlyFilterParam[2])) {
-                $conditions['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1]=='date-to' && isset($onlyFilterParam[2])) {
-                $conditions['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1] == 'participant-phone' && isset($onlyFilterParam[2])) {
-                $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
-                if ($phoneNumbers) {
-                    if (count($phoneNumbers) > 1) {
-                        $or = array();
-                        foreach ($phoneNumbers as $phoneNumber) {
-                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
-                            $or[] = array('participant-phone' => $regex);
-                        }
-                        $conditions['$or'] = $or;
-                    } else {
-                        $conditions['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
-                    }
-                }
-            } elseif ($onlyFilterParam[1] == 'message-content' && isset($onlyFilterParam[2])) {
-                $conditions['message-content'] = new MongoRegex("/".$onlyFilterParam[2]."/i");
-            } else {
-                $this->Session->setFlash(__('The parameter(s) for "%s" filtering are missing.',$onlyFilterParam[1]), 
-                'default',
-                array('class' => "message failure")
-                );
-            }
-        }
-        
-        return $conditions;
+
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->UnmatchableReply->filterFields);
+    }
+
+
+    protected function _getFilterParameterOptions()
+    {
+        return array(
+            'operator' => $this->UnmatchableReply->filterOperatorOptions);
     }
 
     
+    protected function _getConditions($conditions = null)
+    {
+       $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
+
+        if (!isset($filter['filter_param'])) 
+            return null;
+
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->UnmatchableReply->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
+
+        $this->set('urlParams', http_build_query($filter));
+
+        return $this->UnmatchableReply->fromFilterToQueryConditions($filter);
+    }
+
+
 }
