@@ -121,5 +121,323 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEquals(1, $result);    
     }
 
+    public function testFromFilterToQueryConditions_messageDirection()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-direction', 
+                    2 => 'is', 
+                    3 => 'incoming'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-direction' => 'incoming')
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-direction', 
+                    2 => 'not-is', 
+                    3 => 'incoming'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-direction' => array('$ne' => 'incoming'))
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_messageStatus()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-status', 
+                    2 => 'is', 
+                    3 => 'pending'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-status' => 'pending')
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-status', 
+                    2 => 'not-is', 
+                    3 => 'pending'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-status' => array('$ne' => 'pending'))
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_date()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'date', 
+                    2 => 'from', 
+                    3 => '21/01/2012'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('timestamp' => array('$gt' => '2012-01-21T00:00:00'))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'date', 
+                    2 => 'to', 
+                    3 => '21/01/2012'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('timestamp' => array('$lt' => '2012-01-21T00:00:00'))
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_participantPhone()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'start-with', 
+                    3 => '+255'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('participant-phone' => new MongoRegex('/^\\+255/'))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+255'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('participant-phone' => '+255')
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'start-with-any', 
+                    3 => '+255, +256'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('$or' => array(
+                array('participant-phone' => new MongoRegex('/^\\+255/')),
+                array('participant-phone' => new MongoRegex('/^\\+256/'))
+                ))
+            );
+    }
+
+    
+    public function testFromFilterToQueryConditions_messageContent()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-content', 
+                    2 => 'equal-to', 
+                    3 => 'content'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-content' => 'content')
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-content', 
+                    2 => 'contain', 
+                    3 => 'content'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-content' => new MongoRegex('/content/i'))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-content', 
+                    2 => 'has-keyword', 
+                    3 => 'keyword'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('message-content' => new MongoRegex('/^keyword($| )/i'))
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_dialogueSource()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'dialogue-source', 
+                    2 => 'is', 
+                    3 => '1'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('dialogue-id' => '1')
+            );
+    }
+
+    public function testFromFilterToQueryConditions_interactionSource()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'interaction-source', 
+                    2 => 'is', 
+                    3 => '1'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('interaction-id' => '1')
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_answer()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'answer', 
+                    2 => 'matching'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array(
+                'message-direction' => 'incoming',
+                'matching-answer' => array('$ne' => null))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'answer', 
+                    2 => 'not-matching'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array(
+                'message-direction' => 'incoming',
+                'matching-answer' => null)
+            );
+    }
+
+    
+    public function testFromFilterToQueryConditions_AND()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+255'),
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+256'),
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+257'),
+            )); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('$and' => array(
+                array('participant-phone' => '+255'),
+                array('participant-phone' => '+256'),
+                array('participant-phone' => '+257'),
+                ))
+            );       
+    }
+
+    public function testFromFilterToQueryConditions_OR()
+    {
+        $filter = array(
+            'filter_operator' => 'any',
+            'filter_param' => array(
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+255'),
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+256'),
+                array(
+                    1 => 'participant-phone', 
+                    2 => 'equal-to', 
+                    3 => '+257'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('$or' => array(
+                array('participant-phone' => '+255'),
+                array('participant-phone' => '+256'),
+                array('participant-phone' => '+257'),
+                ))
+            );       
+    }
+
 
 }
+    

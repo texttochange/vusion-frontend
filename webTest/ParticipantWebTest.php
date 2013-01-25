@@ -23,7 +23,7 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->waitForPageToLoad("30000");
     $this->click("link=Participants »");
     $this->waitForPageToLoad("30000");
-    $this->click("link=Add Participant");
+    $this->click("link=Add");
     $this->waitForPageToLoad("30000");
     $this->type("id=ParticipantPhone", "256783255632");
     $this->click("css=input[type=\"submit\"]");

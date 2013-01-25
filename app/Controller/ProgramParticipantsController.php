@@ -4,15 +4,18 @@ App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('Dialogue', 'Model');
+
 App::uses('DialogueHelper', 'Lib');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('VusionException', 'Lib');
+App::uses('FilterException', 'Lib');
 
 
 class ProgramParticipantsController extends AppController
 {
 
     public $uses = array('Participant', 'History');
-    var $components = array('RequestHandler');
+    var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery')
         );
@@ -47,25 +50,42 @@ class ProgramParticipantsController extends AppController
     
     public function index() 
     {
-        $this->set('filterFieldOptions', $this->Participant->fieldFilters);
-        $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
-        $this->set('filterDialogueConditionsOptions', $dialoguesContent);
-     
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+                
         $paginate = array('all');
-
+        
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-
+        
         $conditions = $this->_getConditions();
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
-  
+        
         $this->paginate = $paginate;
         $participants = $this->paginate();
-        $this->set(compact('participants')); 
+        $this->set(compact('participants'));
     }
+
+
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->Participant->filterFields);
+    }
+
+
+    protected function _getFilterParameterOptions()
+    {
+        return array(
+            'operator' => $this->Participant->filterOperatorOptions,
+            'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
+            'tag' => $this->Participant->getDistinctTags(),
+            'label' => $this->Participant->getDistinctLabels());
+    }
+
 
     public function download()
     {
@@ -95,7 +115,8 @@ class ProgramParticipantsController extends AppController
      
         $paginate = array(
                     'all', 
-                    'limit' => 500);
+                    'limit' => 500,
+                    'maxLimit' => 500);
 
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
@@ -114,7 +135,7 @@ class ProgramParticipantsController extends AppController
             if (!file_exists($filePath)) {
                 //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
-                chmod($filePath, 0777);
+                chmod($filePath, 0764);
             }
 
             $programNow = $this->ProgramSetting->getProgramTimeNow();
@@ -175,61 +196,18 @@ class ProgramParticipantsController extends AppController
 
     protected function _getConditions()
     {
-        $conditions = null;
-        
-        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
+        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
 
-        if (!isset($onlyFilterParams['filter_param'])) 
-            return $conditions;
-       
-        $urlParams = http_build_query($onlyFilterParams);
-        $this->set('urlParams', $urlParams);
-        
-        foreach($onlyFilterParams['filter_param'] as $onlyFilterParam) {
-            if ($onlyFilterParam[1] == 'enrolled' && isset($onlyFilterParam[2])) {
-                $conditions['enrolled.dialogue-id'] = $onlyFilterParam[2];
-            } elseif ($onlyFilterParam[1] == 'not-enrolled' && isset($onlyFilterParam[2])) {
-                $conditions['enrolled.dialogue-id']['$ne'] = $onlyFilterParam[2];
-            } elseif ($onlyFilterParam[1] == 'optin') { 
-                $conditions['session-id'] = array('$ne' => null);
-            } elseif ($onlyFilterParam[1]=='optin-date-from' && isset($onlyFilterParam[2])) {
-                $conditions['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1]=='optin-date-to' && isset($onlyFilterParam[2])) {
-                $conditions['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1] == 'optout') { 
-                $conditions['session-id'] = null;
-            } elseif ($onlyFilterParam[1]=='optout-date-from' && isset($onlyFilterParam[2])) {
-                $conditions['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1]=='optout-date-to' && isset($onlyFilterParam[2])) {
-                $conditions['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($onlyFilterParam[2]);
-            } elseif ($onlyFilterParam[1] == 'phone' && isset($onlyFilterParam[2])) {
-                $phoneNumbers = explode(",", str_replace(" ", "", $onlyFilterParam[2]));
-                if ($phoneNumbers) {
-                    if (count($phoneNumbers) > 1) {
-                        $or = array();
-                        foreach ($phoneNumbers as $phoneNumber) {
-                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
-                            $or[] = array('phone' => $regex);
-                        }
-                        $conditions['$or'] = $or;
-                    } else {
-                        $conditions['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
-                    }
-                }
-            } elseif ($onlyFilterParam[1]=='tag' && isset($onlyFilterParam[2])) {
-                $conditions['tags'] = $onlyFilterParam[2];
-            } elseif ($onlyFilterParam[1] == 'label' && isset($onlyFilterParam[2]) && isset($onlyFilterParam[3])) {
-                $conditions['profile.label'] = $onlyFilterParam[2];
-                $conditions['profile.value'] = $onlyFilterParam[3];
-            } else {
-                $this->Session->setFlash(__('The parameter(s) for "%s" filtering are missing.',$onlyFilterParam[1]), 
-                'default',
-                array('class' => "message failure")
-                );
-            }
-        }
-        
-        return $conditions;
+        if (!isset($filter['filter_param'])) 
+            return null;
+
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
+
+        $this->set('urlParams', http_build_query($filter));
+
+        return $this->Participant->fromFilterToQueryConditions($filter);
     }
 
 
@@ -380,12 +358,14 @@ class ProgramParticipantsController extends AppController
                 'controller' => 'programParticipants',
                 'action' => 'index',
                 '?' => $this->viewVars['urlParams']));
+                
         } else {
                $this->redirect(array(  
                 'program' => $programUrl,
                 'controller' => 'programParticipants',
                 'action' => 'index'));
         }
+
     }
 
 
@@ -647,10 +627,6 @@ class ProgramParticipantsController extends AppController
                 $userTags = $this->_getTags($this->request->data['Import']['tags']);
                 $userTags = array_filter($userTags);
                 if (empty($userTags)) {
-                    /*$this->Session->setFlash(__('Error: tag must not be empty.'), 
-                        'default',
-                        array('class' => "message failure"));
-                    return;*/
                     $userTags = array();
                 }
                 foreach($userTags as $userTag) {
@@ -675,12 +651,12 @@ class ProgramParticipantsController extends AppController
                 return;
             }
             
-            $filePath = WWW_ROOT . "files/" . $programUrl; 
+            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
             
-            if (!file_exists(WWW_ROOT . "files/".$programUrl)) {
+            if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
                 //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
-                chmod($filePath, 0777);
+                chmod($filePath, 0764);
             }
             
             /** in case the file has already been created, 
@@ -695,7 +671,7 @@ class ProgramParticipantsController extends AppController
                 $filePath . DS . $fileName);
             
             if(!$wasFileAlreadyThere) {
-                chmod($filePath . DS . $fileName, 0777);
+                chmod($filePath . DS . $fileName, 0664);
             }
             
             if ($ext == 'csv') {
@@ -703,7 +679,8 @@ class ProgramParticipantsController extends AppController
             } else if ($ext == 'xls') {
                 $entries = $this->processXls($programUrl, $filePath, $fileName, $tags);
             }
-
+            ##Remove file at the end of the import
+            unlink($filePath . DS . $fileName);
         }
         $this->set(compact('entries'));
     }

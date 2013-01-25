@@ -1,5 +1,6 @@
 <div class="groups index">
 	<h3><?php echo __('Groups');?></h3>
+	<div class="ttc-display-area">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('name');?></th>
@@ -19,6 +20,7 @@
 	</tr>
 <?php endforeach; ?>
 	</table>
+	</div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(

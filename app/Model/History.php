@@ -1,10 +1,9 @@
 <?php
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
-/**
- * Program Model
- *
- */
+App::uses('FilterException', 'Lib');
+
+
 class History extends MongoModel
 {
 
@@ -102,29 +101,6 @@ class History extends MongoModel
         );
     
     
-    public $fieldFilters = array(
-        'message-direction'=>'message direction',
-        'message-status'=>'message status',
-        'date-from'=>'date from',
-        'date-to'=>'date to',
-        'participant-phone'=>'participant phone',
-        'message-content'=>'message content',
-        'dialogue'=>'dialogue',
-        'non-matching-answers' => 'non matching answers'
-        );
-    
-    public $typeConditionFilters = array(
-        'incoming'=>'incoming',
-        'outgoing'=>'outgoing',
-        );
-    
-    public $statusConditionFilters = array(
-        'failed'=>'failed',
-        'delivered'=>'delivered',
-        'pending'=>'pending',
-        );
-    
-    
     public function __construct($id = false, $table = null, $ds = null)
     {
     	    parent::__construct($id, $table, $ds);
@@ -211,5 +187,220 @@ class History extends MongoModel
          }
          return $histories;
     }
+
+    #Filter variables and functions
+    public $filterFields = array(
+        'message-direction' => array( 
+            'label' => 'message direction',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'message-direction'),
+                'not-is' => array(
+                    'label' => 'is not',
+                    'parameter-type' => 'message-direction'))),
+        'message-status' => array(
+            'label' => 'message status',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'message-status'),
+                'not-is' => array(
+                    'label' => 'is not',
+                    'parameter-type' => 'message-status'))),
+        'date' => array(
+            'label' => 'date',
+            'operators' => array(
+                'from' => array(
+                    'label' => 'since',
+                    'parameter-type' => 'date'),
+                'to' => array(
+                    'label' => 'until',
+                    'parameter-type' => 'date'))),
+        'participant-phone' => array(
+            'label' => 'participant phone',
+            'operators' => array(
+                'start-with' => array(
+                    'label' => 'stats with',
+                    'parameter-type' => 'text'),
+                'equal-to' => array(
+                    'label' => 'equal to',
+                    'parameter-type' => 'text'),
+                'start-with-any' => array(
+                    'label' => 'starts with any of',
+                    'parameter-type' => 'text'))),
+        'message-content' => array(
+            'label' => 'message content',
+            'operators' => array(
+                'equal-to' => array(
+                    'label' => 'equals',
+                    'parameter-type' => 'text'),
+                'contain' => array(
+                    'label' => 'contains',
+                    'parameter-type' => 'text'),
+                'has-keyword' => array(
+                    'label' => 'has keyword',
+                    'parameter-type' => 'text'))), 
+        'dialogue-source' => array(
+            'label' => 'dialogue source',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'dialogue'))),
+        'interaction-source' => array(
+            'label' => 'interaction source',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'interaction'))),
+        'answer' => array(
+            'label' => 'answers',
+            'operators' => array(
+                'matching' => array(
+                    'label' => 'matching one question',
+                    'parameter-type' => 'none'),
+                'not-matching' => array(
+                    'label' => 'not matching any question',
+                    'parameter-type' => 'none')
+                )) 
+        );
+
+    public $filterOperatorOptions = array(
+        'all' => 'all',
+        'any' => 'any'
+        );
+
+    public $filterMessageDirectionOptions = array(
+        'incoming'=>'incoming',
+        'outgoing'=>'outgoing',
+        );
+
+    
+    public $filterMessageStatusOptions = array(
+        'failed'=>'failed',
+        'delivered'=>'delivered',
+        'pending'=>'pending',
+        'ack' => 'ack'
+        );
+
+
+    public function validateFilter($filterParam)
+    {
+        if (!isset($filterParam[1])) {
+            throw new FilterException("Field is missing.");
+        }
+
+        if (!isset($this->filterFields[$filterParam[1]])) {
+            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
+        }
+
+        if (!isset($filterParam[2])) {
+            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
+        }
+        
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
+            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
+        }
+
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
+            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
+        }
+        
+        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
+            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
+        }
+    }
+
+
+    public function fromFilterToQueryConditions($filter) {
+
+        $conditions = array();
+        
+        foreach($filter['filter_param'] as $filterParam) {
+        
+            $condition = null;
+            
+            $this->validateFilter($filterParam);
+            
+            if ($filterParam[1] == 'message-direction' or $filterParam[1] == 'message-status') {
+                if ($filterParam[2] == 'is') {
+                    $condition[$filterParam[1]] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
+                }
+            } elseif ($filterParam[1] == 'date') {
+                if ($filterParam[2] == 'from') { 
+                    $condition['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                } elseif ($filterParam[2] == 'to') {
+                    $condition['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                }
+            } elseif ($filterParam[1] == 'participant-phone') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['participant-phone'] = $filterParam[3];                   
+                } elseif ($filterParam[2] == 'start-with') {
+                    $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                } elseif ($filterParam[2] == 'start-with-any') {
+                    $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
+                    if ($phoneNumbers) {
+                        if (count($phoneNumbers) > 1) {
+                            $or = array();
+                            foreach ($phoneNumbers as $phoneNumber) {
+                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                                $or[] = array('participant-phone' => $regex);
+                            }
+                            $condition['$or'] = $or;
+                        } else {
+                            $condition['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                        }
+                    }   
+                }
+            } elseif ($filterParam[1] == 'message-content') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['message-content'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'contain') {
+                     $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                } elseif ($filterParam[2] == 'has-keyword') {
+                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                }
+            } elseif ($filterParam[1] == 'dialogue-source') {
+                if ($filterParam[2] == 'is') {
+                    $condition['dialogue-id'] = $filterParam[3];    
+                }
+            } elseif ($filterParam[1] == 'interaction-source') {
+                if ($filterParam[2] == 'is') {
+                    $condition['interaction-id'] = $filterParam[3];    
+                }
+            } elseif ($filterParam[1] == 'answer') {
+                if ($filterParam[2] == 'matching') {
+                    $condition['message-direction'] = 'incoming';
+                    $condition['matching-answer'] = array('$ne' => null);                    
+                } elseif ($filterParam[2] == 'not-matching') {
+                    $condition['message-direction'] = 'incoming';
+                    $condition['matching-answer'] = null;                    
+                }
+            }
+            
+            if ($filter['filter_operator'] == "all") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$and'])) {
+                    $conditions = array('$and' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$and'], $condition);
+                }
+            }  elseif ($filter['filter_operator'] == "any") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$or'])) {
+                    $conditions = array('$or' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$or'], $condition);
+                }
+            }
+        }
+        
+        return $conditions;
+    }
+
 
 }
