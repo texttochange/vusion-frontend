@@ -145,12 +145,19 @@ class ProgramHistoryController extends AppController
                 'default',
                 array('class'=>'message success')
                 );
-                
-        $this->redirect(array(
-                    'program' => $programUrl,
-                    'controller' => 'programHistory',
-                    'action' => 'index',
-                    '?' => $this->viewVars['urlParams']));
+        
+        if (isset($this->viewVars['urlParams'])) {
+            $this->redirect(array(
+                'program' => $programUrl,
+                'controller' => 'programHistory',
+                'action' => 'index',
+                '?' => $this->viewVars['urlParams']));
+        } else {
+               $this->redirect(array(
+                'program' => $programUrl,
+                'controller' => 'programHistory',
+                'action' => 'index'));
+        }
                    
     }
     
