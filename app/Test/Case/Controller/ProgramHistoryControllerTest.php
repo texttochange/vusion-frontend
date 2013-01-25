@@ -220,7 +220,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testDelete() {
+    public function testMassDelete() {
         
         $this->Status->History->create('dialogue-history');
         $this->Status->History->save(array(
@@ -281,6 +281,31 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->assertEquals(0, $this->Status->History->find('count'));
        
     }
+
+     public function testMassDelete_failMissingFilterOperator() {
+        
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527841',
+            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+            'timestamp' => '2013-02-07T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
+            ));
+        
+        $this->mockProgramAccess();
+        try {
+            $this->testAction("/testurl/programHistory/delete?filter_param%5B1%5D%5B1%5D=message-direction&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=outgoing");
+            $this->failed('Missing filter operator should rise an exception.');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+        }
+        $this->assertEquals(
+            1,
+            $this->Status->History->find('count'));
+     }
 
 
 }

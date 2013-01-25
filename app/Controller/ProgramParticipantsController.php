@@ -195,33 +195,19 @@ class ProgramParticipantsController extends AppController
 
 
     protected function _getConditions()
-    {        
-        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
+    {
+        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
 
-        if (!isset($onlyFilterParams['filter_param'])) 
+        if (!isset($filter['filter_param'])) 
             return null;
-       
-        if (!isset($this->params['url']['filter_operator'])) {
-            $this->Session->setFlash(
-                __('The stack operator is missing.'), 
-                'default',
-                array('class' => "message failure"));
-            return null;
-        }
 
-        $filterOperator = $this->params['url']['filter_operator'];
-        if (!in_array($filterOperator, array('all', 'any'))) {
-                $this->Session->setFlash(
-                    __("The stack operator \"$filterOperator\" is not allowed, by default using \"all\"."), 
-                    'default',
-                    array('class' => "message failure"));
-                $filterOperator = 'all';
-        }
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
 
-        $urlParams = http_build_query($onlyFilterParams);
-        $this->set('urlParams', $urlParams);
+        $this->set('urlParams', http_build_query($filter));
 
-        return $this->Participant->fromFilterToQueryConditions($filterOperator, $onlyFilterParams);
+        return $this->Participant->fromFilterToQueryConditions($filter);
     }
 
 
@@ -372,12 +358,14 @@ class ProgramParticipantsController extends AppController
                 'controller' => 'programParticipants',
                 'action' => 'index',
                 '?' => $this->viewVars['urlParams']));
+                
         } else {
                $this->redirect(array(  
                 'program' => $programUrl,
                 'controller' => 'programParticipants',
                 'action' => 'index'));
         }
+
     }
 
 

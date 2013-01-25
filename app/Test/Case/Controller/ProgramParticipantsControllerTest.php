@@ -814,14 +814,35 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Schedule->create('dialogue-schedule');
         $this->Schedule->save($scheduleToStay);
 
-        $this->testAction("/testurl/programParticipants/massDelete?filter_operator=all&filter_param[1][1]=phone&filter_param[1][2]=start-with-any&filter_param[1][3]=%2B6,%2B7");
+        $this->testAction("/testurl/programParticipants/massDelete?filter_operator=all&filter_param[1][1]=phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B6");
         
         $this->assertEquals(
-            1,
+            2,
             $this->Participant->find('count'));
         $this->assertEquals(
             1,
             $this->Schedule->find('count'));
+    }
+
+    public function testMassDeleteFilteredParticipant_failMissingFilterParameters()
+    {
+        $this->mock_program_access();
+        
+        $participant = array(
+            'phone' => '+6');
+
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        try {
+            $this->testAction("/testurl/programParticipants/massDelete?filter_param[1][1]=phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B6");
+            $this->failed('Missing filter operator should rise an exception.');
+        } catch (FilterException $e) {
+            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+        }
+        $this->assertEquals(
+            1,
+            $this->Participant->find('count'));
     }
 
 
