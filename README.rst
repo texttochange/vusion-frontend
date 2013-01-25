@@ -32,11 +32,11 @@ Second make app/tmp file writable by the webserver.
 Databases
 ---------
 Vusion is using 2 database engines. 
-The first one is the Relational Database for authentication, Access Control List, User management. The default relational database is PostGres, but anyother can be used by modifying "app/config/database.php". 
+The first one is the Relational Database for authentication, Access Control List, User management. The default relational database is PostGres, but anyother can be used by modifying **app/config/database.php**. 
 The second one is the Document Database MongoDB  for the business data.
 (installation of MongoDB version2.x Server) http://www.mongodb.org/display/DOCS/Quickstart
 
-=Relational Database Configuration:
+Relational Database Configuration:
 You can create the relational database schema from file **app/Config/Schema/schema.php** with the cake console
 ::
 	$ ./lib/Cake/Console/cake schema create
@@ -71,3 +71,26 @@ To run the different build task from build.xml, you need to install
 
 - Jdk6
 - Ant
+
+Apache configuration for mod_xsendfile(export)
+--------------------------------
+You need to frist install apache2-prefork-dev
+::
+  $ sudo apt-get install apache2-prefork-dev
+
+Then you clone the clone-xsendfile file from github
+::
+	$ git clone http://github.com/nmaier/mod_xsendfile /opt/mod_xsendfile 
+
+**Note /opt/mod_xsendfile is destination whereyou are storeing the cloned file **
+
+Compile your file you have clone. Run this command in the */opt/mod_xsendfile* 
+::
+ 	$apxs2 -cia mod_xsendfile.c
+
+
+Add this command **XSendFilePath <%= docroot %>/files/programs/** for :
+ Lamp server add it at *httpd.config*
+ Apache add it at * /etc/apache/sites-available *
+
+Don't forget to change permissions on the */files/programs/ * directory
