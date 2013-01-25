@@ -285,6 +285,17 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param%5B1%5D%5B1%5D=message-direction&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=incoming");
         $this->assertEquals(1, $this->Status->History->find('count'));
+        
+        $this->Status->History->create('dialogue-history');
+        $this->Status->History->save(array(
+            'participant-phone' => '356774527841',
+            'message-content' => 'name',
+            'timestamp' => '2013-02-10T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '12',
+            'message-direction' => 'incoming',
+            'matching-answer' => null
+            ));
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete");
         $this->assertEquals(1, $this->Status->History->find('count'));
