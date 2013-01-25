@@ -105,11 +105,11 @@ class UnmatchableReply extends MongoModel
     }
 
 
-    public function fromFilterToQueryConditions($filterOperator, $filterParams) {
+    public function fromFilterToQueryConditions($filter) {
 
         $conditions = array();
 
-        foreach($filterParams['filter_param'] as $filterParam) {
+        foreach($filter['filter_param'] as $filterParam) {
         
             $condition = null;
             
@@ -151,7 +151,7 @@ class UnmatchableReply extends MongoModel
                 }
             } 
             
-            if ($filterOperator=="all") {
+            if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$and'])) {
@@ -159,7 +159,7 @@ class UnmatchableReply extends MongoModel
                 } else {
                     array_push($conditions['$and'], $condition);
                 }
-            }  elseif ($filterOperator=="any") {
+            }  elseif ($filter['filter_operator'] == "any") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$or'])) {

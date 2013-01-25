@@ -73,36 +73,19 @@ class UnmatchableReplyController extends AppController
     
     protected function _getConditions($conditions = null)
     {
-        
-        $onlyFilterParams = array_intersect_key($this->params['url'], array_flip(array('filter_param')));
+       $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
 
-        if (!isset($onlyFilterParams['filter_param'])) 
-            return $conditions;
-
-         if (!isset($this->params['url']['filter_operator'])) {
-            $this->Session->setFlash(
-                __('The filter operator is missing.'), 
-                'default',
-                array('class' => "message failure"));
+        if (!isset($filter['filter_param'])) 
             return null;
-        }
 
-        $filterOperator = $this->params['url']['filter_operator'];
-        if (!in_array($filterOperator, array('all', 'any'))) {
-                $this->Session->setFlash(
-                    __("The filter operator \"$filterOperator\" is not allowed, by default using \"all\"."), 
-                    'default',
-                    array('class' => "message failure"));
-                $filterOperator = 'all';
-        }
-       
-        $urlParams = http_build_query($onlyFilterParams);
-        $this->set('urlParams', $urlParams);
-        
-        $conditions = $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $onlyFilterParams);
-        
-        return $conditions;
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->UnmatchableReply->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
+
+        $this->set('urlParams', http_build_query($filter));
+
+        return $this->UnmatchableReply->fromFilterToQueryConditions($filter);
     }
 
-    
+
 }

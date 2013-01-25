@@ -54,9 +54,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
     
     
     public function testFilter()
-    {
-        $this->mockProgramAccess();
-        
+    {        
         $this->UnmatchableReply->create();
         $this->UnmatchableReply->save(array(
             'participant-phone'=>'1234567890',
@@ -79,15 +77,19 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
             'timestamp'=>'2012-09-07T12:20:43'
             ));
         
+        $this->mockProgramAccess();
         $this->testAction("/unmatchableReply/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=date&filter_param%5B1%5D%5B2%5D=from&filter_param%5B1%5D%5B3%5D=01%2F10%2F2012");
         $this->assertEquals(2, count($this->vars['unmatchableReplies']));
         
+        $this->mockProgramAccess();
         $this->testAction("/unmatchableReply/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=date&filter_param%5B1%5D%5B2%5D=to&filter_param%5B1%5D%5B3%5D=01%2F10%2F2012");
         $this->assertEquals(1, count($this->vars['unmatchableReplies']));
         
+        $this->mockProgramAccess();
         $this->testAction("/unmatchableReply/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=from-phone&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=9876543210");
         $this->assertEquals(1, count($this->vars['unmatchableReplies']));
         
+        $this->mockProgramAccess();
         $this->testAction("/unmatchableReply/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=message-content&filter_param%5B1%5D%5B2%5D=contain&filter_param%5B1%5D%5B3%5D=fee");
         $this->assertEquals(2, count($this->vars['unmatchableReplies']));
     }

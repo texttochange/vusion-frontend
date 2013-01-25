@@ -29,48 +29,49 @@ class UnmatchableReplyTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_fromPhone()
     {
-        $filterOperator = 'all';
-
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "from-phone", 
-                    2 => "start-with", 
-                    3 => "+255"),
+                    1 => 'from-phone', 
+                    2 => 'start-with', 
+                    3 => '+255'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
-            array('participant-phone' => new MongoRegex("/^\\+255/"))
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
+            array('participant-phone' => new MongoRegex('/^\\+255/'))
             );
 
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "from-phone", 
-                    2 => "equal-to", 
-                    3 => "+255"),
+                    1 => 'from-phone', 
+                    2 => 'equal-to', 
+                    3 => '+255'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
-            array('participant-phone' => "+255")
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
+            array('participant-phone' => '+255')
             );
 
         
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "from-phone", 
-                    2 => "start-with-any", 
-                    3 => "+255, +256"),
+                    1 => 'from-phone', 
+                    2 => 'start-with-any', 
+                    3 => '+255, +256'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('$or' => array(
-                array('participant-phone' => new MongoRegex("/^\\+255/")),
-                array('participant-phone' => new MongoRegex("/^\\+256/"))
+                array('participant-phone' => new MongoRegex('/^\\+255/')),
+                array('participant-phone' => new MongoRegex('/^\\+256/'))
                 ))
             );
 
@@ -79,31 +80,31 @@ class UnmatchableReplyTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_date()
     {
-        $filterOperator = 'all';
-
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "date", 
-                    2 => "from", 
-                    3 => "21/01/2012"),
+                    1 => 'date', 
+                    2 => 'from', 
+                    3 => '21/01/2012'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('timestamp' => array('$gt' => '2012-01-21T00:00:00'))
             );
 
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "date", 
-                    2 => "to", 
-                    3 => "21/01/2012"),
+                    1 => 'date', 
+                    2 => 'to', 
+                    3 => '21/01/2012'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('timestamp' => array('$lt' => '2012-01-21T00:00:00'))
             );
     }
@@ -111,44 +112,45 @@ class UnmatchableReplyTestCase extends CakeTestCase
 
     public function testFromFilterToQueryConditions_messageContent()
     {
-        $filterOperator = 'all';
-
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "message-content", 
-                    2 => "equal-to", 
-                    3 => "content"),
+                    1 => 'message-content', 
+                    2 => 'equal-to', 
+                    3 => 'content'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('message-content' => 'content')
             );
 
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "message-content", 
-                    2 => "contain", 
-                    3 => "content"),
+                    1 => 'message-content', 
+                    2 => 'contain', 
+                    3 => 'content'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('message-content' => new MongoRegex('/content/i'))
             );
 
-        $filterParams = array(
-            "filter_param" => array(
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
                 array(
-                    1 => "message-content", 
-                    2 => "has-keyword", 
-                    3 => "keyword"),
+                    1 => 'message-content', 
+                    2 => 'has-keyword', 
+                    3 => 'keyword'),
                 )
             ); 
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filterOperator, $filterParams),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('message-content' => new MongoRegex('/^keyword($| )/i'))
             );
     }
