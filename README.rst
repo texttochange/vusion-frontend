@@ -89,7 +89,7 @@ Compile the file you have cloned. Run this command in the mod_xsednfile director
  	$apxs2 -cia mod_xsendfile.c
 
 
-Add this command **XSendFilePath <documentroot>/files/programs/** for :
+Add this line **XSendFilePath <documentroot>/files/programs/** inside your apache configuration for virtual hosts :
  if you're using Lamp server add it in *httpd.config*
  otherwise, add it in * /etc/apache/sites-available/default *
 
