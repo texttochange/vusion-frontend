@@ -74,23 +74,23 @@ To run the different build task from build.xml, you need to install
 
 Apache configuration for mod_xsendfile(export)
 --------------------------------
-You need to frist install apache2-prefork-dev
+You need to first install apache2-prefork-dev
 ::
   $ sudo apt-get install apache2-prefork-dev
 
-Then you clone the clone-xsendfile file from github
+Then you clone the mod_xsendfile file from github
 ::
 	$ git clone http://github.com/nmaier/mod_xsendfile /opt/mod_xsendfile 
 
-**Note /opt/mod_xsendfile is destination whereyou are storeing the cloned file **
+**Note /opt/mod_xsendfile is destination whereyou are storing the cloned file **
 
-Compile your file you have clone. Run this command in the */opt/mod_xsendfile* 
+Compile the file you have cloned. Run this command in the mod_xsednfile directory, in our case */opt/mod_xsendfile* 
 ::
  	$apxs2 -cia mod_xsendfile.c
 
 
-Add this command **XSendFilePath <%= docroot %>/files/programs/** for :
- Lamp server add it at *httpd.config*
- Apache add it at * /etc/apache/sites-available *
+Add this command **XSendFilePath <documentroot>/files/programs/** for :
+ if you're using Lamp server add it in *httpd.config*
+ otherwise, add it in * /etc/apache/sites-available/default *
 
 Don't forget to change permissions on the */files/programs/ * directory
