@@ -788,7 +788,7 @@ class ProgramParticipantsController extends AppController
                     continue;
                 $participant['profile'][] = array(
                     'label' => $header,
-                    'value' => $data->val($i,$col),
+                    'value' => (string) $data->val($i,$col),
                     'raw' => null);
                 $col++;
             }
