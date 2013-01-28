@@ -323,11 +323,9 @@ class ProgramParticipantsController extends AppController
         
         $programUrl = $this->params['program'];
      
-        // Only get messages and avoid other stuff like markers
-        $defaultConditions = array();
         $params = array('fields' => array('phone'));
 
-        $conditions = $this->_getConditions($defaultConditions);
+        $conditions = $this->_getConditions();
         if ($conditions) {
             $params += array('conditions' => $conditions);
         } else {

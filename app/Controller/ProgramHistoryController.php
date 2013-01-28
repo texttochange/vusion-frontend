@@ -115,7 +115,7 @@ class ProgramHistoryController extends AppController
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
 
         if (!isset($filter['filter_param'])) 
-            return null;
+            return $conditions;
 
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->History->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
@@ -123,7 +123,7 @@ class ProgramHistoryController extends AppController
 
         $this->set('urlParams', http_build_query($filter));
         
-        return $this->History->fromFilterToQueryConditions($filter);        
+        return $this->History->fromFilterToQueryConditions($filter, $conditions);        
     }
 
     public function delete() {
@@ -145,12 +145,19 @@ class ProgramHistoryController extends AppController
                 'default',
                 array('class'=>'message success')
                 );
-                
-        $this->redirect(array(
-                    'program' => $programUrl,
-                    'controller' => 'programHistory',
-                    'action' => 'index',
-                    '?' => $this->viewVars['urlParams']));
+        
+        if (isset($this->viewVars['urlParams'])) {
+            $this->redirect(array(
+                'program' => $programUrl,
+                'controller' => 'programHistory',
+                'action' => 'index',
+                '?' => $this->viewVars['urlParams']));
+        } else {
+               $this->redirect(array(
+                'program' => $programUrl,
+                'controller' => 'programHistory',
+                'action' => 'index'));
+        }
                    
     }
     

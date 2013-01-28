@@ -312,9 +312,7 @@ class History extends MongoModel
     }
 
 
-    public function fromFilterToQueryConditions($filter) {
-
-        $conditions = array();
+    public function fromFilterToQueryConditions($filter, $conditions = array()) {
         
         foreach($filter['filter_param'] as $filterParam) {
         
