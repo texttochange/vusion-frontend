@@ -755,6 +755,7 @@
 
 
 .ttc-stack-filter select{
+	height: 24px;
 	margin-right: 3px;
 	max-width: 200px;
 	text-overflow: ellipsis;

@@ -19,7 +19,7 @@ class ProgramsController extends AppController
     public $helpers = array('Time', 'Js' => array('Jquery'));    
     var $uses = array('Program', 'Group');
     var $paginate = array(
-        'limit' => 20,
+        'limit' => 10,
         'order' => array(
             'Program.created' => 'desc'
             )

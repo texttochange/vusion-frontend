@@ -22,6 +22,19 @@
             'add',
             array('class' => 'ttc-button', 'style'=>'float:right')); ?>
     <h3><?php echo __('Programs');?></h3>
+    <div class="paging" style="text-align:right">
+    <?php
+    echo "<span class='ttc-page-count'>";
+    if (isset($this->Paginator)) {
+        echo $this->Paginator->counter(array(
+            'format' => __('{:start} - {:end} of {:count}')
+            ));
+        echo "</span>";
+        echo $this->Paginator->prev('<', null, null, array('class' => 'prev disabled'));
+        echo $this->Paginator->next('>', null, null, array('class' => 'next disabled'));
+    }
+    ?>
+    </div>
 	<?php
 	foreach ($programs as $program): ?>
 	<div class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
