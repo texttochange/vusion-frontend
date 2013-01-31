@@ -251,6 +251,8 @@ class ParticipantTestCase extends CakeTestCase
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
 
+        $this->assertEqual(array(), $this->Participant->getDistinctTagsAndLabels());
+
         $participant_08 = array(
             'phone' => '08',
             'tags' => array('geek', 'cool'),

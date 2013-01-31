@@ -3,13 +3,27 @@
 		<li><?php echo $this->Html->link(__('New Separate Message'), array('program'=>$programUrl, 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>
 	<h3><?php echo __('Separate Messages');?></h3>
+	<div class="ttc-data-control">
+    <div id="data-control-nav" class="ttc-paging paging">
+    <?php
+	    echo "<span class='ttc-page-count'>";
+	    echo $this->Paginator->counter(array(
+	        'format' => __('{:start} - {:end} of {:count}')
+	    ));
+	    echo "</span>";
+		echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
+		//echo $this->Paginator->numbers(array('separator' => ''));
+		echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+	?>
+	</div>
+	</div>
 	<div class="ttc-display-area"> 
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
-			<th><?php echo $this->Paginator->sort('to', null, array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programUrl)));?></th>
 			<th><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programUrl)));?></th>
-			<th><?php echo $this->Paginator->sort('fixed-time', __('Date'), array('url'=> array('program' => $programUrl)));?></th>
+			<th><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programUrl)));?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
@@ -17,10 +31,22 @@
 	<tr>
 		<td><?php echo $unattachedMessage['UnattachedMessage']['name']; ?>&nbsp;</td>
 		<td><?php
-		if (is_array($unattachedMessage['UnattachedMessage']['to'])) {
-		    echo implode($unattachedMessage['UnattachedMessage']['to'], "<br/>");
+		if ($unattachedMessage['UnattachedMessage']['model-version'] <= 2) {
+		    if (is_array($unattachedMessage['UnattachedMessage']['to'])) {
+		        echo implode($unattachedMessage['UnattachedMessage']['to'], "<br/>");
+		    } else {
+		        echo $unattachedMessage['UnattachedMessage']['to'];
+		    }
 		} else {
-		  echo $unattachedMessage['UnattachedMessage']['to'];
+		    if ($unattachedMessage['UnattachedMessage']['send-to-type'] == 'all') {
+		        echo __('All participants');
+		    } else {
+		        echo __('participant matching %s of the following tag(s)/label(s): ', 
+		                $unattachedMessage['UnattachedMessage']['send-to-match-operator']);
+		        foreach($unattachedMessage['UnattachedMessage']['send-to-match-conditions'] as $condition) {
+		            echo $condition;
+		        }
+		    } 
 		}
 		    ?>&nbsp;</td>
 		<td><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>
@@ -40,18 +66,5 @@
 	</tr>
 <?php endforeach; ?>
 	</table>
-	</div>
-	
-	<div class="paging">
-	<?php
-	    echo "<span class='ttc-page-count'>";
-	    echo $this->Paginator->counter(array(
-	        'format' => __('{:start} - {:end} of {:count}')
-	    ));
-	    echo "</span>";
-		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
-		//echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
-	?>
 	</div>
 </div>

@@ -42,9 +42,11 @@ class DialogueHelper
         if (!$this->validateDate($date)) {
             if ($this->isValideDateFromSearch($date)) {
                 return DateTime::createFromFormat('d/m/Y', $date)->format('Y-m-d\T00:00:00');
+            } elseif ($this->validateDateFromForm($date)) {
+                return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
             }
-            return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
-        }
+            return null;
+        } 
         return $date;
     }
 

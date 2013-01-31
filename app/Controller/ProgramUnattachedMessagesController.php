@@ -57,12 +57,6 @@ class ProgramUnattachedMessagesController extends AppController
         
         if ($this->request->is('post')) {
             $this->UnattachedMessage->create('unattached-message');
-            if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
-                $now = new DateTime('now');
-                $programSettings = $this->ProgramSetting->getProgramSettings();
-                date_timezone_set($now,timezone_open($programSettings['timezone']));
-                $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
-            }
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
                 $this->Session->setFlash(__('The Message has been saved.'),
@@ -81,22 +75,20 @@ class ProgramUnattachedMessagesController extends AppController
             }
         }
         
-        $selectors = $this->_getSelectors();
-        $this->set(compact('selectors'));
-        
+        $selectors = $this->Participant->getDistinctTagsAndLabels();
+        $this->set(compact('selectors'));        
     }
-
+/*
     protected function _getSelectors()
     {
-        $selectors = array('all-participants' => __('All participants'));
         $distinctTagsAndLabels = $this->Participant->getDistinctTagsAndLabels();
         if (count($distinctTagsAndLabels) == 0) {
-            return $selectors;
+            return array();
         }
         $selectorTagAndLabels = array_combine($distinctTagsAndLabels, $distinctTagsAndLabels);
-        return array_merge($selectors, $selectorTagAndLabels);
+        return $selectorTagAndLabels;
     }
-    
+*/  
     
     public function edit()
     {
@@ -112,12 +104,6 @@ class ProgramUnattachedMessagesController extends AppController
 
         $this->UnattachedMessage->read();
         if ($this->request->is('post') || $this->request->is('put')) {
-            if (!isset($this->request->data['UnattachedMessage']['fixed-time'])) {
-                $now = new DateTime('now');
-                $programSettings = $this->ProgramSetting->getProgramSettings();
-                date_timezone_set($now,timezone_open($programSettings['timezone']));
-                $this->request->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($now->modify("+1 minute")->format('d/m/Y H:i'));
-            }
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
                 $unattachedMessage = $this->request->data;
@@ -151,9 +137,16 @@ class ProgramUnattachedMessagesController extends AppController
             if ($now > $messageDate){   
                 throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
             }
+            $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
+            if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
+                $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
+                'default',
+                array('class' => "message warning")
+                );
+            }
         }
 
-        $selectors = $this->_getSelectors();
+        $selectors = $this->Participant->getDistinctTagsAndLabels();;
         $this->set(compact('selectors'));
 
         return $unattachedMessage;
