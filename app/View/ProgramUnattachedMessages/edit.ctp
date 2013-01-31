@@ -6,62 +6,6 @@
 <h3><?php echo __('Edit Separate Message'); ?></h3>
     <div class="ttc-display-area">
     <?php
-    /*
-    echo $this->Form->create('UnattachedMessage');
-    $options = array();
-    $options = $selectors;
-    echo $this->Form->input(__('name'), array('id' => 'name'));
-    $error = "";
-    $errorSchedule = "";
-    if ($this->Form->isFieldError('to')) 
-        $error = "error";            
-    echo "<div class='input-text required ".$error."'>";
-    echo $this->Html->tag('label',__('Send To'));
-    echo "<br />";
-    echo $this->Form->select('to', $options, array('multiple'=>true, 'style'=>'margin-bottom:0px'));
-    if ($this->Form->isFieldError('to'))
-        echo $this->Form->error('to');
-    echo "</div>";
-    echo $this->Form->input(__('content'), array('rows'=>5));
-    $options = array('immediately'=>'Immediately', 'fixed-time'=>'Fixed Time');
-    $attributes = array('separator'=>'&nbsp;&nbsp;', 'legend'=>false);
-    if ($this->Form->isFieldError('type-schedule')) 
-        $errorSchedule = "error";            
-    echo "<div class='input-text required ".$errorSchedule."'>";
-    echo $this->Html->tag('label',__('Schedule'));
-    echo "<br />";
-    echo $this->Form->radio('type-schedule', $options, $attributes);
-    if ($this->Form->isFieldError('type-schedule'))
-        echo $this->Form->error('type-schedule');
-    echo "<br />";
-    if ($this->data['UnattachedMessage']['fixed-time'] != "")
-        $fixedTime = $this->Time->format('d/m/Y H:i', $this->data['UnattachedMessage']['fixed-time']);
-    else
-    $fixedTime = "";
-    echo $this->Form->input(__('fixed-time'), array('id'=>'fixed-time',
-        'label'=>false,
-        'value'=>$fixedTime));
-    echo "</div>";
-    $this->Js->get('document')->event('ready','$("#fixed-time").datetimepicker(
-        {
-        dateFormat: "dd/mm/yy",
-        timeFormat: "hh:mm",
-        timeOnly: false,
-        defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate()}
-        );
-        addContentFormHelp("http://'.env("HTTP_HOST").'");
-        $("input").change();
-        $("#UnattachedMessageTo").chosen();');
-    $this->Js->get('input')->event('change','
-        if ($("input:checked").val() == "fixed-time") {
-        $("#fixed-time").attr("disabled",false);
-        } else {
-        $("#fixed-time").attr("disabled","disabled");
-        $("#fixed-time").val("");
-        }
-        ');
-    echo $this->Form->end(__('Save'));?>
-    */
     $sendToOptions = array(
         'all' => __('All participants'), 
         'match' => __('Participant matching'));
