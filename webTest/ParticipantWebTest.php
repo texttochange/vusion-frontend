@@ -7,7 +7,7 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
   protected function setUp()
   {
     $this->setBrowser("*firefox");
-    $this->setBrowserUrl("http://localhost/");
+    $this->setBrowserUrl("http://vusion-test.texttochange.org/");
   }
 
   public function testParticipantAddDelete()

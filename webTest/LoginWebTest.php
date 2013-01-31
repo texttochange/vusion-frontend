@@ -8,7 +8,7 @@ class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
   protected function setUp()
   {
     $this->setBrowser("*firefox");
-    $this->setBrowserUrl("http://localhost/users/login");
+    $this->setBrowserUrl("http://vusion-test.texttochange.org/users/login");
   }
 
 
