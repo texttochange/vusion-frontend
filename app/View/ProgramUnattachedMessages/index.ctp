@@ -41,11 +41,9 @@
 		    if ($unattachedMessage['UnattachedMessage']['send-to-type'] == 'all') {
 		        echo __('All participants');
 		    } else {
-		        echo __('participant matching %s of the following tag(s)/label(s): ', 
+		        echo __('Participant(s) matching %s of the following tag(s)/label(s): ', 
 		                $unattachedMessage['UnattachedMessage']['send-to-match-operator']);
-		        foreach($unattachedMessage['UnattachedMessage']['send-to-match-conditions'] as $condition) {
-		            echo $condition;
-		        }
+		        echo implode(" - ", $unattachedMessage['UnattachedMessage']['send-to-match-conditions']);
 		    } 
 		}
 		    ?>&nbsp;</td>

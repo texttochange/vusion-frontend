@@ -75,7 +75,8 @@ class ProgramUnattachedMessagesController extends AppController
             }
         }
         
-        $selectors = $this->Participant->getDistinctTagsAndLabels();
+        $selectorValues = $this->Participant->getDistinctTagsAndLabels();
+        $selectors = array_combine($selectorValues, $selectorValues);
         $this->set(compact('selectors'));        
     }
 /*
@@ -131,9 +132,6 @@ class ProgramUnattachedMessagesController extends AppController
             $programTimezone = $this->Session->read($this->params['program'].'_timezone');
             date_timezone_set($now,timezone_open($programTimezone));      
             $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
-            if (!is_array($this->request->data['UnattachedMessage']['to'])) {
-                $this->request->data['UnattachedMessage']['to'] = 'all-participants';
-            }
             if ($now > $messageDate){   
                 throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
             }
@@ -146,7 +144,8 @@ class ProgramUnattachedMessagesController extends AppController
             }
         }
 
-        $selectors = $this->Participant->getDistinctTagsAndLabels();;
+        $selectorValues = $this->Participant->getDistinctTagsAndLabels();
+        $selectors = array_combine($selectorValues, $selectorValues);
         $this->set(compact('selectors'));
 
         return $unattachedMessage;
