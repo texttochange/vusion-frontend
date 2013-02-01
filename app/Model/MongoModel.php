@@ -100,6 +100,7 @@ abstract class MongoModel extends Model
     public function beforeValidate()
     {
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
+        $this->data[$this->alias]['model-version'] = $this->getModelVersion();
         foreach($this->data[$this->alias] as $key => $value) {
             if (is_string($value)){
                 $this->data[$this->alias][$key] = trim(stripcslashes($value));

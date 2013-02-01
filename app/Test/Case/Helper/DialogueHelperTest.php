@@ -138,8 +138,8 @@ class DialogueHelperTestCase extends CakeTestCase
         $this->assertEqual('2012-12-10T10:12:00', $DialogueHelper->convertDateFormat($vusionHtmlFormDate));
         $this->assertEqual('2012-12-10T00:00:00', $DialogueHelper->convertDateFormat($vusionHtmlSearchDate));
         $this->assertEqual('2012-12-10T10:12:00', $DialogueHelper->convertDateFormat($isoDate));
- 
-       
+        $this->assertEqual(null, $DialogueHelper->convertDateFormat(''));
+        $this->assertEqual(null, $DialogueHelper->convertDateFormat(null));
     }
 
     

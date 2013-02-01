@@ -2,6 +2,25 @@
 	color : grey;
 }
 
+/*Fix the default cake 'form div' CSS rule */
+.chzn-container{
+    margin-bottom: 0px
+}
+
+.sublabel {
+    margin-left: 5px;
+}
+
+.subinput {
+    margin-left: 10px;
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+.subinput input{
+    margin: 2px 0px 0px 5px;
+}
+
 .ttc-link-header {
 	color : lightGrey;
 	float : right;
@@ -421,6 +440,12 @@
 .ttc-login-container .required label:after{
 	content: "";
 }
+/*
+.ttc-display-area .required:after {
+    color: #E32;
+    content: '*';
+    display: inline;
+}*/
 
 .ttc-navigation-menu {
 	float: left;

@@ -16,19 +16,24 @@ class UnattachedMessage extends MongoModel
     
     function getModelVersion()
     {
-        return '2';
+        return '3';
     }
 
     function getRequiredFields($objectType)
     {
         return array(
             'name',
-            'to',
+            'send-to-type',
             'content',
             'type-schedule',
             'fixed-time'
             );
     }
+
+    var $matchFields = array(
+        'send-to-match-operator',
+        'send-to-match-conditions'
+        );
 
     public $validate = array(
         'name' => array(
@@ -41,10 +46,29 @@ class UnattachedMessage extends MongoModel
                 'message' => 'This name already exists. Please choose another.'
                 )
             ),
-        'to' => array(
+        'send-to-type' => array(
             'notempty' => array(
-                'rule' => array('selectors'),
-                'message' => 'Please select message recipient.'
+                'rule' => array('notempty'),
+                'message' => 'Please select a Send To option.'
+                ),
+            'allowedChoice' => array(
+                'rule' => array('inList', array('all', 'match')),
+                'message' => 'Send To option not allowed.'
+                ),
+            ),
+        'send-to-match-operator' => array(
+            'notempty'=> array(
+                'rule' => array('notempty'),
+                'message' => 'Please select a condition.'
+                ),
+            'allowedChoice' => array(
+                'rule' => array('inList', array('all', 'any')),
+                'message' => 'Match operator not allowed.'
+                )
+            ),
+        'send-to-match-conditions' => array(
+            'allowChoice' => array(
+                'rule' => array('conditions')
                 )
             ),
         'content' => array(
@@ -53,7 +77,7 @@ class UnattachedMessage extends MongoModel
                 'message' => 'Please enter some content for this message.'
                 )
             ),
-        'type_schedule' => array(
+        'type-schedule' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please choose a type of schedule for this message.'
@@ -100,19 +124,46 @@ class UnattachedMessage extends MongoModel
     }
 
 
+    public function checkFields($object)
+    {
+        if (isset($object['object-type']))
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
+        else
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+       
+        if (isset($object['send-to-type']) && $object['send-to-type'] == 'match') {
+            $toCheck = array_merge($toCheck, $this->matchFields);
+        }
+
+        foreach ($object as $field => $value) {
+            if (!in_array($field, $toCheck)){
+                unset($object[$field]);
+            }
+        }
+
+        foreach ($toCheck as $field) {
+            if (!isset($object[$field])){
+                $object[$field] = null;
+            }
+        };
+
+        return $object;
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
 
-        if (isset($this->data['UnattachedMessage']['fixed-time'])) {
-            if ($this->DialogueHelper->validateDate($this->data['UnattachedMessage']['fixed-time']))
-                return true;
-            
-            if (!$this->DialogueHelper->validateDateFromForm($this->data['UnattachedMessage']['fixed-time']))
-                return false;
-            
+        if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
+            $now = $this->ProgramSetting->getProgramTimeNow();
+            if (isset($now))
+                $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");            
+        } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
+            //Convert fixed-time to vusion format
             $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
-        } 
+        }
+        
         return true;           	
     }    
     
@@ -146,26 +197,34 @@ class UnattachedMessage extends MongoModel
         return $result < 1;
     }
     
-    public function selectors($check)
+    public function conditions($check)
     {
         $regex = '/^[a-zA-Z0-9\s]+(:[a-zA-Z0-9\s]+)?$/';
         
-        if (!isset($check['to']) || !is_array($check['to'])) {
-            return false;
+        if (!is_array($check['send-to-match-conditions'])) {
+            return "Select conditions.";
         }
 
-        foreach($check['to'] as $selector) {
-            if ($selector == 'all-participants') {
-                continue;
-            } elseif (preg_match($regex, $selector)) {
+        foreach($check['send-to-match-conditions'] as $selector) {
+            if (preg_match($regex, $selector)) {
                 continue;
             } else {
-                return false;
+                return "Incorrect tag or label.";
             }
         }
         return true;
     }
 
-
+    public function matchOperator($check) 
+    {   
+        if ($this->data['UnattachedMessage']['send-to-type'] == 'all') {
+            return true;
+        }
+        if (!isset($check)) {
+            return false;
+        }
+        return true;
+        
+    }
     
 }
