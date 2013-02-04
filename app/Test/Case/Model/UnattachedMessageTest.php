@@ -277,6 +277,36 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Incorrect tag or label.',
             $this->UnattachedMessage->validationErrors['send-to-match-conditions'][0]);
     }
+    
+    public function testGetNameIdForFilter()
+    {
+    	$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $unattachedMessage = array(
+            'name'=>'hello',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage1 = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $unattachedMessage = array(
+            'name'=>'hello2',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage2 = $this->UnattachedMessage->save($unattachedMessage);
+      
+        $output = $this->UnattachedMessage->getNameIdForFilter();
+        print_r($output);
+        $this->assertEquals(
+        	array($savedUnattachedMessage1['UnattachedMessage']['_id'] => 'hello',
+        		$savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),
+        	$output);
+    }
 
 
 }

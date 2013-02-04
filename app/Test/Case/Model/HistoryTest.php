@@ -437,7 +437,28 @@ class HistoryTestCase extends CakeTestCase
                 ))
             );       
     }
+    
+    public function testFromFilterToQueryConditions_separateMessages()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'separate-message', 
+                    2 => 'equal-to', 
+                    3 => '2'),
+                )            
+            ); 
+        
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('unattach-id' => '2')
+            );
 
+        
+    }
+    
+    
 
 }
     

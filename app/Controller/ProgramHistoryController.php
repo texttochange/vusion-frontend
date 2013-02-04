@@ -3,6 +3,7 @@ App::uses('AppController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('UnattachedMessage','Model');
 
 
 class ProgramHistoryController extends AppController
@@ -23,8 +24,8 @@ class ProgramHistoryController extends AppController
         $this->History        = new History($options);
         $this->Dialogue       = new Dialogue($options);
         $this->dialogueHelper = new DialogueHelper();
+        $this->UnattachedMessage = new UnattachedMessage($options);
     }
-
 
     public function beforeFilter()
     {
@@ -79,11 +80,16 @@ class ProgramHistoryController extends AppController
     {
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
 
+        //print_r();
         return array(
             'operator' => $this->History->filterOperatorOptions,
             'dialogue' => $dialoguesInteractionsContent,
             'message-direction' => $this->History->filterMessageDirectionOptions,
-            'message-status' => $this->History->filterMessageStatusOptions);
+            'message-status' => $this->History->filterMessageStatusOptions,
+            'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()
+            
+            );
+       
     }
 
         

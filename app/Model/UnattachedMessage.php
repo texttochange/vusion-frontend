@@ -227,4 +227,20 @@ class UnattachedMessage extends MongoModel
         
     }
     
+    public function getNameIdForFilter()
+    {
+        
+        $unattachedMessages = $this->find('all', array('fields' => array('_id','name') ) );
+        
+        foreach($unattachedMessages as $unattachedMessage) {
+            $nameIds[$unattachedMessage['UnattachedMessage']['_id']] = $unattachedMessage['UnattachedMessage']['name'];
+            
+        }
+        
+        
+        return  $nameIds;
+        //print_r(array ($name,$output1));
+    }
+    
+    
 }

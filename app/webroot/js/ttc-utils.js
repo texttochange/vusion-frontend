@@ -562,7 +562,7 @@ function supplyParameterOptions(operatorElt) {
 	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
 	    var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
-                $("[name='"+name+"[3]']").append(new Option(value, value));      
+                $("[name='"+name+"[3]']").append(new Option(value, key));      
         })
     }
 }
