@@ -231,15 +231,11 @@ class UnattachedMessage extends MongoModel
     {
         
         $unattachedMessages = $this->find('all', array('fields' => array('_id','name') ) );
-        
+        $nameIds = null;
         foreach($unattachedMessages as $unattachedMessage) {
-            $nameIds[$unattachedMessage['UnattachedMessage']['_id']] = $unattachedMessage['UnattachedMessage']['name'];
-            
-        }
-        
-        
-        return  $nameIds;
-        //print_r(array ($name,$output1));
+            $nameIds[$unattachedMessage['UnattachedMessage']['_id']] = $unattachedMessage['UnattachedMessage']['name']; 
+        }     
+        return  $nameIds;        
     }
     
     

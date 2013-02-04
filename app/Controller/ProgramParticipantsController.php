@@ -753,7 +753,7 @@ class ProgramParticipantsController extends AppController
     
     private function processXls($programUrl, $filePath, $fileName, $tags)
     {
-        require_once 'excel_reader2.php';
+        require_once 'lib/excel_reader2.php';
 
         $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);

@@ -282,6 +282,12 @@ class UnattachedMessageTestCase extends CakeTestCase
     {
     	$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
 
+    	$output = $this->UnattachedMessage->getNameIdForFilter();        
+        $this->assertEquals(
+        	null,
+        	$output);
+    	
+    	
         $unattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -300,8 +306,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage2 = $this->UnattachedMessage->save($unattachedMessage);
       
-        $output = $this->UnattachedMessage->getNameIdForFilter();
-        print_r($output);
+        $output = $this->UnattachedMessage->getNameIdForFilter();        
         $this->assertEquals(
         	array($savedUnattachedMessage1['UnattachedMessage']['_id'] => 'hello',
         		$savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),

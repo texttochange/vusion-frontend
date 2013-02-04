@@ -86,8 +86,7 @@ class ProgramHistoryController extends AppController
             'dialogue' => $dialoguesInteractionsContent,
             'message-direction' => $this->History->filterMessageDirectionOptions,
             'message-status' => $this->History->filterMessageStatusOptions,
-            'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()
-            
+            'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()            
             );
        
     }
