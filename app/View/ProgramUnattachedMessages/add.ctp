@@ -12,7 +12,7 @@
     $sendToMatchOperator = array(
         'all' => __('all'), 
         'any' => __('any'));
-    $sendToMatchConditions = $selectors;
+    $sendToMatchConditions = (isset($selectors) ? $selectors: array());
     $errorSendTo = "";
     $errorSchedule = "";
     $scheduleOptions = array(
