@@ -77,20 +77,12 @@ class ProgramUnattachedMessagesController extends AppController
         }
         
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
-        $selectors = array_combine($selectorValues, $selectorValues);
+        if (count($selectorValues) > 0) {
+            $selectors = array_combine($selectorValues, $selectorValues);
+        }
         $this->set(compact('selectors'));        
     }
-/*
-    protected function _getSelectors()
-    {
-        $distinctTagsAndLabels = $this->Participant->getDistinctTagsAndLabels();
-        if (count($distinctTagsAndLabels) == 0) {
-            return array();
-        }
-        $selectorTagAndLabels = array_combine($distinctTagsAndLabels, $distinctTagsAndLabels);
-        return $selectorTagAndLabels;
-    }
-*/  
+
     
     public function edit()
     {
@@ -146,7 +138,9 @@ class ProgramUnattachedMessagesController extends AppController
         }
 
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
-        $selectors = array_combine($selectorValues, $selectorValues);
+        if (count($selectorValues) > 0) {
+            $selectors = array_combine($selectorValues, $selectorValues);
+        }
         $this->set(compact('selectors'));
 
         return $unattachedMessage;
