@@ -3,12 +3,12 @@ App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('DialogueHelper', 'Lib');
 /**
- * UnattachedMessage Model
- *
- */
+* UnattachedMessage Model
+*
+*/
 class UnattachedMessage extends MongoModel
 {
-
+    
     var $specific    = true;
     var $name        = 'UnattachedMessage';
     var $useDbConfig = 'mongo';
@@ -18,23 +18,23 @@ class UnattachedMessage extends MongoModel
     {
         return '3';
     }
-
+    
     function getRequiredFields($objectType)
     {
         return array(
             'name',
             'send-to-type',
-            'content',
+            'content',           
             'type-schedule',
             'fixed-time'
             );
     }
-
+    
     var $matchFields = array(
         'send-to-match-operator',
         'send-to-match-conditions'
         );
-
+    
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -94,13 +94,13 @@ class UnattachedMessage extends MongoModel
                 )
             )
         );
-
+    
     var $findMethods = array(
         'all' => true,
         'first' => true,
         'count' => true,
         'future' => true);
-
+    
     protected function _findFuture($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -112,8 +112,8 @@ class UnattachedMessage extends MongoModel
         }
         return $results;
     }
-
-
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
@@ -122,39 +122,39 @@ class UnattachedMessage extends MongoModel
         $this->ProgramSetting = new ProgramSetting($options);
         $this->DialogueHelper = new DialogueHelper();
     }
-
-
+    
+    
     public function checkFields($object)
     {
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
-            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
-       
+        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        
         if (isset($object['send-to-type']) && $object['send-to-type'] == 'match') {
             $toCheck = array_merge($toCheck, $this->matchFields);
         }
-
+        
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)){
                 unset($object[$field]);
             }
         }
-
+        
         foreach ($toCheck as $field) {
             if (!isset($object[$field])){
                 $object[$field] = null;
             }
         };
-
+        
         return $object;
     }
-
-
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
-
+        
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
             if (isset($now))
@@ -204,7 +204,7 @@ class UnattachedMessage extends MongoModel
         if (!is_array($check['send-to-match-conditions'])) {
             return "Select conditions.";
         }
-
+        
         foreach($check['send-to-match-conditions'] as $selector) {
             if (preg_match($regex, $selector)) {
                 continue;
@@ -214,7 +214,7 @@ class UnattachedMessage extends MongoModel
         }
         return true;
     }
-
+    
     public function matchOperator($check) 
     {   
         if ($this->data['UnattachedMessage']['send-to-type'] == 'all') {
@@ -223,13 +223,11 @@ class UnattachedMessage extends MongoModel
         if (!isset($check)) {
             return false;
         }
-        return true;
-        
+        return true;        
     }
     
     public function getNameIdForFilter()
     {
-        
         $unattachedMessages = $this->find('all', array('fields' => array('_id','name') ) );
         $nameIds = null;
         foreach($unattachedMessages as $unattachedMessage) {

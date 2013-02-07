@@ -273,6 +273,38 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             );
 
     }
+    
+    public function testUnattachedMessageStatus()
+    {        
+        $this->mock_program_access();
+        
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');        
+        $unattachedMessage = array(            
+            'name' => 'test',
+            'send-to-type' => 'all',
+            'content' => 'Hello!!!!',
+            'type-schedule' => 'immediately',
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage);        
+       
+        $history = array(
+            'object-type' => 'unattach-history',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'outgoing', 
+            'message-status' => 'pending',
+            'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id'].''
+            );       
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history);  
+        
+        $this->testAction("/testurl/programUnattachedMessages/index");
+        print_r($this);
+        $this->assertEquals();
+       
+    }
 
 
 }

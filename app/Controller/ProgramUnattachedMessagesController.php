@@ -7,6 +7,7 @@ App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
+App::uses('History', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
@@ -36,6 +37,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->DialogueHelper    = new DialogueHelper();
+        $this->History           = new History($options);
     }
 
     protected function _notifyUpdateBackendWorker($workerName, $unattach_id)
@@ -43,12 +45,23 @@ class ProgramUnattachedMessagesController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
     }
 
-
     public function index()
     {
-        $unattachedMessages = $this->paginate();
-        $this->set(compact('unattachedMessages'));
+        $unattachedMessages = $this->paginate();       
         
+        foreach($unattachedMessages as $unattachedMessage)
+        {             
+            $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
+            $numberOfAllMessageSent = $this->History->getStatusOfUnattachedMessages($unattachId);
+            $unattachedMessage['UnattachedMessage']['number-of-message-sent'] = $numberOfAllMessageSent;            
+            $numberOfAllMessageDelivered = $this->History->getStatusOfUnattachedMessages($unattachId, 'delivered');
+            $unattachedMessage['UnattachedMessage']['number-of-message-delivered'] = $numberOfAllMessageDelivered;
+            $numberOfAllMessagePending = $this->History->getStatusOfUnattachedMessages($unattachId, 'pending');
+            $unattachedMessage['UnattachedMessage']['number-of-message-pending'] = $numberOfAllMessagePending;
+            $numberOfAllMessageFailed = $this->History->getStatusOfUnattachedMessages($unattachId, 'failed');
+            $unattachedMessage['UnattachedMessage']['number-of-message-failed'] = $numberOfAllMessageFailed;            
+        }        
+        $this->set('unattachedMessages', $unattachedMessages);
     }
     
     
