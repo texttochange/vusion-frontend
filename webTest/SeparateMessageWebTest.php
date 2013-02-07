@@ -21,10 +21,10 @@ class RequestWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->waitForPageToLoad("30000");
     $this->click("css=div.ttc-program-box");
     $this->waitForPageToLoad("30000");
-    $this->click("link=New Separate Message");
+    $this->click("link=New Message");
     $this->waitForPageToLoad("30000");
     $this->type("id=name", "Test Announcement");
-    $this->select("id=UnattachedMessageSend-to-typeAll");
+    $this->click("id=UnattachedMessageSend-to-typeAll");
     $this->type("id=UnattachedMessageContent", "Hello everyone");
     $this->click("id=UnattachedMessageType-scheduleImmediately");
     $this->click("id=UnattachedMessageType-scheduleFixedTime");
