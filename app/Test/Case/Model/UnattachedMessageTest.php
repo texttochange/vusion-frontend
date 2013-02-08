@@ -190,7 +190,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Fixed time cannot be in the past.',
             $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
-
+    
 
     public function testSave_fail_noScheduleType()
     {
@@ -277,6 +277,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Incorrect tag or label.',
             $this->UnattachedMessage->validationErrors['send-to-match-conditions'][0]);
     }
+
     
     public function testGetNameIdForFilter()
     {

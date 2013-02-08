@@ -89,5 +89,23 @@ class ScheduleTestCase extends CakeTestCase
 
     }
     
+    public function testCountScheduleFromUnattachedMessage()
+    {       
+        $schedule =array(
+            'object-type' => 'unattach-schedule',
+            'unattach-id' => '6',
+            'date-time' => '2013-04-12T11:00',
+            );       
+        
+        $this->Schedule->create('unattach-schedule');
+        $saveUnattachedSchedule = $this->Schedule->save($schedule);       
+        
+        $result = $this->Schedule->countScheduleFromUnattachedMessage('6');
+        $this->assertEquals(1, $result);
+        
+        $result = $this->Schedule->countScheduleFromUnattachedMessage('7');
+        $this->assertEquals(0, $result);
+    }
+    
 
 }
