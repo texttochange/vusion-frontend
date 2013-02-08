@@ -90,7 +90,8 @@ class UnattachedMessage extends MongoModel
                 ),
             'isNotPast' => array(
                 'rule' => 'isNotPast',
-                'required' => true
+                'required' => true,
+                'message' => 'Fixed time cannot be in the past.'
                 )
             )
         );
@@ -129,7 +130,7 @@ class UnattachedMessage extends MongoModel
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
-        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         
         if (isset($object['send-to-type']) && $object['send-to-type'] == 'match') {
             $toCheck = array_merge($toCheck, $this->matchFields);
@@ -162,25 +163,14 @@ class UnattachedMessage extends MongoModel
         } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
             //Convert fixed-time to vusion format
             $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
-        }
-        
+        }       
         return true;           	
     }    
     
-    public function isNotPast()
+    public function isNotPast($check)
     {
-        $now = new DateTime('now');
-        $programSettings = $this->ProgramSetting->getProgramSettings();
-        if (!isset($programSettings['timezone']) or ($programSettings['timezone'] == null))
-            return __("The program settings are incomplete. Please specificy the Timezone.");
-        
-        $programTimezone = $programSettings['timezone'];
-        date_timezone_set($now,timezone_open($programTimezone));        
-        $dateFixedTime = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
-        $dateNow = $this->DialogueHelper->convertDateFormat($now->format('d/m/Y H:i'));
-        if ($dateFixedTime < $dateNow)
-            return __("Fixed time cannot be in the past.");
-        return true;
+        $fixedTimeDate = new DateTime($check['fixed-time']);
+        return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
     
