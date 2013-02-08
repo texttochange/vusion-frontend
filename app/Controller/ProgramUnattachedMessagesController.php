@@ -51,24 +51,27 @@ class ProgramUnattachedMessagesController extends AppController
         
         foreach($unattachedMessages as &$unattachedMessage)
         {  
-            $unattachId = $unattachedMessage['UnattachedMessage']['_id'];            
+            $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
+            $status = array();
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                
-                $numberOfAllMessageSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
-                $unattachedMessage['UnattachedMessage']['number-of-message-schedule'] = $numberOfAllMessageSchedule;                
+                $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
+                $status['count-schedule'] = $countSchedule;                
             } else {               
-                $numberOfAllMessageSent = $this->History->getStatusOfUnattachedMessages($unattachId);
-                $unattachedMessage['UnattachedMessage']['number-of-message-sent'] = $numberOfAllMessageSent;            
-                $numberOfAllMessageDelivered = $this->History->getStatusOfUnattachedMessages($unattachId, 'delivered');
-                $unattachedMessage['UnattachedMessage']['number-of-message-delivered'] = $numberOfAllMessageDelivered;
-                $numberOfAllMessagePending = $this->History->getStatusOfUnattachedMessages($unattachId, 'pending');
-                $unattachedMessage['UnattachedMessage']['number-of-message-pending'] = $numberOfAllMessagePending;
-                $numberOfAllMessageFailed = $this->History->getStatusOfUnattachedMessages($unattachId, 'failed');
-                $unattachedMessage['UnattachedMessage']['number-of-message-failed'] = $numberOfAllMessageFailed;
-                $numberOfAllMessageAck = $this->History->getStatusOfUnattachedMessages($unattachId, 'ack');
-                $unattachedMessage['UnattachedMessage']['number-of-message-ack'] = $numberOfAllMessageAck; 
-                $numberOfAllMessageNack = $this->History->getStatusOfUnattachedMessages($unattachId, 'nack');
-                $unattachedMessage['UnattachedMessage']['number-of-message-nack'] = $numberOfAllMessageNack; 
+                $countSent = $this->History->countUnattachedMessages($unattachId);
+                $status['count-sent'] = $countSent;            
+                $countDelivered = $this->History->countUnattachedMessages($unattachId, 'delivered');
+                $status['count-delivered'] = $countDelivered;
+                $countPending = $this->History->countUnattachedMessages($unattachId, 'pending');
+                $status['count-pending'] = $countPending;
+                $countFailed = $this->History->countUnattachedMessages($unattachId, 'failed');
+                $status['count-failed'] = $countFailed;
+                $countAck = $this->History->countUnattachedMessages($unattachId, 'ack');
+                $status['count-ack'] = $countAck; 
+                $countNack = $this->History->countUnattachedMessages($unattachId, 'nack');
+                $status['count-nack'] = $countNack; 
             }
+            $unattachedMessage['UnattachedMessage'] = array_merge(
+                $status, $unattachedMessage['UnattachedMessage']);
         }
         $this->set('unattachedMessages', $unattachedMessages);
     }

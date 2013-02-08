@@ -48,28 +48,28 @@ if ($unattachedMessage['UnattachedMessage']['model-version'] == '2') {
         echo implode(" - ", $unattachedMessage['UnattachedMessage']['send-to-match-conditions']);
         
     } 
-    if (isset($unattachedMessage['UnattachedMessage']['number-of-message-schedule'])) {
-        echo " (".$unattachedMessage['UnattachedMessage']['number-of-message-schedule'].")";
+    if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
+        echo " (".$unattachedMessage['UnattachedMessage']['count-schedule'].")";
     }
 }
 ?>&nbsp;</td>
 <td><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>		
 <td class="delivery-status">
 <?php 
-if (isset($unattachedMessage['UnattachedMessage']['number-of-message-schedule'])) {
+if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     echo '<em><b>' .  __("scheduled") . '</b></em>';
 } else {
-    echo $unattachedMessage['UnattachedMessage']['number-of-message-sent'];
+    echo $unattachedMessage['UnattachedMessage']['count-sent'];
     echo "(";
-    echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['number-of-message-delivered'] . '</span>';
+    echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-delivered'] . '</span>';
     echo "/";
-    echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['number-of-message-pending'] . '</span>';
+    echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
     echo "/";
-    echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['number-of-message-failed'] . '</span>';
+    echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-failed'] . '</span>';
     echo "&nbsp -";
-    echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['number-of-message-ack'] . '</span>';
+    echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-ack'] . '</span>';
     echo "/";
-    echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['number-of-message-nack'] . '</span>';
+    echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-nack'] . '</span>';
     echo ")";
 }
 ?>

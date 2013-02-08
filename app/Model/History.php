@@ -418,7 +418,7 @@ class History extends MongoModel
         return $conditions;
     }   
     
-    public function getStatusOfUnattachedMessages($unattach_id, $message_status = null)
+    public function countUnattachedMessages($unattach_id, $message_status = null)
     {
         if ($message_status == null)
         {

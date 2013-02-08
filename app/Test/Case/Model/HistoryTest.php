@@ -454,13 +454,13 @@ class HistoryTestCase extends CakeTestCase
         $this->History->create('unattach-history');
         $saveHistoryStatus = $this->History->save($history);      
       
-        $output = $this->History->getStatusOfUnattachedMessages('5');       
+        $output = $this->History->countUnattachedMessages('5');       
         $this->assertEquals(1, $output);   
         
-        $output = $this->History->getStatusOfUnattachedMessages('5','pending');       
+        $output = $this->History->countUnattachedMessages('5','pending');       
         $this->assertEquals(1, $output); 
         
-        $output = $this->History->getStatusOfUnattachedMessages('5','delivered');       
+        $output = $this->History->countUnattachedMessages('5','delivered');       
         $this->assertEquals(0, $output); 
     }            
 
