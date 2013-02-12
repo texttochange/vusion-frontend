@@ -23,6 +23,9 @@
             }
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
+         $this->Js->get('document')->event('ready','
+                addCounter(); ');
 	    ?>
 	</div>
 </div>
+<?php echo $this->Js->writeBuffer(); ?>

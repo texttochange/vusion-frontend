@@ -510,6 +510,7 @@ function activeForm(){
     });
     
     addContentFormHelp();
+    addCounter();
 
     
 }

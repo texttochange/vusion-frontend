@@ -62,7 +62,7 @@
     if ($this->Form->isFieldError('send-to-match-conditions'))
         echo $this->Form->error('send-to-match-conditions');
     echo "</div>";
-    echo $this->Form->input(__('content'), array('rows'=>5));
+    echo $this->Form->input(__('content'), array('rows'=>5));   
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
@@ -94,6 +94,7 @@
     $this->Js->get('document')->event('ready','
         $("#fixed-time").datetimepicker();
         addContentFormHelp();
+        addCounter();
         $("#UnattachedMessageSend-to-match-conditions").chosen();');
     $this->Js->get("input[name*='send-to-type']")->event('change','
         if ($(this).val() == "match" ) {
