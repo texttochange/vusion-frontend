@@ -140,6 +140,17 @@ class DialogueTestCase extends CakeTestCase
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
+    public function testValidate_keyword_fail()
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, keyword 1, other';
+        $saveResult = $this->Dialogue->saveDialogue($dialogue);
+        $this->assertFalse($saveResult);
+        $this->assertEqual(
+            "The keyword/alias 'test, keyword 1, other' is not valid.",
+            $this->Dialogue->validationErrors['dialogue']);
+    }
+
     public function testFindAllKeywordInDialogues()
     {
 
@@ -150,7 +161,7 @@ class DialogueTestCase extends CakeTestCase
         $dialogueTwo['Dialogue']['interactions'][0]['keyword'] = 'FEL';
       
         $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
-        $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);    
+        $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);
 
         $saveDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
         $this->Dialogue->makeDraftActive($saveDialogueTwo['Dialogue']['dialogue-id']);    

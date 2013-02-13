@@ -26,6 +26,13 @@ class Interaction
                  throw new FieldValueIncorrect("Unmatching feedback cannot be $v"); 
         };
         
+        $keywordFct = function($keywords) {
+            $keywordRegex = '/^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$/';
+            if (preg_match($keywordRegex, $keywords)) 
+                return true;
+            throw new FieldValueIncorrect("The keyword/alias '$keywords' is not valid.");
+        };
+
         $this->SCHEDULE_TYPE = array(
             'fixed-time' => array('date-time' => function($v) {return true;}),
             'offset-days'=> array(
@@ -39,7 +46,7 @@ class Interaction
             'announcement' => array('content' => function($v) {return ($v!=null);}),
             'question-answer'=> array(
                 'content'=> function($v) {return ($v!=null);},
-                'keyword'=> function($v) {return ($v!=null);},
+                'keyword'=> $keywordFct,
                 'set-use-template'=> function($v) {return true;},
                 'type-question'=> function($v) {return ($v!=null);},
                 'type-unmatching-feedback'=> $unmatchingFeedbackFct,
@@ -85,7 +92,7 @@ class Interaction
                 'reminder-minutes' => function($v) {return ($v!=null);}));
         
         $this->ANSWER_KEYWORD = array(
-            'keyword' => function($v) {return ($v!=null);},
+            'keyword' => $keywordFct,
             'feedbacks' => function($v) {return true;},
             'answer-actions' => $actionsFct);
 

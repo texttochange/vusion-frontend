@@ -22,6 +22,28 @@ class Request extends MongoModel
             );
     }
 
+    public $validate = array(
+        'keyword' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a keyword for this request.'
+                ),
+            'format' => array(
+                'rule' => array('keywordFormat'),
+                'message' => 'This keyword format is not valid.'
+                )
+            )
+        );
+
+    public function keywordFormat($check) 
+    {
+        $keywordRegex = '/^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$/';
+        if (preg_match($keywordRegex, $check['keyword'])) 
+            return true;
+        return false;
+    }
+
+
     var $findMethods = array(
         'count' => true,
         'first' => true,

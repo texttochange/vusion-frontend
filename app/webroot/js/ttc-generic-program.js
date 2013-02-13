@@ -380,10 +380,12 @@ function activeForm(){
     });
     $("input[name*='\.keyword']").each(function (item) {
                $(this).rules("add",{
-                     required:true,
+                    required:true,
+                    keywordFormat:true,
                     keywordUnique:true,
                     messages:{
                          required: wrapErrorMessage(localized_errors.validation_required_error),
+                         keywordFormat: wrapErrorMessage(localized_errors.validation_keywords_invalid_character_error),
                     }
                 });
     });
@@ -603,6 +605,26 @@ function getAnswerAcceptNoSpaceKeywords(element, keywords){
     return keywords.concat(noSpacedKeywords);
 }
 
+function isDialogueView() {
+    if ($("[name$=dialogue-id]").length > 0) {
+        return true;
+    }
+    return false;
+}
+
+function formatKeywordValidation(value, element, param) {
+    var errors = {};
+    if (isDialogueView()) {
+        var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$','i');
+    } else {
+        var keywordRegex = new RegExp('^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$','i');
+    }
+    if (keywordRegex.test(value)) {
+        return true;
+    }
+    return false;
+}
+
 
 function duplicateKeywordValidation(value, element, param) {    
     var isValid = false;
@@ -688,6 +710,7 @@ function duplicateKeywordValidation(value, element, param) {
     }   
     return true;
 }
+
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
@@ -1082,6 +1105,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "keywordUnique",
         duplicateKeywordValidation,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "keywordFormat",
+        formatKeywordValidation,
         wrapErrorMessage(Error));
 
     $.validator.addMethod(
