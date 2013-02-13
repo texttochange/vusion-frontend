@@ -34,12 +34,14 @@ class ProgramHomeController extends AppController
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting   = new ProgramSetting($options);
 
-        $this->VumiRabbitMQ = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq')
-            );
-        
         $this->DialogueHelper = new DialogueHelper();
-        
+
+        $this->_instanciateVumiRabbitMQ();
+    }
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
 

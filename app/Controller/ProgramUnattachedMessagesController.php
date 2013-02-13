@@ -35,9 +35,13 @@ class ProgramUnattachedMessagesController extends AppController
         $this->Schedule          = new Schedule($options);
         $this->Participant       = new Participant($options);
         $this->ProgramSetting    = new ProgramSetting($options);
-        $this->VumiRabbitMQ      = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->DialogueHelper    = new DialogueHelper();
         $this->History           = new History($options);
+        $this->_instanciateVumiRabbitMQ();
+    }
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
     protected function _notifyUpdateBackendWorker($workerName, $unattach_id)

@@ -34,10 +34,14 @@ class ProgramParticipantsController extends AppController
         $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        $this->VumiRabbitMQ      = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq')
-            );
+        
+        $this->_instanciateVumiRabbitMQ();
+        
         $this->DialogueHelper = new DialogueHelper();
+    }
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
 
@@ -753,7 +757,7 @@ class ProgramParticipantsController extends AppController
     
     private function processXls($programUrl, $filePath, $fileName, $tags)
     {
-        require_once 'lib/excel_reader2.php';
+        require_once 'excel_reader2.php';
 
         $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);

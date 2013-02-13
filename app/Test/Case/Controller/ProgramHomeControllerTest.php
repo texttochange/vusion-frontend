@@ -93,6 +93,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
                 'Program' => array('find', 'count'),
                 'Group' => array()
             ),
+            'methods' => array(
+                '_instanciateVumiRabbitMQ'),
         ));
         
         $home->Acl

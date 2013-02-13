@@ -123,6 +123,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     'Group' => array()
                     ),
                 'methods' => array(
+                    '_instanciateVumiRabbitMQ',
                     '_notifyUpdateBackendWorker',
                     '_notifySendAllMessagesBackendWorker',
                     '_notifyUpdateRegisteredKeywords'

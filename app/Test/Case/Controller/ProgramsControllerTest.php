@@ -102,6 +102,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'Acl' => array('check'),
                 'Session' => array('read', 'write')
             ),
+            'methods' => array(
+                '_instanciateVumiRabbitMQ'),
         ));
         
         $programs->Acl

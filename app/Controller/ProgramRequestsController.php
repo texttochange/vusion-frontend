@@ -29,10 +29,14 @@ class ProgramRequestsController extends AppController
         $this->Request        = new Request($options);
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        $this->VumiRabbitMQ   = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq')
-            );
+        $this->_instanciateVumiRabbitMQ();
     }
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+    }
+
 
 
     public function index()

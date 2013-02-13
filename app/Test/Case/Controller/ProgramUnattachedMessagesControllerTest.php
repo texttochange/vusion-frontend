@@ -91,6 +91,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                    'Group' => array()
                    ),
                 'methods' => array(
+                    '_instanciateVumiRabbitMQ',
                     '_notifyUpdateBackendWorker'
                     )
                 )
@@ -331,7 +332,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $saveScheduleCount = $this->Schedule->save($schedule);  
         
         $this->testAction("/testurl/programUnattachedMessages/index");
-        print_r($this->vars['unattachedMessages']);
+        
         $this->assertEquals(1, count($this->vars['unattachedMessages'])); 
     }
 

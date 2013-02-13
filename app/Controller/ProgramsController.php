@@ -29,9 +29,12 @@ class ProgramsController extends AppController
     {
         parent::constructClasses();
 
-        $this->VumiRabbitMQ = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq')
-            );
+        $this->_instanciateVumiRabbitMQ();
+    }
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
 

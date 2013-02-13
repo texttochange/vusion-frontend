@@ -121,6 +121,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     'Group' => array()
                     ),
                  'methods' => array(
+                    '_instanciateVumiRabbitMQ',
                     '_notifyUpdateRegisteredKeywords',
                     )
                 )
