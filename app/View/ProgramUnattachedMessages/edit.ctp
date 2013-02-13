@@ -94,6 +94,7 @@
     $this->Js->get('document')->event('ready','
         $("#fixed-time").datetimepicker();
         addContentFormHelp();
+        addCounter();
         $("#UnattachedMessageSend-to-match-conditions").chosen();');
     $this->Js->get("input[name*='send-to-type']")->event('change','
         if ($(this).val() == "match" ) {

@@ -7,6 +7,7 @@ App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
+App::uses('History', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
@@ -36,6 +37,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->VumiRabbitMQ      = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->DialogueHelper    = new DialogueHelper();
+        $this->History           = new History($options);
     }
 
     protected function _notifyUpdateBackendWorker($workerName, $unattach_id)
@@ -43,12 +45,35 @@ class ProgramUnattachedMessagesController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
     }
 
-
     public function index()
     {
-        $unattachedMessages = $this->paginate();
-        $this->set(compact('unattachedMessages'));
+        $unattachedMessages = $this->paginate();       
         
+        foreach($unattachedMessages as &$unattachedMessage)
+        {  
+            $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
+            $status = array();
+            if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                
+                $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
+                $status['count-schedule'] = $countSchedule;                
+            } else {               
+                $countSent = $this->History->countUnattachedMessages($unattachId);
+                $status['count-sent'] = $countSent;            
+                $countDelivered = $this->History->countUnattachedMessages($unattachId, 'delivered');
+                $status['count-delivered'] = $countDelivered;
+                $countPending = $this->History->countUnattachedMessages($unattachId, 'pending');
+                $status['count-pending'] = $countPending;
+                $countFailed = $this->History->countUnattachedMessages($unattachId, 'failed');
+                $status['count-failed'] = $countFailed;
+                $countAck = $this->History->countUnattachedMessages($unattachId, 'ack');
+                $status['count-ack'] = $countAck; 
+                $countNack = $this->History->countUnattachedMessages($unattachId, 'nack');
+                $status['count-nack'] = $countNack; 
+            }
+            $unattachedMessage['UnattachedMessage'] = array_merge(
+                $status, $unattachedMessage['UnattachedMessage']);
+        }
+        $this->set('unattachedMessages', $unattachedMessages);
     }
     
     

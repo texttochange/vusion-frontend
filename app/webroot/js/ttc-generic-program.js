@@ -512,6 +512,7 @@ function activeForm(){
     });
     
     addContentFormHelp();
+    addCounter();
 
     
 }

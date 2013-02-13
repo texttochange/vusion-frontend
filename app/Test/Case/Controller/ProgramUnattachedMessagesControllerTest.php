@@ -3,6 +3,7 @@
 App::uses('ProgramUnattachedMessagesController', 'Controller');
 App::uses('Schedule', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('History', 'Model');
 
 /**
  * TestProgramUnattachedMessagesController *
@@ -55,6 +56,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule = new Schedule($options);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->History = new History($options);
     }	
   
     
@@ -124,6 +126,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
  * Test methods
  *
  */
+ 
     public function testIndex()
     {
         $this->mock_program_access();
@@ -273,6 +276,63 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             );
 
     }
+    
+    public function testIndex_unattachedMessageStatus()
+    {     
+        $this->mock_program_access();
+        
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');        
+        $unattachedMessage = array(            
+            'name' => 'test',
+            'send-to-type' => 'all',
+            'content' => 'Hello!!!!',
+            'type-schedule' => 'immediately',
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage);        
+        $history = array(
+            'object-type' => 'unattach-history',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'outgoing', 
+            'message-status' => 'pending',
+            'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id'].''
+            );       
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history);  
+        
+        $this->testAction("/testurl/programUnattachedMessages/index");        
+        $this->assertEquals(1, count($this->vars['unattachedMessages']));
+    }
 
+    
+    public function testIndex_scheduleUnattachedMessageStatus()
+    {     
+        $this->mock_program_access();
+        
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');        
+        $unattachedMessage = array(            
+            'name' => 'test',
+            'send-to-type' => 'all',
+            'content' => 'Hello!!!!',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => '12/04/3013 11:00',
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage); 
+        
+        $schedule =array(
+            'object-type' => 'unattach-schedule',
+            'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id'],
+            'date-time' => '3013-04-12T11:00:00',           
+            );       
+        $this->Schedule->create('unattach-schedule');
+        $saveScheduleCount = $this->Schedule->save($schedule);  
+        
+        $this->testAction("/testurl/programUnattachedMessages/index");
+        print_r($this->vars['unattachedMessages']);
+        $this->assertEquals(1, count($this->vars['unattachedMessages'])); 
+    }
 
 }

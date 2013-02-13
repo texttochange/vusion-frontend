@@ -438,27 +438,33 @@ class HistoryTestCase extends CakeTestCase
             );       
     }
     
-    public function testFromFilterToQueryConditions_separateMessages()
-    {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'separate-message', 
-                    2 => 'equal-to', 
-                    3 => '2'),
-                )            
-            ); 
+    public function testStatusOfUnattachedMessage()
+    {   	
+    	
+        $history = array(
+            'object-type' => 'unattach-history',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'outgoing', 
+            'message-status' => 'pending',
+            'unattach-id' =>'5'
+            );        
         
-        $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('unattach-id' => '2')
-            );
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history);      
+      
+        $output = $this->History->countUnattachedMessages('5');       
+        $this->assertEquals(1, $output);   
+        
+        $output = $this->History->countUnattachedMessages('5','pending');       
+        $this->assertEquals(1, $output); 
+        
+        $output = $this->History->countUnattachedMessages('5','delivered');       
+        $this->assertEquals(0, $output); 
+    }            
 
-        
-    }
-    
-    
+   
 
 }
     
