@@ -20,8 +20,22 @@
             null,
             'programs',
             'add',
-            array('class' => 'ttc-button', 'style'=>'float:right')); ?>
+            array('class' => 'ttc-button', 'style'=>'float:right'));
+        echo $this->Html->tag(
+            'span', 
+            __('Filter'), 
+            array('class' => 'ttc-button', 'style'=>'float:right', 'name' => 'add-filter')); 
+        $this->Js->get('[name=add-filter]')->event(
+            'click',
+            '$("#advanced_filter_form").show();
+            createFilter();
+            addStackFilter();');
+    ?>
     <h3><?php echo __('Programs');?></h3>
+    <?php
+	    echo $this->element('filter_box', array(
+	        'controller' => 'programs'));
+	?>
     <div class="paging" style="text-align:right">
     <?php
     echo "<span class='ttc-page-count'>";

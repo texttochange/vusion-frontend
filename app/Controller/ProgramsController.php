@@ -15,7 +15,7 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler');
+    var $components = array('RequestHandler', 'LocalizeUtils');
     public $helpers = array('Time', 'Js' => array('Jquery'));    
     var $uses = array('Program', 'Group');
     var $paginate = array(
@@ -66,6 +66,9 @@ class ProgramsController extends AppController
 
     public function index() 
     {
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+        
         $this->Program->recursive = -1;
         if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
            $this->paginate = array(
@@ -74,6 +77,12 @@ class ProgramsController extends AppController
                 'user_id' => $this->Session->read('Auth.User.id'),
                 );
         }
+        
+        $conditions = $this->_getConditions(); print_r($conditions);
+        if ($conditions != null) {
+            $paginate['conditions'] = $conditions;
+        }
+        
         $programs      =  $this->paginate();
         $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
@@ -103,6 +112,40 @@ class ProgramsController extends AppController
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         $this->set(compact('programs', 'isProgramEdit'));
+    }
+
+
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->Program->filterFields);
+    }
+
+
+    protected function _getFilterParameterOptions()
+    {
+        return array(
+            'operator' => $this->Program->filterOperatorOptions,
+            'country' => 'Uganda',
+            'shortcode' => '',
+            'program-name' => '');
+    }
+
+
+    protected function _getConditions()
+    {
+        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
+
+        if (!isset($filter['filter_param'])) 
+            return null;
+
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Program->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
+
+        $this->set('urlParams', http_build_query($filter));
+
+        return $this->Program->fromFilterToQueryConditions($filter);
     }
 
 

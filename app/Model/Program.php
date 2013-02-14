@@ -58,6 +58,110 @@ class Program extends AppModel
             )
         );
     
+    #Filter variables and functions
+    public $filterFields = array(
+        'country' => array(
+            'label' => 'country',
+            'operators' => array(
+                'equal-to' => array(
+                    'label' => 'equal to',
+                    'parameter-type' => 'text'))),
+        'shortcode' => array(
+            'label' => 'shortcode',
+            'operators' => array(
+                'equal-to' => array(
+                    'label' => 'equal to',
+                    'parameter-type' => 'text'))),
+        'program-name' => array(
+            'label' => 'program name',
+            'operators' => array(
+                'start-with' => array(
+                    'label' => 'start with',
+                    'parameter-type' => 'text'),
+                'equal-to' => array(
+                    'label' => 'equal to',
+                    'parameter-type' => 'text')))
+        );
+
+    public $filterOperatorOptions = array(
+        'all' => 'all',
+        'any' => 'any'
+        );
+    
+    
+    public function validateFilter($filterParam)
+    {
+        if (!isset($filterParam[1])) {
+            throw new FilterException("Field is missing.");
+        }
+
+        if (!isset($this->filterFields[$filterParam[1]])) {
+            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
+        }
+
+        if (!isset($filterParam[2])) {
+            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
+        }
+        
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
+            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
+        }
+
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
+            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
+        }
+        
+        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
+            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
+        }
+    }
+    
+    
+    public function fromFilterToQueryConditions($filter)
+    {
+        $conditions = array();
+        
+        foreach ($filter['filter_param'] as $filterParam) {
+            
+            $condition = null;
+            
+            $this->validateFilter($filterParam);
+            
+            if ($filterParam[1] == 'country') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['country'] = $filterParam[3];
+                }
+            } elseif ($filterParam[1] == 'shortcode') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['shortcode'] = $filterParam[3];
+                }
+                
+            } elseif ($filterParam[1] == 'program-name') {
+                
+            }
+            
+            if ($filter['filter_operator'] == "all") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$and'])) {
+                    $conditions = array('$and' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$and'], $condition);
+                }
+            }  elseif ($filter['filter_operator'] == "any") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$or'])) {
+                    $conditions = array('$or' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$or'], $condition);
+                }
+            }
+        }
+        return $conditions;
+    }
+    
+    
     public function _findAuthorized($state, $query, $results = array())
     {
         //print_r($query);
