@@ -158,5 +158,15 @@ class ShortCode extends MongoModel
 
         return $result < 1;   
     }
+    
+    public function getShortCodes()
+    {
+        $results = $this->find('all');
+        $shortcodes = array();
+        foreach ($results as $result) {
+            $shortcodes[] = $result['ShortCode']['shortcode'];
+        }
+        return $shortcodes;
+    }
 
 }

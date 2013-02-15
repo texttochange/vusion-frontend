@@ -71,8 +71,8 @@ class Program extends AppModel
             'operators' => array(
                 'equal-to' => array(
                     'label' => 'equal to',
-                    'parameter-type' => 'text'))),
-        'program-name' => array(
+                    'parameter-type' => 'shortcode'))),
+        'name' => array(
             'label' => 'program name',
             'operators' => array(
                 'start-with' => array(
@@ -136,8 +136,10 @@ class Program extends AppModel
                     $condition['shortcode'] = $filterParam[3];
                 }
                 
-            } elseif ($filterParam[1] == 'program-name') {
-                
+            } elseif ($filterParam[1] == 'name') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['name'] = $filterParam[3];
+                }                
             }
             
             if ($filter['filter_operator'] == "all") {

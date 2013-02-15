@@ -30,6 +30,7 @@ class ProgramsController extends AppController
         parent::constructClasses();
 
         $this->_instanciateVumiRabbitMQ();
+        $this->ShortCode  = new ShortCode(array('database' => 'vusion'));
     }
 
 
@@ -94,7 +95,7 @@ class ProgramsController extends AppController
             $tempProgramSetting = new ProgramSetting(array('database' => $database));
             $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
             if (isset($shortcode[0]['ProgramSetting']['value'])) {
-                $this->ShortCode  = new ShortCode(array('database' => 'vusion'));
+                //$this->ShortCode  = new ShortCode(array('database' => 'vusion'));
                 $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
                 $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);
             } 
@@ -127,8 +128,8 @@ class ProgramsController extends AppController
         return array(
             'operator' => $this->Program->filterOperatorOptions,
             'country' => 'Uganda',
-            'shortcode' => '',
-            'program-name' => '');
+            'shortcode' => $this->ShortCode->getShortCodes(),
+            'name' => '');
     }
 
 
