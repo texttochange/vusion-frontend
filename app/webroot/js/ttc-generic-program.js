@@ -616,9 +616,9 @@ function isDialogueView() {
 function formatKeywordValidation(value, element, param) {
     var errors = {};
     if (isDialogueView()) {
-        var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$','i');
+        var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');
     } else {
-        var keywordRegex = new RegExp('^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$','i');
+        var keywordRegex = new RegExp('^[a-zA-Z0-9\\s]+(,(\\s)?[a-zA-Z0-9\\s]+)*$','i');
     }
     if (keywordRegex.test(value)) {
         return true;
