@@ -229,6 +229,16 @@ class History extends MongoModel
                 'start-with-any' => array(
                     'label' => 'starts with any of',
                     'parameter-type' => 'text'))),
+        
+       
+        'separate-message' => array(
+            'label' => 'separate message',
+            'operators' => array(
+                'equal-to' => array(
+                    'label' => 'name is',
+                    'parameter-type' => 'unattach-message'),                
+                )), 
+        
         'message-content' => array(
             'label' => 'message content',
             'operators' => array(
@@ -360,7 +370,15 @@ class History extends MongoModel
                 } elseif ($filterParam[2] == 'has-keyword') {
                     $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
                 }
-            } elseif ($filterParam[1] == 'dialogue-source') {
+            } 
+            
+            elseif ($filterParam[1] == 'separate-message') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['unattach-id'] = $filterParam[3];    
+                }
+            }
+            
+            elseif ($filterParam[1] == 'dialogue-source') {
                 if ($filterParam[2] == 'is') {
                     $condition['dialogue-id'] = $filterParam[3];    
                 }
@@ -398,7 +416,25 @@ class History extends MongoModel
         }
         
         return $conditions;
-    }
-
+    }   
+    
+    public function countUnattachedMessages($unattach_id, $message_status = null)
+    {
+        if ($message_status == null)
+        {
+            $historyCount = $this->find('count', array(
+                'conditions' => array(
+                    'message-direction'=>'outgoing',
+                    'unattach-id'=>$unattach_id)));
+        } else {
+            $historyCount = $this->find('count', array(
+                'conditions' => array(
+                    'message-direction'=>'outgoing',
+                    'unattach-id'=>$unattach_id,
+                    'message-status'=>$message_status)));
+        }
+        return $historyCount;       
+        
+    }   
 
 }

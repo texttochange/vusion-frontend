@@ -85,6 +85,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Group' => array()
                     ),
                 'methods' => array(
+                    '_instanciateVumiRabbitMQ',
                     '_notifyUpdateBackendWorker'
                     )
                 )

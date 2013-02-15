@@ -11,7 +11,29 @@
     
 ?>
 
-<ul class="sf-menu sf-vertical">  
+<ul class="sf-menu sf-vertical"> 
+<li>
+       <?php 
+        echo $this->AclLink->generateLink(__('Requests'),$programUrl,'programRequests');
+        ?>
+        <ul>
+            <li>
+            <?php 
+            echo $this->AclLink->generateLink(__('New Request'),$programUrl,'programRequests','add');
+            ?>
+            </li>
+            <?php if(isset($requests) && $requests!=null) { ?>
+            <?php foreach ($requests as $request): ?>
+                <li>
+                <?php
+                echo $this->AclLink->generateLink($request['Request']['keyword'],$programUrl,'programRequests','edit',$request['Request']['_id']);
+                ?>
+               </li>
+               <?php endforeach; ?>
+           <?php } ?>
+        </ul>
+    </li>
+
     <li>
         <?php
         echo $this->AclLink->generateLink(__('Dialogues'),$programUrl,'programDialogues');
@@ -58,27 +80,7 @@
             <?php } ?>
         </ul>
     </li>
-    <li>
-       <?php 
-        echo $this->AclLink->generateLink(__('Requests'),$programUrl,'programRequests');
-        ?>
-        <ul>
-            <li>
-            <?php 
-            echo $this->AclLink->generateLink(__('New Request'),$programUrl,'programRequests','add');
-            ?>
-            </li>
-            <?php if(isset($requests) && $requests!=null) { ?>
-            <?php foreach ($requests as $request): ?>
-                <li>
-                <?php
-                echo $this->AclLink->generateLink($request['Request']['keyword'],$programUrl,'programRequests','edit',$request['Request']['_id']);
-                ?>
-               </li>
-               <?php endforeach; ?>
-           <?php } ?>
-        </ul>
-    </li>
+    
     <li>
        <?php
        echo $this->AclLink->generateLink(__('Separate Messages'),$programUrl,'programUnattachedMessages');

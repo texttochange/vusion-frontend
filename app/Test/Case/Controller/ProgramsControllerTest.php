@@ -16,6 +16,9 @@ class TestProgramsController extends ProgramsController
         $this->redirectUrl = $url;
     }
 
+    protected function _instanciateVumiRabbitMQ() {
+    }
+
 
 }
 
@@ -45,15 +48,18 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     protected function mockProgramAccess()
     {
-        $programs = $this->generate('Programs', array(
-            'components' => array(
-                'Acl' => array('check'),
-                'Session' => array('read')
-            ),
-            'methods' => array(
-                'paginate'
-            )
-        ));
+        $programs = $this->generate(
+            'Programs', array(
+                'components' => array(
+                    'Acl' => array('check'),
+                    'Session' => array('read')
+                    ),
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    'paginate'
+                    )
+                )
+            );
         
         $programs->Acl
             ->expects($this->any())
@@ -97,12 +103,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex_hasSpecificProgramAccess_True()
     {
     	
-        $programs = $this->generate('Programs', array(
-            'components' => array(
-                'Acl' => array('check'),
-                'Session' => array('read', 'write')
-            ),
-        ));
+        $programs = $this->generate(
+            'Programs', array(
+                'components' => array(
+                    'Acl' => array('check'),
+                    'Session' => array('read', 'write')
+                    ),
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ'),
+                )
+            );
         
         $programs->Acl
             ->expects($this->any())
@@ -122,6 +132,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     public function testView() 
     {
+        $this->mockProgramAccess();
+
         $expected = array('Program' => array(
                     'id' => 1,
                     'name' => 'test',
@@ -156,11 +168,14 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     public function testAdd() 
     {
-        $Programs = $this->generate('Programs', array(
-            'methods' => array(
-                '_startBackendWorker'
-            )
-            ));
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker'
+                    )
+                )
+            );
 
         $Programs
             ->expects($this->once())
@@ -185,11 +200,14 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     public function testAdd_import() 
     {
-        $Programs = $this->generate('Programs', array(
-            'methods' => array(
-                '_startBackendWorker'
-            )
-            ));
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker',
+                    )
+                )
+            );
 
         $Programs
             ->expects($this->once())
@@ -230,20 +248,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     }
 
-
-    public function testEdit() 
-    {
-
-    }
-
-
     public function testDelete() 
     {
-        $Programs = $this->generate('Programs', array(
-            'methods' => array(
-                '_stopBackendWorker'
-            )
-            ));
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_stopBackendWorker'    
+                    )
+                )
+            );
         mkdir(WWW_ROOT . 'files/programs/test/');
    
         $Programs

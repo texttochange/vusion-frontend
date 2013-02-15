@@ -19,7 +19,7 @@ class ProgramsController extends AppController
     public $helpers = array('Time', 'Js' => array('Jquery'));    
     var $uses = array('Program', 'Group');
     var $paginate = array(
-        'limit' => 20,
+        'limit' => 10,
         'order' => array(
             'Program.created' => 'desc'
             )
@@ -29,9 +29,12 @@ class ProgramsController extends AppController
     {
         parent::constructClasses();
 
-        $this->VumiRabbitMQ = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq')
-            );
+        $this->_instanciateVumiRabbitMQ();
+    }
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
 
@@ -72,11 +75,15 @@ class ProgramsController extends AppController
                 );
         }
         $programs      =  $this->paginate();
-        $isProgramEdit = $this->Acl->check(array(
+
+        if ($this->Session->read('Auth.User.id') != null) {
+            $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
-                ),
-            ), 'controllers/Programs/edit');
+                    ),
+                ), 'controllers/Programs/edit');
+        } 
+
         foreach($programs as &$program) {
             $database           = $program['Program']['database'];
             $tempProgramSetting = new ProgramSetting(array('database' => $database));

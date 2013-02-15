@@ -93,6 +93,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
                 'Program' => array('find', 'count'),
                 'Group' => array()
             ),
+            'methods' => array(
+                '_instanciateVumiRabbitMQ'),
         ));
         
         $home->Acl
@@ -188,7 +190,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             'fixed-time' => $timeToSend->format('d/m/Y H:i'),
             'content' => 'Hello',
             'name' => 'test',
-            'to' => array('all-participants')
+            'send-to-type' => 'all'
             );        
        
         $this->Home->UnattachedMessage->create('unattached-message');

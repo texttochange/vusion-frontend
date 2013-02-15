@@ -34,10 +34,14 @@ class ProgramParticipantsController extends AppController
         $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting = new ProgramSetting($options);
-        $this->VumiRabbitMQ      = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq')
-            );
+        
+        $this->_instanciateVumiRabbitMQ();
+        
         $this->DialogueHelper = new DialogueHelper();
+    }
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
 
@@ -788,7 +792,7 @@ class ProgramParticipantsController extends AppController
                     continue;
                 $participant['profile'][] = array(
                     'label' => $header,
-                    'value' => $data->val($i,$col),
+                    'value' => (string) $data->val($i,$col),
                     'raw' => null);
                 $col++;
             }

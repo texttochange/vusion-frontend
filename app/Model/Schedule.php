@@ -4,20 +4,20 @@ App::uses('Dialogue', 'Model');
 App::uses('UnattachedMessage', 'Model');
 App::uses('DialogueHelper', 'Lib');
 /**
- * Program Model
- *
- */
+* Program Model
+*
+*/
 class Schedule extends MongoModel
 {
-
+    
     var $specific = true;
     var $useDbConfig = 'mongo';
     
-     function getModelVersion()
+    function getModelVersion()
     {
         return '1';
     }
-
+    
     function getRequiredFields($objectType='dialogue-schedule')
     {
         if ($objectType=='dialogue-schedule' or $objectType =='reminder-schedule' or $objectType =='deadline-schedule'){
@@ -50,7 +50,7 @@ class Schedule extends MongoModel
         throw new Exception("Object-type not supported:".$objectType);
         
     }
-
+    
     public $findMethods = array(
         'soon' => true,
         'count' => true,
@@ -66,7 +66,7 @@ class Schedule extends MongoModel
         $this->DialogueHelper    = new DialogueHelper();
     }
     
-     
+    
     protected function _findSoon($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -76,7 +76,7 @@ class Schedule extends MongoModel
         }
         return $results;
     }
-
+    
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
         foreach($activeDialogues as $activeDialogue) {
@@ -86,7 +86,7 @@ class Schedule extends MongoModel
         }
         return __("Error: dialogue not found");
     }
-
+    
     public function getParticipantSchedules($phone, $dialoguesInteractionsContent)
     {
         $schedules = $this->find('all', array(
@@ -94,10 +94,10 @@ class Schedule extends MongoModel
             'order' => array('date-time' => 'asc')
             ));
         
-
+        
         foreach($schedules as &$schedule) {
-             if (isset($schedule['Schedule']['interaction-id'])) {
-                 if (isset($dialoguesInteractionsContent[$schedule['Schedule']['dialogue-id']]['interactions'][$schedule['Schedule']['interaction-id']])) {
+            if (isset($schedule['Schedule']['interaction-id'])) {
+                if (isset($dialoguesInteractionsContent[$schedule['Schedule']['dialogue-id']]['interactions'][$schedule['Schedule']['interaction-id']])) {
                     $schedule['Schedule']['content'] = $dialoguesInteractionsContent[$schedule['Schedule']['dialogue-id']]['interactions'][$schedule['Schedule']['interaction-id']];
                 } else {
                     $schedule['Schedule']['content'] = 'unknown interaction';
@@ -110,7 +110,7 @@ class Schedule extends MongoModel
             }
             if ($schedule['Schedule']['object-type']=='action-schedule') {
                 $details = $schedule['Schedule']['action']['type-action'];
-              
+                
                 if ($schedule['Schedule']['action']['type-action'] == 'enrolling') {
                     $details = $details." in ".$dialoguesInteractionsContent[$schedule['Schedule']['action']['enroll']]['name'];
                 }
@@ -119,19 +119,19 @@ class Schedule extends MongoModel
         }
         return $schedules;
     }
-
+    
     public function summary($dateTime)
     {
         $defaultDialogueConditions = array('object-type'=>'dialogue-schedule');
-
+        
         $defaultUnattachConditions = array();
-
+        
         if (isset($dateTime)) {
             $dateCondition = array('date-time' => array('$lt' => $dateTime->format(DateTime::ISO8601)));
             $defaultDialogueConditions += $dateCondition;
             $defaultUnattachConditions += $dateCondition;
         }
-
+        
         $scriptQuery = array(
             'key' => array(
                 'dialogue-id' => true,                
@@ -143,14 +143,14 @@ class Schedule extends MongoModel
             'reduce' => 'function(obj, prev){prev.csum+=1;}',
             'options' => array( 'condition'=> $defaultDialogueConditions),
             );
-
+        
         $tmp = $this->getDataSource()->group($this, $scriptQuery);
-
+        
         $scriptResults = array_filter(
         	$tmp['retval'], 
         	array($this, "_interaction")
         	);
-
+        
         $unattachedQuery = array(
             'key' => array(
                 'unattach-id' => true,
@@ -163,33 +163,33 @@ class Schedule extends MongoModel
         
         
         $tmp = $this->getDataSource()->group($this, $unattachedQuery);
-
+        
         $unattachedResults = array_filter(
         	$tmp['retval'], 
         	array($this, "_unattached")
         	);
-
+        
         $summary = array_merge($scriptResults, $unattachedResults);
         uasort($summary, array($this, '_compareSchedule'));
         return $summary;
         
     }
-
+    
     private function _compareSchedule($a, $b)
     {
         if ($a['date-time'] == $b['date-time'])
     	    return 0;
         return ($a['date-time']<$b['date-time']) ? -1 : 1;
     }
-
-
+    
+    
     private function _interaction($var) 
     {
-    	    return (isset($var['dialogue-id']) && $var['dialogue-id']!=null &&
-    	    	    isset($var['interaction-id']) && $var['interaction-id']!=null);
+        return (isset($var['dialogue-id']) && $var['dialogue-id']!=null &&
+            isset($var['interaction-id']) && $var['interaction-id']!=null);
     }
-
-
+    
+    
     private function _unattached($var)
     {
         return (isset($var['unattach-id']) && $var['unattach-id']!=null);
@@ -216,6 +216,12 @@ class Schedule extends MongoModel
         }
         return $schedules;
     }
-
-
+    public function countScheduleFromUnattachedMessage($unattach_id)
+    {
+        $scheduleCount = $this->find('count', array(
+            'conditions' => array(
+                'unattach-id' => $unattach_id)));
+        
+        return $scheduleCount; 
+    }
 }

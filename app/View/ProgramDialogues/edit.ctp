@@ -1,6 +1,6 @@
 <div class="index">
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+		<li><?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
 		<?php $this->Js->get('#button-save')->event('click','
 		    disableSaveButtons();		    
 		    $("#dynamic-generic-program-form").submit();

@@ -2,10 +2,32 @@
 
 class VumiRabbitMQ {
 
+    
     function __construct($configRabbitmq) {
+        require_once('php-amqplib/amqp.inc');   
+    
         $this->vhost = $configRabbitmq['vhost'];
         $this->username = $configRabbitmq['username'];
         $this->password = $configRabbitmq['password'];
+        
+        $this->EXCHANGE = 'vumi';
+        $BROKER_HOST   = 'localhost';
+        $BROKER_PORT   = 5672;
+        $this->conn = new AMQPConnection(
+                            $BROKER_HOST, 
+                            $BROKER_PORT,
+                            $this->username,
+                            $this->password,
+                            $this->vhost);
+        $this->ch = $this->conn->channel();
+        $this->ch->access_request('/data', false, false, true, true);
+        $this->ch->exchange_declare($this->EXCHANGE, 'direct', false, true, false);
+    }
+    
+    function __destruct()
+    {
+        $this->ch->close();
+        $this->conn->close();
     }
 
     public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatcher", $send_loop_period="60")
@@ -111,44 +133,14 @@ class VumiRabbitMQ {
 
     public function sendMessageTo($to, $msg)
     {
-        //echo "Send RabbitMQ message to:".$to;
-        //print_r($msg);
-        require_once('php-amqplib/amqp.inc');
-        
-        $EXCHANGE = 'vumi';
-        $BROKER_HOST   = 'localhost';
-        $BROKER_PORT   = 5672;
+        require_once('php-amqplib/amqp.inc');   
+    
         $QUEUE    = $to; //'telnet.inbound';
         
         $msg_body = json_encode($msg);
-        
-        //echo "sending '".$msg_body."' to '".$to."'";
-    
-        //echo "starting...";
-        
-        $conn = new AMQPConnection(
-                            $BROKER_HOST, 
-                            $BROKER_PORT,
-                            $this->username,
-                            $this->password,
-                            $this->vhost);
-        //echo "Getting channel\n";
-        $ch = $conn->channel();
-        //echo "Requesting access\n";
-        $ch->access_request('/data', false, false, true, true);
-        
-        //echo "<br>Declaring exchange";
-        $ch->exchange_declare($EXCHANGE, 'direct', false, true, false);
-        //echo "<br>Creating message\n";
         $msg = new AMQPMessage($msg_body, array('content_type' => 'text/plain'));
-        //print_r($msg_body);
-        //echo "<br>Publishing message";
-        $ch->basic_publish($msg, $EXCHANGE, $QUEUE);
-        
-        //echo "<br>Closing channel\n";
-        $ch->close();
-        //echo "<br>Closing connection\n";
-        $conn->close();
+        $this->ch->basic_publish($msg, $this->EXCHANGE, $QUEUE);
+               
         return ($msg_body);
     }
 

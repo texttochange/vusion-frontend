@@ -437,7 +437,34 @@ class HistoryTestCase extends CakeTestCase
                 ))
             );       
     }
+    
+    public function testStatusOfUnattachedMessage()
+    {   	
+    	
+        $history = array(
+            'object-type' => 'unattach-history',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'outgoing', 
+            'message-status' => 'pending',
+            'unattach-id' =>'5'
+            );        
+        
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history);      
+      
+        $output = $this->History->countUnattachedMessages('5');       
+        $this->assertEquals(1, $output);   
+        
+        $output = $this->History->countUnattachedMessages('5','pending');       
+        $this->assertEquals(1, $output); 
+        
+        $output = $this->History->countUnattachedMessages('5','delivered');       
+        $this->assertEquals(0, $output); 
+    }            
 
+   
 
 }
     

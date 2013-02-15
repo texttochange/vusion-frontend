@@ -31,8 +31,12 @@ class ProgramSettingsController extends AppController
         $optionVisionDb     = array('database' => 'vusion');
         $this->ShortCode    = new ShortCode($optionVisionDb);
         $this->Template     = new Template($optionVisionDb);
-        $this->VumiRabbitMQ = new VumiRabbitMQ(
-            Configure::read('vusion.rabbitmq'));
+        $this->_instanciateVumiRabbitMQ();
+    }
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
 

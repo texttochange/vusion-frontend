@@ -78,6 +78,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 'Group' => array()
              ),
             'methods' => array(
+                '_instanciateVumiRabbitMQ',
                 '_notifyUpdateProgramSettings',
                 )
          ));

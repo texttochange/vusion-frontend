@@ -16,6 +16,7 @@ var localized_errors = {
     validation_offset_time_min: "<?php echo __("Offset time not valid, you can express only minutes '10' or minutes and seconds '00:30'.")?>",
     validation_number_min: "<?php echo __("Must be at least 1.")?>",
     validation_keyword_invalid_character_error: "<?php echo __(" has some invalid characters. Keywords must contain only numbers or letters separated by a comma.")?>",
+    validation_keywords_invalid_character_error: "<?php echo __("There is some invalid character(s) or space(s). Keyword can only numbers or letters separated by a comma.")?>",
     validation_keyword_blank_error: "<?php echo __("You cannot have a blank keyword.")?>",
     validation_keyword_used_same_script_error: "<?php echo __(" already used by the same script in another question.")?>",
     validation_choice_duplicate: "<?php echo __("This choice is already used in this interaction.")?>",

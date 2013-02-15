@@ -260,12 +260,12 @@ var countries ={
 function addContentFormHelp(baseUrl) {
     if (!baseUrl)
         baseUrl="../.."
-    $.each($("[name*='content']").prev(":not(:has(img)):not(div)"),
+    $.each($("[name*='content']").prev(":not(:has(img)):not(div):not(span)"),
             function (key, elt){
                     $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
             });
     $.each($("[name*='[template]']").prev(":not(:has(img)):not(div)"),
-            function (key, elt){
+            function (key, elt){ 
                     $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
             });
     $.each($("[name*='\.keyword']").prev("label").not(":has(img)"),
@@ -562,7 +562,7 @@ function supplyParameterOptions(operatorElt) {
 	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
 	    var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
-                $("[name='"+name+"[3]']").append(new Option(value, value));      
+                $("[name='"+name+"[3]']").append(new Option(value, key));      
         })
     }
 }

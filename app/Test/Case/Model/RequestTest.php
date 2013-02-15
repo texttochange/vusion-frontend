@@ -140,4 +140,27 @@ class RequestTestCase extends CakeTestCase
     }
 
 
+    public function testSave_validateKeyword_ok()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request, keyword, otherkeyword request'
+            );
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertTrue(isset($savedRequest));
+    }
+
+    public function testSave_validateKeyword_fail()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request, keyw?ord, otherkeyword request'
+            );
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEquals(
+            'This keyword format is not valid.',
+            $this->Request->validationErrors['keyword'][0]);
+    }
+
 }

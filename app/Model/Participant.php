@@ -210,6 +210,9 @@ class Participant extends MongoModel
 
         $mongo = $this->getDataSource();
         $cursor = $mongo->mapReduce($labelsQuery);
+        if ($cursor == false){ 
+            return $results;
+        }
         foreach($cursor as $distinctLabel) {
             $results[] = $distinctLabel['_id'];
         }

@@ -1,4 +1,4 @@
-    <?php 
+<?php 
 App::uses('Participant', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
@@ -250,6 +250,8 @@ class ParticipantTestCase extends CakeTestCase
     public function testGetDistinctTagsAndLabels()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $this->assertEqual(array(), $this->Participant->getDistinctTagsAndLabels());
 
         $participant_08 = array(
             'phone' => '08',
