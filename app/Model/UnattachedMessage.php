@@ -4,7 +4,7 @@ App::uses('ProgramSetting', 'Model');
 App::uses('DialogueHelper', 'Lib');
 /**
 * UnattachedMessage Model
-*
+*ro
 */
 class UnattachedMessage extends MongoModel
 {
@@ -169,7 +169,8 @@ class UnattachedMessage extends MongoModel
     
     public function isNotPast($check)
     {
-        $fixedTimeDate = new DateTime($check['fixed-time']);
+        $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
+        $fixedTimeDate = new DateTime($check['fixed-time'], timezone_open($programTimezone));
         return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
