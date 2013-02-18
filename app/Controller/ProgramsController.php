@@ -81,7 +81,7 @@ class ProgramsController extends AppController
         
         $conditions = $this->_getConditions(); print_r($conditions);
         if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
+            $this->paginate['conditions'] = $conditions;
         }
         
         $programs      =  $this->paginate();
