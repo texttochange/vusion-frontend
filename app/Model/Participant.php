@@ -621,4 +621,15 @@ class Participant extends MongoModel
         
         return $conditions;
     }
+    
+    public function addMassTags($tag, $conditions)
+    {         
+        $massTag = array(
+            '$push' => array(
+                'tags' => $tag              
+                )
+            );    
+        $this->updateAll($massTag, $conditions);
+    }
+    
 }

@@ -19,6 +19,15 @@
     } 
     ?>
     </li>
+    <li><?php 
+    $massTagUrl = $this->Html->url(array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'massTag'));
+    echo $this->Html->tag(
+        'span', 
+        __('Tag'), 
+        array('class' => 'ttc-button', 'name' => 'massTag', 'url' => $massTagUrl)); 
+    $this->Js->get('[name=massTag]')->event('click',
+        'generateMassTagDialogue(this);');    
+    ?></li>
     <li><?php echo $this->AclLink->generateButton(
         __('Add'), 
         $programUrl,

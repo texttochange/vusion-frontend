@@ -39,6 +39,7 @@ var localized_actions= {
     filter_operator_suffix: "<?php echo __('of the following rules:')?>",
     filter_operator_any: "<?php echo __('any')?>",
     filter_operator_all: "<?php echo __('all')?>",
+    mass_tag:"<?php echo __('Tag all filtered Participants') ?>"
 };
 
 var localized_labels = {

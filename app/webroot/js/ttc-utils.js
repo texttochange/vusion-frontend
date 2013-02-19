@@ -609,7 +609,7 @@ if (!Array.indexOf) {
 function generateExportDialogue(obj) {
     var url = $(obj).attr("url") + ".json" + window.location.search;
     var dialog = $('<div id="export-dialogue" style="display:none" >'+localized_messages['generating_file']+'</div>').appendTo('body');
-        dialog.dialog({
+        dialog.dialog({ 
                 title: localized_actions['export'],
                 close: function(event, ui) {
                     dialog.remove();
@@ -632,3 +632,30 @@ function generateExportDialogue(obj) {
                 }
         });
 } 
+
+function generateMassTagDialogue(obj){
+	var url = $(obj).attr("url") + window.location.search;
+	
+	var dialog = $('<div id="masstag-dialogue" style="display:none">'+
+		'<form action=\'javascript:submitMassTag()\' url="'+url+'" method="get">'+
+		'<input type="text" name="tag" id="tags">'+'<input type="submit" value="Tag">'+
+		'</form>'+'</div>').appendTo('body');
+	dialog.dialog({
+			title: localized_actions['mass_tag'], 
+			close:function(event, ui){
+			dialog.remove(); 
+			},
+			model: true
+	});
+}
+
+function submitMassTag(){	
+	var tag = $('[name*="tag"]').val();	
+	var url = $('#masstag-dialogue').find('form').attr('url');
+	if(url.contains('?')){
+		window.location= url+"&tag="+tag;
+	}else{
+		window.location= url+"?tag="+tag;
+	}	
+	//alert("submit to "+$('#masstag-dialogue').find('form').attr('url').concat(tag));
+}
