@@ -40,7 +40,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Dialogue->deleteAll(true, false);
     }
 
-/*
+
     public function testSave_createData()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -694,7 +694,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );
     }
-*/
+
     public function testAddMassTags_filter()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -729,19 +729,82 @@ class ParticipantTestCase extends CakeTestCase
             );                                                                           
         
         $this->Participant->create();
-        $this->Participant->save($participant_09);    
+        $this->Participant->save($participant_09);   
         
         $conditions = array(
-            'phone' => '+8');          
+            'phone' => '+8');       
         
         $this->Participant->addMassTags('hi', $conditions);
-        $participants = $this->Participant->find('all', $conditions);       
-        print_r($participants);
-        //$this->assertTrue(in_array('hi',$participants[1]['Participant']['tags']));
-        //$this->assertFalse(in_array('hi',$participants[0]['Participant']['tags']));
+        $participants = $this->Participant->find('all', $conditions);         
+        
         $this->assertEqual(array('geek', 'cool', 'hi'), $participants[0]['Participant']['tags']);       
         
     }
-
     
+    public function testAddMassTags_trim()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $this->assertEqual(array(), $this->Participant->getDistinctTagsAndLabels());
+        
+        $participant_08 = array(
+            'phone' => '+8',
+            'tags' => array('geek', 'cool'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'kampala',
+                    'raw'=> null),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> null),
+                ));
+        $this->Participant->create();
+        $this->Participant->save($participant_08);
+        
+        $participant_09 = array(
+            'phone' => '+9',
+            'tags' => array('geek', 'another tag'),
+            'profile' => array(
+                array('label'=>'city',
+                    'value'=> 'jinja',
+                    'raw'=> 'live in jinja'),
+                array('label'=>'gender',
+                    'value'=> 'Male',
+                    'raw'=> 'gender M'),
+                )
+            );                                                                           
+        
+        $this->Participant->create();
+        $this->Participant->save($participant_09);   
+        
+        $conditions = array(
+            'phone' => '+8');       
+        
+        $this->Participant->addMassTags(' hi ', $conditions);
+        $participants = $this->Participant->find('all', $conditions);         
+        
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participants[0]['Participant']['tags']);       
+        
+    }
+    
+   
+    public function testAddMassTags_failValidation()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $participant_08 = array(
+            'phone' => '+8',
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant_08);
+       
+        $conditions = array();    
+        $results = $this->Participant->addMassTags('%', $conditions);       
+        $this->assertFalse($results);
+        
+        $this->Participant->addMassTags('you2', $conditions); 
+        $participants = $this->Participant->find('all', $conditions);  
+        $this->assertTrue(in_array('you2', $participants[0]['Participant']['tags']));
+    }
+      
 }

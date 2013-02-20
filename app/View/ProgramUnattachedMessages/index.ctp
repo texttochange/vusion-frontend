@@ -23,7 +23,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
 <th><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
 <th><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programUrl)));?></th>
 <th><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programUrl)));?></th>
-<th class="delivery-status" title="AllSent(Delivered/Pending/Failed - Ack/Nack)">
+<th class="delivery-status" title="<?php echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ?>">
 <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programUrl)));?></th>
 <th><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programUrl)));?></th>
 <th class="actions"><?php echo __('Actions');?></th>

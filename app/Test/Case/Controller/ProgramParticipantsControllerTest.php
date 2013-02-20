@@ -128,7 +128,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
 
-/*
+
     public function testAdd()
     {
         $participants = $this->mock_program_access();
@@ -1641,7 +1641,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $savedDialogue['Dialogue']['dialogue-id']
         );
     }
-*/
+
     public function testMassTagFilteredParticipant_ok()
     {
         $this->mock_program_access();
@@ -1669,13 +1669,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $conditions = array(
             'conditions' => array(               
                 'tags' => 'test'));
+        print_r($conditions);
         $participants = $this->Participant->find('all', $conditions);      
         $this->assertEqual(1, count($participants));
         $this->assetEqual('+6', $participants[0]['Participant']['phone']);
         
     }
-
-    public function testMassTagFilteredParticipant_failNoTagParam()
-    {
-    }
+    
 }

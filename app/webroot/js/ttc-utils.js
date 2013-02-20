@@ -637,9 +637,12 @@ function generateMassTagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
 	
 	var dialog = $('<div id="masstag-dialogue" style="display:none">'+
-		'<form action=\'javascript:submitMassTag()\' url="'+url+'" method="get">'+
-		'<input type="text" name="tag" id="tags">'+'<input type="submit" value="Tag">'+
-		'</form>'+'</div>').appendTo('body');
+		'<form name="formTag" action=\'javascript:submitMassTag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+		'<input type="text" name="tag" id="masstag-tags">'+
+		'<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
+		'<input type="submit" value="Tag" id="clicky">'+
+		'</form>'+
+		'</div>').appendTo('body');
 	dialog.dialog({
 			title: localized_actions['mass_tag'], 
 			close:function(event, ui){
@@ -656,6 +659,19 @@ function submitMassTag(){
 		window.location= url+"&tag="+tag;
 	}else{
 		window.location= url+"?tag="+tag;
-	}	
-	//alert("submit to "+$('#masstag-dialogue').find('form').attr('url').concat(tag));
+	}		
 }
+          
+function alphanumeric() {
+	var tagRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');	
+	var tag = $('#masstag-tags').val();
+	if(tag.match(tagRegex)){  				
+		return true;  
+	}  
+	else{
+		$('#masstag-error-message').text('Your MassTag has special caharacters.These are not allowed').show();
+		//localization of the error message
+		return false;  
+	}  
+}  
+          
