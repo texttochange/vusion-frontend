@@ -83,11 +83,14 @@ class ProgramParticipantsController extends AppController
 
     protected function _getFilterParameterOptions()
     {
+        $tagValues = $this->Participant->getDistinctTags();
+        $labelValues = $this->Participant->getDistinctLabels();
+        
         return array(
             'operator' => $this->Participant->filterOperatorOptions,
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
-            'tag' => $this->Participant->getDistinctTags(),
-            'label' => $this->Participant->getDistinctLabels());
+            'tag' => (count($tagValues)>0? array_combine($tagValues, $tagValues) : array()),
+            'label' => (count($labelValues)>0? array_combine($labelValues, $labelValues) : array()));
     }
 
 
