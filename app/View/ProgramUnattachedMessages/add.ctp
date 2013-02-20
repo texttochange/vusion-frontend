@@ -1,6 +1,6 @@
 <div class="unattached_messages form">
 <ul class="ttc-actions">		
-    <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+    <li><?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
     <?php $this->Js->get('#button-save')->event('click', '$("#UnattachedMessageAddForm").submit()' , true);?>
 </ul>
 <h3><?php echo __('Add Separate Message'); ?></h3>
