@@ -22,6 +22,7 @@ var localized_errors = {
     validation_choice_duplicate: "<?php echo __("This choice is already used in this interaction.")?>",
     interaction_summary_error: "<?php echo __("There is an error inside this interaction.") ?>",
     timeout: "<?php echo __("timeout") ?>",
+    validation_masstag: "<?php echo __("Your MassTag has special caharacters.These are not allowed")?>",
 };
 
 var localized_messages = {
@@ -39,6 +40,7 @@ var localized_actions= {
     filter_operator_suffix: "<?php echo __('of the following rules:')?>",
     filter_operator_any: "<?php echo __('any')?>",
     filter_operator_all: "<?php echo __('all')?>",
+    mass_tag:"<?php echo __('Tag all filtered Participants') ?>"
 };
 
 var localized_labels = {
