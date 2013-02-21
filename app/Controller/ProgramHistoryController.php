@@ -115,12 +115,13 @@ class ProgramHistoryController extends AppController
         $this->set(compact('data'));
     }
 
-    protected function _getConditions($conditions)
+    protected function _getConditions($defaultConditions)
     {
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-
-        if (!isset($filter['filter_param'])) 
-            return $conditions;
+      
+        if (!isset($filter['filter_param'])) {
+            return $defaultConditions;
+        }
 
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->History->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
@@ -128,7 +129,17 @@ class ProgramHistoryController extends AppController
 
         $this->set('urlParams', http_build_query($filter));
         
-        return $this->History->fromFilterToQueryConditions($filter, $conditions);        
+        $conditions = $this->History->fromFilterToQueryConditions($filter);
+
+        if ($conditions == array()) {
+            $conditions = $defaultConditions;
+        } else {
+            $conditions = array('$and' => array(
+                $defaultConditions,
+                $conditions));
+        }
+    
+        return $conditions;        
     }
 
     public function delete() {
