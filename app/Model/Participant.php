@@ -178,7 +178,7 @@ class Participant extends MongoModel
         return array_merge($results, $distinctLabels);
     }
 
-    public function getDistinctTags()
+    public function getDistinctTags()                 
     {
         $tagsQuery = array(
             'distinct'=>'participants',
@@ -616,9 +616,26 @@ class Participant extends MongoModel
                 }
             }
 
-
         }
         
         return $conditions;
     }
+    
+    public function addMassTags($tag, $conditions)
+    {   
+        $tag = trim($tag);
+        print_r($tag);
+        $check = array('tags' => array($tag));
+        if (!$this->validateTags($check)){
+            return false;
+        }
+        $massTag = array(
+            '$push' => array(
+                'tags' => $tag              
+                )
+            );    
+        $this->updateAll($massTag, $conditions);        
+        return true;
+    }
+    
 }
