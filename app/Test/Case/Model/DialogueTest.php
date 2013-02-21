@@ -242,5 +242,59 @@ class DialogueTestCase extends CakeTestCase
 
          $this->assertEqual(0, $this->Schedule->find('count'));
     }
+    
+    
+    public function testBeforeValidate()
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        
+        $this->assertFalse(array_key_exists('prioritized', $dialogue['Dialogue']));
+        
+        $dialog = $this->Dialogue->saveDialogue($dialogue);
+        
+        $this->assertEqual($this->Dialogue->getModelVersion(), $dialog['Dialogue']['model-version']);
+        $this->assertTrue(array_key_exists('prioritized', $dialog['Dialogue']));
+        $this->assertEqual($dialog['Dialogue']['prioritized'], null);
+    }
+    
+    
+    public function testBeforeValidate_prioritized()
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['interactions'][1] = array(
+            'type-schedule' => 'fixed-time',
+            'date-time' => '02/03/2013 20:20',
+            'type-interaction' => 'annoucement', 
+            'content' => 'hello',
+            'keyword' => 'greet',
+            );
+        $dialogue['Dialogue']['prioritized'] = '1';
+        
+        $dialog = $this->Dialogue->saveDialogue($dialogue);
+        
+        $this->assertEqual($dialog['Dialogue']['interactions'][0]['prioritized'], 1);
+        $this->assertEqual($dialog['Dialogue']['interactions'][1]['prioritized'], 1);
+        
+        $dialogue2 = $this->Maker->getOneDialogue();
+        
+        $dialog2 = $this->Dialogue->saveDialogue($dialogue2);
+        
+        $this->assertEqual($dialog2['Dialogue']['interactions'][0]['prioritized'], null);
+        
+        $dialogue3 = $this->Maker->getOneDialogue();
+        $dialogue3['Dialogue']['interactions'][1] = array(
+            'type-schedule' => 'fixed-time',
+            'date-time' => '02/03/2013 20:20',
+            'type-interaction' => 'announcement', 
+            'content' => 'hello',
+            'keyword' => 'greet',
+            'prioritized' => '1'
+            );
+        
+        $dialog3 = $this->Dialogue->saveDialogue($dialogue3);
+        
+        $this->assertEqual($dialog3['Dialogue']['interactions'][0]['prioritized'], null);
+        $this->assertEqual($dialog3['Dialogue']['interactions'][1]['prioritized'], 1);
+    }
 
 }
