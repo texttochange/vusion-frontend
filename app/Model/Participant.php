@@ -623,8 +623,7 @@ class Participant extends MongoModel
     
     public function addMassTags($tag, $conditions)
     {   
-        $tag = trim($tag);
-        print_r($tag);
+        $tag = trim($tag);       
         $check = array('tags' => array($tag));
         if (!$this->validateTags($check)){
             return false;
