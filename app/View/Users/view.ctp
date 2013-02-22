@@ -51,7 +51,11 @@
 		}
 		?></dt>
 		<dd>
-			<?php echo h($user['User']['modified']); ?>
+			<?php
+			if (isset($isAdmin) && $isAdmin) {
+			echo h($user['User']['modified']); 
+			}
+			?>
 			&nbsp;
 		</dd>
 	</dl>
