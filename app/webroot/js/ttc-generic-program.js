@@ -629,7 +629,7 @@ function formatKeywordValidation(value, element, param) {
     return false;
 }
 
-function doubleSpaceValidation(value, element, param) {     
+function doubleSpaceValidation(value, element, param) {         
     var errors = {}    
     var doubleSpaceRegex = new RegExp('\\s\\s','g');    
     if (doubleSpaceRegex.test(value)) { 
