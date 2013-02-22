@@ -1,19 +1,6 @@
 <div class="users view">
    <h3><?php  echo __('User');?></h3>
 	<dl>
-		<dt><?php 
-		if (isset($isAdmin) && $isAdmin) {
-		    echo __('Id'); 
-		}
-		?></dt>
-		<dd>
-			<?php
-			if (isset($isAdmin) && $isAdmin) {
-			    echo h($user['User']['id']);
-			}
-			?>
-			&nbsp;
-		</dd>
 		<dt><?php echo __('Username'); ?></dt>
 		<dd>
 			<?php echo h($user['User']['username']); ?>
@@ -44,20 +31,7 @@
 		<dd>
 			<?php echo h($user['User']['created']); ?>
 			&nbsp;
-		</dd>
-		<dt><?php
-		if (isset($isAdmin) && $isAdmin) {
-		    echo __('Modified'); 
-		}
-		?></dt>
-		<dd>
-			<?php
-			if (isset($isAdmin) && $isAdmin) {
-			echo h($user['User']['modified']); 
-			}
-			?>
-			&nbsp;
-		</dd>
+		</dd>		
 	</dl>
   <div class="related">
 	<h3><?php echo __('Accessible Programs');?></h3>
