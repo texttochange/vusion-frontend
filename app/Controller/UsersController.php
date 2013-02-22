@@ -91,7 +91,15 @@ class UsersController extends AppController
                     'default',
                     array('class'=>'message success')
                 );
+                if ($this->Acl->check(array(
+                    'User' => array(
+                        'id' => $this->Session->read('Auth.User.id')
+                        )
+                    ), 'Controllers/Users/index')){                
                 $this->redirect(array('action' => 'index'));
+                    } else {                  
+                        $this->redirect(array('action' => 'view', $this->Session->read('Auth.User.id')));
+                    }
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
                 'default',
@@ -238,6 +246,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/Templates');
         $this->Acl->allow($group, 'controllers/Users/view');
         $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         //allow program manager to programs
         $group->id = 3;
@@ -263,6 +272,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramLogs');
         $this->Acl->allow($group, 'controllers/Users/view');
         $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         //allow partner to 
         $group->id = 4;
@@ -287,6 +297,7 @@ class UsersController extends AppController
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
         $this->Acl->allow($group, 'controllers/Users/view');
         $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         //allow program messager to 
         $group->id = 5;
@@ -301,6 +312,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/Users/view');
         $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         echo 'AllDone';
         exit;

@@ -67,11 +67,7 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php
-		if (isset($isAdmin) && $isAdmin) {
-		echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); 
-		}
-		?> 
+		<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
 		</li>
 		<li><?php
 		if (isset($isAdmin) && $isAdmin) {
