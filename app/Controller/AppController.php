@@ -43,7 +43,7 @@ class AppController extends Controller
         'Acl',
         'Cookie');
 
-    public $helpers = array('Html', 'Form', 'Session', 'Js', 'Time', 'AclLink');
+    public $helpers = array('Html', 'Form', 'Session', 'Js', 'Time', 'AclLink', 'Text');
 
 
     function beforeFilter()
