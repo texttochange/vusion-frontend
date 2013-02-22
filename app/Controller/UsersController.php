@@ -236,6 +236,8 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/ProgramLogs');
         $this->Acl->allow($group, 'controllers/Templates');
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
         
         //allow program manager to programs
         $group->id = 3;
@@ -259,6 +261,8 @@ class UsersController extends AppController
         $this->Acl->deny($group, 'controllers/UnmatchableReply');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/ProgramLogs');
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
         
         //allow partner to 
         $group->id = 4;
@@ -281,6 +285,8 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramHistory/index');
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
         
         //allow program messager to 
         $group->id = 5;
@@ -293,7 +299,9 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
-
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
+        
         echo 'AllDone';
         exit;
     }
