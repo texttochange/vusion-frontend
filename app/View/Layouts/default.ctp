@@ -78,16 +78,19 @@
 			<?php
 			if ($this->Session->read('Auth.User.id')) {	
 			    echo $this->Html->link(
-					__('logout'),
+					__('Logout'),
 					array('controller'=> 'users', 'action'=>'logout'), 
+					array('class' => 'ttc-link-header'));
+				echo $this->Html->link(
+					__('My Account'),
+					array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
 					array('class' => 'ttc-link-header'));
 			}
 			if (isset($isAdmin) && $isAdmin) {
 			    echo $this->Html->link(
-			        __('admin'),
+			        __('Admin'),
 			        array('controller'=>'admin'),
-			        array('class'=>'ttc-link-header'));
-				//print_r($vumiStatus);
+			        array('class'=>'ttc-link-header'));				
 			}
 			?>
 			</div> 
