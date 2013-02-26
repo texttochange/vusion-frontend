@@ -22,12 +22,13 @@ class ProgramSetting extends MongoModel
         'unmatching-answer-remove-reminder', 
         'customized-id',
         'double-matching-answer-feedback',
-        'double-optin-error-feedback'
+        'double-optin-error-feedback',
+        'request-and-feedback-prioritized'
         );
 
     function getModelVersion()
     {
-        return "1";
+        return "2";
     }
 
     function getRequiredFields($objectType=null)

@@ -29,7 +29,7 @@ class Dialogue extends MongoModel
             'auto-enrollment',
             'interactions',
             'activated',
-            'prioritized'
+            'set-prioritized'
             );
     }
     
@@ -65,7 +65,6 @@ class Dialogue extends MongoModel
     {
         try {
             parent::beforeValidate();
-    
             if (!isset($this->data['Dialogue']['activated'])) {
                 $this->data['Dialogue']['activated'] = 0;
             } else {
@@ -76,7 +75,7 @@ class Dialogue extends MongoModel
                 $this->data['Dialogue']['dialogue-id'] = uniqid();
             }
             
-            // field "prioritized" is set and initialized inside MongoModel's beforeValidate
+            // field "set-prioritized" is set and initialized inside MongoModel's beforeValidate
     
             if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
                 $errorValue = $this->data['Dialogue']['auto-enrollment'];
@@ -87,17 +86,15 @@ class Dialogue extends MongoModel
     
             if (isset($this->data['Dialogue']['interactions'])) {
                 foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
-                    //print_r($interaction);
-                    if (isset($this->data['Dialogue']['prioritized']) && $this->data['Dialogue']['prioritized']) {
-                        $interaction['prioritized'] = $this->data['Dialogue']['prioritized'];
+                    if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
+                        $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];
                         continue;
                     }
                     $interaction = $interactionModel->beforeValidate($interaction);
-                    //print_r($this->data['Dialogue']['interactions']);
                 }
             } else {
                 $this->data['Dialogue']['interactions'] = array();
-            }//print_r($this->data['Dialogue']['interactions']);
+            }
     
             $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
     

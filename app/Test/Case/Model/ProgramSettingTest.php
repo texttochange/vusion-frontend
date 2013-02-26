@@ -129,6 +129,16 @@ class ProgramSettingTestCase extends CakeTestCase
         $future = $now->modify('+1 hours');
         $this->assertTrue($this->ProgramSetting->isNotPast($future));
     }
+    
+    public function testBeforeValidate()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'value2');
+        
+        $settings = $this->ProgramSetting->find('all');
+        print_r($this->ProgramSetting->find('all'));
+        $this->assertEqual($this->ProgramSetting->getModelVersion(), $settings[0]['ProgramSetting']['model-version']);
+    }
 
     
 }
