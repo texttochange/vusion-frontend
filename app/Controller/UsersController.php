@@ -84,7 +84,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you been redirected to your page'),
+            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
                 'default',
                 array('class' => "message failure"));
             $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
@@ -191,7 +191,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you been redirected to your page'),
+            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
                 'default',
                 array('class' => "message failure"));
             $this->redirect(array('action' => 'changePassword', $this->Auth->user('id')));
