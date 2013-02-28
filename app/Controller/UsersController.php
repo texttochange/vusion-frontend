@@ -82,9 +82,17 @@ class UsersController extends AppController
     public function edit($id = null)
     {
         $this->User->id = $id;
+        
+        if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
+            $this->Session->setFlash(__('Stop trying to ACCESS this user, you been redirected to your page'),
+                'default',
+                array('class' => "message failure"));
+            $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
+        }            
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user.'));
-        }
+        } 
+        
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved.'),
@@ -181,6 +189,14 @@ class UsersController extends AppController
     public function changePassword($id = null)
     {
         $this->User->id = $id;
+        
+        if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
+            $this->Session->setFlash(__('Stop trying to ACCESS this user, you been redirected to your page'),
+                'default',
+                array('class' => "message failure"));
+            $this->redirect(array('action' => 'changePassword', $this->Auth->user('id')));
+        }            
+        
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user.'));
         }
