@@ -19,3 +19,5 @@
 #empty
 /lib/Cake
 .vagrant
+build.xml
+/app/Test/data/restore_data.sh
