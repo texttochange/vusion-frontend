@@ -3,6 +3,18 @@
 		<li><?php echo $this->Html->link(__('New Request'), array('program'=>$programUrl, 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>	
 	<h3><?php echo __('Requests');?></h3>
+	<div id="data-control-nav" class="ttc-paging paging">
+<?php
+echo "<span class='ttc-page-count'>";
+echo $this->Paginator->counter(array(
+    'format' => __('{:start} - {:end} of {:count}')
+    ));
+echo "</span>";
+echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
+//echo $this->Paginator->numbers(array('separator' => ''));
+echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+?>
+</div>
 	<div class='ttc-display-area'>
 	<table cellpadding="0" cellspacing="0">
 		<tr>
@@ -47,21 +59,7 @@
 	</tr>
 	<?php endforeach; ?>
 	</table>
-	</div>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>
-	</p>
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => '', 'url'=> array('program' => $programUrl, '?'=>$this->params['url'])));
-		echo $this->Paginator->next(__('next') . ' >', array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])), null, array('class' => 'next disabled'));
-	?>
-    </div>
+	</div>	
 </div>
 	
 <?php echo $this->Js->writeBuffer(); ?>
