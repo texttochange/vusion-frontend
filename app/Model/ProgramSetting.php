@@ -70,7 +70,12 @@ class ProgramSetting extends MongoModel
 
         if ($this->data['ProgramSetting']['key'] == 'unmatching-answer-remove-reminder') {
             $this->data['ProgramSetting']['value'] = intval($this->data['ProgramSetting']['value']);
-        } 
+        }
+        
+        if ($this->data['ProgramSetting']['key'] == 'request-and-feedback-prioritized'
+                and $this->data['ProgramSetting']['value'] == '1') {
+            $this->data['ProgramSetting']['value'] = 'prioritized';
+        }
     
     }
 

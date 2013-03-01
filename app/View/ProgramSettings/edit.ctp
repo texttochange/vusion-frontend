@@ -99,8 +99,8 @@
         ?>
         <div>
         <?php
-            echo $this->Form->checkbox('request-and-feedback-prioritized');
-            echo $this->Html->tag('label',__('Prioritize request and feedback messages.'));
+            echo $this->Form->checkbox('request-and-feedback-prioritized', array('checked' => true));
+            echo $this->Html->tag('label',__('Prioritize request responses and feedback messages.'));
         ?>
         </div>
         <div>

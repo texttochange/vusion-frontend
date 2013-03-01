@@ -91,6 +91,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual('8181', $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode')));        
 
     }
+    
 
     public function testGetProgramSettings()
     {
@@ -102,6 +103,7 @@ class ProgramSettingTestCase extends CakeTestCase
             $this->ProgramSetting->getProgramSettings()
             ); 
     }
+    
 
     public function testGetProgramTimeNow()
     {
@@ -111,6 +113,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertNotNull($this->ProgramSetting->getProgramTimeNow());
        
     }
+    
 
     public function testIsNotPast()
     {
@@ -130,14 +133,28 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertTrue($this->ProgramSetting->isNotPast($future));
     }
     
+    
     public function testBeforeValidate()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
         $this->ProgramSetting->saveProgramSetting('timezone', 'value2');
         
         $settings = $this->ProgramSetting->find('all');
-        print_r($this->ProgramSetting->find('all'));
+
         $this->assertEqual($this->ProgramSetting->getModelVersion(), $settings[0]['ProgramSetting']['model-version']);
+    }
+    
+
+    public function testBeforeValidate_requestAndFeedbackPrioritized()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'value2');
+        $this->ProgramSetting->saveProgramSetting('request-and-feedback-prioritized', '1');
+        
+        $settings = $this->ProgramSetting->find('all');
+
+        $this->assertEqual('request-and-feedback-prioritized', $settings[2]['ProgramSetting']['key']);
+        $this->assertEqual('prioritized', $settings[2]['ProgramSetting']['value']);
     }
 
     
