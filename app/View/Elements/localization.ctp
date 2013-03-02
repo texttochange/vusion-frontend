@@ -24,6 +24,7 @@ var localized_errors = {
     timeout: "<?php echo __("timeout") ?>",
     validation_masstag: "<?php echo __("Your MassTag has special caharacters.These are not allowed")?>",
     validation_double_space: "<?php echo __(": You have double spaces ")?>",
+    validation_choice_format: "<?php echo __(" You are entering two choices or a special caharacter")?>",
 };
 
 var localized_messages = {
