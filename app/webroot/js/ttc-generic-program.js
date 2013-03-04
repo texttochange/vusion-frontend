@@ -383,6 +383,7 @@ function activeForm(){
     $("input[name*='\.keyword']").each(function (item) {
                $(this).rules("add",{
                     required:true,
+                    doubleSpace:true,
                     keywordFormat:true,
                     keywordUnique:true,
                     messages:{
@@ -617,17 +618,28 @@ function isDialogueView() {
 
 function formatKeywordValidation(value, element, param) {
     var errors = {};
+    
     if (isDialogueView()) {
         var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');
     } else {
         var keywordRegex = new RegExp('^[a-zA-Z0-9\\s]+(,(\\s)?[a-zA-Z0-9\\s]+)*$','i');
     }
-    if (keywordRegex.test(value)) {
+    
+    if (keywordRegex.test(value)) {    	  
         return true;
     }
     return false;
 }
 
+function doubleSpaceValidation(value, element, param) {         
+    var errors = {}    
+    var doubleSpaceRegex = new RegExp('\\s\\s','g');    
+    if (doubleSpaceRegex.test(value)) { 
+        errors[$(element).attr('name')] = wrapErrorMessage(value + localized_errors.validation_double_space);
+        this.showErrors(errors);        
+    }
+    return true;    
+}
 
 function duplicateKeywordValidation(value, element, param) {    
     var isValid = false;
@@ -650,7 +662,7 @@ function duplicateKeywordValidation(value, element, param) {
         }
     }
     $.each($("input[name*='keyword']"), function(index, element){
-        var elementWords = $(element).val().replace(/\s/g, '').split(',');
+    		    var elementWords = $(element).val().replace(/\s/g, '').split(',');
         for(var x=0;x<keywords.length;x++) {
             if (!$(keywordInput).is(element)) {
                 elementWords = getAnswerAcceptNoSpaceKeywords(element, elementWords);
@@ -1109,7 +1121,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         "keywordUnique",
         duplicateKeywordValidation,
         wrapErrorMessage(Error));
-
+    
+    $.validator.addMethod(
+        "doubleSpace",
+    	 doubleSpaceValidation,
+    	 wrapErrorMessage(Error));
+    
     $.validator.addMethod(
         "keywordFormat",
         formatKeywordValidation,

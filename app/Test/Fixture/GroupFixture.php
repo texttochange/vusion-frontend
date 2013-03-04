@@ -3,10 +3,10 @@
 class GroupFixture extends CakeTestFixture 
 {
     
-    public $useDbConfig = 'test';
-    var $import = array(
-        'table' => 'groups'
-        );
+    public $fields = array(
+        'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
+        'name' => array('type' => 'string', 'null' => false),
+        'specific_program_access' => array('type' => 'boolean', 'null' => false));
     
     public $records = array(
         array(

@@ -38,13 +38,19 @@ class ProgramsController extends AppController
     }
 
 
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
+    }
+
     protected function _getPrograms()
     {
         $this->Program->recursive = -1;
-        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+        $user = $this->Auth->user();
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            return  $this->Program->find('authorized', array(
                'specific_program_access' => 'true',
-               'user_id' => $this->Session->read('Auth.User.id')));
+               'user_id' => $user['id']));
 
         }
         return $this->Program->find('all');
@@ -53,10 +59,11 @@ class ProgramsController extends AppController
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
-        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+        $user = $this->Auth->user();
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            return  $this->Program->find('authorized', array(
                'specific_program_access' => 'true',
-               'user_id' => $this->Session->read('Auth.User.id'),
+               'user_id' => $user['id'],
                'conditions' => array('id' => $programId)));
 
         }
@@ -67,11 +74,14 @@ class ProgramsController extends AppController
     public function index() 
     {
         $this->Program->recursive = -1;
-        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+        
+        $user = $this->Auth->user();
+        
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            $this->paginate = array(
                 'authorized',
                 'specific_program_access' => 'true',
-                'user_id' => $this->Session->read('Auth.User.id'),
+                'user_id' => $user['id'],
                 );
         }
         $programs      =  $this->paginate();
