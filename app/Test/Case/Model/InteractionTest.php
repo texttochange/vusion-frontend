@@ -38,7 +38,7 @@ class InteractionTestCase extends CakeTestCase
         $interaction = $this->Interaction->beforeValidate($interaction);
 
         $this->assertEqual($interaction['activated'], 0);
-        $this->assertEqual($interaction['model-version'], "2");
+        $this->assertEqual($interaction['model-version'], "3");
         $this->assertTrue(isset($interaction['reminder-actions'][0]['model-version']));
     }
 

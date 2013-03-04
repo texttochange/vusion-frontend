@@ -1668,8 +1668,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $conditions = array(
             'conditions' => array(               
-                'tags' => 'test'));
-        print_r($conditions);
+                'tags' => 'test'));        
         $participants = $this->Participant->find('all', $conditions);      
         $this->assertEqual(1, count($participants));
         $this->assetEqual('+6', $participants[0]['Participant']['phone']);

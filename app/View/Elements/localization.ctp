@@ -23,6 +23,7 @@ var localized_errors = {
     interaction_summary_error: "<?php echo __("There is an error inside this interaction.") ?>",
     timeout: "<?php echo __("timeout") ?>",
     validation_masstag: "<?php echo __("Your MassTag has special caharacters.These are not allowed")?>",
+    validation_double_space: "<?php echo __(": You have double spaces ")?>",
 };
 
 var localized_messages = {
@@ -107,5 +108,6 @@ var localized_labels = {
     "program-unmatching-feedback":  "<?php echo __('Default program umatching feedback')?>",
     "interaction-unmatching-feedback":  "<?php echo __('Custom umatching message')?>",
     "unmatching-feedback-content": "<?php echo __('Content')?>",
+    "prioritized": "<?php echo __('Has priority')?>",
 };
 

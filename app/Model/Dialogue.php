@@ -17,7 +17,7 @@ class Dialogue extends MongoModel
 
     function getModelVersion()
     {
-        return '1';
+        return '2';
     }
 
 
@@ -29,6 +29,7 @@ class Dialogue extends MongoModel
             'auto-enrollment',
             'interactions',
             'activated',
+            'set-prioritized'
             );
     }
     
@@ -64,7 +65,6 @@ class Dialogue extends MongoModel
     {
         try {
             parent::beforeValidate();
-    
             if (!isset($this->data['Dialogue']['activated'])) {
                 $this->data['Dialogue']['activated'] = 0;
             } else {
@@ -73,7 +73,9 @@ class Dialogue extends MongoModel
     
             if (!isset($this->data['Dialogue']['dialogue-id'])) {
                 $this->data['Dialogue']['dialogue-id'] = uniqid();
-            }   
+            }
+            
+            // field "set-prioritized" is set and initialized inside MongoModel's beforeValidate
     
             if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
                 $errorValue = $this->data['Dialogue']['auto-enrollment'];
@@ -84,6 +86,10 @@ class Dialogue extends MongoModel
     
             if (isset($this->data['Dialogue']['interactions'])) {
                 foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
+                    if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
+                        $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];
+                        continue;
+                    }
                     $interaction = $interactionModel->beforeValidate($interaction);
                 }
             } else {

@@ -778,7 +778,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->save($participant_09);   
         
         $conditions = array(
-            'phone' => '+8');       
+            'phone' => '+8');   
         
         $this->Participant->addMassTags(' hi ', $conditions);
         $participants = $this->Participant->find('all', $conditions);         
