@@ -22,12 +22,13 @@ class ProgramSetting extends MongoModel
         'unmatching-answer-remove-reminder', 
         'customized-id',
         'double-matching-answer-feedback',
-        'double-optin-error-feedback'
+        'double-optin-error-feedback',
+        'request-and-feedback-prioritized'
         );
 
     function getModelVersion()
     {
-        return "1";
+        return "2";
     }
 
     function getRequiredFields($objectType=null)
@@ -69,7 +70,12 @@ class ProgramSetting extends MongoModel
 
         if ($this->data['ProgramSetting']['key'] == 'unmatching-answer-remove-reminder') {
             $this->data['ProgramSetting']['value'] = intval($this->data['ProgramSetting']['value']);
-        } 
+        }
+        
+        if ($this->data['ProgramSetting']['key'] == 'request-and-feedback-prioritized'
+                and $this->data['ProgramSetting']['value'] == '1') {
+            $this->data['ProgramSetting']['value'] = 'prioritized';
+        }
     
     }
 

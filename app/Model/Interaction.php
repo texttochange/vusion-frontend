@@ -7,7 +7,7 @@ App::uses('MissingField', 'Lib');
 class Interaction
 {
     var $modelName = 'interaction';
-    var $modelVersion = '2'; 
+    var $modelVersion = '3'; 
 
     var $payload = array();
 
@@ -15,7 +15,8 @@ class Interaction
         'interaction-id',
         'type-schedule',
         'type-interaction',
-        'activated');
+        'activated',
+        'prioritized');
 
     public function __construct()
     {        
@@ -127,6 +128,8 @@ class Interaction
                     $interaction['interaction-id'] = uniqid();  
                 } elseif ($field=='activated') {
                     $interaction['activated'] = 0;
+                } elseif ($field=='prioritized') {
+                    $interaction['prioritized'] = null;
                 } else {
                     throw new MissingField("$field is missing in an Interaction.");
                 }
