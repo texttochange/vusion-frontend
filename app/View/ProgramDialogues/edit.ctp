@@ -69,6 +69,9 @@
 	    }
 	}
 	$this->Js->set('enrollOptions', $dialogueOptions);
+	$this->Js->get('document')->event('ready','
+	    $("select[name*=\"auto-enrollment\"]").attr("multiple", true);
+        $("select[name*=\"auto-enrollment\"]").chosen();');
 	?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
