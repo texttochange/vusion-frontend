@@ -11,7 +11,14 @@
 		echo $this->Form->input('email');
 		if (isset($isAdmin) && $isAdmin) {
 		    echo $this->Form->input('group_id');
-		    echo $this->Form->input('Program');
+		    $options = $programs;		
+		    echo $this->Form->input('Program', array('options'=>$options,
+		        'type'=>'select',
+		        'multiple'=>true,
+		        'label'=>'Program',	                
+		        'style'=>'margin-bottom:0px'
+		        ));
+		    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');		    
 		}
 	?>
 	</fieldset>

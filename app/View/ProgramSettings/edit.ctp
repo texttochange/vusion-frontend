@@ -1,6 +1,18 @@
 <div class="programsettings form">
     <ul class="ttc-actions">		
-        <li><?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+        <li>
+        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+        <span class="actions">
+        <?php
+        echo $this->Html->link( __('Cancel'), 
+            array(
+                'program' => $programUrl,
+                'controller' => 'programHome',
+                'action' => 'index'	           
+                ));
+        ?>
+        </span>
+        </li>
         <?php $this->Js->get('#button-save')->event('click', '$("#ProgramSettingsEditForm").submit()' , true);?>
 	</ul>
 <H3><?php echo __('Edit Program Settings'); ?></H3>
