@@ -50,34 +50,40 @@
     echo $this->element('filter_box', array(
         'controller' => 'programHistory'));
 	?>
-	<div class="ttc-display-area">
-	<table cellpadding="0" cellspacing="0">
-	<tr>                                                                        
-			<th><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			<th><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-	</tr>
-	<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $statuses == null) { ?>
-	    <tr>
-	        <td colspan=6><?php echo __("No results found.") ?></td>
-	    </tr>
-	<?php } else {?>    
-	<?php
-	foreach ($statuses as $history): ?>
-	<tr>
-		<td><?php echo $history['History']['participant-phone']; ?>&nbsp;</td>
-		    <td><?php echo ucfirst($history['History']['message-direction']); ?>&nbsp;</td>
-		    <td><?php if (isset($history['History']['message-status'])) echo $history['History']['message-status']; ?>&nbsp;</td>
-		    <td><?php if (isset($history['History']['failure-reason'])) echo $history['History']['failure-reason']; ?>&nbsp;</td>
-		    <td><?php echo $history['History']['message-content']; ?>&nbsp;</td>
-		    <td><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
-		</tr>
-	<?php endforeach; ?>
-	<?php } ?>
+	<div class="ttc-table-display-area">
+	<div  class="ttc-table-scrolling-area">
+	<table  cellpadding="0" cellspacing="0">
+	    <thead >
+	        <tr>                                                                        
+			    <th id="phone-css"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th id="direction-css"><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th id="status-css"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th id="failure-reason-css"><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th id="details-css"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th id="date-time-css"><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if (preg_grep('/^filter/', array_keys($this->params['url'])) && $statuses == null) { ?>
+			<tr>
+	            <td colspan=6><?php echo __("No results found.") ?></td>
+	        </tr>
+	            <?php } else {?>    
+	                <?php
+	                foreach ($statuses as $history): ?>
+	        <tr>
+	            <td id="phone-css"><?php echo $history['History']['participant-phone']; ?>&nbsp;</td>
+	            <td id="direction-css"><?php echo ucfirst($history['History']['message-direction']); ?>&nbsp;</td>
+	            <td id="status-css"><?php if (isset($history['History']['message-status'])) echo $history['History']['message-status']; ?>&nbsp;</td>
+	            <td id="failure-reason-css"><?php if (isset($history['History']['failure-reason'])) echo $history['History']['failure-reason']; ?>&nbsp;</td>
+	            <td id="details-css"><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+	            <td id="date-time-css"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+	        </tr>
+	        <?php endforeach; ?>
+	            <?php } ?>
+	     </tbody>
 	</table>
+	</div>
 	</div>
 </div>	
 
