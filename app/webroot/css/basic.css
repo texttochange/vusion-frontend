@@ -580,12 +580,104 @@
 .ttc-display-area {
     height: 340px;
     min-height: 250px;
-    overflow-y:auto;
+    overflow: auto;
     width: 100%;
     border: 2px solid lightgrey;
     margin-bottom: 10px;
     padding: 1%;
 }
+
+.ttc-table-display-area {
+    height: 340px;
+    min-height: 250px;
+    overflow: hidden;
+    width: 100%;
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;   
+    background: none repeat scroll 0 0 ;
+    position: relative;
+    padding-top: 34px; 
+}
+
+.ttc-table-scrolling-area {
+    height: 343px;
+    min-height: 250px;
+    overflow: auto; 
+    
+}
+
+.ttc-table-scrolling-area thead tr{
+   left: 0; top: 0;
+    position: absolute;    
+}
+
+/*.participants thead th{
+width: 139px;
+}
+
+.participants tbody td{
+  width: 155px; 
+  text-align: left;
+}*/
+
+#phone-css {
+width: 118px;
+}
+
+#direction-css {
+width: 94px;
+}
+
+#status-css {
+width: 88px;
+text-align: left;
+}
+
+#failure-reason-css {
+width: 147px;
+}
+
+#details-css {
+width: 480px;
+}
+
+#date-time-css {
+width: 186px;
+}
+
+#action-css {
+width: 186px;
+text-align: center;
+}
+
+#profile-css {
+width: 104px;
+}
+
+#responses-css {
+width: 630px;
+}
+
+#send-to-css {
+width: 165px;
+}
+
+#content-css {
+width: 230px;
+word-wrap: break-word;
+}
+
+#delivery-css {
+width: 150px;
+}
+
+#message-css {
+width: 593px;
+}
+
+.ttc-table-scrolling-area tbody td{ 
+  text-align: left;
+} 
 
 .ttc-table-subelement {
     width: 100%;
@@ -596,15 +688,16 @@
     text-align: left;
 }
 
-.ttc-display-area table{
+.ttc-table-display-area table{
     margin-bottom: 10px;
     width: 100%;
 }
 
-.ttc-display-area table tr td {
+.ttc-table-display-area table tr td {
     padding: 6px;
     text-align: left;
 }
+
 
 .ttc-dialogue {
    float: none;
