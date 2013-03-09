@@ -402,10 +402,13 @@ function activeForm(){
     $("input[name*='choice']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            doubleSpace:true,
             choiceUnique: true,
+            choiceFormat:true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
                 choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
+                choiceFormat: wrapErrorMessage(localized_errors.validation_choice_format),
             }
         });
     });
@@ -729,7 +732,7 @@ function duplicateKeywordValidation(value, element, param) {
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
-    var elementName = $(element).attr('name');
+    var elementName = $(element).attr('name');    
     $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function(key, otherChoice) {
             if (value == $(otherChoice).val()) { 
                 isValid = false;
@@ -737,6 +740,15 @@ function duplicateChoiceValidation(value, element, param) {
             }
     });
     return isValid;
+}
+
+
+function formatChoiceValidation(value, element, param) {    
+    var choiceRegex = new RegExp('^[\\w\\s]*$','i');
+    if (choiceRegex.test(value)) { 
+          return true;
+    }
+    return false;    
 }
 
 function atLeastOneIsChecked(value, element, param) {
@@ -1135,6 +1147,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "choiceUnique",
         duplicateChoiceValidation,
+        wrapErrorMessage(Error));
+    
+    $.validator.addMethod(
+        "choiceFormat",
+        formatChoiceValidation,
         wrapErrorMessage(Error));
 
     $.validator.addMethod(
