@@ -34,7 +34,7 @@
     $fixedTimeSelectDisabled = true;
         
     echo $this->Form->create('UnattachedMessage');
-    echo $this->Form->input(__('name'), array('id' => 'name')); 
+    echo $this->Form->input('name', array('id' => 'name')); 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
         $this->Form->isFieldError('send-to-match-conditions')) { 
@@ -74,7 +74,7 @@
     if ($this->Form->isFieldError('send-to-match-conditions'))
         echo $this->Form->error('send-to-match-conditions');
     echo "</div>";
-    echo $this->Form->input(__('content'), array('rows'=>5));
+    echo $this->Form->input('content', array('rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
