@@ -590,13 +590,15 @@
 .ttc-table-display-area {
     height: 340px;
     min-height: 250px;
+    padding: 1%;
     overflow: hidden;
     width: 100%;
     border: 2px solid lightgrey;
     margin-bottom: 10px;   
     background: none repeat scroll 0 0 ;
     position: relative;
-    padding-top: 34px; 
+    padding-top: 41px; 
+    
 }
 
 .ttc-table-scrolling-area {
@@ -608,7 +610,8 @@
 
 .ttc-table-scrolling-area thead tr{
    left: 0; top: 0;
-    position: absolute;    
+    position: absolute;
+ padding: 0% 1% 0%;    
 }
 
 #phone-css {
@@ -625,11 +628,15 @@ text-align: left;
 }
 
 #failure-reason-css {
-width: 147px;
+width: 153px;
 }
 
 #details-css {
-width: 480px;
+width: 474px;
+}
+
+#details2-css {
+width: 320px;
 }
 
 #date-time-css {
