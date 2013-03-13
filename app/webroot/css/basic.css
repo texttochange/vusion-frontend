@@ -611,15 +611,6 @@
     position: absolute;    
 }
 
-/*.participants thead th{
-width: 139px;
-}
-
-.participants tbody td{
-  width: 155px; 
-  text-align: left;
-}*/
-
 #phone-css {
 width: 118px;
 }
@@ -667,6 +658,11 @@ width: 230px;
 word-wrap: break-word;
 }
 
+#content2-css {
+width: 486px;
+word-wrap: break-word;
+}
+
 #delivery-css {
 width: 150px;
 }
@@ -676,7 +672,7 @@ width: 593px;
 }
 
 .ttc-table-scrolling-area tbody td{ 
-  text-align: left;
+  text-align: left;  
 } 
 
 .ttc-table-subelement {
