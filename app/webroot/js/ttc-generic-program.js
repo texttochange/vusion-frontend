@@ -15,7 +15,7 @@ var program = {"script": [
     "dialogue-id": "hidden",
     //"auto-enrollment": "select",
     "auto-enrollment": ["radio-type-auto-enrollment"],
-    "radio-type-auto-enrollment": "radio-buttons",
+    "radio-type-auto-enrollment": "radiobuttons",
     "type-auto-enrollment": {"none":"none", "all":"all"},
     //"auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "checkbox-set-prioritized": "checkboxes",
