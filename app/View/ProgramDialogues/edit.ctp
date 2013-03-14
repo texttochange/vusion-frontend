@@ -68,10 +68,16 @@
 	            );
 	    }
 	}
-	$this->Js->set('enrollOptions', $dialogueOptions);
-	$this->Js->get('document')->event('ready','
-	    $("select[name*=\"auto-enrollment\"]").attr("multiple", true);
-        $("select[name*=\"auto-enrollment\"]").chosen();');
+	$this->Js->set('enrollOptions', $dialogueOptions); 
+	
+	$autoEnrollOptions = array();
+	foreach ($selectors as $selector) {
+	    $autoEnrollOptions[] = array(
+	        'value' => $selector,
+	        'html' => $selector
+	        );
+	}
+	$this->Js->set('match-participantsOptions', $autoEnrollOptions);
 	?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

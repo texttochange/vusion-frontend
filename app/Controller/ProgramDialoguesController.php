@@ -70,6 +70,12 @@ class ProgramDialoguesController extends AppController
 
     public function edit()
     {
+        $selectorValues = $this->Participant->getDistinctTagsAndLabels();
+        if (count($selectorValues) > 0) {
+            $selectors = array_combine($selectorValues, $selectorValues);
+        }
+        $this->set(compact('selectors'));
+        
         $id = $this->params['id'];
         
         if (!isset($id))
@@ -84,6 +90,9 @@ class ProgramDialoguesController extends AppController
                 );
             return;
         }
+        
+        $selectors = $this->Participant->getDistinctTagsAndLabels();
+        $this->set(compact('selectors'));
 
         $dialogue = $this->Dialogue->read(null, $id);
         if ($dialogue['Dialogue']['activated'] == 2) {

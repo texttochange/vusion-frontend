@@ -16,7 +16,9 @@ var program = {"script": [
     //"auto-enrollment": "select",
     "auto-enrollment": ["radio-type-auto-enrollment"],
     "radio-type-auto-enrollment": "radiobuttons",
-    "type-auto-enrollment": {"none":"none", "all":"all"},
+    "type-auto-enrollment": {"none":"none", "all":"all", "match":"match"},
+    "match": ["match-participants"],
+    "match-participants": "select",
     //"auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
     "checkbox-set-prioritized": "checkboxes",
     "set-prioritized": {"prioritized": "prioritized"},
@@ -319,6 +321,15 @@ function activeForm(){
                 $(elt).mouseover(updateOffsetConditions);
             };
     });
+    $.each($("select[name*='match-participants']"),function (key, elt){
+    	    $(elt).attr("multiple", true);
+    	    $(elt).chosen();
+    	    $(elt).val("");
+    	    $(elt).trigger("liszt:updated")
+            if (!$.data(elt,'events')){    
+                $(elt).mouseover(updateMatchConditions);
+            };
+    });
     $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
@@ -451,6 +462,16 @@ function activeForm(){
         });
     });
     $("input[name*='type-unmatching-feedback']").each(function (item) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        });
+    });
+    $("input[name*='type-auto-enrollment']").each(function (item) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
@@ -596,6 +617,13 @@ function updateOffsetConditions(index, elt){
         defaultOptions = window.app['offset-condition-interaction-idOptions']
         defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
     }
+}
+
+function updateMatchConditions(elt){
+    var matchOptions = window.app['match-participantsOptions'];
+    $.each(matchOptions, function(value, key) {
+    		    $(elt).append(new Option(key, value))
+    });
 }
 
 function getAnswerAcceptNoSpaceKeywords(element, keywords){
