@@ -111,6 +111,7 @@ var localized_labels = {
     "prioritized": "<?php echo __('Has priority')?>",
     "all": "<?php echo __('All participants')?>",
     "none": "<?php echo __('None')?>",
-    "match": "<?php echo __('Participant(s) matching')?>",
+    "match-all": "<?php echo __('Participant(s) matching ALL conditions below')?>",
+    "match-any": "<?php echo __('Participant(s) matching ANY conditions below')?>",
 };
 
