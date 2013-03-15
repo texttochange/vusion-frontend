@@ -498,11 +498,11 @@ function activeForm(){
     });
     $("input[name$='minutes']").each(function (item) {
         $(this).rules("add",{
-            required:true,
+            required:true,         
             minutesSeconds: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),
+                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),                
             }
         });
     });
