@@ -23,7 +23,8 @@ var program = {"script": [
     "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    "question-answer": ["dialogue-content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    "dialogue-content": "textarea",
     "radio-type-unmatching-feedback" : "radiobuttons",
     "type-unmatching-feedback": {
         "no-unmatching-feedback": "no-unmatching-feedback",
@@ -72,7 +73,8 @@ var program = {"script": [
     "responses":["add-response"],
     "actions":["add-action"],
     "add-response":"button",
-    "response":["content"],
+    "response":["request-content"],
+    "request-content": "textarea",
     "radio-type-action": "radiobuttons",
     "add-action":"button",
     "add-feedback":"button",
@@ -93,7 +95,7 @@ var program = {"script": [
         "announcement":"announcement",
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
-    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    "question-answer-keyword": ["dialogue-content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -486,6 +488,22 @@ function activeForm(){
             }
         });
     });
+    $("textarea[name*='request-content']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            messages:{
+                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request"),
+            }
+        });
+    });
+    $("textarea[name*='dialogue-content']").each(function (item) {
+        $(this).rules("add",{
+            required:true,
+            messages:{
+                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue"),
+            }
+        });
+    });
     $("input[name$='days']").each(function (item) {
         $(this).rules("add",{
             required:true,
@@ -498,11 +516,11 @@ function activeForm(){
     });
     $("input[name$='minutes']").each(function (item) {
         $(this).rules("add",{
-            required:true,
+            required:true,         
             minutesSeconds: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),
+                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),                
             }
         });
     });

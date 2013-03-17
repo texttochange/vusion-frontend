@@ -360,8 +360,9 @@
 
 .ttc-validation-error {
     position: absolute;
-    left: -700px;
-    top:-49px;
+   left: -700px;
+    top: -50px;
+    top: -35px\9;
     background: pink;
     border: solid white;
     padding: 5px;
@@ -373,22 +374,37 @@
 }
 
 .ttc-textarea-validation-error {
-    left: 40px;
+   /* position: relative;*/
+    /*left: 170px;*/
     top : -96px;
+    top: -52px\9;
+}
+
+.ttc-textarea-validation-error.request {  
+    left: -695px;   
+}
+
+.ttc-textarea-validation-error.dialogue{  
+    left: 191px;
+    top : -113px;
+    top: -59px\9;
 }
 
 .ttc-input-validation-error {
     top: -49px;
+    top: -64px\9;    
+    left: 191px\9;
 }
 
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.ttc-validation-error{   top: -32px; }
 	.ttc-radio-validation-error{ top: -38px;}
-	.ttc-textarea-validation-error {top: -60px;}
+	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
+	.ttc-textarea-validation-error.dialogue {top: -60px}
+	.ttc-textarea-validation-error.request {top: -60px; left: 170px;}
 }
-
 
 .ttc-validation-error:after {
 	border-width: 12px;
@@ -676,6 +692,10 @@ width: 150px;
 
 #message-css {
 width: 593px;
+}
+
+#log-css {
+width: 813px;
 }
 
 .ttc-table-scrolling-area tbody td{ 
