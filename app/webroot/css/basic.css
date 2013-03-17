@@ -360,7 +360,7 @@
 
 .ttc-validation-error {
     position: absolute;
-    left: -700px;
+   left: -700px;
     top: -50px;
     top: -35px\9;
     background: pink;
@@ -374,9 +374,20 @@
 }
 
 .ttc-textarea-validation-error {
+   /* position: relative;*/
+    /*left: 170px;*/
+    top : -96px;
+    top: -52px\9;
+}
+
+.ttc-textarea-validation-error.request {  
+    left: -695px;   
+}
+
+.ttc-textarea-validation-error.dialogue{  
     left: 191px;
-    top : -115px;
-    top: -71px\9;
+    top : -113px;
+    top: -59px\9;
 }
 
 .ttc-input-validation-error {
@@ -389,10 +400,11 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.ttc-validation-error{   top: -32px; }
 	.ttc-radio-validation-error{ top: -38px;}
-	.ttc-textarea-validation-error {top: -60px;}
+	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
+	.ttc-textarea-validation-error.dialogue {top: -60px}
+	.ttc-textarea-validation-error.request {top: -60px; left: 170px;}
 }
-
 
 .ttc-validation-error:after {
 	border-width: 12px;
