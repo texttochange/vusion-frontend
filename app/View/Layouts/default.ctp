@@ -52,6 +52,10 @@
 			');
 		}
 	?>
+	<?php
+	echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex'));
+	?>
+	
 </head>
 <body>
 	<div id="container">
