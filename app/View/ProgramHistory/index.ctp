@@ -19,7 +19,7 @@
         </li>
 		<li>
 		    <?php
-		        echo $this->Form->create(null);
+		        /*echo $this->Form->create(null);
 		        $exportOptions = array();
 		        $exportOptions['export.csv'] = 'Export CSV'; 
 		        $exportOptions['index.csv'] = 'Export Raw CSV';
@@ -30,7 +30,14 @@
 		        $filterParams = 
 		        $this->Js->get('#export-type')->event('change', '
 	                window.location = "http://"+window.location.host+"/'.$url.'"+$("#export-type option:selected").val()+window.location.search;	                
-	            ');
+	            ');*/
+	            $exportUrl = $this->Html->url(array('program' =>$programUrl, 'controller' => 'programHistory', 'action'=>'export'));
+                echo $this->Html->tag(
+                    'span', 
+                    __('Export'), 
+                    array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
+                $this->Js->get('[name=export]')->event('click',
+                    'generateExportDialogue(this);');
 		    ?>
 		</li>
 		<li><?php
