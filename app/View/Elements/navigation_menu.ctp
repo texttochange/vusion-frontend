@@ -147,24 +147,7 @@
         </ul>
     </li>
     <li>
-        <?php echo $this->AclLink->generateLink(__('History'),$programUrl,'programHistory'); ?>
-        <ul>
-            <li>
-                <?php
-                    echo $this->AclLink->generateLink(__('Export CSV'),$programUrl,'programHistory','export',null,'.csv');
-                ?>
-            </li>            
-            <li>
-                <?php
-                    echo $this->AclLink->generateLink(__('Export Raw CSV'),$programUrl,'programHistory','index',null,'.csv');
-                ?>
-            </li>
-            <li>
-                <?php
-                    echo $this->AclLink->generateLink(__('Export Json'),$programUrl,'programHistory','index',null,'.json');
-                ?>
-            </li>
-        </ul>
+        <?php echo $this->AclLink->generateLink(__('History'),$programUrl,'programHistory'); ?>        
     </li>
     <li>
         <?php

@@ -33,7 +33,7 @@ class ProgramParticipantsController extends AppController
         $this->Dialogue          = new Dialogue($options);
         $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting = new ProgramSetting($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
         
         $this->_instanciateVumiRabbitMQ();
         

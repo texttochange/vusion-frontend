@@ -39,10 +39,13 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         parent::setUp();
 
         $this->Status = new TestProgramHistoryController();
-        ClassRegistry::config(array('ds' => 'test'));
+        //ClassRegistry::config(array('ds' => 'test'));
+        $options = array('database' => $this->programData[0]['Program']['database']);
+        $this->ProgramSetting = new ProgramSetting($options);
         $this->Maker = new ScriptMaker();
 
-        $this->dropData();        
+        $this->dropData();
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');      
         
     }
 
@@ -73,7 +76,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     }
 
 
-    protected function mockProgramAccess()
+    protected function mockProgramAccess_withoutSession()
     {
         $Status = $this->generate('ProgramHistory', array(
             'components' => array(
@@ -96,6 +99,14 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             ->method('find')
             ->will($this->returnValue($this->programData));
             
+        return $Status;
+    }
+    
+    
+    protected function mockProgramAccess()
+    {
+        $Status = $this->mockProgramAccess_withoutSession();
+            
         $Status->Session
             ->expects($this->any())
             ->method('read')
@@ -107,6 +118,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
                 'Africa/Kampala',
                 'testdbprogram'
                 ));
+            
+        return $Status;
     }
 
 
@@ -309,7 +322,50 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
        
     }
 
-     public function testMassDelete_failMissingFilterOperator() {
+    public function testMassDelete_failMissingFilterOperator() {
+        
+       $this->Status->History->create('dialogue-history');
+       $this->Status->History->save(array(
+           'participant-phone' => '356774527841',
+           'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+           'timestamp' => '2013-02-07T12:20:43',
+           'dialogue-id' => '1',
+           'interaction-id' => '11',
+           'message-direction' => 'outgoing',
+           'message-status' => 'delivered'
+           ));
+       
+       $this->mockProgramAccess();
+       try {
+           $this->testAction("/testurl/programHistory/delete?filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=outgoing");
+           $this->failed('Missing filter operator should rise an exception.');
+       } catch (FilterException $e) {
+           $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+       }
+       $this->assertEquals(
+           1,
+           $this->Status->History->find('count'));
+    }
+    
+    
+    public function testExport()
+    {
+        $Status = $this->mockProgramAccess_withoutSession();
+        
+        $Status->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->onConsecutiveCalls(
+                '4', 
+                '2',
+                $this->programData[0]['Program']['database'],
+                $this->programData[0]['Program']['name'],
+                'Africa/Kampala',
+                'testdbprogram',
+                'name1', #?
+                'name2', #?
+                $this->programData[0]['Program']['name'] #only for export test
+                ));
         
         $this->Status->History->create('dialogue-history');
         $this->Status->History->save(array(
@@ -322,17 +378,13 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-status' => 'delivered'
             ));
         
-        $this->mockProgramAccess();
-        try {
-            $this->testAction("/testurl/programHistory/delete?filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=outgoing");
-            $this->failed('Missing filter operator should rise an exception.');
-        } catch (FilterException $e) {
-            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
-        }
-        $this->assertEquals(
-            1,
-            $this->Status->History->find('count'));
-     }
+        $this->testAction("/testurl/programHistory/export");
+        
+        $this->assertTrue(isset($this->vars['fileName']));
+        $this->assertFileEquals(
+            TESTS . 'files/exported_history.csv',
+            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+    }
 
 
 }
