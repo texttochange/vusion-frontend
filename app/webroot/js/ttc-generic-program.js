@@ -23,8 +23,9 @@ var program = {"script": [
     "activated":"hidden",
     "add-interaction":"button",
     "announcement": ["content"],
-    "question-answer": ["dialogue-content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
-    "dialogue-content": "textarea",
+    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    //"question-answer": ["dialogue-content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    //"dialogue-content": "textarea",
     "radio-type-unmatching-feedback" : "radiobuttons",
     "type-unmatching-feedback": {
         "no-unmatching-feedback": "no-unmatching-feedback",
@@ -73,8 +74,9 @@ var program = {"script": [
     "responses":["add-response"],
     "actions":["add-action"],
     "add-response":"button",
-    "response":["request-content"],
-    "request-content": "textarea",
+    "response":["content"],
+    //"response":["request-content"],
+    //"request-content": "textarea",
     "radio-type-action": "radiobuttons",
     "add-action":"button",
     "add-feedback":"button",
@@ -95,7 +97,8 @@ var program = {"script": [
         "announcement":"announcement",
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
-    "question-answer-keyword": ["dialogue-content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    //"question-answer-keyword": ["dialogue-content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -480,30 +483,20 @@ function activeForm(){
             }
         });
     });
-    $("textarea[name*='content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error"),
-            }
-        });
-    });
-    $("textarea[name*='request-content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request"),
-            }
-        });
-    });
-    $("textarea[name*='dialogue-content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue"),
-            }
-        });
-    });
+    $("textarea[name*='content']").each(function (key, elt) {          
+            $(this).rules("add",{
+                    required:true,
+                    messages:{                        
+                        required: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request");
+                            }
+                        },
+                    }  
+            });             
+    });   
     $("input[name$='days']").each(function (item) {
         $(this).rules("add",{
             required:true,
