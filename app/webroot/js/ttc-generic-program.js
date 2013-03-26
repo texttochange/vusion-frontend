@@ -484,38 +484,19 @@ function activeForm(){
         });
     });
     $("textarea[name*='content']").each(function (key, elt) {          
-                $(this).rules("add",{
-                        required:true,
-                        messages:{
-                            //required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error"),
-                            required: function(){
-                                if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){
-                                    alert($(elt))
-                                } else {
-                                    alert('done');
-                                }
-                            },
-                        }  
-                });           
-            
-    });
-    
-   /* $("textarea[name*='request-content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request"),
-            }
-        });
-    });
-    $("textarea[name*='dialogue-content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue"),
-            }
-        });
-    });*/
+            $(this).rules("add",{
+                    required:true,
+                    messages:{                        
+                        required: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request");
+                            }
+                        },
+                    }  
+            });             
+    });   
     $("input[name$='days']").each(function (item) {
         $(this).rules("add",{
             required:true,

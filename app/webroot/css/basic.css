@@ -373,9 +373,7 @@
     left: 30px;
 }
 
-.ttc-textarea-validation-error {
-   /* position: relative;*/
-    /*left: 170px;*/
+.ttc-textarea-validation-error {   
     top : -96px;
     top: -52px\9;     
 }
