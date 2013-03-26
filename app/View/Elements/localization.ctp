@@ -110,5 +110,7 @@ var localized_labels = {
     "interaction-unmatching-feedback":  "<?php echo __('Custom umatching message')?>",
     "unmatching-feedback-content": "<?php echo __('Content')?>",
     "prioritized": "<?php echo __('Has priority')?>",
+    "request-content": "<?php echo __('Content')?>",
+    "dialogue-content": "<?php echo __('Content')?>",
 };
 

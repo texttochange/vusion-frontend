@@ -360,8 +360,9 @@
 
 .ttc-validation-error {
     position: absolute;
-    left: -700px;
-    top:-49px;
+   left: -700px;
+    top: -50px;
+    top: -35px\9;
     background: pink;
     border: solid white;
     padding: 5px;
@@ -372,23 +373,36 @@
     left: 30px;
 }
 
-.ttc-textarea-validation-error {
-    left: 40px;
+.ttc-textarea-validation-error {   
     top : -96px;
+    top: -52px\9;     
+}
+
+.request.ttc-textarea-validation-error{  
+    left: -695px;   
+}
+
+.dialogue.ttc-textarea-validation-error{  
+    left: 191px;
+    top : -113px;
+    top: -59px\9;
 }
 
 .ttc-input-validation-error {
     top: -49px;
+    top: -64px\9;    
+    left: 191px\9;
 }
 
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.ttc-validation-error{   top: -32px; }
 	.ttc-radio-validation-error{ top: -38px;}
-	.ttc-textarea-validation-error {top: -60px;}
+	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
+	.ttc-textarea-validation-error.dialogue {top: -60px}
+	.ttc-textarea-validation-error.request {top: -60px; left: 170px;}
 }
-
 
 .ttc-validation-error:after {
 	border-width: 12px;
@@ -580,12 +594,111 @@
 .ttc-display-area {
     height: 340px;
     min-height: 250px;
-    overflow-y:auto;
+    overflow: auto;
     width: 100%;
     border: 2px solid lightgrey;
     margin-bottom: 10px;
     padding: 1%;
 }
+
+.ttc-table-display-area {
+    height: 340px;
+    min-height: 250px;
+    padding: 1%;
+    overflow: hidden;
+    width: 100%;
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;   
+    background: none repeat scroll 0 0 ;
+    position: relative;
+    padding-top: 41px; 
+    
+}
+
+.ttc-table-scrolling-area {
+    height: 343px;
+    min-height: 250px;
+    overflow: auto; 
+    
+}
+
+.ttc-table-scrolling-area thead tr{
+   left: 0; top: 0;
+    position: absolute;
+ padding: 0% 1% 0%;    
+}
+
+#phone-css {
+width: 118px;
+}
+
+#direction-css {
+width: 94px;
+}
+
+#status-css {
+width: 88px;
+text-align: left;
+}
+
+#failure-reason-css {
+width: 153px;
+}
+
+#details-css {
+width: 474px;
+}
+
+#details2-css {
+width: 320px;
+}
+
+#date-time-css {
+width: 186px;
+}
+
+#action-css {
+width: 183px;
+text-align: center;
+}
+
+#profile-css {
+width: 99px;
+}
+
+#responses-css {
+width: 630px;
+}
+
+#send-to-css {
+width: 165px;
+}
+
+#content-css {
+width: 230px;
+word-wrap: break-word;
+}
+
+#content2-css {
+width: 486px;
+word-wrap: break-word;
+}
+
+#delivery-css {
+width: 150px;
+}
+
+#message-css {
+width: 593px;
+}
+
+#log-css {
+width: 813px;
+}
+
+.ttc-table-scrolling-area tbody td{ 
+  text-align: left;  
+} 
 
 .ttc-table-subelement {
     width: 100%;
@@ -596,15 +709,16 @@
     text-align: left;
 }
 
-.ttc-display-area table{
+.ttc-table-display-area table{
     margin-bottom: 10px;
     width: 100%;
 }
 
-.ttc-display-area table tr td {
+.ttc-table-display-area table tr td {
     padding: 6px;
     text-align: left;
 }
+
 
 .ttc-dialogue {
    float: none;
