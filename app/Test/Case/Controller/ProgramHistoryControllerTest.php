@@ -122,7 +122,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         return $Status;
     }
 
-/*
+
     public function testPagination() 
     {
         $this->instanciateHistoryModel();
@@ -346,7 +346,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
            1,
            $this->Status->History->find('count'));
     }
-    */
+    
     
     public function testExport()
     {
