@@ -110,29 +110,7 @@ class ProgramHistoryController extends AppController
         $this->response->send();
     }
 
-    /*    
-    public function export()
-    {    
-        if (!isset($this->params['named']['sort'])) {
-            $order = array('timestamp' => 'desc');
-        } else {
-            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
-        }
 
-        // Only get messages and avoid other stuff like markers
-        $defaultConditions = array('$or' => array(
-            array('object-type' => array('$in' => $this->History->messageType)),
-            array('object-type' => array('$exists' => false))));
-
-        $exportParams = array(
-            'fields' => array('participant-phone','message-direction','message-status','message-content','timestamp'),
-            'conditions' => $this->_getConditions($defaultConditions),
-            'order'=> $order,
-        );
-        
-        $data = $this->History->find('all', $exportParams);
-        $this->set(compact('data'));
-    }*/
     public function export()
     {
         $programUrl = $this->params['program'];
