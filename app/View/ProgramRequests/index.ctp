@@ -4,17 +4,17 @@
 	</ul>	
 	<h3><?php echo __('Requests');?></h3>
 	<div id="data-control-nav" class="ttc-paging paging">
-<?php
-echo "<span class='ttc-page-count'>";
-echo $this->Paginator->counter(array(
-    'format' => __('{:start} - {:end} of {:count}')
-    ));
-echo "</span>";
-echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
-//echo $this->Paginator->numbers(array('separator' => ''));
-echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
-?>
-</div>
+	<?php
+	echo "<span class='ttc-page-count'>";
+	echo $this->Paginator->counter(array(
+	    'format' => __('{:start} - {:end} of {:count}')
+	    ));
+	echo "</span>";
+	echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
+	//echo $this->Paginator->numbers(array('separator' => ''));
+	echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+	?>
+	</div>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area">
 	<table cellpadding="0" cellspacing="0">

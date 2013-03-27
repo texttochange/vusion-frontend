@@ -1,42 +1,45 @@
 <div class="templates index">
 	<h3><?php echo __('Templates');?></h3>
-	<div class="ttc-display-area">
-	<table cellpadding="0" cellspacing="0">
-	<tr>
-			<th><?php echo $this->Paginator->sort('name');?></th>
-			<th><?php echo $this->Paginator->sort('type-template', 'Type');?></th>
-			<th><?php echo $this->Paginator->sort('template');?></th>
-			<th class="actions"><?php echo __('Actions');?></th>
-	</tr>
+	<div id="data-control-nav" class="ttc-paging paging">
 	<?php
-	foreach ($templates as $template): ?>
-	<tr>
-		<td><?php echo h($template['Template']['name']); ?>&nbsp;</td>
-		<td><?php echo __($template['Template']['type-template']) ?></td>
-		<td><?php echo __($template['Template']['template']) ?></td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete "%s"?', $template['Template']['name'])); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</table>
-	</div>
-	<p>
-	<?php
+	echo "<span class='ttc-page-count'>";
 	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+	    'format' => __('{:start} - {:end} of {:count}')
+	    ));
+	echo "</span>";
+	echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
+	//echo $this->Paginator->numbers(array('separator' => ''));
+	echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
 	?>
 	</div>
-</div>
+	<div class="ttc-table-display-area">
+	<div class="ttc-table-scrolling-area">
+	<table cellpadding="0" cellspacing="0">
+	    <thead>
+	        <tr>
+			    <th id="prefix-css"><?php echo $this->Paginator->sort('name');?></th>
+			    <th id="prefix-css"><?php echo $this->Paginator->sort('type-template', 'Type');?></th>
+			    <th id="details-css"><?php echo $this->Paginator->sort('template');?></th>
+			    <th class="actions" id="action-css"><?php echo __('Actions');?></th>
+			</tr>
+		</thead>
+		<tbody>
+		    <?php foreach ($templates as $template): ?>
+		    <tr>
+		        <td id="prefix-css"><?php echo h($template['Template']['name']); ?>&nbsp;</td>
+		        <td id="prefix-css"><?php echo __($template['Template']['type-template']) ?></td>
+		        <td id="details-css"><?php echo __($template['Template']['template']) ?></td>
+		        <td class="actions" id="action-css">
+		            <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
+		            <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete "%s"?', $template['Template']['name'])); ?>
+		        </td>
+		    </tr>
+		   <?php endforeach; ?>
+		 </tbody>
+	</table>
+	</div>
+	</div>	
+	</div>
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
