@@ -20,11 +20,12 @@ class ProgramHistoryController extends AppController
     {
         parent::constructClasses();
         
-        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->History        = new History($options);
-        $this->Dialogue       = new Dialogue($options);
-        $this->dialogueHelper = new DialogueHelper();
+        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->History           = new History($options);
+        $this->Dialogue          = new Dialogue($options);
+        $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
     }
 
     public function beforeFilter()
@@ -90,30 +91,99 @@ class ProgramHistoryController extends AppController
             );
        
     }
-
+    
+    
+    public function download()
+    {
+        $programUrl = $this->params['program'];
+        $fileName = $this->params['url']['file'];
         
-    public function export()
-    {    
-        if (!isset($this->params['named']['sort'])) {
-            $order = array('timestamp' => 'desc');
-        } else {
-            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
+            
+        if (!file_exists($fileFullPath)) {
+            throw new NotFoundException();
         }
 
+        $this->response->header("X-Sendfile: $fileFullPath");
+        $this->response->header("Content-type: application/octet-stream");
+        $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
+        $this->response->send();
+    }
+
+
+    public function export()
+    {
+        $programUrl = $this->params['program'];
+        
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+        
+        $paginate = array(
+            'all',
+            'limit' => 500,
+            'maxLimit' => 500);
+        
+        if (!isset($this->params['named']['sort'])) {
+            $paginate['order'] = array('timestamp' => 'desc');
+        } else {
+            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+        
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
-
-        $exportParams = array(
-            'fields' => array('participant-phone','message-direction','message-status','message-content','timestamp'),
-            'conditions' => $this->_getConditions($defaultConditions),
-            'order'=> $order,
-        );
         
-        $data = $this->History->find('all', $exportParams);
-        $this->set(compact('data'));
+        $conditions = $this->_getConditions($defaultConditions);
+        if ($conditions != null) {
+            $paginate['conditions'] = $conditions;
+        }
+        
+        try {
+            ##First a tmp file is created
+            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
+            
+            if (!file_exists($filePath)) {
+                mkdir($filePath);
+                chmod($filePath, 0764);
+            }
+            
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            $programName = $this->Session->read($programUrl.'_name');
+            $fileName = $programName . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
+            
+            $fileFullPath = $filePath . "/" . $fileName;
+            
+            $handle = fopen($fileFullPath, "w");
+            
+            $headers = array('participant-phone','message-direction','message-status','message-content','timestamp');
+            ##write the headers
+            fputcsv($handle, $headers,',','"');
+            
+            ##Now extract the data and copy it into the file
+            
+            $historyCount = $this->History->find('count', array('conditions'=> $conditions));
+            $pageCount = intval(ceil($historyCount / $paginate['limit']));
+            for($count = 1; $count <= $pageCount; $count++) {
+                $paginate['page'] = $count;
+                $this->paginate = $paginate;
+                $statuses = $this->paginate();
+                foreach($statuses as $status) {
+                    $line = array();
+                    foreach($headers as $header) {
+                        $line[] = $status['History'][$header];
+                    }
+                    fputcsv($handle, $line,',' , '"' );
+                }
+            }
+            
+            $this->set(compact('fileName'));
+        } catch (Exception $e) {
+            print_r($e->getMessage());
+            $this->set('errorMessage', $e->getMessage());
+        }
     }
+    
 
     protected function _getConditions($defaultConditions)
     {
