@@ -311,8 +311,15 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->assertEquals(
         	array($savedUnattachedMessage1['UnattachedMessage']['_id'] => 'hello',
         		$savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),
-        	$output);
+        	     $output);
     }
-
+    public function testIsNotPast()
+    {    
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+         
+        $now = new DateTime('now', timezone_open('Africa/Kampala'));   
+        $check = array('fixed-time'=> $now->modify('-30 minutes')->format("Y-m-d\TH:i:s"));
+        $this->assertFalse($this->UnattachedMessage->isNotPast($check));
+    }
 
 }

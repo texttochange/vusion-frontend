@@ -123,16 +123,15 @@ class Participant extends MongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-
-        if (!isset($this->data['Participant']['phone']) or $this->data['Participant']['phone'] == "" )
-            return false;
-
-        $this->data['Participant']['phone'] = trim($this->data['Participant']['phone']);
-        $this->data['Participant']['phone'] = preg_replace("/^(00|0)/", "+",$this->data['Participant']['phone']);    
-        if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone'])) 
-            $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
-
-        $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
+        
+        if (isset($this->data['Participant']['phone']) and !empty($this->data['Participant']['phone'])) {
+            $this->data['Participant']['phone'] = trim($this->data['Participant']['phone']);
+            $this->data['Participant']['phone'] = preg_replace("/^(00|0)/", "+",$this->data['Participant']['phone']);    
+            if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone'])) 
+                $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
+    
+            $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
+        }
 
         //The time should be provide by the controller
         if (!$this->data['Participant']['_id']) {
@@ -178,7 +177,7 @@ class Participant extends MongoModel
         return array_merge($results, $distinctLabels);
     }
 
-    public function getDistinctTags()
+    public function getDistinctTags()                 
     {
         $tagsQuery = array(
             'distinct'=>'participants',
@@ -616,9 +615,25 @@ class Participant extends MongoModel
                 }
             }
 
-
         }
         
         return $conditions;
     }
+    
+    public function addMassTags($tag, $conditions)
+    {   
+        $tag = trim($tag);       
+        $check = array('tags' => array($tag));
+        if (!$this->validateTags($check)){
+            return false;
+        }
+        $massTag = array(
+            '$push' => array(
+                'tags' => $tag              
+                )
+            );    
+        $this->updateAll($massTag, $conditions);        
+        return true;
+    }
+    
 }

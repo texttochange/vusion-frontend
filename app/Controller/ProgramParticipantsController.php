@@ -33,7 +33,7 @@ class ProgramParticipantsController extends AppController
         $this->Dialogue          = new Dialogue($options);
         $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting = new ProgramSetting($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
         
         $this->_instanciateVumiRabbitMQ();
         
@@ -83,11 +83,14 @@ class ProgramParticipantsController extends AppController
 
     protected function _getFilterParameterOptions()
     {
+        $tagValues = $this->Participant->getDistinctTags();
+        $labelValues = $this->Participant->getDistinctLabels();
+        
         return array(
             'operator' => $this->Participant->filterOperatorOptions,
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
-            'tag' => $this->Participant->getDistinctTags(),
-            'label' => $this->Participant->getDistinctLabels());
+            'tag' => (count($tagValues)>0? array_combine($tagValues, $tagValues) : array()),
+            'label' => (count($labelValues)>0? array_combine($labelValues, $labelValues) : array()));
     }
 
 
@@ -108,7 +111,56 @@ class ProgramParticipantsController extends AppController
         $this->response->send();
     }
 
-
+    public function massTag()
+    {       
+        $programUrl = $this->params['program'];
+        if ($this->request->is('get')){            
+            $conditions = $this->_getConditions();
+            
+            if(!$conditions){
+                $conditions = array();
+            }  
+            
+            if($this->Participant->addMassTags($this->params['url']['tag'], $conditions)){
+                
+                $this->Session->setFlash(__('The MassTag has been added successfully.'),
+                    'default',
+                    array('class'=>'message success'));
+                if (isset($this->viewVars['urlParams'])) {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index',
+                        '?' => $this->viewVars['urlParams']));
+                    
+                } else {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }
+                
+            } else{                
+                $this->Session->setFlash(__('The MassTag'.$tag.' could not be added successfully.'), 
+                        'default',
+                        array('class' => "message failure"));
+                if (isset($this->viewVars['urlParams'])) {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index',
+                        '?' => $this->viewVars['urlParams']));
+                    
+                } else {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }                
+            }           
+        } 
+    }
+    
     public function export() 
     {
         $programUrl = $this->params['program'];
@@ -200,6 +252,7 @@ class ProgramParticipantsController extends AppController
 
     protected function _getConditions()
     {
+       // print_r($this->params);
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
 
         if (!isset($filter['filter_param'])) 
@@ -278,7 +331,7 @@ class ProgramParticipantsController extends AppController
 
     
     ##we should not be able to edit a phone number
-    public function edit() 
+    public function edit()   
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
@@ -757,7 +810,9 @@ class ProgramParticipantsController extends AppController
     
     private function processXls($programUrl, $filePath, $fileName, $tags)
     {
+
         require_once 'excel_reader2.php';
+
 
         $headers = array();
         $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);

@@ -11,10 +11,12 @@ var program = {"script": [
     "phone":"text",
     "dialogues": ["add-dialogue"],
     "add-dialogue":"button",                    
-    "Dialogue": ["name", "auto-enrollment", "interactions","dialogue-id", "activated"],
+    "Dialogue": ["name",  "checkbox-set-prioritized", "auto-enrollment", "interactions","dialogue-id", "activated"],
     "dialogue-id": "hidden",
     "auto-enrollment": "select",
     "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
+    "checkbox-set-prioritized": "checkboxes",
+    "set-prioritized": {"prioritized": "prioritized"},
     "interactions":["add-interaction"],
     "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id", "activated"],
     "interaction-id":"hidden",
@@ -22,6 +24,8 @@ var program = {"script": [
     "add-interaction":"button",
     "announcement": ["content"],
     "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    //"question-answer": ["dialogue-content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    //"dialogue-content": "textarea",
     "radio-type-unmatching-feedback" : "radiobuttons",
     "type-unmatching-feedback": {
         "no-unmatching-feedback": "no-unmatching-feedback",
@@ -71,6 +75,8 @@ var program = {"script": [
     "actions":["add-action"],
     "add-response":"button",
     "response":["content"],
+    //"response":["request-content"],
+    //"request-content": "textarea",
     "radio-type-action": "radiobuttons",
     "add-action":"button",
     "add-feedback":"button",
@@ -92,6 +98,7 @@ var program = {"script": [
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
     "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    //"question-answer-keyword": ["dialogue-content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -381,6 +388,7 @@ function activeForm(){
     $("input[name*='\.keyword']").each(function (item) {
                $(this).rules("add",{
                     required:true,
+                    doubleSpace:true,
                     keywordFormat:true,
                     keywordUnique:true,
                     messages:{
@@ -399,10 +407,13 @@ function activeForm(){
     $("input[name*='choice']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            doubleSpace:true,
             choiceUnique: true,
+            choiceFormat:true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
                 choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
+                choiceFormat: wrapErrorMessage(localized_errors.validation_choice_format),
             }
         });
     });
@@ -472,14 +483,20 @@ function activeForm(){
             }
         });
     });
-    $("textarea[name*='content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error"),
-            }
-        });
-    });
+    $("textarea[name*='content']").each(function (key, elt) {          
+            $(this).rules("add",{
+                    required:true,
+                    messages:{                        
+                        required: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request");
+                            }
+                        },
+                    }  
+            });             
+    });   
     $("input[name$='days']").each(function (item) {
         $(this).rules("add",{
             required:true,
@@ -492,11 +509,11 @@ function activeForm(){
     });
     $("input[name$='minutes']").each(function (item) {
         $(this).rules("add",{
-            required:true,
+            required:true,         
             minutesSeconds: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),
+                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),                
             }
         });
     });
@@ -615,17 +632,28 @@ function isDialogueView() {
 
 function formatKeywordValidation(value, element, param) {
     var errors = {};
+    
     if (isDialogueView()) {
-        var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$','i');
+        var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');
     } else {
-        var keywordRegex = new RegExp('^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$','i');
+        var keywordRegex = new RegExp('^[a-zA-Z0-9\\s]+(,(\\s)?[a-zA-Z0-9\\s]+)*$','i');
     }
-    if (keywordRegex.test(value)) {
+    
+    if (keywordRegex.test(value)) {    	  
         return true;
     }
     return false;
 }
 
+function doubleSpaceValidation(value, element, param) {         
+    var errors = {}    
+    var doubleSpaceRegex = new RegExp('\\s\\s','g');    
+    if (doubleSpaceRegex.test(value)) { 
+        errors[$(element).attr('name')] = wrapErrorMessage(value + localized_errors.validation_double_space);
+        this.showErrors(errors);        
+    }
+    return true;    
+}
 
 function duplicateKeywordValidation(value, element, param) {    
     var isValid = false;
@@ -648,7 +676,7 @@ function duplicateKeywordValidation(value, element, param) {
         }
     }
     $.each($("input[name*='keyword']"), function(index, element){
-        var elementWords = $(element).val().replace(/\s/g, '').split(',');
+    		    var elementWords = $(element).val().replace(/\s/g, '').split(',');
         for(var x=0;x<keywords.length;x++) {
             if (!$(keywordInput).is(element)) {
                 elementWords = getAnswerAcceptNoSpaceKeywords(element, elementWords);
@@ -715,7 +743,7 @@ function duplicateKeywordValidation(value, element, param) {
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
-    var elementName = $(element).attr('name');
+    var elementName = $(element).attr('name');    
     $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function(key, otherChoice) {
             if (value == $(otherChoice).val()) { 
                 isValid = false;
@@ -723,6 +751,15 @@ function duplicateChoiceValidation(value, element, param) {
             }
     });
     return isValid;
+}
+
+
+function formatChoiceValidation(value, element, param) {    
+    var choiceRegex = new RegExp('^[\\w\\s]*$','i');
+    if (choiceRegex.test(value)) { 
+          return true;
+    }
+    return false;    
 }
 
 function atLeastOneIsChecked(value, element, param) {
@@ -1107,7 +1144,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         "keywordUnique",
         duplicateKeywordValidation,
         wrapErrorMessage(Error));
-
+    
+    $.validator.addMethod(
+        "doubleSpace",
+    	 doubleSpaceValidation,
+    	 wrapErrorMessage(Error));
+    
     $.validator.addMethod(
         "keywordFormat",
         formatKeywordValidation,
@@ -1116,6 +1158,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "choiceUnique",
         duplicateChoiceValidation,
+        wrapErrorMessage(Error));
+    
+    $.validator.addMethod(
+        "choiceFormat",
+        formatChoiceValidation,
         wrapErrorMessage(Error));
 
     $.validator.addMethod(

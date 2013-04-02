@@ -609,7 +609,7 @@ if (!Array.indexOf) {
 function generateExportDialogue(obj) {
     var url = $(obj).attr("url") + ".json" + window.location.search;
     var dialog = $('<div id="export-dialogue" style="display:none" >'+localized_messages['generating_file']+'</div>').appendTo('body');
-        dialog.dialog({
+        dialog.dialog({ 
                 title: localized_actions['export'],
                 close: function(event, ui) {
                     dialog.remove();
@@ -632,3 +632,46 @@ function generateExportDialogue(obj) {
                 }
         });
 } 
+
+function generateMassTagDialogue(obj){
+	var url = $(obj).attr("url") + window.location.search;
+	
+	var dialog = $('<div id="masstag-dialogue" style="display:none">'+
+		'<form name="formTag" action=\'javascript:submitMassTag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+		'<input type="text" name="tag" id="masstag-tags">'+
+		'<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
+		'<input type="submit" value="Tag" id="clicky">'+
+		'</form>'+
+		'</div>').appendTo('body');
+	dialog.dialog({
+			title: localized_actions['mass_tag'], 
+			close:function(event, ui){
+			dialog.remove(); 
+			},
+			model: true
+	});
+}
+
+function submitMassTag(){	
+	var tag = $('[name*="tag"]').val();	
+	var url = $('#masstag-dialogue').find('form').attr('url');
+	if(url.contains('?')){
+		window.location= url+"&tag="+tag;
+	}else{
+		window.location= url+"?tag="+tag;
+	}		
+}
+          
+function alphanumeric() {
+	var tagRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');	
+	var tag = $('#masstag-tags').val();
+	if(tag.match(tagRegex)){  				
+		return true;  
+	}  
+	else{
+		$('#masstag-error-message').text('Your MassTag has special caharacters.These are not allowed').show();
+		//localization of the error message
+		return false;  
+	}  
+}  
+          

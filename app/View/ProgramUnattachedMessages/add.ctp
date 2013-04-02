@@ -1,6 +1,18 @@
 <div class="unattached_messages form">
 <ul class="ttc-actions">		
-    <li><?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+    <li>
+    <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+    <span class="actions">
+    <?php
+    echo $this->Html->link(__('Cancel'), 
+        array(
+            'program' => $programUrl,
+            'controller' => 'programHome',
+            'action' => 'index'	           
+            ));
+    ?>
+    </span>
+    </li>
     <?php $this->Js->get('#button-save')->event('click', '$("#UnattachedMessageAddForm").submit()' , true);?>
 </ul>
 <h3><?php echo __('Add Separate Message'); ?></h3>
@@ -22,7 +34,7 @@
     $fixedTimeSelectDisabled = true;
         
     echo $this->Form->create('UnattachedMessage');
-    echo $this->Form->input(__('name'), array('id' => 'name')); 
+    echo $this->Form->input('name', array('id' => 'name')); 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
         $this->Form->isFieldError('send-to-match-conditions')) { 
@@ -62,7 +74,7 @@
     if ($this->Form->isFieldError('send-to-match-conditions'))
         echo $this->Form->error('send-to-match-conditions');
     echo "</div>";
-    echo $this->Form->input(__('content'), array('rows'=>5));   
+    echo $this->Form->input('content', array('rows'=>5));   
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";

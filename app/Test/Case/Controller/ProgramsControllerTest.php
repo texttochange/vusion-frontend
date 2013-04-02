@@ -103,28 +103,29 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex_hasSpecificProgramAccess_True()
     {
     	
-        $programs = $this->generate(
-            'Programs', array(
+        $Programs = $this->generate('Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
-                    'Session' => array('read', 'write')
+                    'Auth' => array('user'),
                     ),
                 'methods' => array(
-                    '_instanciateVumiRabbitMQ'),
-                )
-            );
+                    '_instanciateVumiRabbitMQ',
+                    )
+                ));
         
-        $programs->Acl
+        $Programs->Auth
+            ->staticExpects($this->once())
+            ->method('user')
+            ->will($this->returnValue(array(
+                'id' => '2',
+                'group_id' => '2')));
+
+        $Programs->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->onConsecutiveCalls('false', 'false'));
+                 
         
-
-        $programs->Session
-            ->expects($this->any())
-            ->method('read')
-            ->will($this->onConsecutiveCalls('2','2','2','2','2','2','2','2','2'));
-            
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
     }
@@ -272,5 +273,5 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     }
 
-    
+   
 }

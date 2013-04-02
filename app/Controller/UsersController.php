@@ -82,16 +82,32 @@ class UsersController extends AppController
     public function edit($id = null)
     {
         $this->User->id = $id;
+        
+        if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
+            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
+                'default',
+                array('class' => "message failure"));
+            $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
+        }            
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user.'));
-        }
+        } 
+        
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
+                if ($this->Acl->check(array(
+                    'User' => array(
+                        'id' => $this->Session->read('Auth.User.id')
+                        )
+                    ), 'Controllers/Users/index')){                
                 $this->redirect(array('action' => 'index'));
+                    } else {                  
+                        $this->redirect(array('action' => 'view', $this->Session->read('Auth.User.id')));
+                    }
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
                 'default',
@@ -173,6 +189,14 @@ class UsersController extends AppController
     public function changePassword($id = null)
     {
         $this->User->id = $id;
+        
+        if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
+            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
+                'default',
+                array('class' => "message failure"));
+            $this->redirect(array('action' => 'changePassword', $this->Auth->user('id')));
+        }            
+        
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user.'));
         }
@@ -236,6 +260,9 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/ProgramLogs');
         $this->Acl->allow($group, 'controllers/Templates');
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         //allow program manager to programs
         $group->id = 3;
@@ -259,6 +286,9 @@ class UsersController extends AppController
         $this->Acl->deny($group, 'controllers/UnmatchableReply');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/ProgramLogs');
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         //allow partner to 
         $group->id = 4;
@@ -281,6 +311,9 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramHistory/index');
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
         
         //allow program messager to 
         $group->id = 5;
@@ -293,7 +326,10 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
-
+        $this->Acl->allow($group, 'controllers/Users/view');
+        $this->Acl->allow($group, 'controllers/Users/changePassword');
+        $this->Acl->allow($group, 'controllers/Users/edit');
+        
         echo 'AllDone';
         exit;
     }

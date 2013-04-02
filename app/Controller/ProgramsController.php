@@ -39,13 +39,19 @@ class ProgramsController extends AppController
     }
 
 
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
+    }
+
     protected function _getPrograms()
     {
         $this->Program->recursive = -1;
-        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+        $user = $this->Auth->user();
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            return  $this->Program->find('authorized', array(
                'specific_program_access' => 'true',
-               'user_id' => $this->Session->read('Auth.User.id')));
+               'user_id' => $user['id']));
 
         }
         return $this->Program->find('all');
@@ -54,10 +60,11 @@ class ProgramsController extends AppController
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
-        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+        $user = $this->Auth->user();
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            return  $this->Program->find('authorized', array(
                'specific_program_access' => 'true',
-               'user_id' => $this->Session->read('Auth.User.id'),
+               'user_id' => $user['id'],
                'conditions' => array('id' => $programId)));
 
         }
@@ -71,11 +78,14 @@ class ProgramsController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $this->Program->recursive = -1;
-        if ($this->Group->hasSpecificProgramAccess($this->Session->read('Auth.User.group_id'))) {
+        
+        $user = $this->Auth->user();
+        
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            $this->paginate = array(
                 'authorized',
                 'specific_program_access' => 'true',
-                'user_id' => $this->Session->read('Auth.User.id'),
+                'user_id' => $user['id'],
                 );
         }
         
@@ -85,11 +95,15 @@ class ProgramsController extends AppController
         }
         
         $programs      =  $this->paginate();
-        $isProgramEdit = $this->Acl->check(array(
+
+        if ($this->Session->read('Auth.User.id') != null) {
+            $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
                     'id' => $this->Session->read('Auth.User.id')
-                ),
-            ), 'controllers/Programs/edit');
+                    ),
+                ), 'controllers/Programs/edit');
+        } 
+
         foreach($programs as &$program) {
             $database           = $program['Program']['database'];
             $tempProgramSetting = new ProgramSetting(array('database' => $database));

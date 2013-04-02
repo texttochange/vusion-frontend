@@ -1642,5 +1642,37 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         );
     }
 
+    public function testMassTagFilteredParticipant_ok()
+    {
+        $this->mock_program_access();
+    
+        $participant_01 = array(
+            'phone' => '+6', 
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant_01);        
 
+        $participant_02 = array(
+            'phone' => '+7',            
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant_02);        
+      
+        $this->testAction(("/testurl/programParticipants/masstag?"
+            .'filter_operator=all'
+            .'&filter_param[1][1]=phone'
+            .'&filter_param[1][2]=equal-to'
+            .'&filter_param[1][3]=%2B6'
+            .'&tag=test'),
+            array('method' => 'get')); 
+        
+        $conditions = array(
+            'conditions' => array(               
+                'tags' => 'test'));        
+        $participants = $this->Participant->find('all', $conditions);      
+        $this->assertEqual(1, count($participants));
+        $this->assetEqual('+6', $participants[0]['Participant']['phone']);
+        
+    }
+    
 }

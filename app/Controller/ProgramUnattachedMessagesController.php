@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
@@ -57,7 +56,7 @@ class ProgramUnattachedMessagesController extends AppController
         {  
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
             $status = array();
-            if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                
+            if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
                 $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
                 $status['count-schedule'] = $countSchedule;                
             } else {               

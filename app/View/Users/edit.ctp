@@ -9,8 +9,17 @@
 		echo $this->Html->tag('label',__('Password'));
 		echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $this->Form->value('User.id')));
 		echo $this->Form->input('email');
-		echo $this->Form->input('group_id');
-		echo $this->Form->input('Program');
+		if (isset($isAdmin) && $isAdmin) {
+		    echo $this->Form->input('group_id');
+		    $options = $programs;		
+		    echo $this->Form->input('Program', array('options'=>$options,
+		        'type'=>'select',
+		        'multiple'=>true,
+		        'label'=>'Program',	                
+		        'style'=>'margin-bottom:0px'
+		        ));
+		    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');		    
+		}
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
@@ -19,8 +28,24 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
-		<li><?php echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete the user "%s" ?', $this->Form->value('User.username'))); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('action' => 'index'));?></li>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+		<li><?php 
+		if (isset($isAdmin) && $isAdmin) {
+		    echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete the user "%s" ?', $this->Form->value('User.username'))); 
+		}
+		?>
+		</li>
+		<li><?php
+		if (isset($isAdmin) && $isAdmin) {
+		    echo $this->Html->link(__('List Users'), array('action' => 'index'));
+		}
+		?>
+		</li>
+		<li><?php 
+		if (isset($isAdmin) && $isAdmin) {
+		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
+		}else{
+		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
+		}
+		?></li>
 	</ul>
 </div>
