@@ -35,19 +35,10 @@
     <?php
 	    echo $this->element('filter_box', array(
 	        'controller' => 'programs'));
+	    $this->Js->get('document')->event('ready', '$(".ttc-paging").css("margin-right", "0px");');
 	?>
-    <div class="paging" style="text-align:right">
-    <?php
-    echo "<span class='ttc-page-count'>";
-    if (isset($this->Paginator)) {
-        echo $this->Paginator->counter(array(
-            'format' => __('{:start} - {:end} of {:count}')
-            ));
-        echo "</span>";
-        echo $this->Paginator->prev('<', null, null, array('class' => 'prev disabled'));
-        echo $this->Paginator->next('>', null, null, array('class' => 'next disabled'));
-    }
-    ?>
+    <div style="clear:both">
+       <!-- Buffer zone -->
     </div>
 	<?php
 	foreach ($programs as $program): ?>

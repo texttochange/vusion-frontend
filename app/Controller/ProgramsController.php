@@ -90,8 +90,9 @@ class ProgramsController extends AppController
         }
         
         $conditions = $this->_getConditions(); print_r($conditions);
-        if ($conditions != null) {
-            $this->paginate['conditions'] = $conditions;
+        if (in_array('name', array_keys($conditions['$and']))) { echo "<br />true<br />";}
+        if (isset($conditions['name']) and $conditions['name'] != null) {
+            $this->paginate['conditions'] = $conditions['name'];
         }
         
         $programs      =  $this->paginate();
@@ -102,7 +103,10 @@ class ProgramsController extends AppController
                     'id' => $this->Session->read('Auth.User.id')
                     ),
                 ), 'controllers/Programs/edit');
-        } 
+        }
+        
+        $filteredPrograms = array();
+        //print_r($programs);
 
         foreach($programs as &$program) {
             $database           = $program['Program']['database'];
@@ -111,14 +115,23 @@ class ProgramsController extends AppController
             if (isset($shortcode[0]['ProgramSetting']['value'])) {
                 //$this->ShortCode  = new ShortCode(array('database' => 'vusion'));
                 $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-                $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);
+                $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
             } 
             $tempParticipant                         = new Participant(array('database' => $database));
             $program['Program']['participant-count'] = $tempParticipant->find('count'); 
             $tempHistory                             = new History(array('database' => $database));
             $program['Program']['history-count']     = $tempHistory->find('count');
             $tempSchedule                            = new Schedule(array('database' => $database));
-            $program['Program']['schedule-count']    = $tempSchedule->find('count');  
+            $program['Program']['schedule-count']    = $tempSchedule->find('count');
+            
+            if (isset($conditions['country']) and strtolower($conditions['country']) == strtolower($code['ShortCode']['country']))
+                $filteredPrograms[] = $program;
+            if (isset($conditions['shortcode']) and $conditions['shortcode'] == $code['ShortCode']['shortcode'])
+                $filteredPrograms[] = $program;
+        }
+        
+        if (count($filteredPrograms)>0) {print_r($filteredPrograms);
+            $programs = $filteredPrograms;
         }
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
@@ -139,11 +152,11 @@ class ProgramsController extends AppController
 
     protected function _getFilterParameterOptions()
     {
+        $shortcodes = $this->ShortCode->getShortCodes();
         return array(
             'operator' => $this->Program->filterOperatorOptions,
-            'country' => 'Uganda',
-            'shortcode' => $this->ShortCode->getShortCodes(),
-            'name' => '');
+            'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
+            );
     }
 
 

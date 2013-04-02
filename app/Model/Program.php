@@ -139,7 +139,9 @@ class Program extends AppModel
             } elseif ($filterParam[1] == 'name') {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['name'] = $filterParam[3];
-                }                
+                } elseif ($filterParam[2] == 'start-with') {
+                    $condition['name LIKE'] = $filterParam[3]."%"; 
+                }            
             }
             
             if ($filter['filter_operator'] == "all") {
