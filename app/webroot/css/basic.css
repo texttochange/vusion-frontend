@@ -249,7 +249,7 @@
 
 .ttc-central-header {
 	float: right;
-	width: 30%;
+	min-width: 32%;
 	padding-top: 25px;
 	padding-right: 10px;
 }
@@ -337,7 +337,8 @@
 	border: 1px solid;
 	float: left;
 	padding: 2px 2px;
-	width: 196px;
+	width: 16%;
+	min-width: 190px;
 	height: 95px;
 	overflow-y: auto;
 	font-size: 9px;
@@ -379,7 +380,7 @@
 }
 
 .request.ttc-textarea-validation-error{  
-    left: -695px;   
+    left: -671px;   
 }
 
 .dialogue.ttc-textarea-validation-error{  
@@ -441,7 +442,7 @@
 }
 
 .ttc-login-input {
-	width:100%;
+	/*width:100%;*/
 	font-size: 100%;
 	float: none;
 	display: block;
@@ -463,8 +464,10 @@
 
 .ttc-navigation-menu {
 	float: left;
-	width: 200px;
+	width: 16%;
+	min-width: 127px;
 	padding-top: 10px;
+	padding-left: 12px;
 }
 
 .ttc-navigation-menu a {
@@ -514,7 +517,8 @@
 .ttc-issues-list div.ttc-issue-time {
     float: right;
     text-align: right;
-    margin-top: 17px;
+    /*margin-top: 17px;*/
+    width: 42%;
 }
 
 .ttc-issue-content h3 {
@@ -564,7 +568,7 @@
 .ttc-program-index .ttc-program-title {
     position: absolute;
     left: 10px;
-    top: 15px;
+    top: 15px;   
 }
 
 .ttc-program-details {
@@ -956,10 +960,50 @@ width: 155px;
     text-decoration: none;
     font-weight: normal; 
 }
+
 .masstag-error {
 color: #C43C35; 
 }
+
 .back-button {	
 margin-top: -44px;
 margin-left: 63px;
 }
+
+
+
+@media projection, screen  {    
+    body {        
+        margin: 0;
+        /*min-width: 75em;*/
+        /*max-width: 75em;*/
+       /* min-width: 1250px;*/
+       min-width: 800px;
+       /*overflow-x: hidden;*/
+        
+    } 
+         #content { 
+             /*padding: 10px 3px 20px 1px;*/
+             /*min-width: 550px;*/
+             padding-top: 10px;
+             padding-left: 3px;
+             padding-right:1px;
+             padding-bottom: 20px;
+         }         
+         .ttc-program-stats {             
+             /*left:277px;*/
+             left: 42%; 
+             padding-left: 73px;
+         }
+         .ttc-program-quicklinks{             
+             /*left: 435px;*/ 
+             left: 90%;             
+         }
+         .ttc-program-index {
+             float: left;
+             padding: 15px 2%;
+             width: 60%;
+             min-width: 488px;
+         }         
+}
+

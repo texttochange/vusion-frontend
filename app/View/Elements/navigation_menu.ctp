@@ -119,7 +119,8 @@
                        20,
                        array('ellipsis' => '...',
                            'exact' => true
-                           ));
+                           ));      
+		
                    
                    echo $this->AclLink->generateLink($unattachedMessageLinkName,
                        $programUrl, 'programUnattachedMessages', 'edit', $unattachedMessage['UnattachedMessage']['_id']);

@@ -21,14 +21,17 @@
 }
 
 /** General Style Info **/
+
 body {
 	background: white;
 	color: black;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
 	margin: 0;
-	min-width: 1250px;
+	/*min-width: 10%*/;
+	min-width: 809px;	 
 }
+
 a {
 	color: #003d4c;
 	text-decoration: underline;
@@ -76,13 +79,15 @@ p {
 
 /** Layout **/
 #container {
-	text-align: left;
+	text-align: left;the probelm in have is dat 
+min-width: 1009px;
 }
 
 #header{
 	padding: 5px 20px;
 	height: 40px;
 	background: black;
+	min-width: 550px;
 }
 
 #header h1 {
@@ -108,12 +113,11 @@ p {
 	color: #333;
 	padding: 10px 20px 20px 20px;
 	overflow: auto;
-	height: 470px;
-	min-width: 1205px;
+	height: 470px;	
 }
 #footer {
 	clear: both;
-	padding: 6px 10px;
+	padding: 6px 10px;    
 	background: white;
 	cursor: pointer;
 }
@@ -123,14 +127,15 @@ div.form,
 div.index,
 div.view {
 	float:right;
-	width:79%;
+	min-width: 554px;
 	/*border-left:1px solid #666;*/
 	padding:10px 2%;
-	height: 372px;
+	/*height: 372px;*/
+	width: 70%;
 }
 div.actions {
 	float:left;
-	width:16%;
+	min-width:19%;
 	padding:10px 0;
 }
 div.actions h3 {
