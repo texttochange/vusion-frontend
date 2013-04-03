@@ -89,10 +89,16 @@ class ProgramsController extends AppController
                 );
         }
         
-        $conditions = $this->_getConditions(); print_r($conditions);
-        if (in_array('name', array_keys($conditions['$and']))) { echo "<br />true<br />";}
-        if (isset($conditions['name']) and $conditions['name'] != null) {
-            $this->paginate['conditions'] = $conditions['name'];
+        $conditions = $this->_getConditions();
+        print_r($conditions);
+        if (isset($conditions)) {
+            $nameCondition = $this->_getNameSqlCondition($conditions);
+            print_r($nameCondition);
+        }
+        
+        //if (is_array($conditions)) { echo "<br />true<br />";}
+        if (isset($nameCondition) and $nameCondition != null) {
+            $this->paginate['conditions'] = $nameCondition;
         }
         
         $programs      =  $this->paginate();
@@ -124,15 +130,15 @@ class ProgramsController extends AppController
             $tempSchedule                            = new Schedule(array('database' => $database));
             $program['Program']['schedule-count']    = $tempSchedule->find('count');
             
-            if (isset($conditions['country']) and strtolower($conditions['country']) == strtolower($code['ShortCode']['country']))
+            /*if (isset($conditions['country']) and strtolower($conditions['country']) == strtolower($code['ShortCode']['country']))
                 $filteredPrograms[] = $program;
             if (isset($conditions['shortcode']) and $conditions['shortcode'] == $code['ShortCode']['shortcode'])
-                $filteredPrograms[] = $program;
+                $filteredPrograms[] = $program;*/
         }
         
-        if (count($filteredPrograms)>0) {print_r($filteredPrograms);
+        /*if (count($filteredPrograms)>0) {print_r($filteredPrograms);
             $programs = $filteredPrograms;
-        }
+        }*/
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -140,6 +146,28 @@ class ProgramsController extends AppController
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         $this->set(compact('programs', 'isProgramEdit'));
+    }
+    
+    
+    protected function _getNameSqlCondition($conditions)
+    {
+        foreach ($conditions as $key => $condition) {
+            if (is_array($condition)) {
+                if (count(array_keys($condition)) > 1) {
+                    //echo $key." => "; print_r($condition); echo "<br />";
+                    $this->_getNameSqlCondition($condition);
+                } else {
+                    if ($key == 'name' or $key == 'name LIKE') {
+                        return $condition;
+                    }
+                }
+            } else {                
+                if ($key == 'name' or $key == 'name LIKE') {
+                    return $conditions;
+                }
+            }
+        }
+        return array();
     }
 
 
