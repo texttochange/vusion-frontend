@@ -127,11 +127,12 @@ div.form,
 div.index,
 div.view {
 	float:right;
-	min-width: 554px;
+	min-width: 547px;
 	/*border-left:1px solid #666;*/
 	padding:10px 2%;
 	/*height: 372px;*/
-	width: 70%;
+	width: 77%;
+	/*padding-left: 11px;*/
 }
 div.actions {
 	float:left;
