@@ -662,6 +662,11 @@ width: 183px;
 text-align: center;
 }
 
+#action-admin-css {
+width: 522px;
+text-align: center;
+}
+
 #profile-css {
 width: 99px;
 }
@@ -680,7 +685,12 @@ word-wrap: break-word;
 }
 
 #content2-css {
-width: 486px;
+width: 224px;
+word-wrap: break-word;
+}
+
+#prefix-css {
+width: 206px;
 word-wrap: break-word;
 }
 
@@ -694,6 +704,15 @@ width: 593px;
 
 #log-css {
 width: 813px;
+}
+
+#shortcodes-css {
+width: 279px;
+text-align: center;
+}
+
+#country-css {
+width: 155px;
 }
 
 .ttc-table-scrolling-area tbody td{ 
