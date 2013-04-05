@@ -90,13 +90,10 @@ class ProgramsController extends AppController
         }
         
         $conditions = $this->_getConditions();
-        print_r($conditions);
         if (isset($conditions)) {
             $nameCondition = $this->_getNameSqlCondition($conditions);
-            print_r($nameCondition);
         }
         
-        //if (is_array($conditions)) { echo "<br />true<br />";}
         if (isset($nameCondition) and $nameCondition != null) {
             $this->paginate['conditions'] = $nameCondition;
         }
@@ -112,7 +109,6 @@ class ProgramsController extends AppController
         }
         
         $filteredPrograms = array();
-        //print_r($programs);
 
         foreach($programs as &$program) {
             $database           = $program['Program']['database'];
@@ -130,15 +126,16 @@ class ProgramsController extends AppController
             $tempSchedule                            = new Schedule(array('database' => $database));
             $program['Program']['schedule-count']    = $tempSchedule->find('count');
             
-            /*if (isset($conditions['country']) and strtolower($conditions['country']) == strtolower($code['ShortCode']['country']))
-                $filteredPrograms[] = $program;
-            if (isset($conditions['shortcode']) and $conditions['shortcode'] == $code['ShortCode']['shortcode'])
-                $filteredPrograms[] = $program;*/
+            $filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
+            if (count($filterPrograms)>0) {
+                foreach ($filterPrograms as $fProgram) {
+                    $filteredPrograms[] = $fProgram;
+                }
+            }
         }
-        
-        /*if (count($filteredPrograms)>0) {print_r($filteredPrograms);
+        if (isset($conditions)) {
             $programs = $filteredPrograms;
-        }*/
+        }
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -149,28 +146,101 @@ class ProgramsController extends AppController
     }
     
     
-    protected function _getNameSqlCondition($conditions)
+    protected function _matchProgramByShortcodeAndCountry($program, $conditions, $codes)
     {
-        foreach ($conditions as $key => $condition) {
-            if (is_array($condition)) {
-                if (count(array_keys($condition)) > 1) {
-                    //echo $key." => "; print_r($condition); echo "<br />";
-                    $this->_getNameSqlCondition($condition);
-                } else {
-                    if ($key == 'name' or $key == 'name LIKE') {
-                        return $condition;
-                    }
+        $result = array();
+        $countryMatch = false;
+        $shortcodeMatch = false;
+        foreach ($codes as $code) {
+            if (isset($conditions['$and'])) {
+                foreach ($conditions['$and'] as $key => $value) {
+                    echo "$key, ";
+                    if (is_array($value)) {
+                        if (isset($value['country'])) {
+                            if (strtolower($value['country']) == strtolower($code['country'])) {
+                                $countryMatch = true;                                
+                            }
+                        }
+                        if (isset($value['shortcode'])) {
+                            if ($value['shortcode'] == $code['shortcode']) {
+                                if ($countryMatch == true)
+                                    array_push($result, $program);
+                            }
+                        }
+                        /*                        
+                        foreach ($value as $key2 => $value2) {
+                            //print_r($value); echo "<br />";                      
+                            if($key2 == 'country') {
+                                if (strtolower($value2) == strtolower($code['country'])) {
+                                    $countryMatch = true;
+                                    //echo $key2.":".$value2."<br />";
+                                    echo "countryMatch set<br />";
+                                    //echo "countryMatch ".$countryMatch." && shortcodeMatch ".$shortcodeMatch."<br />";
+                                }
+                            }elseif($key2 == 'shortcode') {
+                                if ($value2 == strtolower($code['shortcode'])) {
+                                    $shortcodeMatch = true;
+                                    //echo $key2.":".$value2."<br />";
+                                    echo "shortcodeMatch set<br />";
+                                    //echo "countryMatch ".$countryMatch." && shortcodeMatch ".$shortcodeMatch."<br />";
+                                }
+                            } 
+                        }*/
+                    }                    
+                    //print_r($result);
                 }
-            } else {                
-                if ($key == 'name' or $key == 'name LIKE') {
-                    return $conditions;
+                if ($shortcodeMatch == true && $countryMatch == true) {
+                    //echo "countryMatch && shortcodeMatch set<br />";
+                    return;
+                    //array_push($result, $program);
+                }
+            } elseif (isset($conditions['$or'])) {
+                foreach ($conditions['$or'] as $key => $value) {
+                    if (is_array($value)) {
+                        if (isset($value['country'])) {
+                            if (strtolower($value['country']) == strtolower($code['country'])) {
+                                array_push($result, $program);                                
+                            }
+                        }
+                        if (isset($value['shortcode'])) {
+                            if ($value['shortcode'] == $code['shortcode']) {
+                                array_push($result, $program);
+                            }
+                        }
+                    }
+                }                
+            } else {
+                if (isset($conditions['country'])) {
+                    if (strtolower($conditions['country']) == strtolower($code['country'])) {
+                        array_push($result, $program);
+                    }
+                } elseif (isset($conditions['shortcode'])) {
+                    if ($conditions['shortcode'] == $code['shortcode']) {
+                        array_push($result, $program);
+                    }
                 }
             }
         }
-        return array();
+        return $result;
     }
-
-
+    
+    
+    protected function _getNameSqlCondition($conditions)
+    {
+        $result = array();
+        foreach ($conditions as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, $this->_getNameSqlCondition($value));
+            } else {
+                if ($key == 'name LIKE') {
+                    $result = $conditions;
+                }
+            }
+        }
+        return $result;
+    }
+    
+    
     protected function _getFilterFieldOptions()
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
