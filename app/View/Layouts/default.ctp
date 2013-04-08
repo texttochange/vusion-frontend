@@ -181,8 +181,8 @@
 			
 	<div id="content">		
 			    	    
+		<div >
 		<div class='program-left-column'>
-		<div>
 			<?php 			
 			if (isset($programName)) {
 			    echo $this->element('navigation_menu');
