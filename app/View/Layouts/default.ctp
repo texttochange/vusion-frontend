@@ -179,18 +179,24 @@
 				</div>				
 			<?php } ?>
 			
-		<div id="content">	
-		 <?php echo $content_for_layout; ?>
+	<div id="content">		
+			    	    
+		<div class='program-left-column'>
+		<div>
 			<?php 			
-		        if (isset($programName)) {
-		            echo $this->element('navigation_menu');
-		            echo $this->element('backend_notifications');
-		        }        
-		    ?>
-		    <!--<?php echo $content_for_layout; ?>-->
-
+			if (isset($programName)) {
+			    echo $this->element('navigation_menu');
+			    echo $this->element('backend_notifications');
+			}        
+			?>
 		</div>
-	</div>
+		<div class='program-body'>
+		    <?php echo $content_for_layout; ?>
+		    </div>
+   </div>
+		   
+		   
+</div>
 	<div id="footer">
 		    <?php echo $this->element('footer'); ?>
     </div>

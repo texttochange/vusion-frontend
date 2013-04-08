@@ -490,7 +490,7 @@
 .ttc-recent-issues {
     float: right;
     padding: 15px 2%;
-    width: 30%;
+    width: 29%;
 }
 .ttc-recent-issues h3 {
     border-bottom: solid;
@@ -1007,3 +1007,12 @@ margin-left: 63px;
          }         
 }
 
+.program-left-column {
+    width:150px;
+    float: left;
+   
+}
+.program-body {
+min-width : 550px;
+
+}
