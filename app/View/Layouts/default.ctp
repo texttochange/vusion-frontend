@@ -181,7 +181,7 @@
 			
 	<div id="content">		
 			    	    
-		<div >
+		<div>
 		<div class='program-left-column'>
 			<?php 			
 			if (isset($programName)) {

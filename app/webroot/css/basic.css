@@ -186,7 +186,7 @@
     margin-top: -8px;
     margin-left: 0;
     margin-right: -25px;
-    width: 690px;
+    width: 77%;
 }   
 
 .ttc-actions li{
@@ -989,6 +989,8 @@ margin-left: 63px;
              padding-left: 3px;
              padding-right:20px;
              padding-bottom: 20px;
+             min-width: 800px;
+             max-width: 1366px;
          }         
          .ttc-program-stats {             
              /*left:277px;*/
@@ -1010,6 +1012,11 @@ margin-left: 63px;
 .program-left-column {
     width:150px;
     float: left;
+   
+}
+
+.program-left-column1 {
+    width:300px;    
    
 }
 .program-body {
