@@ -94,11 +94,12 @@ class ProgramsController extends AppController
             $nameCondition = $this->_getNameSqlCondition($conditions);
         }
         
-        if (isset($nameCondition) and $nameCondition != null) {
+        if (isset($nameCondition) and $nameCondition != array()) {
             $this->paginate['conditions'] = $nameCondition;
         }
         
         $programs      =  $this->paginate();
+        $allPrograms = $this->Program->find('all');
 
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
@@ -127,15 +128,20 @@ class ProgramsController extends AppController
             $program['Program']['schedule-count']    = $tempSchedule->find('count');
             
             $filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
+            print_r($filterPrograms); echo "<br />";
             if (count($filterPrograms)>0) {
                 foreach ($filterPrograms as $fProgram) {
                     $filteredPrograms[] = $fProgram;
                 }
             }
         }
-        if (isset($conditions)) {
+        
+        if (count($filteredPrograms)>0
+            or (isset($conditions) && $nameCondition == array())
+            or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
             $programs = $filteredPrograms;
         }
+        
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -154,45 +160,24 @@ class ProgramsController extends AppController
         foreach ($codes as $code) {
             if (isset($conditions['$and'])) {
                 foreach ($conditions['$and'] as $key => $value) {
-                    echo "$key, ";
                     if (is_array($value)) {
-                        if (isset($value['country'])) {
-                            if (strtolower($value['country']) == strtolower($code['country'])) {
-                                $countryMatch = true;                                
-                            }
-                        }
-                        if (isset($value['shortcode'])) {
-                            if ($value['shortcode'] == $code['shortcode']) {
-                                if ($countryMatch == true)
-                                    array_push($result, $program);
-                            }
-                        }
-                        /*                        
                         foreach ($value as $key2 => $value2) {
-                            //print_r($value); echo "<br />";                      
                             if($key2 == 'country') {
                                 if (strtolower($value2) == strtolower($code['country'])) {
                                     $countryMatch = true;
-                                    //echo $key2.":".$value2."<br />";
-                                    echo "countryMatch set<br />";
-                                    //echo "countryMatch ".$countryMatch." && shortcodeMatch ".$shortcodeMatch."<br />";
                                 }
-                            }elseif($key2 == 'shortcode') {
-                                if ($value2 == strtolower($code['shortcode'])) {
+                            }
+                            if($key2 == 'shortcode') {
+                                if ($value2 == $code['shortcode']) {
                                     $shortcodeMatch = true;
-                                    //echo $key2.":".$value2."<br />";
-                                    echo "shortcodeMatch set<br />";
-                                    //echo "countryMatch ".$countryMatch." && shortcodeMatch ".$shortcodeMatch."<br />";
                                 }
-                            } 
-                        }*/
-                    }                    
-                    //print_r($result);
-                }
-                if ($shortcodeMatch == true && $countryMatch == true) {
-                    //echo "countryMatch && shortcodeMatch set<br />";
-                    return;
-                    //array_push($result, $program);
+                            }
+                            //echo "countryMatch ".$countryMatch." && shortcodeMatch ".$shortcodeMatch."<br />";
+                            if ($shortcodeMatch == true && $countryMatch == true) {
+                                array_push($result, $program);
+                            }
+                        }
+                    }
                 }
             } elseif (isset($conditions['$or'])) {
                 foreach ($conditions['$or'] as $key => $value) {
