@@ -126,13 +126,14 @@ min-width: 1009px;
 div.form,
 div.index,
 div.view {
-	float:right;
+	/*float: right;*/
 	min-width: 547px;
 	/*border-left:1px solid #666;*/
-	padding:10px 2%;
+	padding:10px 7px 10px 261px;
 	/*height: 372px;*/
-	width: 71%;
+	width: 76%;
 	/*padding-left: 11px;*/
+	position: absolute;
 }
 div.actions {
 	float:left;

@@ -1,5 +1,3 @@
-
-
 <div class='Program Home index'>
     <ul class="ttc-actions">
 		<li><?php 
@@ -49,5 +47,6 @@
 		</div>
 		</div>
 </div>
+
 	
 <?php echo $this->Js->writeBuffer(); ?>

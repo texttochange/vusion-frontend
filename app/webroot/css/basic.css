@@ -464,10 +464,11 @@
 
 .ttc-navigation-menu {
 	float: left;
-	width: 16%;
+	/*width: 16%;*/
+	width: 100%;
 	min-width: 127px;
 	padding-top: 10px;
-	padding-left: 12px;
+	/*padding-left: 12px;*/
 }
 
 .ttc-navigation-menu a {
@@ -1010,8 +1011,11 @@ margin-left: 63px;
 }
 
 .program-left-column {
-    width:150px;
+    /*width:202px;*/
+    width:16%;
     float: left;
+    padding-left: 14px;
+    min-width: 218px;
    
 }
 
@@ -1021,5 +1025,10 @@ margin-left: 63px;
 }
 .program-body {
 min-width : 550px;
-
+width: 99%;
 }
+.admin-action {
+    position: absolute; 
+    padding-left: 13px;
+}
+
