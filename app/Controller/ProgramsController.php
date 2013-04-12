@@ -98,10 +98,13 @@ class ProgramsController extends AppController
             $this->paginate['conditions'] = $nameCondition;
         }
         
-        $programs    =  $this->paginate();
-        //$allPrograms = $this->Program->find('all');
+        $programs    =  $this->paginate();print_r($programs);
+        $allPrograms = $this->Program->find('all');
         
-        //$programsList = (isset($conditions['$or'])? $allPrograms : $programs);
+        if (isset($conditions['$or']) and $nameCondition != array())
+            $programsList =  $allPrograms;
+        else
+            $programsList =  $programs;
         //print_r($programsList);
 
         if ($this->Session->read('Auth.User.id') != null) {
@@ -114,7 +117,7 @@ class ProgramsController extends AppController
         
         $filteredPrograms = array();
 
-        foreach($programs as &$program) {
+        foreach($programsList as &$program) {
             $database           = $program['Program']['database'];
             $tempProgramSetting = new ProgramSetting(array('database' => $database));
             $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
@@ -142,21 +145,26 @@ class ProgramsController extends AppController
         /*
         foreach($programs as &$program) {
             $program = array_merge($program, $this->_getProgramDetails($program));            
-        }
-        */
+        }*/
+        
         if (count($filteredPrograms)>0
             or (isset($conditions) && $nameCondition == array())
             or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
-            $programs = $filteredPrograms;
+            $programsList = $filteredPrograms;
         }
         
-        /*if (isset($conditions['$or'])) {
-            foreach ($filteredPrograms as $filtered) {
-                array_push($programs, $filtered);
+        if (isset($conditions['$or']) and $nameCondition != array()) {
+            foreach($programs as &$program) {
+                $program = array_merge($program, $this->_getProgramDetails($program));            
             }
-        }*/
-        //$programs = $programsList;
-        print_r($programs);
+            foreach ($programsList as $listedProgram) {
+                //array_push($programs, $filtered);
+                array_push($programs, $listedProgram);
+            }
+        } else {
+            $programs = $programsList;
+        }
+        //print_r($programs);
         
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
@@ -167,7 +175,7 @@ class ProgramsController extends AppController
         $this->set(compact('programs', 'isProgramEdit'));
     }
     
-    /*
+    
     protected function _getProgramDetails($programData)
     {
         $database           = $programData['Program']['database'];
@@ -187,7 +195,7 @@ class ProgramsController extends AppController
         
         return $programData;
     }
-    */
+    
     
     protected function _matchProgramByShortcodeAndCountry($program, $conditions, $codes)
     {
