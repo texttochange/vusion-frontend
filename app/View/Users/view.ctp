@@ -64,6 +64,7 @@
 	<?php endif; ?>
   </div>
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -83,4 +84,5 @@
 		}
 		?></li>
 	</ul>
+</div>
 </div>

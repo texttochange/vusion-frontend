@@ -24,6 +24,7 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -48,4 +49,5 @@
 		}
 		?></li>
 	</ul>
+</div>
 </div>
