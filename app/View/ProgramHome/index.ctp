@@ -19,7 +19,7 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
-			    <th id="date-time-css"><?php echo __('At');?></th>			   
+			    <th id="data-time-css"><?php echo __('At');?></th>			   
 			    <th id="send-to-css"><?php echo __('To');?></th>	
 			    <th id="content2-css"><?php echo __('Content');?></th>
 			    <th id="delivery-css"><?php echo __('Source');?></th>
@@ -29,7 +29,7 @@
 		<?php
 		    foreach ($schedules as $schedule): ?>
 		    <tr>
-		        <td id="date-time-css"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
+		        <td class="data-time-css"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
 		            
 		        <td id="send-to-css"><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
 		        <td id="content2-css">&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>

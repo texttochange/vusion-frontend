@@ -40,10 +40,12 @@
 	</div>
 	</div>	
 	</div>
-<div class="actions">
+	<div class="admin-action">
+	<div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Template'), array('action' => 'add')); ?></li>
 		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
 	</ul>
+</div>
 </div>

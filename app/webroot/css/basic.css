@@ -284,7 +284,7 @@
 	height: 50px;
 	background: #19C1FF;
 	padding-left: 20px;
-	padding-right: 20px;
+	padding-right: 20px;	
 }
 
 .ttc-program-title{
@@ -620,6 +620,14 @@
     
 }
 
+/*.ttc-table-display-area tr td.data-time-css{
+width: 186px;
+}
+
+.ttc-table-display-area tr th.data-time-css{
+width: 186px;
+}*/
+
 .ttc-table-scrolling-area {
     height: 343px;
     min-height: 250px;
@@ -628,96 +636,101 @@
 }
 
 .ttc-table-scrolling-area thead tr{
-   left: 0; top: 0;
-    position: absolute;
- padding: 0% 1% 0%;    
+	left: 0; top: 0;
+	position: absolute;
+	padding: 0% 1% 0%;    
 }
 
 #phone-css {
-width: 118px;
+	width: 118px;
 }
 
 #direction-css {
-width: 94px;
+	width: 94px;
 }
 
 #status-css {
-width: 88px;
-text-align: left;
+	width: 88px;
+	text-align: left;
 }
 
 #failure-reason-css {
-width: 153px;
+	width: 153px;
 }
 
 #details-css {
-width: 474px;
+	width: 474px;
 }
 
 #details2-css {
-width: 320px;
+	width: 320px;
 }
 
 #date-time-css {
-width: 186px;
+	width: 186px;
+	/*min-width: 282px;*/
 }
 
 #action-css {
-width: 183px;
-text-align: center;
+	width: 183px;
+	text-align: center;
 }
 
 #action-admin-css {
-width: 522px;
-text-align: center;
+	width: 522px;
+	text-align: center;
 }
 
 #profile-css {
-width: 99px;
+	width: 99px;
 }
 
 #responses-css {
-width: 630px;
+	width: 630px;
 }
 
 #send-to-css {
-width: 165px;
+	width: 165px;
 }
 
 #content-css {
-width: 230px;
-word-wrap: break-word;
+	max-width: 230px;
+	min-width: 220px;
+	width: 230px;
+	word-wrap: break-word;
 }
 
 #content2-css {
-width: 224px;
-word-wrap: break-word;
+	min-width: 224px;
+	max-width: 459px;
+	width: 459px;
+	word-wrap: break-word;
 }
 
 #prefix-css {
-width: 206px;
-word-wrap: break-word;
+	width: 206px;
+	word-wrap: break-word;
 }
 
 #delivery-css {
-width: 150px;
+	width: 150px;
 }
 
 #message-css {
-width: 593px;
+	width: 593px;
 }
 
 #log-css {
-width: 813px;
+	width: 813px;
 }
 
 #shortcodes-css {
-width: 279px;
-text-align: center;
+	width: 279px;
+	text-align: center;
 }
 
 #country-css {
-width: 155px;
+	width: 155px;
 }
 
 .ttc-table-scrolling-area tbody td{ 
@@ -774,11 +787,11 @@ width: 155px;
 }
 
 .ttc-dialogue-status-label {
-  float: right;
-  display: inline;
-  font-size: 10px;
-  margin-right: -7px;
-  margin-top: -8px;
+	float: right;
+	display: inline;
+	font-size: 10px;
+	margin-right: -7px;
+	margin-top: -8px;
 }
 
 .ttc-advanced-filter {
@@ -978,36 +991,36 @@ margin-left: 63px;
         margin: 0;
         /*min-width: 75em;*/
         /*max-width: 75em;*/
-       /* min-width: 1250px;*/
-       min-width: 800px;
-       /*overflow-x: hidden;*/
+        /* min-width: 1250px;*/
+        min-width: 887px;
+        /*overflow-x: hidden;*/
         
     } 
-         #content { 
-             /*padding: 10px 3px 20px 1px;*/
-             /*min-width: 550px;*/
-             padding-top: 10px;
-             padding-left: 3px;
-             padding-right:20px;
-             padding-bottom: 20px;
-             min-width: 800px;
-             max-width: 1366px;
-         }         
-         .ttc-program-stats {             
-             /*left:277px;*/
-             left: 42%; 
-             padding-left: 73px;
-         }
-         .ttc-program-quicklinks{             
-             /*left: 435px;*/ 
-             left: 90%;             
-         }
-         .ttc-program-index {
-             float: left;
-             padding: 15px 2%;
-             width: 60%;
-             min-width: 488px;
-         }         
+    #content { 
+    	/*padding: 10px 3px 20px 1px;*/
+    	/*min-width: 550px;*/
+    	padding-top: 10px;
+    	padding-left: 3px;
+    	padding-right:20px;
+    	padding-bottom: 20px;
+    	min-width: 800px;
+    	max-width: 1366px;
+    }         
+    .ttc-program-stats {             
+    	/*left:277px;*/
+    	left: 42%; 
+    	padding-left: 73px;
+    }
+    .ttc-program-quicklinks{             
+    	/*left: 435px;*/ 
+    	left: 90%;             
+    }
+    .ttc-program-index {
+    	float: left;
+    	padding: 15px 2%;
+    	width: 60%;
+    	min-width: 488px;
+    }         
 }
 
 .program-left-column {
@@ -1016,16 +1029,15 @@ margin-left: 63px;
     float: left;
     padding-left: 14px;
     min-width: 218px;
-   
+    position: absolute;   
 }
-
 .program-left-column1 {
     width:300px;    
-   
+    
 }
 .program-body {
-min-width : 550px;
-width: 99%;
+	min-width : 550px;
+	width: 99%;
 }
 .admin-action {
     position: absolute; 

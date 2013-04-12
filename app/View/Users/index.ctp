@@ -1,10 +1,3 @@
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New User'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-	</ul>
-</div>
 <div class="users index">
 	<h3><?php echo __('Users');?></h3>
 	<div id="data-control-nav" class="ttc-paging paging">
@@ -46,4 +39,13 @@
 	</div>
 	</div>
 	</div> 
+	<div class="admin-action">
+	<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('New User'), array('action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+	</ul>
+</div>
+</div>
 
