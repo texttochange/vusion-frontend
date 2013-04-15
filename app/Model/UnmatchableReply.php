@@ -38,7 +38,7 @@ class UnmatchableReply extends MongoModel
     
     public $filterFields = array(
         'from-phone' => array(
-            'label' => 'from phone',
+            'label' => 'from number',
             'operators' => array(
                  'start-with' => array(
                     'label' => 'stats with',
@@ -48,6 +48,12 @@ class UnmatchableReply extends MongoModel
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
                     'label' => 'starts with any of',
+                    'parameter-type' => 'text'))),
+        'to-phone' => array(
+            'label' => 'to number',
+            'operators' => array(
+                'equal-to' => array(
+                    'label' => 'equal to',
                     'parameter-type' => 'text'))),
         'date' => array(
             'label' => 'date',
@@ -140,6 +146,10 @@ class UnmatchableReply extends MongoModel
                             $condition['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
                         }
                     }   
+                }
+            } elseif ($filterParam[1] == 'to-phone') {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['to'] = $filterParam[3];                   
                 }
             } elseif ($filterParam[1] == 'message-content') {
                 if ($filterParam[2] == 'equal-to') {

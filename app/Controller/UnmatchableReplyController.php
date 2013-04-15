@@ -8,7 +8,7 @@ class UnmatchableReplyController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
-    var $components = array('LocalizeUtils');
+    var $components = array('RequestHandler', 'LocalizeUtils');
 
     public function beforeFilter()
     {
