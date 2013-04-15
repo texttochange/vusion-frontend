@@ -167,18 +167,20 @@
 			</div>
 		</div>				
 			<?php } ?>
-		<div id="content">			     
-	     <div class='program-left-column'>			   
-		  	<?php 			
-		  	if (isset($programName)) {
-		  			echo $this->element('navigation_menu');
-		  			echo $this->element('backend_notifications');
-		  	}        
-		  	?>
-		  </div>			  
-	     <div class='program-body'>
-			<?php echo $content_for_layout; ?>
-		 </div>			   
+		<div id="content">
+        <?php
+        if (isset($programName)) {
+            echo "<div class='program-left-column'>";			   
+            echo $this->element('navigation_menu');
+            echo $this->element('backend_notifications');
+            echo "</div>";
+            echo "<div class='program-body'>";
+			echo $content_for_layout;
+			echo "</div>";   
+		} else {
+		    #not program specific
+		}
+		?>   
 		</div>		   
      </div>
 	<div id="footer">
