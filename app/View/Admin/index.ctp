@@ -1,4 +1,4 @@
-<div class="users index">
+<div class="users-index program-body">
 	<h3><?php echo __('Admin');?></h3>
 	<p>Page under construction</p>
 	<p>Any suggestions are welcome.</p>	

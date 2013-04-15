@@ -177,8 +177,8 @@
             echo "<div class='program-body'>";
 			echo $content_for_layout;
 			echo "</div>";   
-		} else {
-		    #not program specific
+		} else {		    
+		    echo $content_for_layout;
 		}
 		?>   
 		</div>		   

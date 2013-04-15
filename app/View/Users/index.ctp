@@ -1,4 +1,4 @@
-<div class="users index">
+<div class="users-index">
 	<h3><?php echo __('Users');?></h3>
 	<div id="data-control-nav" class="ttc-paging paging">
 	<?php
