@@ -259,5 +259,63 @@ class Program extends AppModel
        return true;
     }
     
+    
+    public function matchProgramByShortcodeAndCountry($program, $conditions, $codes)
+    {
+        $result = array();
+        $countryMatch = false;
+        $shortcodeMatch = false;
+        foreach ($codes as $code) {
+            if (isset($conditions['$and'])) {
+                foreach ($conditions['$and'] as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $key2 => $value2) {
+                            if($key2 == 'country') {
+                                if (strtolower($value2) == strtolower($code['country'])) {
+                                    $countryMatch = true;
+                                }
+                            }
+                            if($key2 == 'shortcode') {
+                                if ($value2 == $code['shortcode']) {
+                                    $shortcodeMatch = true;
+                                }
+                            }
+
+                            if ($shortcodeMatch == true && $countryMatch == true) {
+                                array_push($result, $program);
+                            }
+                        }
+                    }
+                }
+            } elseif (isset($conditions['$or'])) {
+                foreach ($conditions['$or'] as $key => $value) {
+                    if (is_array($value)) {
+                        if (isset($value['country'])) {
+                            if (strtolower($value['country']) == strtolower($code['country'])) {
+                                array_push($result, $program);                                
+                            }
+                        }
+                        if (isset($value['shortcode'])) {
+                            if ($value['shortcode'] == $code['shortcode']) {
+                                array_push($result, $program);
+                            }
+                        }
+                    }
+                }                
+            } else {
+                if (isset($conditions['country'])) {
+                    if (strtolower($conditions['country']) == strtolower($code['country'])) {
+                        array_push($result, $program);
+                    }
+                } elseif (isset($conditions['shortcode'])) {
+                    if ($conditions['shortcode'] == $code['shortcode']) {
+                        array_push($result, $program);
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+    
    
 }

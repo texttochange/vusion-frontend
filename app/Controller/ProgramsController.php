@@ -98,14 +98,13 @@ class ProgramsController extends AppController
             $this->paginate['conditions'] = $nameCondition;
         }
         
-        $programs    =  $this->paginate();print_r($programs);
+        $programs    =  $this->paginate();
         $allPrograms = $this->Program->find('all');
         
-        if (isset($conditions['$or']) and $nameCondition != array())
+        if (isset($conditions['$or']) and !isset($nameCondition['OR']))
             $programsList =  $allPrograms;
         else
             $programsList =  $programs;
-        //print_r($programsList);
 
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
@@ -133,8 +132,8 @@ class ProgramsController extends AppController
             $tempSchedule                            = new Schedule(array('database' => $database));
             $program['Program']['schedule-count']    = $tempSchedule->find('count');
             
-            $filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
-            //print_r($filterPrograms); echo "<br />";
+            //$filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
+            $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry($program, $conditions, $code);
             if (count($filterPrograms)>0) {
                 foreach ($filterPrograms as $fProgram) {
                     $filteredPrograms[] = $fProgram;
@@ -153,18 +152,16 @@ class ProgramsController extends AppController
             $programsList = $filteredPrograms;
         }
         
-        if (isset($conditions['$or']) and $nameCondition != array()) {
+        if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
             foreach($programs as &$program) {
                 $program = array_merge($program, $this->_getProgramDetails($program));            
             }
             foreach ($programsList as $listedProgram) {
-                //array_push($programs, $filtered);
                 array_push($programs, $listedProgram);
             }
         } else {
             $programs = $programsList;
         }
-        //print_r($programs);
         
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
@@ -175,7 +172,7 @@ class ProgramsController extends AppController
         $this->set(compact('programs', 'isProgramEdit'));
     }
     
-    
+    /*
     protected function _getProgramDetails($programData)
     {
         $database           = $programData['Program']['database'];
@@ -195,8 +192,8 @@ class ProgramsController extends AppController
         
         return $programData;
     }
-    
-    
+    */
+    /*
     protected function _matchProgramByShortcodeAndCountry($program, $conditions, $codes)
     {
         $result = array();
@@ -217,7 +214,7 @@ class ProgramsController extends AppController
                                     $shortcodeMatch = true;
                                 }
                             }
-                            //echo "countryMatch ".$countryMatch." && shortcodeMatch ".$shortcodeMatch."<br />";
+
                             if ($shortcodeMatch == true && $countryMatch == true) {
                                 array_push($result, $program);
                             }
@@ -252,7 +249,7 @@ class ProgramsController extends AppController
             }
         }
         return $result;
-    }
+    }*/
     
     
     protected function _getNameSqlCondition($conditions)
@@ -262,10 +259,14 @@ class ProgramsController extends AppController
             if (is_array($value)) {
                 $result = array_merge($result, $this->_getNameSqlCondition($value));
             } else {
-                if ($key == 'name LIKE') {
-                    $result = $conditions;
+                if ($key == 'name LIKE' or $key == 'name') {
+                    array_push($result, $conditions);
                 }
             }
+        }
+        if (count($result) > 1) {
+            $newResult['OR'] = $result;
+            $result = $newResult;
         }
         return $result;
     }

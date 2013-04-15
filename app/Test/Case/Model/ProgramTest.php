@@ -164,6 +164,44 @@ class ProgramTestCase extends CakeTestCase
         $this->Program->deleteProgram();
         $this->assertEquals(1,$this->Program->find('count'));
     }
+    
+    
+    public function testMatchProgramByShortcodeAndCountry()
+    {
+        $program['Program'] = array(
+            'id' => 3,
+            'name' => 'M4h',
+            'url' => 'm4h',
+            'database' => 'm4h',
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $savedProgram = $this->Program->save($program);
+        /*
+        $codes = array(
+            array(
+                'shortcode' => '8181 ',
+                'international-prefix' => ' 256',
+                'country' => 'uganda',
+                'supported-internationally' => "0",
+                'support-customized-id' => "1"
+                ),
+            array(
+                'shortcode' => '8282 ',
+                'international-prefix' => ' 256',
+                'country' => 'uganda',
+                'supported-internationally' => "0",
+                'support-customized-id' => "1"
+                )
+            );
+        
+        $this->ProgramSetting = new ProgramSetting($progrm['Program']['database']);
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');*/
+        
+    }
 
 
 }
