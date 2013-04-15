@@ -178,18 +178,20 @@
 				</div>				
 			<?php } ?>
 			<div id="content">
-			     <div class='program-body'>
-			        <?php echo $content_for_layout; ?>
-			    </div>
+			     
 			    <div class='program-left-column'>			   
 			        <?php 			
 			            if (isset($programName)) {
 			                echo $this->element('navigation_menu');
 			                echo $this->element('backend_notifications');
 			            }        
-			         ?>				
-			   </div> 
+			         ?>
+			    </div> 
 			  
+			    <div class='program-body'>
+			        <?php echo $content_for_layout; ?>
+			    </div>				
+			   
 			 </div>			   
 		   
  </div>

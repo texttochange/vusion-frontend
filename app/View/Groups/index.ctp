@@ -17,16 +17,16 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th id="content-css"><?php echo $this->Paginator->sort('name');?></th>
-			    <th id="content-css"><?php echo $this->Paginator->sort('specific_program_access');?></th>
+			    <th class="content"><?php echo $this->Paginator->sort('name');?></th>
+			    <th class="content"><?php echo $this->Paginator->sort('specific_program_access');?></th>
 			    <th class="actions" id="action-admin-css"><?php echo __('Actions');?></th>
 			</tr>
 	    </thead>
 	    <tbody>
 	        <?php foreach ($groups as $group): ?>
 	        <tr>
-	            <td id="content-css"><?php echo h($group['Group']['name']); ?>&nbsp;</td>
-	            <td id="content-css"><?php echo h($group['Group']['specific_program_access']); ?>&nbsp;</td>
+	            <td class="content"><?php echo h($group['Group']['name']); ?>&nbsp;</td>
+	            <td class="content"><?php echo h($group['Group']['specific_program_access']); ?>&nbsp;</td>
 	            <td class="actions" id="action-admin-css">
 	                <?php echo $this->Html->link(__('View'), array('action' => 'view', $group['Group']['id'])); ?>
 	                <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $group['Group']['id'])); ?>

@@ -74,12 +74,12 @@
 	    <thead>
 	        <tr >
 	            <th id="phone-css"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programUrl))); ?></th>
-	            <th id="date-time-css"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programUrl))); ?></th>
-	            <th id="date-time-css"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programUrl))); ?></th>
-	            <th id="direction-css"><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programUrl))); ?></th> 
+	            <th class="date-time"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programUrl))); ?></th>
+	            <th class="date-time"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programUrl))); ?></th>
+	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programUrl))); ?></th> 
 	            <th id="status-css"><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programUrl))); ?></th>
 	            <th id="profile-css"><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programUrl))); ?></th>
-	            <th id="action-css" class="actions"><?php echo __('Actions');?></th>
+	            <th class="action" class="actions"><?php echo __('Actions');?></th>
 	        </tr>
 	      </thead>	      
 	      <tbody >
@@ -91,21 +91,21 @@
 	      <?php foreach ($participants as $participant): ?>
 	          <tr>
 	              <td id="phone-css"><?php echo $participant['Participant']['phone']; ?></td>
-	              <td id="date-time-css"><?php 
+	              <td class="date-time"><?php 
 	                  if ($participant['Participant']['last-optin-date']) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 
 	                  } else {
 	                      echo $this->Html->tag('div', ''); 
 	                  }
 	                  ?></td>
-	              <td id="date-time-css"><?php 
+	              <td class="date-time"><?php 
 	                  if (isset($participant['Participant']['last-optout-date'])) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optout-date']); 
 	                  } else {
 	                      echo $this->Html->tag('div', ''); 
 	                  }
 	              ?></td>  
-	              <td id="direction-css"><?php
+	              <td class="direction"><?php
 	                  if (count($participant['Participant']['enrolled']) > 0) {
 	                      foreach ($participant['Participant']['enrolled'] as $enrolled) {
 	                          foreach ($dialogues as $dialogue) {
@@ -137,7 +137,7 @@
 	                      echo $this->Html->tag('div', ''); 
 	                  }
 	               ?></td>
-	               <td  id="action-css" class="actions">
+	               <td  class="action" class="actions">
 	                   <?php echo $this->Html->link(__('View'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); ?>
 	                   <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
 	                       <?php echo $this->Html->link(__('Edit'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'edit', $participant['Participant']['_id'])); ?>

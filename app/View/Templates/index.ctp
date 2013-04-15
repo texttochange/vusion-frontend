@@ -20,7 +20,7 @@
 			    <th id="prefix-css"><?php echo $this->Paginator->sort('name');?></th>
 			    <th id="prefix-css"><?php echo $this->Paginator->sort('type-template', 'Type');?></th>
 			    <th id="details-css"><?php echo $this->Paginator->sort('template');?></th>
-			    <th class="actions" id="action-css"><?php echo __('Actions');?></th>
+			    <th class="actions" class="action"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,7 +29,7 @@
 		        <td id="prefix-css"><?php echo h($template['Template']['name']); ?>&nbsp;</td>
 		        <td id="prefix-css"><?php echo __($template['Template']['type-template']) ?></td>
 		        <td id="details-css"><?php echo __($template['Template']['template']) ?></td>
-		        <td class="actions" id="action-css">
+		        <td class="actions" class="action">
 		            <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
 		            <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete "%s"?', $template['Template']['name'])); ?>
 		        </td>

@@ -20,17 +20,17 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
-			    <th id="direction-css"><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programUrl)));?></th>
+			    <th class="direction"><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programUrl)));?></th>
 			    <th id="responses-css"><?php echo $this->Paginator->sort('responses', null, array('url'=> array('program' => $programUrl)));?></th>
 			    <th id="status-css"><?php echo $this->Paginator->sort('do', null, array('url'=> array('program' => $programUrl)));?></th>
-			    <th id="action-css"><?php echo __('Actions');?></th>
+			    <th class="action"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
 		    foreach ($requests as $request): ?>
 		    <tr>
-		        <td id="direction-css"><?php echo $request['Request']['keyword']; ?>&nbsp;</td>
+		        <td class="direction"><?php echo $request['Request']['keyword']; ?>&nbsp;</td>
 		        <td id="responses-css">
 		            <?php 
 		            if (isset($request['Request']['responses']))
@@ -55,7 +55,7 @@
 		            } 
 		            ?>
 		        </td>
-		        <td id="action-css" class="actions">
+		        <td class="action" class="actions">
 		            <?php echo $this->Html->link(__('Edit'), array('program'=>$programUrl, 'action' => 'edit', $request['Request']['_id'])); ?>
 		            <?php echo $this->Form->postLink(__('Delete'), array('program'=>$programUrl, 'action' => 'delete', $request['Request']['_id']), null,
 			                                __('Are you sure you want to delete %s?', $request['Request']['keyword'])); ?>

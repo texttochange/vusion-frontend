@@ -19,10 +19,10 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
-			    <th id="date-time-css"><?php echo __('At');?></th>			   
-			    <th id="send-to-css"><?php echo __('To');?></th>	
+			    <th class="date-time"><?php echo __('At');?></th>			   
+			    <th class="send-to"><?php echo __('To');?></th>	
 			    <th id="content2-css"><?php echo __('Content');?></th>
-			    <th id="delivery-css"><?php echo __('Source');?></th>
+			    <th class="delivery"><?php echo __('Source');?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -31,7 +31,7 @@
 		    <tr>
 		        <td class="date-time-css"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
 		            
-		        <td id="send-to-css"><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
+		        <td class="send-to"><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
 		        <td id="content2-css">&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
 		     <?php if (isset($schedule['dialogue-id'])) { 
 		                echo $this->Html->tag('td', __('Dialogue'));
