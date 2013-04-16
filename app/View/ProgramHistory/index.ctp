@@ -50,11 +50,11 @@
 	<table  cellpadding="0" cellspacing="0">
 	    <thead >
 	        <tr>                                                                        
-			    <th id="phone-css"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			    <th class="direction"><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th id="status-css"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th id="failure-reason-css"><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th id="details2-css"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th class="status"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th class="failure-reason"><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th class="details2"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
 			</tr>
 		</thead>
@@ -67,11 +67,11 @@
 	                <?php
 	                foreach ($statuses as $history): ?>
 	        <tr>
-	            <td id="phone-css"><?php echo $history['History']['participant-phone']; ?></td>
+	            <td class="phone"><?php echo $history['History']['participant-phone']; ?></td>
 	            <td class="direction"><?php echo ucfirst($history['History']['message-direction']); ?></td>
-	            <td id="status-css"><?php if (isset($history['History']['message-status'])) echo $history['History']['message-status']; ?></td>
-	            <td id="failure-reason-css"><?php if (isset($history['History']['failure-reason'])) echo $history['History']['failure-reason']; ?></td>
-	            <td id="details2-css"><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+	            <td class="status"><?php if (isset($history['History']['message-status'])) echo $history['History']['message-status']; ?></td>
+	            <td class="failure-reason"><?php if (isset($history['History']['failure-reason'])) echo $history['History']['failure-reason']; ?></td>
+	            <td class="details2"><?php echo $history['History']['message-content']; ?>&nbsp;</td>
 	            <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
 	        </tr>
 	        <?php endforeach; ?>

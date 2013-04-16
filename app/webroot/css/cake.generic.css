@@ -129,11 +129,12 @@ div.form,
 div.index,
 div.view {
 	/*float: right;*/
-	min-width: 547px;
+	/*min-width: 547px;*/
 	/*border-left:1px solid #666;*/
 	padding:10px 20px 10px 0px;
 	/*height: 372px;*/
-	/*width: 77%;*/
+	min-width: 740px;
+	width:79%;
 	/*padding-right: 11px;*/
 	position: absolute;
 }

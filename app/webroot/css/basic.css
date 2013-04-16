@@ -682,10 +682,16 @@ width: 186px;
 	text-align: center;
 }
 
+.ttc-table-scrolling-area .action-requests {
+	width: 202px;
+	text-align: center;
+}
 .ttc-table-scrolling-area .delivery {
 	width: 150px;
 }
-
+.source {
+width: 102px;
+}
 .action-admin {
 	width: 522px;
 	text-align: center;
@@ -710,16 +716,25 @@ width: 186px;
 	word-wrap: break-word;
 }
 
-.content2-css {
+.content-sending {
 	min-width: 224px;
-	max-width: 459px;
-	width: 459px;
+	max-width: 537px;
+	width: 535px;
 	word-wrap: break-word;
 }
 
 .prefix-css {
 	width: 206px;
 	word-wrap: break-word;
+}
+
+.status {
+	text-align: left;
+	width:88px;
+}
+
+.phone {
+	width: 118px;
 }
 #message-css {
 	width: 593px;

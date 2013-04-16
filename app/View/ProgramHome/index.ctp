@@ -21,18 +21,18 @@
 	        <tr>
 			    <th class="date-time"><?php echo __('At');?></th>			   
 			    <th class="send-to"><?php echo __('To');?></th>	
-			    <th id="content2-css"><?php echo __('Content');?></th>
-			    <th class="delivery"><?php echo __('Source');?></th>
+			    <th class="content-sending"><?php echo __('Content');?></th>
+			    <th class="source"><?php echo __('Source');?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
 		    foreach ($schedules as $schedule): ?>
 		    <tr>
-		        <td class="date-time-css"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
+		        <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
 		            
 		        <td class="send-to"><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
-		        <td id="content2-css">&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
+		        <td class="content-sending">&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
 		     <?php if (isset($schedule['dialogue-id'])) { 
 		                echo $this->Html->tag('td', __('Dialogue'));
 		            } elseif (isset($schedule['unattach-id'])) {
