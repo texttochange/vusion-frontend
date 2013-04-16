@@ -21,7 +21,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area">
 	<table  cellpadding="0" cellspacing="0">
-	<thead>
+	<thead class="test1">
 	    <tr>
 	        <th class="direction"><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
 	        <th class="send-to"><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programUrl)));?></th>
