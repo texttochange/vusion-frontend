@@ -609,7 +609,7 @@
 .ttc-table-display-area {
     height: 340px;
     min-height: 250px;
-    padding: 10px;
+    padding: 41px 10px;
     overflow: hidden;
     /*width: 100%;*/
     border: 2px solid lightgrey;
@@ -640,12 +640,12 @@ width: 186px;
     
 }
 
-/*
-id="direction-css" thead tr{
-	left: 0; top: 0;
+.ttc-table-scrolling-area thead tr{
+	left: 0; 
+	top: 0;
 	position: absolute;
 	padding: 0% 1% 0%;    
-}*/
+}
 
 .ttc-table-scrolling-area .phone {
 	width: 118px;
@@ -680,6 +680,10 @@ id="direction-css" thead tr{
 .ttc-table-scrolling-area .action {
 	width: 183px;
 	text-align: center;
+}
+
+.ttc-table-scrolling-area .delivery {
+	width: 150px;
 }
 
 .action-admin {
@@ -717,11 +721,6 @@ id="direction-css" thead tr{
 	width: 206px;
 	word-wrap: break-word;
 }
-
-#delivery-css {
-	width: 150px;
-}
-
 #message-css {
 	width: 593px;
 }
@@ -994,12 +993,9 @@ margin-left: 63px;
 
 @media projection, screen  {    
     body {        
-        margin: 0;
-        /*min-width: 75em;*/
-        /*max-width: 75em;*/
-        /* min-width: 1250px;*/
-        min-width: 887px;
-        /*overflow-x: hidden;*/
+        margin: 0;        
+        min-width: 1060px;
+        
         
     } 
     #content { 
@@ -1058,4 +1054,7 @@ margin-left: 63px;
 }
 .test1 {
 position: absolute;	
+}
+.test2 {
+position: absolute;
 }

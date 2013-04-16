@@ -21,7 +21,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area">
 	<table  cellpadding="0" cellspacing="0">
-	<thead class="test1">
+	<thead>
 	    <tr>
 	        <th class="direction"><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programUrl)));?></th>
 	        <th class="send-to"><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programUrl)));?></th>
@@ -80,7 +80,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     	        ?>
     	    </td>
     	    <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
-    	    <td class="action" class="actions">
+    	    <td class="action actions">
     	       <?php
     	       $now = new DateTime('now');
     	       date_timezone_set($now,timezone_open($programTimezone));      
