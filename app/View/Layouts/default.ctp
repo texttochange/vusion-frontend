@@ -92,7 +92,7 @@
 			?>
 			</div> 
 		 </div>    
-		 <div class="status">
+		 <div class="status-message">
 		    <table class="status-table" cellpadding="0" cellspacing="0" align="center">
 		    <tr>
 		    <td>
