@@ -8,7 +8,7 @@ class UnmatchableReplyController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
-    var $components = array('RequestHandler', 'LocalizeUtils');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
 
     public function beforeFilter()
     {
@@ -67,7 +67,8 @@ class UnmatchableReplyController extends AppController
     protected function _getFilterParameterOptions()
     {
         return array(
-            'operator' => $this->UnmatchableReply->filterOperatorOptions);
+            'operator' => $this->UnmatchableReply->filterOperatorOptions,
+            'country' => $this->PhoneNumber->getCountriesByPrefixes());
     }
 
     

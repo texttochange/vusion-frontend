@@ -4,13 +4,12 @@ App::uses('Component', 'Controller');
 class PhoneNumberComponent extends Component {
 
 
-    public function __construct($collection, $settings = array())
+    public function startup(Controller $controller)
     {
-        parent::__construct($collection, $settings);
+        parent::startup($controller);
     }
 
-
-    public function getCountriesPrefixes() { 
+    public function getCountriesByPrefixes() { 
         $filePath = WWW_ROOT . "files"; 
 		$fileName = "countries and codes.csv";
 		$importedCountries = fopen($filePath . DS . $fileName,"r");
@@ -22,11 +21,16 @@ class PhoneNumberComponent extends Component {
 		   if($count > 0 && $countries[$count]){
                $countries[$count] = str_replace("\n", "", $countries[$count]);
                $explodedLine = explode(",", $countries[$count]);
-               $options[trim($explodedLine[0])] = trim($explodedLine[0]);
+               $options[trim($explodedLine[1])] = trim($explodedLine[0]);
     	   }
 		   $count++;		   
 		}
 		return $options;
+	}
+
+	public function getCountries() {
+	    $countriesPrefixes = $this->getCountriesByPrefixes();
+        return array_combine(array_values($countriesPrefixes), array_values($countriesPrefixes));  
 	}
 
 
