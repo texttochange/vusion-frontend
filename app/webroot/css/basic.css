@@ -619,6 +619,16 @@
     /*padding-top: 41px;*/ 
     
 }
+.ttc-table-display-area-shortcode {
+	height: 340px;
+    min-height: 250px;
+    padding: 52px 10px 18px;
+    overflow: hidden;    
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;   
+    background: none repeat scroll 0 0 ;
+    position: relative;    
+}
 
 .ttc-data-control {
     width: 100%;
@@ -644,7 +654,7 @@ width: 186px;
 	left: 0; 
 	top: 0;
 	position: absolute;
-	padding: 0% 1% 0%;    
+	padding: 0px 10px 0px;    
 }
 
 .ttc-table-scrolling-area .phone {
@@ -744,9 +754,12 @@ width: 102px;
 	width: 813px;
 }
 
-.ttc-table-scrolling-area .shortcodes {
+.ttc-table-scrolling-area .support {
 	width: 279px;
 	text-align: center;
+}
+.ttc-table-scrolling-area .shortcodes {
+	width: 118px;
 }
 
 .ttc-table-scrolling-area .country. {
@@ -772,6 +785,11 @@ width: 102px;
 }
 
 .ttc-table-display-area table tr td {
+    padding: 6px;
+    text-align: left;
+}
+
+.ttc-table-display-area-shortcode table tr td {
     padding: 6px;
     text-align: left;
 }
@@ -1052,8 +1070,7 @@ margin-left: 63px;
     
 }
 .program-body {
-	min-width : 550px;
-	/*width: 99%;*/
+	min-width : 550px;	
     margin-left: 20px;
 	float: left;
 }
@@ -1065,11 +1082,12 @@ margin-left: 63px;
     min-width: 547px;	
 	padding:10px 20px 10px 0px;	
 	position: absolute;	
-	margin-left: 215px;
+	margin-left: 235px;
+	
 }
-.test1 {
-position: absolute;	
-}
-.test2 {
-position: absolute;
+.shortcode-index {
+	min-width: 819px;	
+	padding:10px 20px 10px 0px;	
+	position: absolute;	
+	margin-left: 202px;
 }
