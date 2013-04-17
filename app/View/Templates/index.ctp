@@ -1,5 +1,6 @@
-<div class="templates index">
+<div class="users-index">
 	<h3><?php echo __('Templates');?></h3>
+	<div class="ttc-data-control">
 	<div id="data-control-nav" class="ttc-paging paging">
 	<?php
 	echo "<span class='ttc-page-count'>";
@@ -12,24 +13,25 @@
 	echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
 	?>
 	</div>
+	</div>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th id="prefix-css"><?php echo $this->Paginator->sort('name');?></th>
-			    <th id="prefix-css"><?php echo $this->Paginator->sort('type-template', 'Type');?></th>
-			    <th id="details-css"><?php echo $this->Paginator->sort('template');?></th>
-			    <th class="actions" class="action"><?php echo __('Actions');?></th>
+			    <th class="prefix"><?php echo $this->Paginator->sort('name');?></th>
+			    <th class="prefix"><?php echo $this->Paginator->sort('type-template', 'Type');?></th>
+			    <th class="details"><?php echo $this->Paginator->sort('template');?></th>
+			    <th class="actions action"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>
 		<tbody>
 		    <?php foreach ($templates as $template): ?>
 		    <tr>
-		        <td id="prefix-css"><?php echo h($template['Template']['name']); ?>&nbsp;</td>
-		        <td id="prefix-css"><?php echo __($template['Template']['type-template']) ?></td>
-		        <td id="details-css"><?php echo __($template['Template']['template']) ?></td>
-		        <td class="actions" class="action">
+		        <td class="prefix"><?php echo h($template['Template']['name']); ?>&nbsp;</td>
+		        <td class="prefix"><?php echo __($template['Template']['type-template']) ?></td>
+		        <td class="details"><?php echo __($template['Template']['template']) ?></td>
+		        <td class="actions action">
 		            <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
 		            <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete "%s"?', $template['Template']['name'])); ?>
 		        </td>

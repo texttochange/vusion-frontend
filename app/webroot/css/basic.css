@@ -692,7 +692,7 @@ width: 186px;
 .source {
 width: 102px;
 }
-.action-admin {
+.ttc-table-scrolling-area .action-admin {
 	width: 522px;
 	text-align: center;
 }
@@ -723,7 +723,7 @@ width: 102px;
 	word-wrap: break-word;
 }
 
-.prefix-css {
+.ttc-table-scrolling-area .prefix {
 	width: 206px;
 	word-wrap: break-word;
 }
@@ -744,12 +744,12 @@ width: 102px;
 	width: 813px;
 }
 
-.shortcodes-css {
+.ttc-table-scrolling-area .shortcodes {
 	width: 279px;
 	text-align: center;
 }
 
-.country. {
+.ttc-table-scrolling-area .country. {
 	width: 155px;
 }
 
@@ -1065,7 +1065,7 @@ margin-left: 63px;
     min-width: 547px;	
 	padding:10px 20px 10px 0px;	
 	position: absolute;	
-	margin-left: 260px;
+	margin-left: 215px;
 }
 .test1 {
 position: absolute;	

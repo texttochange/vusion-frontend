@@ -1,4 +1,4 @@
-<div class="templates form">
+<div class="templates form users-index program-body">
     <h3><?php echo __('Edit Template'); ?></h3>
     <?php echo $this->Form->create('Template'); ?>
        <?php echo $this->Form->input(__('name')); ?>

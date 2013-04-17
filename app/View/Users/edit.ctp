@@ -1,4 +1,4 @@
-<div class="users form">
+<div class="users form users-index program-body">
 <h3><?php echo __('Edit User'); ?></h3>
 <?php echo $this->Form->create('User');?>
 	<fieldset>

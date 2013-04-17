@@ -1,4 +1,4 @@
-<div class="groups form">
+<div class="groups form users-index program-body">
 <h3><?php echo __('Add Group'); ?></h3>
 <?php echo $this->Form->create('Group');?>
 	<fieldset>

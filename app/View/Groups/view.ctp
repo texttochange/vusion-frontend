@@ -1,4 +1,4 @@
-<div class="groups view">
+<div class="groups view users-index program-body">
 <h3><?php  echo __('Group');?></h3>
 	<dl>
 		<dt><?php echo __('Id'); ?></dt>

@@ -1,4 +1,4 @@
-<div class="users view">
+<div class="users view users-index program-body">
    <h3><?php  echo __('User');?></h3>
 	<dl>
 		<dt><?php echo __('Username'); ?></dt>

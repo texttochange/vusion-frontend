@@ -1,4 +1,4 @@
-<div class="shortcodes form">
+<div class="shortcodes form users-index program-body">
 <h3><?php echo __('Add ShortCode'); ?></h3>
 <?php echo $this->Form->create('ShortCode');?>
 
