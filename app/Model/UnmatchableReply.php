@@ -37,6 +37,18 @@ class UnmatchableReply extends MongoModel
     }
     
     public $filterFields = array(
+        'country' => array(
+            'label' => 'from country',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'country'))),
+        'shortcode' => array(
+            'label' => 'shortcode',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'text'))),
         'from-phone' => array(
             'label' => 'from number',
             'operators' => array(
@@ -52,6 +64,9 @@ class UnmatchableReply extends MongoModel
         'to-phone' => array(
             'label' => 'to number',
             'operators' => array(
+                'start-with' => array(
+                    'label' => 'stats with',
+                    'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
                     'parameter-type' => 'text'))),
@@ -121,7 +136,17 @@ class UnmatchableReply extends MongoModel
             
             $this->validateFilter($filterParam);
             
-            if ($filterParam[1] == 'date') {
+            if ($filterParam[1] == 'country') {
+                if ($filterParam[2] == 'is') {
+                    $condition['participant-phone'] = new MongoRegex("/^(\\+)?".$filterParam[3]."/");
+                }
+            } elseif ($filterParam[1] == 'shortcode') {
+                if ($filterParam[2] == 'is') {
+                    $condition['$or'] = array(
+                        array('participant-phone' => new MongoRegex("/\\d*-".$filterParam[3]."$/")),
+                        array('to' => $filterParam[3]));
+                }
+            } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
                     $condition['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
@@ -150,7 +175,9 @@ class UnmatchableReply extends MongoModel
             } elseif ($filterParam[1] == 'to-phone') {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['to'] = $filterParam[3];                   
-                }
+                } elseif ($filterParam[2] == 'start-with') {
+                    $condition['to'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                } 
             } elseif ($filterParam[1] == 'message-content') {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['message-content'] = $filterParam[3];
@@ -179,7 +206,6 @@ class UnmatchableReply extends MongoModel
                 }
             }
         }
-        
         return $conditions;
     }
 

@@ -35,9 +35,9 @@
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
 			 <tr>
-			     <td id="phone-css"><?php echo h($unmatchableReply['UnmatchableReply']['participant-phone']); ?>&nbsp;</td>
-			     <td id="direction-css"><?php echo h($unmatchableReply['UnmatchableReply']['to']); ?>&nbsp;</td>
-			     <td id="message-css"><?php echo h($unmatchableReply['UnmatchableReply']['message-content']); ?>&nbsp;</td>
+			     <td id="phone-css"><?php echo $unmatchableReply['UnmatchableReply']['participant-phone']; ?>&nbsp;</td>
+			     <td id="direction-css"><?php echo $unmatchableReply['UnmatchableReply']['to']; ?>&nbsp;</td>
+			     <td id="message-css"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
 			     <td id="date-time-css"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
 			 </tr>
 			 <?php endforeach; ?>
