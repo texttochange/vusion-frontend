@@ -45,6 +45,12 @@ class PhoneNumberHelper extends AppHelper {
         return $internationalPrefix."-".$code;
     }
 
+    public function displayCode($code, $internationalPrefix, $countriesPrefixes)
+    {
+        $code = $this->addInternationalCodeToShortcode($code, $internationalPrefix);
+        return $this->replaceCountryCodeOfShortcode($code, $countriesPrefixes);
+    }
+
     public function isShortcodeWithPrefix($code)
     {
         return (preg_match('/^\\d*-\\d*$/', $code) == true);
