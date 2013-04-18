@@ -65,7 +65,7 @@ class UnmatchableReply extends MongoModel
             'label' => 'to number',
             'operators' => array(
                 'start-with' => array(
-                    'label' => 'stats with',
+                    'label' => 'starts with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
