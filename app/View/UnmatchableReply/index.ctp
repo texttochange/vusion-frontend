@@ -35,9 +35,22 @@
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
 			 <tr>
-			     <td id="phone-css"><?php echo h($unmatchableReply['UnmatchableReply']['participant-phone']); ?>&nbsp;</td>
-			     <td id="direction-css"><?php echo h($unmatchableReply['UnmatchableReply']['to']); ?>&nbsp;</td>
-			     <td id="message-css"><?php echo h($unmatchableReply['UnmatchableReply']['message-content']); ?>&nbsp;</td>
+			     <?php
+			     $prefix = $this->PhoneNumber->getInternationalPrefix(
+			         $unmatchableReply['UnmatchableReply']['participant-phone'],
+			         $countriesIndexes);
+			     $from = $this->PhoneNumber->displayCode(
+			         $unmatchableReply['UnmatchableReply']['participant-phone'],
+			         $prefix,
+			         $countriesIndexes);
+			     echo '<td id="phone-css">'.$from.'&nbsp;</td>';
+			     $to = $this->PhoneNumber->displayCode(
+			         $unmatchableReply['UnmatchableReply']['to'],
+			         $prefix,
+			         $countriesIndexes);
+			     echo '<td id="direction-css">'.$to.'&nbsp;</td>';
+			     ?>
+			     <td id="message-css"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
 			     <td id="date-time-css"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
 			 </tr>
 			 <?php endforeach; ?>
