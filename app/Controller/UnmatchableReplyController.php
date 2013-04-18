@@ -7,8 +7,8 @@ App::uses('DialogueHelper', 'Lib');
 class UnmatchableReplyController extends AppController
 {
 
-    var $helpers = array('Js' => array('Jquery'), 'Time');
-    var $components = array('LocalizeUtils');
+    var $helpers = array('Js' => array('Jquery'), 'Time', 'PhoneNumber');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
 
     public function beforeFilter()
     {
@@ -51,9 +51,9 @@ class UnmatchableReplyController extends AppController
                 'conditions' => $this->_getConditions(),
                 'order'=> $order,
             );
-
+        $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate();
-        $this->set(compact('unmatchableReplies'));
+        $this->set(compact('unmatchableReplies', 'countriesIndexes'));
     }
 
 
@@ -67,7 +67,8 @@ class UnmatchableReplyController extends AppController
     protected function _getFilterParameterOptions()
     {
         return array(
-            'operator' => $this->UnmatchableReply->filterOperatorOptions);
+            'operator' => $this->UnmatchableReply->filterOperatorOptions,
+            'country' => $this->PhoneNumber->getCountriesByPrefixes());
     }
 
     

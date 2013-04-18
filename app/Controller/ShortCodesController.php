@@ -7,9 +7,8 @@ App::uses('Template', 'Model');
 class ShortCodesController extends AppController
 {
 
-    var $helpers = array('Js' => array('Jquery'));
-    //var $uses = array('Program', 'Group');
-    
+    var $helpers    = array('Js' => array('Jquery'));
+    var $components = array('PhoneNumber'); 
     
     public function beforeFilter()
     {
@@ -63,8 +62,9 @@ class ShortCodesController extends AppController
                 );
             }
         }
-        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
-        $this->set(compact('errorTemplateOptions'));
+        $countryOptions = $this->PhoneNumber->getCountries();
+        $errorTemplateOptions = $this->Template->getTemplateOptions('unmatching-keyword');
+        $this->set(compact('errorTemplateOptions', 'countryOptions'));
     }
     
     
@@ -96,8 +96,9 @@ class ShortCodesController extends AppController
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
+        $countryOptions = $this->PhoneNumber->getCountries();
         $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
-        $this->set(compact('errorTemplateOptions'));
+        $this->set(compact('errorTemplateOptions', 'countryOptions'));
     }
     
     
