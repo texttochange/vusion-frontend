@@ -37,7 +37,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
 	    <tr>
 	        <td id="direction-css"><?php echo $unattachedMessage['UnattachedMessage']['name']; ?>&nbsp;</td>
 	        <td id="send-to-css"><?php
-	            if ($unattachedMessage['UnattachedMessage']['model-version'] == '2') {
+	            if (in_array($unattachedMessage['UnattachedMessage']['model-version'], array('1', '2'))) {
 	                if (is_array($unattachedMessage['UnattachedMessage']['to'])) {
 	                    echo implode($unattachedMessage['UnattachedMessage']['to'], "<br/>");
     	                } else {
