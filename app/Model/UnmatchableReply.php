@@ -38,7 +38,7 @@ class UnmatchableReply extends MongoModel
     
     public $filterFields = array(
         'country' => array(
-            'label' => 'from country',
+            'label' => 'country',
             'operators' => array(
                 'is' => array(
                     'label' => 'is',
