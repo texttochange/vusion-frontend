@@ -410,11 +410,13 @@ function activeForm(){
             doubleSpace:true,
             choiceUnique: true,
             choiceFormat:true,
+            choiceIndex:true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
                 choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
                 choiceFormat: wrapErrorMessage(localized_errors.validation_choice_format),
-            }
+                choiceIndex: wrapErrorMessage(localized_errors.validation_choice_index),
+            } 
         });
     });
     $("input[name*='name']").each(function (item) {
@@ -761,6 +763,17 @@ function formatChoiceValidation(value, element, param) {
     }
     return false;    
 }
+
+function indexChoiceValidation(value, element, param) {     
+    var choiceInput = $(element).attr('name');
+    var choiceValue = new RegExp('^[2]*$');
+    var interactionIndex = choiceInput.substr(22,1)
+    if((choiceInput == $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[0\\].choice$)").attr('name') )&& (choiceValue.test(value))  ){
+    	return false;
+    }
+    return true;   
+}
+
 
 function atLeastOneIsChecked(value, element, param) {
     if ($("[name='"+$(element).attr('name')+"']:checked").length==0) {
@@ -1163,6 +1176,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "choiceFormat",
         formatChoiceValidation,
+        wrapErrorMessage(Error));
+    
+     $.validator.addMethod(
+        "choiceIndex",
+        indexChoiceValidation,
         wrapErrorMessage(Error));
 
     $.validator.addMethod(
