@@ -163,6 +163,8 @@ class ProgramsController extends AppController
             $programs = $programsList;
         }
         
+        print_r($this->paginate());
+        
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
