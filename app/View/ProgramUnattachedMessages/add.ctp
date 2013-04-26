@@ -32,6 +32,7 @@
         'fixed-time'=> __('Fixed Time:'));
     $matchSelectDisabled = true;
     $fixedTimeSelectDisabled = true;
+    $fileFieldDisabled = true;
         
     echo $this->Form->create('UnattachedMessage');
     echo $this->Form->input('name', array('id' => 'name')); 
@@ -73,7 +74,13 @@
         echo $this->Form->error('send-to-match-operator');
     if ($this->Form->isFieldError('send-to-match-conditions'))
         echo $this->Form->error('send-to-match-conditions');
-    echo "</div>";
+    echo $this->Form->radio('send-to-type', array('file' => __('Participants from file')));
+    if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
+        $this->Form->data['UnattachedMessage']['send-to-type'] == 'file') {
+        $fileFieldDisabled = false;
+    }
+    echo $this->Form->input('file', array('type' => 'file', 'disabled' => $fileFieldDisabled));
+    echo "</div>";   
     echo $this->Form->input('content', array('rows'=>5));   
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
@@ -115,6 +122,11 @@
         } else {
         $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
         $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
+        }
+        if ($(this).val() == "file" ) {
+            $("input[type=\"file\"]").attr("disabled",false);
+        } else {
+            $("input[type=\"file\"]").attr("disabled",true);
         }');
     $this->Js->get("input[name*='type-schedule']")->event('change','
         if ($(this).val() == "fixed-time" ) {
