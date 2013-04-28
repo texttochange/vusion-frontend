@@ -135,17 +135,25 @@ class Participant extends MongoModel
     }
     
     
+    public function clearPhone($phone) 
+    {
+        if (isset($phone) and !empty($phone)) {
+            $phone = trim($phone);
+            $phone = preg_replace("/^(00|0)/", "+", $phone);    
+            if (!preg_match('/^\+[0-9]+/', $phone)) { 
+                $phone = "+" . $phone; 
+            }
+            return (string) $phone;
+        }
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
         
         if (isset($this->data['Participant']['phone']) and !empty($this->data['Participant']['phone'])) {
-            $this->data['Participant']['phone'] = trim($this->data['Participant']['phone']);
-            $this->data['Participant']['phone'] = preg_replace("/^(00|0)/", "+",$this->data['Participant']['phone']);    
-            if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone'])) 
-                $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
-    
-            $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
+            $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
         }
 
         //The time should be provide by the controller
@@ -478,21 +486,33 @@ class Participant extends MongoModel
     public function saveParticipantWithReport($participant, $fileLine=null)
     {
         $this->create();
-        $savedParticipant = $this->save($participant);
-        if ($savedParticipant) {
+        $phone = $this->clearPhone($participant['phone']);
+        $exist = $this->find('count', array('conditions' => array('phone' => $phone)));
+        if ($exist) {
             $report = array(
-                'phone' => $savedParticipant['Participant']['phone'],
-                'saved' => true,
-                'message' => array('Insert ok'));
-        } else {
-            $validationMessage = array();
-            foreach ($this->validationErrors as $key => $error) {
-                array_push($validationMessage, $this->validationErrors[$key][0]);
-            }
-            $report = array(
-                'phone' => $participant['phone'],
+                'phone' => $phone,
                 'saved' => false,
-                'message' => $validationMessage);
+                'exist-before' => true,
+                'message' => array($this->validate['phone']['isReallyUnique']['message']));
+        } else {
+            $savedParticipant = $this->save($participant);
+            if ($savedParticipant) {
+                $report = array(
+                    'phone' => $savedParticipant['Participant']['phone'],
+                    'saved' => true,
+                    'exist-before' => false,
+                    'message' => array('Insert ok'));
+            } else {
+                $validationMessage = array();
+                foreach ($this->validationErrors as $key => $error) {
+                    array_push($validationMessage, $this->validationErrors[$key][0]);
+                }
+                $report = array(
+                    'phone' => $participant['phone'],
+                    'saved' => false,
+                    'exist-before' => false,
+                    'message' => $validationMessage);
+            }
         }
         if (isset($fileLine)) {
             $report['line'] = $fileLine;

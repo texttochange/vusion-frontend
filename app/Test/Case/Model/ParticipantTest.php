@@ -40,8 +40,8 @@ class ParticipantTestCase extends CakeTestCase
         $this->Dialogue->deleteAll(true, false);
     }
 
-/*
-    public function testSave_createData()
+
+    public function testSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $participant = array(
@@ -56,6 +56,22 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(is_array( $savedParticipant['Participant']['tags']));
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
         $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
+    }
+
+    public function testSave_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+     
+        $participant = array(
+            'phone' => '+788601461',
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+
+        $this->assertFalse($savedParticipant);
     }
 
 
@@ -361,7 +377,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual($resetParticipant['tags'], array());
         $this->assertEqual($resetParticipant['profile'], array());
     }
-*/
+
 
     //TEST IMPORT
     public function testImport_otherFormat_fail()
@@ -433,6 +449,7 @@ class ParticipantTestCase extends CakeTestCase
             array(
                 'phone' => '+256788601462',
                 'saved' => true,
+                'exist-before' => false,
                 'message' => array('Insert ok'),
                 'line' => 2),
             $report[0]);
@@ -440,6 +457,7 @@ class ParticipantTestCase extends CakeTestCase
             array(
                 'phone' => '+256712747841',
                 'saved' => false,
+                'exist-before' => true,
                 'message' => array('This phone number already exists in the participant list.'),
                 'line' => 3),
             $report[1]);
@@ -523,6 +541,7 @@ class ParticipantTestCase extends CakeTestCase
             array(
                 'phone' => '+256788601462',
                 'saved' => true,
+                'exist-before' => false,
                 'message' => array('Insert ok'),
                 'line' => 2),
             $report[0]
@@ -531,6 +550,7 @@ class ParticipantTestCase extends CakeTestCase
             array(
                 'phone' => '256712747841',
                 'saved' => false,
+                'exist-before' => true,
                 'message' => array('This phone number already exists in the participant list.'),
                 'line' => 3),
             $report[1]
@@ -635,7 +655,7 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
-/*
+
     //TEST FILTERS
     public function testFromFilterToQueryConditions_phone() 
     {
@@ -1080,6 +1100,6 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all', $conditions);  
         $this->assertTrue(in_array('you2', $participants[0]['Participant']['tags']));
     }
-*/
+
     
 }
