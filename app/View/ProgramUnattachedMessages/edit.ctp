@@ -73,6 +73,19 @@
         echo $this->Form->error('send-to-match-operator');
     if ($this->Form->isFieldError('send-to-match-conditions'))
         echo $this->Form->error('send-to-match-conditions');
+    echo $this->Form->radio(
+        'send-to-type',
+        array('file' => __('Participants from file')), 
+        array('hiddenField' => false));
+    if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
+        $this->Form->data['UnattachedMessage']['send-to-type'] == 'file') {
+        $fileFieldDisabled = false;
+        echo __("Message will be send to %s participants.", count( $this->Form->data['UnattachedMessage']['send-to-phone']));
+    }
+    /*echo $this->Form->input(
+        'file',
+        array('type' => 'file', 'disabled' => $fileFieldDisabled, 'label' => false, 'style' => 'padding-left:10px'));*/
+
     echo "</div>";
     echo $this->Form->input('content', array('rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 

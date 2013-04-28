@@ -43,9 +43,14 @@ class ProgramUnattachedMessagesController extends AppController
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
-    protected function _notifyUpdateBackendWorker($workerName, $unattach_id)
+    protected function _notifyUpdateBackendWorkerUnattachedMessage($workerName, $unattach_id)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
+    }
+
+    protected function _notifyUpdateBackendWorkerParticipant($workerName, $participantPhone)
+    {
+        $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
 
     public function index()
@@ -78,30 +83,14 @@ class ProgramUnattachedMessagesController extends AppController
         }
         $this->set('unattachedMessages', $unattachedMessages);
     }
-    
+
     
     public function add()
     {
         $programUrl = $this->params['program'];
         
         if ($this->request->is('post')) {
-            $this->UnattachedMessage->create('unattached-message');
-            if ($this->UnattachedMessage->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
-                $this->Session->setFlash(__('The Message has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                );
-                $this->redirect(
-                    array(
-                        'program' => $programUrl,
-                        'controller' => 'programUnattachedMessages',
-                        'action' => 'index'
-                        )
-                    );
-            } else {
-                $this->Session->setFlash(__('The Message could not be saved.'));
-            }
+            $this->saveUnattachedMessage();
         }
         
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
@@ -111,7 +100,110 @@ class ProgramUnattachedMessagesController extends AppController
         $this->set(compact('selectors'));        
     }
 
-    
+    protected function saveUnattachedMessage()
+    {
+        $programUrl = $this->params['program'];
+        
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->Session->setFlash(
+                __('Please set the program settings then try again.'), 
+                'default', array('class' => "message failure"));
+            return false;
+        }
+        $importMessage = '';
+        $importReport = null;
+        if (isset($this->request->data['UnattachedMessage']['file'])) {
+            $importReport = $this->importParticipants();
+            if ($importReport) {
+                $importFailed = array_filter($importReport, function($participantReport) { 
+                        return (!$participantReport['saved'] && !$participantReport['exist-before']);
+                });
+                $imported = array_filter($importReport, function($participantReport) { 
+                        return ($participantReport['saved']);
+                });
+                $participants = array_filter($importReport, function($participantReport) { 
+                        return ($participantReport['saved'] || $participantReport['exist-before']);
+                });
+                foreach($participants as $participantReport) {
+                    $this->request->data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
+                }
+            }
+        }
+        if ($this->UnattachedMessage->id == null) {
+           $this->UnattachedMessage->create();
+        }
+        $savedUnattached = $this->UnattachedMessage->save($this->request->data);
+        print_r($this->UnattachedMessage->validationErrors);
+        if ($savedUnattached) {
+            $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
+            if (isset($importReport)) {
+                if ($importReport) {
+                    $importMessage = __(' To be send to %s participants, %s have been imported and %s failed to be imported.',
+                        count($participants),
+                        count($imported),
+                        count($importFailed));
+                } else {
+                    $importMessage = __($this->Participant->importErrors);
+                }
+            }
+            
+            $this->Session->setFlash(__('The message has been saved.' . $importMessage),
+                'default', array('class'=>'message success'));
+            $this->redirect(
+                array(
+                    'program' => $programUrl,
+                    'controller' => 'programUnattachedMessages',
+                    'action' => 'index'
+                    ));
+        } else {
+            if (isset($importReport)) {
+                if ($importReport) {
+                    $importMessage = __(' %s participant(s) have been imported and %s failed to be imported.',
+                        count($imported),
+                        count($importFailed));
+                } else {
+                    $importMessage = __($this->Participant->importErrors);
+                }
+            }
+            $this->Session->setFlash(__('The Message could not be saved.' . $importMessage));
+        }
+        return $savedUnattached;
+    }
+
+    protected function importParticipants()
+    {    
+        $programUrl = $this->params['program'];
+
+        if ($this->request->data['UnattachedMessage']['file']['error'] != 0) {
+            if ($this->request->data['UnattachedMessage']['file']['error'] == 4) {
+                $this->importErrors = __('Please select a file.');
+            } else { 
+                $this->importErrors = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
+            }
+            return false;
+        }
+        
+        $fileName = $this->request->data['UnattachedMessage']['file']['name'];
+        $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
+        
+        copy($this->request->data['UnattachedMessage']['file']['tmp_name'], $filePath . DS . $fileName);
+        chmod($filePath . DS . $fileName, 0664);
+        
+        $report = $this->Participant->import($programUrl, $filePath . DS . $fileName);
+        if ($report) {
+            foreach($report as $participantReport) {
+                if ($participantReport['saved']) {
+                    $this->_notifyUpdateBackendWorkerParticipant($programUrl, $participantReport['phone']);
+                }    
+            }
+        } else {
+            $this->importErrors = $this->Participant->importErrors[0];
+        }
+        ##Remove file at the end of the import
+        unlink($filePath . DS . $fileName);
+        return $report;
+    }
+
     public function edit()
     {
         $unattachedMessage = $this->params['unattchedMessage'];
@@ -125,28 +217,8 @@ class ProgramUnattachedMessagesController extends AppController
         }
 
         $this->UnattachedMessage->read();
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->UnattachedMessage->save($this->request->data)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
-                $unattachedMessage = $this->request->data;
-                $this->Session->setFlash(
-                    __('The Message has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(
-                    array(
-                        'program' => $programUrl,
-                        'controller' => 'programUnattachedMessages',
-                        'action' => 'index'
-                        )
-                    );
-            } else {
-                $this->Session->setFlash(__('The Message could not be saved.'), 
-                'default',
-                array('class' => "message failure")
-                );
-            }
+        if ($this->request->is('post')) {
+            $this->saveUnattachedMessage();
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    

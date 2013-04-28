@@ -273,7 +273,7 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
     
-    
+    /*
     protected function _hasAllProgramSettings()
     {
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode'));
@@ -283,38 +283,40 @@ class ProgramParticipantsController extends AppController
         }
         return false;
     }
-    
+    */
 
     public function add() 
     {
         $programUrl = $this->params['program'];
  
         if ($this->request->is('post')) {
-            if ($this->_hasAllProgramSettings()) {
-                $this->Participant->create();
-                if ($this->Participant->save($this->request->data)) {
-                    $participant = $this->Participant->read();
-                    $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
-                    $this->Session->setFlash(__('The participant has been saved.'),
-                        'default',
-                        array('class'=>'message success')
-                        );
-                    $this->redirect(array(
-                        'program' => $programUrl,  
-                        'controller' => 'programParticipants',
-                        'action' => 'index'
-                        ));
-                } else {
-                    $this->Session->setFlash(__('The participant could not be saved.'), 
-                        'default',
-                        array('class' => "message failure")
-                        );
-                }
-            } else 
-            $this->Session->setFlash(__('Please set the program settings then try again.'), 
-                'default',
-                array('class' => "message failure")
+            if (!$this->ProgramSetting->hasRequired()) {
+                $this->Session->setFlash(
+                    __('Please set the program settings then try again.'), 
+                    'default', array('class' => "message failure")
                 );
+                return;
+            }
+            $this->Participant->create();
+            if ($this->Participant->save($this->request->data)) {
+                $participant = $this->Participant->read();
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+                $this->Session->setFlash(__('The participant has been saved.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect(array(
+                    'program' => $programUrl,  
+                    'controller' => 'programParticipants',
+                    'action' => 'index'
+                    ));
+            } else {
+                $this->Session->setFlash(__('The participant could not be saved.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+            
         }        
     }
     
@@ -649,18 +651,20 @@ class ProgramParticipantsController extends AppController
         $programUrl  = $this->params['program'];
 
         if ($this->request->is('post')) {
-            if (!$this->_hasAllProgramSettings()) {
+            if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(
                     __('Please set the program settings then try again.'), 
-                    'default', array('class' => "message failure"));
+                    'default', array('class' => "message failure")
+                );
                 return;
             }
             
             if ($this->request->data['Import']['file']['error'] != 0) {
-                if ($this->request->data['Import']['file']['error'] == 4) 
+                if ($this->request->data['Import']['file']['error'] == 4) { 
                     $message = __("Please select a file.");
-                else 
+                } else { 
                     $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
+                }
                 $this->Session->setFlash($message, 
                     'default', array('class' => "message failure"));
                 return;
