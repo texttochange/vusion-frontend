@@ -1,4 +1,4 @@
-<div class="unattached_messages form">
+\<div class="unattached_messages form">
 <ul class="ttc-actions">		
     <li>
     <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
@@ -44,7 +44,10 @@
     echo "<div class=\"input-text required ".$errorSendTo."\">";
     echo $this->Html->tag('label',__('Send To'), array('class' => 'required'));
     echo "<br/>";
-    echo $this->Form->radio('send-to-type', $sendToOptions, array('separator'=>'<br/>', 'legend'=>false, 'class' => 'sublabel no-after'));
+    echo $this->Form->radio(
+        'send-to-type',
+        $sendToOptions,
+        array('separator' => '<br/>', 'legend' => false, 'class' => 'sublabel no-after', 'hiddenField' => false));
     if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
         $this->Form->data['UnattachedMessage']['send-to-type'] == 'match') {
         $matchSelectDisabled = false;
@@ -74,12 +77,17 @@
         echo $this->Form->error('send-to-match-operator');
     if ($this->Form->isFieldError('send-to-match-conditions'))
         echo $this->Form->error('send-to-match-conditions');
-    echo $this->Form->radio('send-to-type', array('file' => __('Participants from file')));
+    echo $this->Form->radio(
+        'send-to-type',
+        array('file' => __('Participants from file')), 
+        array('hiddenField' => false));
     if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
         $this->Form->data['UnattachedMessage']['send-to-type'] == 'file') {
         $fileFieldDisabled = false;
     }
-    echo $this->Form->input('file', array('type' => 'file', 'disabled' => $fileFieldDisabled));
+    echo $this->Form->input(
+        'file',
+        array('type' => 'file', 'disabled' => $fileFieldDisabled, 'label' => false, 'style' => 'padding-left:10px'));
     echo "</div>";   
     echo $this->Form->input('content', array('rows'=>5));   
     if ($this->Form->isFieldError('type-schedule') || 

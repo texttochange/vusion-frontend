@@ -642,16 +642,6 @@ class ProgramParticipantsController extends AppController
         $this->set(compact('participant','histories', 'schedules'));
     }
 
-    protected function _getTags($tags) 
-    {
-        $tags = trim(stripcslashes($tags));
-        return explode(", ", $tags);
-    }
-
-    protected function _validateTag($tag)
-    {
-        return preg_match("/^[a-zA-Z0-9\s\']*$/", $tag);
-    }
 
     public function import()
     {
@@ -660,9 +650,9 @@ class ProgramParticipantsController extends AppController
 
         if ($this->request->is('post')) {
             if (!$this->_hasAllProgramSettings()) {
-                $this->Session->setFlash(__('Please set the program settings then try again.'), 
-                    'default',
-                    array('class' => "message failure"));
+                $this->Session->setFlash(
+                    __('Please set the program settings then try again.'), 
+                    'default', array('class' => "message failure"));
                 return;
             }
             
@@ -672,44 +662,20 @@ class ProgramParticipantsController extends AppController
                 else 
                     $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
                 $this->Session->setFlash($message, 
-                    'default',
-                    array('class' => "message failure"));
+                    'default', array('class' => "message failure"));
                 return;
             }
-
-            $tags = array('imported');
+            
+            $tags = null;
             if (isset($this->request->data['Import']['tags'])) {
-                $userTags = $this->_getTags($this->request->data['Import']['tags']);
-                $userTags = array_filter($userTags);
-                if (empty($userTags)) {
-                    $userTags = array();
-                }
-                foreach($userTags as $userTag) {
-                    if (!$this->_validateTag($userTag)) {
-                        $this->Session->setFlash(__('Error a tag is not valide: %s.', $userTag), 
-                            'default',
-                            array('class' => "message failure"));
-                        return;
-                    }
-                }
-                $tags = array_merge($tags, $userTags);
+                $tags = $this->request->data['Import']['tags'];
             }
             
             $fileName = $this->request->data['Import']['file']["name"];
-            $ext      = end(explode('.', $fileName));
-            
-            if (!($ext == 'csv') and !($ext == 'xls')) {
-                $this->Session->setFlash(__('This file format is not supported'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
-                return;
-            }
             
             $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
             
             if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
-                //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
                 chmod($filePath, 0764);
             }
@@ -729,142 +695,24 @@ class ProgramParticipantsController extends AppController
                 chmod($filePath . DS . $fileName, 0664);
             }
             
-            if ($ext == 'csv') {
-                $entries = $this->processCsv($programUrl, $filePath, $fileName, $tags);
-            } else if ($ext == 'xls') {
-                $entries = $this->processXls($programUrl, $filePath, $fileName, $tags);
+            $report = $this->Participant->import($programUrl, $filePath . DS . $fileName, $tags);
+            if ($report) {
+                foreach($report as $participantReport) {
+                    if ($participantReport['saved']) {
+                        $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
+                    }    
+                }
+            } else {
+                $this->Session->setFlash(
+                    $this->Participant->importErrors[0], 
+                    'default', array('class' => "message failure"));
             }
+
             ##Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
-        $this->set(compact('entries'));
+        $this->set(compact('report'));
     }
 
-    
-    private function processCsv($programUrl, $filePath, $fileName, $tags)
-    {
-        $importedParticipants = fopen($filePath . DS . $fileName,"r");
-        $entries              = array();
-        $count                = 0;
-        $hasHeaders           = false;
-        $headers              = array();
-        
-
-        while (!feof($importedParticipants)) { 
-            $entries[] = fgets($importedParticipants);
-            if ($count == 0) {
-                   $headers = explode(",", $entries[$count]);
-                   if (strcasecmp(trim(trim($headers[0],'"')), 'phone') ==0) {
-                       $hasHeaders = true;
-                       $count++;
-                       continue;
-                   } else {
-                       if (count($headers) > 1) {
-                            $this->Session->setFlash(__("The file cannot be imported. The first line should be label names, the first label must be 'phone'."), 
-                                'default',
-                                array('class' => "message failure")
-                                );
-                           return;
-                       }
-                       $headers = array();
-                   }
-            }
-            if ($entries[$count]) {
-                $this->Participant->create();
-                $participant          = array();
-                $explodeLine          = explode(',', $entries[$count]);
-                $participant['phone'] = trim(trim($explodeLine[0]), '"');
-                $col = 0;
-                foreach ($headers as $label) {
-                    $label = trim(trim($label), '"');
-                    $value = trim(trim($explodeLine[$col]), '"');
-                    if ($value == '') {
-                        continue;
-                    }
-                    if (strtolower($label) != 'phone') {
-                        $participant['profile'][] = array(
-                            'label' => $label, 
-                            'value' => $value,
-                            'raw' => null);
-                    }
-                    $col++;
-                }
-                $participant['tags'] = $tags;
-                $savedParticipant = $this->Participant->save($participant);
-                if ($savedParticipant) {
-                    $entries[$count] = $savedParticipant['Participant']['phone'].__(", Insert ok");
-                    $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);    
-                } else {
-                    $entries[$count] = $participant['phone'].", ";
-                    foreach ($this->Participant->validationErrors as $key => $error) {
-                        $entries[$count] .= $this->Participant->validationErrors[$key][0]. " line ".($count+1)."<br />";
-                    }
-                }
-                
-            }
-            $count++; 
-        }
-        return $entries;
-    }
-
-    
-    private function processXls($programUrl, $filePath, $fileName, $tags)
-    {
-
-        require_once 'excel_reader2.php';
-
-
-        $headers = array();
-        $data = new Spreadsheet_Excel_Reader($filePath . DS . $fileName);
-        $hasLabels = false;
-        if (strcasecmp('phone', $data->val(1,'A')) == 0) {
-            $hasLabels = true;
-            for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
-                if ($data->val(1, $j)==null){
-                    break;
-                }
-                $headers[] = $data->val(1, $j);
-            }
-        } else {
-            if ($data->val(1, 'B')!=null){
-                $this->Session->setFlash(__("The file cannot be imported. The first line should be label names, the first label must be 'phone'."), 
-                    'default',
-                    array('class' => "message failure")
-                    );
-                return;
-            } 
-        }
-        for ( $i = ($hasLabels) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
-            if ($data->val($i,'A')==null){
-                break;
-            }
-            $this->Participant->create();
-            $participant          = array();
-            $participant['phone'] = $data->val($i,'A');
-            $col = 2;
-            foreach ($headers as $header) {
-                if ($data->val($i,$col)==null) 
-                    continue;
-                $participant['profile'][] = array(
-                    'label' => $header,
-                    'value' => (string) $data->val($i,$col),
-                    'raw' => null);
-                $col++;
-            }
-            $participant['tags'] = $tags;
-            $savedParticipant = $this->Participant->save($participant);
-            if ($savedParticipant) {
-                $entries[$i] = $savedParticipant['Participant']['phone'] . ", Insert ok"; 
-                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);    
-            } else {
-                $entries[$i] = $participant['phone'].", ";
-                foreach ($this->Participant->validationErrors as $key => $error) {
-                    $entries[$i] .= $this->Participant->validationErrors[$key][0]. " line ".$i."<br />";
-                }
-            }
-        }
-        return $entries;
-    }
-    
     
 }
