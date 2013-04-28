@@ -1,6 +1,6 @@
 <?php
-
 App::uses('AppHelper', 'View/Helper');
+
 
 class AclLinkHelper extends AppHelper{
     
