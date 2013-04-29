@@ -12,6 +12,8 @@ class UnattachedMessage extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'unattached_messages';
     
+    var $mongoNoSetOperator = true;
+
     function getModelVersion()
     {
         return '3';

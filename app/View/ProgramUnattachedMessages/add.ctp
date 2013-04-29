@@ -38,7 +38,8 @@
     echo $this->Form->input('name', array('id' => 'name')); 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
-        $this->Form->isFieldError('send-to-match-conditions')) { 
+        $this->Form->isFieldError('send-to-match-conditions') ||
+        $this->Form->isFieldError('send-to-phone')) { 
             $errorSendTo = "error";       
     }
     echo "<div class=\"input-text required ".$errorSendTo."\">";

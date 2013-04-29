@@ -133,7 +133,6 @@ class ProgramUnattachedMessagesController extends AppController
            $this->UnattachedMessage->create();
         }
         $savedUnattached = $this->UnattachedMessage->save($this->request->data);
-        print_r($this->UnattachedMessage->validationErrors);
         if ($savedUnattached) {
             $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
             if (isset($importReport)) {
@@ -143,7 +142,7 @@ class ProgramUnattachedMessagesController extends AppController
                         count($imported),
                         count($importFailed));
                 } else {
-                    $importMessage = __($this->Participant->importErrors);
+                    $importMessage = $this->Participant->importErrors[0];
                 }
             }
             
@@ -162,7 +161,9 @@ class ProgramUnattachedMessagesController extends AppController
                         count($imported),
                         count($importFailed));
                 } else {
-                    $importMessage = __($this->Participant->importErrors);
+                    if (isset($this->Participant->importError[0])) {
+                        $importMessage = $this->Participant->importErrors;
+                    }
                 }
             }
             $this->Session->setFlash(__('The Message could not be saved.' . $importMessage));

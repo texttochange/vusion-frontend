@@ -38,7 +38,8 @@
     echo $this->Form->input('name', array('id' => 'name')); 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
-        $this->Form->isFieldError('send-to-match-conditions')) { 
+        $this->Form->isFieldError('send-to-match-conditions') ||
+        $this->Form->isFieldError('send-to-phone')) { 
             $errorSendTo = "error";       
     }
     echo "<div class=\"input-text required ".$errorSendTo."\">";
@@ -80,10 +81,14 @@
         array('hiddenField' => false));
     echo "<div class='subinput'>";
     if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
-        $this->Form->data['UnattachedMessage']['send-to-type'] == 'phone') {
+        $this->Form->data['UnattachedMessage']['send-to-type'] == 'phone' &&
+        !$this->Form->isFieldError('send-to-phone')) {
         $fileFieldDisabled = false;
         echo "<span>".__("Message will be send to %s participants.", count( $this->Form->data['UnattachedMessage']['send-to-phone']))."</span>";
         echo $this->Html->tag('span', __('Change'), array('class'=>'ttc-button', 'id' => 'button-change-phone'));
+    }
+    if ($this->Form->isFieldError('send-to-phone')) {
+        $fileFieldDisabled = false;
     }
     echo "<span class='input file'>";
     echo $this->Form->input(
@@ -92,8 +97,10 @@
             'type' => 'file', 
             'disabled' => $fileFieldDisabled, 
             'label' => false, 
-            'style' => 'width:inherit;' . ((!$fileFieldDisabled)? 'display:none': ''), 
+            'style' => 'width:inherit;' . ((!$fileFieldDisabled && !$this->Form->isFieldError('send-to-phone'))? 'display:none': ''), 
             'div' => false));
+     if ($this->Form->isFieldError('send-to-phone'))
+        echo $this->Form->error('send-to-phone');
     echo "</span>";
     if (!$fileFieldDisabled) {
         echo $this->Html->tag('span', __('Cancel'), array('class'=>'ttc-button', 'id' => 'button-change-phone-cancel', 'style' => 'display:none;'));
