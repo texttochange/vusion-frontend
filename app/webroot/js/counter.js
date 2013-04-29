@@ -6,8 +6,7 @@ function addCounter(){
                 return;
             }
             $("<span style='float: right; padding-right: 13px;'> <span id="+$(elt).attr('name')+">"+$(elt).val().replace(/{.*}/g, '').length+"</span> Characters</span>").insertBefore($(elt));
-            $(elt).keyup(function(){
-                    alert("hi");
+            $(elt).keyup(function(){                   
                     $('[id="'+$(elt).attr('name')+'"]').text($(this).val().replace(/{.*}/g, '').length);
             }); 
         });

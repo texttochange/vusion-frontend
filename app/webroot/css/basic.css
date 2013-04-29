@@ -610,14 +610,13 @@
     height: 340px;
     min-height: 250px;
     padding: 41px 10px;
-    overflow: hidden;
-    /*width: 100%;*/
+    overflow: hidden;    
     border: 2px solid lightgrey;
     margin-bottom: 10px;   
     background: none repeat scroll 0 0 ;
     position: relative;
-    /*padding-top: 41px;*/ 
-    
+    padding-bottom: 10px; 
+    float: left;
 }
 .ttc-table-display-area-shortcode {
 	height: 340px;
@@ -1026,9 +1025,8 @@ margin-left: 63px;
 
 @media projection, screen  {    
     body {        
-        margin: 0;        
-        min-width: 880px;
-        
+        margin: 0;
+        min-width: 800px;      
         
     } 
     #content { 
@@ -1040,6 +1038,9 @@ margin-left: 63px;
     	padding-bottom: 20px;
     	min-width: 800px;
     	max-width: 1366px;
+    	position: relative;
+    	overflow-x: hidden;
+    	height: 483px;
     }         
     .ttc-program-stats {             
     	/*left:277px;*/
