@@ -29,7 +29,7 @@ body {
 	font-size:90%;
 	margin: 0;
 	/*min-width: 10%*/;
-	min-width: 809px;	 
+	min-width: 840px;	 
 }
 
 a {
@@ -133,7 +133,7 @@ div.view {
 	/*border-left:1px solid #666;*/
 	padding:10px 20px 10px 0px;
 	/*height: 372px;*/
-	min-width: 780px;
+	min-width: 635px;
 	width:79%;
 	/*padding-right: 11px;*/
 	position: absolute;

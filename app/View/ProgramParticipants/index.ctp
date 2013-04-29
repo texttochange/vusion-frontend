@@ -90,7 +90,7 @@
 	      <?php } else {?>   
 	      <?php foreach ($participants as $participant): ?>
 	          <tr>
-	              <td class="phone-css"><?php echo $participant['Participant']['phone']; ?></td>
+	              <td class="phone"><?php echo $participant['Participant']['phone']; ?></td>
 	              <td class="date-time"><?php 
 	                  if ($participant['Participant']['last-optin-date']) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 

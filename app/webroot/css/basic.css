@@ -1027,7 +1027,7 @@ margin-left: 63px;
 @media projection, screen  {    
     body {        
         margin: 0;        
-        min-width: 1060px;
+        min-width: 880px;
         
         
     } 
