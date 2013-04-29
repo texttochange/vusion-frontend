@@ -44,13 +44,18 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     	                    echo $unattachedMessage['UnattachedMessage']['to'];
     	                }
     	        } else {
-    	            if ($unattachedMessage['UnattachedMessage']['send-to-type'] == 'all') {
+    	            switch ($unattachedMessage['UnattachedMessage']['send-to-type']) {
+    	            case "all":
     	                echo __('All participants');
-    	            } else {
+    	                break;
+    	            case "match":
     	                echo __('Participant(s) matching %s of the following tag(s)/label(s): ', 
     	                    $unattachedMessage['UnattachedMessage']['send-to-match-operator']);
     	                echo implode(" - ", $unattachedMessage['UnattachedMessage']['send-to-match-conditions']);
-        
+    	                break;
+    	            case "phone":
+    	                echo __('%s Participant(s)', count($unattachedMessage['UnattachedMessage']['send-to-phone'])); 
+    	                break;
     	            } 
     	            if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     	                echo " (".$unattachedMessage['UnattachedMessage']['count-schedule'].")";
