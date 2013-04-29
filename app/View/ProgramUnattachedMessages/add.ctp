@@ -79,15 +79,17 @@
         echo $this->Form->error('send-to-match-conditions');
     echo $this->Form->radio(
         'send-to-type',
-        array('phone' => __('Participants from file')), 
+        array('phone' => __('List of participant(s)')), 
         array('hiddenField' => false));
+    echo "<div class='subinput'>";
     if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
         $this->Form->data['UnattachedMessage']['send-to-type'] == 'phone') {
         $fileFieldDisabled = false;
     }
     echo $this->Form->input(
         'file',
-        array('type' => 'file', 'disabled' => $fileFieldDisabled, 'label' => false, 'style' => 'padding-left:10px'));
+        array('type' => 'file', 'disabled' => $fileFieldDisabled, 'label' => false));
+    echo "</div>";
     if ($this->Form->isFieldError('send-to-phone'))
         echo $this->Form->error('send-to-phone');
     echo "</div>";   

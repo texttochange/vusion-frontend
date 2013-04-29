@@ -32,8 +32,9 @@
         'fixed-time'=> __('Fixed Time:'));
     $matchSelectDisabled = true;
     $fixedTimeSelectDisabled = true;
+    $fileFieldDisabled = true;
         
-    echo $this->Form->create('UnattachedMessage');
+    echo $this->Form->create('UnattachedMessage', array('type' => 'file'));
     echo $this->Form->input('name', array('id' => 'name')); 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
@@ -75,17 +76,29 @@
         echo $this->Form->error('send-to-match-conditions');
     echo $this->Form->radio(
         'send-to-type',
-        array('file' => __('Participants from file')), 
+        array('phone' => __('List of Participant(s)')), 
         array('hiddenField' => false));
+    echo "<div class='subinput'>";
     if (isset($this->Form->data['UnattachedMessage']['send-to-type']) &&
-        $this->Form->data['UnattachedMessage']['send-to-type'] == 'file') {
+        $this->Form->data['UnattachedMessage']['send-to-type'] == 'phone') {
         $fileFieldDisabled = false;
-        echo __("Message will be send to %s participants.", count( $this->Form->data['UnattachedMessage']['send-to-phone']));
+        echo "<span>".__("Message will be send to %s participants.", count( $this->Form->data['UnattachedMessage']['send-to-phone']))."</span>";
+        echo $this->Html->tag('span', __('Change'), array('class'=>'ttc-button', 'id' => 'button-change-phone'));
     }
-    /*echo $this->Form->input(
+    echo "<span class='input file'>";
+    echo $this->Form->input(
         'file',
-        array('type' => 'file', 'disabled' => $fileFieldDisabled, 'label' => false, 'style' => 'padding-left:10px'));*/
-
+        array(
+            'type' => 'file', 
+            'disabled' => $fileFieldDisabled, 
+            'label' => false, 
+            'style' => 'width:inherit;' . ((!$fileFieldDisabled)? 'display:none': ''), 
+            'div' => false));
+    echo "</span>";
+    if (!$fileFieldDisabled) {
+        echo $this->Html->tag('span', __('Cancel'), array('class'=>'ttc-button', 'id' => 'button-change-phone-cancel', 'style' => 'display:none;'));
+    }
+    echo "</div>";
     echo "</div>";
     echo $this->Form->input('content', array('rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
@@ -122,13 +135,31 @@
         addCounter();
         $("#UnattachedMessageSend-to-match-conditions").chosen();');
     $this->Js->get("input[name*='send-to-type']")->event('change','
-        if ($(this).val() == "match" ) {
-        $("select[name*=\"send-to-match-conditions\"]").attr("disabled",false).trigger("liszt:updated");
-        $("select[name*=\"send-to-match-operator\"]").attr("disabled",false);
-        } else {
-        $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
-        $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
+        switch ($(this).val()) {
+        case "match":
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled",false).trigger("liszt:updated");
+            $("select[name*=\"send-to-match-operator\"]").attr("disabled",false);
+            $("input[name*=\"file\"]").attr("disabled",true);
+            break;
+        case "all":
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
+            $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
+            $("input[name*=\"file\"]").attr("disabled",true);
+            break;
+        case "phone":
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
+            $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
+            $("input[name*=\"file\"]").attr("disabled", false);
         }');
+    $this->Js->get("#button-change-phone")->event('click','
+        $(this).hide();
+        $(this).prev().hide();
+        $(this).nextAll().show();  
+        $(this).next().children().show();');
+    $this->Js->get("#button-change-phone-cancel")->event('click','
+        $(this).hide();
+        $(this).prev("span").children().hide();
+        $(this).prevAll("span").show();');
     $this->Js->get("input[name*='type-schedule']")->event('change','
         if ($(this).val() == "fixed-time" ) {
         $("#fixed-time").attr("disabled",false);
