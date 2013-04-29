@@ -989,6 +989,7 @@ class ParticipantTestCase extends CakeTestCase
             );
     }
 
+
     public function testAddMassTags_filter()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1029,11 +1030,12 @@ class ParticipantTestCase extends CakeTestCase
             'phone' => '+8');       
         
         $this->Participant->addMassTags('hi', $conditions);
-        $participants = $this->Participant->find('all', $conditions);         
-        
-        $this->assertEqual(array('geek', 'cool', 'hi'), $participants[0]['Participant']['tags']);       
+
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
         
     }
+
     
     public function testAddMassTags_trim()
     {
@@ -1075,9 +1077,9 @@ class ParticipantTestCase extends CakeTestCase
             'phone' => '+8');   
         
         $this->Participant->addMassTags(' hi ', $conditions);
-        $participants = $this->Participant->find('all', $conditions);         
         
-        $this->assertEqual(array('geek', 'cool', 'hi'), $participants[0]['Participant']['tags']);       
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
         
     }
     
