@@ -54,7 +54,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
 
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
-        $this->assertEquals('3', $savedUnattachedMessage['UnattachedMessage']['model-version']);
+        $this->assertEquals('4', $savedUnattachedMessage['UnattachedMessage']['model-version']);
         $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
     }
 
@@ -78,7 +78,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
         //$this->assertTrue($savedUnattachedMessage);
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
-        $this->assertEquals('3', $savedUnattachedMessage['UnattachedMessage']['model-version']);
+        $this->assertEquals('4', $savedUnattachedMessage['UnattachedMessage']['model-version']);
         $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
     }
 
