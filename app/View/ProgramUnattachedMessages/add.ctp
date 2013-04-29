@@ -33,9 +33,12 @@
     $matchSelectDisabled = true;
     $fixedTimeSelectDisabled = true;
     $fileFieldDisabled = true;
-        
+       
+    ## Form starts
     echo $this->Form->create('UnattachedMessage', array('type' => 'file'));
-    echo $this->Form->input('name', array('id' => 'name')); 
+    ## Name
+    echo $this->Form->input('name', array('id' => 'name'));
+    ## SentTo 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
         $this->Form->isFieldError('send-to-match-conditions') ||
@@ -72,8 +75,6 @@
             'div' => false,
             'data-placeholder' => __('Choose from available tag(s)/label(s)...')));
     echo "</div>";
-    if ($this->Form->isFieldError('send-to-type'))
-        echo $this->Form->error('send-to-type');
     if ($this->Form->isFieldError('send-to-match-operator'))
         echo $this->Form->error('send-to-match-operator');
     if ($this->Form->isFieldError('send-to-match-conditions'))
@@ -87,18 +88,27 @@
         $this->Form->data['UnattachedMessage']['send-to-type'] == 'phone') {
         $fileFieldDisabled = false;
     }
+    echo "<span class='input file'>";
     echo $this->Form->input(
         'file',
-        array('type' => 'file', 'disabled' => $fileFieldDisabled, 'label' => false));
-    echo "</div>";
+        array('type' => 'file',
+            'disabled' => $fileFieldDisabled,
+            'label' => false,
+            'div' => false));
+    echo "</span>";
     if ($this->Form->isFieldError('send-to-phone'))
         echo $this->Form->error('send-to-phone');
-    echo "</div>";   
+    echo "</div>";
+    if ($this->Form->isFieldError('send-to-type'))
+        echo $this->Form->error('send-to-type');
+    echo "</div>";
+    ## Content
     echo $this->Form->input('content', array('rows'=>5));   
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
     }
+    ## Schedule
     echo "<div class='input-text required ".$errorSchedule."'>";
     echo $this->Html->tag('label',__('Schedule'), array('class' => 'required'));
     echo "<br />";

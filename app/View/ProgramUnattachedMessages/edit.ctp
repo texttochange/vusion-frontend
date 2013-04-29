@@ -69,8 +69,6 @@
             'div' => false,
             'data-placeholder' => __('Choose from available tag(s)/label(s)...')));
     echo "</div>";
-    if ($this->Form->isFieldError('send-to-type'))
-        echo $this->Form->error('send-to-type');
     if ($this->Form->isFieldError('send-to-match-operator'))
         echo $this->Form->error('send-to-match-operator');
     if ($this->Form->isFieldError('send-to-match-conditions'))
@@ -106,6 +104,8 @@
         echo $this->Html->tag('span', __('Cancel'), array('class'=>'ttc-button', 'id' => 'button-change-phone-cancel', 'style' => 'display:none;'));
     }
     echo "</div>";
+    if ($this->Form->isFieldError('send-to-type'))
+        echo $this->Form->error('send-to-type');
     echo "</div>";
     echo $this->Form->input('content', array('rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
