@@ -272,18 +272,7 @@ class ProgramParticipantsController extends AppController
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
-    
-    /*
-    protected function _hasAllProgramSettings()
-    {
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode'));
-        $timezone = $this->ProgramSetting->find('getProgramSetting', array('key'=>'timezone'));        
-        if ($shortCode and $timezone) {
-            return true;
-        }
-        return false;
-    }
-    */
+
 
     public function add() 
     {
