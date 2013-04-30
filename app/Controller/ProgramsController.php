@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('Participant', 'Model');
