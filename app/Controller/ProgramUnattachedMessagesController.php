@@ -7,13 +7,14 @@ App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
+App::uses('User', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
     
-    public $uses = array('UnattachedMessage');
+    public $uses = array('UnattachedMessage', 'User');
 
 
     public function beforeFilter()
@@ -50,10 +51,12 @@ class ProgramUnattachedMessagesController extends AppController
 
     public function index()
     {
-        $unattachedMessages = $this->paginate();       
-        
+        $unattachedMessages = $this->paginate();
+        $user = $this->User->find('all', array('conditions' => array('id'=>$unattachedMessages[0]['UnattachedMessage']['created-by'])));
+        print_r($user);
         foreach($unattachedMessages as &$unattachedMessage)
         {  
+            //$user = $this->User->find('all', array('conditions' => array('id'=>$unattachedMessage['UnattachedMessage']['created-by'])));
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
             $status = array();
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
@@ -75,6 +78,7 @@ class ProgramUnattachedMessagesController extends AppController
             }
             $unattachedMessage['UnattachedMessage'] = array_merge(
                 $status, $unattachedMessage['UnattachedMessage']);
+            $unattachedMessage['UnattachedMessage']['created-by'] = $user['User']['username'];
         }
         $this->set('unattachedMessages', $unattachedMessages);
     }
@@ -87,7 +91,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->UnattachedMessage->create('unattached-message');
             $user = $this->Auth->user();
-            $this->request->data['UnattachedMessage']['created-by'] = $user['username'];
+            $this->request->data['UnattachedMessage']['created-by'] = $user['id'];
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
                 $this->Session->setFlash(__('The Message has been saved.'),
