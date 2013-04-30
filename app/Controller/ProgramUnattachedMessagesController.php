@@ -14,9 +14,8 @@ class ProgramUnattachedMessagesController extends AppController
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
     
-    public $uses = array('UnattachedMessage', 'User');
-
-
+    public $uses = array('User');
+ 
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -51,12 +50,9 @@ class ProgramUnattachedMessagesController extends AppController
 
     public function index()
     {
-        $unattachedMessages = $this->paginate();
-        $user = $this->User->find('all', array('conditions' => array('id'=>$unattachedMessages[0]['UnattachedMessage']['created-by'])));
-        print_r($user);
+        $unattachedMessages = $this->paginate($this->UnattachedMessage);
         foreach($unattachedMessages as &$unattachedMessage)
         {  
-            //$user = $this->User->find('all', array('conditions' => array('id'=>$unattachedMessage['UnattachedMessage']['created-by'])));
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
             $status = array();
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
@@ -78,7 +74,13 @@ class ProgramUnattachedMessagesController extends AppController
             }
             $unattachedMessage['UnattachedMessage'] = array_merge(
                 $status, $unattachedMessage['UnattachedMessage']);
-            $unattachedMessage['UnattachedMessage']['created-by'] = $user['User']['username'];
+
+            if (in_array($unattachedMessage['UnattachedMessage']['model-version'], array('1','2','3'))) {
+                $unattachedMessage['UnattachedMessage']['created-by'] = __("unknown");
+            } else {
+                $user = $this->User->find('first', array('conditions' => array( 'User.id' => $unattachedMessage['UnattachedMessage']['created-by'])));
+                $unattachedMessage['UnattachedMessage']['created-by'] = ($user ? $user['User']['username']: __("unknown"));
+            }
         }
         $this->set('unattachedMessages', $unattachedMessages);
     }
