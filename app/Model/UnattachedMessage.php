@@ -16,7 +16,7 @@ class UnattachedMessage extends MongoModel
     
     function getModelVersion()
     {
-        return '3';
+        return '4';
     }
     
     function getRequiredFields($objectType)
@@ -26,7 +26,8 @@ class UnattachedMessage extends MongoModel
             'send-to-type',
             'content',           
             'type-schedule',
-            'fixed-time'
+            'fixed-time',
+            'created-by'
             );
     }
     
