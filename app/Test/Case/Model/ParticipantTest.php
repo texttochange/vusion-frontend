@@ -394,6 +394,32 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
+    public function testImport_duplicate_csv()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/duplicate_participants.csv', null);
+
+        $this->assertEquals(2, count($report));
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+    }
+
+
+    public function testImport_duplicate_xls()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/duplicate_participants.xls', null);
+
+        $this->assertEquals(2, count($report));
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+    }
+
+
     public function testImport_Csv()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');

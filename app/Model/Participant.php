@@ -75,7 +75,8 @@ class Participant extends MongoModel
     public $importErrorMessages = array(
         'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
         'tag-error' => 'Error a tag is not valide: %s.',
-        'file-format-error' => 'The file format %s is not supported.');
+        'file-format-error' => 'The file format %s is not supported.',
+        'csv-file-error' => 'The csv file cannot be open.');
 
 
     public function validateTags($check)
@@ -486,11 +487,10 @@ class Participant extends MongoModel
     public function saveParticipantWithReport($participant, $fileLine=null)
     {
         $this->create();
-        $phone = $this->clearPhone($participant['phone']);
-        $exist = $this->find('count', array('conditions' => array('phone' => $phone)));
+        $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
             $report = array(
-                'phone' => $phone,
+                'phone' => $participant['phone'],
                 'saved' => false,
                 'exist-before' => true,
                 'message' => array($this->validate['phone']['isReallyUnique']['message']));
@@ -523,22 +523,22 @@ class Participant extends MongoModel
 
     public function importCsv($programUrl, $fileFullPath, $tags)
     {
-        $importedParticipants = fopen($fileFullPath,"r");
-        $entry                = array();
-        $count                = 0;
-        $hasHeaders           = false;
-        $headers              = array();
-        $report               = array();
-        
-        while (!feof($importedParticipants)) {
-            $entry = fgets($importedParticipants);
-            if (!$entry) {
-                $count++;
-                continue;
-            }
+        $count       = 0;
+        $entry       = array();
+        $hasHeaders  = false;
+        $headers     = array();
+        $report      = array();
+        $uniqueNumber = array();
+
+        if (($handle = fopen($fileFullPath,"r")) === false) {
+            array_push($this->importErrors, $this->importErrorMessages['csv-file-error']);
+            return false;
+        }
+  
+        while (($entry = fgetcsv($handle, 1000, ",")) !== FALSE) {
             if ($count == 0) {
-                $headers = explode(",", $entry);
-                if (strcasecmp(trim(trim($headers[0],'"')), 'phone') ==0) {
+                $headers = $entry;
+                if (strcasecmp($headers[0], 'phone') == 0) {
                     $hasHeaders = true;
                     $count++;
                     continue;
@@ -551,12 +551,10 @@ class Participant extends MongoModel
                 }
             }
             $participant          = array();
-            $explodeLine          = explode(',', $entry);
-            $participant['phone'] = trim(trim($explodeLine[0]), '"');
+            $participant['phone'] = $this->clearPhone($entry[0]);
             $col = 0;
             foreach ($headers as $label) {
-                $label = trim(trim($label), '"');
-                $value = trim(trim($explodeLine[$col]), '"');
+                $value = $entry[$col];
                 if ($value == '') {
                     continue;
                 }
@@ -569,7 +567,10 @@ class Participant extends MongoModel
                 $col++;
             }
             $participant['tags'] = $tags;
-            $report[] = $this->saveParticipantWithReport($participant, $count + 1);
+            if (!isset($uniqueNumber[$participant['phone']])) {
+                $uniqueNumber[$participant['phone']] = '';
+                $report[] = $this->saveParticipantWithReport($participant, $count + 1);
+            }
             $count++; 
         }
         return $report;
@@ -580,9 +581,10 @@ class Participant extends MongoModel
     {
         require_once 'excel_reader2.php';
 
-        $headers = array();
+        $headers      = array();
+        $hasLabels    = false;
+        $uniqueNumber = array();
         $data = new Spreadsheet_Excel_Reader($fileFullPath);
-        $hasLabels = false;
         if (strcasecmp('phone', $data->val(1,'A')) == 0) {
             $hasLabels = true;
             for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
@@ -602,7 +604,7 @@ class Participant extends MongoModel
                 break;
             }
             $participant          = array();
-            $participant['phone'] = $data->val($i,'A');
+            $participant['phone'] = $this->clearPhone($data->val($i,'A'));
             $col = 2;
             foreach ($headers as $header) {
                 if ($data->val($i,$col)==null) 
@@ -614,7 +616,10 @@ class Participant extends MongoModel
                 $col++;
             }
             $participant['tags'] = $tags;
-            $report[] = $this->saveParticipantWithReport($participant, $i);
+            if (!isset($uniqueNumber[$participant['phone']])) {
+                $uniqueNumber[$participant['phone']] = '';
+                $report[] = $this->saveParticipantWithReport($participant, $i);
+            }
         }
         return $report;
     }
