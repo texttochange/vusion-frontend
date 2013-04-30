@@ -88,7 +88,6 @@ class ProgramUnattachedMessagesController extends AppController
             $this->UnattachedMessage->create('unattached-message');
             $user = $this->Auth->user();
             $this->request->data['UnattachedMessage']['created-by'] = $user['username'];
-            //print_r($this->request->data);
             if ($this->UnattachedMessage->save($this->request->data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $this->UnattachedMessage->id);
                 $this->Session->setFlash(__('The Message has been saved.'),
