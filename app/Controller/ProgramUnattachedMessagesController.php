@@ -14,7 +14,7 @@ class ProgramUnattachedMessagesController extends AppController
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
     
-    public $uses = array('User');
+    public $uses = array('UnattachedMessage');
  
     public function beforeFilter()
     {
@@ -36,6 +36,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->DialogueHelper    = new DialogueHelper();
         $this->History           = new History($options);
+        $this->User              = new User();
         $this->_instanciateVumiRabbitMQ();
     }
 
@@ -50,7 +51,7 @@ class ProgramUnattachedMessagesController extends AppController
 
     public function index()
     {
-        $unattachedMessages = $this->paginate($this->UnattachedMessage);
+        $unattachedMessages = $this->paginate();
         foreach($unattachedMessages as &$unattachedMessage)
         {  
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
@@ -78,6 +79,7 @@ class ProgramUnattachedMessagesController extends AppController
             if (in_array($unattachedMessage['UnattachedMessage']['model-version'], array('1','2','3'))) {
                 $unattachedMessage['UnattachedMessage']['created-by'] = __("unknown");
             } else {
+                print_r($unattachedMessage);
                 $user = $this->User->find('first', array('conditions' => array( 'User.id' => $unattachedMessage['UnattachedMessage']['created-by'])));
                 $unattachedMessage['UnattachedMessage']['created-by'] = ($user ? $user['User']['username']: __("unknown"));
             }
