@@ -183,6 +183,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         );
 
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
+        $unattachedMessageDB = $this->UnattachedMessage->find('all');
+        $this->assertTrue(in_array('created-by', array_keys($unattachedMessageDB[0]['UnattachedMessage'])));
         
     }
 

@@ -56,6 +56,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $this->assertEquals('4', $savedUnattachedMessage['UnattachedMessage']['model-version']);
         $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
+        $this->assertTrue(in_array('created-by', array_keys($savedUnattachedMessage['UnattachedMessage'])));
     }
 
 

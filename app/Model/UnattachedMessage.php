@@ -157,6 +157,10 @@ class UnattachedMessage extends MongoModel
     {
         parent::beforeValidate();
         
+        if (!isset($this->data['UnattachedMessage']['created-by'])) {
+                $this->data['UnattachedMessage']['created-by'] = null;
+        }
+        
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
             if (isset($now))
