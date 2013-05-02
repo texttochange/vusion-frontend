@@ -143,6 +143,27 @@ class UnattachedMessageTestCase extends CakeTestCase
     }
 
 
+    public function testSave_fail_forbiddenapostrophe()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
+        $unattachedMessage = array(
+            'name' => 'hello',
+            'send-to-type'=> 'all', 
+            'content' => 'what’s that',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => $date->format('d/m/Y H:i')
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
+        $this->assertEquals(
+            'The apostrophe used in this message is not valid.',
+            $this->UnattachedMessage->validationErrors['content'][0]);
+    }
+
+
     public function testSave_ok_update_matchToPhone()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
