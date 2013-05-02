@@ -36,7 +36,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->ProgramSetting->deleteAll(true, false);
     }
 
-    
+
     public function testSave_ok_allParticipants()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -170,6 +170,42 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(0, $this->UnattachedMessage->find('count'));
+    }
+
+
+    public function testSave_ok_update_matchToPhone()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
+        $unattachedMessage = array(
+            'name'=>'hello',
+            'send-to-type'=> 'match',
+            'send-to-match-operator' => 'all',
+            'send-to-match-conditions' => array('a tag'),
+            'content'=>'hello there',
+            'type-schedule'=>'fixed-time',
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by'=>1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+        $this->assertEquals('match', $savedUnattachedMessage['UnattachedMessage']['send-to-type']);
+
+        $unattachedMessage['send-to-type'] = "phone";
+        $unattachedMessage['send-to-phone'] = array("+256777");
+        
+        $this->UnattachedMessage->id =  $savedUnattachedMessage['UnattachedMessage']['_id']."";
+        $this->UnattachedMessage->save($unattachedMessage);
+        $updateUnattachedMessage = $this->UnattachedMessage->find('first');
+        $this->assertEquals(1, $this->UnattachedMessage->find('count'));
+        $this->assertEquals('phone', $updateUnattachedMessage['UnattachedMessage']['send-to-type']);
+        $this->assertEquals(
+            $unattachedMessage['send-to-phone'], 
+            $updateUnattachedMessage['UnattachedMessage']['send-to-phone']);
+        $this->assertTrue(!isset($updateUnattachedMessage['UnattachedMessage']['send-to-match-operator']));
+        $this->assertTrue(!isset($updateUnattachedMessage['UnattachedMessage']['send-to-match-conditions']));
     }
 
 
@@ -350,6 +386,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         		$savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),
         	     $output);
     }
+
+
     public function testIsNotPast()
     {    
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -358,5 +396,6 @@ class UnattachedMessageTestCase extends CakeTestCase
         $check = array('fixed-time'=> $now->modify('-30 minutes')->format("Y-m-d\TH:i:s"));
         $this->assertFalse($this->UnattachedMessage->isNotPast($check));
     }
+
 
 }

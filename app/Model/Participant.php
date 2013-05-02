@@ -12,6 +12,7 @@ class Participant extends MongoModel
     var $name        = 'Participant';
     var $useDbConfig = 'mongo';
     
+    var $importErrors = array();
     
     function getModelVersion()
     {
@@ -71,14 +72,29 @@ class Participant extends MongoModel
             )
         );
 
+    public $importErrorMessages = array(
+        'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
+        'tag-error' => 'Error a tag is not valide: %s.',
+        'file-format-error' => 'The file format %s is not supported.',
+        'csv-file-error' => 'The csv file cannot be open.');
+
 
     public function validateTags($check)
     {
-        $regex = '/^[a-z0-9A-Z\s]+$/';
         foreach ($check['tags'] as $tag) {
-            if (!preg_match($regex,$tag)) {
+            if (!$this->validateTag($tag)) {
                 return false;
             }
+        }
+        return true;
+    }
+
+
+    public function validateTag($check)
+    {
+        $regex = '/^[a-z0-9A-Z\s]+$/';
+        if (!preg_match($regex, $check)) {
+            return false;
         }
         return true;
     }
@@ -120,17 +136,25 @@ class Participant extends MongoModel
     }
     
     
+    public function clearPhone($phone) 
+    {
+        if (isset($phone) and !empty($phone)) {
+            $phone = trim($phone);
+            $phone = preg_replace("/^(00|0)/", "+", $phone);    
+            if (!preg_match('/^\+[0-9]+/', $phone)) { 
+                $phone = "+" . $phone; 
+            }
+            return (string) $phone;
+        }
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
         
         if (isset($this->data['Participant']['phone']) and !empty($this->data['Participant']['phone'])) {
-            $this->data['Participant']['phone'] = trim($this->data['Participant']['phone']);
-            $this->data['Participant']['phone'] = preg_replace("/^(00|0)/", "+",$this->data['Participant']['phone']);    
-            if (!preg_match('/^\+[0-9]+/', $this->data['Participant']['phone'])) 
-                $this->data['Participant']['phone'] = "+".$this->data['Participant']['phone']; 
-    
-            $this->data['Participant']['phone'] = (string) $this->data['Participant']['phone'];
+            $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
         }
 
         //The time should be provide by the controller
@@ -416,6 +440,190 @@ class Participant extends MongoModel
         
         return $check;
     }
+
+
+    public function tagsFromStringToArray($tags) 
+    {
+        $tags = trim(stripcslashes($tags));
+        return explode(", ", $tags);
+    }
+
+
+    public function import($programUrl, $fileFullPath, $tags=null)
+    {
+        $defaultTags = array('imported');
+        if (isset($tags)) {
+            $tags = $this->tagsFromStringToArray($tags);
+            $tags = array_filter($tags);
+            if (empty($tags)) {
+                $tags = array();
+            }
+            foreach($tags as $tag) {
+                if (!$this->validateTag($tag)) {
+                    array_push($this->importErrors, __($this->importErrorMessages['tag-error'], $tag)); 
+                    return false;
+                }
+            }
+            $tags = array_merge($defaultTags, $tags);
+        } else {
+            $tags = $defaultTags;
+        }
+        
+        $ext = end(explode('.', $fileFullPath));
+        if (!($ext == 'csv') and !($ext == 'xls')) {
+            array_push($this->importErrors, __($this->importErrorMessages['file-format-error'], $ext)); 
+            return false;
+        }
+
+        if ($ext == 'csv') {
+            return $this->importCsv($programUrl, $fileFullPath, $tags);
+        } else if ($ext == 'xls') {
+            return $this->importXls($programUrl, $fileFullPath, $tags);
+        }
+
+    }
+
+    
+    public function saveParticipantWithReport($participant, $fileLine=null)
+    {
+        $this->create();
+        $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
+        if ($exist) {
+            $report = array(
+                'phone' => $participant['phone'],
+                'saved' => false,
+                'exist-before' => true,
+                'message' => array($this->validate['phone']['isReallyUnique']['message']));
+        } else {
+            $savedParticipant = $this->save($participant);
+            if ($savedParticipant) {
+                $report = array(
+                    'phone' => $savedParticipant['Participant']['phone'],
+                    'saved' => true,
+                    'exist-before' => false,
+                    'message' => array('Insert ok'));
+            } else {
+                $validationMessage = array();
+                foreach ($this->validationErrors as $key => $error) {
+                    array_push($validationMessage, $this->validationErrors[$key][0]);
+                }
+                $report = array(
+                    'phone' => $participant['phone'],
+                    'saved' => false,
+                    'exist-before' => false,
+                    'message' => $validationMessage);
+            }
+        }
+        if (isset($fileLine)) {
+            $report['line'] = $fileLine;
+        }
+        return $report;
+    }
+
+
+    public function importCsv($programUrl, $fileFullPath, $tags)
+    {
+        $count       = 0;
+        $entry       = array();
+        $hasHeaders  = false;
+        $headers     = array();
+        $report      = array();
+        $uniqueNumber = array();
+
+        if (($handle = fopen($fileFullPath,"r")) === false) {
+            array_push($this->importErrors, $this->importErrorMessages['csv-file-error']);
+            return false;
+        }
+  
+        while (($entry = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            if ($count == 0) {
+                $headers = $entry;
+                if (strcasecmp($headers[0], 'phone') == 0) {
+                    $hasHeaders = true;
+                    $count++;
+                    continue;
+                } else {
+                    if (count($headers) > 1) {
+                        array_push($this->importErrors, $this->importErrorMessages['label-error']); 
+                        return false;
+                    }
+                    $headers = array();
+                }
+            }
+            $participant          = array();
+            $participant['phone'] = $this->clearPhone($entry[0]);
+            $col = 0;
+            foreach ($headers as $label) {
+                $value = $entry[$col];
+                if ($value == '') {
+                    continue;
+                }
+                if (strtolower($label) != 'phone') {
+                    $participant['profile'][] = array(
+                        'label' => $label, 
+                        'value' => $value,
+                        'raw' => null);
+                }
+                $col++;
+            }
+            $participant['tags'] = $tags;
+            if (!isset($uniqueNumber[$participant['phone']])) {
+                $uniqueNumber[$participant['phone']] = '';
+                $report[] = $this->saveParticipantWithReport($participant, $count + 1);
+            }
+            $count++; 
+        }
+        return $report;
+    }
+
+    
+    private function importXls($programUrl, $fileFullPath, $tags)
+    {
+        require_once 'excel_reader2.php';
+
+        $headers      = array();
+        $hasLabels    = false;
+        $uniqueNumber = array();
+        $data = new Spreadsheet_Excel_Reader($fileFullPath);
+        if (strcasecmp('phone', $data->val(1,'A')) == 0) {
+            $hasLabels = true;
+            for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
+                if ($data->val(1, $j)==null){
+                    break;
+                }
+                $headers[] = $data->val(1, $j);
+            }
+        } else {
+            if ($data->val(1, 'B')!=null){
+                array_push($this->importErrors, __($this->importErrorMessages['label-error']));
+                return false;
+            }
+        }
+        for ( $i = ($hasLabels) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
+            if ($data->val($i,'A')==null){
+                break;
+            }
+            $participant          = array();
+            $participant['phone'] = $this->clearPhone($data->val($i,'A'));
+            $col = 2;
+            foreach ($headers as $header) {
+                if ($data->val($i,$col)==null) 
+                    continue;
+                $participant['profile'][] = array(
+                    'label' => $header,
+                    'value' => (string) $data->val($i,$col),
+                    'raw' => null);
+                $col++;
+            }
+            $participant['tags'] = $tags;
+            if (!isset($uniqueNumber[$participant['phone']])) {
+                $uniqueNumber[$participant['phone']] = '';
+                $report[] = $this->saveParticipantWithReport($participant, $i);
+            }
+        }
+        return $report;
+    }
+
 
     #Filter variables and functions
     public $filterFields = array(
