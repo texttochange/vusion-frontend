@@ -94,6 +94,12 @@ class UnattachedMessage extends MongoModel
                 'required' => true,
                 'message' => 'Fixed time cannot be in the past.'
                 )
+            ),
+        'created-by' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Message must be created by a user.'
+                )
             )
         );
     
@@ -157,9 +163,9 @@ class UnattachedMessage extends MongoModel
     {
         parent::beforeValidate();
         
-        if (!isset($this->data['UnattachedMessage']['created-by'])) {
+        /*if (!isset($this->data['UnattachedMessage']['created-by'])) {
                 $this->data['UnattachedMessage']['created-by'] = null;
-        }
+        }*/
         
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
