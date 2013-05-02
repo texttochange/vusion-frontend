@@ -329,13 +329,14 @@ class Participant extends MongoModel
             $profiles = array_filter(explode(",", $profiles));
             $profileList = array();
             foreach ($profiles as $profile) {
-                $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
-                list($label,$value) = explode(":", $profile);
-                $newProfile = array();
-                $newProfile['label'] = $label;
-                $newProfile['value'] = $value;
-                $newProfile['raw'] = null;
-                $profileList[] = $newProfile;
+            		$profile = trim($profile);
+            		$profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
+            		list($label,$value) = explode(":", $profile);
+            		$newProfile = array();
+            		$newProfile['label'] = $label;
+            		$newProfile['value'] = $value;
+            		$newProfile['raw'] = null;
+            		$profileList[] = $newProfile;
             }
             $this->data['Participant']['profile'] = $profileList;
         }
