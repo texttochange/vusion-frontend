@@ -39,7 +39,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
      ));
     
     //public $fixtures = array('app.user');
-    public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
+    //public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 
     
     public function setUp() 
@@ -79,7 +79,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
 
         parent::tearDown();
     }
-    
+
     
     public function mock_program_access()
     {
@@ -88,11 +88,12 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read'),
-                    'Auth' => array('User')
+            //        'Auth' => array('user')
                     ),
                 'models' => array(
                    'Program' => array('find', 'count'),
-                   'Group' => array()
+                   'Group' => array(),
+                   'User' => array('find')
                    ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
@@ -100,14 +101,14 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-        
+        /*
         $unattachedMessages->Auth
             ->staticExpects($this->once())
             ->method('user')
             ->will($this->returnValue(array(
                 'id' => '2',
                 'group_id' => '2')));
-    
+    */
         $unattachedMessages->Acl
             ->expects($this->any())
             ->method('check')
@@ -141,8 +142,24 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
  
     public function testIndex()
     {
-        $this->mock_program_access();
+        $userGerald = array(
+            'User' => array(
+                'id' => 1,
+                'username' => 'gerald',
+                'password' => 'geraldpassword',
+                'email' => 'gerald@here.com',
+                'group_id' => 1,
+                'created' => '2012-01-24 15:34:07',
+                'modified' => '2012-01-24 15:34:07'
+                ));
         
+        $unattachedMessages = $this->mock_program_access();
+        
+        $unattachedMessages->User
+            ->expects($this->any())
+            ->method('find')
+            ->will($this->returnValue($userGerald));
+
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $date = new DateTime('tomorrow');
@@ -163,7 +180,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['unattachedMessages']));	
     }
 
-/*
+
     public function testAdd()
     {
         $unattachedMessages = $this->mock_program_access();
