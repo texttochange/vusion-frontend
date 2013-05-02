@@ -37,9 +37,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'database' => 'testdbprogram'
         )
      ));
-    
-    //public $fixtures = array('app.user');
-    //public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 
     
     public function setUp() 
