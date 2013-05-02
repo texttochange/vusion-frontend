@@ -88,7 +88,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read'),
-            //        'Auth' => array('user')
+                    'Auth' => array('user')
                     ),
                 'models' => array(
                    'Program' => array('find', 'count'),
@@ -184,7 +184,13 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
     public function testAdd()
     {
         $unattachedMessages = $this->mock_program_access();
-        
+        $unattachedMessages->Auth
+            ->staticExpects($this->once())
+            ->method('user')
+            ->will($this->returnValue(array(
+                'id' => '2',
+                'group_id' => '2')));
+
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
 
         $regexId = $this->matchesRegularExpression('/^.{24}$/');
