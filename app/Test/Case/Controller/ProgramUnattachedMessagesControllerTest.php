@@ -101,14 +101,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-        /*
-        $unattachedMessages->Auth
-            ->staticExpects($this->once())
-            ->method('user')
-            ->will($this->returnValue(array(
-                'id' => '2',
-                'group_id' => '2')));
-    */
+
         $unattachedMessages->Acl
             ->expects($this->any())
             ->method('check')
@@ -224,7 +217,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->assertEquals(2, $unattachedMessageDB[0]['UnattachedMessage']['created-by']);
         
     }
-/*
+
 
     public function testEdit()
     {
@@ -241,7 +234,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'send-to-type' => 'all',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
-                'fixed-time' => $date->format('d/m/Y H:i')
+                'fixed-time' => $date->format('d/m/Y H:i'),
+                'created-by' => 1
              )
         );
         $this->UnattachedMessage->create();
@@ -289,7 +283,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'send-to-type' => 'all',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
-                'fixed-time' => $date->format('d/m/Y H:i')
+                'fixed-time' => $date->format('d/m/Y H:i'),
+                'created-by' => 1
              )
         );
         $this->UnattachedMessage->create();
@@ -327,6 +322,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'send-to-type' => 'all',
             'content' => 'Hello!!!!',
             'type-schedule' => 'immediately',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage);        
@@ -358,6 +354,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'content' => 'Hello!!!!',
             'type-schedule' => 'fixed-time',
             'fixed-time' => '12/04/3013 11:00',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage); 
@@ -374,5 +371,5 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(1, count($this->vars['unattachedMessages'])); 
     }
-*/
+
 }
