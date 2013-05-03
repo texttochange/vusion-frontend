@@ -4,7 +4,7 @@
 
  <property file="build.properties"/>
 
- <condition property="vusiondir" value="/var/www/vusion">
+ <condition property="vusiondir" value="/var/vusion">
    <not>  
       <isset property="vusiondir"/>
    </not>
