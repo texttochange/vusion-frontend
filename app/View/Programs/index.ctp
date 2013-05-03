@@ -40,12 +40,10 @@
 	<div class='ttc-program-box' title= "<?php echo $program['Program']['name']?>" onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
 	<?php $programName = $this->Text->truncate($program['Program']['name'], 
 			20, 
-			array('ellipsis' => '....',
+			array('ellipsis' => '...',
 			'exact' => true ));
 	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title'));
 	?>
-		
-		
 		<?php
 		if (isset($program['Program']['shortcode']))
 		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
