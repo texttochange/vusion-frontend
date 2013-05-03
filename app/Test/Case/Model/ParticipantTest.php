@@ -256,10 +256,8 @@ class ParticipantTestCase extends CakeTestCase
             $enrolledParticipant['Participant']['enrolled'][1]['dialogue-id'],
             $otherSavedDialogue['Dialogue']['dialogue-id']
             );
-        $this->assertEqual(
-            $enrolledParticipant['Participant']['enrolled'][1]['date-time'],
-            $programNow->format("Y-m-d\TH:i:s")
-            );
+        $timeDiff = $programNow->diff(new DateTime($enrolledParticipant['Participant']['enrolled'][1]['date-time'])); 
+        $this->assertTrue($timeDiff->format('%s') <= 1);
         $this->assertEqual(2, count($enrolledParticipant['Participant']['enrolled']));
     }
 
