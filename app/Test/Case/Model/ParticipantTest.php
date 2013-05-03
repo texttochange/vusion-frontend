@@ -1129,5 +1129,25 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(in_array('you2', $participants[0]['Participant']['tags']));
     }
 
-    
+	public function testParticipantProfile_trim()
+	{
+			$this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+			
+			$this->assertEqual(array(), $this->Participant->getDistinctTagsAndLabels());			
+			$participant_08 = array(
+					'phone' => '+8',    				
+					);
+			$this->Participant->create();
+			$savedParticipant = $this->Participant->save($participant_08);     		
+			$savedParticipant['Participant']['profile'] = ' city: kampala, name: mama';
+			$new = $this->Participant->save($savedParticipant);
+			$participantDb = $this->Participant->find();			
+			//print_r($participantDb['Participant']['profile']);
+			$this->assertEqual($participantDb['Participant']['profile'][0]['label'],'city');
+			$this->assertEqual($participantDb['Participant']['profile'][1]['label'],'name');
+			$this->assertEqual($participantDb['Participant']['profile'][0]['value'],'kampala');
+			$this->assertEqual($participantDb['Participant']['profile'][1]['value'],'mama');
+			
+	}
+
 }

@@ -101,7 +101,7 @@ class Participant extends MongoModel
     
     
     public function validateProfile($check)
-    {
+    { 
         $regex = '/^[a-zA-Z0-9\s]+:[a-zA-Z0-9\s]+$/';
         foreach ($check['profile'] as $profile) {
             foreach ($profile as $key => $value) {
@@ -322,25 +322,24 @@ class Participant extends MongoModel
     
     protected function _editProfile()
     {
-        if(!isset($this->data['Participant']['profile']))
-            $this->data['Participant']['profile'] = array();
-        else if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {
-            $profiles = trim(stripcslashes($this->data['Participant']['profile']));
-            $profiles = array_filter(explode(",", $profiles));
-            $profileList = array();
-            foreach ($profiles as $profile) {
-            		$profile = trim($profile);
-            		$profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
-            		list($label,$value) = explode(":", $profile);
-            		$newProfile = array();
-            		$newProfile['label'] = $label;
-            		$newProfile['value'] = $value;
-            		$newProfile['raw'] = null;
-            		$profileList[] = $newProfile;
-            }
-            $this->data['Participant']['profile'] = $profileList;
-        }
-        return $this->data['Participant']['profile'];
+    		if(!isset($this->data['Participant']['profile']))
+    				$this->data['Participant']['profile'] = array();
+    		else if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {   				
+    				$profiles = trim(stripcslashes($this->data['Participant']['profile']));    				
+    				$profiles = array_filter(explode(",", $profiles));    				
+    				$profileList = array();
+    				foreach ($profiles as $profile) {   						
+    						$profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
+    						list($label,$value) = explode(":", $profile);
+    						$newProfile = array();
+    						$newProfile['label'] = trim($label);
+    						$newProfile['value'] = trim($value);
+    						$newProfile['raw'] = null;
+    						$profileList[] = $newProfile;    						
+    				}
+    				$this->data['Participant']['profile'] = $profileList;
+    		}
+    		return $this->data['Participant']['profile'];
     }
     
     
