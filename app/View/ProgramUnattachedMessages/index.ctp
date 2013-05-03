@@ -28,7 +28,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
 	        <th id="delivery-css" title="<?php echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ?>">
 	            <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programUrl)));?></th>
 	        <th id="date-time-css"><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programUrl)));?></th>
-	        <th id="direction-css"><?php echo $this->Paginator->sort('created-by', __('Created By'), array('url'=> array('program' => $programUrl)));?></th>
+	        <th id="direction-css"><?php echo $this->Paginator->sort('created-by', __('Creator'), array('url'=> array('program' => $programUrl)));?></th>
 	        <th id="action-css" class="actions"><?php echo __('Actions');?></th>
 	    </tr>
 	    </thead>
