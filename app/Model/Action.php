@@ -1,19 +1,15 @@
 <?php
+App::uses('VirtualModel', 'Model');
 App::uses('VusionConst', 'Lib');
 
 
-class Action
+class Action extends VirtualModel
 {
-
     var $modelName = 'action';
     var $modelVersion = '1'; 
 
-    var $payload = array();
-
     var $fields = array('type-action');
    
-    var $validationErrors = array();
-
     public $validate = array(
             'optin' => array(),
             'optout' => array(),
@@ -43,18 +39,6 @@ class Action
                     'notForbiddenApostrophe' => array(
                         'rule' => 'notForbiddenApostrophe',
                         'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE))));
-
-
-    
-    public function __construct() 
-    {
-    }
-
-
-    public function create()
-    {
-        $this->validationErrors = array();
-    }
 
 
     public function trimArray($Input)
@@ -129,8 +113,10 @@ class Action
     }
 
 
-    public function valid($action)
+    public function validates()
     {
+        $action = $this->data;
+        
         if (!isset($this->validate[$action['type-action']])) {
             array_push($this->validationErrors, __("The action %s is not supported.", $action['type-action']));
             return false;

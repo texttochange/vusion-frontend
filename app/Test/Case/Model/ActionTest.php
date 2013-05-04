@@ -20,8 +20,8 @@ class ActionTestCase extends CakeTestCase
         $action = array(
             'type-action' => 'feedback',
             'content' => 'What’up');
-        $this->Action->create();
-        $this->Action->valid($action);
+        $this->Action->set($action);
+        $this->Action->validates();
         $this->assertEqual(
             'The apostrophe used is not allowed.',
             $this->Action->validationErrors[0]);
@@ -33,8 +33,8 @@ class ActionTestCase extends CakeTestCase
     public function testValidateAction_fail_feedback_fieldMissing() {
         $action = array(
             'type-action' => 'feedback');
-        $this->Action->create();
-        $this->Action->valid($action);
+        $this->Action->set($action);
+        $this->Action->validates();
         $this->assertEqual(
             'The field content is missing.',
             $this->Action->validationErrors[0]);
@@ -48,8 +48,8 @@ class ActionTestCase extends CakeTestCase
             'type-action' => 'delayed-enrolling',
             'enroll' => '233445',
             'offset-days' => array());
-        $this->Action->create();
-        $this->Action->valid($action);
+        $this->Action->set($action);
+        $this->Action->validates();
         $this->assertEqual(
             'The days and time has to be set.',
             $this->Action->validationErrors[0]);
@@ -65,8 +65,8 @@ class ActionTestCase extends CakeTestCase
             'offset-days' => array(
                 'days' => '0',
                 'at-time' => '10:10'));
-        $this->Action->create();
-        $this->Action->valid($action);
+        $this->Action->set($action);
+        $this->Action->validates();
         $this->assertEqual(
             'The offset days is not valid.',
             $this->Action->validationErrors[0]);
@@ -78,8 +78,8 @@ class ActionTestCase extends CakeTestCase
     public function testValidateAction_fail_other_action() {
         $action = array(
             'type-action' => 'some-new-action');
-        $this->Action->create();
-        $this->Action->valid($action);
+        $this->Action->set($action);
+        $this->Action->validates();
         $this->assertEqual(
             'The action some-new-action is not supported.',
             $this->Action->validationErrors[0]
@@ -94,8 +94,8 @@ class ActionTestCase extends CakeTestCase
         $action = array(
             'type-action' => 'tagging',
             'tag' => 'a tag$');
-        $this->Action->create();
-        $this->Action->valid($action);
+        $this->Action->set($action);
+        $this->Action->validates();
         $this->assertEqual(
             'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...',
             $this->Action->validationErrors[0]);
@@ -107,8 +107,8 @@ class ActionTestCase extends CakeTestCase
     public function testValidateAction_optin() {
         $action = array(
             'type-action' => 'optin');
-        $this->Action->create();
-        $this->assertTrue($this->Action->valid($action));
+        $this->Action->set($action);
+        $this->assertTrue($this->Action->validates());
     }
 
 
