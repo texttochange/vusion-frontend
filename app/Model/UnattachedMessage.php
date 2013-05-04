@@ -88,7 +88,7 @@ class UnattachedMessage extends MongoModel
                 'message' => 'Please enter some content for this message.'
                 ),
             'notForbiddenApostrophe' => array(
-                'rule' => array('notForbiddenApostrophe'),
+                'rule' => 'notForbiddenApostrophe',
                 'message' => 'The apostrophe used in this message is not valid.'
                 ),
             ),
