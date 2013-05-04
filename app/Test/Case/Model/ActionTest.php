@@ -24,8 +24,9 @@ class ActionTestCase extends CakeTestCase
         $this->Action->valid($action);
         $this->assertEqual(
             'The apostrophe used is not allowed.',
-            $this->Action->validationErrors[0]
-            );
+            $this->Action->validationErrors[0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors[0]));
     }
 
 
@@ -36,8 +37,9 @@ class ActionTestCase extends CakeTestCase
         $this->Action->valid($action);
         $this->assertEqual(
             'The field content is missing.',
-            $this->Action->validationErrors[0]
-            );
+            $this->Action->validationErrors[0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors[0]));
     }
 
     
@@ -50,8 +52,9 @@ class ActionTestCase extends CakeTestCase
         $this->Action->valid($action);
         $this->assertEqual(
             'The days and time has to be set.',
-            $this->Action->validationErrors[0]
-            );
+            $this->Action->validationErrors[0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors[0]));
     }
 
 
@@ -66,8 +69,9 @@ class ActionTestCase extends CakeTestCase
         $this->Action->valid($action);
         $this->assertEqual(
             'The offset days is not valid.',
-            $this->Action->validationErrors[0]
-            );
+            $this->Action->validationErrors[0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors[0]));
     }
 
 
@@ -80,6 +84,9 @@ class ActionTestCase extends CakeTestCase
             'The action some-new-action is not supported.',
             $this->Action->validationErrors[0]
             );
+        $this->assertEqual(
+            1,
+            count($this->Action->validationErrors[0]));
     }
 
 
@@ -91,8 +98,17 @@ class ActionTestCase extends CakeTestCase
         $this->Action->valid($action);
         $this->assertEqual(
             'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...',
-            $this->Action->validationErrors[0]
-            );
+            $this->Action->validationErrors[0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors[0]));
+    }
+
+
+    public function testValidateAction_optin() {
+        $action = array(
+            'type-action' => 'optin');
+        $this->Action->create();
+        $this->assertTrue($this->Action->valid($action));
     }
 
 

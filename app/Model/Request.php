@@ -62,6 +62,7 @@ class Request extends MongoModel
                 ),
             'validateAction' => array(
                 'rule' => 'validateAction',
+                'message' => ''
                 )
             )
         );
