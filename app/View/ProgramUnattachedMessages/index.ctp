@@ -28,6 +28,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
 	        <th id="delivery-css" title="<?php echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ?>">
 	            <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programUrl)));?></th>
 	        <th id="date-time-css"><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programUrl)));?></th>
+	        <th id="direction-css"><?php echo $this->Paginator->sort('created-by', __('Creator'), array('url'=> array('program' => $programUrl)));?></th>
 	        <th id="action-css" class="actions"><?php echo __('Actions');?></th>
 	    </tr>
 	    </thead>
@@ -44,13 +45,18 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     	                    echo $unattachedMessage['UnattachedMessage']['to'];
     	                }
     	        } else {
-    	            if ($unattachedMessage['UnattachedMessage']['send-to-type'] == 'all') {
+    	            switch ($unattachedMessage['UnattachedMessage']['send-to-type']) {
+    	            case "all":
     	                echo __('All participants');
-    	            } else {
+    	                break;
+    	            case "match":
     	                echo __('Participant(s) matching %s of the following tag(s)/label(s): ', 
     	                    $unattachedMessage['UnattachedMessage']['send-to-match-operator']);
     	                echo implode(" - ", $unattachedMessage['UnattachedMessage']['send-to-match-conditions']);
-        
+    	                break;
+    	            case "phone":
+    	                echo __('%s Participant(s)', count($unattachedMessage['UnattachedMessage']['send-to-phone'])); 
+    	                break;
     	            } 
     	            if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     	                echo " (".$unattachedMessage['UnattachedMessage']['count-schedule'].")";
@@ -79,6 +85,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     	        ?>
     	    </td>
     	    <td id="date-time-css"><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
+    	    <td id="direction-css"><?php echo $unattachedMessage['UnattachedMessage']['created-by']; ?>&nbsp;</th>
     	    <td id="action-css" class="actions">
     	       <?php
     	       $now = new DateTime('now');

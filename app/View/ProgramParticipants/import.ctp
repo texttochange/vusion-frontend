@@ -16,16 +16,22 @@
 
 	<div>
 	   <?php 
-	   if (isset($entries)) {
-	       if (is_array($entries)) {
-	           foreach($entries as $entry){ 
-	               echo $entry."<br />";
-	           }
-	       } else {
-	           echo "$entries";
-	       }
-	   }
-	   ?>
-	</div>
+	  if (isset($report) && $report!=false) {
+	      $importFailed = array_filter($report, function($participant) { 
+	              return (!$participant['saved']);
+	      });
+	      if (count($importFailed) == 0) {
+	          echo __("Import of %s participant(s) succeed.", count($report));
+	      } else { 
+	          echo __("Import failed for %s participant(s) over a total of %s participant(s).", count($importFailed), count($report));
+	          echo "<br/>";
+	          foreach($importFailed as $failure){ 
+	              echo __("On line %s with number %s: %s", $failure['line'],  $failure['phone'], implode(", ", $failure['message']));
+	              echo "<br/>";
+	          }
+	      }
+	  }
+	  ?>
+	  </div>
 
 </div>

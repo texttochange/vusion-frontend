@@ -162,5 +162,15 @@ class ProgramSetting extends MongoModel
         return $now;       
     }
 
+    public function hasRequired()
+    {
+        $shortCode = $this->find('getProgramSetting', array('key'=>'shortcode'));
+        $timezone = $this->find('getProgramSetting', array('key'=>'timezone'));        
+        if ($shortCode and $timezone) {
+            return true;
+        }
+        return false;
+    }
+
 
 }
