@@ -764,14 +764,24 @@ function formatChoiceValidation(value, element, param) {
     return false;    
 }
 
-function indexChoiceValidation(value, element, param) {     
-    var choiceInput = $(element).attr('name');
+function indexChoiceValidation(value, element, param) {  
+	var isValid = true;
+    var choiceInput = $(element).attr('name');    
+    var answerIndex = choiceInput.substr(33,1);
+    answerIndex++;
+    /*
     var choiceValue = new RegExp('^[2]*$');
-    var interactionIndex = choiceInput.substr(22,1)
-    if((choiceInput == $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[0\\].choice$)").attr('name') )&& (choiceValue.test(value))  ){
+    var interactionIndex = choiceInput.substr(22,1);
+    if((choiceInput == $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[0\\].choice$)").attr('name') )&& (choiceInput >= answerIndex)  ){
     	return false;
-    }
-    return true;   
+    }*/
+    $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) {
+            if (value > answerIndex) { 
+                isValid = false;
+                return;
+            }            
+    });
+    return isValid;   
 }
 
 
