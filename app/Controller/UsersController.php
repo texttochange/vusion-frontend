@@ -324,6 +324,7 @@ class UsersController extends AppController
         $this->Acl->allow($group, 'controllers/ProgramParticipants');
         $this->Acl->allow($group, 'controllers/ProgramHistory/index');
         $this->Acl->allow($group, 'controllers/ProgramHistory/export');
+        $this->Acl->allow($group, 'controllers/ProgramHistory/download');
         $this->Acl->deny($group, 'controllers/ProgramHistory/delete');
         $this->Acl->allow($group, 'controllers/ProgramUnattachedMessages');
         $this->Acl->allow($group, 'controllers/Users/view');
