@@ -765,23 +765,31 @@ function formatChoiceValidation(value, element, param) {
 }
 
 function indexChoiceValidation(value, element, param) {  
-	var isValid = true;
-    var choiceInput = $(element).attr('name');    
+	var isValid = true;	
+    var choiceInput = $(element).attr('name');
+    var interactionIndex = choiceInput.substr(22,1)
     var answerIndex = choiceInput.substr(33,1);
+    var answerIndex2 = choiceInput.substr(33,1);
     answerIndex++;
+    answerIndex2--;
+    var N = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;
     /*
     var choiceValue = new RegExp('^[2]*$');
     var interactionIndex = choiceInput.substr(22,1);
     if((choiceInput == $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[0\\].choice$)").attr('name') )&& (choiceInput >= answerIndex)  ){
     	return false;
-    }*/
+    }
     $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) {
             if (value > answerIndex) { 
                 isValid = false;
                 return;
             }            
     });
-    return isValid;   
+    */
+    if(1 >= answerIndex2 || answerIndex >= N  ){
+    	return false;    	
+    }    
+    return true;   
 }
 
 
