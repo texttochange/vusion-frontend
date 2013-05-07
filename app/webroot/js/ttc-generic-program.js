@@ -765,11 +765,11 @@ function formatChoiceValidation(value, element, param) {
 }
 
 function indexChoiceValidation(value, element, param) {  
-	var isValid = true;	
+	var isValid = false;	
     var choiceInput = $(element).attr('name');
     var interactionIndex = choiceInput.substr(22,1)
     var addOne = choiceInput.substr(33,1);    
-    addOne++;
+    addOne++;    
     var lessByOne = choiceInput.substr(33,1);
     lessByOne--;
     var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;
@@ -779,17 +779,22 @@ function indexChoiceValidation(value, element, param) {
     if((choiceInput == $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[0\\].choice$)").attr('name') )&& (choiceInput >= answerIndex)  ){
     	return false;
     }
-    $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) {
-            if (value > answerIndex) { 
+    if(1 >= lessByOne || addOne >= numberOfAnswers){
+    	return false;    	
+    }
+    if (value > answerIndex) { 
                 isValid = false;
                 return;
-            }            
-    });
+            } 
     */
-    if(1 >= lessByOne || addOne >= numberOfAnswers ){
-    	return false;    	
-    }    
-    return true;   
+    $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) {           
+            if(value == ((1 >= lessByOne) || (addOne >= numberOfAnswers))){
+            	isValid = true;
+                return;  	
+            } 
+    });
+      
+    return isValid;   
 }
 
 
