@@ -768,11 +768,11 @@ function indexChoiceValidation(value, element, param) {
 	var isValid = true;	
     var choiceInput = $(element).attr('name');
     var interactionIndex = choiceInput.substr(22,1)
-    var answerIndex = choiceInput.substr(33,1);
-    var answerIndex2 = choiceInput.substr(33,1);
-    answerIndex++;
-    answerIndex2--;
-    var N = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;
+    var addOne = choiceInput.substr(33,1);    
+    addOne++;
+    var lessByOne = choiceInput.substr(33,1);
+    lessByOne--;
+    var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;
     /*
     var choiceValue = new RegExp('^[2]*$');
     var interactionIndex = choiceInput.substr(22,1);
@@ -786,7 +786,7 @@ function indexChoiceValidation(value, element, param) {
             }            
     });
     */
-    if(1 >= answerIndex2 || answerIndex >= N  ){
+    if(1 >= lessByOne || addOne >= numberOfAnswers ){
     	return false;    	
     }    
     return true;   
@@ -795,9 +795,9 @@ function indexChoiceValidation(value, element, param) {
 
 function atLeastOneIsChecked(value, element, param) {
     if ($("[name='"+$(element).attr('name')+"']:checked").length==0) {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 function requireLetterDigitSpace(value, element, param) {
