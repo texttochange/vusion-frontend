@@ -786,13 +786,12 @@ function indexChoiceValidation(value, element, param) {
                 isValid = false;
                 return;
             } 
-    */
-    $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) {           
+             $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) { });
+    */              
             if(value == ((1 >= lessByOne) || (addOne >= numberOfAnswers))){
             	isValid = true;
                 return;  	
-            } 
-    });
+            }  
       
     return isValid;   
 }
