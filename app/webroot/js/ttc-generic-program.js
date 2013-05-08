@@ -765,6 +765,14 @@ function formatChoiceValidation(value, element, param) {
 }
 
 
+function isInt(someNumber) {
+    var intRegex = /^\d+$/;
+    if(intRegex.test(someNumber)) {
+        return true;
+    }
+    return false;
+}
+
 function extractIndex(elementName, indexName) {
     indexedName = elementName.match(/\w*\[(\d*)\]/gm);
     for (var i = 0; i < indexedName.length; i++) {
@@ -777,21 +785,29 @@ function extractIndex(elementName, indexName) {
     return null;
 }
 
-function indexChoiceValidation(value, element, param) {  
-	var isValid = false;	
+function indexChoiceValidation(value, element, param) {
+    // The value is not an Int => no ambiguity
+    if (!isInt(value)) {
+        return true;
+    }
+
     var choiceInput = $(element).attr('name');
-    
     var interactionIndex = extractIndex(choiceInput, 'interactions');
     var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;             
-    
     var answerIndex = extractIndex(choiceInput, 'answers');
-    var addOne = answerIndex - 1;
-    var lessByOne = answerIndex + 1;
-    if((1 >= lessByOne) || (addOne >= numberOfAnswers)){
-    	if (value >= numberOfAnswers){   		 
-    		return true; 	
-    	} 
+    var equivalentParticipantChoice = answerIndex + 1;
+    
+    // The answer index is out of boundary => no ambiguity
+    if (equivalentParticipantChoice < 1 || equivalentParticipantChoice > numberOfAnswers) { 
+        return true;
     }
+
+    // The answer index it equal to the value
+    if (equivalentParticipantChoice == parseInt(value)) {
+        return true;
+    } 
+    
+    // All other case are ambigious
     return false;   
 }
 
