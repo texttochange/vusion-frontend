@@ -772,28 +772,13 @@ function indexChoiceValidation(value, element, param) {
     addOne++;    
     var lessByOne = choiceInput.substr(33,1);
     lessByOne--;
-    var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;
-    /*
-    var choiceValue = new RegExp('^[2]*$');
-    var interactionIndex = choiceInput.substr(22,1);
-    if((choiceInput == $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[0\\].choice$)").attr('name') )&& (choiceInput >= answerIndex)  ){
-    	return false;
+    var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;             
+    if((1 >= lessByOne) || (addOne >= numberOfAnswers)){
+    	if (value >= numberOfAnswers){   		 
+    		return true; 	
+    	} 
     }
-    if(1 >= lessByOne || addOne >= numberOfAnswers){
-    	return false;    	
-    }
-    if (value > answerIndex) { 
-                isValid = false;
-                return;
-            } 
-             $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function( ) { });
-    */              
-            if(value == ((1 >= lessByOne) || (addOne >= numberOfAnswers))){
-            	isValid = true;
-                return;  	
-            }  
-      
-    return isValid;   
+    return false;   
 }
 
 
