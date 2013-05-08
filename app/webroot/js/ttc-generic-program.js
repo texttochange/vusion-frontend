@@ -764,15 +764,29 @@ function formatChoiceValidation(value, element, param) {
     return false;    
 }
 
+
+function extractIndex(elementName, indexName) {
+    indexedName = elementName.match(/\w*\[(\d*)\]/gm);
+    for (var i = 0; i < indexedName.length; i++) {
+        var indexNameRegex = new RegExp(indexName,"g");
+        if (indexNameRegex.test(indexedName[i])) {
+            index = indexedName[i].match(/\[(\d*)\]/gm)[0].slice(1, -1);
+            return parseInt(index);
+        }
+    }
+    return null;
+}
+
 function indexChoiceValidation(value, element, param) {  
 	var isValid = false;	
     var choiceInput = $(element).attr('name');
-    var interactionIndex = choiceInput.substr(22,1)
-    var addOne = choiceInput.substr(33,1);    
-    addOne++;    
-    var lessByOne = choiceInput.substr(33,1);
-    lessByOne--;
+    
+    var interactionIndex = extractIndex(choiceInput, 'interactions');
     var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;             
+    
+    var answerIndex = extractIndex(choiceInput, 'answers');
+    var addOne = answerIndex - 1;
+    var lessByOne = answerIndex + 1;
     if((1 >= lessByOne) || (addOne >= numberOfAnswers)){
     	if (value >= numberOfAnswers){   		 
     		return true; 	
