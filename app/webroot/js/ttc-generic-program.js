@@ -798,7 +798,7 @@ function indexChoiceValidation(value, element, param) {
     var equivalentParticipantChoice = answerIndex + 1;
     
     // The answer index is out of boundary => no ambiguity
-    if (equivalentParticipantChoice < 1 || value > numberOfAnswers) { 
+    if (value < 1 || value > numberOfAnswers) { 
         return true;
     }
 
