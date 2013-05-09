@@ -798,7 +798,7 @@ function indexChoiceValidation(value, element, param) {
     var equivalentParticipantChoice = answerIndex + 1;
     
     // The answer index is out of boundary => no ambiguity
-    if (equivalentParticipantChoice < 1 || equivalentParticipantChoice > numberOfAnswers) { 
+    if (equivalentParticipantChoice < 1 || value > numberOfAnswers) { 
         return true;
     }
 
@@ -814,9 +814,9 @@ function indexChoiceValidation(value, element, param) {
 
 function atLeastOneIsChecked(value, element, param) {
     if ($("[name='"+$(element).attr('name')+"']:checked").length==0) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 function requireLetterDigitSpace(value, element, param) {
