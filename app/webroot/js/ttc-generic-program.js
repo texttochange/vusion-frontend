@@ -410,11 +410,13 @@ function activeForm(){
             doubleSpace:true,
             choiceUnique: true,
             choiceFormat:true,
+            choiceIndex:true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
                 choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
                 choiceFormat: wrapErrorMessage(localized_errors.validation_choice_format),
-            }
+                choiceIndex: wrapErrorMessage(localized_errors.validation_choice_index),
+            } 
         });
     });
     $("input[name*='name']").each(function (item) {
@@ -761,6 +763,54 @@ function formatChoiceValidation(value, element, param) {
     }
     return false;    
 }
+
+
+function isInt(someNumber) {
+    var intRegex = /^\d+$/;
+    if(intRegex.test(someNumber)) {
+        return true;
+    }
+    return false;
+}
+
+function extractIndex(elementName, indexName) {
+    indexedName = elementName.match(/\w*\[(\d*)\]/gm);
+    for (var i = 0; i < indexedName.length; i++) {
+        var indexNameRegex = new RegExp(indexName,"g");
+        if (indexNameRegex.test(indexedName[i])) {
+            index = indexedName[i].match(/\[(\d*)\]/gm)[0].slice(1, -1);
+            return parseInt(index);
+        }
+    }
+    return null;
+}
+
+function indexChoiceValidation(value, element, param) {
+    // The value is not an Int => no ambiguity
+    if (!isInt(value)) {
+        return true;
+    }
+
+    var choiceInput = $(element).attr('name');
+    var interactionIndex = extractIndex(choiceInput, 'interactions');
+    var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;             
+    var answerIndex = extractIndex(choiceInput, 'answers');
+    var equivalentParticipantChoice = answerIndex + 1;
+    
+    // The answer index is out of boundary => no ambiguity
+    if (value < 1 || value > numberOfAnswers) { 
+        return true;
+    }
+
+    // The answer index it equal to the value
+    if (equivalentParticipantChoice == parseInt(value)) {
+        return true;
+    } 
+    
+    // All other case are ambigious
+    return false;   
+}
+
 
 function atLeastOneIsChecked(value, element, param) {
     if ($("[name='"+$(element).attr('name')+"']:checked").length==0) {
@@ -1163,6 +1213,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "choiceFormat",
         formatChoiceValidation,
+        wrapErrorMessage(Error));
+    
+     $.validator.addMethod(
+        "choiceIndex",
+        indexChoiceValidation,
         wrapErrorMessage(Error));
 
     $.validator.addMethod(
