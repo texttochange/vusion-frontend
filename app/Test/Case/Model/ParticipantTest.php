@@ -428,16 +428,30 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
         $this->assertEquals(2, count($participants));
         $this->assertEquals($participants[0]['Participant']['tags'], array('imported'));
-        $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
-        $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
-        $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'DoB');
-        $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '21st of July');
-        $this->assertEquals($participants[1]['Participant']['profile'][0]['value'], 'Gerald Ankunda');
-        $this->assertEquals($participants[1]['Participant']['profile'][1]['value'], '30th of March');
+        $this->assertEquals(
+            $participants[0]['Participant']['profile'][0], 
+            array('label' => 'Name',
+                'value' => 'Olivier Vernin',
+                'raw' => null));
+        $this->assertEquals(
+            $participants[0]['Participant']['profile'][1], 
+            array('label' => 'DoB',
+                'value' => '21st of July',
+                'raw' => null));
+        $this->assertEquals(
+            $participants[1]['Participant']['profile'][0], 
+            array('label' => 'Name',
+                'value' => 'Gerald Ankunda',
+                'raw' => null));
+        $this->assertEquals(
+            $participants[1]['Participant']['profile'][1], 
+            array('label' => 'DoB',
+                'value' => '30th of March',
+                'raw' => null));  
     }
 
 
-    public function testImport_csv_tag() 
+    public function testImport_csv_and_tagging() 
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -453,6 +467,29 @@ class ParticipantTestCase extends CakeTestCase
             $participants[0]['Participant']['tags'], 
             array('imported', '1tag', 'other tag', 'stillAnother Tag'));        
     }
+
+
+    public function testImport_csv_with_tag() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/wellformattedparticipants_withtags.csv');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'a first tag', 'a second tag'));        
+
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256712747841')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'a 3rd tag'));        
+    }
+
 
     public function testImport_csv_duplicate() 
     {
@@ -621,6 +658,27 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
+    public function testImport_xls_with_tags() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/well_formatted_participants_with_tags.xls');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'one tag', 'a second tag'));        
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256712747841')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'a 3rd tag'));                
+    }
+
+
     public function testImport_xls_emptyColumn() 
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -630,10 +688,16 @@ class ParticipantTestCase extends CakeTestCase
             'testUrl',
             TESTS . 'files/empty_column.xls');
 
-        $participants = $this->Participant->find('all');
-        $this->assertEquals(2, count($participants));
-        $this->assertEquals(isset($participants[0]['Participant']['profile'][0]), false);
-        $this->assertEquals(isset($participants[1]['Participant']['profile'][0]), true);
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256777777777')));
+        $this->assertEquals($participant['Participant']['profile'],array());        
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256888888888')));
+        $this->assertEquals(
+            $participant['Participant']['profile'], 
+            array(array(
+                'label' => 'name',
+                'value' => 'oliv',
+                'raw' => null)));
     }
 
 
@@ -677,7 +741,6 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
         $this->assertEquals(5, count($participants));
     }
-
 
 
     //TEST FILTERS
@@ -1140,7 +1203,6 @@ class ParticipantTestCase extends CakeTestCase
 			$savedParticipant['Participant']['profile'] = ' city: kampala, name: mama';
 			$new = $this->Participant->save($savedParticipant);
 			$participantDb = $this->Participant->find();			
-			//print_r($participantDb['Participant']['profile']);
 			$this->assertEqual($participantDb['Participant']['profile'][0]['label'],'city');
 			$this->assertEqual($participantDb['Participant']['profile'][1]['label'],'name');
 			$this->assertEqual($participantDb['Participant']['profile'][0]['value'],'kampala');
