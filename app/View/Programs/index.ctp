@@ -1,17 +1,19 @@
 <div class="ttc-recent-issues">
 	<h3><?php echo __('Recent Issues'); ?></h3>
 	<ul class="ttc-issues-list">
-	<?php foreach ($unmatchableReplies as $unmatchableReply): ?>
-	<li>
-	<?php	    
+	<?php
+	if ($this->AclLink->_allow('controllers/UnmatchableReply')) {
+	    foreach ($unmatchableReplies as $unmatchableReply): 
+	    echo "<li>";
 	    echo $this->Html->tag('div', $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']), array('class' => 'ttc-issue-time'));
 	    echo "<div class='ttc-issue-content'>";
 	    echo $this->Html->tag('h3', $this->Html->link(__('unmatchable reply'),array('controller'=>'unmatchableReply','action' => 'index')));
 	    echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
 	    echo "</div>";
+	    echo "</li>";
+	    endforeach;
+	}
 	?>
-	</li>
-	<?php endforeach; ?>
 	</ul>
 </div>
 <div class="ttc-program-index">
