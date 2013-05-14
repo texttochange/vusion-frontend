@@ -594,7 +594,7 @@ class Participant extends MongoModel
                 $headers[] = $data->val(1, $j);
             }
         } else {
-            if ($data->val(1, 'B')!=null){
+            if ($data->val(1, 'B')!=null or $data->val(1, 'A') == null){
                 array_push($this->importErrors, __($this->importErrorMessages['label-error']));
                 return false;
             }
