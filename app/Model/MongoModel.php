@@ -101,14 +101,24 @@ abstract class MongoModel extends Model
     {
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         $this->data[$this->alias]['model-version'] = $this->getModelVersion();
-        foreach($this->data[$this->alias] as $key => $value) {
-            if (is_string($value)){
-                $this->data[$this->alias][$key] = trim(stripcslashes($value));
-            }
-        }
+        $this->data = $this->_trim_array($this->data);
         return true;
     }
     
+
+    public function _trim_array($document)
+    {
+        if (!is_array($document)) {
+            if (is_string($document)) {
+                $document = trim(stripcslashes($document));
+            }
+            return $document;
+        }
+        foreach($document as &$element) {
+            $element = $this->_trim_array($element);
+        }
+        return $document;
+    }
     
     public function isVeryUnique($check)
     {
