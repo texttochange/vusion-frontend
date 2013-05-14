@@ -258,8 +258,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'type-schedule' => 'immediately',
                 'file' => array(
                     'error' => 0,
-                    'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                    'name' => 'wellformattedparticipants.csv'
+                    'tmp_name' => TESTS . 'files/well_formatted_participants.csv',
+                    'name' => 'well_formatted_participants.csv'
                     )
                 )
             );
@@ -270,7 +270,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             )
         );
 
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.csv');
+        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessage = $this->UnattachedMessage->find('first');
         $this->assertEquals(
