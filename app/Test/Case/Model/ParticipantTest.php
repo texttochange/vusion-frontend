@@ -423,7 +423,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
 
-        $report = $this->Participant->import('testUrl', TESTS.'files/wellformattedparticipants.csv', null);
+        $report = $this->Participant->import('testUrl', TESTS.'files/well_formatted_participants.csv', null);
 
         $participants = $this->Participant->find('all');
         $this->assertEquals(2, count($participants));
@@ -458,7 +458,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $report = $this->Participant->import(
             'testUrl',
-            TESTS.'files/wellformattedparticipants.csv',
+            TESTS.'files/well_formatted_participants.csv',
             '1tag, other tag, stillAnother Tag');
 
         $participants = $this->Participant->find('all');
@@ -476,7 +476,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $report = $this->Participant->import(
             'testUrl',
-            TESTS.'files/wellformattedparticipants_withtags.csv');
+            TESTS.'files/well_formatted_participants_with_tags.csv');
 
         $this->assertEquals(2, $this->Participant->find('count'));
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
@@ -503,7 +503,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $report = $this->Participant->import(
             'testUrl',
-            TESTS.'files/wellformattedparticipants.csv');
+            TESTS.'files/well_formatted_participants.csv');
 
         $this->assertEquals(2, $this->Participant->find('count'));
         $this->assertEquals(
