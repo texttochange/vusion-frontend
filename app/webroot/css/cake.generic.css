@@ -133,8 +133,13 @@ div.view {
 	/*border-left:1px solid #666;*/
 	padding:10px 20px 10px 0px;
 	/*height: 372px;*/
+<<<<<<< HEAD
 	min-width: 719px;
 	width:79%;
+=======
+	min-width: 635px;
+	/*width:79%; */
+>>>>>>> 01d41829690aa637f44f73ee8ae63a8a9bfbc1e7
 	/*padding-right: 11px;*/
 	position: absolute;
 }
