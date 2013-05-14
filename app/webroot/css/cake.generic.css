@@ -89,7 +89,7 @@ p {
 	padding: 5px 20px;
 	height: 40px;
 	background: black;
-	min-width: 550px;
+	min-width: 800px;
 }
 
 #header h1 {
@@ -133,7 +133,7 @@ div.view {
 	/*border-left:1px solid #666;*/
 	padding:10px 20px 10px 0px;
 	/*height: 372px;*/
-	min-width: 635px;
+	min-width: 719px;
 	width:79%;
 	/*padding-right: 11px;*/
 	position: absolute;

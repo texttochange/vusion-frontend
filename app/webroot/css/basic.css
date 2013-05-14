@@ -284,7 +284,8 @@
 	height: 50px;
 	background: #19C1FF;
 	padding-left: 20px;
-	padding-right: 20px;	
+	padding-right: 20px;
+    min-width: 800px;	
 }
 
 .ttc-program-title{
@@ -609,14 +610,15 @@
 .ttc-table-display-area {
     height: 340px;
     min-height: 250px;
-    padding: 41px 10px;
+    padding: 10px 10px;
     overflow: hidden;    
     border: 2px solid lightgrey;
     margin-bottom: 10px;   
     background: none repeat scroll 0 0 ;
-    position: relative;
+    /*position: relative;*/
     padding-bottom: 10px; 
     float: left;
+    min-width: 728px;
 }
 .ttc-table-display-area-shortcode {
 	height: 340px;
@@ -652,8 +654,8 @@ width: 186px;
 .ttc-table-scrolling-area thead tr{
 	left: 0; 
 	top: 0;
-	position: absolute;
-	padding: 0px 10px 0px;    
+	/*position: absolute;*/
+	/*padding: 0px 10px 0px;*/   
 }
 
 .ttc-table-scrolling-area .phone {
@@ -1026,7 +1028,7 @@ margin-left: 63px;
 @media projection, screen  {    
     body {        
         margin: 0;
-        min-width: 800px;      
+        min-width: 998px;      
         
     } 
     #content { 
