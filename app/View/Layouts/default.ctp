@@ -186,6 +186,7 @@
 		        if (isset($programName)) {
 		            echo $this->element('navigation_menu');
 		            echo $this->element('backend_notifications');
+		            echo "</div>";
 		        }
 		    ?>
 
