@@ -76,7 +76,8 @@ class Participant extends MongoModel
         'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
         'tag-error' => 'Error a tag is not valide: %s.',
         'file-format-error' => 'The file format %s is not supported.',
-        'csv-file-error' => 'The csv file cannot be open.');
+        'csv-file-error' => 'The csv file cannot be open.',
+        'file-import-error' => 'The file cannot be imported. There are empty lines between the header and the phone numbers.');
 
 
     public function validateTags($check)
@@ -601,6 +602,8 @@ class Participant extends MongoModel
         }
         for ( $i = ($hasLabels) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
             if ($data->val($i,'A')==null){
+                array_push($this->importErrors, __($this->importErrorMessages['file-import-error']));
+                $report = array();
                 break;
             }
             $participant          = array();

@@ -201,7 +201,6 @@ class ProgramUnattachedMessagesController extends AppController
         chmod($filePath . DS . $fileName, 0664);
         
         $report = $this->Participant->import($programUrl, $filePath . DS . $fileName);
-        //print_r($report);
         if ($report) {
             foreach($report as $participantReport) {
                 if ($participantReport['saved']) {
@@ -210,7 +209,6 @@ class ProgramUnattachedMessagesController extends AppController
             }
         } else {
             $this->importErrors = $this->Participant->importErrors[0];
-            //print_r($this->importErrors);
         }
         ##Remove file at the end of the import
         unlink($filePath . DS . $fileName);
