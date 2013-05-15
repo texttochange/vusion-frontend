@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('Participant', 'Model');
@@ -106,7 +105,8 @@ class ProgramsController extends AppController
             $tempParticipant                         = new Participant(array('database' => $database));
             $program['Program']['participant-count'] = $tempParticipant->find('count'); 
             $tempHistory                             = new History(array('database' => $database));
-            $program['Program']['history-count']     = $tempHistory->find('count');
+            $program['Program']['history-count']     = $tempHistory->find(
+                'count', array('conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
             $tempSchedule                            = new Schedule(array('database' => $database));
             $program['Program']['schedule-count']    = $tempSchedule->find('count');  
         }

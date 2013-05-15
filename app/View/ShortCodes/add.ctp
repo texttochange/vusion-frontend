@@ -5,28 +5,10 @@
 	<fieldset>
 		
 		<div class='input text'>
-	<?php
-		$filePath = WWW_ROOT . "files";
-		$fileName = "countries and codes.csv";
-		$importedCountries = fopen($filePath . DS . $fileName,"r");
-		$countries=array();
-		$count = 0;
-		$options = array();
-		$optionscode = array();
-		while(!feof($importedCountries)){
-		   $countries[] = fgets($importedCountries);
-		   if($count > 0 && $countries[$count]){
-		   $countries[$count] = str_replace("\n", "", $countries[$count]);
-		   $explodedLine = explode(",", $countries[$count]);
-		   $options[trim($explodedLine[0])] = trim($explodedLine[0]);
-		   $optionscode[$explodedLine[1]] = $explodedLine[0];
-		   }
-		   $count++;		   
-		}
-	
+	<?php	
 		echo $this->Html->tag('label',__('Country'));
 		echo "<br />";
-		echo $this->Form->select('country', $options, array('id'=> 'country'));
+		echo $this->Form->select('country', $countryOptions, array('id'=> 'country'));
 		$this->Js->get('#country')->event('change', '		       
 		       $("#international-prefix").val(getCountryCodes($("#country option:selected").text()));
 		       ');

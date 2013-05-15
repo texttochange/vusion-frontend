@@ -41,7 +41,7 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
-    public function testSave_createData()
+    public function testSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $participant = array(
@@ -56,6 +56,22 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(is_array( $savedParticipant['Participant']['tags']));
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
         $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
+    }
+
+    public function testSave_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+     
+        $participant = array(
+            'phone' => '+788601461',
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+
+        $this->assertFalse($savedParticipant);
     }
 
 
@@ -240,10 +256,8 @@ class ParticipantTestCase extends CakeTestCase
             $enrolledParticipant['Participant']['enrolled'][1]['dialogue-id'],
             $otherSavedDialogue['Dialogue']['dialogue-id']
             );
-        $this->assertEqual(
-            $enrolledParticipant['Participant']['enrolled'][1]['date-time'],
-            $programNow->format("Y-m-d\TH:i:s")
-            );
+        $timeDiff = $programNow->diff(new DateTime($enrolledParticipant['Participant']['enrolled'][1]['date-time'])); 
+        $this->assertTrue($timeDiff->format('%s') <= 1);
         $this->assertEqual(2, count($enrolledParticipant['Participant']['enrolled']));
     }
 
@@ -363,6 +377,373 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
+    //TEST IMPORT
+    public function testImport_otherFormat_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/wellformattedparticipants.xlsx', null);
+
+        $this->assertFalse($report);
+        $this->assertEquals(
+            'The file format xlsx is not supported.',
+            $this->Participant->importErrors[0]);
+    }
+
+
+    public function testImport_duplicate_csv()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/duplicate_participants.csv', null);
+
+        $this->assertEquals(2, count($report));
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+    }
+
+
+    public function testImport_duplicate_xls()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/duplicate_participants.xls', null);
+
+        $this->assertEquals(2, count($report));
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+    }
+
+
+    public function testImport_Csv()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/well_formatted_participants.csv', null);
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported'));
+        $this->assertEquals(
+            $participants[0]['Participant']['profile'][0], 
+            array('label' => 'Name',
+                'value' => 'Olivier Vernin',
+                'raw' => null));
+        $this->assertEquals(
+            $participants[0]['Participant']['profile'][1], 
+            array('label' => 'DoB',
+                'value' => '21st of July',
+                'raw' => null));
+        $this->assertEquals(
+            $participants[1]['Participant']['profile'][0], 
+            array('label' => 'Name',
+                'value' => 'Gerald Ankunda',
+                'raw' => null));
+        $this->assertEquals(
+            $participants[1]['Participant']['profile'][1], 
+            array('label' => 'DoB',
+                'value' => '30th of March',
+                'raw' => null));  
+    }
+
+
+    public function testImport_csv_and_tagging() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/well_formatted_participants.csv',
+            '1tag, other tag, stillAnother Tag');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals(
+            $participants[0]['Participant']['tags'], 
+            array('imported', '1tag', 'other tag', 'stillAnother Tag'));        
+    }
+
+
+    public function testImport_csv_with_tag() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/well_formatted_participants_with_tags.csv');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'a first tag', 'a second tag'));        
+
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256712747841')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'a 3rd tag'));        
+    }
+
+
+    public function testImport_csv_duplicate() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $this->Participant->create();
+        $this->Participant->save(array(
+            'phone' => '+256712747841',
+            'name' => 'Gerald'));
+
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/well_formatted_participants.csv');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $this->assertEquals(
+            array(
+                'phone' => '+256788601462',
+                'saved' => true,
+                'exist-before' => false,
+                'message' => array('Insert ok'),
+                'line' => 2),
+            $report[0]);
+        $this->assertEquals(
+            array(
+                'phone' => '+256712747841',
+                'saved' => false,
+                'exist-before' => true,
+                'message' => array('This phone number already exists in the participant list.'),
+                'line' => 3),
+            $report[1]);
+    }
+
+
+    public function testImport_csv_emptyColumn() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/empty_column.csv');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals(isset($participants[0]['Participant']['profile'][0]), false);
+        $this->assertEquals(isset($participants[1]['Participant']['profile'][0]), true);
+    }
+
+
+    public function testImport_csv_noLabelOneColumn_ok() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/no_label_one_column.csv');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+    public function testImport_csv_noLabelTwoColumns_fail() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/no_label_two_columns.csv');
+        
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(0, count($participants));
+    }
+
+
+    public function testImport_csv_labelwrongline() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/label_wrong_line.csv');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+
+    public function testImport_xls_duplicate() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+      
+        $this->Participant->create();
+        $this->Participant->save(
+            array(
+                'phone' => '256712747841',
+                'name' => 'Gerald'));
+    
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/well_formatted_participants.xls');
+        
+        $this->assertEquals(2, $this->Participant->find('count'));        
+        $this->assertEquals(
+            array(
+                'phone' => '+256788601462',
+                'saved' => true,
+                'exist-before' => false,
+                'message' => array('Insert ok'),
+                'line' => 2),
+            $report[0]
+            );
+        $this->assertEquals(
+            array(
+                'phone' => '256712747841',
+                'saved' => false,
+                'exist-before' => true,
+                'message' => array('This phone number already exists in the participant list.'),
+                'line' => 3),
+            $report[1]
+            );
+    }
+
+
+    public function testImport_xls_wellFromated() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/well_formatted_participants.xls');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['label'], 'Name');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['value'], 'Olivier Vernin');
+        $this->assertEquals($participants[0]['Participant']['profile'][0]['raw'], '');  
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['label'], 'Age');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['value'], '33');
+        $this->assertEquals($participants[0]['Participant']['profile'][1]['raw'], '');
+        $this->assertEquals($participants[1]['Participant']['profile'][0]['value'], 'Gerald Ankunda');
+        $this->assertEquals($participants[1]['Participant']['profile'][1]['value'], '26');
+    }
+
+
+    public function testImport_xls_tag() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/well_formatted_participants.xls',                   
+            '1tag, other tag, stillAnother Tag');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
+        $this->assertEquals($participants[0]['Participant']['tags'], array('imported', '1tag', 'other tag', "stillAnother Tag"));
+        
+    }
+
+
+    public function testImport_xls_with_tags() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/well_formatted_participants_with_tags.xls');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'one tag', 'a second tag'));        
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256712747841')));
+        $this->assertEquals(
+            $participant['Participant']['tags'], 
+            array('imported', 'a 3rd tag'));                
+    }
+
+
+    public function testImport_xls_emptyColumn() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/empty_column.xls');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256777777777')));
+        $this->assertEquals($participant['Participant']['profile'],array());        
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256888888888')));
+        $this->assertEquals(
+            $participant['Participant']['profile'], 
+            array(array(
+                'label' => 'name',
+                'value' => 'oliv',
+                'raw' => null)));
+    }
+
+
+    public function testImport_xls_noLabelOneColumn_ok() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/no_label_one_column.xls');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+
+    public function testImport_xls_noLabelTwoColumns_fail() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/no_label_two_columns.xls');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(0, count($participants));
+    }
+
+
+    public function testImport_xls_labelwrongline() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/label_wrong_line.xls');
+
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(5, count($participants));
+    }
+
+
+    //TEST FILTERS
     public function testFromFilterToQueryConditions_phone() 
     {
         $filter = array(
@@ -695,6 +1076,7 @@ class ParticipantTestCase extends CakeTestCase
             );
     }
 
+
     public function testAddMassTags_filter()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -735,11 +1117,12 @@ class ParticipantTestCase extends CakeTestCase
             'phone' => '+8');       
         
         $this->Participant->addMassTags('hi', $conditions);
-        $participants = $this->Participant->find('all', $conditions);         
-        
-        $this->assertEqual(array('geek', 'cool', 'hi'), $participants[0]['Participant']['tags']);       
+
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
         
     }
+
     
     public function testAddMassTags_trim()
     {
@@ -781,9 +1164,9 @@ class ParticipantTestCase extends CakeTestCase
             'phone' => '+8');   
         
         $this->Participant->addMassTags(' hi ', $conditions);
-        $participants = $this->Participant->find('all', $conditions);         
         
-        $this->assertEqual(array('geek', 'cool', 'hi'), $participants[0]['Participant']['tags']);       
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
         
     }
     
@@ -806,5 +1189,25 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all', $conditions);  
         $this->assertTrue(in_array('you2', $participants[0]['Participant']['tags']));
     }
-      
+
+	public function testParticipantProfile_trim()
+	{
+			$this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+			
+			$this->assertEqual(array(), $this->Participant->getDistinctTagsAndLabels());			
+			$participant_08 = array(
+					'phone' => '+8',    				
+					);
+			$this->Participant->create();
+			$savedParticipant = $this->Participant->save($participant_08);     		
+			$savedParticipant['Participant']['profile'] = ' city: kampala, name: mama';
+			$new = $this->Participant->save($savedParticipant);
+			$participantDb = $this->Participant->find();			
+			$this->assertEqual($participantDb['Participant']['profile'][0]['label'],'city');
+			$this->assertEqual($participantDb['Participant']['profile'][1]['label'],'name');
+			$this->assertEqual($participantDb['Participant']['profile'][0]['value'],'kampala');
+			$this->assertEqual($participantDb['Participant']['profile'][1]['value'],'mama');
+			
+	}
+
 }

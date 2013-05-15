@@ -1,6 +1,6 @@
 <?php
-
 App::uses('AppHelper', 'View/Helper');
+
 
 class AclLinkHelper extends AppHelper{
     
@@ -14,7 +14,7 @@ class AclLinkHelper extends AppHelper{
         $this->Session=new SessionComponent(new ComponentCollection()); 
     }
     
-    protected function _allow($aclUrl) {
+    function _allow($aclUrl) {
         return $this->Acl->check(
             array('user'=>array('id'=>$this->Session->read('Auth.User.id'))),
             $aclUrl);

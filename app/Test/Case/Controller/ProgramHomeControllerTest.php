@@ -190,7 +190,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             'fixed-time' => $timeToSend->format('d/m/Y H:i'),
             'content' => 'Hello',
             'name' => 'test',
-            'send-to-type' => 'all'
+            'send-to-type' => 'all',
+            'created-by' => 2
             );        
        
         $this->Home->UnattachedMessage->create('unattached-message');

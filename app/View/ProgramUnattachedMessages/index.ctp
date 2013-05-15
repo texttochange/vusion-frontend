@@ -27,8 +27,9 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
 	        <th class="send-to"><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programUrl)));?></th>
 	        <th class="content"><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programUrl)));?></th>
 	        <th class="delivery" title="<?php echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ?>">
-	            <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programUrl)));?></th>
+	        <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programUrl)));?></th>
 	        <th class="date-time"><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programUrl)));?></th>
+	        <th id="direction-css"><?php echo $this->Paginator->sort('created-by', __('Creator'), array('url'=> array('program' => $programUrl)));?></th>
 	        <th class="action" class="actions"><?php echo __('Actions');?></th>
 	    </tr>
 	    </thead>
@@ -45,13 +46,18 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     	                    echo $unattachedMessage['UnattachedMessage']['to'];
     	                }
     	        } else {
-    	            if ($unattachedMessage['UnattachedMessage']['send-to-type'] == 'all') {
+    	            switch ($unattachedMessage['UnattachedMessage']['send-to-type']) {
+    	            case "all":
     	                echo __('All participants');
-    	            } else {
+    	                break;
+    	            case "match":
     	                echo __('Participant(s) matching %s of the following tag(s)/label(s): ', 
     	                    $unattachedMessage['UnattachedMessage']['send-to-match-operator']);
     	                echo implode(" - ", $unattachedMessage['UnattachedMessage']['send-to-match-conditions']);
-        
+    	                break;
+    	            case "phone":
+    	                echo __('%s Participant(s)', count($unattachedMessage['UnattachedMessage']['send-to-phone'])); 
+    	                break;
     	            } 
     	            if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     	                echo " (".$unattachedMessage['UnattachedMessage']['count-schedule'].")";
@@ -80,8 +86,9 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, 
     	        ?>
     	    </td>
     	    <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
+    	    <td id="direction-css"><?php echo $unattachedMessage['UnattachedMessage']['created-by']; ?>&nbsp;</th>
     	    <td class="action actions">
-    	       <?php
+     	       <?php
     	       $now = new DateTime('now');
     	       date_timezone_set($now,timezone_open($programTimezone));      
     	       $messageDate = new DateTime($unattachedMessage['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
