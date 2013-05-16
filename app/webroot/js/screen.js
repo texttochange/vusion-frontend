@@ -1,9 +1,7 @@
 
-function layoutHandler(){	
-		alert("hi");
-	if (window.innerWidth > 800){
-		/*styleLink.setAttribute("href", "mobile.css")*/
-		$(".width-size").attr('width','1053;');		
+function layoutHandler(){		
+	if (window.innerWidth > 800){		
+		$(".width-size").attr("style","width:1053px");		
 	}		
 }
 
