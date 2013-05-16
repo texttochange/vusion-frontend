@@ -36,6 +36,7 @@
 		echo $this->Html->script('moment.js');
 		echo $this->Html->script('chosen.jquery.min.js');
 		echo $this->Html->script('counter.js');
+		echo $this->Html->script('screen.js');
     ?><script>
     <?php echo $this->element('localization');?>
     </script>

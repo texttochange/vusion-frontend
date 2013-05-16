@@ -10,4 +10,4 @@ function addCounter(){
                     $('[id="'+$(elt).attr('name')+'"]').text($(this).val().replace(/{.*}/g, '').length);
             }); 
         });
-}     
+}  

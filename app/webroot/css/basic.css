@@ -888,7 +888,7 @@ width: 102px;
 
 .ttc-paging {
     float: right;
-    width: 150px;
+    width: 162px;
 }
 
 .ttc-stack-filter input{
@@ -1043,7 +1043,7 @@ margin-left: 63px;
 @media projection, screen  {    
     body {        
         margin: 0;
-        min-width: 998px;      
+        min-width: 1061px;      
         
     } 
     #content { 

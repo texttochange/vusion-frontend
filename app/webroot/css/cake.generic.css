@@ -138,6 +138,18 @@ div.view {
 	/*padding-right: 11px;*/
 	position: absolute;
 }
+div.form2,
+{
+	/*float: right;*/
+	/*min-width: 547px;*/
+	/*border-left:1px solid #666;*/
+	padding:10px 20px 10px 0px;
+	/*height: 372px;*/
+	min-width: 719px;
+	width:79%;
+	/*padding-right: 11px;*/
+	position: absolute;
+}
 div.actions {
 	float:left;
 	min-width:19%;
