@@ -1,15 +1,17 @@
 
-function layoutHandler(){		
-	if (window.innerWidth > 800){		
-		$(".width-size").attr("style","width:1053px");		
+function layoutHandler() {
+	if (window.innerWidth > 1080) {
+	    var variableWidth = window.innerWidth - 300; 
+	    $(".width-size").attr("style","width:"+variableWidth+"px");		
 	}		
 }
 
 $(function(){
-		layoutHandler($(this));
+		$(window).load(function() {
+		        layoutHandler();
+		});
 		$(window).resize(function(){
-				layoutHandler($(this));
+				layoutHandler();
 		});
 });
-/*window.onresize = layoutHandler();*/
 
