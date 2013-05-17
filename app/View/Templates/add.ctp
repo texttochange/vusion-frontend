@@ -1,6 +1,7 @@
-<div class="templates form">
+<div class="templates form program-body users-index">
     <h3><?php echo __('Add Template'); ?></h3>
     <?php echo $this->Form->create('Template'); ?>
+    <fieldset>
        <?php echo $this->Form->input(__('name')); ?>
        <div class="input select required <?php if ($this->Form->isFieldError('type-template')) {echo "error";}?>">
        <?php 
@@ -15,10 +16,10 @@
        </div>
        <?php echo $this->Form->input(__('template'), array('rows'=>3)); ?>
        <?php $this->Js->get('document')->event('ready','addContentFormHelp();'); ?>
-    <?php echo $this->Form->end(__('Submit')); ?>
-
+   </fieldset>
+       <?php echo $this->Form->end(__('Submit')); ?>
 </div>
-<<div class="admin-action">
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
