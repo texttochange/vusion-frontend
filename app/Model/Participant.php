@@ -519,7 +519,7 @@ class Participant extends MongoModel
             $savedParticipant = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
             $this->id = $savedParticipant['Participant']['_id']."";
             $tags = $participant['tags'];
-            $labels = $participant['profile'];
+            $labels = (isset($participant['profile']) ? $participant['profile'] : array());
             $participant = $savedParticipant['Participant'];
             $participant['tags'] = $tags;
             $participant['profile'] = $labels;
