@@ -1,4 +1,4 @@
-<div class="users form">
+<div class="users form users-index program-body">
 <h3><?php echo __('Edit User'); ?></h3>
 <?php echo $this->Form->create('User');?>
 	<fieldset>
@@ -24,6 +24,7 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -48,4 +49,5 @@
 		}
 		?></li>
 	</ul>
+</div>
 </div>

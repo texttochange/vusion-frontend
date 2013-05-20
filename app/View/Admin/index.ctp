@@ -1,10 +1,9 @@
-<div class="users index">
+<div class="users-index program-body">
 	<h3><?php echo __('Admin');?></h3>
-
 	<p>Page under construction</p>
-	<p>Any suggestions are welcome.</p>
-	
+	<p>Any suggestions are welcome.</p>	
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -15,3 +14,7 @@
 		<li><?php echo $this->Html->link(__('Templates Management'), array('controller' => 'templates')); ?> </li>
 	</ul>
 </div>
+</div>
+
+
+
