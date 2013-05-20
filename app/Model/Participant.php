@@ -63,12 +63,24 @@ class Participant extends MongoModel
                 )
             ),
         'profile' => array(
-            'rule' => 'validateProfile',
-            'message' => 'Invalid format. Must be label:value, label:value, ... e.g gender:male, ..'
+/*             'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Profile cannot be empty.'
+                ),*/
+            'validateProfile' => array(
+                'rule' => 'validateProfile',
+                'message' => 'Invalid format. Must be label:value, label:value, ... e.g gender:male, ..'
+                ),
             ),
         'tags' => array(
-            'rule' => 'validateTags',
-            'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
+            /* 'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Tags cannot be empty.'
+                ),*/
+            'validateTags' => array(
+                'rule' => 'validateTags',
+                'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
+                ),
             )
         );
 
@@ -157,6 +169,11 @@ class Participant extends MongoModel
             $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
         }
 
+        #filter out empty tags
+        if (isset($this->data['Participant']['tags']) && is_array($this->data['Participant']['tags'])) {
+            $this->data['Participant']['tags'] = array_filter($this->data['Participant']['tags']);
+        }
+
         //The time should be provide by the controller
         if (!$this->data['Participant']['_id']) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
@@ -188,7 +205,6 @@ class Participant extends MongoModel
             
             $this->_editEnrolls();            
         }
-
         return true;
     }
 
@@ -217,7 +233,7 @@ class Participant extends MongoModel
             for(var i = 0; i < this.profile.length; i++) {
             emit([this.profile[i].label,this.profile[i].value].join(':'), 1);
             }
-            }");
+            }");                 
         $reduce = new MongoCode("function(k, vals) { 
             return vals.length; }");
         $labelsQuery = array(
@@ -449,7 +465,7 @@ class Participant extends MongoModel
     }
 
 
-    public function import($programUrl, $fileFullPath, $tags=null)
+    public function import($programUrl, $fileFullPath, $tags=null, $replaceTagsAndLabels=false)
     {
         $defaultTags = array('imported');
         if (isset($tags)) {
@@ -476,52 +492,63 @@ class Participant extends MongoModel
         }
 
         if ($ext == 'csv') {
-            return $this->importCsv($programUrl, $fileFullPath, $tags);
+            return $this->importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
         } else if ($ext == 'xls') {
-            return $this->importXls($programUrl, $fileFullPath, $tags);
+            return $this->importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
         }
 
     }
 
     
-    public function saveParticipantWithReport($participant, $fileLine=null)
+    public function saveParticipantWithReport($participant, $replaceTagsAndLabels, $fileLine=null)
     {
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
-            $report = array(
-                'phone' => $participant['phone'],
-                'saved' => false,
-                'exist-before' => true,
-                'message' => array($this->validate['phone']['isReallyUnique']['message']));
-        } else {
-            $savedParticipant = $this->save($participant);
-            if ($savedParticipant) {
-                $report = array(
-                    'phone' => $savedParticipant['Participant']['phone'],
-                    'saved' => true,
-                    'exist-before' => false,
-                    'message' => array('Insert ok'));
-            } else {
-                $validationMessage = array();
-                foreach ($this->validationErrors as $key => $error) {
-                    array_push($validationMessage, $this->validationErrors[$key][0]);
-                }
+            print_r($this->getID());
+            if (!$replaceTagsAndLabels) {
                 $report = array(
                     'phone' => $participant['phone'],
                     'saved' => false,
-                    'exist-before' => false,
-                    'message' => $validationMessage);
+                    'exist-before' => true,
+                    'message' => array($this->validate['phone']['isReallyUnique']['message']),
+                    'line' => $fileLine);
+                return $report;
             }
+
+            $savedParticipant = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
+            $this->id = $savedParticipant['Participant']['_id']."";
+            $tags = $participant['tags'];
+            $labels = (isset($participant['profile']) ? $participant['profile'] : array());
+            $participant = $savedParticipant['Participant'];
+            $participant['tags'] = $tags;
+            $participant['profile'] = $labels;
+        } 
+        $savedParticipant = $this->save($participant);
+        if ($savedParticipant) {
+            $report = array(
+                'phone' => $savedParticipant['Participant']['phone'],
+                'saved' => true,
+                'exist-before' => $exist,
+                'message' => array('Insert ok'),
+                'line' => $fileLine);
+            return $report;
         }
-        if (isset($fileLine)) {
-            $report['line'] = $fileLine;
+        $validationMessage = array();
+        foreach ($this->validationErrors as $key => $error) {
+            array_push($validationMessage, $this->validationErrors[$key][0]);
         }
+        $report = array(
+            'phone' => $participant['phone'],
+            'saved' => false,
+            'exist-before' => $exist,
+            'message' => $validationMessage,
+            'line' => $fileLine);
         return $report;
     }
 
 
-    public function importCsv($programUrl, $fileFullPath, $tags)
+    public function importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
     {
         $count       = 0;
         $entry       = array();
@@ -541,6 +568,7 @@ class Participant extends MongoModel
             if ($count == 0) {
                 $index = 0;
                 foreach($entry as $header) {
+                    $header = trim($header);
                     $headers[strtolower($header)] = array(
                         'name' => $header,
                         'index' => $index);
@@ -584,7 +612,7 @@ class Participant extends MongoModel
             #Save if not a duplicate
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant, $count + 1);
+                $report[] = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
             }
             $count++; 
         }
@@ -600,7 +628,7 @@ class Participant extends MongoModel
     }    
 
 
-    private function importXls($programUrl, $fileFullPath, $tags)
+    private function importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
     {
         require_once 'excel_reader2.php';
 
@@ -616,7 +644,7 @@ class Participant extends MongoModel
                 if ($data->val(1, $j) == null || $data->val(1, $j) == ''){
                     break;
                 }
-                $header = $data->val(1, $j); 
+                $header = trim($data->val(1, $j)); 
                 $headers[strtolower($header)] = array(
                     'name' => $header, 
                     'index' => $j);
@@ -652,7 +680,7 @@ class Participant extends MongoModel
             }
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant, $i);
+                $report[] = $this->saveParticipantWithReport($participant,  $replaceTagsAndLabels, $i);
             }
         }
         return $report;
