@@ -399,7 +399,7 @@
 
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	.ttc-validation-error{   top: -32px; }
+	.ttc-validation-error{   top: -32px; left: -589px}
 	.ttc-radio-validation-error{ top: -38px;}
 	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
