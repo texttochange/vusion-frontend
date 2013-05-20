@@ -145,9 +145,9 @@
 }
 
 .ui-dform-text {
+    width: 96%;
 	margin-left : 10px;
 	margin-bottom : 10px;
-	/*width : 92%;*/
 }
 
 .ui-dform-addElt {
@@ -399,7 +399,7 @@
 
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	.ttc-validation-error{   top: -32px; left: -589px}
+	.ttc-validation-error{   top: -32px; left: -489px}
 	.ttc-radio-validation-error{ top: -38px;}
 	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
