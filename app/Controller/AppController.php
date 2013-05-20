@@ -56,6 +56,7 @@ class AppController extends Controller
         $programName = $this->Session->read($this->params['program'].'_name');
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
         $databaseName = $this->Session->read($this->params['program'].'_db');
+        $shortCode = $this->Session->read($this->params['program'].'_shortcode');
         if ($this->Session->read('Auth.User.id')) {
             $isAdmin = $this->Acl->check(
                 array(
@@ -87,7 +88,7 @@ class AppController extends Controller
             
             $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
         }
-        $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin'));
+        $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin', 'shortCode'));
     }
 
 
@@ -112,6 +113,8 @@ class AppController extends Controller
                 $this->Session->write($this->params['program'] . '_name', $data[0]['Program']['name']);
                 $this->Session->write($this->params['program'] . '_db', $database_name); 
                 $programSettingModel = new ProgramSetting(array('database' => $database_name));
+                $shortCode = $programSettingModel->find('programSetting', array('key' => 'shortcode'));
+                $this->Session->write($this->params['program'].'_shortcode', $shortCode[0]['ProgramSetting']['value']);
                 $programTimezone = $programSettingModel->find('programSetting', array('key' => 'timezone'));
                 if (isset($programTimezone[0]['ProgramSetting']['value']))
                     $this->Session->write($this->params['program'].'_timezone', $programTimezone[0]['ProgramSetting']['value']);
