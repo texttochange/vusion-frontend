@@ -1,21 +1,3 @@
-<div class="ttc-recent-issues">
-	<h3><?php echo __('Recent Issues'); ?></h3>
-	<ul class="ttc-issues-list">
-	<?php
-	if ($this->AclLink->_allow('controllers/UnmatchableReply')) {
-	    foreach ($unmatchableReplies as $unmatchableReply): 
-	    echo "<li>";
-	    echo $this->Html->tag('div', $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']), array('class' => 'ttc-issue-time'));
-	    echo "<div class='ttc-issue-content'>";
-	    echo $this->Html->tag('h3', $this->Html->link(__('unmatchable reply'),array('controller'=>'unmatchableReply','action' => 'index')));
-	    echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
-	    echo "</div>";
-	    echo "</li>";
-	    endforeach;
-	}
-	?>
-	</ul>
-</div>
 <div class="ttc-program-index">
     <?php echo $this->AclLink->generateButton(
             __('Create Program'), 
@@ -39,6 +21,7 @@
     </div>
 	<?php
 	foreach ($programs as $program): ?>
+
 	<div class='ttc-program-box' title= "<?php echo $program['Program']['name']?>" onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
 	<?php $programName = $this->Text->truncate($program['Program']['name'], 
 			24, 
@@ -69,5 +52,22 @@
     <?php endforeach; ?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
+
+<div class="ttc-recent-issues">
+	<h3><?php echo __('Recent Issues'); ?></h3>
+	<ul class="ttc-issues-list">
+	<?php foreach ($unmatchableReplies as $unmatchableReply): ?>
+	<li>
+	<?php	    
+	    echo $this->Html->tag('div', $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']), array('class' => 'ttc-issue-time'));
+	    echo "<div class='ttc-issue-content'>";
+	    echo $this->Html->tag('h3', $this->Html->link(__('unmatchable reply'),array('controller'=>'unmatchableReply','action' => 'index')));
+	    echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
+	    echo "</div>";
+	?>
+	</li>
+	<?php endforeach; ?>
+	</ul>
+</div>
 
 
