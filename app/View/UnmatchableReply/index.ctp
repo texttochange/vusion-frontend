@@ -1,4 +1,4 @@
-<div class="unmatchable replies index">
+<div class="unmatchable  index users-index">
     <ul class="ttc-actions">
         <li>
         <?php 
@@ -34,11 +34,7 @@
 			 <?php
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
-			 <tr>
-			     <td id="phone-css"><?php echo h($unmatchableReply['UnmatchableReply']['participant-phone']); ?>&nbsp;</td>
-			     <td class="direction"><?php echo h($unmatchableReply['UnmatchableReply']['to']); ?>&nbsp;</td>
-			     <td id="message-css"><?php echo h($unmatchableReply['UnmatchableReply']['message-content']); ?>&nbsp;</td>
-			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
+			 <tr>			     
 			     <?php
 			     $prefix = $this->PhoneNumber->getInternationalPrefix(
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
@@ -62,8 +58,8 @@
 	</table>
 	</div>
 	</div>
-
 </div>
+ <div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -72,4 +68,5 @@
                         'action' => 'index'));
             ?></li>
 	</ul>
+</div>
 </div>

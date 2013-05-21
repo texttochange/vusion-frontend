@@ -10,7 +10,7 @@
     $this->Js->get('document')->event(
         'ready',
         'setInterval(function(){pullBackendNotifications("'.$this->Html->url(
-            array('program'=>$programUrl, 'controller'=>'programLogs', 'action'=>'getBackendNotifications.json')).'")}, 10000);');
+            array('program'=>$programDetails['url'], 'controller'=>'programLogs', 'action'=>'getBackendNotifications.json')).'")}, 10000);');
 ?>
 </div>
 <?php } ?>
