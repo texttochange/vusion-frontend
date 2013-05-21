@@ -593,6 +593,10 @@ class Participant extends MongoModel
             $participant          = array();
             #Get Phone
             $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);
+            if (!isset($participant['phone'])) {
+                array_push($this->importErrors, __($this->importErrorMessages['file-import-error']));
+                return false;
+            }
             #Get Tags
             $participant['tags']  = array();
             if (isset($headers['tags']) && isset($entry[$headers['tags']['index']])) {
@@ -602,10 +606,8 @@ class Participant extends MongoModel
             #Get Labels
             foreach ($labels as $label) {
                 $value = $entry[$label['index']];
-                if ($value == '') {//print_r($entry);
-                    array_push($this->importErrors, __($this->importErrorMessages['label-error']));
-                    return false;
-                    //continue;
+                if ($value == '') {
+                    continue;
                 }
                 $participant['profile'][] = array(
                     'label' => $label['name'], 
@@ -654,7 +656,7 @@ class Participant extends MongoModel
             }
             $labels = $this->array_filter_out_not_label($headers);
         } else {
-            if ($data->val(1, 'B')!=null or $data->val(1, 'A') == null){
+            if ($data->val(1, 'B')!=null){
                 array_push($this->importErrors, __($this->importErrorMessages['label-error']));
                 return false;
             }
