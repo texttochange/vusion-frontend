@@ -1,4 +1,4 @@
-<div class="participants form">
+<div class="participants form width-size">
     <ul class="ttc-actions">
         <li>
         <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
@@ -22,7 +22,7 @@
 	    <?php echo $this->Form->create('Participant');?>
 	        <fieldset>		
 	            <?php
-	                echo $this->Form->input('phone');
+	                echo $this->Form->input('phone', array('label' => __('Phone')));
 	            ?>
 	        </fieldset>
 	    <?php echo $this->Form->end(__('Save'));?>

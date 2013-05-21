@@ -25,6 +25,7 @@ var localized_errors = {
     validation_masstag: "<?php echo __("Your MassTag has special caharacters.These are not allowed")?>",
     validation_double_space: "<?php echo __(": You have double spaces ")?>",
     validation_choice_format: "<?php echo __(" You are entering two choices or a special caharacter")?>",
+    validation_choice_index: "<?php echo __("The choice is ambigious when answering by index, please Enter a different choice")?>",
 };
 
 var localized_messages = {
