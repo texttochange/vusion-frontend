@@ -40,7 +40,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Dialogue->deleteAll(true, false);
     }
 
-
+/*
     public function testSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -677,8 +677,59 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
         $this->assertEquals(5, count($participants));
     }
+    
+    
+    public function testImport_xls_oneEmptyRowAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/one_empty_row_after_header.xls');
 
+        $participants = $this->Participant->find('all');
+        
+        $this->assertEquals(0, count($participants));
+        $this->assertEquals($this->Participant->importErrors[0],
+            'The file cannot be imported. The first line should be label names, the first label must be "phone".');
+    }
+    
+    
+    public function testImport_xls_manyEmptyRowsAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows_after_header.xls');
 
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(0, count($participants));
+        $this->assertEquals($this->Participant->importErrors[0],
+            'The file cannot be imported. There are empty lines between the header and the phone numbers.');
+    }
+    */
+    
+    public function testImport_csv_oneEmptyRowAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/one_empty_row_after_header.csv');
+
+        $participants = $this->Participant->find('all');
+        
+        $this->assertEquals(0, count($participants));
+        $this->assertEquals($this->Participant->importErrors[0],
+            'The file cannot be imported. The first line should be label names, the first label must be "phone".');
+    }
+
+/*
 
     //TEST FILTERS
     public function testFromFilterToQueryConditions_phone() 
@@ -1147,5 +1198,5 @@ class ParticipantTestCase extends CakeTestCase
 			$this->assertEqual($participantDb['Participant']['profile'][1]['value'],'mama');
 			
 	}
-
+*/
 }

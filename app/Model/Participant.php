@@ -556,8 +556,9 @@ class Participant extends MongoModel
             $col = 0;
             foreach ($headers as $label) {
                 $value = $entry[$col];
-                if ($value == '') {
-                    continue;
+                if ($value == '') {//print_r($entry);
+                    array_push($this->importErrors, __($this->importErrorMessages['label-error']));
+                    return false;
                 }
                 if (strtolower($label) != 'phone') {
                     $participant['profile'][] = array(
