@@ -1,4 +1,4 @@
-<div class="unmatchable replies index">
+<div class="unmatchable replies index users-index">
     <ul class="ttc-actions">
         <li>
         <?php 
@@ -24,9 +24,9 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>                                                                        
-			    <th id="phone-css"><?php echo $this->Paginator->sort('participant-phone', __('From'));?></th>
+			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('From'));?></th>
 			    <th class="direction"><?php echo $this->Paginator->sort('to', __('To'));?></th>
-			    <th id="message-css"><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
+			    <th class="message-unmatchable"><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
 			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
 			 </tr>
 		</thead>
@@ -34,11 +34,7 @@
 			 <?php
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
-			 <tr>
-			     <td id="phone-css"><?php echo h($unmatchableReply['UnmatchableReply']['participant-phone']); ?>&nbsp;</td>
-			     <td class="direction"><?php echo h($unmatchableReply['UnmatchableReply']['to']); ?>&nbsp;</td>
-			     <td id="message-css"><?php echo h($unmatchableReply['UnmatchableReply']['message-content']); ?>&nbsp;</td>
-			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
+			 <tr>			     
 			     <?php
 			     $prefix = $this->PhoneNumber->getInternationalPrefix(
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
@@ -47,15 +43,15 @@
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
 			         $prefix,
 			         $countriesIndexes);
-			     echo '<td id="phone-css">'.$from.'&nbsp;</td>';
+			     echo '<td class="phone">'.$from.'&nbsp;</td>';
 			     $to = $this->PhoneNumber->displayCode(
 			         $unmatchableReply['UnmatchableReply']['to'],
 			         $prefix,
 			         $countriesIndexes);
-			     echo '<td id="direction-css">'.$to.'&nbsp;</td>';
+			     echo '<td class="direction"">'.$to.'&nbsp;</td>';
 			     ?>
-			     <td id="message-css"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
-			     <td id="date-time-css"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
+			     <td class="message-unmatchable"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
+			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
 			 </tr>
 			 <?php endforeach; ?>
 	    </tbody>
@@ -64,6 +60,7 @@
 	</div>
 
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -72,4 +69,5 @@
                         'action' => 'index'));
             ?></li>
 	</ul>
+</div>
 </div>
