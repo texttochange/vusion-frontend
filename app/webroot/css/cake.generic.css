@@ -1,19 +1,19 @@
 /**
- *
- * Generic CSS for CakePHP
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.webroot.css
- * @since         CakePHP(tm)
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
+*
+* Generic CSS for CakePHP
+*
+* CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+* Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+*
+* Licensed under The MIT License
+* Redistributions of files must retain the above copyright notice.
+*
+* @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+* @link          http://cakephp.org CakePHP(tm) Project
+* @package       app.webroot.css
+* @since         CakePHP(tm)
+* @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+*/
 
 * {
 	margin:0;
@@ -21,14 +21,17 @@
 }
 
 /** General Style Info **/
+
 body {
 	background: white;
 	color: black;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
 	margin: 0;
-	min-width: 1250px;
+	/*min-width: 10%*/;
+	min-width: 840px;	 
 }
+
 a {
 	color: #003d4c;
 	text-decoration: underline;
@@ -77,12 +80,16 @@ p {
 /** Layout **/
 #container {
 	text-align: left;
+	max-width: 1366px;
+	min-width: 800px;
+	/*min-width: 1009px;*/
 }
 
 #header{
 	padding: 5px 20px;
 	height: 40px;
 	background: black;
+	min-width: 800px;
 }
 
 #header h1 {
@@ -108,12 +115,11 @@ p {
 	color: #333;
 	padding: 10px 20px 20px 20px;
 	overflow: auto;
-	height: 470px;
-	min-width: 1205px;
+	height: 470px;	
 }
 #footer {
 	clear: both;
-	padding: 6px 10px;
+	padding: 6px 10px;    
 	background: white;
 	cursor: pointer;
 }
@@ -122,15 +128,31 @@ p {
 div.form,
 div.index,
 div.view {
-	float:right;
-	width:79%;
+	/*float: right;*/
+	/*min-width: 547px;*/
 	/*border-left:1px solid #666;*/
-	padding:10px 2%;
-	height: 372px;
+	padding:10px 20px 10px 0px;
+	/*height: 372px;*/
+	min-width: 719px;
+	/*width:79%;*/
+	/*padding-right: 11px;*/
+	position: absolute;
+}
+div.form2,
+{
+	/*float: right;*/
+	/*min-width: 547px;*/
+	/*border-left:1px solid #666;*/
+	padding:10px 20px 10px 0px;
+	/*height: 372px;*/
+	min-width: 719px;
+	width:79%;
+	/*padding-right: 11px;*/
+	position: absolute;
 }
 div.actions {
 	float:left;
-	width:16%;
+	min-width:19%;
 	padding:10px 0;
 }
 div.actions h3 {
@@ -248,11 +270,11 @@ dl {
 }
 dl dd:nth-child(4n+2),
 dl dt:nth-child(4n+1) {
-/*	background: #f0f0f0;*/
+	/*	background: #f0f0f0;*/
 }
 
 dt {
-/*	font-weight: bold;*/
+	/*	font-weight: bold;*/
 	padding-left: 4px;
 	vertical-align: top;
 	width: 24em;
@@ -290,7 +312,7 @@ fieldset fieldset legend {
 }
 fieldset fieldset div {
 	clear: left;
-/*	margin: 0 20px;*/
+	/*	margin: 0 20px;*/
 }
 form div {
 	clear: both;
@@ -315,9 +337,9 @@ form div.submit {
 	margin-top: 10px;
 }
 label {
-/*	display: block;*/
-/*	font-size: 110%;*/
-/*	margin-bottom:3px;*/
+	/*	display: block;*/
+	/*	font-size: 110%;*/
+	/*	margin-bottom:3px;*/
 }
 input, textarea {
 	clear: both;
@@ -348,7 +370,7 @@ div.checkbox label {
 	display: inline;
 }
 input[type=radio] {
-/*	float:left;*/
+	/*	float:left;*/
 	width:auto;
 	margin: 6px 0;
 	padding: 0;
@@ -412,7 +434,7 @@ form .error-message {
 .message {
 	clear: both;
 	color: #fff;
-/*	font-size: 140%; 
+	/*	font-size: 140%; 
 	font-weight: bold; 
 	margin: 0 0 1em 0;
 	padding: 5px;*/

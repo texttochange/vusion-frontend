@@ -1,4 +1,4 @@
-<div class="Dialogue index">
+<div class="Dialogue index width-size">
 	<ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('New Dialogue'), array('program'=>$programUrl, 'action' => 'edit'), array('class' => 'ttc-button')); ?></li>
 	</ul>

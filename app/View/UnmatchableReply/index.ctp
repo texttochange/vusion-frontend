@@ -25,9 +25,9 @@
 	    <thead>
 	        <tr>                                                                        
 			    <th id="phone-css"><?php echo $this->Paginator->sort('participant-phone', __('From'));?></th>
-			    <th id="direction-css"><?php echo $this->Paginator->sort('to', __('To'));?></th>
+			    <th class="direction"><?php echo $this->Paginator->sort('to', __('To'));?></th>
 			    <th id="message-css"><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
-			    <th id="date-time-css"><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
+			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
 			 </tr>
 		</thead>
 		<tbody>
@@ -35,6 +35,10 @@
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
 			 <tr>
+			     <td id="phone-css"><?php echo h($unmatchableReply['UnmatchableReply']['participant-phone']); ?>&nbsp;</td>
+			     <td class="direction"><?php echo h($unmatchableReply['UnmatchableReply']['to']); ?>&nbsp;</td>
+			     <td id="message-css"><?php echo h($unmatchableReply['UnmatchableReply']['message-content']); ?>&nbsp;</td>
+			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
 			     <?php
 			     $prefix = $this->PhoneNumber->getInternationalPrefix(
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
