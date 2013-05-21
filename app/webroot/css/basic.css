@@ -52,7 +52,7 @@
 	font-size : 18px;
 }
 
-.status {
+.status-message {
    /* width: 100%;*/
     height: 0px;
 }
@@ -145,9 +145,9 @@
 }
 
 .ui-dform-text {
+    width: 96%;
 	margin-left : 10px;
 	margin-bottom : 10px;
-	/*width : 92%;*/
 }
 
 .ui-dform-addElt {
@@ -185,8 +185,8 @@
     padding: 7px 0px 3px 3px;
     margin-top: -8px;
     margin-left: 0;
-    margin-right: -25px;
-    width: 690px;
+    margin-right: 0px;
+    /*width: 77%;*/
 }   
 
 .ttc-actions li{
@@ -195,6 +195,7 @@
     margin: 0;
     padding: 3px;
 }
+
 .ttc-actions li a{
     border: 1px solid #BBBBBB;
    /* border-radius: 4px 4px 4px 4px; */    
@@ -249,7 +250,7 @@
 
 .ttc-central-header {
 	float: right;
-	width: 30%;
+	min-width: 32%;
 	padding-top: 25px;
 	padding-right: 10px;
 }
@@ -285,6 +286,7 @@
 	background: #19C1FF;
 	padding-left: 20px;
 	padding-right: 20px;
+    min-width: 800px;	
 }
 
 .ttc-program-title{
@@ -337,7 +339,8 @@
 	border: 1px solid;
 	float: left;
 	padding: 2px 2px;
-	width: 196px;
+	width: 16%;
+	min-width: 190px;
 	height: 95px;
 	overflow-y: auto;
 	font-size: 9px;
@@ -379,7 +382,7 @@
 }
 
 .request.ttc-textarea-validation-error{  
-    left: -695px;   
+    left: -671px;   
 }
 
 .dialogue.ttc-textarea-validation-error{  
@@ -396,7 +399,7 @@
 
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	.ttc-validation-error{   top: -32px; }
+	.ttc-validation-error{   top: -32px; left: -489px}
 	.ttc-radio-validation-error{ top: -38px;}
 	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
@@ -441,7 +444,7 @@
 }
 
 .ttc-login-input {
-	width:100%;
+	/*width:100%;*/
 	font-size: 100%;
 	float: none;
 	display: block;
@@ -463,8 +466,11 @@
 
 .ttc-navigation-menu {
 	float: left;
-	width: 200px;
+	/*width: 16%;*/
+	/*width: 100%;
+	min-width: 127px;*/
 	padding-top: 10px;
+	/*padding-left: 12px;*/
 }
 
 .ttc-navigation-menu a {
@@ -487,7 +493,7 @@
 .ttc-recent-issues {
     float: right;
     padding: 15px 2%;
-    width: 30%;
+    width: 29%;
 }
 .ttc-recent-issues h3 {
     border-bottom: solid;
@@ -514,7 +520,8 @@
 .ttc-issues-list div.ttc-issue-time {
     float: right;
     text-align: right;
-    margin-top: 17px;
+    /*margin-top: 17px;*/
+    width: 42%;
 }
 
 .ttc-issue-content h3 {
@@ -564,7 +571,7 @@
 .ttc-program-index .ttc-program-title {
     position: absolute;
     left: 10px;
-    top: 15px;
+    top: 15px;   
 }
 
 .ttc-program-details {
@@ -604,16 +611,53 @@
 .ttc-table-display-area {
     height: 340px;
     min-height: 250px;
-    padding: 1%;
-    overflow: hidden;
-    width: 100%;
+    padding: 10px 10px;
+    overflow: hidden;    
     border: 2px solid lightgrey;
     margin-bottom: 10px;   
     background: none repeat scroll 0 0 ;
-    position: relative;
-    padding-top: 41px; 
-    
+    /*position: relative;*/
+    padding-bottom: 10px; 
+    float: left;
+    min-width: 728px;
 }
+.ttc-table-display-area-shortcode {
+	height: 340px;
+    min-height: 250px;
+    padding: 52px 10px 18px;
+    overflow: hidden;    
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;   
+    background: none repeat scroll 0 0 ;
+    position: relative;    
+}
+
+.ttc-data-control {
+    width: 100%;
+    min-height: 35px;
+}
+
+/*
+.ttc-data-control li{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    float: left;
+    display: inline-block;
+}
+
+.ttc-data-control ul {
+    margin: 0px auto;
+}
+*/
+
+/*.ttc-table-display-area tr td.data-time-css{
+width: 186px;
+}
+
+.ttc-table-display-area tr th.data-time-css{
+width: 186px;
+}*/
 
 .ttc-table-scrolling-area {
     height: 343px;
@@ -623,96 +667,118 @@
 }
 
 .ttc-table-scrolling-area thead tr{
-   left: 0; top: 0;
-    position: absolute;
- padding: 0% 1% 0%;    
+	left: 0; 
+	top: 0;
+	/*position: absolute;*/
+	/*padding: 0px 10px 0px;*/   
 }
 
-#phone-css {
-width: 118px;
+.ttc-table-scrolling-area .phone {
+	width: 118px;
 }
 
-#direction-css {
-width: 94px;
+.ttc-table-scrolling-area .direction {
+	width: 94px;
 }
 
-#status-css {
-width: 88px;
-text-align: left;
+.ttc-table-scrolling-area .status {
+	width: 88px;
+	text-align: left;
 }
 
-#failure-reason-css {
-width: 153px;
+.ttc-table-scrolling-area .failure-reason {
+	width: 153px;
 }
 
-#details-css {
-width: 474px;
+.ttc-table-scrolling-area .details {
+	width: 474px;
 }
 
-#details2-css {
-width: 320px;
+.ttc-table-scrolling-area .details2 {
+	width: 320px;
 }
 
-#date-time-css {
-width: 186px;
+.ttc-table-scrolling-area .date-time {
+	width: 186px;
+	/*min-width: 282px;*/
 }
 
-#action-css {
-width: 183px;
-text-align: center;
+.ttc-table-scrolling-area .action {
+	width: 183px;
+	text-align: center;
 }
 
-#action-admin-css {
-width: 522px;
-text-align: center;
+.ttc-table-scrolling-area .action-requests {
+	width: 202px;
+	text-align: center;
+}
+.ttc-table-scrolling-area .delivery {
+	width: 150px;
+}
+.source {
+width: 102px;
+}
+.ttc-table-scrolling-area .action-admin {
+	width: 522px;
+	text-align: center;
 }
 
-#profile-css {
-width: 99px;
+.profile {
+	width: 99px;
 }
 
-#responses-css {
-width: 630px;
+.responses {
+	width: 630px;
 }
 
-#send-to-css {
-width: 165px;
+.send-to {
+	width: 165px;
 }
 
-#content-css {
-width: 230px;
-word-wrap: break-word;
+.content {
+	max-width: 230px;
+	min-width: 220px;
+	width: 230px;
+	word-wrap: break-word;
 }
 
-#content2-css {
-width: 224px;
-word-wrap: break-word;
+.content-sending {
+	min-width: 224px;
+	max-width: 537px;
+	width: 535px;
+	word-wrap: break-word;
 }
 
-#prefix-css {
-width: 206px;
-word-wrap: break-word;
+.ttc-table-scrolling-area .prefix {
+	width: 206px;
+	word-wrap: break-word;
 }
 
-#delivery-css {
-width: 150px;
+.status {
+	text-align: left;
 }
 
+.phone {
+	width: 118px;
+}
 #message-css {
-width: 593px;
+	width: 593px;
 }
 
 #log-css {
-width: 813px;
+	width: 813px;
 }
 
-#shortcodes-css {
-width: 279px;
-text-align: center;
+.ttc-table-scrolling-area .support {
+	width: 279px;
+	text-align: center;
+}
+.ttc-table-scrolling-area .shortcodes {
+	width: 118px;
 }
 
-#country-css {
-width: 155px;
+.ttc-table-scrolling-area .country. {
+	width: 155px;
 }
 
 .ttc-table-scrolling-area tbody td{ 
@@ -734,6 +800,11 @@ width: 155px;
 }
 
 .ttc-table-display-area table tr td {
+    padding: 6px;
+    text-align: left;
+}
+
+.ttc-table-display-area-shortcode table tr td {
     padding: 6px;
     text-align: left;
 }
@@ -769,17 +840,18 @@ width: 155px;
 }
 
 .ttc-dialogue-status-label {
-  float: right;
-  display: inline;
-  font-size: 10px;
-  margin-right: -7px;
-  margin-top: -8px;
+	float: right;
+	display: inline;
+	font-size: 10px;
+	margin-right: -7px;
+	margin-top: -8px;
 }
 
 .ttc-advanced-filter {
     display: none;
     float: left;
-    width: 80%;
+    width: 70%;
+    min-width: 450px;
     clear: none;
     border: 1px dashed grey;
     background: #FFCB4B;
@@ -816,7 +888,7 @@ width: 155px;
 
 .ttc-paging {
     float: right;
-    margin-right: -23px;
+    width: 162px;
 }
 
 .ttc-stack-filter input{
@@ -956,10 +1028,84 @@ width: 155px;
     text-decoration: none;
     font-weight: normal; 
 }
+
 .masstag-error {
 color: #C43C35; 
 }
+
 .back-button {	
 margin-top: -44px;
 margin-left: 63px;
+}
+
+
+
+@media projection, screen  {    
+    body {        
+        margin: 0;
+        min-width: 1061px;      
+        
+    } 
+    #content { 
+    	/*padding: 10px 3px 20px 1px;*/
+    	/*min-width: 550px;*/
+    	padding-top: 10px;
+    	padding-left: 20px;
+    	padding-right: 20px;
+    	padding-bottom: 20px;
+    	min-width: 800px;
+    	max-width: 1366px;
+    	position: relative;
+    	overflow-x: hidden;
+    	height: 483px;
+    }         
+    .ttc-program-stats {             
+    	/*left:277px;*/
+    	left: 42%; 
+    	padding-left: 73px;
+    }
+    .ttc-program-quicklinks{             
+    	/*left: 435px;*/ 
+    	left: 90%;             
+    }
+    .ttc-program-index {
+    	float: left;
+    	padding: 15px 2%;
+    	width: 60%;
+    	min-width: 488px;
+    }         
+}
+
+.program-left-column {
+    /*width:202px;*/
+    float: left;
+    width: 200px;
+    /*position: absolute;*/
+    z-index: 99;
+}
+.program-left-column1 {
+    width:300px;    
+    
+}
+.program-body {
+	min-width : 550px;	
+    margin-left: 20px;
+	float: left;
+}
+.admin-action {
+    position: absolute; 
+    padding-left: 13px;
+}
+.users-index {
+    min-width: 547px;	
+	padding:10px 20px 10px 0px;	
+	position: absolute;	
+	margin-left: 235px;
+	
+}
+.shortcode-index {
+	min-width: 819px;	
+	padding:10px 20px 10px 0px;	
+	position: absolute;	
+	margin-left: 202px;
 }

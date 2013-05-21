@@ -1,4 +1,4 @@
-<div class="programsUsers form">
+<div class="programsUsers form width-size">
 <?php echo $this->Form->create('ProgramsUser');?>
 	<fieldset>
 		<legend><?php echo __('Edit Programs User'); ?></legend>

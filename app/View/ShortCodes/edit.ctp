@@ -1,4 +1,4 @@
-<div class="shortcodes form">
+<div class="shortcodes form users-index program-body">
 <h3><?php echo __('Edit ShortCode'); ?></h3>
 <?php echo $this->Form->create('ShortCode');?>
 	<fieldset>
@@ -48,11 +48,13 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('View ShortCodes'), array('action' => 'index')); ?></li>
 		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
 	</ul>	
+</div>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

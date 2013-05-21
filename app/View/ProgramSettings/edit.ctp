@@ -1,4 +1,4 @@
-<div class="programsettings form">
+<div class="programsettings form width-size">
     <ul class="ttc-actions">		
         <li>
         <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>

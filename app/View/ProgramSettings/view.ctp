@@ -1,4 +1,4 @@
-<div class="programsettings form">
+<div class="programsettings form width-size">
 <H3><?php echo __('View Program Settings'); ?></H3>
 <dl>
         <?php

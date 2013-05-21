@@ -164,8 +164,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Import'=> array(
                         'file' => array(
                             'error' => 0,
-                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                            'name' => 'wellformattedparticipants.csv'
+                            'tmp_name' => TESTS . 'files/well_formatted_participants.csv',
+                            'name' => 'well_formatted_participants.csv'
                             )
                         )
                     )
@@ -198,15 +198,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Import'=> array(
                         'file' => array(
                             'error' => 0,
-                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                            'name' => 'wellformattedparticipants.csv'
+                            'tmp_name' => TESTS . 'files/well_formatted_participants.csv',
+                            'name' => 'well_formatted_participants.csv'
                             )
                         )
                     )
                 )
             );
 
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.csv');
+        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(2, count($this->vars['report']));
     }
 
@@ -239,15 +239,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Import'=> array(
                         'file' => array(
                             'error' => 0,
-                            'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                            'name' => 'wellformattedparticipants.csv'
+                            'tmp_name' => TESTS . 'files/well_formatted_participants.csv',
+                            'name' => 'well_formatted_participants.csv'
                             )
                         )
                     )
                 )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.csv');
+        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(
             'Insert ok',
             $this->vars['report'][0]['message'][0]
