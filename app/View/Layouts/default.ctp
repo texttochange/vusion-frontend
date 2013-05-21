@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>
-    <?php if (isset($programName)) echo $programName." - "; ?>	
+    <?php if (isset($programDetails['name'])) echo $programDetails['name']." - "; ?>	
     <?php echo "Vusion" ?>
 	</title>
 	<?php	
@@ -121,13 +121,14 @@
 			 </table>
 			</div>
 			<!-- To be refact with all the Controllers and views -->
-			<?php if (isset($programName)) { ?>
-					<?php echo $this->element('program_specific_header');
-					?>
-			<?php } ?>
+			<?php 
+			if (isset($programDetails['name'])) { 
+					 echo $this->element('program_specific_header');					
+			} 
+			?>
 		<div id="content">
         <?php
-        if (isset($programName)) {
+        if (isset($programDetails['name'])) {
             echo "<div class='program-left-column'>";			   
             echo $this->element('navigation_menu');
             echo $this->element('backend_notifications');

@@ -57,6 +57,8 @@ class AppController extends Controller
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
         $databaseName = $this->Session->read($this->params['program'].'_db');
         $shortCode = $this->Session->read($this->params['program'].'_shortcode');
+        $programDetails = array('url' => $programUrl, 'name' => $programName, 'timezone' =>  $programTimezone, 'shortcode' => $shortCode);
+       print_r($programDetails['name']);
         if ($this->Session->read('Auth.User.id')) {
             $isAdmin = $this->Acl->check(
                 array(
@@ -88,7 +90,7 @@ class AppController extends Controller
             
             $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
         }
-        $this->set(compact('programUrl', 'programName', 'programTimezone', 'isAdmin', 'shortCode'));
+        $this->set(compact('programDetails', 'isAdmin'));
     }
 
 
