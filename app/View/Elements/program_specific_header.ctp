@@ -19,20 +19,28 @@
 						'controller' => 'programHome',
 						'action' => 'index'
 						), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));
+		echo " " ;
+		 echo  '<l class = "blackets"> (</l>' ;
 		
-		//echo " > ";
-		?>
-	</div>
-	<div class="ttc-program-link">
-		<?php
-		echo $this->Html->link($programDetails['shortcode'], 
+		$prefix = $this->PhoneNumber->getInternationalPrefix(
+			         $programDetails['shortcode'],
+			         $countriesIndexes);
+		$countryAndShortcode = $this->PhoneNumber->displayCode(
+			        $programDetails['shortcode'],
+			         $prefix,
+			         $countriesIndexes);		
+		echo $this->Html->link($countryAndShortcode, 
 				array('program' => $programDetails['url'],
 						'controller' => 'programHome',
 						'action' => 'index'
 						),
-				array('style'=>'text-decoration:none;font-weight:normal; font-size:12px'));
-		echo "> ";
-		echo $this->Html->link($this->params['controller'], 
+				array('style'=>'text-decoration:none;font-weight:normal; font-size:14px'));
+		echo  '<l class = "blackets">) </l>' ;
+		?>
+	</div>
+	<div class="ttc-program-link">
+		<?php
+				echo $this->Html->link($this->params['controller'], 
 				array('program' => $programDetails['url'],
 						'controller' => $this->params['controller'],
 						'action' => 'index'

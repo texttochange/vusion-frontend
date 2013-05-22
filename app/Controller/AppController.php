@@ -41,9 +41,10 @@ class AppController extends Controller
                 )
             ),
         'Acl',
-        'Cookie');
+        'Cookie', 
+        'PhoneNumber');
 
-    public $helpers = array('Html', 'Form', 'Session', 'Js', 'Time', 'AclLink', 'Text');
+    public $helpers = array('PhoneNumber', 'Html', 'Form', 'Session', 'Js', 'Time', 'AclLink', 'Text');
 
 
     function beforeFilter()
@@ -57,8 +58,9 @@ class AppController extends Controller
         $programTimezone = $this->Session->read($this->params['program'].'_timezone');
         $databaseName = $this->Session->read($this->params['program'].'_db');
         $shortCode = $this->Session->read($this->params['program'].'_shortcode');
-        $programDetails = array('url' => $programUrl, 'name' => $programName, 'timezone' =>  $programTimezone, 'shortcode' => $shortCode);
-       print_r($programDetails['name']);
+        $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();         
+        print_r($shortCode);
+        $programDetails = array('url' => $programUrl, 'name' => $programName, 'timezone' =>  $programTimezone, 'shortcode' => $shortCode);       
         if ($this->Session->read('Auth.User.id')) {
             $isAdmin = $this->Acl->check(
                 array(
@@ -90,7 +92,7 @@ class AppController extends Controller
             
             $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
         }
-        $this->set(compact('programDetails', 'isAdmin'));
+        $this->set(compact('programDetails', 'isAdmin', 'countriesIndexes'));
     }
 
 

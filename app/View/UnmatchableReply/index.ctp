@@ -35,14 +35,14 @@
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
 			 <tr>			     
-			     <?php
+			     <?php			    
 			     $prefix = $this->PhoneNumber->getInternationalPrefix(
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
-			         $countriesIndexes);
+			         $countriesIndexes);			    
 			     $from = $this->PhoneNumber->displayCode(
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
 			         $prefix,
-			         $countriesIndexes);
+			         $countriesIndexes);			  
 			     echo '<td id="phone-css">'.$from.'&nbsp;</td>';
 			     $to = $this->PhoneNumber->displayCode(
 			         $unmatchableReply['UnmatchableReply']['to'],
