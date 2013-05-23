@@ -1083,33 +1083,42 @@ margin-left: 63px;
     /*position: absolute;*/
     z-index: 99;
 }
+
 .program-left-column1 {
     width:300px;    
     
 }
+
 .program-body {
 	min-width : 550px;	
     margin-left: 20px;
 	float: left;
 }
+
 .admin-action {
     position: absolute; 
     padding-left: 13px;
 }
+
 .users-index {
     min-width: 547px;	
 	padding:10px 20px 10px 0px;	
 	position: absolute;	
 	margin-left: 235px;
-	
 }
+
 .shortcode-index {
 	min-width: 819px;	
 	padding:10px 20px 10px 0px;	
 	position: absolute;	
 	margin-left: 202px;
 }
+
 .blackets {
 	font-size: 14px;
 	color: #003D4C;
+}
+
+.program-edit {
+    margin-left: 235px;
 }
