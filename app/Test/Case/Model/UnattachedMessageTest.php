@@ -48,13 +48,14 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-type'=> 'all',
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
 
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
-        $this->assertEquals('3', $savedUnattachedMessage['UnattachedMessage']['model-version']);
+        $this->assertEquals('4', $savedUnattachedMessage['UnattachedMessage']['model-version']);
         $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
     }
 
@@ -72,14 +73,40 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-match-conditions' => array('a tag'),
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
         //$this->assertTrue($savedUnattachedMessage);
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
-        $this->assertEquals('3', $savedUnattachedMessage['UnattachedMessage']['model-version']);
+        $this->assertEquals('4', $savedUnattachedMessage['UnattachedMessage']['model-version']);
         $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
+    }
+    
+    
+    public function testSave_fail_noCreatedBy()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
+        $unattachedMessage = array(
+            'name'=>'hello',
+            'send-to-type'=> 'match',
+            'send-to-match-operator' => 'all',
+            'send-to-match-conditions' => array('a tag'),
+            'content'=>'hello there',
+            'type-schedule'=>'fixed-time',
+            'fixed-time'=> $date->format('d/m/Y H:i')
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $this->assertEquals(0, $this->UnattachedMessage->find('count'));
+        $this->assertEquals(
+            'Message must be created by a user.',
+            $this->UnattachedMessage->validationErrors['created-by'][0]);
     }
 
 
@@ -94,7 +121,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-type'=> 'match',
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
@@ -113,7 +141,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-match-operator'=> 'all',
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
@@ -135,7 +164,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-match-conditions' => array('a tag'),
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
@@ -177,7 +207,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-match-conditions' => array('a tag'),
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by'=>1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
@@ -216,7 +247,8 @@ class UnattachedMessageTestCase extends CakeTestCase
                 'some label:some value'),
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=> $date->format('d/m/Y H:i')
+            'fixed-time'=> $date->format('d/m/Y H:i'),
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($unattachedMessage);
@@ -234,7 +266,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-type'=> 'all',
             'content'=>'hello there',
             'type-schedule'=>'fixed-time',
-            'fixed-time'=>'05/04/2012 14:30'
+            'fixed-time'=>'05/04/2012 14:30',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($otherUnattachedMessage);
@@ -255,7 +288,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         $otherUnattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
-            'content'=>'hello there');
+            'content'=>'hello there',
+            'created-by' => 1);
         $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($otherUnattachedMessage);
         
@@ -279,7 +313,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'name' => 'hello',
             'send-to-type' => 'all',
             'content' => 'hello there',
-            'type-schedule' => 'fixed-time');
+            'type-schedule' => 'fixed-time',
+            'created-by' => 1);
         $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($otherUnattachedMessage);
         
@@ -301,6 +336,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-type'=> 'all',
             'content'=>'hello there',
             'type-schedule'=>'immediately',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($otherUnattachedMessage);
@@ -350,6 +386,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-type'=> 'all',
             'content'=>'hello there',
             'type-schedule'=>'immediately',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage1 = $this->UnattachedMessage->save($unattachedMessage);
@@ -359,6 +396,7 @@ class UnattachedMessageTestCase extends CakeTestCase
             'send-to-type'=> 'all',
             'content'=>'hello there',
             'type-schedule'=>'immediately',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage2 = $this->UnattachedMessage->save($unattachedMessage);

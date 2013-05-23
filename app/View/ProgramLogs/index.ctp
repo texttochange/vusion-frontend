@@ -6,7 +6,7 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-	            <th id="date-time-css">Date</th>
+	            <th class="date-time">Date</th>
 	            <th id="log-css">Log</th>
 	        </tr>
 	    </thead>
@@ -17,7 +17,7 @@
 	        $newKey = substr_replace($key, $newDate, 1, 19);
 	        ?>
 	        <tr>
-	            <td id="date-time-css"><?php echo substr($newKey, 1, 19); ?></td>
+	            <td class="date-time"><?php echo substr($newKey, 1, 19); ?></td>
 	            <td ><?php echo htmlspecialchars(substr($newKey, 21)); ?></td>
 	        </tr>
 	        <?php endforeach; ?>

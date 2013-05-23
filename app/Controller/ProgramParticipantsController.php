@@ -663,8 +663,13 @@ class ProgramParticipantsController extends AppController
             if (isset($this->request->data['Import']['tags'])) {
                 $tags = $this->request->data['Import']['tags'];
             }
+
+            $replaceTagsAndLabels = false;
+            if (isset($this->request->data['Import']['replace-tags-and-labels'])) {
+                $replaceTagsAndLabels = true;
+            }
             
-            $fileName = $this->request->data['Import']['file']["name"];
+            $fileName = $this->request->data['Import']['file']['name'];
             
             $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
             
@@ -688,7 +693,11 @@ class ProgramParticipantsController extends AppController
                 chmod($filePath . DS . $fileName, 0664);
             }
             
-            $report = $this->Participant->import($programUrl, $filePath . DS . $fileName, $tags);
+            $report = $this->Participant->import(
+                $programUrl, 
+                $filePath . DS . $fileName, 
+                $tags,
+                $replaceTagsAndLabels);
             if ($report) {
                 foreach($report as $participantReport) {
                     if ($participantReport['saved']) {

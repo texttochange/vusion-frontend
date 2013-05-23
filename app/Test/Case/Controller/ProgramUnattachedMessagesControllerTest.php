@@ -78,7 +78,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
 
         parent::tearDown();
     }
-    
+
     
     public function mock_program_access()
     {
@@ -87,11 +87,12 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth'
+                    'Auth' /*=> array('user')*/
                     ),
                 'models' => array(
                    'Program' => array('find', 'count'),
-                   'Group' => array()
+                   'Group' => array(),
+                   'User' => array('find')
                    ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
@@ -100,7 +101,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-    
+
         $unattachedMessages->Acl
             ->expects($this->any())
             ->method('check')
@@ -121,7 +122,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 $this->programData[0]['Program']['name'],
                 'utc',
                 'testdbprogram'
-                ));	    
+                ));
  
         return $unattachedMessages;
 
@@ -133,8 +134,24 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
  */ 
     public function testIndex()
     {
-        $this->mock_program_access();
+        $userGerald = array(
+            'User' => array(
+                'id' => 1,
+                'username' => 'gerald',
+                'password' => 'geraldpassword',
+                'email' => 'gerald@here.com',
+                'group_id' => 1,
+                'created' => '2012-01-24 15:34:07',
+                'modified' => '2012-01-24 15:34:07'
+                ));
         
+        $unattachedMessages = $this->mock_program_access();
+        
+        $unattachedMessages->User
+            ->expects($this->any())
+            ->method('find')
+            ->will($this->returnValue($userGerald));
+
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $date = new DateTime('tomorrow');
@@ -146,7 +163,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'send-to-type' => 'all',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
-                'fixed-time' => $date->format('d/m/Y H:i')
+                'fixed-time' => $date->format('d/m/Y H:i'),
+                'created-by' => 1
             ));
         
         $this->testAction("/testurl/programUnattachedMessages/index");
@@ -162,6 +180,12 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $regexId = $this->matchesRegularExpression('/^.{24}$/');
         
         $unattachedMessages = $this->mock_program_access();
+        $unattachedMessages->Auth
+            ->staticExpects($this->once())
+            ->method('user')
+            ->will($this->returnValue(array(
+                'id' => '2',
+                'group_id' => '2')));
         
         $unattachedMessages
             ->expects($this->once())
@@ -185,7 +209,11 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             )
         );
 
-        $this->assertEquals(1, $this->UnattachedMessage->find('count'));   
+        $this->assertEquals(1, $this->UnattachedMessage->find('count'));
+        $unattachedMessageDB = $this->UnattachedMessage->find('all');
+
+        $this->assertTrue(in_array('created-by', array_keys($unattachedMessageDB[0]['UnattachedMessage'])));
+        $this->assertEquals(2, $unattachedMessageDB[0]['UnattachedMessage']['created-by']);   
     }
 
     
@@ -196,7 +224,14 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
        
-        $unattachedMessages = $this->mock_program_access();        
+        $unattachedMessages = $this->mock_program_access();
+        $unattachedMessages->Auth
+            ->staticExpects($this->once())
+            ->method('user')
+            ->will($this->returnValue(array(
+                'id' => '2',
+                'group_id' => '2')));
+            
         $unattachedMessages
             ->expects($this->once())
             ->method('_notifyUpdateBackendWorkerUnattachedMessage')
@@ -223,8 +258,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'type-schedule' => 'immediately',
                 'file' => array(
                     'error' => 0,
-                    'tmp_name' => TESTS . 'files/wellformattedparticipants.csv',
-                    'name' => 'wellformattedparticipants.csv'
+                    'tmp_name' => TESTS . 'files/well_formatted_participants.csv',
+                    'name' => 'well_formatted_participants.csv'
                     )
                 )
             );
@@ -235,7 +270,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             )
         );
 
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.csv');
+        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessage = $this->UnattachedMessage->find('first');
         $this->assertEquals(
@@ -261,7 +296,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'send-to-type' => 'all',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
-                'fixed-time' => $date->format('d/m/Y H:i')
+                'fixed-time' => $date->format('d/m/Y H:i'),
+                'created-by' => 1
              )
         );
         $this->UnattachedMessage->create();
@@ -311,7 +347,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'send-to-type' => 'all',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'fixed-time',
-                'fixed-time' => $date->format('d/m/Y H:i')
+                'fixed-time' => $date->format('d/m/Y H:i'),
+                'created-by' => 1
              )
         );
         $this->UnattachedMessage->create();
@@ -350,6 +387,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'send-to-type' => 'all',
             'content' => 'Hello!!!!',
             'type-schedule' => 'immediately',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage);        
@@ -381,6 +419,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'content' => 'Hello!!!!',
             'type-schedule' => 'fixed-time',
             'fixed-time' => '12/04/3013 11:00',
+            'created-by' => 1
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage= $this->UnattachedMessage->save($unattachedMessage); 

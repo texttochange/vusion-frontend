@@ -7,15 +7,15 @@ App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
+App::uses('User', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
     
-    public $uses = array('UnattachedMessage');
-
-
+    public $uses = array('UnattachedMessage', 'User');
+ 
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -55,8 +55,7 @@ class ProgramUnattachedMessagesController extends AppController
 
     public function index()
     {
-        $unattachedMessages = $this->paginate();       
-        
+        $unattachedMessages = $this->paginate();
         foreach($unattachedMessages as &$unattachedMessage)
         {  
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
@@ -80,6 +79,15 @@ class ProgramUnattachedMessagesController extends AppController
             }
             $unattachedMessage['UnattachedMessage'] = array_merge(
                 $status, $unattachedMessage['UnattachedMessage']);
+
+            if (in_array($unattachedMessage['UnattachedMessage']['model-version'], array('1','2','3'))) {
+                $unattachedMessage['UnattachedMessage']['created-by'] = __("unknown");
+            } else {
+                $conditions = array('conditions' => array( 'User.id' => $unattachedMessage['UnattachedMessage']['created-by']));
+                
+                $user = $this->User->find('first', $conditions);
+                $unattachedMessage['UnattachedMessage']['created-by'] = ($user ? $user['User']['username']: __("unknown"));
+            }
         }
         $this->set('unattachedMessages', $unattachedMessages);
     }
@@ -131,6 +139,8 @@ class ProgramUnattachedMessagesController extends AppController
         }
         if ($this->UnattachedMessage->id == null) {
            $this->UnattachedMessage->create();
+           $user = $this->Auth->user();
+           $this->request->data['UnattachedMessage']['created-by'] = $user['id'];
         }
         $savedUnattached = $this->UnattachedMessage->save($this->request->data);
         if ($savedUnattached) {
