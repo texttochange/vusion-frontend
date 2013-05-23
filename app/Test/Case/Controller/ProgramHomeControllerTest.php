@@ -131,8 +131,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             
         $this->testAction("/testurl/home", array('method' => 'get'));
 
-        $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
-        $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
+        $this->assertEquals($this->vars['programDetails']['name'], $this->programData[0]['Program']['name']);
+        $this->assertEquals($this->vars['programDetails']['url'], $this->programData[0]['Program']['url']);        
     }
 
 /* to be used in testing access write    
