@@ -1,4 +1,4 @@
-<div class="programs form">
+<div class="programs form program-edit">
 <h3><?php echo __('Edit Program'); ?></h3>
 <?php echo $this->Form->create('Program');?>
 	<fieldset>
@@ -12,6 +12,7 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -19,4 +20,5 @@
 		<li><?php echo $this->Html->link(__('List Programs'), array('action' => 'index'));?></li>
 		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
 	</ul>
+</div>
 </div>
