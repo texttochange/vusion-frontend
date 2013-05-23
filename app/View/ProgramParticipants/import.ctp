@@ -1,3 +1,4 @@
+
 <div class="participants index width-size"">
     <ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'add'), array('class'=>'ttc-button')); ?></li>
