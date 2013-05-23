@@ -6,7 +6,7 @@
         <?php
         echo $this->Html->link( __('Cancel'), 
             array(
-                'program' => $programUrl,
+                'program' => $programDetails['url'],
                 'controller' => 'programHome',
                 'action' => 'index'	           
                 ));
@@ -14,8 +14,8 @@
         </span>
         </li>
         <?php $this->Js->get('#button-save')->event('click', '$("#ParticipantAddForm").submit()' , true);?>
-		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'import'), array('class'=>'ttc-button')); ?></li>
-		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programUrl, 'controller' => 'programParticipants', 'action' => 'index'), array('class'=>'ttc-button'));?></li>
+		<li><?php echo $this->Html->link(__('Import Participant(s)'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'import'), array('class'=>'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'index'), array('class'=>'ttc-button'));?></li>
 	</ul>
 	<h3><?php echo __('Add Participant'); ?></h3>
 	<div class="ttc-display-area">

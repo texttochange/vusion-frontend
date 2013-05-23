@@ -34,8 +34,9 @@
 			 <?php
 			 foreach($unmatchableReplies as $unmatchableReply):
 			 ?>
-			 <tr>			     
+			 <tr>
 			     <?php
+
 			     $prefix = $this->PhoneNumber->getInternationalPrefix(
 			         $unmatchableReply['UnmatchableReply']['participant-phone'],
 			         $countriesIndexes);
@@ -58,7 +59,6 @@
 	</table>
 	</div>
 	</div>
-
 </div>
 <div class="admin-action">
 <div class="actions">

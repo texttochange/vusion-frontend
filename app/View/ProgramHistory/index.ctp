@@ -7,7 +7,7 @@
         }
         echo $this->AclLink->generatePostLink(
                 __('Delete'),
-                $programUrl, 
+                $programDetails['url'], 
                 'programHistory',
                 'delete', 
                 __('Are you sure you want to delete %s histories?', $this->Paginator->counter(array(
@@ -19,7 +19,7 @@
         </li>
 		<li>
 		    <?php
-		        $exportUrl = $this->Html->url(array('program' =>$programUrl, 'controller' => 'programHistory', 'action'=>'export'));
+		        $exportUrl = $this->Html->url(array('program' =>$programDetails['url'], 'controller' => 'programHistory', 'action'=>'export'));
                 echo $this->Html->tag(
                     'span', 
                     __('Export'), 
@@ -50,12 +50,12 @@
 	<table  cellpadding="0" cellspacing="0">
 	    <thead >
 	        <tr>                                                                        
-			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th class="direction"><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th class="status"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th class="failure-reason"><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th class="details2"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
-			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programUrl, '?'=>$this->params['url'])));?></th>
+			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+			    <th class="direction"><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+			    <th class="status"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+			    <th class="failure-reason"><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+			    <th class="details2"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
 			</tr>
 		</thead>
 		<tbody>
