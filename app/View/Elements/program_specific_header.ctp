@@ -19,23 +19,12 @@
 						'controller' => 'programHome',
 						'action' => 'index'
 						), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));
-		echo " " ;
-		 echo  '<l class = "blackets"> (</l>' ;
-		
-		$prefix = $this->PhoneNumber->getInternationalPrefix(
-			         $programDetails['shortcode'],
-			         $countriesIndexes);
-		$countryAndShortcode = $this->PhoneNumber->displayCode(
+		echo  '<l class = "blackets"> (</l>';		
+		$countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
 			        $programDetails['shortcode'],
-			         $prefix,
-			         $countriesIndexes);		
-		echo $this->Html->link($countryAndShortcode, 
-				array('program' => $programDetails['url'],
-						'controller' => 'programHome',
-						'action' => 'index'
-						),
-				array('style'=>'text-decoration:none;font-weight:normal; font-size:14px'));
-		echo  '<l class = "blackets">) </l>' ;
+			        $countryIndexedByPrefix);
+		echo '<l class ="blackets">'.$countryAndShortcode.'</l>';		
+		echo  '<l class = "blackets">)</l>';
 		?>
 	</div>
 	<div class="ttc-program-link">

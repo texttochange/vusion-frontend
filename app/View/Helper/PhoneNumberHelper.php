@@ -23,7 +23,7 @@ class PhoneNumberHelper extends AppHelper {
     {
         if ($this->isShortcodeWithPrefix($code)){
             $explodedCode = explode("-", $code);
-            return $explodedCode[0];            
+            return $explodedCode[0];          
         }
 
         if ($this->isLongcode($code)){
