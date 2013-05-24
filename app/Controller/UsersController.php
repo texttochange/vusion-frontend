@@ -117,7 +117,7 @@ class UsersController extends AppController
         } else {
             $this->request->data = $this->User->read(null, $id);
         }
-        $Groups   = $this->User->Group->find('list');
+        $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
         $this->set(compact('groups', 'programs'));
     }
