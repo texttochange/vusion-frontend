@@ -102,7 +102,7 @@ class VumiRabbitMQ {
         return $this->sendMessageTo(
             $to.'.control',
             array(
-                'action' => 'test-send-all-messages',
+                'action' => 'test_send_all_messages',
                 'phone_number' => $phone,
                 'dialogue_obj_id' => $dialogueObjId)
             );
