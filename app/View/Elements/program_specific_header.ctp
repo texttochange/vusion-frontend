@@ -26,12 +26,12 @@
 		if (isset($countryAndShortcode)){
 				echo '<l class ="blackets">'.$countryAndShortcode.'</l>';
 		}else{
-				echo $this->Html->link('Configure Shortcode', 
+				echo $this->Html->link('configure shortcode', 
 						array('program' => $programDetails['url'],
 								'controller' => 'programSettings',
 								'action' => 'index'
 								),
-						array('style'=>'text-decoration:none;font-weight:normal; font-size:14px'));
+						array('style'=>'text-decoration:none;font-weight:normal; font-size:14px; color:#C43C35'));
 		}				
 		echo  '<l class = "blackets">)</l>';
 		?>
