@@ -23,7 +23,16 @@
 		$countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
 			        $programDetails['shortcode'],
 			        $countryIndexedByPrefix);
-		echo '<l class ="blackets">'.$countryAndShortcode.'</l>';		
+		if (isset($countryAndShortcode)){
+				echo '<l class ="blackets">'.$countryAndShortcode.'</l>';
+		}else{
+				echo $this->Html->link('Configure Shortcode', 
+						array('program' => $programDetails['url'],
+								'controller' => 'programSettings',
+								'action' => 'index'
+								),
+						array('style'=>'text-decoration:none;font-weight:normal; font-size:14px'));
+		}				
 		echo  '<l class = "blackets">)</l>';
 		?>
 	</div>
