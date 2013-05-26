@@ -93,20 +93,23 @@ class ProgramSettingsController extends AppController
                     array('class'=>'message failure')
                     );
             } else {   
-                foreach ($this->request->data['ProgramSettings'] as $key => $value) {
-                    if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
-                        $this->Session->setFlash(__("Program Settings saved."),
-                            'default',
-                            array('class'=>'message success')
-                            );
-                    } else {
-                        $this->Session->setFlash(__("Save settings failed."),
-                            'default',
-                            array('class'=>'message failure')
-                            );
-                    }
-                }
-                $this->_notifyUpdateProgramSettings($programUrl);
+            		foreach ($this->request->data['ProgramSettings'] as $key => $value) {
+            				if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
+            						$this->Session->setFlash(__("Program Settings saved."),
+            								'default',
+            								array('class'=>'message success'));
+            				} else {
+            						$this->Session->setFlash(__("Save settings failed."),
+            								'default',
+            								array('class'=>'message failure'));            						
+            				}
+            		}
+                $this->_notifyUpdateProgramSettings($programUrl);                
+                $this->redirect(
+                		array(
+                				'program' => $programUrl,
+                				'controller' => 'programSettings',
+                				'action' => 'edit'));
             }
         }
         $shortcodes = $this->ShortCode->find('all');
@@ -128,7 +131,6 @@ class ProgramSettingsController extends AppController
     	    
             $this->request->data = $programSettings;
         }
-       
     }
 
 
