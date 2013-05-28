@@ -104,4 +104,40 @@ class InteractionTestCase extends CakeTestCase
     }
 
 
+    public function testValidate_fail()
+    {
+         $interaction = array(
+                    'type-interaction' => 'annoucement', 
+                    'content' => 'hello',
+                    'keyword' => 'feel',
+                    'interaction-id' => '1');
+         $this->Interaction->set($interaction);
+         $this->assertFalse($this->Interaction->validates());
+
+         $this->assertEqual(
+             $this->Interaction->validationErrors['activated'][0], 
+             'Activated field is missing.'
+             );
+    }
+
+
+    public function testValidate_fail_requiredConditionalFieldValue()
+    {
+         $interaction = array(
+                    'type-interaction' => 'annoucement', 
+                    'type-schedule' => 'fixed-time',
+                    'content' => 'hello',
+                    'keyword' => 'feel',
+                    'interaction-id' => '1',
+                    'activated' => 0,
+                    'prioritized' => 1);
+         $this->Interaction->set($interaction);
+         $this->assertFalse($this->Interaction->validates());
+
+         $this->assertEqual(
+             $this->Interaction->validationErrors['date-time'][0], 
+             'Fixed time required a date-time.'
+             );
+    }
+
 }
