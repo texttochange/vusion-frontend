@@ -723,6 +723,10 @@ width: 102px;
 	text-align: center;
 }
 
+.ttc-table-scrolling-area .profile {
+	width: 99px;
+}
+
 .profile {
 	width: 99px;
 }
