@@ -98,7 +98,7 @@ class ProgramDialoguesController extends AppController
                 'default',
                 array('class' => "message failure"));
         }
-
+print_r($this->Dialogue->validationErrors);
         $this->set('dialogue', $dialogue);
     }
 

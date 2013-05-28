@@ -60,7 +60,14 @@ class Dialogue extends MongoModel
         return $results;
     }    
 
-
+    public $validate = array(
+    		'name' => array(
+    				'uniqueDialogueName' => array(
+    						'rule' => 'uniqueDialogueName',
+    						'message' => 'This Dialogue Name already exists. Please choose another.'
+    						)
+    				));
+    
     public function beforeValidate()
     {
         try {
@@ -318,7 +325,19 @@ class Dialogue extends MongoModel
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
     }
-
+    
+    public function uniqueDialogueName($check)
+    {
+        if ($this->name) {
+            $conditions = array('name'=>array('$ne'=> $this->name),'name' => $check['name']);
+        } else {
+            $conditions = array('name' => $check['name']);
+        }
+        $result = $this->find('count', array(
+            'conditions' => $conditions
+            ));
+        return $result < 1;
+    }
 }
 
 

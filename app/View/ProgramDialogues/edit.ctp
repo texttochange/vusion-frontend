@@ -48,15 +48,18 @@
 	?>
 	</h3>
 	<div class="ttc-display-area">
-	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>
-	<?php
-	$this->Js->get("#dynamic-generic-program-form");
-	if (isset($dialogue))
-	    $this->Js->each('$(this).buildTtcForm("Dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
-	else
-	$this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
-    ?>
-	</div>
+	<?php 	
+	echo $this->Html->tag('form', null, array('id'=> 'dynamic-generic-program-form')); 
+	
+   ?>
+   <?php
+   $this->Js->get("#dynamic-generic-program-form");
+   if (isset($dialogue))
+   		   $this->Js->each('$(this).buildTtcForm("Dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
+   else
+   $this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
+   ?>
+	</div>	
 	<?php
 	$offsetConditionOptions[] = array('value'=>'0', 'html' => __('Choose one question...'));
 	if (isset($dialogue['Dialogue']['interactions'])) {
