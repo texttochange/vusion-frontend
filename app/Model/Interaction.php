@@ -20,7 +20,10 @@ class Interaction extends VirtualModel
         'prioritized');
 
     public function __construct()
-    {        
+    {     
+        parent::__construct();
+        $this->Action = new Action();
+        /*
         $unmatchingFeedbackFct = function($v) { 
              if (in_array($v, array('no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback')))
                  return true;
@@ -103,6 +106,7 @@ class Interaction extends VirtualModel
             'choice' => function($v) {return ($v!=null);},
             'feedbacks' => function($v) {return true;},
             'answer-actions' => $actionsFct);
+            */
     }
 
     public $validate = array(
@@ -425,24 +429,57 @@ class Interaction extends VirtualModel
         );
 
 
-    public function validateAnswers()
+    public function validateAnswers($field, $data)
     {
-
+        foreach($data[$field] as $answer) {
+            $this->_validate($answer, $this->validateAnswer);
+        }
+        if ($this->validationErrors != array()) {
+            return false;
+        }
+        return true;
     }
 
 
-    public function validateAnswerKeywords()
+    public function validateAnswerKeywords($field, $data)
     {
-        
+        foreach($data[$field] as $answerKeyword) {
+            $this->_validate($answerKeyword, $this->validateAnswerKeyword);
+        }
+        if ($this->validationErrors != array()) {
+            return false;
+        }
+        return true;        
+    }
+
+    
+    public function validateActions($field, $data)
+    {
+        foreach($data[$field] as $action) {
+            $this->Action->set($action);
+            if (!$this->Action->validates()) {
+                if (!isset($this->validationErrors['actions'])) {
+                    $this->validationErrors['actions'] = array();
+                }
+                array_push($this->validationErrors['actions'], $this->Action->validationErrors[0]);
+                return false;
+            }
+        }
+        return true;
     }
 
 
     public function validates()
     {
         $interaction = $this->data;
-        foreach ($this->validate as $field => $validateField) {
+        return $this->_validates($interaction, $this->validate);
+    }
+
+    protected function _validates($data, $validationRules)
+    {
+        foreach ($validationRules as $field => $validateField) {
             foreach ($validateField as $rule) {
-                $defaultArgs = array($field, $interaction);
+                $defaultArgs = array($field, $data);
                 if (is_array($rule['rule'])) {
                     $func = $rule['rule'][0];
                     $args = array_slice($rule['rule'], 1);
@@ -482,7 +519,8 @@ class Interaction extends VirtualModel
     public function beforeValidate($interaction)
     {
         $interaction = $this->trimArray($interaction);
-
+        
+        /*
         $interaction['object-type'] = $this->modelName;        
         $interaction['model-version'] = $this->modelVersion;
 
@@ -593,7 +631,7 @@ class Interaction extends VirtualModel
                 $interaction['answers'] = array();                
             }
         }
-            
+        */  
         return $interaction;
     }
 
