@@ -5,8 +5,8 @@ App::uses('VusionConst', 'Lib');
 
 class Action extends VirtualModel
 {
-    var $modelName = 'action';
-    var $modelVersion = '1'; 
+    var $name = 'action';
+    var $version = '1'; 
 
     var $fields = array('type-action');
    
@@ -49,15 +49,14 @@ class Action extends VirtualModel
         return array_map(array($this,'TrimArray'), $Input);
     }
 
-
-    public function beforeValidate($action)
+    
+    public function beforeValidate()
     {
-        $action = $this->trimArray($action);
-
-        $action['object-type'] = $this->modelName;
-        $action['model-version'] = $this->modelVersion;
-       
-        return $action;
+        parent::beforeValidate();
+        if (isset($this->data['type-answer-action'])) {
+            $this->data['type-action'] = $this->data['type-answer-action'];
+        }
+        return true;
     }
 
 

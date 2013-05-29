@@ -7,8 +7,8 @@ App::uses('VusionConst', 'Lib');
 
 class Interaction extends VirtualModel
 {
-    var $modelName = 'interaction';
-    var $modelVersion = '3'; 
+    var $name = 'interaction';
+    var $version = '3'; 
 
     var $payload = array();
 
@@ -129,9 +129,9 @@ class Interaction extends VirtualModel
             'notempty' => array(
                 'rule' => 'notempty',
                 'message' => 'Type Schedule field cannot be empty.'
-                )
+                ),
             'validValue' => array(
-                'rule' => array('inlist', 'fixed-time', 'offset-days', 'offset-time', 'offset-condition')
+                'rule' => array('inlist', array('fixed-time', 'offset-days', 'offset-time', 'offset-condition')),
                 'message' => 'Type Schedule has not a valid value.'
                 )
             ),
@@ -175,9 +175,9 @@ class Interaction extends VirtualModel
             'notempty' => array(
                 'rule' => 'notempty',
                 'message' => 'Type Interaction value cannot be empty.'
-                )
+                ),
             'validValue' => array(
-                'rule' => array('inList', 'announcement', 'question-answer', 'question-answer-keyword'),
+                'rule' => array('inList', array('announcement', 'question-answer', 'question-answer-keyword')),
                 'message' => 'Type Interaction value is not valid.'
                 )
             ),
@@ -209,7 +209,7 @@ class Interaction extends VirtualModel
         'set-use-template'=> array( 
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'question-answer'),
-                'message' => 'Question Answer required a set-use-template.',
+                'message' => 'A set-use-template field is required.',
                 ),
             ),
         'set-max-unmatching-answers' => array( 
@@ -230,7 +230,7 @@ class Interaction extends VirtualModel
                 'message' => 'A type-unmatching-feedback field is required.',
                 ),
             'validValue' => array(
-                'rule' => array('inList', 'no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback'),
+                'rule' => array('inList', array('no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback')),
                 'message' => 'Type Question value is not valid.',
                 )
             ),
@@ -240,7 +240,7 @@ class Interaction extends VirtualModel
                 'message' => 'Question Answer required a type-question.',
                 ),
             'validValue' => array(
-                'rule' => array('inList', 'closed-question', 'open-question'),
+                'rule' => array('inList', array('closed-question', 'open-question')),
                 'message' => 'Type Question value is not valid.',
                 )
             ),
@@ -315,7 +315,7 @@ class Interaction extends VirtualModel
                 'message' => 'A type-schedule-reminder field is required.',
                 ),
             'validValue' => array(
-                'rule' => array('inList', 'reminder-offset-days', 'reminder-offset-time')
+                'rule' => array('inList', array('reminder-offset-days', 'reminder-offset-time')),
                 'message' => 'The value of type-schedule-reminder is not valid.',
                 )
             ),
@@ -338,7 +338,7 @@ class Interaction extends VirtualModel
                 'message' => 'A reminder-days field is required.',
                 ),
             ),
-        'reminder-at-time' array(
+        'reminder-at-time' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule-reminder', 'reminder-offset-days'),
                 'message' => 'A reminder-at-time field is required.',
@@ -356,9 +356,9 @@ class Interaction extends VirtualModel
                 'rule' => 'required',
                 'message' => 'Activated field is missing.'
                 ),
-            'notempty' => array(
-                'rule' => 'notempty',
-                'message' => 'Actived field cannot be empty.'
+            'validValue' => array(
+                'rule' => array('inList', array(0, 1)),
+                'message' => 'Actived field value is not valid.'
                 )
             ),
         'prioritized'  => array(
@@ -366,9 +366,9 @@ class Interaction extends VirtualModel
                 'rule' => 'required',
                 'message' => 'Prioritized field is missing.'
                 ),
-            'notempty' => array(
-                'rule' => 'notempty',
-                'message' => 'Prioritized field cannot be empty.'
+            'validValue' => array(
+                'rule' => array('inList', array(null, 'prioritized')),
+                'message' => 'Prioritized field value is not valid.'
                 )
             )
         );
@@ -381,10 +381,6 @@ class Interaction extends VirtualModel
                 )
             ),
         'feedbacks' => array(
-            'notempty' => array(
-                'rule' => 'notempty',
-                'message' => 'Content field cannot be empty.'
-                ),
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
@@ -411,13 +407,9 @@ class Interaction extends VirtualModel
                 )
             ),
         'feedbacks' => array(
-            'notempty' => array(
-                'rule' => 'notempty',
-                'message' => 'Content field cannot be empty.'
-                ),
-            'validApostrophe' => array(
-                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
-                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+            'validFeedback' => array(
+                'rule' => 'validateFeedbacks',
+                'message' => 'On Feedback is not valid.'
                 )
             ),
         'answer-actions' => array( 
@@ -429,12 +421,29 @@ class Interaction extends VirtualModel
         );
 
 
+    public $validateFeedback = array(
+        'content' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'Content field cannot be empty.'
+                ),
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                )
+            )
+        );
+
+
     public function validateAnswers($field, $data)
     {
-        foreach($data[$field] as $answer) {
-            $this->_validate($answer, $this->validateAnswer);
+        if (!isset($data[$field])) {
+            return true;
         }
-        if ($this->validationErrors != array()) {
+        foreach($data[$field] as $answer) {
+            $this->_validates($answer, $this->validateAnswer);
+        }
+        if (isset($this->validationErrors[$field])) {
             return false;
         }
         return true;
@@ -443,13 +452,31 @@ class Interaction extends VirtualModel
 
     public function validateAnswerKeywords($field, $data)
     {
-        foreach($data[$field] as $answerKeyword) {
-            $this->_validate($answerKeyword, $this->validateAnswerKeyword);
+        if (!isset($data[$field])) {
+            return true;
         }
-        if ($this->validationErrors != array()) {
+        foreach($data[$field] as $answerKeyword) {
+            $this->_validates($answerKeyword, $this->validateAnswerKeyword);
+        }
+        if (isset($this->validationErrors[$field])) {
             return false;
         }
         return true;        
+    }
+
+
+    public function validateFeedbacks($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        foreach($data[$field] as $answer) {
+            $this->_validates($answer, $this->validateFeedback);
+        }
+        if (isset($this->validationErrors[$field])) {
+            return false;
+        }
+        return true;
     }
 
     
@@ -503,7 +530,7 @@ class Interaction extends VirtualModel
         return true;
     }
 
-
+/*
     public function trimArray($Input){
  
         if (!is_array($Input)) {
@@ -514,143 +541,83 @@ class Interaction extends VirtualModel
         }
         return array_map(array($this,'TrimArray'), $Input);
     }
+*/
 
 
-    public function beforeValidate($interaction)
+    public function beforeValidate()
     {
-        $interaction = $this->trimArray($interaction);
-        
-        /*
-        $interaction['object-type'] = $this->modelName;        
-        $interaction['model-version'] = $this->modelVersion;
+        parent::beforeValidate();
+        $this->_setDefault('interaction-id', uniqid());
+        $this->_setDefault('activated', 0);
+        $this->_setDefault('prioritized', null);
 
-        foreach($this->fields as $field) {
-            if (!isset($interaction[$field])) {
-                if ($field=='interaction-id') {
-                    $interaction['interaction-id'] = uniqid();  
-                } elseif ($field=='activated') {
-                    $interaction['activated'] = 0;
-                } elseif ($field=='prioritized') {
-                    $interaction['prioritized'] = null;
-                } else {
-                    throw new MissingField("$field is missing in an Interaction.");
-                }
-            }
-        }
-        
-        foreach($this->SCHEDULE_TYPE[$interaction['type-schedule']] as $field => $check) {
-            if (!call_user_func($check, $interaction[$field])){
-                throw new MissingField("$field has incorrect value in an interaction.");
-            }
-        }
-        foreach($this->INTERACTION_TYPE[$interaction['type-interaction']] as $field => $check) {
-            if (!isset($interaction[$field])) {
-                if ($field=='set-use-template') {
-                    $interaction['set-use-template'] = null;
-                } elseif ($field=='type-unmatching-feedback') {
-                    $interaction['type-unmatching-feedback'] = 'none';                        
-                } elseif ($field=='set-reminder') {
-                    $interaction['set-reminder'] = null;
-                } elseif ($field=='set-max-unmatching-answers') {
-                    $interaction['set-max-unmatching-answers'] = null;
-                } else {
-                    throw new MissingField("$field is missing in an Interaction.");
-                }
-            }
-            if (!call_user_func($check, $interaction[$field])){
-                throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
-            }
-        }
-        if ($interaction['type-interaction'] == 'announcement') {
-            return $interaction;
-        }
-        if ($interaction['type-interaction'] == 'question-answer') {
-            foreach($this->QUESTION_TYPE[$interaction['type-question']] as $field => $check) {
-                if (!isset($interaction[$field])) {
-                    if ($field=='set-answer-accept-no-space') {
-                        $interaction['set-answer-accept-no-space'] = null;
-                    } elseif ($field=='label-for-participant-profiling') {
-                        $interaction['label-for-participant-profiling'] = null;
-                    } elseif ($field=='feedbacks') {
-                        $interaction['feedbacks'] = array();
-                    } else {
-                        throw new MissingField("$field is missing in an Interaction.");
-                    }    
-                } 
-                if (!call_user_func($check, $interaction[$field])){
-                    throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
-                }
-            }
-            if ($interaction['set-max-unmatching-answers'] == 'max-unmatching-answers') {
-                foreach($this->MAX_UNMATCHING_ANSWER_FIELDS as $field => $check) {
-                    if (!isset($interaction[$field])) {
-                        if ($field == 'max-unmatching-answer-actions') {
-                            $interaction['max-unmatching-answer-actions'] = array();
-                        } else {
-                            throw new MissingField("$field is missing in the interaction.");
-                        }
-                    }
-                    if (is_callable($check) && !call_user_func($check, &$interaction[$field])) {
-                        throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
-                    }
-                }
-            }
+        if (!isset($this->data['type-interaction'])) {
+            return false;
         }
 
-        if ($interaction['set-reminder'] == 'reminder') {
-            foreach($this->REMINDER_FIELDS as $field => $check) {
-                if (!isset($interaction[$field])){
-                    if ($field == 'reminder-actions') {
-                        $interaction['reminder-actions'] = array();
-                    } else {
-                        throw new MissingField("$field is missing in the interaction.");
-                    }
-                }
-                if (is_callable($check) && !call_user_func($check, &$interaction[$field])) {
-                    throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
-                }
+        if ($this->data['type-interaction'] == 'announcement')
+            return true;
+ 
+        if ($this->data['type-interaction'] == 'question-answer') {
+            $this->_setDefault('set-use-template', null);
+            $this->_setDefault('type-unmatching-feedback', 'none');                        
+            $this->_setDefault('set-reminder', null);
+            $this->_setDefault('set-max-unmatching-answers', null);
+            if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {
+                $this->_setDefault('max-unmatching-answer-actions', array());
             }
-            foreach($this->REMINDER_SCHEDULE_TYPE[$interaction['type-schedule-reminder']] as $field => $check){
-                if (!call_user_func($check, &$interaction[$field])){
-                    throw new FieldValueIncorrect("$field has incorrect value in an interaction.");
-                }
+            if ($this->data['type-question'] == 'closed-question') {
+                $this->_setDefault('set-answer-accept-no-space', null);
+                $this->_setDefault('label-for-participant-profiling', null);
+                $this->_setDefault('feedbacks', array());
+                $this->_setDefault('answers', array());
+                $this->_beforeValidateAnswers();
             }
+        }
+      
+        if ($this->data['type-interaction'] == 'question-answer-keyword') {
+            $this->_setDefault('set-reminder', null);
+            $this->_setDefault('answer-keywords', array()); 
+            $this->_beforeValidateAnswerKeywords();
         }
 
-        //Specific Answer check for closed and multikeyword question
-        if ($interaction['type-interaction'] == 'question-answer-keyword') {
-            if (is_array($interaction['answer-keywords'])) {
-                $interaction['answer-keywords'] = $this->beforeValidateAnswers($interaction['answer-keywords'], $this->ANSWER_KEYWORD);
-            } else {
-                $interaction['answer-keywords'] = array();                
-            }
-        } elseif ($interaction['type-interaction'] == 'question-answer' && $interaction['type-question'] == 'closed-question') {
-            if (is_array($interaction['answers'])) {
-                $interaction['answers'] = $this->beforeValidateAnswers($interaction['answers'], $this->ANSWER);
-            } else {
-                $interaction['answers'] = array();                
-            }
+        if ($this->data['set-reminder'] == 'reminder') {
+            $this->_setDefault('reminder-actions', array());
+            $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
-        */  
-        return $interaction;
+
+        return true;
     }
 
-    private function beforeValidateAnswers(&$answers, $validateRules) 
+    protected function _beforeValidateActions($actions)
     {
-        foreach($answers as &$answer) {
-            foreach($validateRules as $field => $check) {
-                if (!isset($answer[$field])) {
-                    if ($field == 'feedbacks' or $field == 'answer-actions') { 
-                        $answer[$field] = array();
-                    }
-                }
-                if (call_user_func($check, &$answer[$field]) == false){
-                    throw new FieldValueIncorrect("$field has an incorrect value in an Answer.");
-                }
-            }
+        foreach($actions as &$action) {
+            $this->Action->set($action);
+            $this->Action->beforeValidate();
+            $action = $this->Action->getCurrent();
         }
-        return $answers;
     }
 
+    protected function _beforeValidateAnswerKeywords() 
+    {
+        foreach ($this->data['answer-keywords'] as &$answer) {
+            if (!isset($answer['feedbacks']))
+                $answer['feedbacks'] = array();
+            if (!isset($answer['answer-actions']))
+                $answer['answer-actions'] = array();
+            $this->_beforeValidateActions(&$answer['answer-actions']);
+        }
+    }
+
+    protected function _beforeValidateAnswers() 
+    {
+        foreach ($this->data['answers'] as &$answer) {
+            if (!isset($answer['feedbacks']))
+                $answer['feedbacks'] = array();
+            if (!isset($answer['answer-actions']))
+                $answer['answer-actions'] = array();
+            $this->_beforeValidateActions(&$answer['answer-actions']);
+        }
+    }
 
 }
