@@ -39,7 +39,14 @@ class Dialogue extends MongoModel
         'first' => true,
         'count' => true,
         );
-
+    
+    public $validate = array(
+    		'name' => array(
+    				'uniqueDialogueName' => array(
+    						'rule' => 'uniqueDialogueName',
+    						'message' => 'This Dialogue Name already exists. Please choose another.'
+    						)
+    				));    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -58,15 +65,7 @@ class Dialogue extends MongoModel
             return $query;
         }
         return $results;
-    }    
-
-    public $validate = array(
-    		'name' => array(
-    				'uniqueDialogueName' => array(
-    						'rule' => 'uniqueDialogueName',
-    						'message' => 'This Dialogue Name already exists. Please choose another.'
-    						)
-    				));
+    }
     
     public function beforeValidate()
     {
@@ -327,16 +326,16 @@ class Dialogue extends MongoModel
     }
     
     public function uniqueDialogueName($check)
-    {
-        if ($this->name) {
-            $conditions = array('name'=>array('$ne'=> $this->name),'name' => $check['name']);
-        } else {
-            $conditions = array('name' => $check['name']);
-        }
-        $result = $this->find('count', array(
-            'conditions' => $conditions
-            ));
-        return $result < 1;
+    {        
+    		if ($this->id) {
+    				$conditions = array('id'=>array('$ne'=> $this->id),'name' => $check['name']);
+    		} else {
+    				$conditions = array('name' => $check['name']);
+    		}
+    		$result = $this->find('count', array(
+    				'conditions' => $conditions
+    				));
+    		return $result < 1;
     }
 }
 

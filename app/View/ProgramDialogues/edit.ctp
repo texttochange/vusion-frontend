@@ -48,9 +48,8 @@
 	?>
 	</h3>
 	<div class="ttc-display-area">
-	<?php 	
+	<?php 
 	echo $this->Html->tag('form', null, array('id'=> 'dynamic-generic-program-form')); 
-	
    ?>
    <?php
    $this->Js->get("#dynamic-generic-program-form");
