@@ -910,7 +910,7 @@ class ParticipantTestCase extends CakeTestCase
         
         $this->assertEquals(0, count($participants));
         $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. There are empty lines between the header and the phone numbers.');
+            'The file cannot be imported. Line 1 is empty.');
     }
     
     
@@ -927,7 +927,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $this->assertEquals(0, count($participants));
         $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. There are empty lines between the header and the phone numbers.');
+            'The file cannot be imported. Line 2 is empty.');
     }
     
     
@@ -944,7 +944,7 @@ class ParticipantTestCase extends CakeTestCase
         
         $this->assertEquals(0, count($participants));
         $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. There are empty lines between the header and the phone numbers.');
+            'The file cannot be imported. Line 2 is empty.');
     }
     
     
@@ -961,7 +961,41 @@ class ParticipantTestCase extends CakeTestCase
 
         $this->assertEquals(0, count($participants));
         $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. There are empty lines between the header and the phone numbers.');
+            'The file cannot be imported. Line 2 is empty.');
+    }
+    
+    
+    public function testImport_xls_emptyRowInMiddle_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/empty_rows_in_the_middle.xls');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(0, count($participants));
+        $this->assertEquals($this->Participant->importErrors[0],
+            'The file cannot be imported. Line 5 is empty.');
+    }
+    
+    
+    public function testImport_csv_emptyRowInMiddle_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/empty_rows_in_the_middle.csv');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(0, count($participants));
+        $this->assertEquals($this->Participant->importErrors[0],
+            'The file cannot be imported. Line 6 is empty.');
     }
 
 
