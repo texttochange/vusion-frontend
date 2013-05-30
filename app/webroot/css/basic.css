@@ -399,7 +399,7 @@
 
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	.ttc-validation-error{   top: -32px; left: -489px}
+	.ttc-validation-error{ top: -32px; }
 	.ttc-radio-validation-error{ top: -38px;}
 	.ttc-textarea-validation-error {top: -60px; left: 170px}
 	.ttc-input-validation-error {left: 198px; top: -61px;}
@@ -721,6 +721,10 @@ width: 102px;
 .ttc-table-scrolling-area .action-admin {
 	width: 522px;
 	text-align: center;
+}
+
+.ttc-table-scrolling-area .profile {
+	width: 99px;
 }
 
 .profile {
