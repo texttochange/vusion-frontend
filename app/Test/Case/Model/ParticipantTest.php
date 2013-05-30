@@ -908,9 +908,15 @@ class ParticipantTestCase extends CakeTestCase
 
         $participants = $this->Participant->find('all');
         
-        $this->assertEquals(0, count($participants));
-        $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. Line 1 is empty.');
+        $this->assertEquals(5, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
     }
     
     
@@ -925,9 +931,15 @@ class ParticipantTestCase extends CakeTestCase
             
         $participants = $this->Participant->find('all');
 
-        $this->assertEquals(0, count($participants));
-        $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. Line 2 is empty.');
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
     }
     
     
@@ -942,9 +954,15 @@ class ParticipantTestCase extends CakeTestCase
 
         $participants = $this->Participant->find('all');
         
-        $this->assertEquals(0, count($participants));
-        $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. Line 2 is empty.');
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
     }
     
     
@@ -959,9 +977,15 @@ class ParticipantTestCase extends CakeTestCase
             
         $participants = $this->Participant->find('all');
 
-        $this->assertEquals(0, count($participants));
-        $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. Line 2 is empty.');
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
     }
     
     
@@ -975,10 +999,16 @@ class ParticipantTestCase extends CakeTestCase
             TESTS . 'files/empty_rows_in_the_middle.xls');
             
         $participants = $this->Participant->find('all');
-
-        $this->assertEquals(0, count($participants));
-        $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. Line 5 is empty.');
+        
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 5),
+            $report[3]);
     }
     
     
@@ -992,12 +1022,17 @@ class ParticipantTestCase extends CakeTestCase
             TESTS . 'files/empty_rows_in_the_middle.csv');
             
         $participants = $this->Participant->find('all');
-
-        $this->assertEquals(0, count($participants));
-        $this->assertEquals($this->Participant->importErrors[0],
-            'The file cannot be imported. Line 6 is empty.');
+        
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 6),
+            $report[4]);
     }
-
 
 
     //TEST FILTERS

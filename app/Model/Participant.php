@@ -524,7 +524,16 @@ class Participant extends MongoModel
             $participant = $savedParticipant['Participant'];
             $participant['tags'] = $tags;
             $participant['profile'] = $labels;
-        } 
+        }
+        if ($participant['phone'] == '') {
+            $report = array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => $exist,
+                'message' => array('This line is empty.'),
+                'line' => $fileLine);
+            return $report;
+        }
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
@@ -594,8 +603,7 @@ class Participant extends MongoModel
             #Get Phone
             $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);
             if (!isset($participant['phone'])) {
-                array_push($this->importErrors, __($this->importErrorMessages['file-import-error'], $count+1));
-                return false;
+                $participant['phone'] = '';
             }
             #Get Tags
             $participant['tags']  = array();
@@ -663,9 +671,7 @@ class Participant extends MongoModel
         }
         for ($i = ($hasHeaders) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
             if ($data->val($i,'A')==null){
-                array_push($this->importErrors, __($this->importErrorMessages['file-import-error'], $i));
-                $report = array();
-                break;
+                $participant['phone'] = '';
             }
             $participant          = array();
             #Get Phone
