@@ -1,10 +1,10 @@
-<div class="participant view">
+<div class="participant view width-size">
     <ul class="ttc-actions">
         <li>
         <?php 
 		    echo $this->AclLink->generatePostLink(
 		        __('Delete Participant and Clear History'),
-		        $programUrl,
+		        $programDetails['url'],
 		        'programParticipants',
 		        'delete',
 		         __('Are you sure you want to delete the participant %s and all his histories?', $participant['Participant']['phone']),
@@ -16,7 +16,7 @@
 		<li><?php 
 		    echo $this->AclLink->generateButton(
 		        __('Edit Participant'),
-		        $programUrl,
+		        $programDetails['url'],
 		        'programParticipants',
 		        'edit',
 		        array('class'=>'ttc-button'),
@@ -26,7 +26,7 @@
 		<li><?php 
 		    echo $this->AclLink->generatePostLink(
 		        __('Reset'),
-		        $programUrl,
+		        $programDetails['url'],
 		        'programParticipants',
 		        'reset',
 		         __('Are you sure you want to reset the participant %s?', $participant['Participant']['phone']),
@@ -38,7 +38,7 @@
 		    if ($participant['Participant']['session-id'] != null) {
 		        echo $this->AclLink->generatePostLink(
 		            __('Optout'),
-		            $programUrl,
+		            $programDetails['url'],
 		            'programParticipants',
 		            'optout',
 		            __('Are you sure you want to optout the participant %s?', $participant['Participant']['phone']),
@@ -47,7 +47,7 @@
 		    } else {
 		        echo $this->AclLink->generatePostLink(
 		            __('Optin'),
-		            $programUrl,
+		            $programDetails['url'],
 		            'programParticipants',
 		            'optin',
 		            __('Are you sure you want to optin the participant %s?', $participant['Participant']['phone']),
