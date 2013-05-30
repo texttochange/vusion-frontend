@@ -725,9 +725,18 @@ width: 102px;
 
 .ttc-table-scrolling-area .profile {
 	width: 99px;
+	word-break: break-all;
+	hyphens: auto;
+	-ms-hyphens: auto;
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
 }
 
 .profile {
+	width: 99px;
+}
+
+.profile-table-header {
 	width: 99px;
 }
 
