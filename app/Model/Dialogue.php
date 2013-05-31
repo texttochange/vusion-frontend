@@ -40,13 +40,13 @@ class Dialogue extends MongoModel
         'count' => true,
         );
     
-    public $validate = array(
+    /*public $validate = array(
     		'name' => array(
     				'uniqueDialogueName' => array(
     						'rule' => 'uniqueDialogueName',
     						'message' => 'This Dialogue Name already exists. Please choose another.'
     						)
-    				));    
+    				));*/    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -325,7 +325,7 @@ class Dialogue extends MongoModel
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
     }
     
-    public function uniqueDialogueName($check)
+    /*public function uniqueDialogueName($check)
     {   $dialogueId = $this->data['Dialogue']['dialogue-id'];
     	if ($this->id) {
             $conditions = array('id'=>array('$ne'=> $this->id), 'dialogue-id' => $dialogueId);
@@ -340,8 +340,7 @@ class Dialogue extends MongoModel
     			));
     		return $result < 1;
         }    	
-    	
-    }
+    }*/
 }
 
 

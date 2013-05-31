@@ -422,8 +422,10 @@ function activeForm(){
     $("input[name*='name']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            uniqueDialogueName: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
+                //uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
     });
@@ -742,6 +744,47 @@ function duplicateKeywordValidation(value, element, param) {
     return true;
 }
 
+function duplicateDialogueNameValidation(value, element, param) {
+    var isValid = true;
+    var dialogueNameInput = element;    
+    var errors = {};
+    
+    var url = location.href.indexOf("edit/")<0 ? "./validateName.json" : "../validateName.json"; 
+    
+    function validateNameReply(data, textStatus) {
+        var elt = $("[name='"+this.inputName+"']");
+        $('#connectionState').hide();
+        if (data.status=='fail') { 
+            if ($(elt).prev("label").has('.ttc-ok')) {
+                $(elt).prev("label").children('img.ttc-ok').remove();
+            }
+                errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+                isValid = false;
+        } else {
+    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
+    	    isValid = true;
+    	}
+    };
+
+
+    $.ajax({
+            url: url,
+            type: "POST",
+            async: false,
+            data: {  
+                'dialogue-id': $("[name$=dialogue-id]").val(),
+                'name': $("[name$='name']").val()},
+            inputName: $(dialogueNameInput).attr('name'),
+            success: validateNameReply,
+            timeout: 1000,
+            error: vusionAjaxError,
+    });
+    if (!isValid) {
+        this.showErrors(errors);
+    }   
+    return true;   
+    
+}
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
@@ -1193,6 +1236,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "keywordUnique",
         duplicateKeywordValidation,
+        wrapErrorMessage(Error));
+    
+    $.validator.addMethod(
+        "uniqueDialogueName",
+        duplicateDialogueNameValidation,
         wrapErrorMessage(Error));
     
     $.validator.addMethod(

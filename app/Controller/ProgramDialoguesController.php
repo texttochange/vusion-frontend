@@ -294,5 +294,24 @@ class ProgramDialoguesController extends AppController
              );
     }
 
-
+    public function validateName() {
+        $dialogueName = $this->request->data['name'];
+        $dialogueId = $this->request->data['dialogue-id'];
+        $dialogues = $this->Dialogue->getActiveAndDraft();
+        foreach($dialogues as $dialogue){
+        		if($dialogue['Dialogue']['dialogue-id'] != $dialogueId){ 
+				    if($dialogue['Dialogue']['name'] == $dialogueName){
+						$this->set(
+						    'result', array(
+						    	'status'=>'fail',
+						    	'message'=>__("'%s' Dialogue Name already used by a dialogue of program '%s'.", $dialogueName, $dialogue['Dialogue']['name'])
+									)
+								);	
+						return;
+					}
+				}        		
+        }
+        $this->set('result', array('status'=>'ok'));
+    }
+    
 }
