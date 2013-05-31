@@ -163,6 +163,48 @@ abstract class VirtualModel
     }
 
 
-    abstract function validates();
+    public function validates()
+    {
+        $interaction = $this->data;
+        return $this->_validates($interaction, $this->validate);
+    }
+
+
+    protected function _validates($data, $validationRules)
+    {
+        foreach ($validationRules as $field => $validateField) {
+            foreach ($validateField as $rule) {
+                $defaultArgs = array($field, $data);
+                if (is_array($rule['rule'])) {
+                    $func = $rule['rule'][0];
+                    $args = array_slice($rule['rule'], 1);
+                } else {
+                    $func = $rule['rule'];
+                    $args = array();
+                }
+                $args = array_merge($defaultArgs, $args);
+                $result = call_user_func_array(array($this, $func), $args);
+                $errorMessage = null;
+                if (is_string($result)) {
+                    $errorMessage = $result;
+                    $result = false;
+                }
+                if (!$result) {
+                    if (!isset($this->validationErrors[$field])) {
+                        $this->validationErrors[$field] = array();
+                    }
+                    if (!isset($errorMessage)) {
+                        $errorMessage = $rule['message'];
+                    }
+                    array_push($this->validationErrors[$field], $errorMessage);
+                    break;
+                }
+            }
+        }
+        if ($this->validationErrors != array()) {
+            return false;
+        }
+        return true;
+    }
 
 }
