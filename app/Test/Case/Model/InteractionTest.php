@@ -143,14 +143,14 @@ class InteractionTestCase extends CakeTestCase
                     'keyword' => 'feel',
                     'interaction-id' => '1',
                     'activated' => 0,
-                    'prioritized' => 1);
+                    'prioritized' => 'prioritized');
          $this->Interaction->set($interaction);
          $this->Interaction->beforeValidate();
          $this->assertFalse($this->Interaction->validates());
 
          $this->assertEqual(
              $this->Interaction->validationErrors['type-schedule'][0], 
-             'Fixed time require date-time field.'
+             'The type-schedule field with value fixed-time require the field date-time.'
              );
     }
 

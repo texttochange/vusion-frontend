@@ -83,7 +83,7 @@ abstract class VirtualModel
         $requiredFields = $requiredFieldsPerValue[$data[$field]];
         foreach ($requiredFields as $requiredField) {
             if (!array_key_exists($requiredField, $data)) {
-                return false;
+                return __('The %s field with value %s require the field %s.', $field, $data[$field], $requiredField);
             }
         }
         return true;

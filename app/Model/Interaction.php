@@ -59,7 +59,7 @@ class Interaction extends VirtualModel
                         'offset-days' => array('days', 'at-time'),
                         'offset-time' => array('at-time'),
                         'offset-condition' => array('offset-condition-interaction-id'))),
-                'message' => 'Fixed time require date-time field.'
+                'message' => 'Type schedule required field are not present.'
                 )
             ),
         ## Type Schedule subtype
@@ -456,11 +456,20 @@ class Interaction extends VirtualModel
                     $args = array();
                 }
                 $args = array_merge($defaultArgs, $args);
-                if (!call_user_func_array(array($this, $func), $args)) {
+                $result = call_user_func_array(array($this, $func), $args);
+                $errorMessage = null;
+                if (is_string($result)) {
+                    $errorMessage = $result;
+                    $result = false;
+                }
+                if (!$result) {
                     if (!isset($this->validationErrors[$field])) {
                         $this->validationErrors[$field] = array();
                     }
-                    array_push($this->validationErrors[$field], $rule['message']);
+                    if (!isset($errorMessage)) {
+                        $errorMessage = $rule['message'];
+                    }
+                    array_push($this->validationErrors[$field], $errorMessage);
                     break;
                 }
             }
