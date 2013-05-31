@@ -45,6 +45,16 @@ class Request extends MongoModel
                 'message' => 'This keyword format is not valid.'
                 )
             ),
+        'set-no-request-matching-try-keyword-only' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'The field set-no-request-matching-try-keyword-only is not set.'
+                ),
+            'validValue' => array(
+                'rule' => array('inlist', array(0, 'no-request-matching-try-keyword-only')),
+                'message' => 'The field no-request-matching-try-keyword-only value is not valid.'
+                )
+            ),
         'responses' => array(
             'validateArray' => array(
                 'rule' => 'validateArray',
@@ -127,29 +137,37 @@ class Request extends MongoModel
 
         $this->data['Request']['object-type'] = strtolower($this->name);
 
-        if ($this->data['Request']['actions'] == null) {
-            $this->data['Request']['actions'] = array();
-        }
+        $this->_setDefault('actions', array());
+        $this->_setDefault('responses', array());
+        $this->_setDefault('set-no-request-matching-try-keyword-only', 0);
+        
+        $this->_beforeValidateRequests();
+        $this->_beforeValidateActions();
+    }
 
-        if ($this->data['Request']['responses'] == null) {
-            $this->data['Request']['responses'] = array();
-        } else {
-            $this->data['Request']['responses'] = array_map(function($element) {
-                    $element['content'] = trim($element['content']); 
-                    return $element;
-            }, $this->data['Request']['responses']);
-            $this->data['Request']['responses'] = array_filter(
-                $this->data['Request']['responses'], 
-                function($element) {
-                    return ($element['content'] != '');
-                });
-            $this->data['Request']['responses'] = array_values($this->data['Request']['responses']);
-        }
 
-        if ($this->data['Request']['set-no-request-matching-try-keyword-only'] == null) {
-            $this->data['Request']['set-no-request-matching-try-keyword-only'] = 0;
-        } else {
-            $this->data['Request']['set-no-request-matching-try-keyword-only'] = 'no-request-matching-try-keyword-only';
+    protected function _beforeValidateRequests()
+    {
+        $this->data['Request']['responses'] = array_map(
+            function($element) {
+                $element['content'] = trim($element['content']); 
+                return $element; }, 
+            $this->data['Request']['responses']);
+        $this->data['Request']['responses'] = array_filter(
+            $this->data['Request']['responses'], 
+            function($element) {
+                return ($element['content'] != '');
+            });
+        $this->data['Request']['responses'] = array_values($this->data['Request']['responses']);
+     }
+
+
+    protected function _beforeValidateActions()
+    {
+        foreach($this->data['Request']['actions'] as &$action) {
+            $this->Action->set($action);
+            $this->Action->beforeValidate();
+            $action = $this->Action->getCurrent();
         }
     }
 
