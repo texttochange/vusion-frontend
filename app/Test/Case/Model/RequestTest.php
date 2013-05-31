@@ -150,6 +150,21 @@ class RequestTestCase extends CakeTestCase
         $this->assertTrue(isset($savedRequest));
     }
 
+    
+    public function testSave_validateAction_ok()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request',
+            'actions' => array(
+                array(
+                    'type-action' => 'feedback',
+                    'content' => 'Hello')));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertTrue(isset($savedRequest));
+        $this->assertTrue(isset($savedRequest['Request']['actions'][0]['model-version']));
+    }
+
 
     public function testSave_validateKeyword_fail()
     {
