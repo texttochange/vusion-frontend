@@ -72,6 +72,23 @@ abstract class VirtualModel
     }
 
 
+    public function valueRequireFields($field, $data, $requiredFieldsPerValue) 
+    {   
+        if (!array_key_exists($field, $data)) {
+            return true;
+        }
+        if (!isset($requiredFieldsPerValue[$data[$field]])) {
+            return true;
+        }
+        $requiredFields = $requiredFieldsPerValue[$data[$field]];
+        foreach ($requiredFields as $requiredField) {
+            if (!array_key_exists($requiredField, $data)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function requiredConditionalFieldValue($field, $data, $cField, $cValue) 
     {
         if (!array_key_exists($field, $data)) {

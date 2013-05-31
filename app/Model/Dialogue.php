@@ -13,8 +13,6 @@ class Dialogue extends MongoModel
     var $specific = true;
     var $name     = 'Dialogue';
     
-    //var $AUTOENROLLMENT_VALUES = array('none', 'all');
-
     function getModelVersion()
     {
         return '2';
@@ -53,7 +51,7 @@ class Dialogue extends MongoModel
         'interactions' => array(
             'validInteractions' => array(
                 'rule' => 'validateInteractions',
-                'message' => null
+                'message' => 'noMessage'
                 )
             ),
         'activated' => array(
@@ -71,15 +69,20 @@ class Dialogue extends MongoModel
         );
 
     public function validateInteractions($check) {
+        $index = 0;
         foreach ($check['interactions'] as $interaction) {
             $this->Interaction->set($interaction);
             if (!$this->Interaction->validates()) {
                 if (!isset($this->validationErrors['interactions'])) {
                     $this->validationErrors['interactions'] = array();
                 }
-                array_push($this->validationErrors['interactions'], $this->Interaction->validationErrors);
+                if (!isset($this->validationErrors['interactions'][$index])) {
+                    $this->validationErrors['interactions'][$index] = array();
+                }
+                $this->validationErrors['interactions'][$index] = $this->Interaction->validationErrors;
                 return false;
             }
+            $index++;
         }
         return true;
     }
@@ -110,9 +113,7 @@ class Dialogue extends MongoModel
             return $query;
         }
         return $results;
-    }    
-
-    
+    }
 
 
     public function beforeValidate()

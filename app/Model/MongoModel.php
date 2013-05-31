@@ -147,6 +147,17 @@ abstract class MongoModel extends Model
         } 
     }
 
+    # Need to overwrite to avoid validation error message to be written
+    public function invalidate($field, $value = true) {
+        if ($value == 'noMessage') {
+            return;
+        }
+		if (!is_array($this->validationErrors)) {
+			$this->validationErrors = array();
+		}
+		$this->validationErrors[$field] []= $value;
+	}
+
     # Need to be overwrite to take into accound array field in mongo
     public function save($data = null, $validate = true, $fieldList = array()) {
         $defaults = array('validate' => true, 'fieldList' => array(), 'callbacks' => true);
