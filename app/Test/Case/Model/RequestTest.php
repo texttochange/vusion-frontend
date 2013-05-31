@@ -210,10 +210,11 @@ class RequestTestCase extends CakeTestCase
             ));
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
+        
         $this->assertFalse($savedRequest);
         $this->assertEqual(
             'The apostrophe used is not allowed.',
-            $this->Request->validationErrors['actions'][0]);
+            $this->Request->validationErrors['actions'][0]['content'][0]);
     }
 
 }

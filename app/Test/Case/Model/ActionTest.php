@@ -24,9 +24,10 @@ class ActionTestCase extends CakeTestCase
         $this->Action->validates();
         $this->assertEqual(
             'The apostrophe used is not allowed.',
-            $this->Action->validationErrors[0]);
+            $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
-            1, count($this->Action->validationErrors[0]));
+            1, 
+            count($this->Action->validationErrors['content']));
     }
 
 
@@ -36,25 +37,31 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->validates();
         $this->assertEqual(
-            'The field content is missing.',
-            $this->Action->validationErrors[0]);
+            'The type-action field with value feedback require the field content.',
+            $this->Action->validationErrors['type-action'][0]);
         $this->assertEqual(
-            1, count($this->Action->validationErrors[0]));
+            1, 
+            count($this->Action->validationErrors['type-action']));
     }
 
-    
+   
     public function testValidateAction_fail_delayedEnrolling() {
         $action = array(
             'type-action' => 'delayed-enrolling',
             'enroll' => '233445',
             'offset-days' => array());
         $this->Action->set($action);
+        $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            'The days and time has to be set.',
-            $this->Action->validationErrors[0]);
+            'The days field is required.',
+            $this->Action->validationErrors['days'][0]);
         $this->assertEqual(
-            1, count($this->Action->validationErrors[0]));
+            'The at-time field is required.',
+            $this->Action->validationErrors['at-time'][0]);
+        $this->assertEqual(
+            2,
+            count($this->Action->validationErrors));
     }
 
 
@@ -68,10 +75,11 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->validates();
         $this->assertEqual(
-            'The offset days is not valid.',
-            $this->Action->validationErrors[0]);
+            'Offset days has to be greater or equal to 1.',
+            $this->Action->validationErrors['days'][0]);
         $this->assertEqual(
-            1, count($this->Action->validationErrors[0]));
+            1, 
+            count($this->Action->validationErrors['days']));
     }
 
 
@@ -81,12 +89,12 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->validates();
         $this->assertEqual(
-            'The action some-new-action is not supported.',
-            $this->Action->validationErrors[0]
+            'The type-action value is not valid.',
+            $this->Action->validationErrors['type-action'][0]
             );
         $this->assertEqual(
             1,
-            count($this->Action->validationErrors[0]));
+            count($this->Action->validationErrors));
     }
 
 
@@ -98,9 +106,9 @@ class ActionTestCase extends CakeTestCase
         $this->Action->validates();
         $this->assertEqual(
             'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...',
-            $this->Action->validationErrors[0]);
+            $this->Action->validationErrors['tag'][0]);
         $this->assertEqual(
-            1, count($this->Action->validationErrors[0]));
+            1, count($this->Action->validationErrors['tag']));
     }
 
 

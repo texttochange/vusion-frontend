@@ -89,6 +89,7 @@ abstract class VirtualModel
         return true;
     }
 
+
     public function requiredConditionalFieldValue($field, $data, $cField, $cValue) 
     {
         if (!array_key_exists($field, $data)) {
@@ -150,6 +151,9 @@ abstract class VirtualModel
 
     public function notRegex($field, $data, $regex)
     {
+        if (!isset($data[$field])) {
+            return true;
+        }
         return (!$this->regex($field, $data, $regex));
     }
 

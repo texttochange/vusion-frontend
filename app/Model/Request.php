@@ -62,7 +62,7 @@ class Request extends MongoModel
                 ),
             'validateAction' => array(
                 'rule' => 'validateAction',
-                'message' => ''
+                'message' => 'noMessage'
                 )
             )
         );
@@ -104,7 +104,7 @@ class Request extends MongoModel
                 if (!isset($this->validationErrors['actions'])) {
                     $this->validationErrors['actions'] = array();
                 }
-                array_push($this->validationErrors['actions'], $this->Action->validationErrors[0]);
+                array_push($this->validationErrors['actions'], $this->Action->validationErrors);
                 return false;
             }
         }

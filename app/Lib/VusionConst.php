@@ -11,6 +11,9 @@ class VusionConst
     const APOSTROPHE_REGEX='/.*[’`’‘]/';
     const APOSTROPHE_FAIL_MESSAGE='The apostrophe used is not allowed.';
 
-    const DATE_TIME_REGEX='/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/';
+    const DATE_TIME_REGEX='/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/';
     const DATE_TIME_FAIL_MESSAGE='The date time is not in an ISO format.';
+
+    const ATTIME_REGEX='/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
+    const ATTIME_FAIL_MESSAGE='The at-time is not valid.';
 }
