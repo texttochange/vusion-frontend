@@ -82,9 +82,11 @@ class ProgramRequestsController extends AppController
                         'message' => 'Request saved.')
                     );
             } else {
+                $message = reset($this->Request->validationErrors);
                 $this->set(
                     'result', array(
-                        'status' => 'fail'
+                        'status' => 'fail',
+                        'message' => $message[0]
                         )
                     );
             }
@@ -217,11 +219,6 @@ class ProgramRequestsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
     }
 
-
-    public function getActiveDialogue()
-    {
-
-    }
 
 
 }
