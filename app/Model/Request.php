@@ -1,5 +1,7 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('Action', 'Model');
+App::uses('VusionConst', 'Lib');
 
 class Request extends MongoModel
 {
@@ -7,7 +9,7 @@ class Request extends MongoModel
     var $specific = true;
     var $name     = 'Request';
 
-     function getModelVersion()
+    function getModelVersion()
     {
         return '2';
     }
@@ -22,6 +24,16 @@ class Request extends MongoModel
             );
     }
 
+    ##Construtor
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $this->Action = new Action();
+    }
+
+
+    ## Validate
     public $validate = array(
         'keyword' => array(
             'notempty' => array(
@@ -32,8 +44,39 @@ class Request extends MongoModel
                 'rule' => array('keywordFormat'),
                 'message' => 'This keyword format is not valid.'
                 )
+            ),
+        'set-no-request-matching-try-keyword-only' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'The field set-no-request-matching-try-keyword-only is not set.'
+                ),
+            'validValue' => array(
+                'rule' => array('inlist', array(0, 'no-request-matching-try-keyword-only')),
+                'message' => 'The field no-request-matching-try-keyword-only value is not valid.'
+                )
+            ),
+        'responses' => array(
+            'validateArray' => array(
+                'rule' => 'validateArray',
+                'message' => 'The responses has to be an array.'
+                ),
+            'noForbiddenApostrophe' => array(
+                'rule' => 'noForbiddenApostrophe',
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                )
+            ),
+        'actions' => array(
+            'validateArray' => array(
+                'rule' => 'validateArray',
+                'message' => 'The actions has to be an array.'
+                ),
+            'validateAction' => array(
+                'rule' => 'validateAction',
+                'message' => 'noMessage'
+                )
             )
         );
+
 
     public function keywordFormat($check) 
     {
@@ -41,6 +84,41 @@ class Request extends MongoModel
         if (preg_match($keywordRegex, $check['keyword'])) 
             return true;
         return false;
+    }
+
+
+    public function validateArray($check) {
+        if (!is_array(reset($check))) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function noForbiddenApostrophe($check)
+    {
+        foreach($check['responses'] as $response) {
+            if (preg_match(VusionConst::APOSTROPHE_REGEX, $response['content'])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public function validateAction($check)
+    {
+        foreach($check['actions'] as $action) {
+            $this->Action->set($action);
+            if (!$this->Action->validates()) {
+                if (!isset($this->validationErrors['actions'])) {
+                    $this->validationErrors['actions'] = array();
+                }
+                array_push($this->validationErrors['actions'], $this->Action->validationErrors);
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -52,27 +130,45 @@ class Request extends MongoModel
         'keyphrase' => true,
         );
 
+
     public function beforeValidate()
     {
         parent::beforeValidate();
 
         $this->data['Request']['object-type'] = strtolower($this->name);
 
-        if ($this->data['Request']['actions'] == null) {
-            $this->data['Request']['actions'] = array();
+        $this->_setDefault('actions', array());
+        $this->_setDefault('responses', array());
+        $this->_setDefault('set-no-request-matching-try-keyword-only', 0);
+        
+        $this->_beforeValidateRequests();
+        $this->_beforeValidateActions();
+    }
+
+
+    protected function _beforeValidateRequests()
+    {
+        $this->data['Request']['responses'] = array_map(
+            function($element) {
+                $element['content'] = trim($element['content']); 
+                return $element; }, 
+            $this->data['Request']['responses']);
+        $this->data['Request']['responses'] = array_filter(
+            $this->data['Request']['responses'], 
+            function($element) {
+                return ($element['content'] != '');
+            });
+        $this->data['Request']['responses'] = array_values($this->data['Request']['responses']);
+     }
+
+
+    protected function _beforeValidateActions()
+    {
+        foreach($this->data['Request']['actions'] as &$action) {
+            $this->Action->set($action);
+            $this->Action->beforeValidate();
+            $action = $this->Action->getCurrent();
         }
-
-        if ($this->data['Request']['responses'] == null) {
-            $this->data['Request']['responses'] = array();
-        }
-
-        if ($this->data['Request']['set-no-request-matching-try-keyword-only'] == null) {
-            $this->data['Request']['set-no-request-matching-try-keyword-only'] = 0;
-        } else {
-            $this->data['Request']['set-no-request-matching-try-keyword-only'] = 'no-request-matching-try-keyword-only';
-        }
-
-
     }
 
 
@@ -99,6 +195,7 @@ class Request extends MongoModel
         return null;
     }
 
+
     public function getKeywords()
     {
         $requests = $this->find('all');
@@ -112,6 +209,7 @@ class Request extends MongoModel
         }
         return $keywords;
     }
+
 
     protected function _findKeyphrase($state, $query, $results = array())
     {
@@ -142,5 +240,6 @@ class Request extends MongoModel
         } 
         return null;
     }
+
 
 }
