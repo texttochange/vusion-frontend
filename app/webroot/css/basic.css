@@ -724,12 +724,12 @@ width: 102px;
 }
 
 .ttc-table-scrolling-area .profile {
-	width: 99px;
-	word-break: break-all;
+	width: 112px;
+	/*word-break: break-all;
 	hyphens: auto;
 	-ms-hyphens: auto;
 	-moz-hyphens: auto;
-	-webkit-hyphens: auto;
+	-webkit-hyphens: auto;*/
 }
 
 .profile {
