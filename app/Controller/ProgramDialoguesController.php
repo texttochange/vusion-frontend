@@ -293,11 +293,12 @@ class ProgramDialoguesController extends AppController
                  )
              );
     }
-
+                                                              
     public function validateName() {
         $dialogueName = $this->request->data['name'];
         $dialogueId = $this->request->data['dialogue-id'];
-        $dialogues = $this->Dialogue->getActiveAndDraft();
+        $dialogues = $this->Dialogue->getActiveDialogues();
+        
         foreach($dialogues as $dialogue){
         		if($dialogue['Dialogue']['dialogue-id'] != $dialogueId){ 
 				    if($dialogue['Dialogue']['name'] == $dialogueName){

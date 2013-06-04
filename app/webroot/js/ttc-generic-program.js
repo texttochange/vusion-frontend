@@ -745,23 +745,20 @@ function duplicateKeywordValidation(value, element, param) {
 }
 
 function duplicateDialogueNameValidation(value, element, param) {
-    var isValid = true;
+    var isValid = false;
     var dialogueNameInput = element;    
     var errors = {};
+    var dialogueName = $(dialogueNameInput).val();
     
     var url = location.href.indexOf("edit/")<0 ? "./validateName.json" : "../validateName.json"; 
     
     function validateNameReply(data, textStatus) {
         var elt = $("[name='"+this.inputName+"']");
         $('#connectionState').hide();
-        if (data.status=='fail') { 
-            if ($(elt).prev("label").has('.ttc-ok')) {
-                $(elt).prev("label").children('img.ttc-ok').remove();
-            }
-                errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
-                isValid = false;
+        if (data.status=='fail') {
+        	errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+			isValid = false;
         } else {
-    	    $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
     	    isValid = true;
     	}
     };
@@ -771,9 +768,9 @@ function duplicateDialogueNameValidation(value, element, param) {
             url: url,
             type: "POST",
             async: false,
-            data: {  
+            data: {  'name' : dialogueName,
                 'dialogue-id': $("[name$=dialogue-id]").val(),
-                'name': $("[name$='name']").val()},
+                'object-id': $("[name$='_id']").val()},
             inputName: $(dialogueNameInput).attr('name'),
             success: validateNameReply,
             timeout: 1000,
