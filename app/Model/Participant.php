@@ -88,7 +88,8 @@ class Participant extends MongoModel
         'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
         'tag-error' => 'Error a tag is not valide: %s.',
         'file-format-error' => 'The file format %s is not supported.',
-        'csv-file-error' => 'The csv file cannot be open.');
+        'csv-file-error' => 'The csv file cannot be open.',
+        'file-import-error' => 'The file cannot be imported. Line %s is empty.');
 
 
     public function validateTags($check)
@@ -523,7 +524,16 @@ class Participant extends MongoModel
             $participant = $savedParticipant['Participant'];
             $participant['tags'] = $tags;
             $participant['profile'] = $labels;
-        } 
+        }
+        if ($participant['phone'] == '') {
+            $report = array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => $exist,
+                'message' => array('This line is empty.'),
+                'line' => $fileLine);
+            return $report;
+        }
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
@@ -592,6 +602,9 @@ class Participant extends MongoModel
             $participant          = array();
             #Get Phone
             $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);
+            if (!isset($participant['phone'])) {
+                $participant['phone'] = '';
+            }
             #Get Tags
             $participant['tags']  = array();
             if (isset($headers['tags']) && isset($entry[$headers['tags']['index']])) {
@@ -658,7 +671,7 @@ class Participant extends MongoModel
         }
         for ($i = ($hasHeaders) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
             if ($data->val($i,'A')==null){
-                continue;
+                $participant['phone'] = '';
             }
             $participant          = array();
             #Get Phone

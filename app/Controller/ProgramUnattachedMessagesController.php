@@ -171,8 +171,8 @@ class ProgramUnattachedMessagesController extends AppController
                         count($imported),
                         count($importFailed));
                 } else {
-                    if (isset($this->Participant->importError[0])) {
-                        $importMessage = $this->Participant->importErrors;
+                    if (isset($this->importErrors)) {
+                        $importMessage = $this->importErrors;
                     }
                 }
             }

@@ -895,6 +895,144 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
         $this->assertEquals(5, count($participants));
     }
+    
+    
+    public function testImport_xls_oneEmptyRowAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/one_empty_row_after_header.xls');
+
+        $participants = $this->Participant->find('all');
+        
+        $this->assertEquals(5, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
+    }
+    
+    
+    public function testImport_xls_manyEmptyRowsAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows_after_header.xls');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
+    }
+    
+    
+    public function testImport_csv_oneEmptyRowAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/one_empty_row_after_header.csv');
+
+        $participants = $this->Participant->find('all');
+        
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
+    }
+    
+    
+    public function testImport_csv_manyEmptyRowsAfterHeader_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows_after_header.csv');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 2),
+            $report[0]);
+    }
+    
+    
+    public function testImport_xls_emptyRowInMiddle_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/empty_rows_in_the_middle.xls');
+            
+        $participants = $this->Participant->find('all');
+        
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 5),
+            $report[3]);
+    }
+    
+    
+    public function testImport_csv_emptyRowInMiddle_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/empty_rows_in_the_middle.csv');
+            
+        $participants = $this->Participant->find('all');
+        
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(
+            array(
+                'phone' => '<i>undefined</i>',
+                'saved' => false,
+                'exist-before' => 0,
+                'message' => array('This line is empty.'),
+                'line' => 6),
+            $report[4]);
+    }
 
 
     //TEST FILTERS
@@ -1363,6 +1501,5 @@ class ParticipantTestCase extends CakeTestCase
 			$this->assertEqual($participantDb['Participant']['profile'][1]['value'],'mama');
 			
 	}
-
 
 }
