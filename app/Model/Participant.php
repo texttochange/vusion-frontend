@@ -590,7 +590,7 @@ class Participant extends MongoModel
                 }
             }
             #skip empty rows
-            if ($entry[0] == null || $entry[0] == '') {
+            if (!isset($entry[0])) {
                 continue;
             }
             $participant          = array();
@@ -603,7 +603,6 @@ class Participant extends MongoModel
             }
             $participant['tags'] = array_merge($tags, $participant['tags']);
             #Get Labels
-            //print_r($entry); echo "\n";
             foreach ($labels as $label) {
                 $value = $entry[$label['index']];
                 if ($value == '') {
