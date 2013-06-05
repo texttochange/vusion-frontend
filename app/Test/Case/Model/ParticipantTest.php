@@ -909,6 +909,7 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
 
         $this->assertEquals(6, count($participants));
+        $this->assertEquals(6, count($report));
     }
     
     
@@ -924,6 +925,7 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
 
         $this->assertEquals(6, count($participants));
+        $this->assertEquals(6, count($report));
     }
 
 
