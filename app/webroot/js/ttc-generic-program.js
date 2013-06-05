@@ -221,7 +221,7 @@ function saveFormOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 3000,
+        timeout: 4000,
         error: saveAjaxError,
         userAction: localized_actions['save_dialogue'],
     });
@@ -258,7 +258,7 @@ function saveRequestOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 1000,
+        timeout: 3000,
         error: saveAjaxError,
         userAction: localized_actions['save_request'],
     });
@@ -490,6 +490,7 @@ function activeForm(){
     $("textarea[name*='content']").each(function (key, elt) {          
             $(this).rules("add",{
                     required:true,
+                    forbiddenApostrophe: true,
                     messages:{                        
                         required: function(){
                             if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
@@ -498,6 +499,13 @@ function activeForm(){
                                 return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request");
                             }
                         },
+                        forbiddenApostrophe: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_apostrophe, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_apostrophe, "ttc-textarea-validation-error request");
+                            }
+                        }
                     }  
             });             
     });   
@@ -865,6 +873,14 @@ function requireLetterDigitSpace(value, element, param) {
         return true;
     }
     return false;
+}
+
+function forbiddenApostrophe(value, element, param) {
+    r = new RegExp('[’`’‘]');
+    if (r.test(value)) {
+        return false;
+    }
+    return true;
 }
 
 function minutesSeconds(value, element, param) {
@@ -1278,6 +1294,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "minutesSeconds",
         minutesSeconds,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "forbiddenApostrophe",
+        forbiddenApostrophe,
         wrapErrorMessage(Error));
 
         

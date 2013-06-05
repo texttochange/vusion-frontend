@@ -137,6 +137,7 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['date-time'] = '2013-10-20 20:20:00';
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
+        print_r($saveResult);
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
@@ -144,11 +145,11 @@ class DialogueTestCase extends CakeTestCase
     {
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, keyword 1, other';
-        $saveResult = $this->Dialogue->saveDialogue($dialogue);
-        $this->assertFalse($saveResult);
+
+        $this->assertFalse($this->Dialogue->saveDialogue($dialogue));
         $this->assertEqual(
-            "The keyword/alias 'test, keyword 1, other' is not valid.",
-            $this->Dialogue->validationErrors['dialogue']);
+            "The keyword/alias is(are) not valid.",
+            $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
     }
 
     public function testFindAllKeywordInDialogues()
@@ -256,9 +257,9 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue(array_key_exists('set-prioritized', $dialog['Dialogue']));
         $this->assertEqual($dialog['Dialogue']['set-prioritized'], null);
     }
-    
-    
-    public function testBeforeValidate_prioritized()
+  
+
+    public function testSaveDialogue_interactionValidation_fail()
     {
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][1] = array(
@@ -268,10 +269,28 @@ class DialogueTestCase extends CakeTestCase
             'content' => 'hello',
             'keyword' => 'greet',
             );
+        
+        $this->assertFalse($this->Dialogue->saveDialogue($dialogue));
+        $this->assertEqual(
+            'Type Interaction value is not valid.',
+            $this->Dialogue->validationErrors['interactions'][1]['type-interaction'][0]
+            );
+    }
+
+    public function testSaveDialogue_beforeValidate_prioritized()
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['interactions'][1] = array(
+            'type-schedule' => 'fixed-time',
+            'date-time' => '02/03/2013 20:20',
+            'type-interaction' => 'announcement', 
+            'content' => 'hello',
+            'keyword' => 'greet',
+            );
         $dialogue['Dialogue']['set-prioritized'] = 'prioritized';
         
         $dialog = $this->Dialogue->saveDialogue($dialogue);
-        
+       
         $this->assertEqual($dialog['Dialogue']['interactions'][0]['prioritized'], 'prioritized');
         $this->assertEqual($dialog['Dialogue']['interactions'][1]['prioritized'], 'prioritized');
         
