@@ -36,7 +36,7 @@ class DialogueTestCase extends CakeTestCase
     }
 
 
-    public function testSaveDialogue()
+    /*public function testSaveDialogue()
     {
         $dialogue = $this->Maker->getOneDialogue();
     
@@ -334,9 +334,9 @@ class DialogueTestCase extends CakeTestCase
             'conditions'=>array('set-prioritized'=>'prioritized')));
 
         $this->assertEqual(count($dialog2), 1);
-    }
+    }*/
     
-  /*  public function testUniqueDialogueName_dialogueIdSame_pass()
+    public function testUniqueDialogueName_dialogueIdSame_pass()
     {
     	$dialogue = $this->Maker->getOneDialogue();
     	$savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);    	
@@ -345,7 +345,8 @@ class DialogueTestCase extends CakeTestCase
     	$dialogue2['Dialogue']['dialogue-id'] = $savedDialogueOne['Dialogue']['dialogue-id'];
     	$savedDialogueTwo = $this->Dialogue->saveDialogue($dialogue2);
     	
-    	$this->assertEquals($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']);      
+    	$this->assertEquals($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']); 
+    	$this->assertTrue(isset($savedDialogueTwo));
     }
     
     public function testUniqueDialogueName_dialogueIdDifferent_fail()
@@ -374,5 +375,5 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertNotEqual($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']);
     	$this->assertEqual(2,$this->Dialogue->find('count'));
     	$this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
-    }*/
+    }
 }
