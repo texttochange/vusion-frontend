@@ -129,6 +129,36 @@
            } 
            ?>
        </ul>
+    </li>
+    <li>
+        <?php
+            echo $this->AclLink->generateLink(__('Predefined Messages'),$programDetails['url'],'programPredefinedMessages');
+         ?>
+         <ul>
+           <li>
+           <?php
+           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programPredefinedMessages','add');
+           ?>
+           </li>
+           <?php 
+           if(isset($predefinedMessages) && $predefinedMessages!=null) { 
+               foreach ($predefinedMessages as $predefinedMessage) {
+                   echo "<li title='".$predefinedMessage['PredefinedMessage']['name']."'>";
+                   $predefinedMessageLinkName = $this->Text->truncate(
+                       $predefinedMessage['PredefinedMessage']['name'],
+                       20,
+                       array('ellipsis' => '...',
+                           'exact' => true
+                           ));      
+		
+                   
+                   echo $this->AclLink->generateLink($predefinedMessageLinkName,
+                       $programDetails['url'], 'programPredefinedMessages', 'edit', $predefinedMessage['PredefinedMessage']['_id']);
+                   echo "</li>";
+               }
+           } 
+           ?>
+       </ul>
     </li>  
     <li>
         <?php

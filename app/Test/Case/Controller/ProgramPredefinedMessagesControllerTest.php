@@ -64,30 +64,146 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         unset($this->PredefinedMessage);
         parent::tearDown();
     }
+
     
+    public function mock_program_access()
+    {
+        $predefinedMessages = $this->generate(
+            'ProgramPredefinedMessages', array(
+                'components' => array(
+                    'Acl' => array('check'),
+                    'Session' => array('read', 'setFlash'),
+                    ),
+                'models' => array(
+                   'Program' => array('find', 'count'),
+                   'Group' => array(),
+                   'User' => array('find')
+                   ),
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ'
+                    )
+                )
+            );
+
+        $predefinedMessages->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+            
+        $predefinedMessages->Program
+            ->expects($this->once())
+            ->method('find')
+            ->will($this->returnValue($this->programData));
+
+        $predefinedMessages->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->onConsecutiveCalls(
+                '4', 
+                '2',
+                $this->programData[0]['Program']['database'],
+                $this->programData[0]['Program']['name'],
+                'utc',
+                'testdbprogram'
+                ));
+ 
+        return $predefinedMessages;
+
+    }
+    
+/**
+ * Test methods
+ *
+ */    
     
     public function testIndex()
     {
-    }
-    
-    
-    public function testView()
-    {
+        $predefinedMessages = $this->mock_program_access();  
+
+        $predefinedMessage =  array(
+            'PredefinedMessage' => array(
+                'name' => 'my message',
+                'content' => 'welcome!!!!'
+             )
+        );
+        $this->PredefinedMessage->create();
+        $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
+        
+        $this->testAction("/testurl/programPredefinedMessage/index");
+        $this->assertEquals(1, count($this->vars['predefinedMessages']));
     }
     
     
     public function testAdd()
     {
+        $predefinedMessages = $this->mock_program_access();  
+
+        $predefinedMessage =  array(
+            'PredefinedMessage' => array(
+                'name' => 'my message',
+                'content' => 'Hello!!!!'
+             )
+        );
+        $this->testAction(
+            "/testurl/programPredefinedMessage/add", 
+            array(
+                'method' => 'post',
+                'data' => $predefinedMessage
+                )
+            );
     }
     
     
     public function testEdit()
     {
+        $predefinedMessages = $this->mock_program_access();  
+
+        $predefinedMessage =  array(
+            'PredefinedMessage' => array(
+                'name' => 'my message',
+                'content' => 'welcome!!!!'
+             )
+        );
+        $this->PredefinedMessage->create();
+        $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
+        
+        $this->testAction(
+            "/testurl/programPredefinedMessage/edit/".$savedMessage['PredefinedMessage']['_id'], 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'PredefinedMessage' => array(
+                        'name' => 'test message',
+                        'content' => 'Hello world'
+                        )
+                    )
+                )
+            );
+        $this->PredefinedMessage->id = $savedMessage['PredefinedMessage']['_id']."";
+        $predefinedMessage = $this->PredefinedMessage->read(); 
+        $this->assertEquals(
+           'Hello world',
+            $predefinedMessage['PredefinedMessage']['content']
+        );
     }
     
     
     public function testDelete()
     {
+        $predefinedMessages = $this->mock_program_access();  
+
+        $predefinedMessage =  array(
+            'PredefinedMessage' => array(
+                'name' => 'my message',
+                'content' => 'welcome!!!!'
+             )
+        );
+        $this->PredefinedMessage->create();
+        $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
+        
+        $this->testAction(
+            "/testurl/programPredefinedMessage/delete/".$savedMessage['PredefinedMessage']['_id']);
+        $this->assertEquals(0, $this->PredefinedMessage->find('count'));        
     }
     
 }
