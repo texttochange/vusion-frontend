@@ -150,6 +150,22 @@ class RequestTestCase extends CakeTestCase
         $this->assertTrue(isset($savedRequest));
     }
 
+    
+    public function testSave_validateAction_ok()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request',
+            'actions' => array(
+                array(
+                    'type-action' => 'feedback',
+                    'content' => 'Hello')));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertTrue(isset($savedRequest));
+        $this->assertTrue(isset($savedRequest['Request']['actions'][0]['model-version']));
+    }
+
+
     public function testSave_validateKeyword_fail()
     {
         $request['Request'] = array(
@@ -161,6 +177,59 @@ class RequestTestCase extends CakeTestCase
         $this->assertEquals(
             'This keyword format is not valid.',
             $this->Request->validationErrors['keyword'][0]);
+    }
+
+    
+    public function testSave_validateContent_fail()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'what`up'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            'The apostrophe used is not allowed.',
+            $this->Request->validationErrors['responses'][0]);
+    }
+
+    public function testSave_beforeValidate_removeEmptyReponses()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => '  '),
+                    array('content' => 'what is up'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertEqual(
+            array(array('content' => 'what is up')),
+            $savedRequest['Request']['responses']);
+    }
+
+
+    public function testSave_validateAction_fail()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'actions' => array(
+                    array(
+                        'type-action' => 'feedback',
+                        'content' => 'what`up'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            'The apostrophe used is not allowed.',
+            $this->Request->validationErrors['actions'][0]['content'][0]);
     }
 
 }

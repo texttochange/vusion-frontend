@@ -131,8 +131,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             
         $this->testAction("/testurl/home", array('method' => 'get'));
 
-        $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
-        $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
+        $this->assertEquals($this->vars['programDetails']['name'], $this->programData[0]['Program']['name']);
+        $this->assertEquals($this->vars['programDetails']['url'], $this->programData[0]['Program']['url']);        
     }
 
 /* to be used in testing access write    
@@ -190,7 +190,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             'fixed-time' => $timeToSend->format('d/m/Y H:i'),
             'content' => 'Hello',
             'name' => 'test',
-            'send-to-type' => 'all'
+            'send-to-type' => 'all',
+            'created-by' => 2
             );        
        
         $this->Home->UnattachedMessage->create('unattached-message');

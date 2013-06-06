@@ -14,12 +14,12 @@
 <ul class="sf-menu sf-vertical"> 
 <li>
        <?php 
-        echo $this->AclLink->generateLink(__('Requests'),$programUrl,'programRequests');
+        echo $this->AclLink->generateLink(__('Requests'), $programDetails['url'], 'programRequests');
         ?>
         <ul>
             <li>
             <?php 
-            echo $this->AclLink->generateLink(__('New Request'),$programUrl,'programRequests','add');
+            echo $this->AclLink->generateLink(__('New Request'),$programDetails['url'],'programRequests','add');
             ?>
             </li>
             <?php 
@@ -33,7 +33,7 @@
                             'exact' => true
                             ));
                     echo $this->AclLink->generateLink($requestLinkName,
-                        $programUrl, 'programRequests', 'edit', $request['Request']['_id']);
+                        $programDetails['url'], 'programRequests', 'edit', $request['Request']['_id']);
                     echo "</li>";
                 }; 
             } 
@@ -43,12 +43,12 @@
 
     <li>
         <?php
-        echo $this->AclLink->generateLink(__('Dialogues'),$programUrl,'programDialogues');
+        echo $this->AclLink->generateLink(__('Dialogues'),$programDetails['url'],'programDialogues');
         ?>        
         <ul>
             <li>
             <?php 
-            echo $this->AclLink->generateLink(__('New Dialogue'),$programUrl,'programDialogues','edit');    
+            echo $this->AclLink->generateLink(__('New Dialogue'),$programDetails['url'],'programDialogues','edit');    
             ?>
             </li>
             <?php foreach ($dialogues as $dialogue) { 
@@ -67,27 +67,27 @@
                         'exact' => true
                         ));
                 echo $this->AclLink->generateLink($dialogueLinkName, 
-                    $programUrl, 'programDialogues', 'edit', $dialogue['_id']);
+                    $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
                 ?>
                 <ul>
                     <?php if ($isActive) {?>
                     <li>
                     <?php
                     echo $this->AclLink->generateLink(__('Active'), 
-                        $programUrl, 'programDialogues', 'edit', $dialogue['_id']);
+                        $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
                     ?>
                     </li>
                     <?php } else {?>
                     <li>
                     <?php
                     echo $this->AclLink->generateLink(__('Draft'),
-                        $programUrl, 'programDialogues', 'edit', $dialogue['_id']);
+                        $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
                     ?>
                     <ul>
                         <li>
                         <?php 
                         echo $this->AclLink->generateLink(__('Activate'),
-                            $programUrl, 'programDialogues', 'edit', $dialogue['_id']);
+                            $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
                         ?>
                         </li>
                     </ul>
@@ -102,12 +102,12 @@
     
     <li>
        <?php
-       echo $this->AclLink->generateLink(__('Separate Messages'),$programUrl,'programUnattachedMessages');
+       echo $this->AclLink->generateLink(__('Separate Messages'),$programDetails['url'],'programUnattachedMessages');
        ?>
        <ul>
            <li>
            <?php
-           echo $this->AclLink->generateLink(__('New Message'),$programUrl,'programUnattachedMessages','add');
+           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programUnattachedMessages','add');
            ?>
            </li>
            <?php 
@@ -119,10 +119,11 @@
                        20,
                        array('ellipsis' => '...',
                            'exact' => true
-                           ));
+                           ));      
+		
                    
                    echo $this->AclLink->generateLink($unattachedMessageLinkName,
-                       $programUrl, 'programUnattachedMessages', 'edit', $unattachedMessage['UnattachedMessage']['_id']);
+                       $programDetails['url'], 'programUnattachedMessages', 'edit', $unattachedMessage['UnattachedMessage']['_id']);
                    echo "</li>";
                }
            } 
@@ -131,49 +132,32 @@
     </li>  
     <li>
         <?php
-        echo $this->AclLink->generateLink(__('Participants'),$programUrl,'programParticipants','index');
+        echo $this->AclLink->generateLink(__('Participants'),$programDetails['url'],'programParticipants','index');
         ?>
         <ul>
             <li>
                 <?php 
-                     echo $this->AclLink->generateLink(__('Add Participants'),$programUrl,'programParticipants','add');
+                     echo $this->AclLink->generateLink(__('Add Participants'),$programDetails['url'],'programParticipants','add');
                 ?>
             </li>
 		    <li>
 		        <?php
-		             echo $this->AclLink->generateLink(__('Import Participants'),$programUrl,'programParticipants','import');
+		             echo $this->AclLink->generateLink(__('Import Participants'),$programDetails['url'],'programParticipants','import');
 		        ?>
 		    </li>
         </ul>
     </li>
     <li>
-        <?php echo $this->AclLink->generateLink(__('History'),$programUrl,'programHistory'); ?>
-        <ul>
-            <li>
-                <?php
-                    echo $this->AclLink->generateLink(__('Export CSV'),$programUrl,'programHistory','export',null,'.csv');
-                ?>
-            </li>            
-            <li>
-                <?php
-                    echo $this->AclLink->generateLink(__('Export Raw CSV'),$programUrl,'programHistory','index',null,'.csv');
-                ?>
-            </li>
-            <li>
-                <?php
-                    echo $this->AclLink->generateLink(__('Export Json'),$programUrl,'programHistory','index',null,'.json');
-                ?>
-            </li>
-        </ul>
+        <?php echo $this->AclLink->generateLink(__('History'),$programDetails['url'],'programHistory'); ?>        
     </li>
     <li>
         <?php
-            echo $this->AclLink->generateLink(__('Settings'),$programUrl,'programSettings','index');
+            echo $this->AclLink->generateLink(__('Settings'),$programDetails['url'],'programSettings','index');
          ?>
     </li>
     <li>
         <?php
-            echo $this->AclLink->generateLink(__('Logs'),$programUrl,'programLogs');
+            echo $this->AclLink->generateLink(__('Logs'),$programDetails['url'],'programLogs');
          ?>
     </li>
     <li>

@@ -2,10 +2,8 @@
 App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('DialogueHelper', 'Lib');
-/**
-* UnattachedMessage Model
-*ro
-*/
+
+
 class UnattachedMessage extends MongoModel
 {
     
@@ -14,19 +12,22 @@ class UnattachedMessage extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'unattached_messages';
     
+    var $mongoNoSetOperator = true;
+
     function getModelVersion()
     {
-        return '3';
+        return '4';
     }
     
-    function getRequiredFields($objectType)
+    function getRequiredFields($objectType=null)
     {
         return array(
             'name',
             'send-to-type',
             'content',           
             'type-schedule',
-            'fixed-time'
+            'fixed-time',
+            'created-by'
             );
     }
     
@@ -34,7 +35,13 @@ class UnattachedMessage extends MongoModel
         'send-to-match-operator',
         'send-to-match-conditions'
         );
+
+    var $phoneFields = array(
+        'send-to-phone'
+        );
     
+    var $participantPhoneRegex = '/^\+[0-9]*$/';
+
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -52,7 +59,7 @@ class UnattachedMessage extends MongoModel
                 'message' => 'Please select a Send To option.'
                 ),
             'allowedChoice' => array(
-                'rule' => array('inList', array('all', 'match')),
+                'rule' => array('inList', array('all', 'match', 'phone')),
                 'message' => 'Send To option not allowed.'
                 ),
             ),
@@ -71,11 +78,20 @@ class UnattachedMessage extends MongoModel
                 'rule' => array('conditions')
                 )
             ),
+        'send-to-phone' => array(
+            'phoneList'=> array(
+                'rule' => 'phoneList',
+                'message' => 'Please enter a list of participant phone.'
+                )),
         'content' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter some content for this message.'
-                )
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => 'notForbiddenApostrophe',
+                'message' => 'The apostrophe used in this message is not valid.'
+                ),
             ),
         'type-schedule' => array(
             'notempty' => array(
@@ -92,6 +108,12 @@ class UnattachedMessage extends MongoModel
                 'rule' => 'isNotPast',
                 'required' => true,
                 'message' => 'Fixed time cannot be in the past.'
+                )
+            ),
+        'created-by' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Message must be created by a user.'
                 )
             )
         );
@@ -136,6 +158,10 @@ class UnattachedMessage extends MongoModel
             $toCheck = array_merge($toCheck, $this->matchFields);
         }
         
+        if (isset($object['send-to-type']) && $object['send-to-type'] == 'phone') {
+            $toCheck = array_merge($toCheck, $this->phoneFields);
+        }
+
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)){
                 unset($object[$field]);
@@ -155,6 +181,10 @@ class UnattachedMessage extends MongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
+        
+        /*if (!isset($this->data['UnattachedMessage']['created-by'])) {
+                $this->data['UnattachedMessage']['created-by'] = null;
+        }*/
         
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
@@ -216,6 +246,32 @@ class UnattachedMessage extends MongoModel
         }
         return true;        
     }
+
+
+    public function phoneList($check)
+    {
+        if (!is_array($check['send-to-phone'])) {
+            return false;
+        }
+        foreach($check['send-to-phone'] as $participantPhone) {
+            if (!preg_match($this->participantPhoneRegex, $participantPhone)) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    
+    public function notForbiddenApostrophe($check)
+    {
+        if (preg_match('/.*[’`’‘]/', $check['content'])) {
+            return false;
+        }
+        return true;
+    }
+
+
     
     public function getNameIdForFilter()
     {

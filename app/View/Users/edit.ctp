@@ -1,4 +1,4 @@
-<div class="users form">
+<div class="users form users-index program-body">
 <h3><?php echo __('Edit User'); ?></h3>
 <?php echo $this->Form->create('User');?>
 	<fieldset>
@@ -6,17 +6,26 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('username');
-		echo $this->Html->tag('label',__('Password'));
+		echo "<div>";
 		echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $this->Form->value('User.id')));
+		echo "</div>";
 		echo $this->Form->input('email');
 		if (isset($isAdmin) && $isAdmin) {
 		    echo $this->Form->input('group_id');
-		    echo $this->Form->input('Program');
+		    $options = $programs;		
+		    echo $this->Form->input('Program', array('options'=>$options,
+		        'type'=>'select',
+		        'multiple'=>true,
+		        'label'=>'Program',	                
+		        'style'=>'margin-bottom:0px'
+		        ));
+		    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');		    
 		}
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
+<div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
@@ -41,4 +50,5 @@
 		}
 		?></li>
 	</ul>
+</div>
 </div>

@@ -5,7 +5,7 @@
 		$this->Js->get('#restart-worker-button')->event(
 	           'click',
 	           $this->Js->request(
-	               array('program'=>$programUrl, 'action'=>'restartWorker.json'),
+	               array('program'=>$programDetails['url'], 'action'=>'restartWorker.json'),
 	               array('method' => 'GET',
                          'async' => true, 
 	                     'dataExpression' => true,
@@ -13,31 +13,40 @@
 		?></li>
 	</ul>
 	<h3><?php echo __('Sending Next');?></h3>
-	<div class="ttc-display-area">
+	
+	<div class="ttc-table-display-area">
+	<div class="ttc-table-scrolling-area">
 	<table cellpadding="0" cellspacing="0">
-		<tr>
-			<th><?php echo __('At');?></th>
-			<th><?php echo __('Source');?></th>
-			<th><?php echo __('To');?></th>	
-			<th><?php echo __('Content');?></th>
-		</tr>
-	<?php
-	foreach ($schedules as $schedule): ?>
-	<tr>
-		<td><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
-		<?php if (isset($schedule['dialogue-id'])) { 
-		    echo $this->Html->tag('td', __('Dialogue'));
-		} elseif (isset($schedule['unattach-id'])) {
-		    echo $this->Html->tag('td', __('Separate Msg'));   
-		} else { ?>
-		<td></td>
-		<?php } ?>
-		<td><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
-		<td>&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
-	</tr>
-	<?php endforeach; ?>
-	</table>
-  	</div>
+	    <thead>	
+	        <tr>
+			    <th class="date-time"><?php echo __('At');?></th>			   
+			    <th class="send-to"><?php echo __('To');?></th>	
+			    <th class="content-sending"><?php echo __('Content');?></th>
+			    <th class="source"><?php echo __('Source');?></th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+		    foreach ($schedules as $schedule): ?>
+		    <tr>
+		        <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
+		            
+		        <td class="send-to"><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
+		        <td class="content-sending">&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
+		     <?php if (isset($schedule['dialogue-id'])) { 
+		                echo $this->Html->tag('td', __('Dialogue'));
+		            } elseif (isset($schedule['unattach-id'])) {
+		                echo $this->Html->tag('td', __('Separate Msg'));   
+		            } else { ?>
+		        <td></td>
+		            <?php } ?>
+		       </tr>
+		         <?php endforeach; ?>
+		   </tbody>
+		</table>
+		</div>
+		</div>
 </div>
+
 	
 <?php echo $this->Js->writeBuffer(); ?>

@@ -30,6 +30,8 @@ var program = {"script": [
     "add-interaction":"button",
     "announcement": ["content"],
     "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    //"question-answer": ["dialogue-content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
+    //"dialogue-content": "textarea",
     "radio-type-unmatching-feedback" : "radiobuttons",
     "type-unmatching-feedback": {
         "no-unmatching-feedback": "no-unmatching-feedback",
@@ -79,6 +81,8 @@ var program = {"script": [
     "actions":["add-action"],
     "add-response":"button",
     "response":["content"],
+    //"response":["request-content"],
+    //"request-content": "textarea",
     "radio-type-action": "radiobuttons",
     "add-action":"button",
     "add-feedback":"button",
@@ -100,6 +104,7 @@ var program = {"script": [
         "question-answer":"question",
         "question-answer-keyword": "question-multi-keyword"},
     "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
+    //"question-answer-keyword": ["dialogue-content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
     "answer-keywords":["add-answer-keyword"],
     "add-answer-keyword":"button",
     "answer-keyword": ["keyword","feedbacks", "answer-actions"],
@@ -222,7 +227,7 @@ function saveFormOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 3000,
+        timeout: 4000,
         error: saveAjaxError,
         userAction: localized_actions['save_dialogue'],
     });
@@ -259,7 +264,7 @@ function saveRequestOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 1000,
+        timeout: 3000,
         error: saveAjaxError,
         userAction: localized_actions['save_request'],
     });
@@ -417,11 +422,16 @@ function activeForm(){
     $("input[name*='choice']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            doubleSpace:true,
             choiceUnique: true,
+            choiceFormat:true,
+            choiceIndex:true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
                 choiceUnique: wrapErrorMessage(localized_errors.validation_choice_duplicate),
-            }
+                choiceFormat: wrapErrorMessage(localized_errors.validation_choice_format),
+                choiceIndex: wrapErrorMessage(localized_errors.validation_choice_index),
+            } 
         });
     });
     $("input[name*='name']").each(function (item) {
@@ -500,14 +510,28 @@ function activeForm(){
             }
         });
     });
-    $("textarea[name*='content']").each(function (item) {
-        $(this).rules("add",{
-            required:true,
-            messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error"),
-            }
-        });
-    });
+    $("textarea[name*='content']").each(function (key, elt) {          
+            $(this).rules("add",{
+                    required:true,
+                    forbiddenApostrophe: true,
+                    messages:{                        
+                        required: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request");
+                            }
+                        },
+                        forbiddenApostrophe: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_apostrophe, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_apostrophe, "ttc-textarea-validation-error request");
+                            }
+                        }
+                    }  
+            });             
+    });   
     $("input[name$='days']").each(function (item) {
         $(this).rules("add",{
             required:true,
@@ -520,11 +544,11 @@ function activeForm(){
     });
     $("input[name$='minutes']").each(function (item) {
         $(this).rules("add",{
-            required:true,
+            required:true,         
             minutesSeconds: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),
+                minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),                
             }
         });
     });
@@ -761,7 +785,7 @@ function duplicateKeywordValidation(value, element, param) {
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
-    var elementName = $(element).attr('name');
+    var elementName = $(element).attr('name');    
     $(element).parent().parent().find("[name$='choice']:not([name='"+$(element).attr('name')+"'])").each( function(key, otherChoice) {
             if (value == $(otherChoice).val()) { 
                 isValid = false;
@@ -770,6 +794,63 @@ function duplicateChoiceValidation(value, element, param) {
     });
     return isValid;
 }
+
+
+function formatChoiceValidation(value, element, param) {    
+    var choiceRegex = new RegExp('^[\\w\\s]*$','i');
+    if (choiceRegex.test(value)) { 
+          return true;
+    }
+    return false;    
+}
+
+
+function isInt(someNumber) {
+    var intRegex = /^\d+$/;
+    if(intRegex.test(someNumber)) {
+        return true;
+    }
+    return false;
+}
+
+function extractIndex(elementName, indexName) {
+    indexedName = elementName.match(/\w*\[(\d*)\]/gm);
+    for (var i = 0; i < indexedName.length; i++) {
+        var indexNameRegex = new RegExp(indexName,"g");
+        if (indexNameRegex.test(indexedName[i])) {
+            index = indexedName[i].match(/\[(\d*)\]/gm)[0].slice(1, -1);
+            return parseInt(index);
+        }
+    }
+    return null;
+}
+
+function indexChoiceValidation(value, element, param) {
+    // The value is not an Int => no ambiguity
+    if (!isInt(value)) {
+        return true;
+    }
+
+    var choiceInput = $(element).attr('name');
+    var interactionIndex = extractIndex(choiceInput, 'interactions');
+    var numberOfAnswers = $(":regex(name,^Dialogue.interactions\\["+interactionIndex+"\\].answers\\[\\d+\\].choice$)").length;             
+    var answerIndex = extractIndex(choiceInput, 'answers');
+    var equivalentParticipantChoice = answerIndex + 1;
+    
+    // The answer index is out of boundary => no ambiguity
+    if (value < 1 || value > numberOfAnswers) { 
+        return true;
+    }
+
+    // The answer index it equal to the value
+    if (equivalentParticipantChoice == parseInt(value)) {
+        return true;
+    } 
+    
+    // All other case are ambigious
+    return false;   
+}
+
 
 function atLeastOneIsChecked(value, element, param) {
     if ($("[name='"+$(element).attr('name')+"']:checked").length==0) {
@@ -784,6 +865,14 @@ function requireLetterDigitSpace(value, element, param) {
         return true;
     }
     return false;
+}
+
+function forbiddenApostrophe(value, element, param) {
+    r = new RegExp('[’`’‘]');
+    if (r.test(value)) {
+        return false;
+    }
+    return true;
 }
 
 function minutesSeconds(value, element, param) {
@@ -1168,6 +1257,16 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         "choiceUnique",
         duplicateChoiceValidation,
         wrapErrorMessage(Error));
+    
+    $.validator.addMethod(
+        "choiceFormat",
+        formatChoiceValidation,
+        wrapErrorMessage(Error));
+    
+     $.validator.addMethod(
+        "choiceIndex",
+        indexChoiceValidation,
+        wrapErrorMessage(Error));
 
     $.validator.addMethod(
         "atLeastOneIsChecked",
@@ -1182,6 +1281,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "minutesSeconds",
         minutesSeconds,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "forbiddenApostrophe",
+        forbiddenApostrophe,
         wrapErrorMessage(Error));
 
         

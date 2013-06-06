@@ -1,6 +1,18 @@
-<div class="index">
+<div class="index width-size">
     <ul class="ttc-actions">
-		<li><?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?></li>
+		<li>
+		<?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+		<span class="actions">
+		<?php
+		echo $this->Html->link( __('Cancel'), 
+		    array(
+		        'program' => $programDetails['url'],
+		        'controller' => 'programHome',
+		        'action' => 'index'	           
+		        ));
+		?>
+		</span>
+		</li>
 		<?php $this->Js->get('#button-save')->event('click','
 		    disableSaveButtons();		    
 		    $("#dynamic-generic-program-form").submit();
@@ -11,15 +23,15 @@
         if (isset($dialogue)) {
             if (!$dialogue['Dialogue']['activated']) {
                 echo "<li>";
-                echo $this->Html->link(__('Activate'), array('program'=>$programUrl,'action'=>'activate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
+                echo $this->Html->link(__('Activate'), array('program'=>$programDetails['url'],'action'=>'activate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
                 echo "</li>";
             } 
             ## Remove simulate button as long as it's not properly working in the backend
             /*echo "<li>";
-            echo $this->Html->link(__('Simulate'), array('program'=>$programUrl, 'controller' => 'programSimulator', 'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
+            echo $this->Html->link(__('Simulate'), array('program'=>$programDetails['url'], 'controller' => 'programSimulator', 'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
             echo "</li>";*/
             echo "<li>";
-            echo $this->Html->link(__('Test send all messages'), array('program'=>$programUrl,'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
+            echo $this->Html->link(__('Test send all messages'), array('program'=>$programDetails['url'],'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
             echo "</li>"; 
         }?>
 	</ul>
