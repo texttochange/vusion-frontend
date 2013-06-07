@@ -373,20 +373,22 @@ class Dialogue extends MongoModel
     
     public function uniqueDialogueName($check)
     {   $dialogueId = $this->data['Dialogue']['dialogue-id'];
-    	if ($this->id) {
-            $conditions = array('id'=>array('$ne'=> $this->id), 'dialogue-id' => $dialogueId);
-            $result = $this->find('count', array(
-    			'conditions' => $conditions
-    			));
-    		return $result >= 0;
-        } else {
-            $conditions = array('name' => $check['name']);
-            $result = $this->find('count', array(
-    			'conditions' => $conditions
-    			));
-    		return $result < 1;
-        }    	
+        return $this->checkDialogueName($check['name'], $dialogueId);	    	
     }
+
+    public function checkDialogueName($name, $dialogueId = null)
+    {
+        if (isset($dialogueId)) {
+            $conditions = array('name'=> $name, 'dialogue-id' => array('$ne', $dialogueId));
+            $result = $this->find('count', array('conditions' => $conditions));
+    		return $result == 0;
+        }
+
+        $conditions = array('name' => $name);
+        $result = $this->find('count', array('conditions' => $conditions));
+        return $result == 0;
+    }
+
 }
 
 
