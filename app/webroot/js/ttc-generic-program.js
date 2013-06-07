@@ -203,7 +203,8 @@ function saveFormOnServer(){
         dataType: 'json', 
         success: function(response) {
             if (response['status'] == 'fail') {
-                $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                message = handleResponseValidationErrors(response['message']);
+                showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -227,6 +228,44 @@ function saveFormOnServer(){
     });
 }
 
+function handleResponseValidationErrors(validationErrors){
+   errorMessages = [];
+   for (var field in validationErrors) {
+       if (field == 'interactions') {
+          for (var interaction in validationErrors[field]) {
+               errorPrefix = "For interaciton "+interaction+"-";
+               for (var subfield in validationErrors[field][interaction]) {
+                   if (subfield != 'answer-actions') {
+                       errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0]);
+                   } else {
+                       for (var subsubfield in validationErrors[field][interaction][subfield][0]) {
+                           errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0][subsubfield]);
+                       }
+                   } 
+               }
+           }
+       } else if (field == 'actions') {
+            for (var action in validationErrors[field]) {
+                for (var subfield in validationErrors[field][action]) {
+                    errorMessages.push(validationErrors[field][action][subfield]);
+                }
+            }
+       } else {
+           errorMessages.push(validationErrors[field][0]);
+       }
+   }
+   return errorMessages;     
+}
+
+function showErrorMessages(errorMessages){
+    if (errorMessages.length == 1) {
+        $("#flashMessage").attr('class', 'message error').show().text(errorMessages[0]);
+   } else {
+       message = "<div class='message error'>"+errorMessages.join("</div><br/><div class='message error'>")+"</div>";
+       $("#flashMessage").attr('class', '').show().html(message);
+   }
+}
+
 function saveRequestOnServer(){
         
     var formData = form2js('dynamic-generic-program-form', '.', true);
@@ -243,7 +282,8 @@ function saveRequestOnServer(){
         dataType: 'json', 
         success: function(response) {
             if (response['status'] == 'fail') {
-                $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                message = handleResponseValidationErrors(response['message']);
+                showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -540,8 +580,6 @@ function activeForm(){
     
     addContentFormHelp();
     addCounter();
-
-    
 }
 
 function expandForm(){
