@@ -1,6 +1,6 @@
 <div class='Program Requests index'>
 	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Request'), array('program'=>$programUrl, 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('New Request'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>	
 	<h3><?php echo __('Requests');?></h3>
 	<div class="ttc-data-control">
@@ -11,9 +11,9 @@
 	    'format' => __('{:start} - {:end} of {:count}')
 	    ));
 	echo "</span>";
-	echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
+	echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
 	//echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+	echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
 	?>
 	</div>
 	</div>
@@ -22,9 +22,9 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
-			    <th class="direction"><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programUrl)));?></th>
-			    <th class="responses"><?php echo $this->Paginator->sort('responses', null, array('url'=> array('program' => $programUrl)));?></th>
-			    <th class="status"><?php echo $this->Paginator->sort('do', null, array('url'=> array('program' => $programUrl)));?></th>
+			    <th class="direction"><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="responses"><?php echo $this->Paginator->sort('responses', null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="status"><?php echo $this->Paginator->sort('do', null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="action-requests"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>
@@ -58,8 +58,8 @@
 		            ?>
 		        </td>
 		        <td class="action-requests actions">
-		            <?php echo $this->Html->link(__('Edit'), array('program'=>$programUrl, 'action' => 'edit', $request['Request']['_id'])); ?>
-		            <?php echo $this->Form->postLink(__('Delete'), array('program'=>$programUrl, 'action' => 'delete', $request['Request']['_id']), null,
+		            <?php echo $this->Html->link(__('Edit'), array('program'=>$programDetails['url'], 'action' => 'edit', $request['Request']['_id'])); ?>
+		            <?php echo $this->Form->postLink(__('Delete'), array('program'=>$programDetails['url'], 'action' => 'delete', $request['Request']['_id']), null,
 			                                __('Are you sure you want to delete %s?', $request['Request']['keyword'])); ?>
 			    </td>
 			    </tr>

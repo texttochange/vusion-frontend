@@ -892,7 +892,7 @@ width: 102px;
 
 .ttc-paging {
     float: right;
-    width: 162px;
+    width: 184px;
 }
 
 .ttc-stack-filter input{
@@ -1116,6 +1116,11 @@ margin-left: 63px;
 	padding:10px 20px 10px 0px;	
 	position: absolute;	
 	margin-left: 202px;
+}
+
+.blackets {
+	font-size: 14px;
+	color: #003D4C;
 }
 
 .program-edit {

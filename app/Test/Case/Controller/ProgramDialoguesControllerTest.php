@@ -214,7 +214,9 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         $this->assertEqual('fail', $this->vars['result']['status']);
-        $this->assertEqual('type-schedule is missing in an Interaction.', $this->vars['result']['message']);        
+        $this->assertEqual(
+            'Type Schedule field is missing.', 
+            $this->vars['result']['message']['interactions'][0]['type-schedule'][0]);        
     }
 
 

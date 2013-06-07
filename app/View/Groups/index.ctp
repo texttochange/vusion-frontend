@@ -8,9 +8,9 @@
 	    'format' => __('{:start} - {:end} of {:count}')
 	    ));
 	echo "</span>";
-	echo $this->Paginator->prev('<', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
+	echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
 	//echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(' >', array('url'=> array('program' => $programUrl, '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+	echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
 	?>
 	</div>
 	</div>
@@ -40,7 +40,7 @@
 	</table>
 	</div>
 	</div>	
-    </div>
+  </div>
     <div class="admin-action">
     <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>

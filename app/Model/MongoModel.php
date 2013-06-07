@@ -125,6 +125,7 @@ abstract class MongoModel extends Model
         return $document;
     }
     
+
     public function isVeryUnique($check)
     {
         $key = array_keys($check);
@@ -139,6 +140,23 @@ abstract class MongoModel extends Model
         return $result < 1;
     }
 
+
+    protected function _setDefault($field, $default) {
+        if (!isset($this->data[$this->alias][$field])) {
+            $this->data[$this->alias][$field] = $default;
+        } 
+    }
+
+    # Need to overwrite to avoid validation error message to be written
+    public function invalidate($field, $value = true) {
+        if ($value == 'noMessage') {
+            return;
+        }
+		if (!is_array($this->validationErrors)) {
+			$this->validationErrors = array();
+		}
+		$this->validationErrors[$field] []= $value;
+	}
 
     # Need to be overwrite to take into accound array field in mongo
     public function save($data = null, $validate = true, $fieldList = array()) {
