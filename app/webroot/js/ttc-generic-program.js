@@ -1,146 +1,3 @@
-var program = {"script": [ 
-        "dialogues",
-        ],
-    "name" : "text",
-    "partner": "text",
-    "shortcode" : "text",
-    "participants":["add-participant"],
-    "add-group":"button",
-    "add-participant":"button",
-    "participant":["phone","name"],
-    "phone":"text",
-    "dialogues": ["add-dialogue"],
-    "add-dialogue":"button",                    
-    "Dialogue": ["name",  "checkbox-set-prioritized", "auto-enrollment", "interactions","dialogue-id", "activated"],
-    "dialogue-id": "hidden",
-    "auto-enrollment": "select",
-    "auto-enrollment-options": [{"value":"none", "html":"None"}, {"value": "all", "html": "All participants"}],    
-    "checkbox-set-prioritized": "checkboxes",
-    "set-prioritized": {"prioritized": "prioritized"},
-    "interactions":["add-interaction"],
-    "interaction":["radio-type-schedule", "radio-type-interaction","interaction-id", "activated"],
-    "interaction-id":"hidden",
-    "activated":"hidden",
-    "add-interaction":"button",
-    "announcement": ["content"],
-    "question-answer": ["content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
-    //"question-answer": ["dialogue-content","keyword", "checkbox-set-use-template", "radio-type-question", "checkbox-set-max-unmatching-answers", "radio-type-unmatching-feedback","checkbox-set-reminder"],
-    //"dialogue-content": "textarea",
-    "radio-type-unmatching-feedback" : "radiobuttons",
-    "type-unmatching-feedback": {
-        "no-unmatching-feedback": "no-unmatching-feedback",
-        "program-unmatching-feedback":"program-unmatching-feedback",
-        "interaction-unmatching-feedback":"interaction-unmatching-feedback"},
-    "interaction-unmatching-feedback": ["unmatching-feedback-content"],
-    "unmatching-feedback-content": "textarea",
-    "checkbox-set-use-template": "checkboxes",
-    "set-use-template": {"use-template": "use-template"},
-    "checkbox-set-max-unmatching-answers": "checkboxes",
-    "set-max-unmatching-answers": {"max-unmatching-answers": "max-unmatching-answers"},
-    "max-unmatching-answers": ["max-unmatching-answer-number", "max-unmatching-answer-actions"],
-    "max-unmatching-answer-number": "text",
-    "max-unmatching-answer-actions": ["add-max-unmatching-answer-action"],
-    "add-max-unmatching-answer-action": "button",
-    "max-unmatching-answer-action": ["radio-type-action"],
-    "radio-type-question": "radiobuttons", 
-    "type-question":{"closed-question":"closed-question","open-question":"open-question"},
-    "closed-question": ["label-for-participant-profiling", "checkbox-set-answer-accept-no-space", "answers"],
-    "checkbox-set-answer-accept-no-space": "checkboxes",
-    "set-answer-accept-no-space": {"answer-accept-no-space": "answer-accept-no-space"},
-    "label-for-participant-profiling": "text",
-    "open-question": ["answer-label", "feedbacks"],
-    "answer-label": "text",
-    "requests-responses":["add-request-response"],
-    "add-request-response":"button",
-    "request-response":["content","responses","actions"],
-    "radio-type-routing":"radiobuttons",
-    "type-routing":{"keyword-routing": "Keyword routing","phone-routing":"Phone number routing (all incomming message from participant will be root to this program)"},    
-    "keyword-routing":["keyword"],
-    "answers":["add-answer"],
-    "add-answer": "button",
-    "answer": ["choice","feedbacks", "answer-actions"],
-    "feedbacks":["add-feedback"],
-    "answer-actions": ["add-answer-action"],
-    "add-answer-action": "button",
-    "answer-action": ["radio-type-answer-action"],
-    "radio-type-answer-action": "radiobuttons",
-    "type-answer-action": {"optin":"optin", "optout": "optout", "enrolling":"enrolling", "delayed-enrolling": "delayed-enrolling", "tagging":"tagging", "reset":"reset", "feedback":"feedback"},
-    "add-request":"button",
-    "Request": ["keyword", "checkbox-set-no-request-matching-try-keyword-only", "responses", "actions"],
-    //"radio-type-request-matching": "radiobuttons",
-    //"type-request-matching": {"exact-matching":"exact-matching", "keyword-only-matching": "keyword-only-matching"},
-    "checkbox-set-no-request-matching-try-keyword-only": "checkboxes",
-    "set-no-request-matching-try-keyword-only": {"no-request-matching-try-keyword-only": "no-request-matching-try-keyword-only"},
-    "responses":["add-response"],
-    "actions":["add-action"],
-    "add-response":"button",
-    "response":["content"],
-    //"response":["request-content"],
-    //"request-content": "textarea",
-    "radio-type-action": "radiobuttons",
-    "add-action":"button",
-    "add-feedback":"button",
-    "action":["radio-type-action"],
-    "type-action": {"optin": "optin", "optout": "optout", "enrolling":"enrolling", "delayed-enrolling": "delayed-enrolling", "tagging":"tagging", "reset":"reset", "feedback":"feedback"},
-    "choice":"text",
-    "tagging":["tag"],
-    "tag":"text",
-    "enrolling":["enroll"],
-    "enroll":"select",
-    "delayed-enrolling":["enroll", "offset-days"],
-    "add-request-reply":'button',
-    "request-reply":["keyword","add-feedback","radio-type-action"],
-    "id":"text",
-    "type":"text",
-    "radio-type-interaction":"radiobuttons",
-    "type-interaction": {
-        "announcement":"announcement",
-        "question-answer":"question",
-        "question-answer-keyword": "question-multi-keyword"},
-    "question-answer-keyword": ["content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
-    //"question-answer-keyword": ["dialogue-content", "label-for-participant-profiling", "answer-keywords", "checkbox-set-reminder"],
-    "answer-keywords":["add-answer-keyword"],
-    "add-answer-keyword":"button",
-    "answer-keyword": ["keyword","feedbacks", "answer-actions"],
-    "radio-type-schedule":"radiobuttons",
-    "type-schedule": {
-        "fixed-time":"fixed-time",
-        "offset-days":"offset-days",
-        "offset-time":"offset-time",
-        "offset-condition": "offset-condition"},
-    "radio-type-schedule-reminder":"radiobuttons",
-    "type-schedule-reminder": {
-        "reminder-offset-time":"offset-time",
-        "reminder-offset-days":"offset-days"},
-    "content":"textarea",
-    "date": "text",
-    "fixed-time":["date-time"],
-    "date-time":"text",
-    "offset-time":["minutes"],
-    "offset-days":["days","at-time"],
-    "reminder-offset-time":["reminder-minutes"],
-    "reminder-offset-days":["reminder-days","reminder-at-time"],
-    "reminder-days":"text",
-    "reminder-minutes":"text",
-    "reminder-at-time":"text",
-    "offset-condition": ["offset-condition-interaction-id"],
-    "offset-condition-interaction-id": "select",
-    "wait-answer": ["minutes"],
-    "days":"text",
-    "minutes":"text",
-    "at-time":"text",
-    "time": "text",
-    "keyword":"text",
-    "feedback":["content"],
-    "checkbox-set-reminder":"checkboxes",
-    "set-reminder": {"reminder":"reminder"},
-    "reminder":["reminder-number","radio-type-schedule-reminder","reminder-actions"],
-    "reminder-number":"text",
-    "reminder-actions": ["add-reminder-action"],
-    "add-reminder-action": "button",
-    "reminder-action": ["radio-type-action"],
-};
-
 (function($)
 {
 
@@ -283,10 +140,7 @@ function clickBasicButton(){
     var parent = $(this).parent();
     
     var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
-    
-    if (eltLable='interaction') {
-        object = {"interaction-id":guid()}
-    }    
+      
     configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]", object);
     
     $(parent).formElement(expandedElt);
@@ -339,6 +193,11 @@ function activeForm(){
             };
     });
     $.each($("input[name*='reminder']"),function (key, elt){
+            if (!$.data(elt,'events')){    
+                $(elt).change(updateCheckboxSubmenu);
+            };
+    });
+    $.each($("input[name*='condition']"),function (key, elt){
             if (!$.data(elt,'events')){    
                 $(elt).change(updateCheckboxSubmenu);
             };
@@ -860,6 +719,7 @@ function isArray(obj) {
 function updateRadioButtonSubmenu() {
     //var elt = event.currentTarget;
     var elt = this;
+    var item = $(elt).attr('item');
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null) {
@@ -880,7 +740,7 @@ function updateRadioButtonSubmenu() {
          "name":name,
              "elements":[]};
     //var name = $(elt).parent().parent().attr('name');
-    configToForm($(elt).attr('value'), newContent, name);
+    configToForm(item, newContent, name, {item: $(elt).attr('value')});
     
     $(elt).parent().formElement(newContent);
     
@@ -929,182 +789,213 @@ function updateCheckboxSubmenu() {
 };
 
 
-function configToForm(item,elt,id_prefix,configTree){
-    if (!program[item]){
+function configToForm(item, elt, id_prefix, configTree){
+    if (!dynamicForm[item]){
         elt['type']=null;    
         return;
     }
-    if (!isArray(program[item])){
-        alert("structure is wrong, no array for: "+item);
-    }
-    var rabioButtonAtThisIteration = false;
-    var checkBoxAtThisIteration = false;
-    program[item].forEach(function (sub_item){
-            if (!isArray(program[sub_item]))
-            {
-                if (program[sub_item]=="button"){
-                    var label = sub_item.substring(4);
-                    if (rabioButtonAtThisIteration && configTree && configTree[label]){
-                        tmpConfigTree = configTree[label];
-                    } else {
-                        tmpConfigTree = configTree;
-                    };
-                    if (tmpConfigTree && tmpConfigTree.length>0){
-                        var i = 0;
-                        tmpConfigTree.forEach(function (configElt){
-                                if (rabioButtonAtThisIteration) {
-                                    tmpIdPrefix = id_prefix + "."+label;
-                                }else{
-                                    tmpIdPrefix = id_prefix;
-                                }
-                                var myelt = {
-                                    "type":"fieldset",
-                                    "caption": localize_label(label), //+" "+ i,
-                                    "name": tmpIdPrefix+"["+i+"]",
-                                    "elements": []
-                                };
-                                configToForm(label,myelt,tmpIdPrefix+"["+i+"]",configElt);
-                                i = i + 1;
-                                elt["elements"].push(myelt);
-                        });
-                        
-                    }
-                    elt["elements"].push({
-                        "type":"addElt",
-                        "alert":"add message",
-                        "label": label
-                    });
-                } else if (program[sub_item]=="radiobuttons") {
-                	rabioButtonAtThisIteration = true;
-                	var radio_type = sub_item.substring(6);
-                	var checkedRadio = {};
-                	var checkedItem;
-                	var checkedItemLabel;
-                	$.each(program[radio_type],function(k,v) {
-                	        if (configTree && k==configTree[radio_type]) {
-                	            checkedRadio[k] = {
-                	                "value": k, 
-                	                "caption": localize_label(v),
-                	                "checked":"checked"
-                	            }
-                	            checkedItem = k;
-                	            checkedItemLabel = localize_label(v);
-                	        } else {
-                	            checkedRadio[k] = localize_label(v);
-                	        }     
-                	})
-                	elt["elements"].push({
-                            "name":id_prefix+"."+radio_type,
-                            "type": program[sub_item],
-                            "options": checkedRadio
-                    });
-                    if (checkedItem){
-                        if (program[checkedItem]){
-                            var box = {
-                                "type":"fieldset",
-                                "caption": localize_label(checkedItem),
-                                "radiochildren":"radiochildren",
-                                "elements":[]
-                            };
-                            configToForm(checkedItem, box,id_prefix,configTree);
-                            if (box['type'])
-                                elt["elements"].push(box);
-                        };
-                    }
-                } else if (program[sub_item]=="checkboxes") {
-                	checkBoxAtThisIteration = true;
-                	var checkbox_type = sub_item.substring(9);
-                	var checkedCheckBox = {};
-                	var checkedItem;
-                	var checkedItemLabel;
-                	$.each(program[checkbox_type],function(k,v) {
-                	        if (configTree && k==configTree[checkbox_type]) {
-                	            checkedCheckBox[k] = {
-                	                "value": k, 
-                	                "caption": localize_label(v),
-                	                "checked":"checked"
-                	            }
-                	            checkedItem = k;
-                	            checkedItemLabel = localize_label(v);
-                	        } else {
-                	            checkedCheckBox[k] = localize_label(v);
-                	        }     
-                	})
-                	elt["elements"].push({
-                            "name":id_prefix+"."+checkbox_type,
-                            "type": program[sub_item],
-                            "options": checkedCheckBox
-                    });
-                    if (checkedItem){
-                        if (program[checkedItem]){
-                            var box = {
-                                "type":"fieldset",
-                                "caption": localize_label(checkedItem),
-                                "radiochildren":"radiochildren",
-                                "elements":[]
-                            };
-                            configToForm(checkedItem, box,id_prefix,configTree);
-                            if (box['type'])
-                                elt["elements"].push(box);
-                        };
-                    }
-                } else if (program[sub_item]=="select") {
-                    var eltValue = "";
-                    var options = [];
-                    if (window.app && window.app[sub_item+'Options']) {
-                        /**need to clone otherwise the selected will be share by all form*/
-                        options = clone(window.app[sub_item+'Options']);
-                    } else {
-                        options = program[sub_item+'-options'];
-                    }
-                    if (configTree) {
-                        for (var j=0; j<options.length; j++){
-                            if (options[j]['value']==configTree[sub_item])
-                                options[j]['selected'] = true;
-                        }
-                    }
-                    var label = null;
-                    if (program[sub_item]!="hidden"){
-                        label = localize_label(sub_item)
-                    }
-                    elt["elements"].push(
-                        {
-                            "type":"fieldset",
-                            'class': "actions",
-                            'elements': [{
-                                    "name":id_prefix+"."+sub_item,
-                                    "caption": label,
-                                    "type": program[sub_item],
-                                    "options": options
-                            }]
-                        });
-                } else {  //It's not a Radio, Select or a button  
-                    var eltValue = "";
-                    if (configTree) {
-                        eltValue = configTree[sub_item];
-                        if (sub_item == 'date-time')
-                            eltValue = fromIsoDateToFormDate(eltValue);
-                    }
-                    var label = null;
-                    if (program[sub_item]!="hidden"){
-                        label = localize_label(sub_item)
-                    } 
-                    elt["elements"].push(
-                        {
-                            "name":id_prefix+"."+sub_item,
-                            "caption": label,
-                            "type": program[sub_item],
-                            "value": eltValue
-                        });
+    //var rabioButtonAtThisIteration = false;
+    //var checkBoxAtThisIteration = false;
+    if (dynamicForm[item]['type'] == 'container') {
+        if (!dynamicForm[item]['skip']) {
+            var myelt = {
+                "type":"fieldset",
+                "caption": localize_label(item),
+                "name": id_prefix,
+                "elements": []
+            }; 
+            elt["elements"].push(myelt);
+        } else {
+            var myelt = elt;
+        }
+        $.each(dynamicForm[item]['contains'], function(k,v) {
+                if (configTree) {
+                    configToForm(v , myelt, id_prefix, configTree[v]);
+                } else {
+                    configToForm(v , myelt, id_prefix);
                 }
-            } else { //It's an array
+        });
+    } else if (dynamicForm[item]['type'] == 'list') {
+        var myelt = {
+            "type":"fieldset",
+            "caption": localize_label(item),
+            "name": id_prefix+"."+item,
+            "elements": []
+        };
+        if (configTree && configTree.length>0){
+            var i = 0;
+            configTree.forEach(function (configElt){
+                    /*if (rabioButtonAtThisIteration) {
+                    tmpIdPrefix = id_prefix + "."+label;
+                    }else{
+                    tmpIdPrefix = id_prefix;
+                    }*/
+                    var listElt = {
+                        "type":"fieldset",
+                        "caption": localize_label(item), //+" "+ i,
+                        "name": id_prefix+"["+i+"]",
+                        "elements": []
+                    };
+                    configToForm(dynamicForm[item]['adds'], listElt, id_prefix+"["+i+"]", configElt);
+                    i = i + 1;
+                    myelt["elements"].push(listElt);
+            });            
+        }
+        if (dynamicForm[item]['add-button']) {
+            myelt["elements"].push({
+                    "type":"addElt",
+                    "alert":"add message",
+                    "label": dynamicForm[item]['adds']});
+        }
+        elt["elements"].push(myelt);
+    } else if (dynamicForm[item]['type'] == "radiobuttons") {
+        /*rabioButtonAtThisIteration = true;
+        var radio_type = sub_item.substring(6);*/
+        var checkedRadio = {};
+        var checkedItem;
+        //var checkedItemLabel;
+        $.each(dynamicForm[item]['options'],function(k,v) {
+                if (configTree && v['value']==configTree[item]) {
+                    checkedRadio[v['value']] = {
+                        "value": v['value'],
+                        "item": item,
+                        "caption": localize_label(v['value']),
+                        "checked":"checked"
+                    }
+                    checkedItem = v;
+                    checkedItemLabel = localize_label(v['value']);
+                } else {
+                    checkedRadio[v['value']] = { 
+                        'value': v['value'],
+                        "item": item,
+                        "caption": localize_label(v['value'])};
+                }     
+        })
+        elt["elements"].push({
+                "name":id_prefix+"."+item,
+                "type": "radiobuttons",
+                "options": checkedRadio
+        });
+        if (checkedItem && checkedItem['subfields']){
+            var box = {
+                "type":"fieldset",
+                "caption": localize_label(checkedItem),
+                "radiochildren":"radiochildren",
+                "elements":[]
+            };
+            $.each(checkedItem['subfields'], function (k,v) {
+                    configToForm(v, box, id_prefix, configTree);
+            });
+            if (box['type'])
+                elt["elements"].push(box);
+        };
+    } else if (dynamicForm[item]['type'] == "checkboxes") {
+        //checkBoxAtThisIteration = true;
+        //var checkbox_type = sub_item.substring(9);
+        var checkedCheckBox = {};
+        var checkedItem;
+        var checkedItemLabel;
+/*        $.each(dynamicForm[item], function(k,v) {
+                if (configTree && k==configTree[checkbox_type]) {
+                    checkedCheckBox[k] = {
+                        "value": k, 
+                        "caption": localize_label(v),
+                        "checked":"checked"
+                    }
+                    checkedItem = k;
+                    checkedItemLabel = localize_label(v);
+                } else {
+                    checkedCheckBox[k] = localize_label(v);
+                }     
+        });
+        elt["elements"].push({
+                "name":id_prefix+"."+checkbox_type,
+                "type": program[sub_item],
+                "options": checkedCheckBox
+        });*/
+        if (configTree && dynamicForm[item]['value']==configTree[item]) {
+            checkedItem = dynamicForm[item];
+            checkedItemLabel = localize_label(checkedItem['value']);
+            checkedCheckBox[item] = {
+                "value": checkedItem['value'], 
+                "caption": localize_label(checkedItem['value']),
+                "checked":"checked"
+            }
+        } else {
+            checkedCheckBox[dynamicForm[item]['value']] = localize_label(item);
+        }
+        elt["elements"].push({
+                "name": id_prefix+"."+item,
+                "type": 'checkboxes',
+                "options": checkedCheckBox
+        });
+        if (checkedItem || dynamicForm[item]['subfields']){
+            var box = {
+                "type":"fieldset",
+                "caption": localize_label(checkedItem),
+                "radiochildren":"radiochildren",
+                "elements":[]
+            };
+            $.each(checkedItem['subfields'], function (k,v) {
+                    configToForm(v, box, id_prefix, configTree);
+            });
+            if (box['type'])
+                elt["elements"].push(box);
+        }
+    } else if (dynamicForm[item]["type"] == "select") {
+        if (dynamicForm[item]["options"] == 'dynamic') {
+            options = clone(window.app[item+'Options']);
+        } else {
+            options = dynamicForm[item]["options"];
+        }
+        if (configTree && item in configTree) {
+            for (var j=0; j<options.length; j++){
+                if (options[j]['value'] == configTree[item])
+                    options[j]['selected'] = true;
+            }
+        }
+        var label = null;
+        if (dynamicForm[item]!="hidden"){
+            label = localize_label(item)
+        }
+        elt["elements"].push(
+            {
+                "type":"fieldset",
+                'class': "actions",
+                'elements': [{
+                        "name": id_prefix + "." + item,
+                        "caption": label,
+                        "type": 'select',
+                        "options": options
+                }]
+            });
+    } else {
+        var eltValue = "";
+        if (configTree) {
+            eltValue = configTree[item];
+            if (sub_item == 'date-time')
+                eltValue = fromIsoDateToFormDate(eltValue);
+        }
+        var label = null;
+        if (dynamicForm[item]['type'] != "hidden"){
+            label = localize_label(item)
+        } 
+        elt["elements"].push(
+            {
+                "name":id_prefix+"."+item,
+                "caption": label,
+                "type": dynamicForm[item]['type'],
+                "value": eltValue
+            });
+    }
+/*    
+            } else { //it's an array 
                 var myelt = {
                     "type":"fieldset",
                     "caption": localize_label(sub_item),
                     "name": id_prefix+"."+sub_item,
                     "elements": []
                 };
-                //alert("start recursive call "+sub_item);
                 if (configTree) {
                     configToForm(sub_item,myelt,id_prefix+"."+sub_item, configTree[sub_item]);
                 } else {
@@ -1112,7 +1003,7 @@ function configToForm(item,elt,id_prefix,configTree){
                 }
                 elt["elements"].push(myelt);
         }
-    });
+    });*/
 };
 
 function localize_label(label) {

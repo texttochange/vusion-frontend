@@ -2,33 +2,38 @@ var dynamicForm = {};
 
 var dialogue = {
     "Dialogue":{
-        'type': 'container'
+        'type': 'container',
         'contains': ["name",  "set-prioritized", "auto-enrollment", "interactions","dialogue-id", "activated"],
+        'skip': true,
+    },
+    'name': {
+        'type': 'text',
     },
     "dialogue-id":{ 
         'type': "hidden",
-    }
+    },
     "auto-enrollment":{ 
         'type': "select",
-        'options':  ["none": 'None', "all": "All participants"],
-    }    
+        'options':  ["none", "all"],
+    },   
     "set-prioritized": {
         'type': "checkboxes",
         'value': 'prioritized'
     },
     "interactions": {
         'type': 'list',
-        'add-button': true
+        'add-button': true,
         'adds' : "interaction",
     },
     "interaction": {
-        'type': 'containers',
+        'type': 'container',
         'contains': [
             "type-schedule", 
             "type-interaction",
             "interaction-id", 
             "activated"],
-    }
+            'skip': true,
+    },
     "interaction-id":{
         'type': "hidden",
     },
@@ -47,7 +52,7 @@ var dialogue = {
                 "days",
                 "at-time"]},
             {'value': "offset-condition",
-            'subfields': ["offset-condition-interaction-id"]},
+            'subfields': ["offset-condition-interaction-id"]}]},
     "type-interaction": {
         "type": "radiobuttons",
         "options": [
@@ -72,8 +77,8 @@ var dialogue = {
     "type-unmatching-feedback" : {
         'type': "radiobuttons",
         'options': [
-            {"value": "no-unmatching-feedback"} 
-            {'value': "program-unmatching-feedback"}
+            {"value": "no-unmatching-feedback"}, 
+            {'value': "program-unmatching-feedback"},
             {'value': "interaction-unmatching-feedback",
             'subfields': ['unmatching-feedback-content']}],
     },
@@ -110,7 +115,7 @@ var dialogue = {
             {"value": 'open-question',
              "subfield": [
                  "answer-label", 
-                 "feedbacks"]}
+            "feedbacks"]}]
     },
     "set-answer-accept-no-space": { 
         "type": "checkboxes",
@@ -143,10 +148,10 @@ var dialogue = {
     },
     "choice": {
         "type": "text",
-    }
+    },
     "answer-keywords": {
         'type': 'list',
-        'add-button': true
+        'add-button': true,
         'adds': "answer-keyword",
     },
     "answer-keyword": {
@@ -183,7 +188,7 @@ var request = {
         'type': 'list',
         'add-button': true,
         'adds': "action"
-    }
+    },
     "response":{ 
         "type": "container",
         "contains": ["content"],
@@ -224,7 +229,7 @@ var reminder = {
     },
     "reminder-actions": {
         'type': 'list',
-        'add-button': true
+        'add-button': true,
         'add': "action",
     },
     "reminder-days": {"type": "text"},
@@ -252,7 +257,7 @@ var action = {
             {'value': "any-subconditions"}],
     },
     'subconditions': {
-        'type': 'list'
+        'type': 'list',
         'add-button': true,
         'adds': 'subcondition'
     },
@@ -276,7 +281,7 @@ var action = {
         'options': 'dynamic',
     },
     "type-action": {
-        'type': 'radio',
+        'type': 'radiobuttons',
         'options': [
             {'value': "optin"},
             {'value': "optout"}, 
@@ -289,7 +294,7 @@ var action = {
             {'value': "reset"},
             {'value': "feedback",
             'subfields': 'content'}]
-    }
+    },
     "tag": {'type': 'text'},
     "enroll": {
         'type': 'select',

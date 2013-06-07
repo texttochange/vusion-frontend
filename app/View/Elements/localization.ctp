@@ -65,8 +65,8 @@ var localized_labels = {
     "at-time": "<?php echo __('At Time')?>",
     "days": "<?php echo __('Days')?>",
     "announcement": "<?php echo __('Announcement')?>",
-    "question": "<?php echo __('Question')?>",
-    "question-multi-keyword": "<?php echo __('Question multi-keyword')?>",
+    "question-answer": "<?php echo __('Question')?>",
+    "question-answer-keyword": "<?php echo __('Question multi-keyword')?>",
     "open-question": "<?php echo __('Open question')?>",
     "closed-question": "<?php echo __('Closed question')?>",
     "answers": "<?php echo __('Answers')?>",
@@ -114,5 +114,10 @@ var localized_labels = {
     "prioritized": "<?php echo __('Has priority')?>",
     "request-content": "<?php echo __('Content')?>",
     "dialogue-content": "<?php echo __('Content')?>",
+    "condition": "<?php echo __('Condition')?>",
+    "all-subconditions": "<?php echo __('Match All Subcondition')?>",
+    "any-subconditions": "<?php echo __('Match Any Subcondition')?>",
+    "subcondition": "<?php echo __('Subcondition')?>",
+    "set-prioritized": "<?php echo __('Prioritize')?>",
 };
 
