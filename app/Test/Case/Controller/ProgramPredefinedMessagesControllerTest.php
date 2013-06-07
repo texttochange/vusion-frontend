@@ -73,15 +73,11 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
+                    'Auth' => array()
                     ),
                 'models' => array(
-                   'Program' => array('find', 'count'),
-                   'Group' => array(),
-                   'User' => array('find')
-                   ),
-                'methods' => array(
-                    '_instanciateVumiRabbitMQ'
-                    )
+                   'Program' => array('find', 'count')
+                   )
                 )
             );
 
@@ -91,7 +87,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
             ->will($this->returnValue('true'));
             
         $predefinedMessages->Program
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('find')
             ->will($this->returnValue($this->programData));
 
@@ -151,6 +147,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
                 'data' => $predefinedMessage
                 )
             );
+        $this->assertEquals(1, $this->PredefinedMessage->find('count'));
     }
     
     

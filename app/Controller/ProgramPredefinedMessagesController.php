@@ -2,7 +2,6 @@
 
 App::uses('AppController', 'Controller');
 App::uses('PredefinedMessage', 'Model');
-App::uses('VumiRabbitMQ', 'Lib');
 
 
 class ProgramPredefinedMessagesController extends AppController
@@ -18,13 +17,7 @@ class ProgramPredefinedMessagesController extends AppController
             );
         
         $this->PredefinedMessage = new PredefinedMessage($options);
-        $this->_instanciateVumiRabbitMQ();
         
-    }
-
-
-    protected function _instanciateVumiRabbitMQ(){
-        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
     
     
