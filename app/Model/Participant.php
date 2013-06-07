@@ -52,8 +52,13 @@ class Participant extends MongoModel
                 'message' => 'Please enter a phone number.'
                 ),
             'hasPlus'=>array(
-                'rule' => 'hasPlus',
+                'rule' => array('custom', '/^\+/'),
                 'message' => "A phone number must begin with a '+' sign and end with a serie of digits such as +3345678733.",
+                'required' => true
+                ),
+            'validMSISDN'=>array(
+                'rule' => array('custom', '/^\+[0-9]+$/'),
+                'message' => 'A phone number must only contain digits such as +3345678733.',
                 'required' => true
                 ),
             'isReallyUnique' => array(
@@ -63,20 +68,12 @@ class Participant extends MongoModel
                 )
             ),
         'profile' => array(
-/*             'notempty' => array(
-                'rule' => array('notempty'),
-                'message' => 'Profile cannot be empty.'
-                ),*/
             'validateProfile' => array(
                 'rule' => 'validateProfile',
                 'message' => 'Invalid format. Must be label:value, label:value, ... e.g gender:male, ..'
                 ),
             ),
         'tags' => array(
-            /* 'notempty' => array(
-                'rule' => array('notempty'),
-                'message' => 'Tags cannot be empty.'
-                ),*/
             'validateTags' => array(
                 'rule' => 'validateTags',
                 'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
@@ -138,13 +135,6 @@ class Participant extends MongoModel
             'conditions' => $conditions
             ));
         return $result < 1;            
-    }
-    
-    
-    public function hasPlus($check)
-    {
-        $regex = '/^\+[0-9]+/';
-        return preg_match($regex, $check['phone']);
     }
     
     
