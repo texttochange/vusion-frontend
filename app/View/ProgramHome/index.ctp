@@ -5,7 +5,7 @@
 		$this->Js->get('#restart-worker-button')->event(
 	           'click',
 	           $this->Js->request(
-	               array('program'=>$programUrl, 'action'=>'restartWorker.json'),
+	               array('program'=>$programDetails['url'], 'action'=>'restartWorker.json'),
 	               array('method' => 'GET',
                          'async' => true, 
 	                     'dataExpression' => true,

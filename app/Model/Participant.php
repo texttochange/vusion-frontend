@@ -579,6 +579,10 @@ class Participant extends MongoModel
                         'tags' => array('index' => 1));
                 }
             }
+            #skip empty rows
+            if (!isset($entry[0])) {
+                continue;
+            }
             $participant          = array();
             #Get Phone
             $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);

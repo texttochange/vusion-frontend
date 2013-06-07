@@ -914,6 +914,38 @@ class ParticipantTestCase extends CakeTestCase
         $participants = $this->Participant->find('all');
         $this->assertEquals(5, count($participants));
     }
+    
+    
+    public function testImport_csv_manyEmptyRows()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows.csv');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(6, count($report));
+    }
+    
+    
+    public function testImport_xls_manyEmptyRows()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows.xls');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(6, count($report));
+    }
 
 
     //TEST FILTERS

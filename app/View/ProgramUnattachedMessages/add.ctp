@@ -6,7 +6,7 @@
     <?php
     echo $this->Html->link(__('Cancel'), 
         array(
-            'program' => $programUrl,
+            'program' => $programDetails['url'],
             'controller' => 'programHome',
             'action' => 'index'	           
             ));

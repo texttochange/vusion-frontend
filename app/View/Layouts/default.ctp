@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>
-    <?php if (isset($programName)) echo $programName." - "; ?>	
+    <?php if (isset($programDetails['name'])) echo $programDetails['name']." - "; ?>	
     <?php echo "Vusion" ?>
 	</title>
 	<?php	
@@ -121,56 +121,14 @@
 			 </table>
 			</div>
 			<!-- To be refact with all the Controllers and views -->
-			<?php if (isset($programName)) { ?>
-			<div class='ttc-program-header'>
-			<div class="ttc-program-time">
-			<?php
-			if ($programTimezone) {
-					echo $this->Html->tag('span', $programTimezone.' - ');
-					$now = new DateTime('now');
-					date_timezone_set($now,timezone_open($programTimezone));
-					echo $this->Html->tag('span', $now->format('d/m/Y H:i:s'), array("id"=>"local-date-time") );
-					$this->Js->get('document')->event('ready',
-							'setInterval("updateClock()", 1000);'
-							);
-			}
-		    ?>
-			</div>
-			<div class='ttc-program-title'>
-			<?php
-			echo $this->Html->link($programName, 
-					array('program' => $programUrl,
-							'controller' => 'programHome',
-							'action' => 'index'
-							), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));			
-			
+			<?php 
+			if (isset($programDetails['name'])) { 
+					 echo $this->element('program_specific_header');					
+			} 
 			?>
-			</div>				
-			<div class="ttc-program-link">
-			<?php
-			echo "> ";
-			echo $this->Html->link($this->params['controller'], 
-					array('program' => $programUrl,
-							'controller' => $this->params['controller'],
-							'action' => 'index'
-							),
-					array('style'=>'text-decoration:none;font-weight:normal; font-size:12px'));
-			if(isset($this->params['action']) &&  $this->params['action'] != 'index') {
-					echo " > ";
-					echo $this->Html->link($this->params['action'], 
-							array('program' => $programUrl,
-									'controller' => $this->params['controller'],
-									'action' => $this->params['action']
-									),
-							array('style'=>'text-decoration:none;font-weight:normal; font-size:12px'));
-			}				    
-			?>				
-			</div>
-		</div>				
-			<?php } ?>
 		<div id="content">
         <?php
-        if (isset($programName)) {
+        if (isset($programDetails['name'])) {
             echo "<div class='program-left-column'>";			   
             echo $this->element('navigation_menu');
             echo $this->element('backend_notifications');
