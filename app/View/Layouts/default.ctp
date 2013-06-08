@@ -27,14 +27,16 @@
 		echo $this->Html->script('dform/dform.subscribers.js');
 		echo $this->Html->script('dform/dform.converters.js');
 		echo $this->Html->script('form2js/form2js.js');
-		echo $this->Html->script('ttc-generic-program.js');
-		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('superfish-1.4.8/superfish.js');
 		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
 		echo $this->Html->script('superfish-1.4.8/supersubs.js');
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('moment.js');
 		echo $this->Html->script('chosen.jquery.min.js');
+		## home brewed javascript
+		echo $this->Html->script('ttc-dynamic-form-structure.js');
+		echo $this->Html->script('ttc-generic-program.js');
+		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('counter.js');
 		echo $this->Html->script('screen.js');
     ?><script>

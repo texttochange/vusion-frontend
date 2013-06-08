@@ -141,7 +141,7 @@ function clickBasicButton(){
     
     var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
       
-    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]", object);
+    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
     
     $(parent).formElement(expandedElt);
     
@@ -739,17 +739,18 @@ function updateRadioButtonSubmenu() {
          "radiochildren":"radiochildren",
          "name":name,
              "elements":[]};
-    //var name = $(elt).parent().parent().attr('name');
-    configToForm(item, newContent, name, {item: $(elt).attr('value')});
+    checked = $(elt).attr('value');
+    option = dynamicForm[item]['options'].filter(function (option) { return option.value == checked});
+    if (option[0]['subfields']) {
+        $.each(option[0]['subfields'], function(k, v) {
+                configToForm(v, newContent, name);
+        });    
     
-    $(elt).parent().formElement(newContent);
-    
-    var newElt = $(elt).nextAll('fieldset');
-    
-    $(elt).parent().after($(newElt).clone());
-    //$(newElt).clone().appendTo($(elt).parent());
-    $(newElt).remove();
-    //$(elt).parent().after($(newElt).clone());
+        $(elt).parent().formElement(newContent);
+        var newElt = $(elt).nextAll('fieldset');
+        $(elt).parent().after($(newElt).clone());
+        $(newElt).remove();
+    }
     
     activeForm();
 };
@@ -757,6 +758,7 @@ function updateRadioButtonSubmenu() {
 function updateCheckboxSubmenu() {
     //var elt = event.currentTarget;
     var elt = this;
+    var item = $(elt).parent().attr('item');
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null)
@@ -772,18 +774,14 @@ function updateCheckboxSubmenu() {
              "caption": label,
              "radiochildren":"radiochildren",
              "name":name,
-                "elements":[]};
-        //var name = $(elt).parent().parent().attr('name');
-        configToForm($(elt).attr('value'), newContent, name);
-    
+               "elements":[]};
+        $.each(dynamicForm[item]['subfields'], function(k, v) {
+                configToForm(v, newContent, name);
+        });
         $(elt).parent().formElement(newContent);
-    
         var newElt = $(elt).nextAll('fieldset');
-    
         $(elt).parent().after($(newElt).clone());
-        //$(newElt).clone().appendTo($(elt).parent());
         $(newElt).remove();
-        //$(elt).parent().after($(newElt).clone());
     }
     activeForm();
 };
@@ -926,10 +924,11 @@ function configToForm(item, elt, id_prefix, configTree){
         }
         elt["elements"].push({
                 "name": id_prefix+"."+item,
+                "item": item,
                 "type": 'checkboxes',
                 "options": checkedCheckBox
         });
-        if (checkedItem || dynamicForm[item]['subfields']){
+        if (checkedItem && dynamicForm[item]['subfields']){
             var box = {
                 "type":"fieldset",
                 "caption": localize_label(checkedItem),

@@ -57,7 +57,7 @@ var dialogue = {
         "type": "radiobuttons",
         "options": [
             {"value": "announcement",
-            "subfields": "content"},
+            "subfields": ["content"]},
             {"value": "question-answer",
             'subfields': [
                 "content",
@@ -65,7 +65,7 @@ var dialogue = {
                 "set-use-template", 
                 "type-question", 
                 "set-max-unmatching-answers", 
-                "radio-type-unmatching-feedback",
+                "type-unmatching-feedback",
                 "set-reminder"]},
             {"value": "question-answer-keyword",
             "subfields": [
@@ -108,14 +108,14 @@ var dialogue = {
         'type': "radiobuttons",
         "options": [
             {"value": "closed-question",
-             "subfield": [
+             "subfields": [
                  "label-for-participant-profiling", 
-                 "checkbox-set-answer-accept-no-space", 
+                 "set-answer-accept-no-space", 
                  "answers"]},
             {"value": 'open-question',
-             "subfield": [
+             "subfields": [
                  "answer-label", 
-            "feedbacks"]}]
+                 "feedbacks"]}]
     },
     "set-answer-accept-no-space": { 
         "type": "checkboxes",
@@ -139,12 +139,13 @@ var dialogue = {
     },
     "feedback": {
         "type": 'container',
-        "contains": ["content"]
+        "contains": ["content"],
+        'skip': true
     },
     "answer-actions": {
         "type": "list",
         "add-button": true,
-        "adds": "actions"
+        "adds": "action"
     },
     "choice": {
         "type": "text",
@@ -157,6 +158,7 @@ var dialogue = {
     "answer-keyword": {
         'type': 'container',
         'contains': ["keyword","feedbacks", "answer-actions"],
+        'skip': true,
     },
     "offset-condition-interaction-id": {
         'type': "select",
@@ -230,7 +232,7 @@ var reminder = {
     "reminder-actions": {
         'type': 'list',
         'add-button': true,
-        'add': "action",
+        'adds': "action",
     },
     "reminder-days": {"type": "text"},
     "reminder-minutes": {'type': "text"},
@@ -242,6 +244,7 @@ var action = {
     "action": { 
         'type': 'container',
         'contains': ["set-condition", "type-action"],
+        'skip': true,
     },
     "set-condition": {
         'type': 'checkboxes',
@@ -251,7 +254,7 @@ var action = {
             "subconditions"],
     },
     "condition-operator": { 
-        'type': 'radio',
+        'type': 'radiobuttons',
         'options': [
             {'value': "all-subconditions"},
             {'value': "any-subconditions"}],
@@ -265,6 +268,7 @@ var action = {
         'type': 'container', 
         'contains': ["subcondition-field", "subcondition-operator", "subcondition-parameter"],
         'align': 'horizontal',
+        'skip': true,
     },
     "subcondition-field": {
         'type': 'select',
