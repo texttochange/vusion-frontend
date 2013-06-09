@@ -200,8 +200,10 @@ abstract class VirtualModel
                     if (!isset($errorMessage)) {
                         $errorMessage = $rule['message'];
                     }
-                    array_push($this->validationErrors[$field], $errorMessage);
-                    break;
+                    if (isset($errorMessage)) {
+                        array_push($this->validationErrors[$field], $errorMessage);
+                        break;
+                    }
                 }
             }
         }

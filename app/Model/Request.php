@@ -108,15 +108,17 @@ class Request extends MongoModel
 
     public function validateAction($check)
     {
+        $count = 0;
         foreach($check['actions'] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
-                if (!isset($this->validationErrors['actions'])) {
-                    $this->validationErrors['actions'] = array();
+                if (!isset($this->validationErrors['actions'][$count])) {
+                    $this->validationErrors['actions'][$count] = array();
                 }
-                array_push($this->validationErrors['actions'], $this->Action->validationErrors);
+                $this->validationErrors['actions'][$count] = $this->Action->validationErrors;
                 return false;
             }
+            $count++;
         }
         return true;
     }
