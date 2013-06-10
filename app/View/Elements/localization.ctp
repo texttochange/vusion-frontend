@@ -33,6 +33,7 @@ var localized_messages = {
     wait_redirection: "<?php echo __('Wait for redirection.')?>",
     generating_file: "<?php echo __('Generating export file...')?>",
     download_should_start: "<?php echo __('The export file has been generated. The download should start shortly.')?>",
+    select_one: "<?php echo __('Select one...')?>",
 };
 
 var localized_actions= {
@@ -102,7 +103,7 @@ var localized_labels = {
     "offset-condition": "<?php echo __('Answer Required')?>",
     "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
     "set-use-template": "<?php echo __('Use template from program settings')?>",
-    "no-request-matching-try-keyword-only": "<?php echo __('In case no matching on other requests, try to match only the message first word.')?>",
+    "set-no-request-matching-try-keyword-only": "<?php echo __('In case no matching on other requests, try to match only the message first word.')?>",
     "set-max-unmatching-answers": "<?php echo __('Set maximum number of accepted unmatching answers')?>",
     "max-unmatching-answer-number": "<?php echo __('Maximum number of accepted unmatching answers')?>",        
     "max-unmatching-answer-actions": "<?php echo __('Actions')?>",
@@ -114,7 +115,7 @@ var localized_labels = {
     "prioritized": "<?php echo __('Has priority')?>",
     "request-content": "<?php echo __('Content')?>",
     "dialogue-content": "<?php echo __('Content')?>",
-    "set-condition": "<?php echo __('Set Condition')?>",
+    "set-condition": "<?php echo __('Set Condition on Participant')?>",
     "all-subconditions": "<?php echo __('Match All Subcondition')?>",
     "any-subconditions": "<?php echo __('Match Any Subcondition')?>",
     "subconditions": "<?php echo __('Subconditions')?>",
@@ -124,5 +125,6 @@ var localized_labels = {
     "reminder-offset-days": "<?php echo __('Remind at offset days')?>",
     "all-subconditions": "<?php echo __('All subcondition have to be true')?>",
     "any-subconditions": "<?php echo __('Only one subcondition has to be true')?>",
+    "set-answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
 };
 

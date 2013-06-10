@@ -14,7 +14,9 @@ var dialogue = {
     },
     "auto-enrollment":{ 
         'type': "select",
+        'data': "static",
         'options':  ["none", "all"],
+        'fieldset': true
     },   
     "set-prioritized": {
         'type': "checkboxes",
@@ -162,7 +164,9 @@ var dialogue = {
     },
     "offset-condition-interaction-id": {
         'type': "select",
-        'options': 'dynamic'
+        'data': 'page-dynamic',
+        'fieldset': true,
+        'onmouseover': 'updateOffsetConditions(this)',
     },
     "keyword": {"type": "text"},
 };
@@ -267,22 +271,22 @@ var action = {
     "subcondition": {
         'type': 'container', 
         'contains': ["subcondition-field", "subcondition-operator", "subcondition-parameter"],
-        'align': 'horizontal',
         'skip': true,
     },
     "subcondition-field": {
         'type': 'select',
-        'options': 'dynamic',
-        'modify': ['subcondition-operator', 'subcondition-parameter'],
+        'data': 'server-dynamic',
+        'onchange': 'supplySubconditionOperatorOptions(this)',
+        'fieldset': false,
     },
     "subcondition-operator": {
         'type': 'select',
-        'options': 'dynamic',
-        'modify': ['subcondition-parameter']
+        'data': 'server-dynamic',
+        'fieldset': false,
     },
     "subcondition-parameter": {
-        'type': 'select',
-        'options': 'dynamic',
+        'type': 'text',
+        'style': 'width:200px'
     },
     "type-action": {
         'type': 'radiobuttons',
@@ -302,7 +306,8 @@ var action = {
     "tag": {'type': 'text'},
     "enroll": {
         'type': 'select',
-        'option': 'dynamic',
+        'data': 'server-dynamic',
+        'fieldset': true
     },
 }
 $.extend(dynamicForm, action);

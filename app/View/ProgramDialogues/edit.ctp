@@ -81,6 +81,8 @@
 	    }
 	}
 	$this->Js->set('enrollOptions', $dialogueOptions);
+	$this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+	$this->Js->set('dymanicOptions', $dynamicOptions);
 	?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

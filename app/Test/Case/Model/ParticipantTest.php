@@ -1344,6 +1344,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(in_array('you2', $participants[0]['Participant']['tags']));
     }
 
+
 	public function testParticipantProfile_trim()
 	{
 			$this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1363,6 +1364,17 @@ class ParticipantTestCase extends CakeTestCase
 			$this->assertEqual($participantDb['Participant']['profile'][1]['value'],'mama');
 			
 	}
+
+
+    public function testGetFilters()
+    {
+        $filters = $this->Participant->getFilters('conditional-action');
+        $this->assertEqual(count($filters), 2);
+        $this->assertTrue(isset($filters['tagged']));
+        $this->assertTrue(isset($filters['tagged']['operators']['in']));
+        $this->assertTrue(isset($filters['labelled']));
+        
+    }	
 
 
 }

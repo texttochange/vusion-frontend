@@ -739,19 +739,23 @@ class Participant extends MongoModel
             'operators' => array(
                 'in' =>  array(
                     'label' => 'with',
-                    'parameter-type' => 'tag'),
+                    'parameter-type' => 'tag',
+                    'conditional-action' => true),
                 'not-in' =>  array(
                     'label' => 'not with',
-                    'parameter-type' => 'tag'))),
+                    'parameter-type' => 'tag',
+                    'conditional-action' => true))),
         'labelled' => array(
             'label' => 'labelled',
             'operators' => array(
                 'in' =>  array(
                     'label' => 'with',
-                    'parameter-type' => 'label'),
+                    'parameter-type' => 'label',
+                    'conditional-action' => true),
                 'not-in' =>  array(
                     'label' => 'not with',
-                    'parameter-type' => 'label')))
+                    'parameter-type' => 'label',
+                    'conditional-action' => true)))
     );
 
     public $filterOperatorOptions = array(
@@ -759,7 +763,29 @@ class Participant extends MongoModel
         'any' => 'any'
         );
 
-     
+
+    public function getFilters($subset = null) 
+    {
+        if (!isset($subset)) {
+            return $this->filterFields;
+        }
+        $subsetFilterFields = array();
+        foreach ($this->filterFields as $field => $filterField) {
+            $subsetOperator = array();
+            foreach ($filterField['operators'] as $operator => $details) {
+                if (isset($details[$subset])) {
+                    $subsetOperator[$operator] = $details;
+                }
+            }
+            if ($subsetOperator != array()) {
+                $subsetFilterField = $filterField;
+                $subsetFilterField['operators'] = $subsetOperator;
+                $subsetFilterFields[$field] = $subsetFilterField;
+            }
+        }
+        return $subsetFilterFields;
+    }
+
 
    public function validateFilter($filterParam)
     {

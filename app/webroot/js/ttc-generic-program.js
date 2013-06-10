@@ -170,11 +170,6 @@ function activeForm(){
                 $(elt).change(updateRadioButtonSubmenu);
             };
     });
-    $.each($("select[name*='offset-condition-interaction-id']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).mouseover(updateOffsetConditions);
-            };
-    });
     $.each($(".ui-dform-fieldset:[name$=']']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
@@ -447,10 +442,10 @@ function generateFieldSummary(elt, parentName, field)
 }
 
 //TODO need to generate a interaction id there.
-function updateOffsetConditions(index, elt){
+function updateOffsetConditions(elt){
     var bucket = []; 
     var i =0;
-    $(this).children().each(function(){bucket[i]=this.value; i++;});
+    $(elt).children().each(function(){bucket[i]=elt.value; i++;});
     if (!(bucket instanceof Array)) {
         bucket = [bucket];
     }
@@ -459,12 +454,12 @@ function updateOffsetConditions(index, elt){
     for (var i=0; i<currentQA.length; i++) {
         var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
         bucket.splice(bucket.indexOf(interactionId), 1);
-        if ($(this).children("[value='"+interactionId+"']").length==0)
-            $(this).append("<option class='ui-dform-option' value='"+
+        if ($(elt).children("[value='"+interactionId+"']").length==0)
+            $(elt).append("<option class='ui-dform-option' value='"+
                 interactionId+"'>"+
                 $(currentQA[i]).find('[name$="content"]').val()+"</option>")
         else
-            $(this).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
+            $(elt).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
     } 
     //Removing deleted interactions
     for (var i=0; i<bucket.length; i++) {
@@ -472,7 +467,7 @@ function updateOffsetConditions(index, elt){
         if (bucket[i]==0) {
             continue
         }
-        $(this).children("[value='"+bucket[i]+"']").remove();
+        $(elt).children("[value='"+bucket[i]+"']").remove();
         defaultOptions = window.app['offset-condition-interaction-idOptions']
         defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
     }
@@ -786,14 +781,27 @@ function updateCheckboxSubmenu() {
     activeForm();
 };
 
+function supplySubconditionOperatorOptions(elt) {
+     //$(elt).nextAll('input,select').remove();
+    var item = $(elt).attr("item");
+    var field = $(elt).val();
+    if (field == "")
+        return;
+    var operatorOptions = window.app[item+'Options'][field]['operators'];
+ 
+    var operatorDropDown = $(elt).nextAll('select')[0];
+    $(operatorDropDown).empty();
+	$.each(operatorOptions, function(operator, details) {
+	        $(operatorDropDown).append(new Option(details['label'], operator));
+	});
+}
+
 
 function configToForm(item, elt, id_prefix, configTree){
     if (!dynamicForm[item]){
         elt['type']=null;    
         return;
     }
-    //var rabioButtonAtThisIteration = false;
-    //var checkBoxAtThisIteration = false;
     if (dynamicForm[item]['type'] == 'container') {
         if (!dynamicForm[item]['skip']) {
             var myelt = {
@@ -808,50 +816,44 @@ function configToForm(item, elt, id_prefix, configTree){
         }
         $.each(dynamicForm[item]['contains'], function(k,v) {
                 if (configTree) {
-                    configToForm(v , myelt, id_prefix, configTree[v]);
+                    configToForm(v , myelt, id_prefix, configTree);
                 } else {
                     configToForm(v , myelt, id_prefix);
                 }
         });
     } else if (dynamicForm[item]['type'] == 'list') {
-        var myelt = {
+        var listName = id_prefix+"."+item;
+        var list = {
             "type":"fieldset",
             "caption": localize_label(item),
-            "name": id_prefix+"."+item,
+            "name": listName,
             "elements": []
         };
-        if (configTree && configTree.length>0){
+        if (configTree && configTree[item] && configTree[item].length>0){
             var i = 0;
-            configTree.forEach(function (configElt){
-                    /*if (rabioButtonAtThisIteration) {
-                    tmpIdPrefix = id_prefix + "."+label;
-                    }else{
-                    tmpIdPrefix = id_prefix;
-                    }*/
+            listEltName =  listName + "["+i+"]";
+            configTree[item].forEach(function (listEltValues){
                     var listElt = {
                         "type":"fieldset",
                         "caption": localize_label(item), //+" "+ i,
-                        "name": id_prefix+"["+i+"]",
+                        "name": listEltName,
                         "elements": []
                     };
-                    configToForm(dynamicForm[item]['adds'], listElt, id_prefix+"["+i+"]", configElt);
+                    configToForm(dynamicForm[item]['adds'], listElt, listEltName, listEltValues);
                     i = i + 1;
-                    myelt["elements"].push(listElt);
+                    list["elements"].push(listElt);
             });            
         }
         if (dynamicForm[item]['add-button']) {
-            myelt["elements"].push({
+            list["elements"].push({
                     "type":"addElt",
                     "alert":"add message",
                     "label": dynamicForm[item]['adds']});
         }
-        elt["elements"].push(myelt);
+        elt["elements"].push(list);
     } else if (dynamicForm[item]['type'] == "radiobuttons") {
-        /*rabioButtonAtThisIteration = true;
-        var radio_type = sub_item.substring(6);*/
         var checkedRadio = {};
         var checkedItem;
-        //var checkedItemLabel;
         $.each(dynamicForm[item]['options'],function(k,v) {
                 if (configTree && v['value']==configTree[item]) {
                     checkedRadio[v['value']] = {
@@ -888,29 +890,9 @@ function configToForm(item, elt, id_prefix, configTree){
                 elt["elements"].push(box);
         };
     } else if (dynamicForm[item]['type'] == "checkboxes") {
-        //checkBoxAtThisIteration = true;
-        //var checkbox_type = sub_item.substring(9);
         var checkedCheckBox = {};
         var checkedItem;
         var checkedItemLabel;
-/*        $.each(dynamicForm[item], function(k,v) {
-                if (configTree && k==configTree[checkbox_type]) {
-                    checkedCheckBox[k] = {
-                        "value": k, 
-                        "caption": localize_label(v),
-                        "checked":"checked"
-                    }
-                    checkedItem = k;
-                    checkedItemLabel = localize_label(v);
-                } else {
-                    checkedCheckBox[k] = localize_label(v);
-                }     
-        });
-        elt["elements"].push({
-                "name":id_prefix+"."+checkbox_type,
-                "type": program[sub_item],
-                "options": checkedCheckBox
-        });*/
         if (configTree && dynamicForm[item]['value']==configTree[item]) {
             checkedItem = dynamicForm[item];
             checkedItemLabel = localize_label(checkedItem['value']);
@@ -942,10 +924,24 @@ function configToForm(item, elt, id_prefix, configTree){
                 elt["elements"].push(box);
         }
     } else if (dynamicForm[item]["type"] == "select") {
-        if (dynamicForm[item]["options"] == 'dynamic') {
-            options = clone(window.app[item+'Options']);
-        } else {
-            options = dynamicForm[item]["options"];
+        options = [{
+                'value': null,
+                'html': localized_messages.select_one}];
+        switch (dynamicForm[item]["data"]) {
+        case 'server-dynamic':
+            for (option in window.app[item+'Options']) {
+                options.push({
+                        'value': option,
+                        'html': window.app[item+'Options'][option]['label']})
+            }
+            break;
+        case 'static':
+            for (option in dynamicForm[item]["options"]) {
+                 options.push({
+                         'value': dynamicForm[item]["options"][option],
+                         'html': dynamicForm[item]["options"][option]})
+            }
+            break;
         }
         if (configTree && item in configTree) {
             for (var j=0; j<options.length; j++){
@@ -957,53 +953,50 @@ function configToForm(item, elt, id_prefix, configTree){
         if (dynamicForm[item]!="hidden"){
             label = localize_label(item)
         }
-        elt["elements"].push(
-            {
-                "type":"fieldset",
-                'class': "actions",
-                'elements': [{
-                        "name": id_prefix + "." + item,
-                        "caption": label,
-                        "type": 'select',
-                        "options": options
-                }]
-            });
+        select = {
+            "name": id_prefix + "." + item,
+            "caption": label,
+            "item": item,
+            "type": 'select',
+            "options": options};
+        if (dynamicForm[item]['onchange']) {
+            select['onchange'] = dynamicForm[item]['onchange']; 
+        }
+        if (dynamicForm[item]['onmouseover']) {
+            select['onmouseover'] = dynamicForm[item]['onmouseover']; 
+        }
+        if (dynamicForm[item]['fieldset']==false) {
+            elt["elements"].push(select);
+        } else {
+            elt["elements"].push({
+                    "type":"fieldset",
+                    'class': "actions",
+                    'elements': [select]
+            });            
+        }
     } else {
         var eltValue = "";
         if (configTree) {
             eltValue = configTree[item];
-            if (sub_item == 'date-time')
+            if (item == 'date-time')
                 eltValue = fromIsoDateToFormDate(eltValue);
         }
         var label = null;
         if (dynamicForm[item]['type'] != "hidden"){
             label = localize_label(item)
         } 
-        elt["elements"].push(
-            {
+        newElt = {
                 "name":id_prefix+"."+item,
                 "caption": label,
                 "type": dynamicForm[item]['type'],
-                "value": eltValue
-            });
-    }
-/*    
-            } else { //it's an array 
-                var myelt = {
-                    "type":"fieldset",
-                    "caption": localize_label(sub_item),
-                    "name": id_prefix+"."+sub_item,
-                    "elements": []
-                };
-                if (configTree) {
-                    configToForm(sub_item,myelt,id_prefix+"."+sub_item, configTree[sub_item]);
-                } else {
-                    configToForm(sub_item,myelt,id_prefix+"."+sub_item);
-                }
-                elt["elements"].push(myelt);
+                "value": eltValue}
+        if (dynamicForm[item]['style']) {
+            newElt['style'] = dynamicForm[item]['style']; 
         }
-    });*/
+        elt["elements"].push(newElt);
+    }
 };
+
 
 function localize_label(label) {
 	if (label in localized_labels)
