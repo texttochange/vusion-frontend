@@ -379,14 +379,16 @@ class Dialogue extends MongoModel
     public function checkDialogueName($name, $dialogueId = null)
     {
         if (isset($dialogueId)) {
-            $conditions = array('name'=> $name, 'dialogue-id' => array('$ne', $dialogueId));
+            $conditions = array('name'=> $name, 'dialogue-id' => array('$ne'=> $dialogueId));
             $result = $this->find('count', array('conditions' => $conditions));
-    		return $result == 0;
+            //print_r($conditions);
+            return $result == 0;    		
         }
-
+        
         $conditions = array('name' => $name);
         $result = $this->find('count', array('conditions' => $conditions));
-        return $result == 0;
+        //print_r($conditions);
+        return $result == 0;        
     }
 
 }

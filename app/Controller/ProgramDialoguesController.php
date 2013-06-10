@@ -313,6 +313,7 @@ class ProgramDialoguesController extends AppController
 				}        		
         }
         $this->set('result', array('status'=>'ok'));
+      
     }
     
 }
