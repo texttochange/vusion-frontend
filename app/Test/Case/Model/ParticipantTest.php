@@ -75,8 +75,7 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
-
-    public function testSave_fail()
+    public function testSave_noUnique_fail()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
      
@@ -90,7 +89,27 @@ class ParticipantTestCase extends CakeTestCase
         $savedParticipant = $this->Participant->save($participant);
 
         $this->assertFalse($savedParticipant);
+        $this->assertEqual(
+            'This phone number already exists in the participant list.',
+            $this->Participant->validationErrors['phone'][0]);
     }
+
+
+    public function testSave_valiationPhone_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+     
+        $participant = array(
+            'phone' => '2.5679E+11',
+            );
+        $this->Participant->create();
+        $this->assertFalse($this->Participant->save($participant));
+        
+        $this->assertEqual(
+            'A phone number must only contain digits such as +3345678733.',
+            $this->Participant->validationErrors['phone'][0]);
+    }
+
 
 
     public function testSave_clearPhone()
@@ -894,6 +913,38 @@ class ParticipantTestCase extends CakeTestCase
 
         $participants = $this->Participant->find('all');
         $this->assertEquals(5, count($participants));
+    }
+    
+    
+    public function testImport_csv_manyEmptyRows()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows.csv');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(6, count($report));
+    }
+    
+    
+    public function testImport_xls_manyEmptyRows()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+  
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS . 'files/many_empty_rows.xls');
+            
+        $participants = $this->Participant->find('all');
+
+        $this->assertEquals(6, count($participants));
+        $this->assertEquals(6, count($report));
     }
 
 

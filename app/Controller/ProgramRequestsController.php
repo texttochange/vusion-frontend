@@ -60,6 +60,12 @@ class ProgramRequestsController extends AppController
                         'request-id' => $this->Request->id,
                         'message' => __('Request created, wait for redirection.'))
                     );
+            } else {
+                $this->set(
+                    'result', array(
+                        'status' => 'fail',
+                        'message' => $this->Request->validationErrors)
+                    );
             }
         }
     }
@@ -82,11 +88,10 @@ class ProgramRequestsController extends AppController
                         'message' => 'Request saved.')
                     );
             } else {
-                $message = reset($this->Request->validationErrors);
                 $this->set(
                     'result', array(
                         'status' => 'fail',
-                        'message' => $message[0]
+                        'message' => $this->Request->validationErrors
                         )
                     );
             }

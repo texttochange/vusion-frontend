@@ -57,7 +57,7 @@ class Interaction extends VirtualModel
                     'valueRequireFields', array(
                         'fixed-time' => array('date-time'),
                         'offset-days' => array('days', 'at-time'),
-                        'offset-time' => array('at-time'),
+                        'offset-time' => array('minutes'),
                         'offset-condition' => array('offset-condition-interaction-id'))),
                 'message' => 'Type schedule required field are not present.'
                 )
@@ -322,15 +322,15 @@ class Interaction extends VirtualModel
                 )
             ),
         'feedbacks' => array(
-            'validApostrophe' => array(
-                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
-                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+            'validFeedback' => array(
+                'rule' => 'validateFeedbacks',
+                'message' => null
                 )
             ),
         'answer-actions' => array( 
             'validateActions' => array(
                 'rule' => 'validateActions',
-                'message' => 'One Action is not valid.'
+                'message' => null
                 ),
             )
         );
@@ -350,13 +350,13 @@ class Interaction extends VirtualModel
         'feedbacks' => array(
             'validFeedback' => array(
                 'rule' => 'validateFeedbacks',
-                'message' => 'On Feedback is not valid.'
+                'message' => null
                 )
             ),
         'answer-actions' => array( 
             'validateActions' => array(
                 'rule' => 'validateActions',
-                'message' => 'One Action is not valid.'
+                'message' => null
                 ),
             )
         );
@@ -423,15 +423,17 @@ class Interaction extends VirtualModel
     
     public function validateActions($field, $data)
     {
+        $count = 0;
         foreach($data[$field] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
-                if (!isset($this->validationErrors['actions'])) {
-                    $this->validationErrors['actions'] = array();
+                if (!isset($this->validationErrors[$field])) {
+                    $this->validationErrors[$field][$count] = array();
                 }
-                array_push($this->validationErrors['actions'], $this->Action->validationErrors[0]);
+                $this->validationErrors[$field][$count] = $this->Action->validationErrors;
                 return false;
             }
+            $count++;
         }
         return true;
     }
