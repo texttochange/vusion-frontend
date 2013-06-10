@@ -107,31 +107,29 @@
     if ($this->Form->isFieldError('send-to-type'))
         echo $this->Form->error('send-to-type');
     echo "</div>";
-    echo $this->Form->checkbox('use-predefined-message', array('hiddenField' => false));
-    echo $this->Html->tag('label',__('Use predefined message from list:'));
-    $this->Js->get('#UnattachedMessageUse-predefined-message')->event('change','
-        if(this.checked)
-            $("#predefined-message").attr("disabled", false);
-        else
-            $("#predefined-message").attr("disabled", "disabled");
-        ');
     $predefinedMessageOptions = array();
     foreach ($predefinedMessages as $predefinedMessage) {
         $predefinedMessageOptions[$predefinedMessage['PredefinedMessage']['_id']] = $predefinedMessage['PredefinedMessage']['name'];
     }
-    echo "&nbsp";
-    echo $this->Form->select('predefined-message', $predefinedMessageOptions, array('id' => 'predefined-message', 'disabled' => 'disabled'));
-    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5)); 
-    $this->Js->get('#predefined-message')->event('change','
-        var messageList = '.json_encode($predefinedMessages).';
-        var messageId = $("#predefined-message option:selected").val();
-        $.each(messageList, function (i, elem) {
-            if (messageId == elem.PredefinedMessage._id)
-                $("#unattached-content").val(elem.PredefinedMessage.content);
-            else
-                $("#unattached-content").val("");
-        });
-        ');
+    if (count($predefinedMessages) <= 0) {
+        echo $this->Html->tag('label',__('There are no predefined messages. To create one, go '));
+        echo $this->Html->link(__('here'), array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'));
+    } else {
+        echo $this->Html->tag('label',__('Use predefined message from list:'));
+        echo "&nbsp";
+        echo $this->Form->select('predefined-message', $predefinedMessageOptions, array('id' => 'predefined-message'));
+        $this->Js->get('#predefined-message')->event('change','
+            var messageList = '.json_encode($predefinedMessages).';
+            var messageId = $("#predefined-message option:selected").val();
+            $.each(messageList, function (i, elem) {
+                if (messageId.length == 0)
+                    $("#unattached-content").val("");
+                if (messageId == elem.PredefinedMessage._id)
+                    $("#unattached-content").val(elem.PredefinedMessage.content);
+            });
+            ');
+    }
+    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
