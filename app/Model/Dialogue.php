@@ -63,7 +63,7 @@ class Dialogue extends MongoModel
         'set-prioritized' => array(
             'validValue' => array(
                 'rule' => array('inList', array(null, 'prioritized')),
-                'message' => 'The activated field value can only be 0 or 1.'
+                'message' => 'The prioritized field value can only be null or prioritized.'
                 ), 
             ),
         );
