@@ -444,6 +444,7 @@ class Interaction extends VirtualModel
         parent::beforeValidate();
         $this->_setDefault('interaction-id', uniqid());
         $this->_setDefault('activated', 0);
+        $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
 
         if (!isset($this->data['type-interaction'])) {
