@@ -47,9 +47,9 @@ var dialogue = {
         "options": [
             {"value": "fixed-time",
             "subfields":["date-time"]},
-            {"value": "offset-days",
+            {"value": "offset-time",
             "subfields":["minutes"]},
-            {'value': "offset-time",
+            {'value': "offset-days",
             'subfields': [
                 "days",
                 "at-time"]},
@@ -133,6 +133,7 @@ var dialogue = {
     "answer": {
         'type': 'container',
         'contains': ["choice", "feedbacks", "answer-actions"],
+        'skip': true
     },
     "feedbacks": {
         "type": "list",
@@ -277,11 +278,13 @@ var action = {
         'type': 'select',
         'data': 'server-dynamic',
         'onchange': 'supplySubconditionOperatorOptions(this)',
+        'onmouseover': 'supplySubconditionOperatorOptions(this)',
         'fieldset': false,
     },
     "subcondition-operator": {
         'type': 'select',
         'data': 'server-dynamic',
+        'onmouseover': 'supplySubconditionOperatorOptions(this)',
         'fieldset': false,
     },
     "subcondition-parameter": {

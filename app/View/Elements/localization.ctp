@@ -126,5 +126,11 @@ var localized_labels = {
     "all-subconditions": "<?php echo __('All subcondition have to be true')?>",
     "any-subconditions": "<?php echo __('Only one subcondition has to be true')?>",
     "set-answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
+    "in": "<?php echo __('with')?>",
+    "not-in": "<?php echo __('not with')?>",
+    "none": "<?php echo __('none')?>",
+    "all": "<?php echo __('all participants')?>",
+    "tagged": "<?php echo __('tagged')?>",
+    "labelled": "<?php echo __('labelled')?>",
 };
 

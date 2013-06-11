@@ -170,28 +170,31 @@ function clickBasicButton(){
     //alert("click on add element "+$(this).prev('legend'));
     var object = null;
     var id = $(this).prevAll("fieldset").length;
-    var eltLabel = $(this).attr('label');
-    var tableLabel = $(this).parent().attr('name');
+    var itemToAdd = $(this).attr('adds');
+    var listName = $(this).parent().attr('name');
     //in case of radio button the parent name need the name to be added
     var r = new RegExp("\\]$","g");
-    if (r.test(tableLabel)){
-        tableLabel = tableLabel +"."+ eltLabel;
+    if (r.test(listName)){
+        listName = listName +"."+ itemToAdd;
     }
     var parent = $(this).parent();
     
-    var expandedElt = {"type":"fieldset","name":tableLabel+"["+id+"]","caption": localize_label(eltLabel),"elements":[]}
+    var newElt = {
+        "type": "fieldset",
+        "name": listName+"["+id+"]",
+        "caption": localize_label(itemToAdd),
+        "elements": []}
       
-    configToForm(eltLabel, expandedElt, tableLabel+"["+id+"]");
+    configToForm(itemToAdd, newElt, listName+"["+id+"]");
     
-    $(parent).formElement(expandedElt);
+    $(parent).formElement(newElt);
     
-    $(this).parent().children("button").each(function(index,elt){
-        $(elt).clone().appendTo($(parent));
-        $(elt).remove();    
-    })
-    
+    $(this).parent().children("button").each(
+        function(index,elt){
+            $(elt).clone().appendTo($(parent));
+            $(elt).remove();    
+    });
     activeForm();
-    
 };
 
 function hiddeUndisabled(key, item){
@@ -446,28 +449,34 @@ function expandForm(){
 }
 
 function foldForm(){
-    var name = $(this).parent().attr('name');
-    $(this).parent().children(":not(img):not(.ui-dform-legend)").slideUp('fast');
-    var summary = $('[name="'+name+'.content"]').val();
-    if (summary && summary != "")
-        $(this).parent().append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
-    else {        
-        var elt = $(this);
-        if ($('[name="'+name+'"]').children('[name*=".choice"]').length > 0) {
-	    generateFieldSummary(elt, name, 'choice');
-        } else if ($('[name="'+name+'"]').children('[name*=".keyword"]').length > 0) {
-	    generateFieldSummary(elt, name, 'keyword');
-	} else {
-    	    var action = $('[name="'+name+'.type-action"]:checked').val();
-    	    if (action == null)
-    	    	    action = $('[name="'+name+'.type-answer-action"]:checked').val();
-    	    if (action == null)
-    	    	    action = $('[name="'+name+'.type-reminder-action"]:checked').val();
-    	    if (action && action != "") {
-    	    	    $(elt).parent().append('<div class="ttc-fold-summary">'+action+'</div>');
-    	    }
-	}
+//    var name = $(this).parent().attr('name');
+    var parent = $(this).parent(); 
+    $(parent).children(":not(img):not(.ui-dform-legend)").slideUp('fast');
+    var itemToFold = $(this).parent().attr('item');
+    var nameToFold = $(this).parent().attr('name');
+    var summary = "";
+    switch (itemToFold) {
+    case "interaction":
+        summary = $('[name="'+nameToFold+'.content"]').val();
+        break;
+    case "feedback":
+        summary = $('[name="'+nameToFold+'.content"]').val();
+        break;
+    case "answer":
+        summary = $('[name="'+nameToFold+'.choice"]').val();
+        break;
+    case "answer-keyword":
+        summary = $('[name="'+nameToFold+'.keyword"]').val();
+    case "action":
+        summary = $('[name="'+nameToFold+'.type-action"]:checked').val();
+        break;
+    case "subcondition":
+        summary = $('[name="'+nameToFold+'.subcondition-field"]').val()
+        break;
+    default:
+        summary = "not summarized view available for this item";
     }
+    $(parent).append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
 
@@ -820,18 +829,31 @@ function updateCheckboxSubmenu() {
 };
 
 function supplySubconditionOperatorOptions(elt) {
-     //$(elt).nextAll('input,select').remove();
     var item = $(elt).attr("item");
-    var field = $(elt).val();
-    if (field == "")
-        return;
-    var operatorOptions = window.app[item+'Options'][field]['operators'];
- 
-    var operatorDropDown = $(elt).nextAll('select')[0];
-    $(operatorDropDown).empty();
-	$.each(operatorOptions, function(operator, details) {
-	        $(operatorDropDown).append(new Option(details['label'], operator));
-	});
+    switch (item) {
+    case 'subcondition-field':
+        var field = $(elt).val();
+        if (field == "")
+            return;
+        var operatorOptions = window.app[item+'Options'][field]['operators'];
+        
+        var operatorDropDown = $(elt).nextAll('select')[0];
+        operatorValue = $(operatorDropDown).val()
+        $(operatorDropDown).empty();
+        $(operatorDropDown).append(new Option(localized_messages['select_one']));
+        $.each(operatorOptions, function(operator, details) {
+                var option = new Option(details['label'], operator);
+                if (operatorValue && operator == operatorValue) {
+                    $(option).prop('selected', true);
+                }
+                $(operatorDropDown).append(option);
+        });
+        break;
+    case 'subcondition-operator':
+        var fieldDropDown = $(elt).prevAll('select')[0];
+        supplySubconditionOperatorOptions(fieldDropDown);
+        break;
+    }
 }
 
 
@@ -869,24 +891,24 @@ function configToForm(item, elt, id_prefix, configTree){
         };
         if (configTree && configTree[item] && configTree[item].length>0){
             var i = 0;
-            listEltName =  listName + "["+i+"]";
             configTree[item].forEach(function (listEltValues){
+                    listEltName =  listName + "["+i+"]";
                     var listElt = {
                         "type":"fieldset",
-                        "caption": localize_label(item), //+" "+ i,
+                        "item": dynamicForm[item]['adds'],
+                        "caption": localize_label(item),
                         "name": listEltName,
                         "elements": []
                     };
                     configToForm(dynamicForm[item]['adds'], listElt, listEltName, listEltValues);
                     i = i + 1;
                     list["elements"].push(listElt);
-            });            
+            }); 
         }
         if (dynamicForm[item]['add-button']) {
             list["elements"].push({
                     "type":"addElt",
-                    "alert":"add message",
-                    "label": dynamicForm[item]['adds']});
+                    "adds": dynamicForm[item]['adds']});
         }
         elt["elements"].push(list);
     } else if (dynamicForm[item]['type'] == "radiobuttons") {
@@ -934,9 +956,8 @@ function configToForm(item, elt, id_prefix, configTree){
         if (configTree && dynamicForm[item]['value']==configTree[item]) {
             checkedItem = dynamicForm[item];
             checkedItemLabel = localize_label(checkedItem['value']);
-            checkedCheckBox[item] = {
-                "value": checkedItem['value'], 
-                "caption": localize_label(checkedItem['value']),
+            checkedCheckBox[checkedItem['value']] = {
+                "caption": localize_label(item),
                 "checked":"checked"
             }
         } else {
@@ -951,7 +972,7 @@ function configToForm(item, elt, id_prefix, configTree){
         if (checkedItem && dynamicForm[item]['subfields']){
             var box = {
                 "type":"fieldset",
-                "caption": localize_label(checkedItem),
+                "caption": localize_label(item),
                 "radiochildren":"radiochildren",
                 "elements":[]
             };
@@ -970,14 +991,15 @@ function configToForm(item, elt, id_prefix, configTree){
             for (option in window.app[item+'Options']) {
                 options.push({
                         'value': option,
-                        'html': window.app[item+'Options'][option]['label']})
+                        'html': localized_labels[option]})
             }
             break;
         case 'static':
             for (option in dynamicForm[item]["options"]) {
+                 var opt = dynamicForm[item]["options"][option];
                  options.push({
-                         'value': dynamicForm[item]["options"][option],
-                         'html': dynamicForm[item]["options"][option]})
+                         'value': opt,
+                         'html': localized_labels[opt]})
             }
             break;
         }
@@ -985,6 +1007,12 @@ function configToForm(item, elt, id_prefix, configTree){
             for (var j=0; j<options.length; j++){
                 if (options[j]['value'] == configTree[item])
                     options[j]['selected'] = true;
+            }
+            if (options.length == 1) {
+                options.push({
+                        'value': configTree[item],
+                        'html': localized_labels[configTree[item]],
+                        'selected': true});
             }
         }
         var label = null;
@@ -1002,6 +1030,9 @@ function configToForm(item, elt, id_prefix, configTree){
         }
         if (dynamicForm[item]['onmouseover']) {
             select['onmouseover'] = dynamicForm[item]['onmouseover']; 
+        }
+        if (dynamicForm[item]['onload']) {
+            select['onload'] = dynamicForm[item]['onload']; 
         }
         if (dynamicForm[item]['fieldset']==false) {
             elt["elements"].push(select);
@@ -1108,10 +1139,10 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     //alert("function called");
     
     $.dform.addType("addElt", function(option) {
-            return $("<button type='button'>").dformAttr(option).html(localize_label("add")+' '+localize_label(option["label"]))        
+            return $("<button type='button'>").dformAttr(option).html(localize_label("add")+' '+localize_label(option["adds"]))        
         });
     $.dform.addType("removeElt", function(option) {
-            return $("<button type='button'>").dformAttr(option).html(localize_label("remove")+' '+localize_label(option["label"]))        
+            return $("<button type='button'>").dformAttr(option).html(localize_label("remove")+' '+localize_label(option["adds"]))        
         });
     
     
