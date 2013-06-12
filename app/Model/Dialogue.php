@@ -68,7 +68,8 @@ class Dialogue extends MongoModel
             ),
         );
 
-    public function validateInteractions($check) {
+    public function validateInteractions($check) 
+    {
         $index = 0;
         foreach ($check['interactions'] as $interaction) {
             $this->Interaction->set($interaction);
