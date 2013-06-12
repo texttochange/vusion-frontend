@@ -297,12 +297,12 @@ class ProgramDialoguesController extends AppController
     public function validateName() {
         $dialogueName = $this->request->data['name'];
         $dialogueId = $this->request->data['dialogue-id'];
-        $dialogues = $this->Dialogue->checkDialogueName($dialogueName,  $dialogueId);
-        if(!($dialogues == 1)){
+        $isValid = $this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId);
+        if($isValid == false){
         		$this->set(
         				'result', array(
 						    	'status'=>'fail',
-						    	'message'=>__("'%s' Dialogue Name already used by a dialogue of program ", $dialogueName)
+						    	'message'=>__("'%s' Dialogue Name already exists in program. Please choose another. ", $dialogueName)
 						    	));	
 				return;
 		}				       		

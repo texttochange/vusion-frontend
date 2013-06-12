@@ -386,7 +386,7 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
     }
     
-    public function testCheckDialogueName()
+    public function testisValidDialogueName()
     {
     	$dialogue = $this->Maker->getOneDialogue();
     	$savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);
@@ -396,10 +396,8 @@ class DialogueTestCase extends CakeTestCase
     	$dialogue2['Dialogue']['dialogue-id'] = '08';
     	$savedDialogueTwo = $this->Dialogue->saveDialogue($dialogue2);
     	
-    	$output = $this->Dialogue->checkDialogueName('tom','08');
+    	$output = $this->Dialogue->isValidDialogueName('tom','08');
     	$this->assertEqual(1,$output);
-    	$this->assertNotEqual($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']);
-    	$this->assertEqual(2,$this->Dialogue->find('count'));
-    	$this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
+		$this->assertTrue($output);    	
     }
 }
