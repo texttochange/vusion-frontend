@@ -98,7 +98,6 @@ class ProgramDialoguesController extends AppController
                 'default',
                 array('class' => "message failure"));
         }
-
         $this->set('dialogue', $dialogue);
     }
 
@@ -294,6 +293,22 @@ class ProgramDialoguesController extends AppController
                  )
              );
     }
-
-
+                                                              
+    public function validateName() {
+        $dialogueName = $this->request->data['name'];
+        $dialogueId = $this->request->data['dialogue-id'];
+        $isValid = $this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId);
+        if($isValid == false){
+        		$this->set(
+        				'result', array(
+						    	'status'=>'fail',
+						    	'message'=>__("'%s' Dialogue Name already exists in program. Please choose another. ", $dialogueName)
+						    	));	
+				return;
+		}				       		
+        
+        $this->set('result', array('status'=>'ok'));
+      
+    }
+    
 }

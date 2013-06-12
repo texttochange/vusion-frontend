@@ -110,7 +110,6 @@ class ShortCode extends MongoModel
         $result = $this->find('count', array(
             'conditions' => $conditions
             ));
-
         return $result < 1;            
     }
 

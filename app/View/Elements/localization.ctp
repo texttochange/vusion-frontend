@@ -27,6 +27,7 @@ var localized_errors = {
     validation_apostrophe: "<?php echo __(" The apostrophe used in this message is not valid.")?>",
     validation_choice_format: "<?php echo __(" You are entering two choices or a special caharacter")?>",
     validation_choice_index: "<?php echo __("The choice is ambigious when answering by index, please Enter a different choice")?>",
+    validation_unique_dialogue_name: "<?php echo __("This Dialogue Name already exists. Please choose another.")?>",
 };
 
 var localized_messages = {
