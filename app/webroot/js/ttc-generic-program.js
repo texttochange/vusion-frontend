@@ -896,7 +896,7 @@ function configToForm(item, elt, id_prefix, configTree){
                     var listElt = {
                         "type":"fieldset",
                         "item": dynamicForm[item]['adds'],
-                        "caption": localize_label(item),
+                        "caption": localize_label(dynamicForm[item]['adds']),
                         "name": listEltName,
                         "elements": []
                     };

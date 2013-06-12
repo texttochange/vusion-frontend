@@ -285,10 +285,8 @@ class DialogueTestCase extends CakeTestCase
             'date-time' => '02/03/2013 20:20',
             'type-interaction' => 'announcement', 
             'content' => 'hello',
-            'keyword' => 'greet',
             );
         $dialogue['Dialogue']['set-prioritized'] = 'prioritized';
-        
         $dialog = $this->Dialogue->saveDialogue($dialogue);
        
         $this->assertEqual($dialog['Dialogue']['interactions'][0]['prioritized'], 'prioritized');
@@ -306,7 +304,6 @@ class DialogueTestCase extends CakeTestCase
             'date-time' => '02/03/2013 20:20',
             'type-interaction' => 'announcement', 
             'content' => 'hello',
-            'keyword' => 'greet',
             'prioritized' => 'prioritized'
             );
         
