@@ -301,10 +301,10 @@ var action = {
             {'value': "delayed-enrolling",
             'subfields': ['enroll', 'offset-days']}, 
             {'value': "tagging",
-            'subfields': 'tag'},
+            'subfields': ['tag']},
             {'value': "reset"},
             {'value': "feedback",
-            'subfields': 'content'}]
+            'subfields': ['content']}]
     },
     "tag": {'type': 'text'},
     "enroll": {
@@ -312,5 +312,10 @@ var action = {
         'data': 'server-dynamic',
         'fieldset': true
     },
+    'offset-days': {
+        'type': 'container',
+        'contains': ['days', 'at-time'],
+        'skip': false
+    }
 }
 $.extend(dynamicForm, action);
