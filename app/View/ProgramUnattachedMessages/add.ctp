@@ -104,25 +104,28 @@
         echo $this->Form->error('send-to-type');
     echo "</div>";
     ## Content
-    $predefinedMessageOptions = array();
-    foreach ($predefinedMessages as $predefinedMessage) {
-        $predefinedMessageOptions[$predefinedMessage['PredefinedMessage']['_id']] = $predefinedMessage['PredefinedMessage']['name'];
+    $this->Js->set('predefinedMessageOptions', $predefinedMessageOptions);
+    $options = array();
+    foreach ($predefinedMessageOptions as $key => $value) {
+        $options[$value['id']] = $value['name'];
     }
-    if (count($predefinedMessages) <= 0) {
-        echo $this->Html->tag('label',__('There are no predefined messages. To create one, go '));
-        echo $this->Html->link(__('here'), array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'));
+    echo "&nbsp&nbsp";
+    if (count($predefinedMessageOptions) <= 0) {
+        echo $this->Html->tag('label',__('There are no predefined messages.'));
+        echo $this->Html->link(__('To create a predefined message click here.'), array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'));
     } else {
         echo $this->Html->tag('label',__('Use predefined message from list:'));
         echo "&nbsp";
-        echo $this->Form->select('predefined-message', $predefinedMessageOptions, array('id' => 'predefined-message'));
+        echo $this->Form->select('predefined-message', $options, array('id' => 'predefined-message', 'empty' => '...select one...'));
         $this->Js->get('#predefined-message')->event('change','
-            var messageList = '.json_encode($predefinedMessages).';
+            var predefinedMessages = window.app["predefinedMessageOptions"];
             var messageId = $("#predefined-message option:selected").val();
-            $.each(messageList, function (i, elem) {
-                if (messageId.length == 0)
-                    $("#unattached-content").val("");
-                if (messageId == elem.PredefinedMessage._id)
-                    $("#unattached-content").val(elem.PredefinedMessage.content);
+            $.each(predefinedMessages, function (i, predefinedMessage) {
+                if (messageId == predefinedMessage.id) {
+                    var test = confirm("WARNING: Everything in the content area will be replaced.");
+                    if (test == true)
+                        $("#unattached-content").val(predefinedMessage.content);
+                }
             });
             ');
     }

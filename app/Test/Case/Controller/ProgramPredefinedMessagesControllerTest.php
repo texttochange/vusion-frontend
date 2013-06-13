@@ -76,7 +76,8 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
                     'Auth' => array()
                     ),
                 'models' => array(
-                   'Program' => array('find', 'count')
+                   'Program' => array('find', 'count'),
+                   'Group' => array()
                    )
                 )
             );
