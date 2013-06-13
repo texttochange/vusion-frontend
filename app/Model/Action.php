@@ -161,6 +161,17 @@ class Action extends VirtualModel
             ),
         );
 
+    public $validateSubconditionValues = array(
+        'labelled' => array(
+            'in' => VusionConst::LABEL_FULL_REGEX,
+            'not-in' => VusionConst::LABEL_FULL_REGEX,
+            ),
+        'tagged' => array(
+            'in' => VusionConst::TAG_REGEX,
+            'not-in' => VusionConst::TAG_REGEX,
+            )
+        );
+
 
     public function trimArray($Input)
     {
@@ -217,17 +228,44 @@ class Action extends VirtualModel
             return true;
         }
         $count = 0;
+        $validationError = array();
         foreach($data[$field] as $subcondition) {
             $result = $this->_runValidateRules($subcondition, $this->validateSubcondition);
+            if (is_bool($result) && $result) {
+                $result = $this->validSubconditionValue($subcondition);
+            }
             if (is_array($result)) {
-                $this->validationErrors[$field][$count] = $this->Action->validationErrors;
-                return false;
+                $validationError[$count] = $result;
             }
             $count++;
+        }
+        if ($validationError != array()) {
+            return $validationError;
         }
         return true;
     }
 
+
+    public function validSubconditionValue($subcondition)
+    {
+        if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
+            return array(
+                'subcondition-field' => array(
+                    __("The field value '%s' is not valid.", $subcondition['subcondition-field']))); 
+        }
+        $operators = $this->validateSubconditionValues[$subcondition['subcondition-field']]; 
+        if (!isset($operators[$subcondition['subcondition-operator']])) {
+            return array(
+                'subcondition-operator' => array( 
+                    __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
+        }
+        if (!preg_match($operators[$subcondition['subcondition-operator']], $subcondition['subcondition-parameter'])) {
+            return array(
+                'subcondition-parameter' => array(
+                    __("The parameter value '%s' is not valid.", $subcondition['subcondition-parameter'])));
+        }
+        return true;
+    }
 
 
 }

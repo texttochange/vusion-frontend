@@ -110,7 +110,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...',
+            "Use only space, letters and numbers for tag, e.g 'group 1'.",
             $this->Action->validationErrors['tag'][0]);
         $this->assertEqual(
             1, count($this->Action->validationErrors['tag']));
@@ -154,5 +154,22 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['set-condition'][0]);
     }
 
+
+    public function testValidateAction_condition_fail_subcondition_value() {
+        $action = array(
+            'type-action' => 'optin',
+            'set-condition' => 'condition',
+            'condition-operator' => 'all',
+            'subconditions' => array(
+                array('subcondition-field' => 'tagged',
+                    'subcondition-operator' => 'in',
+                    'subcondition-parameter' => 'a bad tag,')));
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            "The parameter value 'a bad tag,' is not valid.",
+            $this->Action->validationErrors['subconditions'][0]['subcondition-parameter'][0]);
+    }
 
 } 
