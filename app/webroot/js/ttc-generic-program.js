@@ -182,6 +182,7 @@ function clickBasicButton(){
     var newElt = {
         "type": "fieldset",
         "name": listName+"["+id+"]",
+        "item": itemToAdd,
         "caption": localize_label(itemToAdd),
         "elements": []}
       
@@ -459,6 +460,9 @@ function foldForm(){
     var summary = "";
     switch (itemToFold) {
     case "interaction":
+        summary = $('[name="'+nameToFold+'.content"]').val();
+        break;
+    case "response":
         summary = $('[name="'+nameToFold+'.content"]').val();
         break;
     case "feedback":

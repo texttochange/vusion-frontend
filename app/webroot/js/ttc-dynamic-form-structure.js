@@ -199,6 +199,7 @@ var request = {
     "response":{ 
         "type": "container",
         "contains": ["content"],
+        "skip": true
     },
 }
 $.extend(dynamicForm, request);
