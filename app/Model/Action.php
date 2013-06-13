@@ -74,7 +74,8 @@ class Action extends VirtualModel
                         'delayed-enrolling' => array('enroll', 'offset-days'),
                         'tagging' => array('tag'),
                         'reset' => array(),
-                        'feedback' => array('content'))),
+                        'feedback' => array('content'),
+                        'proportional-tagging' => array('proportional-tags'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -114,6 +115,16 @@ class Action extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 )
             ),
+        'proportional-tags' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'proportional-tagging'),
+                'message' => 'The proportional-tags field require an proportional-tagging action.',
+                ),
+            'validProportionalTags' => array(
+                'rule' => 'validProportionalTags',
+                'message' => 'noMessage',
+                ),
+            )      
         );
 
     public $validateOffsetDays = array(
@@ -172,6 +183,29 @@ class Action extends VirtualModel
             )
         );
 
+
+    public $validateProportionalTag = array(
+        'tag' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The tag is required.'
+                ),
+            'validValue' => array(
+                'rule' => array('regex', VusionConst::TAG_REGEX),
+                'message' => VusionConst::TAG_FAIL_MESSAGE
+                ),
+            ),
+        'weight' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The weight is required.'
+                ),
+            'validValue' => array(
+                'rule' => array('regex', '/^\d+$/'),
+                'message' => 'The weight value can only be a integer.'
+                ),
+            ),
+        );
 
     public function trimArray($Input)
     {
@@ -243,6 +277,12 @@ class Action extends VirtualModel
             return $validationError;
         }
         return true;
+    }
+
+
+    public function validProportionalTags($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateProportionalTag);
     }
 
 

@@ -188,6 +188,27 @@ abstract class VirtualModel
     }
 
 
+    public function validList($field, $data, $elementRules)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $count = 0;
+        $validationError = array();
+        foreach($data[$field] as $subcondition) {
+            $result = $this->_runValidateRules($subcondition, $elementRules);
+            if (is_array($result)) {
+                $validationError[$count] = $result;
+            }
+            $count++;
+        }
+        if ($validationError != array()) {
+            return $validationError;
+        }
+        return true;
+    }
+
+
     public function validates()
     {
         $data = $this->data;

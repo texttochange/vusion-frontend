@@ -172,4 +172,22 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['subconditions'][0]['subcondition-parameter'][0]);
     }
 
+    public function testValidateAction_fail_proportionalTagging() {
+        $action = array(
+            'type-action' => 'proportional-tagging',
+            'proportional-tags' => array(
+                array(
+                    'tag' => 'a tag$',
+                    'weight' => '6.5')));
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "Use only space, letters and numbers for tag, e.g 'group 1'.",
+            $this->Action->validationErrors['proportional-tags'][0]['tag'][0]);
+        $this->assertEqual(
+            'The weight value can only be a integer.',
+            $this->Action->validationErrors['proportional-tags'][0]['weight'][0]);
+    }
+
 } 
