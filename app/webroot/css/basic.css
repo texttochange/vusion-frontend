@@ -605,7 +605,8 @@
     width: 100%;
     border: 2px solid lightgrey;
     margin-bottom: 10px;
-    padding: 1%;
+    padding: 1%;    
+    max-width:1084px;
 }
 
 .ttc-table-display-area {
@@ -619,7 +620,8 @@
     /*position: relative;*/
     padding-bottom: 10px; 
     float: left;
-    min-width: 728px;
+    min-width: 728px;    
+    max-width:1084px;
 }
 .ttc-table-display-area-shortcode {
 	height: 340px;
