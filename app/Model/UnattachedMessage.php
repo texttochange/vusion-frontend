@@ -215,6 +215,7 @@ class UnattachedMessage extends MongoModel
         $result = $this->find('count', array(
             'conditions' => $conditions
             ));
+        //print_r($conditions);
         return $result < 1;
     }
     
