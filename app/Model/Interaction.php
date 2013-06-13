@@ -57,7 +57,7 @@ class Interaction extends VirtualModel
                     'valueRequireFields', array(
                         'fixed-time' => array('date-time'),
                         'offset-days' => array('days', 'at-time'),
-                        'offset-time' => array('at-time'),
+                        'offset-time' => array('minutes'),
                         'offset-condition' => array('offset-condition-interaction-id'))),
                 'message' => 'Type schedule required field are not present.'
                 )
