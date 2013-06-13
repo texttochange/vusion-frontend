@@ -11,6 +11,7 @@ Installation
 	# Then retrive the Plugins and the Backend
 	$ git submodule init
 	$ git submodule update
+test
 
 You need to add the following folders
 ::
