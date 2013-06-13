@@ -302,10 +302,10 @@ class ProgramDialoguesController extends AppController
         		$this->set(
         				'result', array(
 						    	'status'=>'fail',
-						    	'message'=>__("'%s' Dialogue Name already exists in program. Please choose another. ", $dialogueName)
+						    	'message'=>__("'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName)
 						    	));	
 				return;
-		}				       		
+		}    		
         
         $this->set('result', array('status'=>'ok'));
       
