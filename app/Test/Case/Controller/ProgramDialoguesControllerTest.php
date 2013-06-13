@@ -116,7 +116,8 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array(),
+                    'RequestHandler' => array()
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),

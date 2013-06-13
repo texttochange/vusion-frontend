@@ -107,7 +107,7 @@ class InteractionTestCase extends CakeTestCase
         $this->Interaction->beforeValidate();
         $this->assertFalse($this->Interaction->validates());
         $this->assertEqual(
-            $this->Interaction->validationErrors['keyword'][0],        
+            $this->Interaction->validationErrors['answer-keywords'][0]['keyword'][0],        
             "The keyword/alias is(are) not valid.");
                 
     }

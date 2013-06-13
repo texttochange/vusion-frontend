@@ -99,7 +99,7 @@ abstract class VirtualModel
             return false;
         }
         if ($data[$cField] != $cValue) {
-            return true;
+            return false;
         }
         return true;
     }
@@ -122,6 +122,27 @@ abstract class VirtualModel
             return false;
         }
         return true;
+    }
+
+
+    public function requiredConditionalFieldOrKeyValue()
+    {
+        $args = func_get_args();
+        $field = $args[0];
+        $data = $args[1];
+        $orKeyValue = $args[2];
+        if (!isset($data[$field])) {
+            return true;
+        }
+        foreach ($orKeyValue as $cField => $cValue) {
+            if (!isset($data[$cField])) {
+                continue;
+            }
+            if ($data[$cField] == $cValue) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -169,15 +190,28 @@ abstract class VirtualModel
 
     public function validates()
     {
-        $interaction = $this->data;
-        return $this->_validates($interaction, $this->validate);
+        $data = $this->data;
+        return $this->_validates($data, $this->validate);
     }
 
 
     protected function _validates($data, $validationRules)
     {
+        $result = $this->_runValidateRules($data, $validationRules);
+        if (is_bool($result)) {
+            $this->validationErrors = array();
+            return $result;
+        } 
+        $this->validationErrors = $result;
+        return false;
+    }
+
+
+    protected function _runValidateRules($data, $validationRules)    
+    {
+        $validationErrors = array();
         foreach ($validationRules as $field => $validateField) {
-            foreach ($validateField as $rule) {
+            foreach ($validateField as $ruleName => $rule) {
                 $defaultArgs = array($field, $data);
                 if (is_array($rule['rule'])) {
                     $func = $rule['rule'][0];
@@ -189,28 +223,33 @@ abstract class VirtualModel
                 $args = array_merge($defaultArgs, $args);
                 $result = call_user_func_array(array($this, $func), $args);
                 $errorMessage = null;
-                if (is_string($result)) {
+                if (is_string($result) || is_array($result)) {
                     $errorMessage = $result;
                     $result = false;
                 }
                 if (!$result) {
-                    if (!isset($this->validationErrors[$field])) {
-                        $this->validationErrors[$field] = array();
+                    if (!isset($validationErrors[$field])) {
+                        $validationErrors[$field] = array();
                     }
                     if (!isset($errorMessage)) {
                         $errorMessage = $rule['message'];
                     }
                     if (isset($errorMessage)) {
-                        array_push($this->validationErrors[$field], $errorMessage);
+                        if (is_array($errorMessage)) {
+                            $validationErrors[$field] = $errorMessage;
+                        } else {
+                            array_push($validationErrors[$field], $errorMessage);
+                        }
                         break;
                     }
                 }
             }
         }
-        if ($this->validationErrors != array()) {
-            return false;
+        if ($validationErrors != array()) {
+            return $validationErrors;
         }
         return true;
     }
+
 
 }

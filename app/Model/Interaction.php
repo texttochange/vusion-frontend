@@ -185,12 +185,6 @@ class Interaction extends VirtualModel
                 'message' => 'Type Question value is not valid.',
                 )
             ),
-        'label-for-participant-profiling' => array(
-            'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'question-answer-keyword'),
-                'message' => 'A label-for-participant-profiling is required.',
-                ),
-            ),
         'answer-keywords' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'question-answer-keyword'),
@@ -204,7 +198,9 @@ class Interaction extends VirtualModel
         ### Type Interaction Subtype - Type Question Subtype
         'label-for-participant-profiling'=> array(
             'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'type-question', 'closed-question'),
+                'rule' => array('requiredConditionalFieldOrKeyValue', array(
+                                                                'type-interaction'=>'question-answer-keyword',
+                                                                'type-question' => 'closed-question')),
                 'message' => 'A label-for-participant-profiling is required.',
                 ),
             ),
@@ -381,11 +377,17 @@ class Interaction extends VirtualModel
         if (!isset($data[$field])) {
             return true;
         }
+        $count = 0;
+        $validationErrors = array();
         foreach($data[$field] as $answer) {
-            $this->_validates($answer, $this->validateAnswer);
+            $valid = $this->_runValidateRules($answer, $this->validateAnswer);
+             if (is_array($valid)) {
+                $validationErrors[$count] = $valid;
+            }
+            $count++;
         }
-        if (isset($this->validationErrors[$field])) {
-            return false;
+        if ($validationErrors != array()) {
+            return $validationErrors;
         }
         return true;
     }
@@ -396,11 +398,17 @@ class Interaction extends VirtualModel
         if (!isset($data[$field])) {
             return true;
         }
-        foreach($data[$field] as $answerKeyword) {
-            $this->_validates($answerKeyword, $this->validateAnswerKeyword);
+        $count = 0;
+        $validationErrors = array();
+        foreach ($data[$field] as $answerKeyword) {
+            $valid = $this->_runValidateRules($answerKeyword, $this->validateAnswerKeyword);
+            if (is_array($valid)) {
+                $validationErrors[$count] = $valid;
+            }
+            $count++;
         }
-        if (isset($this->validationErrors[$field])) {
-            return false;
+        if ($validationErrors != array()) {
+            return $validationErrors;
         }
         return true;        
     }
@@ -411,11 +419,17 @@ class Interaction extends VirtualModel
         if (!isset($data[$field])) {
             return true;
         }
-        foreach($data[$field] as $answer) {
-            $this->_validates($answer, $this->validateFeedback);
+        $count = 0;
+        $validationErrors = array();
+        foreach ($data[$field] as $answer) {
+            $valid = $this->_runValidateRules($answer, $this->validateFeedback);
+            if (is_array($valid)) {
+                $validationErrors[$count] = $valid;
+            }
+            $count++;
         }
-        if (isset($this->validationErrors[$field])) {
-            return false;
+        if ($validationErrors != array()) {
+            return $validationErrors;
         }
         return true;
     }
@@ -444,6 +458,7 @@ class Interaction extends VirtualModel
         parent::beforeValidate();
         $this->_setDefault('interaction-id', uniqid());
         $this->_setDefault('activated', 0);
+        $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
 
         if (!isset($this->data['type-interaction'])) {

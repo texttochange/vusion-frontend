@@ -997,6 +997,9 @@ width: 102px;
 
 .ttc-fold-summary{
 	font-style: italic;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-bottom: 5px;
 }
 
 .paging .ttc-page-count{
