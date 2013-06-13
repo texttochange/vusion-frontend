@@ -108,15 +108,7 @@ class ProgramUnattachedMessagesController extends AppController
             $selectors = array_combine($selectorValues, $selectorValues);
         }
         
-        $predefinedMessages = $this->PredefinedMessage->find('all');
-        $predefinedMessageOptions = array();
-        foreach ($predefinedMessages as $predefinedMessage) {
-            $predefinedMessageOptions[] = array(
-                'id' => $predefinedMessage['PredefinedMessage']['_id'],
-                'name' => $predefinedMessage['PredefinedMessage']['name'],
-                'content' => $predefinedMessage['PredefinedMessage']['content']
-                );
-        }
+        $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
         $this->set(compact('selectors', 'predefinedMessageOptions'));
    
     }
@@ -266,6 +258,15 @@ class ProgramUnattachedMessagesController extends AppController
             $selectors = array_combine($selectorValues, $selectorValues);
         }
         
+        $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
+        $this->set(compact('selectors', 'predefinedMessageOptions'));
+
+        return $unattachedMessage;
+    }
+    
+    
+    protected function _getPredefinedMessageOptions()
+    {
         $predefinedMessages = $this->PredefinedMessage->find('all');
         $predefinedMessageOptions = array();
         foreach ($predefinedMessages as $predefinedMessage) {
@@ -275,9 +276,7 @@ class ProgramUnattachedMessagesController extends AppController
                 'content' => $predefinedMessage['PredefinedMessage']['content']
                 );
         }
-        $this->set(compact('selectors', 'predefinedMessageOptions'));
-
-        return $unattachedMessage;
+        return $predefinedMessageOptions;
     }
     
     

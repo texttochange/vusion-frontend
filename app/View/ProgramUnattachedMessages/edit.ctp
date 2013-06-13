@@ -114,12 +114,18 @@
     }
     echo "&nbsp&nbsp";
     if (count($predefinedMessageOptions) <= 0) {
-        echo $this->Html->tag('label',__('There are no predefined messages.'));
-        echo $this->Html->link(__('To create a predefined message click here.'), array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'));
+        echo $this->Html->tag('label',__('There are no predefined messages. '));
+        echo $this->Html->link(__('To create a predefined message click here.'),
+            array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'),
+            array('style'=>'text-decoration:none; font-weight:normal; font-size:14px')
+            );
     } else {        
         echo $this->Html->tag('label',__('Use predefined message from list:'));
         echo "&nbsp";
-        echo $this->Form->select('predefined-message', $options, array('id' => 'predefined-message', 'empty' => '...select one...'));
+        echo $this->Form->select('predefined-message',
+            $options,
+            array('id' => 'predefined-message', 'empty' => '...select one...')
+            );
         $this->Js->get('#predefined-message')->event('change','
             var predefinedMessages = window.app["predefinedMessageOptions"];
             var messageId = $("#predefined-message option:selected").val();
