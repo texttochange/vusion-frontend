@@ -479,9 +479,12 @@ class Interaction extends VirtualModel
             if ($this->data['type-question'] == 'closed-question') {
                 $this->_setDefault('set-answer-accept-no-space', null);
                 $this->_setDefault('label-for-participant-profiling', null);
-                $this->_setDefault('feedbacks', array());
+                //
                 $this->_setDefault('answers', array());
                 $this->_beforeValidateAnswers();
+            } elseif ($this->data['type-question'] == 'open-question') {
+                $this->_setDefault('answer-label', null);
+                $this->_setDefault('feedbacks', array());
             }
         }
       
