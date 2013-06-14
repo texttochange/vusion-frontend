@@ -606,7 +606,7 @@
     border: 2px solid lightgrey;
     margin-bottom: 10px;
     padding: 1%;    
-    max-width:1084px;
+    max-width:1071px;
 }
 
 .ttc-table-display-area {
@@ -621,7 +621,7 @@
     padding-bottom: 10px; 
     float: left;
     min-width: 728px;    
-    max-width:1084px;
+    max-width:1071px;
 }
 .ttc-table-display-area-shortcode {
 	height: 340px;
@@ -821,7 +821,7 @@ width: 102px;
    margin-bottom: 10px;
    border: 1px solid black;
    padding: 5px 10px 5px 10px;
-   height: 28px
+   height: 28px;
 }
 
 .ttc-dialogue a {
@@ -1060,7 +1060,7 @@ margin-left: 63px;
     	padding-right: 20px;
     	padding-bottom: 20px;
     	min-width: 800px;
-    	max-width: 1366px;
+    	/*max-width: 1366px;*/
     	position: relative;
     	overflow-x: hidden;
     	height: 483px;

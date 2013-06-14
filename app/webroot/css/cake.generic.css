@@ -80,7 +80,7 @@ p {
 /** Layout **/
 #container {
 	text-align: left;
-	max-width: 1366px;
+	/*max-width: 1366px;*/
 	min-width: 800px;
 	/*min-width: 1009px;*/
 }
@@ -137,6 +137,7 @@ div.view {
 	/*width:79%;*/
 	/*padding-right: 11px;*/
 	position: absolute;
+	max-width: 1071px;
 }
 div.form2,
 {
