@@ -11,7 +11,7 @@ Installation
 	# Then retrive the Plugins and the Backend
 	$ git submodule init
 	$ git submodule update
-test
+
 
 You need to add the following folders
 ::
@@ -43,10 +43,15 @@ You can create the relational database schema from file **app/Config/Schema/sche
 	$ ./lib/Cake/Console/cake schema create
 	
 If file schema.php is not found, you can also create the database using Mysql by importing a file **app/Config/Schema/schema.sql** with phpmyadmin tool.
+
 ::
 	1.On your phpmyadmin home go to more tab and in the drop dpwn select import
 	2.Browse the file you went to import in this case schema.sql 
 	3.Tick the checkbox with donot auto increment and press go
+
+
+or in the mysql console type "mysql -u root-p < app/Config/Schema/schema.sql"
+
 	
 Create a userLogin and password in the Mysql account database which must correspond to ones in the **app/Config/database.php** 
 ::
@@ -54,24 +59,49 @@ Create a userLogin and password in the Mysql account database which must corresp
 	2.Click on add a new user
 	3.Feelin the infromation but on Host select local and Global privileges check all then press go
 
+while in the mysql console,navigate to to users table and create two users; "cake" and "cake_test" and grant all privileges to these users by issuing the commands below
+
+         1.GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
+         2.GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
+
+Run vusion.sql
+        mysql -u root -p < app/Test/data/mySQL/vusion.sql
+
 PHP Modules
 -----------
 Modules need to be install and configure in PHP
  
 - MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
+- Download a .tar.gz file
+- Open a terminal
+- tar zxvf mongodb-php-driver-<commit_id>.tar.gz //commit id is the version of mongo driver
+- cd mongodb-php-driver-<commit_id>
+- phpize
+- ./configure
+- make all
+- sudo make install
+
 
 Development PHP Modules
 ----------------------- 
 
 - Pear
+sudo apt-get install php-pear
+
 - PHPUnit
+sudo apt-get install phpunit
 
 Jenkins
 -------
 To run the different build task from build.xml, you need to install
 
 - Jdk6
+sudo apt-get install openjdk-6-jre;
+
 - Ant
+sudo apt-get install -u ant;
+sudo apt-get insatll ant;
+
 
 Apache configuration for mod_xsendfile(export)
 --------------------------------
