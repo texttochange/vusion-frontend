@@ -393,7 +393,7 @@ class Interaction extends VirtualModel
     public function validateActions($field, $data)
     {
         $count = 0;
-        $validationError = array();
+        $validationErrors = array();
         foreach($data[$field] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
@@ -416,10 +416,10 @@ class Interaction extends VirtualModel
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
 
-        if (!isset($this->data['type-interaction'])) {
-            return false;
-        }
+        $this->_setDefault('type-interaction', null);
+        $this->_setDefault('type-schedule', null);
 
+        //Exit the function in case of announcement
         if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
             return true;
  
@@ -434,7 +434,6 @@ class Interaction extends VirtualModel
             if ($this->data['type-question'] == 'closed-question') {
                 $this->_setDefault('set-answer-accept-no-space', null);
                 $this->_setDefault('label-for-participant-profiling', null);
-                //
                 $this->_setDefault('answers', array());
                 $this->_beforeValidateAnswers();
             } elseif ($this->data['type-question'] == 'open-question') {

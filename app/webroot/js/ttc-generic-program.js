@@ -61,7 +61,7 @@ function saveFormOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 message = handleResponseValidationErrors(response['message']);
-                showErrorMessages(message);
+                //showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -90,37 +90,27 @@ function handleResponseValidationErrors(validationErrors){
    //Need to build up the name of the failed items. in a recursive maner
    errors = object2array(validationErrors);
    $.each(errors, function(k, error) {
+           if (error['value'] == null) {
+               return;
+           }
            error['name'] = error['name'].replace(/\[0\]$/g,'');
-           errorMessages[error['name']] = error['value'];
+           item = error['name'].match(/[\-\w]*$/g);
+           errorClass = null;
+           style = null;
+           switch (item[0]) {
+           case 'condition-operator':
+               errorClass = "ttc-radio-validation-error";
+               break;
+           case 'type-action':
+               errorClass = "ttc-radio-validation-error";
+               break;
+           case 'subcondition-parameter':
+               style = 'left:-200px';
+               break;
+           }
+           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style);
    });
    $('#dynamic-generic-program-form').validate().showErrors(errorMessages);
-   /*
-   for (var field in validationErrors) {
-       if (field == 'interactions') {
-          for (var interaction in validationErrors[field]) {
-               errorPrefix = "For interaciton "+interaction+"-";
-               for (var subfield in validationErrors[field][interaction]) {
-                   if (subfield != 'answer-actions') {
-                       errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0]);
-                   } else {
-                       for (var subsubfield in validationErrors[field][interaction][subfield][0]) {
-                           errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0][subsubfield]);
-                       }
-                   } 
-               }
-           }
-       } else if (field == 'actions') {
-            for (var action in validationErrors[field]) {
-                for (var subfield in validationErrors[field][action]) {
-                    errorMessages.push(validationErrors[field][action][subfield]);
-                }
-            }
-       } else {
-           errorMessages.push(validationErrors[field][0]);
-       }
-   }
-   return errorMessages;
-   */     
 }
 
 function showErrorMessages(errorMessages){
@@ -149,7 +139,7 @@ function saveRequestOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 message = handleResponseValidationErrors(response['message']);
-                showErrorMessages(message);
+                //showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -1118,14 +1108,15 @@ function wrapErrorMessage(error) {
      return wrapErrorMessageInClass(error, null);
 }
 
-function wrapErrorMessageInClass(error, inClasses){
+function wrapErrorMessageInClass(error, inClasses, style){
     if (inClasses != null) {
         inClasses = inClasses + " ttc-validation-error"
     } else {
         inClasses = "ttc-validation-error"
     }
-    return '<span class="'+inClasses+'"><nobr>'+error+'</nobr></span>';
+    return '<span class="'+inClasses+'" style="'+style+'"><nobr>'+error+'</nobr></span>';
 }
+
 
 //TODO: consider renaming radiochildren so that the names are not the same as those for the interactions 
 function showSummaryError() {

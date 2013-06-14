@@ -148,13 +148,24 @@ abstract class VirtualModel
 
     public function inList($field, $data, $list)
     {
-        if (!isset($data[$field])) {
+        if (!array_key_exists($field, $data)) {
             return true;
         }
-        if (in_array($data[$field], $list)) {
+        if (!in_array($data[$field], $list)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function notEmptyArray($field, $data) {
+        if (!array_key_exists($field, $data)) {
             return true;
         }
-        return false;
+        if ($data[$field] == array()) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -183,6 +194,27 @@ abstract class VirtualModel
     {
         if ($data[$field] == null) {
             return false;
+        }
+        return true;
+    }
+
+
+    public function validList($field, $data, $elementRules)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $count = 0;
+        $validationError = array();
+        foreach($data[$field] as $subcondition) {
+            $result = $this->_runValidateRules($subcondition, $elementRules);
+            if (is_array($result)) {
+                $validationError[$count] = $result;
+            }
+            $count++;
+        }
+        if ($validationError != array()) {
+            return $validationError;
         }
         return true;
     }
@@ -240,7 +272,6 @@ abstract class VirtualModel
                         } else {
                             array_push($validationErrors[$field], $errorMessage);
                         }
-                        break;
                     }
                 }
             }

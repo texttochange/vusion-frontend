@@ -75,6 +75,29 @@ class ProgramRequestsController extends AppController
         }
     }
 
+    protected function isAssoc($array)
+    {
+        return (bool)count(array_filter(array_keys($array), 'is_string'));
+    }
+
+    protected function fillNonAssociativeArray($array) {
+        if (!is_array($array)) {
+            return $array;
+        }
+        foreach($array as $k => $subarray) {
+            $array[$k] = $this->fillNonAssociativeArray($subarray);
+        }
+        if (!$this->isAssoc($array)) {
+            $maxIndex = max(array_keys($array));
+            for ( $i=0 ; $i < $maxIndex ; $i++) {
+                if (!isset($array[$i])) {
+                    $array[$i] = null;
+                }
+            }
+            ksort($array);
+        }
+        return $array;
+    }
 
     public function edit()
     {
@@ -95,10 +118,11 @@ class ProgramRequestsController extends AppController
                         'message' => 'Request saved.')
                     );
             } else {
+                $this->Request->validationErrors = $this->fillNonAssociativeArray($this->Request->validationErrors);
                 $this->set(
                     'result', array(
                         'status' => 'fail',
-                        'message' => $this->Request->validationErrors
+                        'message' => array('Request' => $this->Request->validationErrors)
                         )
                     );
             }

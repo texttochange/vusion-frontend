@@ -25,7 +25,7 @@ class Action extends VirtualModel
             'valueRequireField' => array(
                 'rule' => array(
                     'valueRequireFields', array(
-                        'condition' => array('subconditions', 'condition-operator')),
+                        'condition' => array('condition-operator', 'subconditions')),
                     'message' => 'The field required by set-condition are not present.'
                     )
                 ),
@@ -35,8 +35,8 @@ class Action extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'set-condition', 'condition'),
                 'message' => 'The set-condition field has not the valid value.',
                 ),
-            'validOpeartor' => array(
-                'rule' => array('inlist', array('all', 'any')),
+            'validOperator' => array(
+                'rule' => array('inlist', array('all-subconditions', 'any-subconditions')),
                 'message' => 'The condition-operator value is not valid.'
                 )
             ),
@@ -44,6 +44,10 @@ class Action extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-condition', 'condition'),
                 'message' => 'The set-condition field has not the valid value.',
+                ),
+            'notEmptyArray' => array(
+                'rule' => 'notEmptyArray',
+                'message' => 'At least one subconditions has to be set.'
                 ),
             'validSubconditions' => array(
                 'rule' => 'validSubconditions',
@@ -163,12 +167,12 @@ class Action extends VirtualModel
 
     public $validateSubconditionValues = array(
         'labelled' => array(
-            'in' => VusionConst::LABEL_FULL_REGEX,
-            'not-in' => VusionConst::LABEL_FULL_REGEX,
+            'with' => VusionConst::LABEL_FULL_REGEX,
+            'not-with' => VusionConst::LABEL_FULL_REGEX,
             ),
         'tagged' => array(
-            'in' => VusionConst::TAG_REGEX,
-            'not-in' => VusionConst::TAG_REGEX,
+            'with' => VusionConst::TAG_REGEX,
+            'not-with' => VusionConst::TAG_REGEX,
             )
         );
 
@@ -190,6 +194,10 @@ class Action extends VirtualModel
             unset($this->data['type-answer-action']);
         } 
         $this->_setDefault('set-condition', null);
+        if ($this->data['set-condition'] == 'condition') {
+             $this->_setDefault('condition-operator', null);
+             $this->_setDefault('subconditions', array());
+        }
         return true;
     }
 
