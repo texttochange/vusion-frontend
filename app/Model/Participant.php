@@ -731,22 +731,22 @@ class Participant extends MongoModel
         'tagged' => array(
             'label' => 'tagged',
             'operators' => array(
-                'in' =>  array(
+                'with' =>  array(
                     'label' => 'with',
                     'parameter-type' => 'tag',
                     'conditional-action' => true),
-                'not-in' =>  array(
+                'not-with' =>  array(
                     'label' => 'not with',
                     'parameter-type' => 'tag',
                     'conditional-action' => true))),
         'labelled' => array(
             'label' => 'labelled',
             'operators' => array(
-                'in' =>  array(
+                'with' =>  array(
                     'label' => 'with',
                     'parameter-type' => 'label',
                     'conditional-action' => true),
-                'not-in' =>  array(
+                'not-with' =>  array(
                     'label' => 'not with',
                     'parameter-type' => 'label',
                     'conditional-action' => true)))
@@ -862,20 +862,20 @@ class Participant extends MongoModel
                     $condition['phone'] = $filterParam[3];        
                 }
             } elseif ($filterParam[1]=='tagged') {
-                if ($filterParam[2] == 'in') {
+                if ($filterParam[2] == 'with') {
                     $condition['tags'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-in') {
+                } elseif ($filterParam[2] == 'not-with') {
                     $condition['tags'] = array('$ne' => $filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'labelled') {
                 $label = explode(":", $filterParam[3]);   
-                if ($filterParam[2] == 'in') {
+                if ($filterParam[2] == 'with') {
                     $condition['profile'] = array(
                         '$elemMatch' => array(
                             'label' => $label[0],
                             'value' => $label[1])
                         );
-                } elseif (($filterParam[2] == 'not-in')) {
+                } elseif (($filterParam[2] == 'not-with')) {
                     $condition['profile'] = array(
                         '$elemMatch' => array(
                             '$or' => array(

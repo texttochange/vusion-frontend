@@ -777,7 +777,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(2, $this->Participant->find('count'));
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
         $this->assertEquals(
-            $participant['Participant']['tags'], 
+            $participant['Participant']['tags'],                   
             array('imported', 'one tag', 'a second tag'));        
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256712747841')));
         $this->assertEquals(
@@ -1126,7 +1126,7 @@ class ParticipantTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'tagged', 
-                    2 => 'in',
+                    2 => 'with',
                     3 => 'geek')
                 )
             );        
@@ -1140,7 +1140,7 @@ class ParticipantTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'tagged', 
-                    2 => 'not-in',
+                    2 => 'not-with',
                     3 => 'geek')
                 )
             );        
@@ -1157,7 +1157,7 @@ class ParticipantTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'labelled', 
-                    2 => 'in',
+                    2 => 'with',
                     3 => 'gender:male')
                 )
             );        
@@ -1175,7 +1175,7 @@ class ParticipantTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'labelled', 
-                    2 => 'not-in',
+                    2 => 'not-with',
                     3 => 'gender:male')
                 )
             );        
@@ -1232,7 +1232,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $filterParam = array(
             1 => "labelled", 
-            2 => "in");
+            2 => "with");
         try {
             $this->Participant->validateFilter($filterParam);
             $this->failed('Not supported operator should rise an exception');
@@ -1422,7 +1422,7 @@ class ParticipantTestCase extends CakeTestCase
         $filters = $this->Participant->getFilters('conditional-action');
         $this->assertEqual(count($filters), 2);
         $this->assertTrue(isset($filters['tagged']));
-        $this->assertTrue(isset($filters['tagged']['operators']['in']));
+        $this->assertTrue(isset($filters['tagged']['operators']['with']));
         $this->assertTrue(isset($filters['labelled']));
         
     }	
