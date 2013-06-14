@@ -131,16 +131,18 @@
 	              <td class="profile"><?php
 	              	if (count($participant['Participant']['profile']) > 0) {
 	              		  foreach ($participant['Participant']['profile'] as $profileItem) {?>
-	              		  		  <div title = "<?php echo __("%s: %s", $profileItem['label'], $profileItem['value'])?>">
-	              		  		  <?php $profileItemsLabel = $this->Text->truncate($profileItem['label'],
+	              		  		 <?php $profileItemsLabel = $profileItem['label'];
+	              		  		       $profileItemsValue = $profileItem['value'];
+	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;
+	              		  		 ?>
+	              		  		  <div title = "<?php echo __($participantProfile)?>">
+	              		  		  <?php
+	              		  		  		$participantProfileEllipsis = $this->Text->truncate($participantProfile,
 	              		  		  			16,
 	              		  		  			array('ellipsis' => '...',
-	              		  		  		  		  'exact' => true));	
-	              		  		  		 $profileItemsValue = $this->Text->truncate($profileItem['value'],
-	              		  		  			10,
-	              		  		  			array('ellipsis' => '...',
 	              		  		  		  		  'exact' => true));
-	              		  		  	echo $this->Html->tag('div', __("%s: %s", $profileItemsLabel, $profileItemsValue)); ?>
+	              		  		  	echo $this->Html->tag('div', __($participantProfileEllipsis)); 
+	              		  		  	?>
 	              		  		  </div>
 	              		  <?php  }
 	              	} else {
