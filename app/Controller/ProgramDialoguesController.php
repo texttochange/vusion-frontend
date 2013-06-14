@@ -61,7 +61,7 @@ class ProgramDialoguesController extends AppController
                     'result', 
                     array(
                         'status'=>'fail',
-                        'message' => $this->Dialogue->validationErrors,
+                        'message' => array('Dialogue' => $this->Dialogue->validationErrors),
                         )
                     );
             }

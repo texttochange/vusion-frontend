@@ -374,80 +374,35 @@ class Interaction extends VirtualModel
 
     public function validateAnswers($field, $data)
     {
-        if (!isset($data[$field])) {
-            return true;
-        }
-        $count = 0;
-        $validationErrors = array();
-        foreach($data[$field] as $answer) {
-            $valid = $this->_runValidateRules($answer, $this->validateAnswer);
-             if (is_array($valid)) {
-                $validationErrors[$count] = $valid;
-            }
-            $count++;
-        }
-        if ($validationErrors != array()) {
-            return $validationErrors;
-        }
-        return true;
+        return $this->validList($field, $data, $this->validateAnswer); 
     }
 
 
     public function validateAnswerKeywords($field, $data)
     {
-        if (!isset($data[$field])) {
-            return true;
-        }
-        $count = 0;
-        $validationErrors = array();
-        foreach ($data[$field] as $answerKeyword) {
-            $valid = $this->_runValidateRules($answerKeyword, $this->validateAnswerKeyword);
-            if (is_array($valid)) {
-                $validationErrors[$count] = $valid;
-            }
-            $count++;
-        }
-        if ($validationErrors != array()) {
-            return $validationErrors;
-        }
-        return true;        
+        return $this->validList($field, $data, $this->validateAnswerKeyword);      
     }
 
 
     public function validateFeedbacks($field, $data)
     {
-        if (!isset($data[$field])) {
-            return true;
-        }
-        $count = 0;
-        $validationErrors = array();
-        foreach ($data[$field] as $answer) {
-            $valid = $this->_runValidateRules($answer, $this->validateFeedback);
-            if (is_array($valid)) {
-                $validationErrors[$count] = $valid;
-            }
-            $count++;
-        }
-        if ($validationErrors != array()) {
-            return $validationErrors;
-        }
-        return true;
+        return $this->validList($field, $data, $this->validateFeedback);
     }
 
     
     public function validateActions($field, $data)
     {
         $count = 0;
+        $validationError = array();
         foreach($data[$field] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
-                if (!isset($this->validationErrors[$field])) {
-                    $this->validationErrors[$field][$count] = array();
-                }
-                $this->validationErrors[$field][$count] = $this->Action->validationErrors;
-                return false;
+                $validationErrors[$count] = $this->Action->validationErrors;
             }
             $count++;
+        }
+        if ($validationErrors != array()) {
+            return $validationErrors;
         }
         return true;
     }

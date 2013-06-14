@@ -69,7 +69,7 @@ class ProgramRequestsController extends AppController
                 $this->set(
                     'result', array(
                         'status' => 'fail',
-                        'message' => $this->Request->validationErrors)
+                        'message' => array('Request' => $this->Request->validationErrors))
                     );
             }
         }
