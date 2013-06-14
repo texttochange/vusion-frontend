@@ -151,9 +151,11 @@ class Request extends MongoModel
                     $this->validationErrors['actions'][$count] = array();
                 }
                 $this->validationErrors['actions'][$count] = $this->Action->validationErrors;
-                return false;
             }
             $count++;
+        }
+        if (isset($this->validationErrors['actions'])) {
+            return false;
         }
         return true;
     }

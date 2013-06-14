@@ -94,10 +94,10 @@ function handleResponseValidationErrors(validationErrors){
                return;
            }
            error['name'] = error['name'].replace(/\[0\]$/g,'');
-           item = error['name'].match(/[\-\w]*$/g);
+           item = error['name'].match(/[\-\w]*$/g)[0];
            errorClass = null;
            style = null;
-           switch (item[0]) {
+           switch (item) {
            case 'condition-operator':
                errorClass = "ttc-radio-validation-error";
                break;
@@ -107,6 +107,10 @@ function handleResponseValidationErrors(validationErrors){
            case 'subcondition-parameter':
                style = 'left:-200px';
                break;
+           default:
+               if (dynamicForm[item]['type'] == 'list') {
+                   style = 'left:20px;top:-76px';
+               }
            }
            errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style);
    });
@@ -813,7 +817,7 @@ function updateCheckboxSubmenu() {
         $(box).remove();
     }
     
-    if ($(elt).attr('checked')) {
+    if ($(elt).attr('checked') && "subfields" in dynamicForm[item]) {
         var newContent = {
              "type":"fieldset",
              "caption": label,

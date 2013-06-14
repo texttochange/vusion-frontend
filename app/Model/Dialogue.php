@@ -81,9 +81,11 @@ class Dialogue extends MongoModel
                     $this->validationErrors['interactions'][$index] = array();
                 }
                 $this->validationErrors['interactions'][$index] = $this->Interaction->validationErrors;
-                return false;
             }
             $index++;
+        }
+        if (isset($this->validationErrors['interactions'])) {
+            return false;
         }
         return true;
     }

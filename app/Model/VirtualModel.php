@@ -273,6 +273,7 @@ abstract class VirtualModel
                             array_push($validationErrors[$field], $errorMessage);
                         }
                     }
+                    break;
                 }
             }
         }

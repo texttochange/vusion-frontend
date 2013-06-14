@@ -192,7 +192,8 @@ class Action extends VirtualModel
         if (isset($this->data['type-answer-action'])) {
             $this->data['type-action'] = $this->data['type-answer-action'];
             unset($this->data['type-answer-action']);
-        } 
+        }
+        $this->_setDefault('type-action', null);
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {
              $this->_setDefault('condition-operator', null);
