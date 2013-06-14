@@ -117,7 +117,7 @@
         echo $this->Html->tag('label',__('There are no predefined messages. '));
         echo $this->Html->link(__('To create a predefined message click here.'),
             array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'),
-            array('style'=>'font-weight:normal; font-size:14px')
+            array('class'=>'ttc-goto-link')
             );
     } else {        
         echo $this->Html->tag('label',__('Use predefined message from list:'));

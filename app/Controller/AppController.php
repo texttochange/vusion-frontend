@@ -4,6 +4,7 @@ App::uses('ProgramSetting', 'Model');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('Request', 'Model');
+App::uses('PredefinedMessage', 'Model');
 
 class AppController extends Controller
 {
@@ -76,6 +77,13 @@ class AppController extends Controller
                 $programUnattachedMessages = $unattachedMessages;
             else
                 $programUnattachedMessages = null;
+                
+            $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));
+            $predefinedMessages = $predefinedMessageModel->find('all');
+            if (isset($predefinedMessages))
+                $programPredefinedMessages = $predefinedMessages;
+            else
+                $programPredefinedMessages = null;
             
             $dialogueModel = new Dialogue(array('database' => $databaseName));
             $dialogues = $dialogueModel->getActiveAndDraft();
@@ -89,7 +97,7 @@ class AppController extends Controller
             if ($this->_hasProgramLogs($redis,$programUrl))
                 $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
             
-            $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
+            $this->set(compact('programUnattachedMessages', 'programPredefinedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
         }
         $this->set(compact('programDetails', 'isAdmin', 'countryIndexedByPrefix'));
     }

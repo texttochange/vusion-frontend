@@ -141,8 +141,8 @@
            ?>
            </li>
            <?php 
-           if(isset($predefinedMessages) && $predefinedMessages!=null) { 
-               foreach ($predefinedMessages as $predefinedMessage) {
+           if(isset($programPredefinedMessages) && $programPredefinedMessages!=null) { 
+               foreach ($programPredefinedMessages as $predefinedMessage) {
                    echo "<li title='".$predefinedMessage['PredefinedMessage']['name']."'>";
                    $predefinedMessageLinkName = $this->Text->truncate(
                        $predefinedMessage['PredefinedMessage']['name'],
