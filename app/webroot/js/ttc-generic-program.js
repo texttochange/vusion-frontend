@@ -86,7 +86,15 @@ function saveFormOnServer(){
 }
 
 function handleResponseValidationErrors(validationErrors){
-   errorMessages = [];
+   errorMessages = new Object();
+   //Need to build up the name of the failed items. in a recursive maner
+   errors = object2array(validationErrors);
+   $.each(errors, function(k, error) {
+           error['name'] = error['name'].replace(/\[0\]$/g,'');
+           errorMessages[error['name']] = error['value'];
+   });
+   $('#dynamic-generic-program-form').validate().showErrors(errorMessages);
+   /*
    for (var field in validationErrors) {
        if (field == 'interactions') {
           for (var interaction in validationErrors[field]) {
@@ -111,7 +119,8 @@ function handleResponseValidationErrors(validationErrors){
            errorMessages.push(validationErrors[field][0]);
        }
    }
-   return errorMessages;     
+   return errorMessages;
+   */     
 }
 
 function showErrorMessages(errorMessages){

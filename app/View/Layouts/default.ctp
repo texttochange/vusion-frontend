@@ -27,6 +27,7 @@
 		echo $this->Html->script('dform/dform.subscribers.js');
 		echo $this->Html->script('dform/dform.converters.js');
 		echo $this->Html->script('form2js/form2js.js');
+		echo $this->Html->script('form2js/js2form.utils.js');
 		echo $this->Html->script('superfish-1.4.8/superfish.js');
 		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
 		echo $this->Html->script('superfish-1.4.8/supersubs.js');
