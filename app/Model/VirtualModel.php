@@ -28,6 +28,12 @@ abstract class VirtualModel
         } 
     }
 
+    protected function _setDefaultSubfield(&$data, $field, $default) {
+        if (!isset($data[$field])) {
+            $data[$field] = $default;
+        }
+    }
+
 
     public function _trim_array($document)
     {

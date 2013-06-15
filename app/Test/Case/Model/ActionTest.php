@@ -170,7 +170,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
-            "The parameter value 'a bad tag,' is not valid.",
+            "Use only space, letters and numbers for tag, e.g 'group 1'.",
             $this->Action->validationErrors['subconditions'][0]['subcondition-parameter'][0]);
     }
 

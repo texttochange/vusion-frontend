@@ -104,17 +104,31 @@ function handleResponseValidationErrors(validationErrors){
            case 'type-action':
                errorClass = "ttc-radio-validation-error";
                break;
+           case 'subcondition-field':
+               style = 'left:-80px';
+               break;
+           case 'subcondition-operator':
+               style = 'left:-80px';
+               break;
            case 'subcondition-parameter':
                style = 'left:-200px';
                break;
            default:
                if (dynamicForm[item]['type'] == 'list') {
                    style = 'left:20px;top:-76px';
+                   $('[name="'+error['name']+'"] > button').on('click', function() {hideValidationLabel(error['name']);});
                }
            }
-           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style);
+           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style, error['name']);
+           if (dynamicForm[item]['type'] != 'list') {
+               $('[name="'+error['name']+'"]').on('click', function() {hideValidationLabel(error['name']);});
+           }
    });
    $('#dynamic-generic-program-form').validate().showErrors(errorMessages);
+}
+
+function hideValidationLabel(name) {
+    $("span[name='"+name+"']").remove();
 }
 
 function showErrorMessages(errorMessages){
@@ -338,7 +352,7 @@ function activeForm(){
             }
         });
     });
-    $("input[name*='type-interaction']").each(function (item) {
+    $("input[name*='type-interaction'], input[name*='type-action']").each(function (item) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
@@ -991,7 +1005,7 @@ function configToForm(item, elt, id_prefix, configTree){
         }
     } else if (dynamicForm[item]["type"] == "select") {
         options = [{
-                'value': null,
+                'value': 'select one...',
                 'html': localized_messages.select_one}];
         switch (dynamicForm[item]["data"]) {
         case 'server-dynamic':
@@ -1112,13 +1126,13 @@ function wrapErrorMessage(error) {
      return wrapErrorMessageInClass(error, null);
 }
 
-function wrapErrorMessageInClass(error, inClasses, style){
+function wrapErrorMessageInClass(error, inClasses, style, name){
     if (inClasses != null) {
         inClasses = inClasses + " ttc-validation-error"
     } else {
         inClasses = "ttc-validation-error"
     }
-    return '<span class="'+inClasses+'" style="'+style+'"><nobr>'+error+'</nobr></span>';
+    return '<span class="'+inClasses+'" style="'+style+'" name="'+name+'"><nobr>'+error+'</nobr></span>';
 }
 
 
