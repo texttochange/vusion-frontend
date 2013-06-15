@@ -61,7 +61,6 @@ function saveFormOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 message = handleResponseValidationErrors(response['message']);
-                //showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -86,8 +85,8 @@ function saveFormOnServer(){
 }
 
 function handleResponseValidationErrors(validationErrors){
+   showErrorMessages(localized_errors.validation_error);
    errorMessages = new Object();
-   //Need to build up the name of the failed items. in a recursive maner
    errors = object2array(validationErrors);
    $.each(errors, function(k, error) {
            if (error['value'] == null) {
@@ -124,7 +123,7 @@ function handleResponseValidationErrors(validationErrors){
                $('[name="'+error['name']+'"]').on('click', function() {hideValidationLabel(error['name']);});
            }
    });
-   $('.ttc-expand-icon').click();
+   $('.ttc-expand-icon').click(); //Expand all folded part to show the errors properly
    $('#dynamic-generic-program-form').validate().showErrors(errorMessages);
 }
 
@@ -132,13 +131,8 @@ function hideValidationLabel(name) {
     $("span[name='"+name+"']").remove();
 }
 
-function showErrorMessages(errorMessages){
-    if (errorMessages.length == 1) {
-        $("#flashMessage").attr('class', 'message error').show().text(errorMessages[0]);
-   } else {
-       message = "<div class='message error'>"+errorMessages.join("</div><br/><div class='message error'>")+"</div>";
-       $("#flashMessage").attr('class', '').show().html(message);
-   }
+function showErrorMessages(errorMessage){
+        $("#flashMessage").attr('class', 'message error').show().text(errorMessage);
 }
 
 function saveRequestOnServer(){

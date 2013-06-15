@@ -7,6 +7,7 @@ var localized_errors = {
     vusion_ajax_action_failed_due: "<?php echo __("Action {0} failed due to {1}.")?>",
     vusion_ajax_timeout_error: "<?php echo __("Poor network connection (request timed out).")?>",
     vusion_ajax_connection_error: "<?php echo __("Cannot connect the server.")?>",
+    validation_error: "<?php echo __("Saved failed due to validation error.")?>",
     validation_required_error: "<?php echo __("This field is required.")?>",
     validation_required_checked: "<?php echo __("Select one of the choices")?>",
     validation_required_answer_label: "<?php echo __("Required in order to label the participant when he is answering.")?>",
