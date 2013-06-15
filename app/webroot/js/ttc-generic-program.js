@@ -124,6 +124,7 @@ function handleResponseValidationErrors(validationErrors){
                $('[name="'+error['name']+'"]').on('click', function() {hideValidationLabel(error['name']);});
            }
    });
+   $('.ttc-expand-icon').click();
    $('#dynamic-generic-program-form').validate().showErrors(errorMessages);
 }
 
@@ -461,7 +462,8 @@ function expandForm(){
     $(this).parent().children().each(function(){ 
         if ($(this).attr('type')=='text')
             $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
-        $(this).slideDown('fast')});
+        $(this).slideDown('fast');
+    });
     $(this).parent().children('[class="ttc-fold-summary"]').remove();
     $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
 }
@@ -470,6 +472,7 @@ function foldForm(){
 //    var name = $(this).parent().attr('name');
     var parent = $(this).parent(); 
     $(parent).children(":not(img):not(.ui-dform-legend)").slideUp('fast');
+    $(parent).children(":not(img):not(.ui-dform-legend) > label.error").hide();
     var itemToFold = $(this).parent().attr('item');
     var nameToFold = $(this).parent().attr('name');
     var summary = "";
@@ -490,6 +493,9 @@ function foldForm(){
         summary = $('[name="'+nameToFold+'.keyword"]').val();
     case "action":
         summary = $('[name="'+nameToFold+'.type-action"]:checked').val();
+        if (summary == null) {
+            summary = '';
+        }
         break;
     case "subcondition":
         summary = $('[name="'+nameToFold+'.subcondition-field"]').val()

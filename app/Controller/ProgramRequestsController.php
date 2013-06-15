@@ -11,7 +11,7 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramRequestsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'LocalizeUtils');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'Utils');
     public $uses = array('Request');
     
     
@@ -66,6 +66,7 @@ class ProgramRequestsController extends AppController
                         'message' => __('Request created, wait for redirection.'))
                     );
             } else {
+                $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
                 $this->set(
                     'result', array(
                         'status' => 'fail',
@@ -75,29 +76,6 @@ class ProgramRequestsController extends AppController
         }
     }
 
-    protected function isAssoc($array)
-    {
-        return (bool)count(array_filter(array_keys($array), 'is_string'));
-    }
-
-    protected function fillNonAssociativeArray($array) {
-        if (!is_array($array)) {
-            return $array;
-        }
-        foreach($array as $k => $subarray) {
-            $array[$k] = $this->fillNonAssociativeArray($subarray);
-        }
-        if (!$this->isAssoc($array)) {
-            $maxIndex = max(array_keys($array));
-            for ( $i=0 ; $i < $maxIndex ; $i++) {
-                if (!isset($array[$i])) {
-                    $array[$i] = null;
-                }
-            }
-            ksort($array);
-        }
-        return $array;
-    }
 
     public function edit()
     {
@@ -118,7 +96,7 @@ class ProgramRequestsController extends AppController
                         'message' => 'Request saved.')
                     );
             } else {
-                $this->Request->validationErrors = $this->fillNonAssociativeArray($this->Request->validationErrors);
+                $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
                 $this->set(
                     'result', array(
                         'status' => 'fail',
