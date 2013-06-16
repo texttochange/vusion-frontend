@@ -66,6 +66,12 @@ class Dialogue extends MongoModel
                 'message' => 'The prioritized field value can only be null or prioritized.'
                 ), 
             ),
+        'name' => array(
+        	'uniqueDialogueName' => array(
+        		 'rule' => 'uniqueDialogueName',
+        		 'message' => 'This Dialogue Name already exists. Please choose another.'
+        		 ),
+        	),
         );
 
     public function validateInteractions($check) 
@@ -95,8 +101,7 @@ class Dialogue extends MongoModel
         'draft' => true,
         'first' => true,
         'count' => true,
-        );
-
+        );    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -117,7 +122,6 @@ class Dialogue extends MongoModel
         }
         return $results;
     }
-
 
     public function beforeValidate()
     {
@@ -368,6 +372,24 @@ class Dialogue extends MongoModel
     {
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
+    }
+    
+    public function uniqueDialogueName($check)
+    {   $dialogueId = $this->data['Dialogue']['dialogue-id'];
+        return $this->isValidDialogueName($check['name'], $dialogueId);	    	
+    }
+
+    public function isValidDialogueName($name, $dialogueId = null)
+    {
+        if (isset($dialogueId)) {
+            $conditions = array('name'=> $name, 'dialogue-id' => array('$ne'=> $dialogueId));
+            $result = $this->find('count', array('conditions' => $conditions));
+            return $result == 0;    		
+        }
+        
+        $conditions = array('name' => $name);
+        $result = $this->find('count', array('conditions' => $conditions));
+        return $result == 0;        
     }
 
 }

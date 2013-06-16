@@ -305,7 +305,9 @@ var action = {
             'subfields': ['tag']},
             {'value': "reset"},
             {'value': "feedback",
-            'subfields': ['content']}]
+            'subfields': ['content']},
+            {'value': 'proportional-tagging',
+            'subfields': ['proportional-tags']}]
     },
     "tag": {'type': 'text'},
     "enroll": {
@@ -317,6 +319,17 @@ var action = {
         'type': 'container',
         'contains': ['days', 'at-time'],
         'skip': false
-    }
+    },
+    "proportional-tags": {
+        'type': 'list',
+        'add-button': true,
+        'adds': 'proportional-tag'
+    },
+    "proportional-tag": {
+        'type': 'container', 
+        'contains': ["tag", "weight"],
+        'skip': true,
+    },
+    "weight": {'type': 'text'},
 }
 $.extend(dynamicForm, action);
