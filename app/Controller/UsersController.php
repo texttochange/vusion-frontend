@@ -318,6 +318,7 @@ class UsersController extends AppController
         $this->Acl->deny($Group, 'controllers/ProgramParticipants/optout');
         $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
         $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
+        $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
         $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
         $this->Acl->allow($Group, 'controllers/Users/view');
         $this->Acl->allow($Group, 'controllers/Users/changePassword');
