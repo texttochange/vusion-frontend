@@ -121,15 +121,16 @@ class InteractionTestCase extends CakeTestCase
                     'keyword' => 'feel',
                     'interaction-id' => '1');
          $this->Interaction->set($interaction);
+         $this->Interaction->beforeValidate();
          $this->assertFalse($this->Interaction->validates());
 
          $this->assertEqual(
-             $this->Interaction->validationErrors['type-interaction'][0], 
-             'Type Interaction value is not valid.'
+             $this->Interaction->validationErrors['type-schedule'][0], 
+             'Type Schedule field cannot be empty.'
              );
          $this->assertEqual(
-             $this->Interaction->validationErrors['activated'][0], 
-             'Activated field is missing.'
+             $this->Interaction->validationErrors['type-interaction'][0], 
+             'Type Interaction value is not valid.'
              );
     }
 

@@ -10,7 +10,7 @@ App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramDialoguesController extends AppController
 {
-    var $components = array('RequestHandler', 'Acl', 'LocalizeUtils');
+    var $components = array('RequestHandler', 'Acl', 'LocalizeUtils', 'Utils');
 
 
     public function beforeFilter()
@@ -57,11 +57,12 @@ class ProgramDialoguesController extends AppController
                         )
                     );
             } else {
+                $errors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
                 $this->set(
                     'result', 
                     array(
                         'status'=>'fail',
-                        'message' => $this->Dialogue->validationErrors,
+                        'message' => array('Dialogue' => $errors),
                         )
                     );
             }

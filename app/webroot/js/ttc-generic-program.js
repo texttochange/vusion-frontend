@@ -61,7 +61,6 @@ function saveFormOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 message = handleResponseValidationErrors(response['message']);
-                showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -86,41 +85,54 @@ function saveFormOnServer(){
 }
 
 function handleResponseValidationErrors(validationErrors){
-   errorMessages = [];
-   for (var field in validationErrors) {
-       if (field == 'interactions') {
-          for (var interaction in validationErrors[field]) {
-               errorPrefix = "For interaciton "+interaction+"-";
-               for (var subfield in validationErrors[field][interaction]) {
-                   if (subfield != 'answer-actions') {
-                       errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0]);
-                   } else {
-                       for (var subsubfield in validationErrors[field][interaction][subfield][0]) {
-                           errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0][subsubfield]);
-                       }
-                   } 
+   showErrorMessages(localized_errors.validation_error);
+   errorMessages = new Object();
+   errors = object2array(validationErrors);
+   $.each(errors, function(k, error) {
+           if (error['value'] == null) {
+               return;
+           }
+           error['name'] = error['name'].replace(/\[0\]$/g,'');
+           item = error['name'].match(/[\-\w]*$/g)[0];
+           errorClass = null;
+           style = null;
+           switch (item) {
+           case 'condition-operator':
+               errorClass = "ttc-radio-validation-error";
+               break;
+           case 'type-action':
+               errorClass = "ttc-radio-validation-error";
+               break;
+           case 'subcondition-field':
+               style = 'left:-80px';
+               break;
+           case 'subcondition-operator':
+               style = 'left:-80px';
+               break;
+           case 'subcondition-parameter':
+               style = 'left:-200px';
+               break;
+           default:
+               if (dynamicForm[item]['type'] == 'list') {
+                   style = 'left:20px;top:-76px';
+                   $('[name="'+error['name']+'"] > button').on('click', function() {hideValidationLabel(error['name']);});
                }
            }
-       } else if (field == 'actions') {
-            for (var action in validationErrors[field]) {
-                for (var subfield in validationErrors[field][action]) {
-                    errorMessages.push(validationErrors[field][action][subfield]);
-                }
-            }
-       } else {
-           errorMessages.push(validationErrors[field][0]);
-       }
-   }
-   return errorMessages;     
+           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style, error['name']);
+           if (dynamicForm[item]['type'] != 'list') {
+               $('[name="'+error['name']+'"]').on('click', function() {hideValidationLabel(error['name']);});
+           }
+   });
+   $('.ttc-expand-icon').click(); //Expand all folded part to show the errors properly
+   $('#dynamic-generic-program-form').validate().showErrors(errorMessages);
 }
 
-function showErrorMessages(errorMessages){
-    if (errorMessages.length == 1) {
-        $("#flashMessage").attr('class', 'message error').show().text(errorMessages[0]);
-   } else {
-       message = "<div class='message error'>"+errorMessages.join("</div><br/><div class='message error'>")+"</div>";
-       $("#flashMessage").attr('class', '').show().html(message);
-   }
+function hideValidationLabel(name) {
+    $("span[name='"+name+"']").remove();
+}
+
+function showErrorMessages(errorMessage){
+        $("#flashMessage").attr('class', 'message error').show().text(errorMessage);
 }
 
 function saveRequestOnServer(){
@@ -140,7 +152,7 @@ function saveRequestOnServer(){
         success: function(response) {
             if (response['status'] == 'fail') {
                 message = handleResponseValidationErrors(response['message']);
-                showErrorMessages(message);
+                //showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -337,7 +349,7 @@ function activeForm(){
             }
         });
     });
-    $("input[name*='type-interaction']").each(function (item) {
+    $("input[name*='type-interaction'], input[name*='type-action']").each(function (item) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
@@ -446,7 +458,8 @@ function expandForm(){
     $(this).parent().children().each(function(){ 
         if ($(this).attr('type')=='text')
             $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
-        $(this).slideDown('fast')});
+        $(this).slideDown('fast');
+    });
     $(this).parent().children('[class="ttc-fold-summary"]').remove();
     $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-fold-icon').off().on('click', foldForm);
 }
@@ -455,6 +468,7 @@ function foldForm(){
 //    var name = $(this).parent().attr('name');
     var parent = $(this).parent(); 
     $(parent).children(":not(img):not(.ui-dform-legend)").slideUp('fast');
+    $(parent).children(":not(img):not(.ui-dform-legend) > label.error").hide();
     var itemToFold = $(this).parent().attr('item');
     var nameToFold = $(this).parent().attr('name');
     var summary = "";
@@ -473,8 +487,12 @@ function foldForm(){
         break;
     case "answer-keyword":
         summary = $('[name="'+nameToFold+'.keyword"]').val();
+        break;
     case "action":
         summary = $('[name="'+nameToFold+'.type-action"]:checked').val();
+        if (summary == null) {
+            summary = '';
+        }
         break;
     case "subcondition":
         summary = $('[name="'+nameToFold+'.subcondition-field"]').val()
@@ -501,7 +519,7 @@ function generateFieldSummary(elt, parentName, field)
 function updateOffsetConditions(elt){
     var bucket = []; 
     var i =0;
-    $(elt).children().each(function(){bucket[i]=elt.value; i++;});
+    $(elt).children().each(function(){bucket[i]=$(this).val(); i++;});
     if (!(bucket instanceof Array)) {
         bucket = [bucket];
     }
@@ -857,7 +875,7 @@ function updateCheckboxSubmenu() {
         $(box).remove();
     }
     
-    if ($(elt).attr('checked')) {
+    if ($(elt).attr('checked') && "subfields" in dynamicForm[item]) {
         var newContent = {
              "type":"fieldset",
              "caption": label,
@@ -1031,14 +1049,20 @@ function configToForm(item, elt, id_prefix, configTree){
         }
     } else if (dynamicForm[item]["type"] == "select") {
         options = [{
-                'value': null,
+                'value': 'select one...',
                 'html': localized_messages.select_one}];
         switch (dynamicForm[item]["data"]) {
         case 'server-dynamic':
             for (option in window.app[item+'Options']) {
-                options.push({
-                        'value': option,
-                        'html': localized_labels[option]})
+                if ('value' in window.app[item+'Options'][option]) {
+                    options.push({
+                         'value': window.app[item+'Options'][option]['value'],
+                         'html': window.app[item+'Options'][option]['html']});
+                } else {
+                    options.push({
+                         'value': option,
+                         'html': localized_labels[option]})
+                }
             }
             break;
         case 'static':
@@ -1152,14 +1176,15 @@ function wrapErrorMessage(error) {
      return wrapErrorMessageInClass(error, null);
 }
 
-function wrapErrorMessageInClass(error, inClasses){
+function wrapErrorMessageInClass(error, inClasses, style, name){
     if (inClasses != null) {
         inClasses = inClasses + " ttc-validation-error"
     } else {
         inClasses = "ttc-validation-error"
     }
-    return '<span class="'+inClasses+'"><nobr>'+error+'</nobr></span>';
+    return '<span class="'+inClasses+'" style="'+style+'" name="'+name+'"><nobr>'+error+'</nobr></span>';
 }
+
 
 //TODO: consider renaming radiochildren so that the names are not the same as those for the interactions 
 function showSummaryError() {

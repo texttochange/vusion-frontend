@@ -28,6 +28,12 @@ abstract class VirtualModel
         } 
     }
 
+    protected function _setDefaultSubfield(&$data, $field, $default) {
+        if (!isset($data[$field])) {
+            $data[$field] = $default;
+        }
+    }
+
 
     public function _trim_array($document)
     {
@@ -148,13 +154,24 @@ abstract class VirtualModel
 
     public function inList($field, $data, $list)
     {
-        if (!isset($data[$field])) {
+        if (!array_key_exists($field, $data)) {
             return true;
         }
-        if (in_array($data[$field], $list)) {
+        if (!in_array($data[$field], $list)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function notEmptyArray($field, $data) {
+        if (!array_key_exists($field, $data)) {
             return true;
         }
-        return false;
+        if ($data[$field] == array()) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -261,8 +278,8 @@ abstract class VirtualModel
                         } else {
                             array_push($validationErrors[$field], $errorMessage);
                         }
-                        break;
                     }
+                    break;
                 }
             }
         }

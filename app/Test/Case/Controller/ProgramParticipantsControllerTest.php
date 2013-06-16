@@ -1060,11 +1060,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(2, count($this->vars['participants']));
 
         $this->mock_program_access();
-        $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=Geek");
+        $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=Geek");
         $this->assertEquals(2, count($this->vars['participants']));
 
         $this->mock_program_access();
-        $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=gender:female");
+        $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
         $this->assertEquals(1, count($this->vars['participants']));
 
     }

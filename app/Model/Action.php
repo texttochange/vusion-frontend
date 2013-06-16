@@ -25,7 +25,7 @@ class Action extends VirtualModel
             'valueRequireField' => array(
                 'rule' => array(
                     'valueRequireFields', array(
-                        'condition' => array('subconditions', 'condition-operator')),
+                        'condition' => array('condition-operator', 'subconditions')),
                     'message' => 'The field required by set-condition are not present.'
                     )
                 ),
@@ -35,8 +35,8 @@ class Action extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'set-condition', 'condition'),
                 'message' => 'The set-condition field has not the valid value.',
                 ),
-            'validOpeartor' => array(
-                'rule' => array('inlist', array('all', 'any')),
+            'validOperator' => array(
+                'rule' => array('inlist', array('all-subconditions', 'any-subconditions')),
                 'message' => 'The condition-operator value is not valid.'
                 )
             ),
@@ -44,6 +44,10 @@ class Action extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-condition', 'condition'),
                 'message' => 'The set-condition field has not the valid value.',
+                ),
+            'notEmptyArray' => array(
+                'rule' => 'notEmptyArray',
+                'message' => 'At least one subconditions has to be set.'
                 ),
             'validSubconditions' => array(
                 'rule' => 'validSubconditions',
@@ -174,12 +178,24 @@ class Action extends VirtualModel
 
     public $validateSubconditionValues = array(
         'labelled' => array(
-            'in' => VusionConst::LABEL_FULL_REGEX,
-            'not-in' => VusionConst::LABEL_FULL_REGEX,
+            'with' => array(
+                'regex' => VusionConst::LABEL_FULL_REGEX,
+                'message' => VusionConst::LABEL_FULL_FAIL_MESSAGE
+                ),
+            'not-with' => array(
+                'regex' => VusionConst::LABEL_FULL_REGEX,
+                'message' => VusionConst::LABEL_FULL_FAIL_MESSAGE,
+                ),
             ),
         'tagged' => array(
-            'in' => VusionConst::TAG_REGEX,
-            'not-in' => VusionConst::TAG_REGEX,
+            'with' => array(
+                'regex' => VusionConst::TAG_REGEX,
+                'message' => VusionConst::TAG_FAIL_MESSAGE,
+                ),
+            'not-with' => array(
+                'regex' => VusionConst::TAG_REGEX,
+                'message' => VusionConst::TAG_FAIL_MESSAGE,
+                ),
             )
         );
 
@@ -222,8 +238,18 @@ class Action extends VirtualModel
         if (isset($this->data['type-answer-action'])) {
             $this->data['type-action'] = $this->data['type-answer-action'];
             unset($this->data['type-answer-action']);
-        } 
+        }
+        $this->_setDefault('type-action', null);
         $this->_setDefault('set-condition', null);
+        if ($this->data['set-condition'] == 'condition') {
+             $this->_setDefault('condition-operator', null);
+             $this->_setDefault('subconditions', array());
+             foreach ($this->data['subconditions'] as &$subconditions) {
+                 $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
+                 $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
+                 $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
+             }
+        }
         return true;
     }
 
@@ -299,10 +325,10 @@ class Action extends VirtualModel
                 'subcondition-operator' => array( 
                     __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
         }
-        if (!preg_match($operators[$subcondition['subcondition-operator']], $subcondition['subcondition-parameter'])) {
+        if (!preg_match($operators[$subcondition['subcondition-operator']]['regex'], $subcondition['subcondition-parameter'])) {
             return array(
                 'subcondition-parameter' => array(
-                    __("The parameter value '%s' is not valid.", $subcondition['subcondition-parameter'])));
+                    $operators[$subcondition['subcondition-operator']]['message']));
         }
         return true;
     }
