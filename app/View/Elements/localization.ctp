@@ -28,6 +28,7 @@ var localized_errors = {
     validation_apostrophe: "<?php echo __(" The apostrophe used in this message is not valid.")?>",
     validation_choice_format: "<?php echo __(" You are entering two choices or a special caharacter")?>",
     validation_choice_index: "<?php echo __("The choice is ambigious when answering by index, please Enter a different choice")?>",
+    validation_unique_dialogue_name: "<?php echo __("This Dialogue Name already exists. Please choose another.")?>",
 };
 
 var localized_messages = {
@@ -83,10 +84,10 @@ var localized_labels = {
     "answer-action": "<?php echo __('Action')?>",
     "optin": "<?php echo __('Opt-in')?>",
     "optout": "<?php echo __('Opt-out')?>",
-    "enrolling": "<?php echo __('Enroll')?>",
-    "delayed-enrolling": "<?php echo __('Delayed Enroll')?>",
-    "tagging": "<?php echo __('Tag')?>",
-    "reset": "<?php echo __('Reset')?>",
+    "enrolling": "<?php echo __('Enrolling')?>",
+    "delayed-enrolling": "<?php echo __('Delayed Enrolling')?>",
+    "tagging": "<?php echo __('Tagging')?>",
+    "reset": "<?php echo __('Reseting')?>",
     "add": "<?php echo __('Add')?>",
     "remove": "<?php echo __('Remove')?>",
     "responses": "<?php echo __('Responses')?>",
@@ -133,5 +134,10 @@ var localized_labels = {
     "all": "<?php echo __('all participants')?>",
     "tagged": "<?php echo __('tagged')?>",
     "labelled": "<?php echo __('labelled')?>",
+    "proportional-tagging": "<?php echo __('Proportional Tagging')?>",
+    "proportional-tags": "<?php echo __('Proportional Tags')?>",
+    "proportional-tag": "<?php echo __('Proportional Tag')?>",
+    "tag": "<?php echo __('Tag')?>",
+    "weight": "<?php echo __('Weight')?>",
 };
 

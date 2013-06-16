@@ -332,8 +332,10 @@ function activeForm(){
     $("input[name*='name']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            uniqueDialogueName: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
+                //uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
     });
@@ -494,6 +496,9 @@ function foldForm(){
         break;
     case "subcondition":
         summary = $('[name="'+nameToFold+'.subcondition-field"]').val()
+        break;
+    case "proportional-tag":
+        summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
         break;
     default:
         summary = "not summarized view available for this item";
@@ -673,6 +678,44 @@ function duplicateKeywordValidation(value, element, param) {
     return true;
 }
 
+function duplicateDialogueNameValidation(value, element, param) {
+    var isValid = false;
+    var dialogueNameInput = element;    
+    var errors = {};
+    var dialogueName = $(dialogueNameInput).val();
+    
+    var url = location.href.indexOf("edit/")<0 ? "./validateName.json" : "../validateName.json"; 
+    
+    function validateNameReply(data, textStatus) {
+        var elt = $("[name='"+this.inputName+"']");
+        $('#connectionState').hide();
+        if (data.status=='fail') {
+        	errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+			isValid = false;
+        } else {
+    	    isValid = true;
+    	}
+    };
+
+
+    $.ajax({
+            url: url,
+            type: "POST",
+            async: false,
+            data: {  'name' : dialogueName,
+                'dialogue-id': $("[name$=dialogue-id]").val(),
+                'object-id': $("[name$='_id']").val()},
+            inputName: $(dialogueNameInput).attr('name'),
+            success: validateNameReply,
+            timeout: 1000,
+            error: vusionAjaxError,
+    });
+    if (!isValid) {
+        this.showErrors(errors);
+    }   
+    return true;   
+    
+}
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
@@ -1190,6 +1233,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "keywordUnique",
         duplicateKeywordValidation,
+        wrapErrorMessage(Error));
+    
+    $.validator.addMethod(
+        "uniqueDialogueName",
+        duplicateDialogueNameValidation,
         wrapErrorMessage(Error));
     
     $.validator.addMethod(
