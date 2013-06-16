@@ -485,6 +485,7 @@ function foldForm(){
         break;
     case "answer-keyword":
         summary = $('[name="'+nameToFold+'.keyword"]').val();
+        break;
     case "action":
         summary = $('[name="'+nameToFold+'.type-action"]:checked').val();
         if (summary == null) {
@@ -513,7 +514,7 @@ function generateFieldSummary(elt, parentName, field)
 function updateOffsetConditions(elt){
     var bucket = []; 
     var i =0;
-    $(elt).children().each(function(){bucket[i]=elt.value; i++;});
+    $(elt).children().each(function(){bucket[i]=$(this).val(); i++;});
     if (!(bucket instanceof Array)) {
         bucket = [bucket];
     }
@@ -1010,9 +1011,15 @@ function configToForm(item, elt, id_prefix, configTree){
         switch (dynamicForm[item]["data"]) {
         case 'server-dynamic':
             for (option in window.app[item+'Options']) {
-                options.push({
-                        'value': option,
-                        'html': localized_labels[option]})
+                if ('value' in window.app[item+'Options'][option]) {
+                    options.push({
+                         'value': window.app[item+'Options'][option]['value'],
+                         'html': window.app[item+'Options'][option]['html']});
+                } else {
+                    options.push({
+                         'value': option,
+                         'html': localized_labels[option]})
+                }
             }
             break;
         case 'static':

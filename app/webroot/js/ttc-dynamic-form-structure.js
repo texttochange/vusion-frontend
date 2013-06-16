@@ -165,7 +165,7 @@ var dialogue = {
     },
     "offset-condition-interaction-id": {
         'type': "select",
-        'data': 'page-dynamic',
+        'data': 'server-dynamic',
         'fieldset': true,
         'onmouseover': 'updateOffsetConditions(this)',
     },
