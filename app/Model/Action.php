@@ -66,7 +66,14 @@ class Action extends VirtualModel
             'validValue' => array(
                 'rule' => array(
                     'inlist', array(
-                        'optin', 'optout', 'enrolling', 'delayed-enrolling', 'tagging', 'reset', 'feedback')),
+                        'optin', 
+                        'optout', 
+                        'enrolling', 
+                        'delayed-enrolling', 
+                        'tagging', 
+                        'reset', 
+                        'feedback',
+                        'proportional-tagging')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
