@@ -731,21 +731,25 @@ class Participant extends MongoModel
         'tagged' => array(
             'label' => 'tagged',
             'operators' => array(
-                'in' =>  array(
+                'with' =>  array(
                     'label' => 'with',
-                    'parameter-type' => 'tag'),
-                'not-in' =>  array(
+                    'parameter-type' => 'tag',
+                    'conditional-action' => true),
+                'not-with' =>  array(
                     'label' => 'not with',
-                    'parameter-type' => 'tag'))),
+                    'parameter-type' => 'tag',
+                    'conditional-action' => true))),
         'labelled' => array(
             'label' => 'labelled',
             'operators' => array(
-                'in' =>  array(
+                'with' =>  array(
                     'label' => 'with',
-                    'parameter-type' => 'label'),
-                'not-in' =>  array(
+                    'parameter-type' => 'label',
+                    'conditional-action' => true),
+                'not-with' =>  array(
                     'label' => 'not with',
-                    'parameter-type' => 'label')))
+                    'parameter-type' => 'label',
+                    'conditional-action' => true)))
     );
 
     public $filterOperatorOptions = array(
@@ -753,7 +757,29 @@ class Participant extends MongoModel
         'any' => 'any'
         );
 
-     
+
+    public function getFilters($subset = null) 
+    {
+        if (!isset($subset)) {
+            return $this->filterFields;
+        }
+        $subsetFilterFields = array();
+        foreach ($this->filterFields as $field => $filterField) {
+            $subsetOperator = array();
+            foreach ($filterField['operators'] as $operator => $details) {
+                if (isset($details[$subset])) {
+                    $subsetOperator[$operator] = $details;
+                }
+            }
+            if ($subsetOperator != array()) {
+                $subsetFilterField = $filterField;
+                $subsetFilterField['operators'] = $subsetOperator;
+                $subsetFilterFields[$field] = $subsetFilterField;
+            }
+        }
+        return $subsetFilterFields;
+    }
+
 
    public function validateFilter($filterParam)
     {
@@ -836,20 +862,20 @@ class Participant extends MongoModel
                     $condition['phone'] = $filterParam[3];        
                 }
             } elseif ($filterParam[1]=='tagged') {
-                if ($filterParam[2] == 'in') {
+                if ($filterParam[2] == 'with') {
                     $condition['tags'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-in') {
+                } elseif ($filterParam[2] == 'not-with') {
                     $condition['tags'] = array('$ne' => $filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'labelled') {
                 $label = explode(":", $filterParam[3]);   
-                if ($filterParam[2] == 'in') {
+                if ($filterParam[2] == 'with') {
                     $condition['profile'] = array(
                         '$elemMatch' => array(
                             'label' => $label[0],
                             'value' => $label[1])
                         );
-                } elseif (($filterParam[2] == 'not-in')) {
+                } elseif (($filterParam[2] == 'not-with')) {
                     $condition['profile'] = array(
                         '$elemMatch' => array(
                             '$or' => array(
