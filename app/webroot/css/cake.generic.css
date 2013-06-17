@@ -402,7 +402,7 @@ form .submit input[type=submit]:hover {
 	cursor: pointer;
 }
 /* Form errors */
-form .error {
+form .error:not(fieldset) {
 	background: #FFDACC;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;

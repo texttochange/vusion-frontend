@@ -63,7 +63,7 @@ class Dialogue extends MongoModel
         'set-prioritized' => array(
             'validValue' => array(
                 'rule' => array('inList', array(null, 'prioritized')),
-                'message' => 'The activated field value can only be 0 or 1.'
+                'message' => 'The prioritized field value can only be null or prioritized.'
                 ), 
             ),
         'name' => array(
@@ -74,7 +74,8 @@ class Dialogue extends MongoModel
         	),
         );
 
-    public function validateInteractions($check) {
+    public function validateInteractions($check) 
+    {
         $index = 0;
         foreach ($check['interactions'] as $interaction) {
             $this->Interaction->set($interaction);
@@ -86,9 +87,11 @@ class Dialogue extends MongoModel
                     $this->validationErrors['interactions'][$index] = array();
                 }
                 $this->validationErrors['interactions'][$index] = $this->Interaction->validationErrors;
-                return false;
             }
             $index++;
+        }
+        if (isset($this->validationErrors['interactions'])) {
+            return false;
         }
         return true;
     }

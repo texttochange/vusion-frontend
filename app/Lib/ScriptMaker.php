@@ -138,7 +138,6 @@ class ScriptMaker
                         array("content" => "It's a Female only program, you are going to be optout.")),
                     "answer-actions" => array(
                         array("type-answer-action" => "optout")))),
-            "type-unmatching-feedback" => "no-unmatching-feedback",
             "set-reminder" => "reminder",
             "reminder-number" => "3",
             "type-schedule-reminder" => "reminder-offset-days",

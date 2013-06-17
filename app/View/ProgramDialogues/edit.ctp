@@ -60,7 +60,7 @@
    ?>
 	</div>	
 	<?php
-	$offsetConditionOptions[] = array('value'=>'0', 'html' => __('Choose one question...'));
+	$offsetConditionOptions = array(); //array('value'=> null, 'html' => __('Choose one question...'));
 	if (isset($dialogue['Dialogue']['interactions'])) {
 	    foreach($dialogue['Dialogue']['interactions'] as $interaction) {
 	        if ($interaction['type-interaction']!='question-answer' and $interaction['type-interaction']!='question-answer-keyword')
@@ -83,6 +83,8 @@
 	    }
 	}
 	$this->Js->set('enrollOptions', $dialogueOptions);
+	$this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+	$this->Js->set('dymanicOptions', $dynamicOptions);
 	?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
