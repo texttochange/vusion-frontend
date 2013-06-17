@@ -6,6 +6,7 @@ Vusion Frontend is build with CakePHP2.0.5.
 Installation
 ------------
 
+::
 
 	$ git clone <this repository>
 	# Then retrive the Plugins and the Backend
@@ -14,6 +15,7 @@ Installation
 
 
 You need to add the following folders
+::
 
 	$ mkdir app/tmp/cache
 	$ mkdir app/tmp/cache/persistent
@@ -45,6 +47,8 @@ You can create the relational database schema from file **app/Config/Schema/sche
 If file schema.php is not found, you can also create the database using Mysql by importing a file **app/Config/Schema/schema.sql** with phpmyadmin tool.
 
 
+::
+
 	1.On your phpmyadmin home go to more tab and in the drop dpwn select import
 	2.Browse the file you went to import in this case schema.sql 
 	3.Tick the checkbox with donot auto increment and press go
@@ -55,11 +59,15 @@ or in the mysql console type "mysql -u root-p < app/Config/Schema/schema.sql"
 	
 Create a userLogin and password in the Mysql account database which must correspond to ones in the **app/Config/database.php** 
 
+::
+
 	1.On your phpmyadmin home go to phpmyadmin tab 
 	2.Click on add a new user
 	3.Feelin the infromation but on Host select local and Global privileges check all then press go
 
 while in the mysql console,navigate to to users table and create two users; "cake" and "cake_test" and grant all privileges to these users by issuing the commands below
+
+::
 
          1.GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
          2.GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
