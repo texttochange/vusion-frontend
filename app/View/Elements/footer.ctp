@@ -1,6 +1,6 @@
-<div>
+<div class="powered-by">
 <?php
-echo $this->Html->tag('span', 'Vusion powered by');
+echo $this->Html->tag('span', 'Vusion powered by', array('class' => 'powered-by-text'));
 echo $this->Html->image('connect4change-logo.png', array('class' => 'powered-by-logo'));
 ?>  
 </div>
