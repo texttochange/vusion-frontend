@@ -60,6 +60,12 @@ class ProgramRequestsController extends AppController
                         'request-id' => $this->Request->id,
                         'message' => __('Request created, wait for redirection.'))
                     );
+            } else {
+                $this->set(
+                    'result', array(
+                        'status' => 'fail',
+                        'message' => $this->Request->validationErrors)
+                    );
             }
         }
     }
@@ -84,7 +90,8 @@ class ProgramRequestsController extends AppController
             } else {
                 $this->set(
                     'result', array(
-                        'status' => 'fail'
+                        'status' => 'fail',
+                        'message' => $this->Request->validationErrors
                         )
                     );
             }
@@ -217,11 +224,6 @@ class ProgramRequestsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
     }
 
-
-    public function getActiveDialogue()
-    {
-
-    }
 
 
 }

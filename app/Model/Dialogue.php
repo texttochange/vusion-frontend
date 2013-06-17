@@ -13,8 +13,6 @@ class Dialogue extends MongoModel
     var $specific = true;
     var $name     = 'Dialogue';
     
-    var $AUTOENROLLMENT_VALUES = array('none', 'all');
-
     function getModelVersion()
     {
         return '2';
@@ -33,13 +31,74 @@ class Dialogue extends MongoModel
             );
     }
     
+    public $validate = array(
+        'dialogue-id' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'A dialogue-id field cannot be empty.'
+                ),
+            ),
+        'auto-enrollment' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'A auto-enrollment field cannot be empty.'
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array('none', 'all')),
+                'message' => 'The auto-enrollment value is not valid.'
+                ),
+            ),
+        'interactions' => array(
+            'validInteractions' => array(
+                'rule' => 'validateInteractions',
+                'message' => 'noMessage'
+                )
+            ),
+        'activated' => array(
+            'validValue' => array(
+                'rule' => array('inlist', array(0, 1)),
+                'message' => 'The activated field value can only be 0 or 1.'
+                ),
+            ),
+        'set-prioritized' => array(
+            'validValue' => array(
+                'rule' => array('inList', array(null, 'prioritized')),
+                'message' => 'The activated field value can only be 0 or 1.'
+                ), 
+            ),
+        'name' => array(
+        	'uniqueDialogueName' => array(
+        		 'rule' => 'uniqueDialogueName',
+        		 'message' => 'This Dialogue Name already exists. Please choose another.'
+        		 ),
+        	),
+        );
+
+    public function validateInteractions($check) {
+        $index = 0;
+        foreach ($check['interactions'] as $interaction) {
+            $this->Interaction->set($interaction);
+            if (!$this->Interaction->validates()) {
+                if (!isset($this->validationErrors['interactions'])) {
+                    $this->validationErrors['interactions'] = array();
+                }
+                if (!isset($this->validationErrors['interactions'][$index])) {
+                    $this->validationErrors['interactions'][$index] = array();
+                }
+                $this->validationErrors['interactions'][$index] = $this->Interaction->validationErrors;
+                return false;
+            }
+            $index++;
+        }
+        return true;
+    }
+
 
     var $findMethods = array(
         'draft' => true,
         'first' => true,
         'count' => true,
-        );
-
+        );    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -47,6 +106,7 @@ class Dialogue extends MongoModel
         
         $this->DialogueHelper = new DialogueHelper();
         $this->Schedule = new Schedule($id, $table, $ds);
+        $this->Interaction = new Interaction();
     }
 
 
@@ -58,51 +118,43 @@ class Dialogue extends MongoModel
             return $query;
         }
         return $results;
-    }    
-
+    }
 
     public function beforeValidate()
     {
-        try {
-            parent::beforeValidate();
-            if (!isset($this->data['Dialogue']['activated'])) {
-                $this->data['Dialogue']['activated'] = 0;
-            } else {
-                $this->data['Dialogue']['activated'] = intval( $this->data['Dialogue']['activated']);
+        parent::beforeValidate();
+        
+        ## Need to convert all dates
+        $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
+        $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
+        
+        ## Set default value if key not present
+        $this->_setDefault('activated', 0);
+        $this->_setDefault('dialogue-id', uniqid());
+        $this->_setDefault('interactions', array());
+        $this->_setDefault('set-prioritized', null);
+        
+        ## Need to make sure the value is an int
+        $this->data['Dialogue']['activated'] = intval($this->data['Dialogue']['activated']);
+        
+        ## Run before validate for all interactions
+        $this->_beforeValidateInteractions();
+       
+        return true;        
+    }
+
+
+    public function _beforeValidateInteractions()
+    {
+        foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
+            if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
+                $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];
             }
-    
-            if (!isset($this->data['Dialogue']['dialogue-id'])) {
-                $this->data['Dialogue']['dialogue-id'] = uniqid();
-            }
-            
-            // field "set-prioritized" is set and initialized inside MongoModel's beforeValidate
-    
-            if (!in_array($this->data['Dialogue']['auto-enrollment'], $this->AUTOENROLLMENT_VALUES)) {
-                $errorValue = $this->data['Dialogue']['auto-enrollment'];
-                throw new FieldValueIncorrect("Auto Enrollment cannot be $errorValue");
-            }
-    
-            $interactionModel = new Interaction();
-    
-            if (isset($this->data['Dialogue']['interactions'])) {
-                foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
-                    if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
-                        $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];
-                        continue;
-                    }
-                    $interaction = $interactionModel->beforeValidate($interaction);
-                }
-            } else {
-                $this->data['Dialogue']['interactions'] = array();
-            }
-    
-            $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
-    
-            return $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
-        } catch (Exception $e) {
-            $this->validationErrors['dialogue'] = $e->getMessage();
-            return false;
+            $this->Interaction->set($interaction);
+            $this->Interaction->beforeValidate();
+            $interaction = $this->Interaction->getCurrent();
         }
+        return true;
     }
 
     
@@ -317,6 +369,24 @@ class Dialogue extends MongoModel
     {
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
+    }
+    
+    public function uniqueDialogueName($check)
+    {   $dialogueId = $this->data['Dialogue']['dialogue-id'];
+        return $this->isValidDialogueName($check['name'], $dialogueId);	    	
+    }
+
+    public function isValidDialogueName($name, $dialogueId = null)
+    {
+        if (isset($dialogueId)) {
+            $conditions = array('name'=> $name, 'dialogue-id' => array('$ne'=> $dialogueId));
+            $result = $this->find('count', array('conditions' => $conditions));
+            return $result == 0;    		
+        }
+        
+        $conditions = array('name' => $name);
+        $result = $this->find('count', array('conditions' => $conditions));
+        return $result == 0;        
     }
 
 }

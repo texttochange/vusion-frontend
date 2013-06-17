@@ -87,7 +87,11 @@ class UnattachedMessage extends MongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter some content for this message.'
-                )
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => 'notForbiddenApostrophe',
+                'message' => 'The apostrophe used in this message is not valid.'
+                ),
             ),
         'type-schedule' => array(
             'notempty' => array(
@@ -211,6 +215,7 @@ class UnattachedMessage extends MongoModel
         $result = $this->find('count', array(
             'conditions' => $conditions
             ));
+        //print_r($conditions);
         return $result < 1;
     }
     
@@ -243,6 +248,7 @@ class UnattachedMessage extends MongoModel
         return true;        
     }
 
+
     public function phoneList($check)
     {
         if (!is_array($check['send-to-phone'])) {
@@ -256,6 +262,17 @@ class UnattachedMessage extends MongoModel
         return true;
 
     }
+
+    
+    public function notForbiddenApostrophe($check)
+    {
+        if (preg_match('/.*[’`’‘]/', $check['content'])) {
+            return false;
+        }
+        return true;
+    }
+
+
     
     public function getNameIdForFilter()
     {

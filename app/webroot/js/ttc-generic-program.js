@@ -203,7 +203,8 @@ function saveFormOnServer(){
         dataType: 'json', 
         success: function(response) {
             if (response['status'] == 'fail') {
-                $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                message = handleResponseValidationErrors(response['message']);
+                showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -221,10 +222,48 @@ function saveFormOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 3000,
+        timeout: 4000,
         error: saveAjaxError,
         userAction: localized_actions['save_dialogue'],
     });
+}
+
+function handleResponseValidationErrors(validationErrors){
+   errorMessages = [];
+   for (var field in validationErrors) {
+       if (field == 'interactions') {
+          for (var interaction in validationErrors[field]) {
+               errorPrefix = "For interaciton "+interaction+"-";
+               for (var subfield in validationErrors[field][interaction]) {
+                   if (subfield != 'answer-actions') {
+                       errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0]);
+                   } else {
+                       for (var subsubfield in validationErrors[field][interaction][subfield][0]) {
+                           errorMessages.push(errorPrefix + validationErrors[field][interaction][subfield][0][subsubfield]);
+                       }
+                   } 
+               }
+           }
+       } else if (field == 'actions') {
+            for (var action in validationErrors[field]) {
+                for (var subfield in validationErrors[field][action]) {
+                    errorMessages.push(validationErrors[field][action][subfield]);
+                }
+            }
+       } else {
+           errorMessages.push(validationErrors[field][0]);
+       }
+   }
+   return errorMessages;     
+}
+
+function showErrorMessages(errorMessages){
+    if (errorMessages.length == 1) {
+        $("#flashMessage").attr('class', 'message error').show().text(errorMessages[0]);
+   } else {
+       message = "<div class='message error'>"+errorMessages.join("</div><br/><div class='message error'>")+"</div>";
+       $("#flashMessage").attr('class', '').show().html(message);
+   }
 }
 
 function saveRequestOnServer(){
@@ -243,7 +282,8 @@ function saveRequestOnServer(){
         dataType: 'json', 
         success: function(response) {
             if (response['status'] == 'fail') {
-                $("#flashMessage").attr('class', 'message error').show().text(response['message']);
+                message = handleResponseValidationErrors(response['message']);
+                showErrorMessages(message);
                 reactivateSaveButtons();
                 return;
             }
@@ -258,7 +298,7 @@ function saveRequestOnServer(){
                 reactivateSaveButtons();
             }
         },
-        timeout: 1000,
+        timeout: 3000,
         error: saveAjaxError,
         userAction: localized_actions['save_request'],
     });
@@ -422,8 +462,10 @@ function activeForm(){
     $("input[name*='name']").each(function (item) {
         $(this).rules("add",{
             required:true,
+            uniqueDialogueName: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
+                //uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
     });
@@ -488,6 +530,7 @@ function activeForm(){
     $("textarea[name*='content']").each(function (key, elt) {          
             $(this).rules("add",{
                     required:true,
+                    forbiddenApostrophe: true,
                     messages:{                        
                         required: function(){
                             if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
@@ -496,6 +539,13 @@ function activeForm(){
                                 return wrapErrorMessageInClass(localized_errors.validation_required_content, "ttc-textarea-validation-error request");
                             }
                         },
+                        forbiddenApostrophe: function(){
+                            if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               
+                                return wrapErrorMessageInClass(localized_errors.validation_apostrophe, "ttc-textarea-validation-error dialogue");
+                            } else {                                
+                                return wrapErrorMessageInClass(localized_errors.validation_apostrophe, "ttc-textarea-validation-error request");
+                            }
+                        }
                     }  
             });             
     });   
@@ -532,8 +582,6 @@ function activeForm(){
     
     addContentFormHelp();
     addCounter();
-
-    
 }
 
 function expandForm(){
@@ -742,6 +790,44 @@ function duplicateKeywordValidation(value, element, param) {
     return true;
 }
 
+function duplicateDialogueNameValidation(value, element, param) {
+    var isValid = false;
+    var dialogueNameInput = element;    
+    var errors = {};
+    var dialogueName = $(dialogueNameInput).val();
+    
+    var url = location.href.indexOf("edit/")<0 ? "./validateName.json" : "../validateName.json"; 
+    
+    function validateNameReply(data, textStatus) {
+        var elt = $("[name='"+this.inputName+"']");
+        $('#connectionState').hide();
+        if (data.status=='fail') {
+        	errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+			isValid = false;
+        } else {
+    	    isValid = true;
+    	}
+    };
+
+
+    $.ajax({
+            url: url,
+            type: "POST",
+            async: false,
+            data: {  'name' : dialogueName,
+                'dialogue-id': $("[name$=dialogue-id]").val(),
+                'object-id': $("[name$='_id']").val()},
+            inputName: $(dialogueNameInput).attr('name'),
+            success: validateNameReply,
+            timeout: 1000,
+            error: vusionAjaxError,
+    });
+    if (!isValid) {
+        this.showErrors(errors);
+    }   
+    return true;   
+    
+}
 
 function duplicateChoiceValidation(value, element, param) {
     var isValid = true;
@@ -825,6 +911,14 @@ function requireLetterDigitSpace(value, element, param) {
         return true;
     }
     return false;
+}
+
+function forbiddenApostrophe(value, element, param) {
+    r = new RegExp('[’`’‘]');
+    if (r.test(value)) {
+        return false;
+    }
+    return true;
 }
 
 function minutesSeconds(value, element, param) {
@@ -1196,6 +1290,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         wrapErrorMessage(Error));
     
     $.validator.addMethod(
+        "uniqueDialogueName",
+        duplicateDialogueNameValidation,
+        wrapErrorMessage(Error));
+    
+    $.validator.addMethod(
         "doubleSpace",
     	 doubleSpaceValidation,
     	 wrapErrorMessage(Error));
@@ -1233,6 +1332,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     $.validator.addMethod(
         "minutesSeconds",
         minutesSeconds,
+        wrapErrorMessage(Error));
+
+    $.validator.addMethod(
+        "forbiddenApostrophe",
+        forbiddenApostrophe,
         wrapErrorMessage(Error));
 
         
