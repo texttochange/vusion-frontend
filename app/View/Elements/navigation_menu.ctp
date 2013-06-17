@@ -23,8 +23,8 @@
             ?>
             </li>
             <?php 
-            if(isset($requests) && $requests!=null) { 
-                foreach ($requests as $request) {
+            if(isset($navMenuData['requests']) && $navMenuData['requests']!=null) { 
+                foreach ($navMenuData['requests'] as $request) {
                     echo "<li title='".$request['Request']['keyword']."'>";
                     $requestLinkName = $this->Text->truncate(
                         $request['Request']['keyword'],
@@ -51,7 +51,7 @@
             echo $this->AclLink->generateLink(__('New Dialogue'),$programDetails['url'],'programDialogues','edit');    
             ?>
             </li>
-            <?php foreach ($dialogues as $dialogue) { 
+            <?php foreach ($navMenuData['dialogues'] as $dialogue) { 
                 if ($dialogue['Active']) {
                     $dialogue = $dialogue['Active'];
                     $isActive = true;
@@ -111,8 +111,8 @@
            ?>
            </li>
            <?php 
-           if(isset($programUnattachedMessages) && $programUnattachedMessages!=null) { 
-               foreach ($programUnattachedMessages as $unattachedMessage) {
+           if(isset($navMenuData['unattachedMessages']) && $navMenuData['unattachedMessages']!=null) { 
+               foreach ($navMenuData['unattachedMessages'] as $unattachedMessage) {
                    echo "<li title='".$unattachedMessage['UnattachedMessage']['name']."'>";
                    $unattachedMessageLinkName = $this->Text->truncate(
                        $unattachedMessage['UnattachedMessage']['name'],
@@ -141,8 +141,8 @@
            ?>
            </li>
            <?php 
-           if(isset($programPredefinedMessages) && $programPredefinedMessages!=null) { 
-               foreach ($programPredefinedMessages as $predefinedMessage) {
+           if(isset($navMenuData['predefinedMessages']) && $navMenuData['predefinedMessages']!=null) { 
+               foreach ($navMenuData['predefinedMessages'] as $predefinedMessage) {
                    echo "<li title='".$predefinedMessage['PredefinedMessage']['name']."'>";
                    $predefinedMessageLinkName = $this->Text->truncate(
                        $predefinedMessage['PredefinedMessage']['name'],
