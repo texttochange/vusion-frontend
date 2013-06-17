@@ -78,7 +78,7 @@
 	            <th class="date-time"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programDetails['url']))); ?></th> 
 	            <th class="status"><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="profile-table-header"><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="profile"><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="action" class="actions"><?php echo __('Actions');?></th>
 	        </tr>
 	      </thead>	      
@@ -135,16 +135,10 @@
 	              		  		       $profileItemsValue = $profileItem['value'];
 	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;
 	              		  		 ?>
-	              		  		  <div title = "<?php echo __($participantProfile)?>" class= "participant-tuncated-profile">
+	              		  		  <div title = "<?php echo __($participantProfile)?>" >
 	              		  		  <?php
-	              		  		  		/*$participantProfileEllipsis = $this->Text->truncate($participantProfile,
-	              		  		  			16,
-	              		  		  			array('ellipsis' => '...',
-	              		  		  		  		  'exact' => true));
-	              		  		  	echo $this->Html->tag('div', __($participantProfileEllipsis));*/ 
-	              		  		  
-	              		  		  	echo $this->Html->tag('div', __($participantProfile)); 
-	              		  		  	?>
+	              		  		  	echo $this->Html->tag('div class= "participant-tuncated-profile" ', __($participantProfile)); 
+	              		  		  ?>
 	              		  		  </div>
 	              		  <?php  }
 	              	} else {
