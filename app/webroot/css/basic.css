@@ -1136,6 +1136,9 @@ margin-left: 63px;
     margin-left: 235px;
 }
 
-.non-wrap{
-
+.participant-tuncated-profile{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 122px;
 }

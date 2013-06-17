@@ -135,13 +135,15 @@
 	              		  		       $profileItemsValue = $profileItem['value'];
 	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;
 	              		  		 ?>
-	              		  		  <div title = "<?php echo __($participantProfile)?>">
+	              		  		  <div title = "<?php echo __($participantProfile)?>" class= "participant-tuncated-profile">
 	              		  		  <?php
-	              		  		  		$participantProfileEllipsis = $this->Text->truncate($participantProfile,
+	              		  		  		/*$participantProfileEllipsis = $this->Text->truncate($participantProfile,
 	              		  		  			16,
 	              		  		  			array('ellipsis' => '...',
 	              		  		  		  		  'exact' => true));
-	              		  		  	echo $this->Html->tag('div', __($participantProfileEllipsis)); 
+	              		  		  	echo $this->Html->tag('div', __($participantProfileEllipsis));*/ 
+	              		  		  
+	              		  		  	echo $this->Html->tag('div', __($participantProfile)); 
 	              		  		  	?>
 	              		  		  </div>
 	              		  <?php  }
