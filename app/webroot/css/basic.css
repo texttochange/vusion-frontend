@@ -1127,8 +1127,9 @@ margin-left: 63px;
     margin-left: 235px;
 }
 
-.ttc-goto-link {
+.program-body .ttc-link {
     font-weight: normal;
     font-size: 14px;
+    color: #003d4c;
 }
 
