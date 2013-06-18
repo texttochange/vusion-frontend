@@ -135,9 +135,9 @@
 	              		  		       $profileItemsValue = $profileItem['value'];
 	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;
 	              		  		 ?>
-	              		  		  <div title = "<?php echo __($participantProfile)?>" >
+	              		  		  <div title = "<?php echo $participantProfile?>" >
 	              		  		  <?php
-	              		  		  	echo $this->Html->tag('div class= "participant-tuncated-profile" ', __($participantProfile)); 
+	              		  		  	echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile')); 
 	              		  		  ?>
 	              		  		  </div>
 	              		  <?php  }
