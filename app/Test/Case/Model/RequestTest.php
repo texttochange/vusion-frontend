@@ -193,7 +193,7 @@ class RequestTestCase extends CakeTestCase
         $this->assertFalse($savedRequest);
         $this->assertEqual(
             'The apostrophe used is not allowed.',
-            $this->Request->validationErrors['responses'][0]);
+            $this->Request->validationErrors['responses'][0]['content'][0]);
     }
 
     public function testSave_beforeValidate_removeEmptyReponses()
@@ -210,6 +210,23 @@ class RequestTestCase extends CakeTestCase
         $this->assertEqual(
             array(array('content' => 'what is up')),
             $savedRequest['Request']['responses']);
+    }
+
+
+    public function testSave_fail_apostophe()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'what`is up'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            'The apostrophe used is not allowed.',
+            $this->Request->validationErrors['responses'][0]['content'][0]);
     }
 
 
@@ -231,5 +248,6 @@ class RequestTestCase extends CakeTestCase
             'The apostrophe used is not allowed.',
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
+
 
 }

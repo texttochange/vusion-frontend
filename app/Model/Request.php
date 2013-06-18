@@ -2,6 +2,7 @@
 App::uses('MongoModel', 'Model');
 App::uses('Action', 'Model');
 App::uses('VusionConst', 'Lib');
+App::uses('VusionValidation', 'Lib');
 
 class Request extends MongoModel
 {
@@ -37,7 +38,7 @@ class Request extends MongoModel
     public $validate = array(
         'keyword' => array(
             'notempty' => array(
-                'rule' => array('notempty'),
+                'rule' => 'notempty',
                 'message' => 'Please enter a keyword for this request.'
                 ),
             'format' => array(
@@ -47,7 +48,7 @@ class Request extends MongoModel
             ),
         'set-no-request-matching-try-keyword-only' => array(
             'notempty' => array(
-                'rule' => array('notempty'),
+                'rule' => 'notempty',
                 'message' => 'The field set-no-request-matching-try-keyword-only is not set.'
                 ),
             'validValue' => array(
@@ -60,9 +61,9 @@ class Request extends MongoModel
                 'rule' => 'validateArray',
                 'message' => 'The responses has to be an array.'
                 ),
-            'noForbiddenApostrophe' => array(
-                'rule' => 'noForbiddenApostrophe',
-                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+            'validateReponses' => array(
+                'rule' => 'validateResponses',
+                'message' => 'noMessage'
                 )
             ),
         'actions' => array(
@@ -77,6 +78,18 @@ class Request extends MongoModel
             )
         );
 
+    public $validateResponse = array(
+        'content' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'Please enter a content for this response.'
+                ),
+            'noForbiddenApostrophe' => array(
+                'rule' => array('customNot', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                )
+            )
+        );
 
     public function keywordFormat($check) 
     {
@@ -95,12 +108,34 @@ class Request extends MongoModel
     }
 
 
-    public function noForbiddenApostrophe($check)
+    public function validateResponses($check)
     {
-        foreach($check['responses'] as $response) {
-            if (preg_match(VusionConst::APOSTROPHE_REGEX, $response['content'])) {
-                return false;
+        $count = 0;
+        foreach ($check['responses'] as $response) {
+            $validationErrors = array();
+            foreach ($this->validateResponse as $field => $rules) {
+                foreach ($rules as $rule) {
+                    if (is_array($rule['rule'])) {
+                        $func = $rule['rule'][0];
+                        $args = array_slice($rule['rule'], 1);
+                        $args = $args[0];
+                    } else {
+                        $func = $rule['rule'];
+                        $args = null;
+                    }
+                    $valid = forward_static_call_array(array("VusionValidation", $func), array($response[$field], $args));
+                    if (!is_bool($valid) || $valid == false) {
+                       $validationErrors[$field][] = $rule['message']; 
+                    }
+                }
             }
+            if ($validationErrors != array()) {
+                $this->validationErrors['responses'][$count] = $validationErrors;
+            }
+            $count++;
+        }
+        if (isset($this->validationErrors['responses'])) {
+            return false;
         }
         return true;
     }
@@ -108,15 +143,19 @@ class Request extends MongoModel
 
     public function validateAction($check)
     {
+        $count = 0;
         foreach($check['actions'] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
-                if (!isset($this->validationErrors['actions'])) {
-                    $this->validationErrors['actions'] = array();
+                if (!isset($this->validationErrors['actions'][$count])) {
+                    $this->validationErrors['actions'][$count] = array();
                 }
-                array_push($this->validationErrors['actions'], $this->Action->validationErrors);
-                return false;
+                $this->validationErrors['actions'][$count] = $this->Action->validationErrors;
             }
+            $count++;
+        }
+        if (isset($this->validationErrors['actions'])) {
+            return false;
         }
         return true;
     }

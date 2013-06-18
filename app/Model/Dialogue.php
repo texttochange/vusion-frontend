@@ -63,12 +63,19 @@ class Dialogue extends MongoModel
         'set-prioritized' => array(
             'validValue' => array(
                 'rule' => array('inList', array(null, 'prioritized')),
-                'message' => 'The activated field value can only be 0 or 1.'
+                'message' => 'The prioritized field value can only be null or prioritized.'
                 ), 
             ),
+        'name' => array(
+        	'uniqueDialogueName' => array(
+        		 'rule' => 'uniqueDialogueName',
+        		 'message' => 'This Dialogue Name already exists. Please choose another.'
+        		 ),
+        	),
         );
 
-    public function validateInteractions($check) {
+    public function validateInteractions($check) 
+    {
         $index = 0;
         foreach ($check['interactions'] as $interaction) {
             $this->Interaction->set($interaction);
@@ -80,9 +87,11 @@ class Dialogue extends MongoModel
                     $this->validationErrors['interactions'][$index] = array();
                 }
                 $this->validationErrors['interactions'][$index] = $this->Interaction->validationErrors;
-                return false;
             }
             $index++;
+        }
+        if (isset($this->validationErrors['interactions'])) {
+            return false;
         }
         return true;
     }
@@ -92,8 +101,7 @@ class Dialogue extends MongoModel
         'draft' => true,
         'first' => true,
         'count' => true,
-        );
-
+        );    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -114,7 +122,6 @@ class Dialogue extends MongoModel
         }
         return $results;
     }
-
 
     public function beforeValidate()
     {
@@ -365,6 +372,24 @@ class Dialogue extends MongoModel
     {
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
+    }
+    
+    public function uniqueDialogueName($check)
+    {   $dialogueId = $this->data['Dialogue']['dialogue-id'];
+        return $this->isValidDialogueName($check['name'], $dialogueId);	    	
+    }
+
+    public function isValidDialogueName($name, $dialogueId = null)
+    {
+        if (isset($dialogueId)) {
+            $conditions = array('name'=> $name, 'dialogue-id' => array('$ne'=> $dialogueId));
+            $result = $this->find('count', array('conditions' => $conditions));
+            return $result == 0;    		
+        }
+        
+        $conditions = array('name' => $name);
+        $result = $this->find('count', array('conditions' => $conditions));
+        return $result == 0;        
     }
 
 }

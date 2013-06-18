@@ -31,6 +31,7 @@
             }
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
+        $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
 	?>
 	</div>
 </div>

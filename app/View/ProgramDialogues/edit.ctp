@@ -48,17 +48,19 @@
 	?>
 	</h3>
 	<div class="ttc-display-area">
-	<?php echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form')); ?>
+	<?php 
+	echo $this->Html->tag('form', null, array('id'=> 'dynamic-generic-program-form')); 
+   ?>
+   <?php
+   $this->Js->get("#dynamic-generic-program-form");
+   if (isset($dialogue))
+   		   $this->Js->each('$(this).buildTtcForm("Dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
+   else
+   $this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
+   ?>
+	</div>	
 	<?php
-	$this->Js->get("#dynamic-generic-program-form");
-	if (isset($dialogue))
-	    $this->Js->each('$(this).buildTtcForm("Dialogue", '.$this->Js->object($dialogue['Dialogue']).', "javascript:saveFormOnServer()")', true);
-	else
-	$this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
-    ?>
-	</div>
-	<?php
-	$offsetConditionOptions[] = array('value'=>'0', 'html' => __('Choose one question...'));
+	$offsetConditionOptions = array(); //array('value'=> null, 'html' => __('Choose one question...'));
 	if (isset($dialogue['Dialogue']['interactions'])) {
 	    foreach($dialogue['Dialogue']['interactions'] as $interaction) {
 	        if ($interaction['type-interaction']!='question-answer' and $interaction['type-interaction']!='question-answer-keyword')
@@ -81,6 +83,8 @@
 	    }
 	}
 	$this->Js->set('enrollOptions', $dialogueOptions);
+	$this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+	$this->Js->set('dymanicOptions', $dynamicOptions);
 	?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>

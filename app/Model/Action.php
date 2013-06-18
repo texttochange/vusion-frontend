@@ -6,11 +6,54 @@ App::uses('VusionConst', 'Lib');
 class Action extends VirtualModel
 {
     var $name = 'action';
-    var $version = '1'; 
+    var $version = '2'; 
 
-    var $fields = array('type-action');
+    var $fields = array(
+        'set-condition',
+        'type-action');
     
     public $validate = array(
+        'set-condition' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The field set-condition is missing.'
+                ),
+            'notempty' => array(
+                'rule' => array('inlist', array(null, 'condition')),
+                'message' => 'The value of set-condition is not valid.'
+                ),
+            'valueRequireField' => array(
+                'rule' => array(
+                    'valueRequireFields', array(
+                        'condition' => array('condition-operator', 'subconditions')),
+                    'message' => 'The field required by set-condition are not present.'
+                    )
+                ),
+            ),
+        'condition-operator' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'set-condition', 'condition'),
+                'message' => 'The set-condition field has not the valid value.',
+                ),
+            'validOperator' => array(
+                'rule' => array('inlist', array('all-subconditions', 'any-subconditions')),
+                'message' => 'The condition-operator value is not valid.'
+                )
+            ),
+        'subconditions' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'set-condition', 'condition'),
+                'message' => 'The set-condition field has not the valid value.',
+                ),
+            'notEmptyArray' => array(
+                'rule' => 'notEmptyArray',
+                'message' => 'At least one subconditions has to be set.'
+                ),
+            'validSubconditions' => array(
+                'rule' => 'validSubconditions',
+                'message' => 'noMessage'
+                )
+            ),
         'type-action' => array(
             'required' => array(
                 'rule' => 'required',
@@ -23,7 +66,14 @@ class Action extends VirtualModel
             'validValue' => array(
                 'rule' => array(
                     'inlist', array(
-                        'optin', 'optout', 'enrolling', 'delayed-enrolling', 'tagging', 'reset', 'feedback')),
+                        'optin', 
+                        'optout', 
+                        'enrolling', 
+                        'delayed-enrolling', 
+                        'tagging', 
+                        'reset', 
+                        'feedback',
+                        'proportional-tagging')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -35,7 +85,8 @@ class Action extends VirtualModel
                         'delayed-enrolling' => array('enroll', 'offset-days'),
                         'tagging' => array('tag'),
                         'reset' => array(),
-                        'feedback' => array('content'))),
+                        'feedback' => array('content'),
+                        'proportional-tagging' => array('proportional-tags'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -52,7 +103,7 @@ class Action extends VirtualModel
                 ),
            'validSubfield' => array(
                 'rule' => 'validOffsetDays',
-                'Message' => 'noMessage'
+                'message' => 'noMessage'
                ),
             ),
         'tag' => array(
@@ -75,6 +126,16 @@ class Action extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 )
             ),
+        'proportional-tags' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'proportional-tagging'),
+                'message' => 'The proportional-tags field require an proportional-tagging action.',
+                ),
+            'validProportionalTags' => array(
+                'rule' => 'validProportionalTags',
+                'message' => 'noMessage',
+                ),
+            )      
         );
 
     public $validateOffsetDays = array(
@@ -100,6 +161,75 @@ class Action extends VirtualModel
             )
         );
 
+
+    public $validateSubcondition = array(
+        'subcondition-field' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The field is required.'
+                ),
+            ),
+        'subcondition-operator' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The operator is required.'
+                ),
+            ),
+        'subcondition-parameter' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The parameter is required.'
+                ),
+            ),
+        );
+
+    public $validateSubconditionValues = array(
+        'labelled' => array(
+            'with' => array(
+                'regex' => VusionConst::LABEL_FULL_REGEX,
+                'message' => VusionConst::LABEL_FULL_FAIL_MESSAGE
+                ),
+            'not-with' => array(
+                'regex' => VusionConst::LABEL_FULL_REGEX,
+                'message' => VusionConst::LABEL_FULL_FAIL_MESSAGE,
+                ),
+            ),
+        'tagged' => array(
+            'with' => array(
+                'regex' => VusionConst::TAG_REGEX,
+                'message' => VusionConst::TAG_FAIL_MESSAGE,
+                ),
+            'not-with' => array(
+                'regex' => VusionConst::TAG_REGEX,
+                'message' => VusionConst::TAG_FAIL_MESSAGE,
+                ),
+            )
+        );
+
+
+    public $validateProportionalTag = array(
+        'tag' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The tag is required.'
+                ),
+            'validValue' => array(
+                'rule' => array('regex', VusionConst::TAG_REGEX),
+                'message' => VusionConst::TAG_FAIL_MESSAGE
+                ),
+            ),
+        'weight' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The weight is required.'
+                ),
+            'validValue' => array(
+                'rule' => array('regex', '/^\d+$/'),
+                'message' => 'The weight value can only be a integer.'
+                ),
+            ),
+        );
+
     public function trimArray($Input)
     {
         if (!is_array($Input))
@@ -116,6 +246,17 @@ class Action extends VirtualModel
             $this->data['type-action'] = $this->data['type-answer-action'];
             unset($this->data['type-answer-action']);
         }
+        $this->_setDefault('type-action', null);
+        $this->_setDefault('set-condition', null);
+        if ($this->data['set-condition'] == 'condition') {
+             $this->_setDefault('condition-operator', null);
+             $this->_setDefault('subconditions', array());
+             foreach ($this->data['subconditions'] as &$subconditions) {
+                 $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
+                 $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
+                 $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
+             }
+        }
         return true;
     }
 
@@ -125,12 +266,13 @@ class Action extends VirtualModel
         if (!isset($data[$field])) {
             return true;
         }
-        $this->_validates($data[$field], $this->validateOffsetDays);
-        if (isset($this->validationErrors[$field])) {
-            return false;
+        $result = $this->_runValidateRules($data[$field], $this->validateOffsetDays);
+        if (is_array($result)) {
+            return $result;
         }
         return true;
     }
+
 
     public function validDays($field, $data)
     {
@@ -142,6 +284,58 @@ class Action extends VirtualModel
         }
         if (!(intval($data[$field]) >= 1)) {
             return false;
+        }
+        return true;
+    }
+
+
+    public function validSubconditions($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $count = 0;
+        $validationError = array();
+        foreach($data[$field] as $subcondition) {
+            $result = $this->_runValidateRules($subcondition, $this->validateSubcondition);
+            if (is_bool($result) && $result) {
+                $result = $this->validSubconditionValue($subcondition);
+            }
+            if (is_array($result)) {
+                $validationError[$count] = $result;
+            }
+            $count++;
+        }
+        if ($validationError != array()) {
+            return $validationError;
+        }
+        return true;
+    }
+
+
+    public function validProportionalTags($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateProportionalTag);
+    }
+
+
+    public function validSubconditionValue($subcondition)
+    {
+        if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
+            return array(
+                'subcondition-field' => array(
+                    __("The field value '%s' is not valid.", $subcondition['subcondition-field']))); 
+        }
+        $operators = $this->validateSubconditionValues[$subcondition['subcondition-field']]; 
+        if (!isset($operators[$subcondition['subcondition-operator']])) {
+            return array(
+                'subcondition-operator' => array( 
+                    __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
+        }
+        if (!preg_match($operators[$subcondition['subcondition-operator']]['regex'], $subcondition['subcondition-parameter'])) {
+            return array(
+                'subcondition-parameter' => array(
+                    $operators[$subcondition['subcondition-operator']]['message']));
         }
         return true;
     }
