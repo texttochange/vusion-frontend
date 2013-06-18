@@ -154,12 +154,12 @@
 	margin :5px;	
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not(span):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
 /*	background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(even) {
+[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not(span):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(even) {
 	/*background:#FDEEF4;*/
 	background: #FFCB4B;
 }
@@ -172,11 +172,11 @@
 	background: #FFCB4B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):nth-child(odd) {
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(odd) {
 	background: #FFD97B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):nth-child(even) {
+[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(even) {
 	background: #FFCB4B;
 }
 
@@ -605,7 +605,8 @@
     width: 100%;
     border: 2px solid lightgrey;
     margin-bottom: 10px;
-    padding: 1%;
+    padding: 1%;    
+    max-width:1071px;
 }
 
 .ttc-table-display-area {
@@ -619,7 +620,8 @@
     /*position: relative;*/
     padding-bottom: 10px; 
     float: left;
-    min-width: 728px;
+    min-width: 728px;    
+    max-width:1071px;
 }
 .ttc-table-display-area-shortcode {
 	height: 340px;
@@ -819,7 +821,7 @@ width: 102px;
    margin-bottom: 10px;
    border: 1px solid black;
    padding: 5px 10px 5px 10px;
-   height: 28px
+   height: 28px;
 }
 
 .ttc-dialogue a {
@@ -997,6 +999,9 @@ width: 102px;
 
 .ttc-fold-summary{
 	font-style: italic;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-bottom: 5px;
 }
 
 .paging .ttc-page-count{
@@ -1058,7 +1063,7 @@ margin-left: 63px;
     	padding-right: 20px;
     	padding-bottom: 20px;
     	min-width: 800px;
-    	max-width: 1366px;
+    	/*max-width: 1366px;*/
     	position: relative;
     	overflow-x: hidden;
     	height: 483px;

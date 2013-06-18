@@ -10,7 +10,7 @@ App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramDialoguesController extends AppController
 {
-    var $components = array('RequestHandler', 'Acl');
+    var $components = array('RequestHandler', 'Acl', 'LocalizeUtils', 'Utils');
 
 
     public function beforeFilter()
@@ -57,11 +57,12 @@ class ProgramDialoguesController extends AppController
                         )
                     );
             } else {
+                $errors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
                 $this->set(
                     'result', 
                     array(
                         'status'=>'fail',
-                        'message' => $this->Dialogue->validationErrors,
+                        'message' => array('Dialogue' => $errors),
                         )
                     );
             }
@@ -70,13 +71,13 @@ class ProgramDialoguesController extends AppController
 
     public function edit()
     {
+        $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('dynamicOptions', $this->_getDynamicOptions());
+
         $id = $this->params['id'];
-        
         if (!isset($id))
             return;
-
         $this->Dialogue->id = $id;
-
         if (!$this->Dialogue->exists()) {
             $this->Session->setFlash(__("Dialogue doesn't exist."), 
                 'default',
@@ -100,6 +101,20 @@ class ProgramDialoguesController extends AppController
         }
         $this->set('dialogue', $dialogue);
     }
+
+
+    protected function _getConditionalActionOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->Participant->getFilters('conditional-action'));
+    }
+
+
+    protected function _getDynamicOptions()
+    {      
+        return array();
+    }
+
 
     public function activate()
     {

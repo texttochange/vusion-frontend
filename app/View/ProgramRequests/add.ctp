@@ -36,7 +36,8 @@
             }
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
-         $this->Js->get('document')->event('ready','
+        $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+        $this->Js->get('document')->event('ready','
                 addCounter(); ');
 	    ?>
 	</div>
