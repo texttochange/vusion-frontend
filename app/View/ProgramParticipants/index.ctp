@@ -134,12 +134,10 @@
 	              		  		 <?php $profileItemsLabel = $profileItem['label'];
 	              		  		       $profileItemsValue = $profileItem['value'];
 	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;
-	              		  		 ?>
-	              		  		  <div title = "<?php echo $participantProfile?>" >
+	              		  		 ?>	              		  		  
 	              		  		  <?php
-	              		  		  	echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile')); 
-	              		  		  ?>
-	              		  		  </div>
+	              		  		  	echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile', 'title' => $participantProfile)); 
+	              		  		  ?>	              		  		 
 	              		  <?php  }
 	              	} else {
 	              			echo $this->Html->tag('div', ''); 
