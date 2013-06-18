@@ -726,10 +726,19 @@ width: 102px;
 }
 
 .ttc-table-scrolling-area .profile {
-	width: 99px;
+	width: 112px;
+	/*word-break: break-all;
+	hyphens: auto;
+	-ms-hyphens: auto;
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;*/
 }
 
 .profile {
+	width: 99px;
+}
+
+.profile-table-header {
 	width: 99px;
 }
 
@@ -1130,4 +1139,11 @@ margin-left: 63px;
 
 .program-edit {
     margin-left: 235px;
+}
+
+.participant-tuncated-profile {
+	width: 122px;
+	white-space: nowrap;	
+	overflow: hidden;	
+	text-overflow: ellipsis;	
 }
