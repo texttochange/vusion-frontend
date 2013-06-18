@@ -71,7 +71,7 @@ class AppController extends Controller
                 'controllers/Admin');
         }
         if (isset($programUrl)) {            
-            $navMenuData = $this->_getNavMenuData();
+            $currentProgramData = $this->_getCurrentProgramData();
 
             $redis = new Redis();
             $redis->connect('127.0.0.1');
@@ -80,7 +80,7 @@ class AppController extends Controller
             if ($this->_hasProgramLogs($redis,$programUrl))
                 $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
             
-            $this->set(compact('navMenuData', 'hasProgramLogs', 'programLogsUpdates'));
+            $this->set(compact('currentProgramData', 'hasProgramLogs', 'programLogsUpdates'));
         }
         $this->set(compact('programDetails', 'isAdmin', 'countryIndexedByPrefix'));
     }
@@ -145,7 +145,7 @@ class AppController extends Controller
     }
     
     
-    protected function _getNavMenuData()
+    protected function _getcurrentProgramData()
     {
         $databaseName = $this->Session->read($this->params['program'].'_db');
         
@@ -168,14 +168,14 @@ class AppController extends Controller
         $requestModel = new Request(array('database' => $databaseName));
         $requests = $requestModel->find('all');
         
-        $navMenuData = array(
+        $currentProgramData = array(
             'unattachedMessages' => $programUnattachedMessages,
             'predefinedMessages' => $programPredefinedMessages,
             'dialogues' => $dialogues,
             'requests' => $requests
             );
         
-        return $navMenuData;
+        return $currentProgramData;
     }
 
 
