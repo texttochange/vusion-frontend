@@ -673,5 +673,16 @@ function alphanumeric() {
 		//localization of the error message
 		return false;  
 	}  
-}  
+}
+
+function warningUnattachedMessage() {
+	if ($("#unattached-content").val() != "") {                    
+		var test = confirm("WARNING: Everything in the content area will be replaced.");
+		if (test == false) {
+		    $("#predefined-message option:eq(0)").prop("selected", true);
+		    return false;
+		}
+	}
+	return true;	
+}
           
