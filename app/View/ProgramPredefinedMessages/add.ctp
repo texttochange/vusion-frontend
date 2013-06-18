@@ -21,7 +21,10 @@
     <fieldset>
        <?php echo $this->Form->input(__('name'), array('id' => 'name')); ?>
        <?php echo $this->Form->input(__('content'), array('rows'=>5)); ?>
-       <?php $this->Js->get('document')->event('ready','addContentFormHelp();'); ?>
+       <?php $this->Js->get('document')->event('ready','
+           addContentFormHelp();
+           addCounter();
+           '); ?>
     </fieldset>
        <?php echo $this->Form->end(__('Save')); ?>
    </div>
