@@ -3,6 +3,7 @@ App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('VusionConst', 'Lib');
 
 class Participant extends MongoModel
 {
@@ -68,18 +69,30 @@ class Participant extends MongoModel
                 )
             ),
         'profile' => array(
-            'validateProfile' => array(
-                'rule' => 'validateProfile',
-                'message' => 'Invalid format. Must be label:value, label:value, ... e.g gender:male, ..'
+            'validateLabels' => array(
+                'rule' => 'validateLabels',
+                'message' => 'noMessage'
                 ),
             ),
         'tags' => array(
             'validateTags' => array(
                 'rule' => 'validateTags',
-                'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
+                'message' => 'noMessage'
                 ),
             )
         );
+/*
+    public $validateLabel = array(
+        'label' => array(
+            'rule' => 
+            'message' => ),
+        'value' => array(
+            
+            ),
+        'raw' => array(
+            ),
+        );
+*/
 
     public $importErrorMessages = array(
         'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
@@ -90,10 +103,18 @@ class Participant extends MongoModel
 
     public function validateTags($check)
     {
+        $index = 0;
         foreach ($check['tags'] as $tag) {
-            if (!$this->validateTag($tag)) {
-                return false;
+            if (is_string($validationError = $this->validateTag($tag))) {
+               if (!isset($this->validationErrors['tags'])) {
+                    $this->validationErrors['tags'] = array();
+                }
+                $this->validationErrors['tags'][$index] = $validationError;
             }
+            $index++;
+        }
+        if (isset($this->validationErrors['tags'])) {
+            return false;
         }
         return true;
     }
@@ -101,15 +122,15 @@ class Participant extends MongoModel
 
     public function validateTag($check)
     {
-        $regex = '/^[a-z0-9A-Z\s]+$/';
+        $regex = VusionConst::TAG_REGEX;
         if (!preg_match($regex, $check)) {
-            return false;
+            return VusionConst::TAG_FAIL_MESSAGE;
         }
         return true;
     }
     
     
-    public function validateProfile($check)
+    public function validateLabels($check)
     { 
         $regex = '/^[a-zA-Z0-9\s]+:[a-zA-Z0-9\s]+$/';
         foreach ($check['profile'] as $profile) {
