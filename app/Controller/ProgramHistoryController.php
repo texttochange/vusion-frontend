@@ -171,7 +171,11 @@ class ProgramHistoryController extends AppController
                 foreach($statuses as $status) {
                     $line = array();
                     foreach($headers as $header) {
-                        $line[] = $status['History'][$header];
+                        if (isset($status['History'][$header])) {
+                            $line[] = $status['History'][$header];
+                        } else {
+                            $line[] = "";
+                        }
                     }
                     fputcsv($handle, $line,',' , '"' );
                 }
