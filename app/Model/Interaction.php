@@ -185,12 +185,6 @@ class Interaction extends VirtualModel
                 'message' => 'Type Question value is not valid.',
                 )
             ),
-        'label-for-participant-profiling' => array(
-            'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'question-answer-keyword'),
-                'message' => 'A label-for-participant-profiling is required.',
-                ),
-            ),
         'answer-keywords' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'question-answer-keyword'),
@@ -204,7 +198,9 @@ class Interaction extends VirtualModel
         ### Type Interaction Subtype - Type Question Subtype
         'label-for-participant-profiling'=> array(
             'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'type-question', 'closed-question'),
+                'rule' => array('requiredConditionalFieldOrKeyValue', array(
+                                                                'type-interaction'=>'question-answer-keyword',
+                                                                'type-question' => 'closed-question')),
                 'message' => 'A label-for-participant-profiling is required.',
                 ),
             ),
@@ -378,62 +374,35 @@ class Interaction extends VirtualModel
 
     public function validateAnswers($field, $data)
     {
-        if (!isset($data[$field])) {
-            return true;
-        }
-        foreach($data[$field] as $answer) {
-            $this->_validates($answer, $this->validateAnswer);
-        }
-        if (isset($this->validationErrors[$field])) {
-            return false;
-        }
-        return true;
+        return $this->validList($field, $data, $this->validateAnswer); 
     }
 
 
     public function validateAnswerKeywords($field, $data)
     {
-        if (!isset($data[$field])) {
-            return true;
-        }
-        foreach($data[$field] as $answerKeyword) {
-            $this->_validates($answerKeyword, $this->validateAnswerKeyword);
-        }
-        if (isset($this->validationErrors[$field])) {
-            return false;
-        }
-        return true;        
+        return $this->validList($field, $data, $this->validateAnswerKeyword);      
     }
 
 
     public function validateFeedbacks($field, $data)
     {
-        if (!isset($data[$field])) {
-            return true;
-        }
-        foreach($data[$field] as $answer) {
-            $this->_validates($answer, $this->validateFeedback);
-        }
-        if (isset($this->validationErrors[$field])) {
-            return false;
-        }
-        return true;
+        return $this->validList($field, $data, $this->validateFeedback);
     }
 
     
     public function validateActions($field, $data)
     {
         $count = 0;
+        $validationErrors = array();
         foreach($data[$field] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
-                if (!isset($this->validationErrors[$field])) {
-                    $this->validationErrors[$field][$count] = array();
-                }
-                $this->validationErrors[$field][$count] = $this->Action->validationErrors;
-                return false;
+                $validationErrors[$count] = $this->Action->validationErrors;
             }
             $count++;
+        }
+        if ($validationErrors != array()) {
+            return $validationErrors;
         }
         return true;
     }
@@ -444,12 +413,13 @@ class Interaction extends VirtualModel
         parent::beforeValidate();
         $this->_setDefault('interaction-id', uniqid());
         $this->_setDefault('activated', 0);
+        $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
 
-        if (!isset($this->data['type-interaction'])) {
-            return false;
-        }
+        $this->_setDefault('type-interaction', null);
+        $this->_setDefault('type-schedule', null);
 
+        //Exit the function in case of announcement
         if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
             return true;
  
@@ -464,9 +434,11 @@ class Interaction extends VirtualModel
             if ($this->data['type-question'] == 'closed-question') {
                 $this->_setDefault('set-answer-accept-no-space', null);
                 $this->_setDefault('label-for-participant-profiling', null);
-                $this->_setDefault('feedbacks', array());
                 $this->_setDefault('answers', array());
                 $this->_beforeValidateAnswers();
+            } elseif ($this->data['type-question'] == 'open-question') {
+                $this->_setDefault('answer-label', null);
+                $this->_setDefault('feedbacks', array());
             }
         }
       
