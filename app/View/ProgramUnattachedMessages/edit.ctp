@@ -131,11 +131,14 @@
             var messageId = $("#predefined-message option:selected").val();
             $.each(predefinedMessages, function (i, predefinedMessage) {
                 if (messageId == predefinedMessage.id) {
-                    var test = confirm("WARNING: Everything in the content area will be replaced.");
-                    if (test == true)
-                        $("#unattached-content").val(predefinedMessage.content);
-                    else
-                        $("#predefined-message option:eq(0)").prop("selected", true);
+                    if ($("#unattached-content").val() != "") {                    
+                        var test = confirm("WARNING: Everything in the content area will be replaced.");
+                        if (test == false) {
+                            $("#predefined-message option:eq(0)").prop("selected", true);
+                            return;
+                        }
+                    }
+                    $("#unattached-content").val(predefinedMessage.content);
                 }
             });
             ');
