@@ -5,6 +5,7 @@ Vusion Frontend is build with CakePHP2.0.5.
 
 Installation
 ------------
+
 ::
 
 	$ git clone <this repository>
@@ -12,15 +13,17 @@ Installation
 	$ git submodule init
 	$ git submodule update
 
+
 You need to add the following folders
 ::
+
 	$ mkdir app/tmp/cache
 	$ mkdir app/tmp/cache/persistent
 	$ mkdir app/tmp/cache/model
 
 You must change the permissions of the cache folder and it's subfolders to use www-data user
 who is the apache user.
-::
+
 	$ chown -R www-data app/tmp/cache
 
 Web Server Configuration
@@ -38,59 +41,95 @@ The second one is the Document Database MongoDB  for the business data.
 
 Relational Database Configuration:
 You can create the relational database schema from file **app/Config/Schema/schema.php** with the cake console
-::
+
 	$ ./lib/Cake/Console/cake schema create
 	
 If file schema.php is not found, you can also create the database using Mysql by importing a file **app/Config/Schema/schema.sql** with phpmyadmin tool.
+
+
 ::
+
 	1.On your phpmyadmin home go to more tab and in the drop dpwn select import
 	2.Browse the file you went to import in this case schema.sql 
 	3.Tick the checkbox with donot auto increment and press go
+
+
+or in the mysql console type "mysql -u root-p < app/Config/Schema/schema.sql"
+
 	
 Create a userLogin and password in the Mysql account database which must correspond to ones in the **app/Config/database.php** 
+
 ::
+
 	1.On your phpmyadmin home go to phpmyadmin tab 
 	2.Click on add a new user
 	3.Feelin the infromation but on Host select local and Global privileges check all then press go
+
+while in the mysql console,navigate to to users table and create two users; "cake" and "cake_test" and grant all privileges to these users by issuing the commands below
+
+::
+
+         1.GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
+         2.GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
+
+Run vusion.sql
+        mysql -u root -p < app/Test/data/mySQL/vusion.sql
 
 PHP Modules
 -----------
 Modules need to be install and configure in PHP
  
 - MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
+- Download a .tar.gz file
+- Open a terminal
+- tar zxvf mongodb-php-driver-1.2.9.tar.gz
+- cd mongodb-php-driver-1.2.9
+- phpize
+- ./configure
+- make all
+- sudo make install
+
 
 Development PHP Modules
 ----------------------- 
 
 - Pear
+sudo apt-get install php-pear
+
 - PHPUnit
+sudo apt-get install phpunit
 
 Jenkins
 -------
 To run the different build task from build.xml, you need to install
 
 - Jdk6
+sudo apt-get install openjdk-6-jre;
+
 - Ant
+sudo apt-get install -u ant; or sudo apt-get install ant;
+
+
 
 Apache configuration for mod_xsendfile(export)
 --------------------------------
 You need to first install apache2-prefork-dev
-::
+
   $ sudo apt-get install apache2-prefork-dev
 
 Then you clone the mod_xsendfile file from github
-::
+
 	$ git clone http://github.com/nmaier/mod_xsendfile /opt/mod_xsendfile 
 
 **Note /opt/mod_xsendfile is destination whereyou are storing the cloned file **
 
 Compile the file you have cloned. Run this command in the mod_xsednfile directory, in our case */opt/mod_xsendfile* 
-::
+
  	$apxs2 -cia mod_xsendfile.c
 
 
 Add this line **XSendFilePath <documentroot>/files/programs/** inside your apache configuration for virtual hosts
-::
+
 	if you're using Lamp server add it in **httpd.config**.
  	otherwise, add it in ** /etc/apache/sites-available/default **
 
