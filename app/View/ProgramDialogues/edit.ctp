@@ -74,7 +74,7 @@
 	$this->Js->set('offset-condition-interaction-idOptions', $offsetConditionOptions);
 	
 	$dialogueOptions = array();
-	foreach($dialogues as $dialogue) {
+	foreach($navMenuData['dialogues'] as $dialogue) {
 	    if ($dialogue['Active']) {
 	        $dialogueOptions[] = array(
 	            'value' => $dialogue['Active']['dialogue-id'],

@@ -262,6 +262,7 @@ class UsersController extends AppController
         $this->Acl->allow($Group, 'controllers/ShortCodes');
         $this->Acl->allow($Group, 'controllers/UnmatchableReply');
         $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
         $this->Acl->allow($Group, 'controllers/ProgramLogs');
         $this->Acl->allow($Group, 'controllers/Templates');
         $this->Acl->allow($Group, 'controllers/Users/view');
@@ -291,6 +292,7 @@ class UsersController extends AppController
         $this->Acl->allow($Group, 'controllers/ShortCodes');
         $this->Acl->deny($Group, 'controllers/UnmatchableReply');
         $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
         $this->Acl->allow($Group, 'controllers/ProgramLogs');
         $this->Acl->allow($Group, 'controllers/Users/view');
         $this->Acl->allow($Group, 'controllers/Users/changePassword');
@@ -338,6 +340,7 @@ class UsersController extends AppController
         $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
         $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
         $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
         $this->Acl->allow($Group, 'controllers/Users/view');
         $this->Acl->allow($Group, 'controllers/Users/changePassword');
         $this->Acl->allow($Group, 'controllers/Users/edit');

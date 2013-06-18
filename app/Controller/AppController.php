@@ -4,6 +4,7 @@ App::uses('ProgramSetting', 'Model');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('Request', 'Model');
+App::uses('PredefinedMessage', 'Model');
 
 class AppController extends Controller
 {
@@ -70,17 +71,7 @@ class AppController extends Controller
                 'controllers/Admin');
         }
         if (isset($programUrl)) {            
-            $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
-            $unattachedMessages = $unattachedMessageModel->find('future');
-            if (isset($unattachedMessages))
-                $programUnattachedMessages = $unattachedMessages;
-            else
-                $programUnattachedMessages = null;
-            
-            $dialogueModel = new Dialogue(array('database' => $databaseName));
-            $dialogues = $dialogueModel->getActiveAndDraft();
-            $requestModel = new Request(array('database' => $databaseName));
-            $requests = $requestModel->find('all');
+            $navMenuData = $this->_getNavMenuData();
 
             $redis = new Redis();
             $redis->connect('127.0.0.1');
@@ -89,7 +80,7 @@ class AppController extends Controller
             if ($this->_hasProgramLogs($redis,$programUrl))
                 $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
             
-            $this->set(compact('programUnattachedMessages', 'dialogues', 'hasProgramLogs', 'programLogsUpdates', 'requests'));
+            $this->set(compact('navMenuData', 'hasProgramLogs', 'programLogsUpdates'));
         }
         $this->set(compact('programDetails', 'isAdmin', 'countryIndexedByPrefix'));
     }
@@ -151,6 +142,40 @@ class AppController extends Controller
             return array_reverse($programLogs);
         }
         return array();    	    	    
+    }
+    
+    
+    protected function _getNavMenuData()
+    {
+        $databaseName = $this->Session->read($this->params['program'].'_db');
+        
+        $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
+        $unattachedMessages = $unattachedMessageModel->find('future');
+        if (isset($unattachedMessages))
+            $programUnattachedMessages = $unattachedMessages;
+        else
+            $programUnattachedMessages = null;
+            
+        $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));
+        $predefinedMessages = $predefinedMessageModel->find('all');
+        if (isset($predefinedMessages))
+            $programPredefinedMessages = $predefinedMessages;
+        else
+            $programPredefinedMessages = null;
+        
+        $dialogueModel = new Dialogue(array('database' => $databaseName));
+        $dialogues = $dialogueModel->getActiveAndDraft();
+        $requestModel = new Request(array('database' => $databaseName));
+        $requests = $requestModel->find('all');
+        
+        $navMenuData = array(
+            'unattachedMessages' => $programUnattachedMessages,
+            'predefinedMessages' => $programPredefinedMessages,
+            'dialogues' => $dialogues,
+            'requests' => $requests
+            );
+        
+        return $navMenuData;
     }
 
 

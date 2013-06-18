@@ -107,7 +107,40 @@
     if ($this->Form->isFieldError('send-to-type'))
         echo $this->Form->error('send-to-type');
     echo "</div>";
-    echo $this->Form->input('content', array('rows'=>5));
+    $this->Js->set('predefinedMessageOptions', $predefinedMessageOptions);
+    $options = array();
+    foreach ($predefinedMessageOptions as $key => $value) {
+        $options[$value['id']] = $value['name'];
+    }
+    echo "&nbsp&nbsp";
+    if (count($predefinedMessageOptions) <= 0) {
+        echo $this->Html->tag('label',__('There are no predefined messages. '));
+        echo $this->Html->link(__('To create a predefined message click here.'),
+            array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'),
+            array('class'=>'ttc-goto-link')
+            );
+    } else {        
+        echo $this->Html->tag('label',__('Use predefined message from list:'));
+        echo "&nbsp";
+        echo $this->Form->select('predefined-message',
+            $options,
+            array('id' => 'predefined-message', 'empty' => 'Select one...')
+            );
+        $this->Js->get('#predefined-message')->event('change','
+            var predefinedMessages = window.app["predefinedMessageOptions"];
+            var messageId = $("#predefined-message option:selected").val();
+            $.each(predefinedMessages, function (i, predefinedMessage) {
+                if (messageId == predefinedMessage.id) {
+                    var test = confirm("WARNING: Everything in the content area will be replaced.");
+                    if (test == true)
+                        $("#unattached-content").val(predefinedMessage.content);
+                    else
+                        $("#predefined-message option:eq(0)").prop("selected", true);
+                }
+            });
+            ');
+    }
+    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
