@@ -133,12 +133,9 @@
 	              		  foreach ($participant['Participant']['profile'] as $profileItem) {?>
 	              		  		 <?php $profileItemsLabel = $profileItem['label'];
 	              		  		       $profileItemsValue = $profileItem['value'];
-	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;
-	              		  		 ?>	              		  		  
-	              		  		  <?php
+	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;	              		  		 
 	              		  		  	echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile', 'title' => $participantProfile)); 
-	              		  		  ?>	              		  		 
-	              		  <?php  }
+	              		  		    }
 	              	} else {
 	              			echo $this->Html->tag('div', ''); 
 	              	}	             
