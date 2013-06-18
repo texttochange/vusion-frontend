@@ -497,6 +497,9 @@ function foldForm(){
     case "subcondition":
         summary = $('[name="'+nameToFold+'.subcondition-field"]').val()
         break;
+    case "proportional-tag":
+        summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
+        break;
     default:
         summary = "not summarized view available for this item";
     }
