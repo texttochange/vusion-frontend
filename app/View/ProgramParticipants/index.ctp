@@ -128,18 +128,19 @@
 	                      echo $this->Html->tag('div', '');
 	                  }
 	              ?></td>
-	              <td class="profile"><?php
-	              	if (count($participant['Participant']['profile']) > 0) {
-	              		  foreach ($participant['Participant']['profile'] as $profileItem) {?>
-	              		  		 <?php $profileItemsLabel = $profileItem['label'];
-	              		  		       $profileItemsValue = $profileItem['value'];
-	              		  		       $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;	              		  		 
-	              		  		  	echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile', 'title' => $participantProfile)); 
-	              		  		    }
-	              	} else {
-	              			echo $this->Html->tag('div', ''); 
-	              	}	             
-	               ?></td>	            
+	              <td class="profile">
+	              <?php
+	              if (count($participant['Participant']['profile']) > 0) {
+	              		  foreach ($participant['Participant']['profile'] as $profileItem) {
+	              		  		  $profileItemsLabel = $profileItem['label'];
+	              		  		  $profileItemsValue = $profileItem['value'];
+	              		  		  $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;	              		  		 
+	              		  		  echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile', 'title' => $participantProfile)); 
+	              		  }
+	              } else {
+	              		  echo $this->Html->tag('div', ''); 
+	              }	             
+	              ?></td>	            
 	               <td  class="action actions">
 	                   <?php echo $this->Html->link(__('View'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); ?>
 	                   <?php if ($this->Session->read('Auth.User.group_id') != 4 ) { ?>
