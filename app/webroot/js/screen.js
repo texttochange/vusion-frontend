@@ -5,8 +5,12 @@ function layoutHandler() {
 	    $(".width-size").attr("style","width:"+variableWidth+"px");		
 	}
 	if (window.innerHeight > 340) {
-	    var variableHeight = window.innerHeight - 300; 
+	    var variableHeight = window.innerHeight - 200; 
 	    $(".height-size").attr("style","height:"+variableHeight+"px");		
+	}
+	if (window.innerHeight > 340) {
+	    var variableHeight2 = window.innerHeight - 300; 
+	    $(".dispaly-height-size").attr("style","height:"+variableHeight2+"px");		
 	}
 }
 
