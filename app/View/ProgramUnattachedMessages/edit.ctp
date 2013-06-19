@@ -126,16 +126,7 @@
             $options,
             array('id' => 'predefined-message', 'empty' => 'Select one...')
             );
-        $this->Js->get('#predefined-message')->event('change','
-            var predefinedMessages = window.app["predefinedMessageOptions"];
-            var messageId = $("#predefined-message option:selected").val();
-            $.each(predefinedMessages, function (i, predefinedMessage) {
-                if (messageId == predefinedMessage.id) {
-                    if (warningUnattachedMessage())
-                        $("#unattached-content").val(predefinedMessage.content);
-                }
-            });
-            ');
+        $this->Js->get('#predefined-message')->event('change','addPredefinedContent();');
     }
     echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
