@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('Participant', 'Model');
@@ -125,18 +124,22 @@ class ProgramsController extends AppController
                 $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
                 $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
             } 
-            $tempParticipant                         = new Participant(array('database' => $database));
-            $program['Program']['participant-count'] = $tempParticipant->find('count'); 
-            $tempHistory                             = new History(array('database' => $database));
-            $program['Program']['history-count']     = $tempHistory->find('count');
-            $tempSchedule                            = new Schedule(array('database' => $database));
-            $program['Program']['schedule-count']    = $tempSchedule->find('count');
+
+            if ($this->params['ext']!='json') {
+                $tempParticipant = new Participant(array('database' => $database));
+                $program['Program']['participant-count'] = $tempParticipant->find('count'); 
+                $tempHistory     = new History(array('database' => $database));
+                $program['Program']['history-count']     = $tempHistory->find(
+                    'count', array('conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
+                $tempSchedule = new Schedule(array('database' => $database));
+                $program['Program']['schedule-count']    = $tempSchedule->find('count');
             
-            //$filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
-            $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry($program, $conditions, $code);
-            if (count($filterPrograms)>0) {
-                foreach ($filterPrograms as $fProgram) {
-                    $filteredPrograms[] = $fProgram;
+                //$filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
+                $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry($program, $conditions, $code);
+                if (count($filterPrograms)>0) {
+                    foreach ($filterPrograms as $fProgram) {
+                        $filteredPrograms[] = $fProgram;
+                    }
                 }
             }
         }

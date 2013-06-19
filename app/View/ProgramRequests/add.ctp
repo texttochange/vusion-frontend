@@ -1,4 +1,5 @@
-<div class="request form">
+
+<div class="request form width-size"  >
     <ul class="ttc-actions">
         <li>
         <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
@@ -6,7 +7,7 @@
         <?php
         echo $this->Html->link( __('Cancel'), 
             array(
-                'program' => $programUrl,
+                'program' => $programDetails['url'],
                 'controller' => 'programHome',
                 'action' => 'index'	           
                 ));
@@ -35,7 +36,8 @@
             }
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
-         $this->Js->get('document')->event('ready','
+        $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+        $this->Js->get('document')->event('ready','
                 addCounter(); ');
 	    ?>
 	</div>

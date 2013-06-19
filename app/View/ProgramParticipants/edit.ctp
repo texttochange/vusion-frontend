@@ -1,4 +1,4 @@
-<div class="participants form">
+<div class="participants form width-size">
     <ul class="ttc-actions">		
         <li>
         <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
@@ -6,7 +6,7 @@
         <?php
         echo $this->Html->link( __('Cancel'), 
             array(
-                'program' => $programUrl,
+                'program' => $programDetails['url'],
                 'controller' => 'programHome',
                 'action' => 'index'	           
                 ));
@@ -20,7 +20,7 @@
 	<?php echo $this->Form->create('Participant');?>
 	    <fieldset>
 	        <?php
-	            echo $this->Form->input('phone');	            
+	            echo $this->Form->input('phone', array('label' => __('Phone')));	            
 	            $profiles = $this->data['Participant']['profile'];
 	            if (is_array($profiles)) {
 	                $profileArray = array();
@@ -31,7 +31,7 @@
 	            } else {
 	                $profileData = $profiles;
 	            }
-	            echo $this->Form->input(__('profile'), array('rows'=>5, 'value'=>$profileData));
+	            echo $this->Form->input('profile', array('label' => __('Profile'), 'rows'=>5, 'value'=>$profileData));
 	            $tags = $this->data['Participant']['tags'];
 	            if (is_array($tags)) {
 	                $tagsArray = explode(",",implode(",", $tags));
@@ -39,7 +39,7 @@
 	            } else {
 	                $tagsString = $tags;
 	            }
-	            echo $this->Form->input(__('tags'), array('rows'=>5, 'value'=>$tagsString));
+	            echo $this->Form->input('tags', array('label' => __('Tags'), 'rows'=>5, 'value'=>$tagsString));
 	            $options = $selectOptions;
 	            $selected = $oldEnrolls;
 	            echo $this->Form->input('enrolled', array('options'=>$options,

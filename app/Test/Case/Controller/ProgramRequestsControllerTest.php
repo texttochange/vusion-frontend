@@ -114,7 +114,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array(),
+                    'RequestHandler' => array()
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -150,14 +151,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         return $requests;
     }
    
-
+/*
     public function testIndex()
     {
         $this->mockProgramAccess();
         $this->testAction("testurl/programRequests/index");   
         $this->assertEqual(array(), $this->vars['requests']);
     }
-
+*/
 
     public function testAdd()
     {
@@ -199,13 +200,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->testAction(
             "testurl/programRequests/edit/" . $savedRequest['Request']['_id'],
             array(
-                'method' => 'post',
+                'method' => 'POST',
                 'data' => $savedRequest
                 )
             );
 
         $this->assertEquals('OTHERKEYWORD', $requests->data['Request']['keyword']);
     }
+
 
     public function testEdit_json()
     {
@@ -221,7 +223,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->testAction(
             "testurl/programRequests/edit.json",
             array(
-                'method' => 'post',
+                'method' => 'POST',
                 'data' => $savedRequest
                 )
             );
@@ -444,6 +446,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
          $this->assertEquals('fail', $this->vars['result']['status']);
 
     }
-  
+
 
 }

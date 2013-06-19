@@ -4,12 +4,14 @@ App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Helper');
+App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+
 
 class ProgramRequestsController extends AppController
 {
 
-    var $components = array('RequestHandler');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'Utils');
     public $uses = array('Request');
     
     
@@ -29,6 +31,7 @@ class ProgramRequestsController extends AppController
         $this->Request        = new Request($options);
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
+        $this->Participant    = new Participant($options);
         $this->_instanciateVumiRabbitMQ();
     }
 
@@ -47,6 +50,8 @@ class ProgramRequestsController extends AppController
 
     public function add()
     {
+        $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+
         $programUrl = $this->params['program'];
 
         if ($this->request->is('post')) {
@@ -60,6 +65,13 @@ class ProgramRequestsController extends AppController
                         'request-id' => $this->Request->id,
                         'message' => __('Request created, wait for redirection.'))
                     );
+            } else {
+                $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
+                $this->set(
+                    'result', array(
+                        'status' => 'fail',
+                        'message' => array('Request' => $this->Request->validationErrors))
+                    );
             }
         }
     }
@@ -67,6 +79,8 @@ class ProgramRequestsController extends AppController
 
     public function edit()
     {
+        $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
 
@@ -82,9 +96,11 @@ class ProgramRequestsController extends AppController
                         'message' => 'Request saved.')
                     );
             } else {
+                $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
                 $this->set(
                     'result', array(
-                        'status' => 'fail'
+                        'status' => 'fail',
+                        'message' => array('Request' => $this->Request->validationErrors)
                         )
                     );
             }
@@ -95,6 +111,13 @@ class ProgramRequestsController extends AppController
             }
             $this->set('request', $this->Request->read(null, $id));
         }
+    }
+
+
+    protected function _getConditionalActionOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->Participant->getFilters('conditional-action'));
     }
 
 
@@ -217,11 +240,6 @@ class ProgramRequestsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
     }
 
-
-    public function getActiveDialogue()
-    {
-
-    }
 
 
 }

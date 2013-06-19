@@ -116,7 +116,8 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array(),
+                    'RequestHandler' => array()
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -214,7 +215,9 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         $this->assertEqual('fail', $this->vars['result']['status']);
-        $this->assertEqual('type-schedule is missing in an Interaction.', $this->vars['result']['message']);        
+        $this->assertEqual(
+            'Type Schedule field cannot be empty.', 
+            $this->vars['result']['message']['Dialogue']['interactions'][0]['type-schedule'][0]);        
     }
 
 
