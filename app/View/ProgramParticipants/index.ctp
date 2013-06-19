@@ -68,8 +68,8 @@
     echo $this->element('filter_box', array(
         'controller' => 'programParticipants'));
 	?>	
-	<div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area">
+	<div class="ttc-table-display-area height-size">
+	<div class="ttc-table-scrolling-area height-size">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >

@@ -610,7 +610,7 @@
 }
 
 .ttc-table-display-area {
-    height: 340px;
+    /*height: 340px;*/
     min-height: 250px;
     padding: 10px 10px;
     overflow: hidden;    
@@ -662,7 +662,7 @@ width: 186px;
 }*/
 
 .ttc-table-scrolling-area {
-    height: 343px;
+    /*height: 343px;*/
     min-height: 250px;
     overflow: auto; 
     
