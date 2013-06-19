@@ -111,6 +111,24 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
+    public function testSave_valiationLabel()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+     
+        $participant = array(
+            'phone' => '25601',
+            'profile' => array(
+                array(
+                    'label' => 'balance',
+                    'value' => '16.01'
+                    ),
+                ),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertTrue(isset($savedParticipant));
+    }
+
 
     public function testSave_clearPhone()
     {
@@ -1374,7 +1392,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
         
     }
-    
+
    
     public function testAddMassTags_failValidation()
     {
@@ -1387,12 +1405,13 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->save($participant_08);
        
         $conditions = array();    
-        $results = $this->Participant->addMassTags('%', $conditions);       
-        $this->assertFalse($results);
+        $this->assertEqual(
+            "Use only space, letters and numbers for tag, e.g 'group 1'.",
+            $this->Participant->addMassTags('%', $conditions));       
         
-        $this->Participant->addMassTags('you2', $conditions); 
-        $participants = $this->Participant->find('all', $conditions);  
-        $this->assertTrue(in_array('you2', $participants[0]['Participant']['tags']));
+        $this->assertTrue($this->Participant->addMassTags('you2', $conditions)); 
+        $participant = $this->Participant->find('first', $conditions);
+        $this->assertTrue(in_array('you2', $participant['Participant']['tags']));
     }
 
 
