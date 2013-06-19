@@ -677,7 +677,7 @@ function alphanumeric() {
 
 function warningUnattachedMessage() {
 	if ($("#unattached-content").val() != "") {                    
-		var test = confirm("WARNING: Everything in the content area will be replaced.");
+		var test = confirm(localized_errors['warning_unattached_message']);
 		if (test == false) {
 		    $("#predefined-message option:eq(0)").prop("selected", true);
 		    return false;
