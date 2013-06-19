@@ -309,6 +309,24 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryConditions($filter),
             array('message-content' => new MongoRegex('/^keyword($| )/i'))
             );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-content', 
+                    2 => 'has-keyword-any', 
+                    3 => 'keyword1,keyword2'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array(
+                '$or' => array(
+                    array('message-content' => new MongoRegex('/^keyword1($| )/i')),
+                    array('message-content' => new MongoRegex('/^keyword2($| )/i'))
+                ))
+            );
     }
 
 

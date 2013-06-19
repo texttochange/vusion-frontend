@@ -229,16 +229,13 @@ class History extends MongoModel
                 'start-with-any' => array(
                     'label' => 'starts with any of',
                     'parameter-type' => 'text'))),
-        
-       
         'separate-message' => array(
             'label' => 'separate message',
             'operators' => array(
                 'equal-to' => array(
                     'label' => 'name is',
                     'parameter-type' => 'unattach-message'),                
-                )), 
-        
+                )),
         'message-content' => array(
             'label' => 'message content',
             'operators' => array(
@@ -250,19 +247,25 @@ class History extends MongoModel
                     'parameter-type' => 'text'),
                 'has-keyword' => array(
                     'label' => 'has keyword',
-                    'parameter-type' => 'text'))), 
+                    'parameter-type' => 'text'),
+                'has-keyword-any' => array(
+                    'label' => 'has keyword any of',
+                    'parameter-type' => 'text')
+                )),
         'dialogue-source' => array(
             'label' => 'dialogue source',
             'operators' => array(
                 'is' => array(
                     'label' => 'is',
-                    'parameter-type' => 'dialogue'))),
+                    'parameter-type' => 'dialogue')
+                )),
         'interaction-source' => array(
             'label' => 'interaction source',
             'operators' => array(
                 'is' => array(
                     'label' => 'is',
-                    'parameter-type' => 'interaction'))),
+                    'parameter-type' => 'interaction')
+                )),
         'answer' => array(
             'label' => 'answers',
             'operators' => array(
@@ -272,7 +275,7 @@ class History extends MongoModel
                 'not-matching' => array(
                     'label' => 'not matching any question',
                     'parameter-type' => 'none')
-                )) 
+                )), 
         );
 
     public $filterOperatorOptions = array(
@@ -349,18 +352,7 @@ class History extends MongoModel
                     $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
                 } elseif ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    if ($phoneNumbers) {
-                        if (count($phoneNumbers) > 1) {
-                            $or = array();
-                            foreach ($phoneNumbers as $phoneNumber) {
-                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
-                                $or[] = array('participant-phone' => $regex);
-                            }
-                            $condition['$or'] = $or;
-                        } else {
-                            $condition['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
-                        }
-                    }   
+                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
                 }
             } elseif ($filterParam[1] == 'message-content') {
                 if ($filterParam[2] == 'equal-to') {
@@ -369,8 +361,11 @@ class History extends MongoModel
                      $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
                 } elseif ($filterParam[2] == 'has-keyword') {
                     $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                } elseif ($filterParam[2] == 'has-keyword-any') {
+                    $keywords = explode(",", str_replace(" ", "", $filterParam[3]));
+                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
                 }
-            } 
+            }
             
             elseif ($filterParam[1] == 'separate-message') {
                 if ($filterParam[2] == 'equal-to') {
@@ -416,7 +411,25 @@ class History extends MongoModel
         }
         
         return $conditions;
-    }   
+    } 
+
+
+    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null) 
+    {
+        $query = array();
+        if (count($choices) > 1) {
+            $or = array();
+            foreach ($choices as $choice) {
+                $regex = new MongoRegex("/^".$prefix.$choice.$suffix);
+                $or[] = array($field => $regex);
+            }
+            $query['$or'] = $or;
+        } else {
+            $query[$field] = new MongoRegex("/^".$prefix.$choices[0].$suffix);
+        }
+        return $query;
+    }
+  
     
     public function countUnattachedMessages($unattach_id, $message_status = null)
     {
