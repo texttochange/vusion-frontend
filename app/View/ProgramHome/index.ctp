@@ -15,7 +15,7 @@
 	<h3><?php echo __('Sending Next');?></h3>
 	
 	<div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area">
+	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>

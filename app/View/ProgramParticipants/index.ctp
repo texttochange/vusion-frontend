@@ -69,7 +69,7 @@
         'controller' => 'programParticipants'));
 	?>	
 	<div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area dispaly-height-size">
+	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >

@@ -1,4 +1,3 @@
-
 function layoutHandler() {
 	if (window.innerWidth > 1080) {
 	    var variableWidth = window.innerWidth - 300; 
@@ -9,8 +8,8 @@ function layoutHandler() {
 	    $(".height-size").attr("style","height:"+variableHeight+"px");		
 	}
 	if (window.innerHeight > 340) {
-	    var variableHeight2 = window.innerHeight - 300; 
-	    $(".dispaly-height-size").attr("style","height:"+variableHeight2+"px");		
+	    var displayVariableHeight = window.innerHeight - 300; 
+	    $(".display-height-size").attr("style","height:"+displayVariableHeight+"px");		
 	}
 }
 

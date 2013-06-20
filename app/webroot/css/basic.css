@@ -765,7 +765,7 @@ width: 102px;
 }
 
 .ttc-table-scrolling-area .prefix {
-	width: 206px;
+	width: 255px;
 	word-wrap: break-word;
 }
 
@@ -785,7 +785,7 @@ width: 102px;
 }
 
 .ttc-table-scrolling-area .support {
-	width: 279px;
+	width: 336px;
 	text-align: center;
 }
 .ttc-table-scrolling-area .shortcodes {
