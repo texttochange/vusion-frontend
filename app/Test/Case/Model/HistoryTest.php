@@ -265,7 +265,29 @@ class HistoryTestCase extends CakeTestCase
             );
     }
 
-    
+
+    public function testFromFilterToQueryConditions_messageContent_validationFail()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-content', 
+                    2 => 'has-keyword-any', 
+                    3 => 'keyword1 keyword2'),
+                )
+            );
+        try {
+            $this->History->fromFilterToQueryConditions($filter);
+            $this->fail();
+        } catch (FilterException $e) {
+            $this->assertTrue(true);
+        } catch (Exception $e) {
+            $this->fail();
+        }
+    }
+
+
     public function testFromFilterToQueryConditions_messageContent()
     {
         $filter = array(

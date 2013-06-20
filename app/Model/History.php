@@ -2,6 +2,7 @@
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
+App::uses('VusionConst', 'Lib');
 
 
 class History extends MongoModel
@@ -250,7 +251,8 @@ class History extends MongoModel
                     'parameter-type' => 'text'),
                 'has-keyword-any' => array(
                     'label' => 'has keyword any of',
-                    'parameter-type' => 'text')
+                    'parameter-type' => 'text',
+                    'parameter-validate' => VusionConst::KEYWORD_REGEX)
                 )),
         'dialogue-source' => array(
             'label' => 'dialogue source',
@@ -300,27 +302,31 @@ class History extends MongoModel
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
-            throw new FilterException("Field is missing.");
+            throw new FilterException(__("The filter's field is missing."));
         }
 
         if (!isset($this->filterFields[$filterParam[1]])) {
-            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
+            throw new FilterException(__("The filter's field '%s' is not supported.", $filterParam[1]));
         }
 
         if (!isset($filterParam[2])) {
-            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
+            throw new FilterException(__("The filter's operator is missing for field '%s'.", $filterParam[1]));
         }
         
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
-            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
+            throw new FilterException(__("The filter's operator '%s' not supported for field '%s'.", $filterParam[2], $filterParam[1]));
         }
 
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
-            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
+        $operator = $this->filterFields[$filterParam[1]]['operators'][$filterParam[2]];
+
+        if ($operator['parameter-type'] != 'none' && !isset($filterParam[3])) {
+            throw new FilterException(__("The filter's parameter is missing for field '%s'.", $filterParam[1]));
         }
-        
-        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
-            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
+
+        if (isset($operator['parameter-validate'])) {
+            if (!preg_match($operator['parameter-validate'], $filterParam[3])) {
+                throw new FilterException(__("The filter's parameter value '%s' is not valid.", $filterParam[3]));
+            }
         }
     }
 
