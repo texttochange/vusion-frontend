@@ -8,6 +8,7 @@ App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
 App::uses('User', 'Model');
+App::uses('PredefinedMessage', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
@@ -36,6 +37,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->DialogueHelper    = new DialogueHelper();
         $this->History           = new History($options);
+        $this->PredefinedMessage = new PredefinedMessage($options);
         $this->_instanciateVumiRabbitMQ();
     }
 
@@ -105,7 +107,10 @@ class ProgramUnattachedMessagesController extends AppController
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);
         }
-        $this->set(compact('selectors'));        
+        
+        $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
+        $this->set(compact('selectors', 'predefinedMessageOptions'));
+   
     }
 
     protected function saveUnattachedMessage()
@@ -252,9 +257,26 @@ class ProgramUnattachedMessagesController extends AppController
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);
         }
-        $this->set(compact('selectors'));
+        
+        $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
+        $this->set(compact('selectors', 'predefinedMessageOptions'));
 
         return $unattachedMessage;
+    }
+    
+    
+    protected function _getPredefinedMessageOptions()
+    {
+        $predefinedMessages = $this->PredefinedMessage->find('all');
+        $predefinedMessageOptions = array();
+        foreach ($predefinedMessages as $predefinedMessage) {
+            $predefinedMessageOptions[] = array(
+                'id' => $predefinedMessage['PredefinedMessage']['_id'],
+                'name' => $predefinedMessage['PredefinedMessage']['name'],
+                'content' => $predefinedMessage['PredefinedMessage']['content']
+                );
+        }
+        return $predefinedMessageOptions;
     }
     
     

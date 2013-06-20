@@ -33,6 +33,7 @@
     $matchSelectDisabled = true;
     $fixedTimeSelectDisabled = true;
     $fileFieldDisabled = true;
+    $messageSelectDisabled = true;
        
     ## Form starts
     echo $this->Form->create('UnattachedMessage', array('type' => 'file'));
@@ -103,7 +104,28 @@
         echo $this->Form->error('send-to-type');
     echo "</div>";
     ## Content
-    echo $this->Form->input('content', array('rows'=>5));   
+    $this->Js->set('predefinedMessageOptions', $predefinedMessageOptions);
+    $options = array();
+    foreach ($predefinedMessageOptions as $key => $value) {
+        $options[$value['id']] = $value['name'];
+    }
+    echo "&nbsp&nbsp";
+    if (count($predefinedMessageOptions) <= 0) {
+        echo $this->Html->tag('label',__('There are no predefined messages. '));
+        echo $this->Html->link(__('To create a predefined message click here.'),
+            array('program'=>$programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'add'),
+            array('class'=>'ttc-link')
+            );
+    } else {
+        echo $this->Html->tag('label',__('Use predefined message from list:'));
+        echo "&nbsp";
+        echo $this->Form->select('predefined-message',
+            $options,
+            array('id' => 'predefined-message', 'empty' => 'Select one...')
+            );
+        $this->Js->get('#predefined-message')->event('change','addPredefinedContent();');
+    }
+    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";

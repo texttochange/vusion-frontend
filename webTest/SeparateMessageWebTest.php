@@ -25,7 +25,7 @@ class RequestWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->waitForPageToLoad("30000");
     $this->type("id=name", "Test Announcement");
     $this->click("id=UnattachedMessageSend-to-typeAll");
-    $this->type("id=UnattachedMessageContent", "Hello everyone");
+    $this->type("id=unattached-content", "Hello everyone");
     $this->click("id=UnattachedMessageType-scheduleImmediately");
     $this->click("id=UnattachedMessageType-scheduleFixedTime");
     $this->click("id=fixed-time");

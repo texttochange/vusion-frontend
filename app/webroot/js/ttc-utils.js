@@ -673,5 +673,21 @@ function alphanumeric() {
 		//localization of the error message
 		return false;  
 	}  
-}  
-          
+}
+
+function addPredefinedContent() {
+	var predefinedMessages = window.app["predefinedMessageOptions"];
+	var messageId = $("#predefined-message option:selected").val();
+	$.each(predefinedMessages, function (i, predefinedMessage) {
+	    if (messageId == predefinedMessage.id) {
+	        if ($("#unattached-content").val() != "") {                    
+		    var test = confirm(localized_errors['warning_unattached_message']);
+		    if (test == false) {
+		        $("#predefined-message option:eq(0)").prop("selected", true);
+		        return;
+		    }
+		}
+		$("#unattached-content").val(predefinedMessage.content);
+	    }
+	});
+}

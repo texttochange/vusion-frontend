@@ -23,8 +23,8 @@
             ?>
             </li>
             <?php 
-            if(isset($requests) && $requests!=null) { 
-                foreach ($requests as $request) {
+            if(isset($currentProgramData['requests']) && $currentProgramData['requests']!=null) { 
+                foreach ($currentProgramData['requests'] as $request) {
                     echo "<li title='".$request['Request']['keyword']."'>";
                     $requestLinkName = $this->Text->truncate(
                         $request['Request']['keyword'],
@@ -51,7 +51,7 @@
             echo $this->AclLink->generateLink(__('New Dialogue'),$programDetails['url'],'programDialogues','edit');    
             ?>
             </li>
-            <?php foreach ($dialogues as $dialogue) { 
+            <?php foreach ($currentProgramData['dialogues'] as $dialogue) { 
                 if ($dialogue['Active']) {
                     $dialogue = $dialogue['Active'];
                     $isActive = true;
@@ -111,8 +111,8 @@
            ?>
            </li>
            <?php 
-           if(isset($programUnattachedMessages) && $programUnattachedMessages!=null) { 
-               foreach ($programUnattachedMessages as $unattachedMessage) {
+           if(isset($currentProgramData['unattachedMessages']) && $currentProgramData['unattachedMessages']!=null) { 
+               foreach ($currentProgramData['unattachedMessages'] as $unattachedMessage) {
                    echo "<li title='".$unattachedMessage['UnattachedMessage']['name']."'>";
                    $unattachedMessageLinkName = $this->Text->truncate(
                        $unattachedMessage['UnattachedMessage']['name'],
@@ -124,6 +124,36 @@
                    
                    echo $this->AclLink->generateLink($unattachedMessageLinkName,
                        $programDetails['url'], 'programUnattachedMessages', 'edit', $unattachedMessage['UnattachedMessage']['_id']);
+                   echo "</li>";
+               }
+           } 
+           ?>
+       </ul>
+    </li>
+    <li>
+        <?php
+            echo $this->AclLink->generateLink(__('Predefined Messages'),$programDetails['url'],'programPredefinedMessages');
+         ?>
+         <ul>
+           <li>
+           <?php
+           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programPredefinedMessages','add');
+           ?>
+           </li>
+           <?php 
+           if(isset($currentProgramData['predefinedMessages']) && $currentProgramData['predefinedMessages']!=null) { 
+               foreach ($currentProgramData['predefinedMessages'] as $predefinedMessage) {
+                   echo "<li title='".$predefinedMessage['PredefinedMessage']['name']."'>";
+                   $predefinedMessageLinkName = $this->Text->truncate(
+                       $predefinedMessage['PredefinedMessage']['name'],
+                       20,
+                       array('ellipsis' => '...',
+                           'exact' => true
+                           ));      
+		
+                   
+                   echo $this->AclLink->generateLink($predefinedMessageLinkName,
+                       $programDetails['url'], 'programPredefinedMessages', 'edit', $predefinedMessage['PredefinedMessage']['_id']);
                    echo "</li>";
                }
            } 
