@@ -247,6 +247,7 @@ class UsersController extends AppController
         
         //allow manager to users and programs
         $group = $Group->find('first', array('conditions' => array('name' => 'manager')));
+<<<<<<< HEAD
         if ($group == null) {
             echo "Acl ERROR: cannot find the group manager</br>";
         } else {
@@ -304,6 +305,59 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
+=======
+        $Group->id = $group['Group']['id'];
+        $this->Acl->deny($Group, 'controllers');
+        $this->Acl->allow($Group, 'controllers/Users');
+        $this->Acl->allow($Group, 'controllers/Programs');
+        $this->Acl->allow($Group, 'controllers/ProgramsUsers');
+        $this->Acl->allow($Group, 'controllers/ProgramHome');
+        $this->Acl->allow($Group, 'controllers/ProgramParticipants');
+        $this->Acl->allow($Group, 'controllers/ProgramDialogues');
+        $this->Acl->allow($Group, 'controllers/ProgramHistory');
+        $this->Acl->allow($Group, 'controllers/ProgramSettings');
+        $this->Acl->allow($Group, 'controllers/ProgramSimulator');
+        $this->Acl->allow($Group, 'controllers/ProgramRequests');
+        $this->Acl->allow($Group, 'controllers/ShortCodes');
+        $this->Acl->allow($Group, 'controllers/UnmatchableReply');
+        $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramLogs');
+        $this->Acl->allow($Group, 'controllers/Templates');
+        $this->Acl->allow($Group, 'controllers/Users/view');
+        $this->Acl->allow($Group, 'controllers/Users/changePassword');
+        $this->Acl->allow($Group, 'controllers/Users/edit');
+        echo "Acl Done: ". $group['Group']['name'];
+        
+        //allow program manager to programs
+        $group = $Group->find('first', array('conditions' => array('name' => 'program manager')));
+        $Group->id = $group['Group']['id'];
+        $this->Acl->deny($Group, 'controllers');
+        $this->Acl->deny($Group, 'controllers/Programs');
+        $this->Acl->allow($Group, 'controllers/Programs/index');        
+        //$this->Acl->allow($Group, 'controllers/Users/login');
+        //$this->Acl->allow($Group, 'controllers/Users/logout');
+        $this->Acl->allow($Group, 'controllers/ProgramHome');
+        $this->Acl->allow($Group, 'controllers/ProgramParticipants');
+        $this->Acl->allow($Group, 'controllers/ProgramDialogues');
+        $this->Acl->allow($Group, 'controllers/ProgramHistory');
+        $this->Acl->allow($Group, 'controllers/ProgramSettings');
+        $this->Acl->allow($Group, 'controllers/ProgramSettings/view');
+        $this->Acl->allow($Group, 'controllers/ProgramSettings/edit');
+        //$this->Acl->allow($Group, 'controllers/ProgramSettings/index');
+        //$this->Acl->allow($Group, 'controllers/ProgramSettings/view');
+        $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
+        $this->Acl->allow($Group, 'controllers/ProgramRequests');
+        $this->Acl->allow($Group, 'controllers/ShortCodes');
+        $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+        $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramLogs');
+        $this->Acl->allow($Group, 'controllers/Users/view');
+        $this->Acl->allow($Group, 'controllers/Users/changePassword');
+        $this->Acl->allow($Group, 'controllers/Users/edit');
+        echo "Acl Done: ". $group['Group']['name'];
+>>>>>>> feature/predefined_separate_messages
         
         //allow partner to 
         $group = $Group->find('first', array('conditions' => array('name' => 'partner')));
@@ -337,6 +391,7 @@ class UsersController extends AppController
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
+<<<<<<< HEAD
         //allow partner messager to
         $group = $Group->find('first', array('conditions' => array('name' => 'partner messenger')));
         if ($group == null) {
@@ -359,6 +414,26 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
+=======
+        //allow program messager to
+        $group = $Group->find('first', array('conditions' => array('name' => 'program messager')));
+        $Group->id = $group['Group']['id'];
+        $this->Acl->deny($Group, 'controllers');
+        $this->Acl->allow($Group, 'controllers/Programs/index');
+        $this->Acl->allow($Group, 'controllers/Programs/view');
+        $this->Acl->allow($Group, 'controllers/ProgramHome');
+        $this->Acl->allow($Group, 'controllers/ProgramParticipants');
+        $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
+        $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
+        $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
+        $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
+        $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
+        $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
+        $this->Acl->allow($Group, 'controllers/Users/view');
+        $this->Acl->allow($Group, 'controllers/Users/changePassword');
+        $this->Acl->allow($Group, 'controllers/Users/edit');
+        echo "Acl Done: ". $group['Group']['name'];
+>>>>>>> feature/predefined_separate_messages
                 
         echo 'AllDone';
         exit;
