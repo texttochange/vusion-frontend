@@ -130,6 +130,43 @@ class ParticipantTestCase extends CakeTestCase
     }
 
 
+    public function testSave_valiationLabel_failEmptyValue()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $participant = array(
+            'phone' => '25601',
+            'profile' => array(
+                array(
+                    'label' => 'balance',
+                    'value' => null
+                    ),
+                ),
+            );
+        $this->Participant->create();
+        $this->assertFalse($this->Participant->save($participant));
+        $this->assertEqual(
+            $this->Participant->validationErrors['profile'][0],
+            'The label value cannot be empty.');
+
+
+        $participant = array(
+            'phone' => '25601',
+            'profile' => array(
+                array(
+                    'label' => 'balance',
+                    'value' => ''
+                    ),
+                ),
+            );
+        $this->Participant->create();
+        $this->assertFalse($this->Participant->save($participant));
+        $this->assertEqual(
+            $this->Participant->validationErrors['profile'][0],
+            'The label value cannot be empty.');
+    }
+
+
     public function testSave_clearPhone()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');

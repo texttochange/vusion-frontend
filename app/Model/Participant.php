@@ -91,6 +91,10 @@ class Participant extends MongoModel
                 ),
             ),
         'value' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The label value cannot be empty.',
+                ),
             'validateValue' => array(
                 'rule' => array('custom', VusionConst::LABEL_VALUE_REGEX),
                 'message' => VusionConst::LABEL_VALUE_FAIL_MESSAGE,
@@ -162,12 +166,18 @@ class Participant extends MongoModel
                         $valid = forward_static_call_array(array("VusionValidation", $func), array($element[$field], $args));
                     }
                     if (!is_bool($valid) || $valid == false) {
-                       $validationErrors[$field][] = $rule['message']; 
+                       ## To revert when creating a better form edit
+                       //$validationErrors[$field][] = $rule['message'];
+                       $validationErrors[] = $rule['message'];
+                       break;
                     }
                 }
             }
             if ($validationErrors != array()) {
-                $this->validationErrors['profile'][$count] = $validationErrors;
+                ## To switch when creating a better form edit
+                //$this->validationErrors['profile'][$count] = $validationErrors;
+                $this->validationErrors['profile'] = $validationErrors;
+                break;
             }
             $count++;
         }
