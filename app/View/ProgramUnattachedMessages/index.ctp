@@ -19,7 +19,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
 </div>
 </div>
     <div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area">
+	<div class="ttc-table-scrolling-area display-height-size">
 	<table  cellpadding="0" cellspacing="0">
 	<thead>
 	    <tr>
