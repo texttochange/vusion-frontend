@@ -1061,7 +1061,7 @@ function configToForm(item, elt, id_prefix, configTree){
                 } else {
                     options.push({
                          'value': option,
-                         'html': localize_labels(option)})
+                         'html': localize_label(option)})
                 }
             }
             break;
@@ -1070,7 +1070,7 @@ function configToForm(item, elt, id_prefix, configTree){
                  var opt = dynamicForm[item]["options"][option];
                  options.push({
                          'value': opt,
-                         'html': localize_labels(opt)})
+                         'html': localize_label(opt)})
             }
             break;
         }
@@ -1082,7 +1082,7 @@ function configToForm(item, elt, id_prefix, configTree){
             if (options.length == 1) {
                 options.push({
                         'value': configTree[item],
-                        'html': localize_labels(configTree[item]),
+                        'html': localize_label(configTree[item]),
                         'selected': true});
             }
         }
