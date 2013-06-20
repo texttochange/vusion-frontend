@@ -47,7 +47,7 @@
 	    	    echo $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
 	?>
 	</h3>
-	<div class="ttc-display-area">
+	<div class="ttc-display-area display-height-size">
 	<?php 
 	echo $this->Html->tag('form', null, array('id'=> 'dynamic-generic-program-form')); 
    ?>

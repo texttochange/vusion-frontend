@@ -16,7 +16,7 @@
         <?php $this->Js->get('#button-save')->event('click', '$("#ProgramSettingsEditForm").submit()' , true);?>
 	</ul>
 <H3><?php echo __('Edit Program Settings'); ?></H3>
-  <div class="ttc-display-area">
+  <div class="ttc-display-area display-height-size">
   <?php echo $this->Form->create('ProgramSettings'); ?>
     <fieldset>      
         

@@ -14,8 +14,8 @@
 	?>
 	</div>
 	</div>
-	<div class="ttc-table-display-area-shortcode">
-	<div class="ttc-table-scrolling-area">
+	<div class="ttc-table-display-area">
+	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
