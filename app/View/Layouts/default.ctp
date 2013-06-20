@@ -129,7 +129,7 @@
 					 echo $this->element('program_specific_header');					
 			} 
 			?>
-		<div id="content">
+		<div id="content" class="height-size">
         <?php
         if (isset($programDetails['name'])) {
             echo "<div class='program-left-column'>";			   

@@ -16,7 +16,7 @@
     <?php $this->Js->get('#button-save')->event('click', '$("#UnattachedMessageAddForm").submit()' , true);?>
 </ul>
 <h3><?php echo __('Add Separate Message'); ?></h3>
-    <div class="ttc-display-area">
+    <div class="ttc-display-area display-height-size">
     <?php 
     $sendToOptions = array(
         'all' => __('All participants'), 
