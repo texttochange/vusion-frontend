@@ -16,13 +16,13 @@
         <?php $this->Js->get('#button-save')->event('click', '$("#dynamic-generic-program-form").submit()' , true);?>
     </ul>
     <h3><?php echo __('Edit Request'); ?></h3>
-    <div class="ttc-display-area">
+    <div class="ttc-display-area display-height-size">
 	<?php 
         echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form'));
         $this->Js->get("#dynamic-generic-program-form");
         $this->Js->each('$(this).buildTtcForm("Request", '.$this->Js->object($request['Request']).', "javascript:saveRequestOnServer()")', true);
         $dialogueOptions = array();
-        foreach($dialogues as $dialogue) {
+        foreach($currentProgramData['dialogues'] as $dialogue) {
             if ($dialogue['Active']) {
                 $dialogueOptions[] = array(
                     'value' => $dialogue['Active']['dialogue-id'],

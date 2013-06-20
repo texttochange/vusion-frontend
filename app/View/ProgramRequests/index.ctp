@@ -18,7 +18,7 @@
 	</div>
 	</div>
 	<div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area">
+	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
@@ -47,7 +47,7 @@
 		            foreach ($request['Request']['actions'] as $action) {
 		                $info = __($action['type-action']);
 		                if ($action['type-action']=='enrolling')
-		                    foreach ($dialogues as $dialogue) {
+		                    foreach ($currentProgramData['dialogues'] as $dialogue) {
 		                        if ($dialogue['dialogue-id'] == $action['enroll']) {
 		                            $info = __("Enrolling dialogue %s", $dialogue['Active']['name']);
 		                            break;

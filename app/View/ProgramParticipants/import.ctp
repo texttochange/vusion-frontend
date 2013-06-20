@@ -5,7 +5,7 @@
 		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'index'), array('class'=>'ttc-button'));?></li>
 	</ul>
     <h3>Import Participants</h3>
-    <div class="ttc-display-area">
+    <div class="ttc-display-area display-height-size">
 	<?php
 	    echo $this->Form->create('Import', array('type' => 'file'));
 		echo $this->Form->input('Import.file', array(

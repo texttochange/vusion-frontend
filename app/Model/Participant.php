@@ -3,6 +3,8 @@ App::uses('MongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('VusionConst', 'Lib');
+App::uses('VusionValidation', 'Lib');
 
 class Participant extends MongoModel
 {
@@ -68,18 +70,44 @@ class Participant extends MongoModel
                 )
             ),
         'profile' => array(
-            'validateProfile' => array(
-                'rule' => 'validateProfile',
-                'message' => 'Invalid format. Must be label:value, label:value, ... e.g gender:male, ..'
+            'validateLabels' => array(
+                'rule' => 'validateLabels',
+                'message' => 'noMessage'
                 ),
             ),
         'tags' => array(
             'validateTags' => array(
                 'rule' => 'validateTags',
-                'message' => 'Only letters and numbers. Must be tag, tag, ... e.g cool, nice, ...'
+                'message' => 'noMessage'
                 ),
             )
         );
+
+    public $validateLabel = array(
+        'label' => array(
+            'validateValue' => array(
+                'rule' => array('custom', VusionConst::LABEL_REGEX),
+                'message' => VusionConst::LABEL_FAIL_MESSAGE,
+                ),
+            ),
+        'value' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The label value cannot be empty.',
+                ),
+            'validateValue' => array(
+                'rule' => array('custom', VusionConst::LABEL_VALUE_REGEX),
+                'message' => VusionConst::LABEL_VALUE_FAIL_MESSAGE,
+                ),            
+            ),
+        'raw' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The field raw is required.'
+                ),
+            ),
+        );
+
 
     public $importErrorMessages = array(
         'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
@@ -90,10 +118,18 @@ class Participant extends MongoModel
 
     public function validateTags($check)
     {
+        $index = 0;
         foreach ($check['tags'] as $tag) {
-            if (!$this->validateTag($tag)) {
-                return false;
+            if (is_string($validationError = $this->validateTag($tag))) {
+               if (!isset($this->validationErrors['tags'])) {
+                    $this->validationErrors['tags'] = array();
+                }
+                $this->validationErrors['tags'][$index] = $validationError;
             }
+            $index++;
+        }
+        if (isset($this->validationErrors['tags'])) {
+            return false;
         }
         return true;
     }
@@ -101,28 +137,56 @@ class Participant extends MongoModel
 
     public function validateTag($check)
     {
-        $regex = '/^[a-z0-9A-Z\s]+$/';
+        $regex = VusionConst::TAG_REGEX;
         if (!preg_match($regex, $check)) {
+            return VusionConst::TAG_FAIL_MESSAGE;
+        }
+        return true;
+    }
+    
+    
+    public function validateLabels($check)
+    {
+        $count = 0;
+        foreach ($check['profile'] as $element) {
+            $validationErrors = array();
+            foreach ($this->validateLabel as $field => $rules) {
+                foreach ($rules as $rule) {
+                    if (is_array($rule['rule'])) {
+                        $func = $rule['rule'][0];
+                        $args = array_slice($rule['rule'], 1);
+                        $args = $args[0];
+                    } else {
+                        $func = $rule['rule'];
+                        $args = null;
+                    }
+                    if ($func == 'required') {
+                        $valid = array_key_exists($field, $element);
+                    } else {
+                        $valid = forward_static_call_array(array("VusionValidation", $func), array($element[$field], $args));
+                    }
+                    if (!is_bool($valid) || $valid == false) {
+                       ## To revert when creating a better form edit
+                       //$validationErrors[$field][] = $rule['message'];
+                       $validationErrors[] = $rule['message'];
+                       break;
+                    }
+                }
+            }
+            if ($validationErrors != array()) {
+                ## To switch when creating a better form edit
+                //$this->validationErrors['profile'][$count] = $validationErrors;
+                $this->validationErrors['profile'] = $validationErrors;
+                break;
+            }
+            $count++;
+        }
+        if (isset($this->validationErrors['profile'])) {
             return false;
         }
         return true;
     }
-    
-    
-    public function validateProfile($check)
-    { 
-        $regex = '/^[a-zA-Z0-9\s]+:[a-zA-Z0-9\s]+$/';
-        foreach ($check['profile'] as $profile) {
-            foreach ($profile as $key => $value) {
-                $result = $profile['label'].":".$profile['value'];
-                if (!preg_match($regex,$result)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    
+
         
     public function isReallyUnique($check)
     {
@@ -151,6 +215,23 @@ class Participant extends MongoModel
     }
 
 
+    public function addMassTags($tag, $conditions)
+    {   
+        $tag = trim($tag);       
+        $valid = $this->validateTag($tag);
+        if (!is_bool($valid) || $valid != true){
+            return $valid;
+        }
+        $massTag = array(
+            '$push' => array(
+                'tags' => $tag              
+                )
+            );    
+        $this->updateAll($massTag, $conditions);        
+        return true;
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -159,9 +240,19 @@ class Participant extends MongoModel
             $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
         }
 
+        $this->_setDefault('tags', array());
         #filter out empty tags
         if (isset($this->data['Participant']['tags']) && is_array($this->data['Participant']['tags'])) {
             $this->data['Participant']['tags'] = array_filter($this->data['Participant']['tags']);
+        }
+
+        $this->_setDefault('profile', array());
+        if (is_array($this->data['Participant']['profile'])) {
+            foreach ($this->data['Participant']['profile'] as &$label) {
+                if (!array_key_exists('raw', $label)) {
+                    $label['raw'] = null;
+                }
+            }
         }
 
         //The time should be provide by the controller
@@ -186,8 +277,6 @@ class Participant extends MongoModel
                     'date-time' => $programNow->format("Y-m-d\TH:i:s")
                     );
             }
-            if (!isset($this->data['Participant']['profile']))
-                $this->data['Participant']['profile'] = array();
         } else {
             $this->_editTags();
             
@@ -328,24 +417,22 @@ class Participant extends MongoModel
     
     protected function _editProfile()
     {
-    		if(!isset($this->data['Participant']['profile']))
-    				$this->data['Participant']['profile'] = array();
-    		else if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {   				
-    				$profiles = trim(stripcslashes($this->data['Participant']['profile']));    				
-    				$profiles = array_filter(explode(",", $profiles));    				
-    				$profileList = array();
-    				foreach ($profiles as $profile) {   						
-    						$profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
-    						list($label,$value) = explode(":", $profile);
-    						$newProfile = array();
-    						$newProfile['label'] = trim($label);
-    						$newProfile['value'] = trim($value);
-    						$newProfile['raw'] = null;
-    						$profileList[] = $newProfile;    						
-    				}
-    				$this->data['Participant']['profile'] = $profileList;
-    		}
-    		return $this->data['Participant']['profile'];
+        if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {   				
+            $profiles = trim(stripcslashes($this->data['Participant']['profile']));    				
+            $profiles = array_filter(explode(",", $profiles));    				
+            $profileList = array();
+            foreach ($profiles as $profile) {   						
+                $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
+                list($label,$value) = explode(":", $profile);
+                $newProfile = array();
+                $newProfile['label'] = trim($label);
+                $newProfile['value'] = trim($value);
+                $newProfile['raw'] = null;
+                $profileList[] = $newProfile;    						
+            }
+            $this->data['Participant']['profile'] = $profileList;
+        }    
+        return $this->data['Participant']['profile'];
     }
     
     
@@ -909,21 +996,6 @@ class Participant extends MongoModel
         
         return $conditions;
     }
-    
-    public function addMassTags($tag, $conditions)
-    {   
-        $tag = trim($tag);       
-        $check = array('tags' => array($tag));
-        if (!$this->validateTags($check)){
-            return false;
-        }
-        $massTag = array(
-            '$push' => array(
-                'tags' => $tag              
-                )
-            );    
-        $this->updateAll($massTag, $conditions);        
-        return true;
-    }
+
     
 }
