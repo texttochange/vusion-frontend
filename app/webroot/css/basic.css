@@ -1148,6 +1148,13 @@ margin-left: 63px;
 	text-overflow: ellipsis;	
 }
 
+.participant-truncated-enroll {
+    width: 94px; 
+	white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+}
+
 .powered-by {
     height: 30px;
     display: table;
