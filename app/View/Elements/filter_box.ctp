@@ -6,7 +6,7 @@
         echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));        
         $count = $this->Paginator->counter('{:count}');
         if($count < 1000000){
-        		$count_format= number_format($count / 1000, 2) .'K';     		 
+        		$count_format= number_format($count / 1000, 3) .'K';     		 
         }else if($count < 1000000000) {
         		$count_format= number_format($count / 1000000, 3) .'M'; 	 
         }else{
