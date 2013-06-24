@@ -2,10 +2,17 @@
     <div id="data-control-nav" class="ttc-paging paging">
     <?php
     echo "<span class='ttc-page-count'>";
-    if (isset($this->Paginator)) {
-        echo $this->Paginator->counter(array(
-            'format' => __('{:start} - {:end} of {:count}')
-            ));
+    if (isset($this->Paginator)) {        
+        echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));        
+        $count = $this->Paginator->counter('{:count}');
+        if($count < 1000000){
+        		$count_format= number_format($count / 1000, 2) .'K';     		 
+        }else if($count < 1000000000) {
+        		$count_format= number_format($count / 1000000, 3) .'M'; 	 
+        }else{
+        		$count_format= number_format($count / 1000000000, 3) .'B'; 
+        }
+        echo "$count_format";       
         echo "</span>";
         echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
         echo $this->Paginator->next('>', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
