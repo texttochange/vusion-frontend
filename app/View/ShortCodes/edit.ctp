@@ -25,10 +25,12 @@
 	<?php
 	    echo $this->Html->tag('label',__('Error Template'));
 		echo "<br />";
-	    echo $this->Form->select('error-template', $errorTemplateOptions,
-	        array('id' => 'error-template',
-	            'empty'=> __('Template...')
-	            )
+	    echo $this->Form->select(
+	        'error-template', 
+	        $errorTemplateOptions,
+	        array(
+	            'id' => 'error-template',
+	            'empty'=> __('Choose one...'))
 	        );
 	?>
 	</div>
@@ -40,9 +42,18 @@
 	</div>
 	<div>
 	<?php
-	
 	    echo $this->Form->checkbox('supported-internationally');
-	    echo $this->Html->tag('label',__('Supported Internationally'));
+	    echo $this->Html->tag('label', __('Supported Internationally'));
+	?>
+	</div>
+	<div>
+	<?php
+	    echo $this->Html->tag('label', __('Maximun number of character per SMS'));
+		echo "<br />";
+	    echo $this->Form->select(
+	        'max-character-per-sms',
+	        $maxCharacterPerSmsOptions,
+	        array('empty' => __('Choose one...')));
 	?>
 	</div>
 	</fieldset>

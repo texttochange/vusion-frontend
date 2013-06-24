@@ -45,6 +45,16 @@
 	    echo $this->Form->checkbox('supported-internationally');
 	?>
 	</div>
+	<div>
+	<?php
+	    echo $this->Html->tag('label', __('Maximun number of character per SMS'));
+		echo "<br />";
+	    echo $this->Form->select(
+	        'max-character-per-sms',
+	        $maxCharacterPerSmsOptions,
+	        array('empty' => __('Choose one...')));
+	?>
+	</div>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
