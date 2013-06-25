@@ -11,14 +11,14 @@ class VusionConst
     const TAG_LIST_REGEX = null;
     const TAG_LIST_FAIL_MESSAGE = 'Only space letters and numbers separate by coma. Must be tag1, tag2, ... e.g cool, nice, ...';
 
-    const LABEL_VALUE_REGEX = '/^[a-z0-9A-Z\s]+$/';
-    const LABEL_VALUE_FAIL_MESSAGE = 'Use only space, letters and numbers for label value.';
+    const LABEL_VALUE_REGEX = '/^[a-z0-9A-Z\s\.]+$/';
+    const LABEL_VALUE_FAIL_MESSAGE = 'Use only DOT, space, letters and numbers for the label value.';
 
-    const LABEL_FULL_REGEX = '/^[a-z0-9A-Z\s]+:[a-z0-9A-Z\s]+$/';
+    const LABEL_FULL_REGEX = '/^[a-z0-9A-Z\s]+:[a-z0-9A-Z\s\.]+$/';
     const LABEL_FULL_FAIL_MESSAGE = "The correct format is 'label:value'.";
 
     const LABEL_REGEX = '/^[a-z0-9A-Z\s]+$/';
-    const LABEL_FAIL_MESSAGE = 'Use only space, letters and numbers for label value.';
+    const LABEL_FAIL_MESSAGE = 'Use only space, letters and numbers for the label name.';
 
     const APOSTROPHE_REGEX = '/.*[’`’‘]/';
     const APOSTROPHE_FAIL_MESSAGE = 'The apostrophe used is not allowed.';

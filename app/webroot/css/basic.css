@@ -610,7 +610,7 @@
 }
 
 .ttc-table-display-area {
-    height: 340px;
+    /*height: 340px;*/
     min-height: 250px;
     padding: 10px 10px;
     overflow: hidden;    
@@ -662,7 +662,7 @@ width: 186px;
 }*/
 
 .ttc-table-scrolling-area {
-    height: 343px;
+    /*height: 343px;*/
     min-height: 250px;
     overflow: auto; 
     
@@ -765,7 +765,7 @@ width: 102px;
 }
 
 .ttc-table-scrolling-area .prefix {
-	width: 206px;
+	width: 255px;
 	word-wrap: break-word;
 }
 
@@ -785,7 +785,7 @@ width: 102px;
 }
 
 .ttc-table-scrolling-area .support {
-	width: 279px;
+	width: 336px;
 	text-align: center;
 }
 .ttc-table-scrolling-area .shortcodes {
@@ -1161,5 +1161,11 @@ margin-left: 63px;
     height: 28px;
     margin-left: 7px;
     vertical-align: middle;
+}
+
+.program-body .ttc-link {
+    font-weight: normal;
+    font-size: 14px;
+    color: #003d4c;
 }
 

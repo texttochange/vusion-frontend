@@ -16,7 +16,7 @@
         <?php $this->Js->get('#button-save')->event('click', '$("#ParticipantEditForm").submit()' , true);?>
 	</ul>
 	<h3><?php echo __('Edit Participant'); ?></h3>
-	<div class="ttc-display-area">
+	<div class="ttc-display-area display-height-size">
 	<?php echo $this->Form->create('Participant');?>
 	    <fieldset>
 	        <?php

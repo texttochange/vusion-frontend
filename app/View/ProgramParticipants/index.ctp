@@ -69,7 +69,7 @@
         'controller' => 'programParticipants'));
 	?>	
 	<div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area">
+	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >
@@ -108,7 +108,7 @@
 	              <td class="direction"><?php
 	                  if (count($participant['Participant']['enrolled']) > 0) {
 	                      foreach ($participant['Participant']['enrolled'] as $enrolled) {
-	                          foreach ($dialogues as $dialogue) {
+	                          foreach ($currentProgramData['dialogues'] as $dialogue) {
 	                              if ($dialogue['dialogue-id'] == $enrolled['dialogue-id']) {
 	                                  echo $this->Html->tag('div', __("%s at %s", $dialogue['Active']['name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
 	                                  break;
