@@ -1,12 +1,12 @@
 <div class="ttc-data-control">
     <div id="data-control-nav" class="ttc-paging paging">
     <?php
-    echo "<span class='ttc-page-count'>";
-    if (isset($this->Paginator)) {        
-        echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));        
-        $count = $this->Paginator->counter('{:count}');
+    if (isset($this->Paginator)) {
+    	$count = $this->Paginator->counter('{:count}');
+    	echo "<span class='ttc-page-count' title = $count>";
+        echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
         if($count < 1000000){
-        		$count_format= number_format($count / 1000, 3) .'K';     		 
+        		$count_format= number_format($count / 1000, 2) .'K';     		 
         }else if($count < 1000000000) {
         		$count_format= number_format($count / 1000000, 3) .'M'; 	 
         }else{
