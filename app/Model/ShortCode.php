@@ -11,11 +11,11 @@ class ShortCode extends MongoModel
 
     var $localPrefixedShortCodePattern = '/^[0-9]+-[0-9]+/';
     var $internationalShortCodePattern = '/^\+[0-9]+/';
-
+    var $maxCharacterPerSmsOptions = array(70, 140, 160);
     
     function getModelVersion()
     {
-        return '1';
+        return '2';
     }
    
     function getRequiredFields($objectType=null)
@@ -26,7 +26,8 @@ class ShortCode extends MongoModel
             'international-prefix',
             'error-template',
             'support-customized-id',
-            'supported-internationally');
+            'supported-internationally',
+            'max-character-per-sms');
     }
 
     var $findMethods = array(
@@ -86,6 +87,16 @@ class ShortCode extends MongoModel
                 'message' => 'There is already the same shortcode for this country.',
                 'required' => true
                 )
+            ),
+        'max-character-per-sms' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please choose a maximum number of characters per sms.'
+                ),
+            'validValue'=> array(
+                'rule' => array('inlist', array(70, 140, 160)),
+                'message' => 'The valid value are only 70, 140 and 160.'
+                ),
             )
         );
 
@@ -121,6 +132,10 @@ class ShortCode extends MongoModel
         $this->data['ShortCode']['international-prefix'] = trim($this->data['ShortCode']['international-prefix']);
         $this->data['ShortCode']['supported-internationally'] = intval($this->data['ShortCode']['supported-internationally']);
         $this->data['ShortCode']['support-customized-id'] = intval($this->data['ShortCode']['support-customized-id']);
+        if (isset($this->data['ShortCode']['max-character-per-sms'])) {
+            $this->data['ShortCode']['max-character-per-sms'] = intval($this->data['ShortCode']['max-character-per-sms']);
+        }
+        $this->_setDefault('max-character-per-sms', 160);
         return true;
     }
 
