@@ -116,38 +116,20 @@ class ProgramsController extends AppController
         $filteredPrograms = array();
 
         foreach($programsList as &$program) {
-            $database           = $program['Program']['database'];
-            $tempProgramSetting = new ProgramSetting(array('database' => $database));
-            $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
-            if (isset($shortcode[0]['ProgramSetting']['value'])) {
-                //$this->ShortCode  = new ShortCode(array('database' => 'vusion'));
-                $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-                $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
-            } 
-
-            if ($this->params['ext']!='json') {
-                $tempParticipant = new Participant(array('database' => $database));
-                $program['Program']['participant-count'] = $tempParticipant->find('count'); 
-                $tempHistory     = new History(array('database' => $database));
-                $program['Program']['history-count']     = $tempHistory->find(
-                    'count', array('conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
-                $tempSchedule = new Schedule(array('database' => $database));
-                $program['Program']['schedule-count']    = $tempSchedule->find('count');
+            $programDetails = $this->_getProgramDetails($program);
             
-                //$filterPrograms = $this->_matchProgramByShortcodeAndCountry($program, $conditions, $code);
-                $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry($program, $conditions, $code);
-                if (count($filterPrograms)>0) {
-                    foreach ($filterPrograms as $fProgram) {
-                        $filteredPrograms[] = $fProgram;
-                    }
+            $program = array_merge($program, $programDetails['program']);
+            
+            $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
+                $programDetails['program'],
+                $conditions,
+                $programDetails['shortcode']);
+            if (count($filterPrograms)>0) {
+                foreach ($filterPrograms as $fProgram) {
+                    $filteredPrograms[] = $fProgram;
                 }
             }
         }
-        
-        /*
-        foreach($programs as &$program) {
-            $program = array_merge($program, $this->_getProgramDetails($program));            
-        }*/
         
         if (count($filteredPrograms)>0
             or (isset($conditions) && $nameCondition == array())
@@ -157,16 +139,16 @@ class ProgramsController extends AppController
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
             foreach($programs as &$program) {
-                $program = array_merge($program, $this->_getProgramDetails($program));            
+                $details = $this->_getProgramDetails($program);
+                $program = array_merge($program, $details['program']);            
             }
             foreach ($programsList as $listedProgram) {
-                array_push($programs, $listedProgram);
+                if (!in_array($listedProgram, $programs))
+                    array_push($programs, $listedProgram);
             }
         } else {
             $programs = $programsList;
         }
-        print_r($programs);
-        //print_r($this->paginate());
         
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
@@ -177,27 +159,34 @@ class ProgramsController extends AppController
         $this->set(compact('programs', 'isProgramEdit'));
     }
     
-    /**/
+
     protected function _getProgramDetails($programData)
     {
         $database           = $programData['Program']['database'];
         $tempProgramSetting = new ProgramSetting(array('database' => $database));
         $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+
         if (isset($shortcode[0]['ProgramSetting']['value'])) {
-            //$this->ShortCode  = new ShortCode(array('database' => 'vusion'));
             $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
             $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
-        } 
-        $tempParticipant                         = new Participant(array('database' => $database));
-        $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
-        $tempHistory                             = new History(array('database' => $database));
-        $programData['Program']['history-count']     = $tempHistory->find('count');
-        $tempSchedule                            = new Schedule(array('database' => $database));
-        $programData['Program']['schedule-count']    = $tempSchedule->find('count');
+        }
+
+        if ($this->params['ext']!='json') {
+            $tempParticipant                             = new Participant(array('database' => $database));
+            $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
+            $tempHistory                                 = new History(array('database' => $database));
+            $programData['Program']['history-count']     = $tempHistory->find('count');
+            $tempSchedule                                = new Schedule(array('database' => $database));
+            $programData['Program']['schedule-count']    = $tempSchedule->find('count');
+            
+            $programDetails = array(
+                'program' =>  $programData,
+                'shortcode' => (isset($code)) ? $code : null
+                );
+        }
         
-        return $programData;
+        return $programDetails;
     }
-    /**/
     
     
     protected function _getNameSqlCondition($conditions)

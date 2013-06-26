@@ -265,27 +265,32 @@ class Program extends AppModel
         $result = array();
         $countryMatch = false;
         $shortcodeMatch = false;
+        
+        if (empty($codes))
+            return array();
+        
         foreach ($codes as $code) {
             if (isset($conditions['$and'])) { 
                 $conditionHas = $this->_conditonHasCountryAndShortcodeOptions($conditions);
                 if ($conditionHas['country'] == 1 and $conditionHas['shortcode'] == 1) {
                     foreach ($conditions['$and'] as $key => $value) {
-                        if (is_array($value)) {
-                            foreach ($value as $key2 => $value2) {
-                                if($key2 == 'country') {
-                                    if (strtolower($value2) == strtolower($code['country'])) {
-                                        $countryMatch = true;
-                                    }
+                        if (!is_array($value))
+                            return;
+
+                        foreach ($value as $key2 => $value2) {
+                            if($key2 == 'country') {
+                                if (strtolower($value2) == strtolower($code['country'])) {
+                                    $countryMatch = true;
                                 }
-                                if($key2 == 'shortcode') {
-                                    if ($value2 == $code['shortcode']) {
-                                        $shortcodeMatch = true;
-                                    }
+                            }
+                            if($key2 == 'shortcode') {
+                                if ($value2 == $code['shortcode']) {
+                                    $shortcodeMatch = true;
                                 }
-    
-                                if ($shortcodeMatch == true && $countryMatch == true) {
-                                    array_push($result, $program);
-                                }
+                            }
+
+                            if ($shortcodeMatch == true && $countryMatch == true) {
+                                array_push($result, $program);
                             }
                         }
                     }
