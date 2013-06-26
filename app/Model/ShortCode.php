@@ -135,6 +135,7 @@ class ShortCode extends MongoModel
         if (isset($this->data['ShortCode']['max-character-per-sms'])) {
             $this->data['ShortCode']['max-character-per-sms'] = intval($this->data['ShortCode']['max-character-per-sms']);
         }
+        $this->_setDefault('max-character-per-sms', 160);
         return true;
     }
 
