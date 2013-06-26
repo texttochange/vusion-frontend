@@ -34,7 +34,6 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         parent::setUp();
 
         $this->ShortCodes = new TestShortCodesController();
-        //ClassRegistry::config(array('ds' => 'mongo_test'));
         $this->instanciateShortCodesModel();
         $this->dropData();
     }
@@ -42,14 +41,14 @@ class ShortCodesControllerTestCase extends ControllerTestCase
 
     protected function instanciateShortCodesModel() 
     {
-        $options                     = array('database' => $this->databaseName);
-        $this->ShortCodes->ShortCode = new ShortCode($options);
+        $options         = array('database' => $this->databaseName);
+        $this->ShortCode = new ShortCode($options);
     }	
   
     
     protected function dropData()
     {
-        $this->ShortCodes->ShortCode->deleteAll(true, false);
+        $this->ShortCode->deleteAll(true, false);
     }
     
 
@@ -68,7 +67,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $shortCodes = $this->generate('ShortCodes', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
+                'Auth' => array(),
             ),
             'models' => array(
                 'Group' => array()
@@ -95,8 +95,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();
    
         $this->instanciateShortCodesModel();
-        $this->ShortCodes->ShortCode->create();
-        $this->ShortCodes->ShortCode->save(array(
+        $this->ShortCode->create();
+        $this->ShortCode->save(array(
                 'country' => 'uganda',
                 'shortcode' => 8282,
                 'international-prefix' => 256
@@ -123,7 +123,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
             'method' => 'post',
             'data' => $shortcode
         ));
-        $this->assertEquals(1, $this->ShortCodes->ShortCode->find('count'));
+        $this->assertEquals(1, $this->ShortCode->find('count'));
     }
 
 
@@ -137,8 +137,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
             'shortcode' => 8282,
             'international-prefix' => 256
         );
-        $this->ShortCodes->ShortCode->create();
-        $data = $this->ShortCodes->ShortCode->save($shortcodes);	    
+        $this->ShortCode->create();
+        $data = $this->ShortCode->save($shortcodes);	    
 
         $this->testAction("/shortCodes/edit/".$data['ShortCode']['_id'], array(
             'method' => 'post',
@@ -165,12 +165,12 @@ class ShortCodesControllerTestCase extends ControllerTestCase
                 'international-prefix' => 256
             )
         );
-        $this->ShortCodes->ShortCode->create();
-        $data = $this->ShortCodes->ShortCode->save($shortcodes);
+        $this->ShortCode->create();
+        $data = $this->ShortCode->save($shortcodes);
     
         $this->testAction("/shortCodes/delete/".$data['ShortCode']['_id']);
     
-        $this->assertEquals(0, $this->ShortCodes->ShortCode->find('count'));
+        $this->assertEquals(0, $this->ShortCode->find('count'));
     }
 
 

@@ -1,8 +1,8 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ShortCode', 'Model');
 App::uses('Template', 'Model');
+
 
 class ShortCodesController extends AppController
 {
