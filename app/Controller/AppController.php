@@ -45,7 +45,7 @@ class AppController extends Controller
         'Cookie', 
         'PhoneNumber');
 
-    public $helpers = array('PhoneNumber', 'Html', 'Form', 'Session', 'Js', 'Time', 'AclLink', 'Text');
+    public $helpers = array('PhoneNumber', 'Html', 'Form', 'Session', 'Js', 'Time', 'AclLink', 'Text','BigNumber');
 
 
     function beforeFilter()

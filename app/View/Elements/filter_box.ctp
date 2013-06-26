@@ -5,14 +5,7 @@
     	$count = $this->Paginator->counter('{:count}');
     	echo "<span class='ttc-page-count' title = $count>";
         echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
-        if($count < 1000000){
-        		$count_format= number_format($count / 1000, 2) .'K';     		 
-        }else if($count < 1000000000) {
-        		$count_format= number_format($count / 1000000, 3) .'M'; 	 
-        }else{
-        		$count_format= number_format($count / 1000000000, 3) .'B'; 
-        }
-        echo "$count_format";       
+        echo $this->BigNumber->replaceBigNumbers($count);       
         echo "</span>";
         echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
         echo $this->Paginator->next('>', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
