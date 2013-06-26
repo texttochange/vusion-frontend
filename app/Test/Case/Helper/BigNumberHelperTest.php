@@ -15,6 +15,15 @@ class BigNumberHelperTest extends CakeTestCase{
 				$this->BigNumberRenderer = new BigNumberHelper($View);
 		}
 		
+		public function testNoConvert()
+		{
+				$count = 120;
+				
+				$this->assertEqual(
+						'120',
+						$this->BigNumberRenderer->replaceBigNumbers($count));
+		}
+		
 		public function testConvertThousandToAddK()
 		{
 				$count = 2806;
