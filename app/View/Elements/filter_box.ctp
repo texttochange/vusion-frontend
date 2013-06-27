@@ -1,11 +1,11 @@
 <div class="ttc-data-control">
     <div id="data-control-nav" class="ttc-paging paging">
     <?php
-    echo "<span class='ttc-page-count'>";
     if (isset($this->Paginator)) {
-        echo $this->Paginator->counter(array(
-            'format' => __('{:start} - {:end} of {:count}')
-            ));
+    	$count = $this->Paginator->counter('{:count}');
+    	echo "<span class='ttc-page-count' title = $count>";
+        echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
+        echo $this->BigNumber->replaceBigNumbers($count);       
         echo "</span>";
         echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
         echo $this->Paginator->next('>', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
