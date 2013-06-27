@@ -108,9 +108,12 @@
 	              <td class="direction"><?php
 	                  if (count($participant['Participant']['enrolled']) > 0) {
 	                      foreach ($participant['Participant']['enrolled'] as $enrolled) {
-	                          foreach ($currentProgramData['dialogues'] as $dialogue) {
+	                          foreach ($currentProgramData['dialogues'] as $dialogue) {                	         
 	                              if ($dialogue['dialogue-id'] == $enrolled['dialogue-id']) {
-	                                  echo $this->Html->tag('div', __("%s at %s", $dialogue['Active']['name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
+	                                  $dialogueEnrollName = $dialogue['Active']['name'];
+	                          	      $dialogueEnrollDate = $this->Time->format('d/m/Y H:i:s', $enrolled['date-time']);
+	                          	      $participantEnroll = $dialogueEnrollName . ' at ' .$dialogueEnrollDate;
+	                                  echo $this->Html->tag('div', $participantEnroll, array('class'=> 'participant-truncated-enroll', 'title' => $participantEnroll)); 
 	                                  break;
 	                              }
 	                          }
