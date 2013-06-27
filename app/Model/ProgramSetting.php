@@ -260,6 +260,10 @@ class ProgramSetting extends MongoModel
 
     protected function _runBeforeValidate($settings) 
     {
+        if (!isset($settings['sms-limit-type']) || $settings['sms-limit-type'] == null) {
+            $settings['sms-limit-type'] = 'none';
+        }
+
         if (isset($settings['sms-limit-from-date'])) {
             $settings['sms-limit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['sms-limit-from-date']);
         }

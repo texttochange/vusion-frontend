@@ -152,15 +152,23 @@
                 $options,
                 $attributes);
             $displaySmsLimitDetails = 'display:none';
+            $disableSmsLimitDetails = true;      
             if (isset($this->Form->data['ProgramSetting']['sms-limit-type'])) {
                 if (in_array($this->Form->data['ProgramSetting']['sms-limit-type'], array('outgoing-only','outgoing-incoming'))) {
                     $displaySmsLimitDetails  = '';
+                    $disableSmsLimitDetails = false;
                 }
             }
             echo "<fieldset id='sms-limit-details' style='$displaySmsLimitDetails'>";
-            echo $this->Form->input('sms-limit-number', array('label' => __('Total limit')));
-            echo $this->Form->input('sms-limit-from-date', array('label' => __('Limit Count From')));
-            echo $this->Form->input('sms-limit-to-date', array('label' => __('Limit Count To')));
+            echo $this->Form->input('sms-limit-number', array(
+                'label' => __('Total limit'),
+                'disabled' => $disableSmsLimitDetails));
+            echo $this->Form->input('sms-limit-from-date', array(
+                'label' => __('Limit Count From'),
+                'disabled' => $disableSmsLimitDetails));
+            echo $this->Form->input('sms-limit-to-date', array(
+                'label' => __('Limit Count To'),
+                'disabled' => $disableSmsLimitDetails));
             $this->Js->get("[name*='sms-limit-type'][type='radio']")->event(
                 'change',
                 "if ($(\"[name*='sms-limit-type'][type='radio']:checked\").val() == 'none') {
