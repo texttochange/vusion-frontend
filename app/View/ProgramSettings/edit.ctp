@@ -17,9 +17,13 @@
 	</ul>
 <H3><?php echo __('Edit Program Settings'); ?></H3>
   <div class="ttc-display-area display-height-size">
-  <?php echo $this->Form->create('ProgramSettings'); ?>
-    <fieldset>      
-        
+  <?php 
+    ## Hack to manully set the validationErrors due to our bad model key/value
+    if (isset($validationErrorsArray)) {
+        $this->Form->validationErrors['ProgramSetting'] = $validationErrorsArray;
+    }
+    echo $this->Form->create('ProgramSetting'); ?>
+    <fieldset>
         <div class='input text'>
         <?php
             echo $this->Html->tag('label',__('Shortcode'));    
@@ -122,13 +126,64 @@
         ?>
         </div>
         <?php
-            echo $this->Form->input('double-matching-answer-feedback', 
-                    array('rows' => 3,
-                        'label' => 'Double matching answer feedback'));
+            echo $this->Form->input(
+                'double-matching-answer-feedback', 
+                array(
+                    'rows' => 3,
+                    'label' => 'Double matching answer feedback'));
 
-            echo $this->Form->input('double-optin-error-feedback', 
-                    array('rows' => 3,
-                        'label' => 'Double optin error feedback'));
+            echo $this->Form->input(
+                'double-optin-error-feedback', 
+                array(
+                    'rows' => 3,
+                    'label' => 'Double optin error feedback'));
+            echo $this->Html->tag('div', __('Set SMS Limit'), array('style'=>'margin-bottom:0px'));
+            $options = array(
+                'none' => __('No limit'),
+                'outgoing-only' => __('Count only outgoing'),
+                'outgoing-incoming' => _('Count outgoing and incoming'));
+            $attributes = array(
+                'legend' => false,
+                'style' => 'margin-left:5px',
+                );
+            echo "<div>";
+            echo $this->Form->radio(
+                'sms-limit-type',
+                $options,
+                $attributes);
+            $displaySmsLimitDetails = 'display:none';
+            $disableSmsLimitDetails = true;      
+            if (isset($this->Form->data['ProgramSetting']['sms-limit-type'])) {
+                if (in_array($this->Form->data['ProgramSetting']['sms-limit-type'], array('outgoing-only','outgoing-incoming'))) {
+                    $displaySmsLimitDetails  = '';
+                    $disableSmsLimitDetails = false;
+                }
+            }
+            echo "<fieldset id='sms-limit-details' style='$displaySmsLimitDetails'>";
+            echo $this->Form->input('sms-limit-number', array(
+                'label' => __('Total limit'),
+                'disabled' => $disableSmsLimitDetails));
+            echo $this->Form->input('sms-limit-from-date', array(
+                'label' => __('Limit Count From'),
+                'disabled' => $disableSmsLimitDetails));
+            echo $this->Form->input('sms-limit-to-date', array(
+                'label' => __('Limit Count To'),
+                'disabled' => $disableSmsLimitDetails));
+            $this->Js->get("[name*='sms-limit-type'][type='radio']")->event(
+                'change',
+                "if ($(\"[name*='sms-limit-type'][type='radio']:checked\").val() == 'none') {
+                    $(\"[name*='sms-limit-']:not([type='radio'])\").val(null).prop('disabled', true);
+                    $('#sms-limit-details').hide();
+                } else { 
+                    $(\"[name*='sms-limit-']:not([type='radio'])\").prop('disabled', false);
+                    $('#sms-limit-details').show();
+                }");
+             $this->Js->get('document')->event(
+                 'ready',
+                 '$("[name*=\'sms-limit-from-date\']").datepicker();
+                 $("[name*=\'sms-limit-to-date\']").datepicker();'
+                 );
+            echo '</div>';
         ?>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>

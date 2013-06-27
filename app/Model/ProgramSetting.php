@@ -1,7 +1,8 @@
 <?php
-
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('VusionConst', 'Lib');
+App::uses('ValidationHelper', 'Lib');
 
 
 class ProgramSetting extends MongoModel
@@ -12,19 +13,6 @@ class ProgramSetting extends MongoModel
     var $name        = 'ProgramSetting';
     var $useDbConfig = 'mongo';
 
-    var $settings = array(
-        'shortcode',
-        'timezone',
-        'international-prefix',
-        'default-template-closed-question',
-        'default-template-open-question',
-        'default-template-unmatching-answer',
-        'unmatching-answer-remove-reminder', 
-        'customized-id',
-        'double-matching-answer-feedback',
-        'double-optin-error-feedback',
-        'request-and-feedback-prioritized'
-        );
 
     function getModelVersion()
     {
@@ -38,6 +26,77 @@ class ProgramSetting extends MongoModel
             'value'
             );
     }
+
+    var $settings = array(
+        'shortcode',
+        'timezone',
+        'international-prefix',
+        'default-template-closed-question',
+        'default-template-open-question',
+        'default-template-unmatching-answer',
+        'unmatching-answer-remove-reminder', 
+        'customized-id',
+        'double-matching-answer-feedback',
+        'double-optin-error-feedback',
+        'request-and-feedback-prioritized',
+        'sms-limit-type',
+        'sms-limit-number',
+        'sms-limit-from-date',
+        'sms-limit-to-date'
+        );
+
+    public $validateSettings = array(
+        'sms-limit-type' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The sms-limit-type is required'
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array('none', 'outgoing-only', 'incoming-outgoing')),
+                'message' => 'The type of sms limit is not supported',
+                ),
+            'validRequireFields' => array(
+                'rule' => array(
+                    'valueRequireFields', array(
+                        'none' => array(),
+                        'outgoing-only' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
+                        'outgoing-incoming-outgoing' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
+                        )),
+                'message' => 'The sms-limit-type required fields are not present.'
+                ),
+            ),
+        'sms-limit-number' => array(
+            'validateValue' => array(
+                'rule' => array('custom', '/^\d+$/'),
+                'message' => 'The sms limit can only be an interger.',
+                'required' => false
+                ),
+            ),
+        'sms-limit-from-date' => array(
+            'validateDate' => array(
+                'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
+                'message' => 'The format of the date has to be 15/02/2013.',
+                'required' => false
+                ),
+            'lowerThan' => array(
+                'rule' => array('lowerThan', 'sms-limit-to-date'),
+                'message' => 'This from date has to be before the to date.',
+                'required' => false,
+                ),
+            ),
+        'sms-limit-to-date' => array(
+            'validateDate' => array(
+                'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
+                'message' => 'The format of the date has to be 15/02/2013.',
+                'required' => false,
+                ),
+            'greaterThan' => array(
+                'rule' => array('greaterThan', 'sms-limit-from-date'),
+                'message' => 'This to date has to be after the from date.',
+                'required' => false,
+                ),
+            ),   
+        );
 
 
     public $findMethods =  array(
@@ -53,6 +112,7 @@ class ProgramSetting extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $this->DialogueHelper = new DialogueHelper();
+        $this->ValidationHelper = new ValidationHelper();
     }
 
 
@@ -62,16 +122,15 @@ class ProgramSetting extends MongoModel
 
         if (!in_array($this->data['ProgramSetting']['key'], $this->settings)) {
             return false;
-        } 
+        }
 
         if ($this->data['ProgramSetting']['value'] == '') {
             $this->data['ProgramSetting']['value'] = null;
-        }
+        }   
 
         if ($this->data['ProgramSetting']['key'] == 'unmatching-answer-remove-reminder') {
             $this->data['ProgramSetting']['value'] = intval($this->data['ProgramSetting']['value']);
         }
-        
         if ($this->data['ProgramSetting']['key'] == 'request-and-feedback-prioritized'
                 and $this->data['ProgramSetting']['value'] == '1') {
             $this->data['ProgramSetting']['value'] = 'prioritized';
@@ -129,6 +188,22 @@ class ProgramSetting extends MongoModel
             );
     }
 
+
+    public function saveProgramSettings($settings)
+    {
+        $settings = $this->_runBeforeValidate($settings);
+        $validationErrors = $this->_runValidateRules($settings, $this->validateSettings);
+        if (!is_bool($validationErrors) || !$validationErrors) {
+            $this->validationErrors = $validationErrors;
+            return false;
+        }
+        foreach ($settings as $key => $value) {
+            $this->saveProgramSetting($key, $value);
+        }
+        return true;
+    }
+
+
     public function getProgramSettings()
     {
         $rawSettings = $this->find('all');
@@ -162,6 +237,7 @@ class ProgramSetting extends MongoModel
         return $now;       
     }
 
+
     public function hasRequired()
     {
         $shortCode = $this->find('getProgramSetting', array('key'=>'shortcode'));
@@ -170,6 +246,31 @@ class ProgramSetting extends MongoModel
             return true;
         }
         return false;
+    }
+
+
+    ## function required because the Setting model has a bad design: key/value
+    ## This key/value design to be replace in the future but in the mean time
+    ## one need a validation function to be run before.
+    protected function _runValidateRules($data, $validationRules)    
+    {
+        return $this->ValidationHelper->runValidationRules($data, $validationRules);
+    }
+
+
+    protected function _runBeforeValidate($settings) 
+    {
+        if (!isset($settings['sms-limit-type']) || $settings['sms-limit-type'] == null) {
+            $settings['sms-limit-type'] = 'none';
+        }
+
+        if (isset($settings['sms-limit-from-date'])) {
+            $settings['sms-limit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['sms-limit-from-date']);
+        }
+        if (isset($settings['sms-limit-to-date'])) {
+            $settings['sms-limit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['sms-limit-to-date']);
+        }
+        return $settings;
     }
 
 
