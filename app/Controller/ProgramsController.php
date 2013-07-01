@@ -14,8 +14,8 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'LocalizeUtils');
-    public $helpers = array('Time', 'Js' => array('Jquery'));    
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
+    public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
@@ -88,17 +88,17 @@ class ProgramsController extends AppController
                 );
         }
         
-        $conditions = $this->_getConditions();print_r($conditions);
+        $conditions = $this->_getConditions();
         $nameCondition = array();
         if (isset($conditions)) {
             $nameCondition = $this->_getNameSqlCondition($conditions);
         }
-        print_r($nameCondition);
+
         if (isset($nameCondition) and $nameCondition != array()) {
             $this->paginate['conditions'] = $nameCondition;
         }
-        print_r($this->paginate);
-        $programs    =  $this->paginate();//print_r($programs);
+
+        $programs    =  $this->paginate();
         $allPrograms = $this->Program->find('all');
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']))
@@ -157,7 +157,9 @@ class ProgramsController extends AppController
             array('conditions' => array('direction' => 'incoming'), 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
-        $this->set(compact('programs', 'isProgramEdit'));
+        
+        $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
+        $this->set(compact('programs', 'isProgramEdit', 'countriesIndexes'));
     }
     
 
@@ -191,7 +193,7 @@ class ProgramsController extends AppController
     
     
     protected function _getNameSqlCondition($conditions)
-    {echo "enter _getNameSql\n";
+    {
         $result = array();
         foreach ($conditions as $key => $value) {
             if (is_array($value)) {
@@ -220,9 +222,15 @@ class ProgramsController extends AppController
     protected function _getFilterParameterOptions()
     {
         $shortcodes = $this->ShortCode->getShortCodes();
+        $countriesAndPrefixes = $this->PhoneNumber->getCountriesByPrefixes();
+        foreach ($countriesAndPrefixes as $countryAndPrefix) {
+            $countries[$countryAndPrefix] = $countryAndPrefix;
+        }
+
         return array(
             'operator' => $this->Program->filterOperatorOptions,
             'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
+            'country' => $countries
             );
     }
 

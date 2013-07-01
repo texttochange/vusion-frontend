@@ -63,20 +63,20 @@ class Program extends AppModel
         'country' => array(
             'label' => 'country',
             'operators' => array(
-                'equal-to' => array(
-                    'label' => 'equal to',
-                    'parameter-type' => 'text'))),
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'country'))),
         'shortcode' => array(
             'label' => 'shortcode',
             'operators' => array(
-                'equal-to' => array(
-                    'label' => 'equal to',
+                'is' => array(
+                    'label' => 'is',
                     'parameter-type' => 'shortcode'))),
         'name' => array(
             'label' => 'program name',
             'operators' => array(
                 'start-with' => array(
-                    'label' => 'start with',
+                    'label' => 'starts with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
@@ -128,11 +128,11 @@ class Program extends AppModel
             $this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'country') {
-                if ($filterParam[2] == 'equal-to') {
+                if ($filterParam[2] == 'is') {
                     $condition['country'] = $filterParam[3];
                 }
             } elseif ($filterParam[1] == 'shortcode') {
-                if ($filterParam[2] == 'equal-to') {
+                if ($filterParam[2] == 'is') {
                     $condition['shortcode'] = $filterParam[3];
                 }
                 
@@ -341,7 +341,6 @@ class Program extends AppModel
                 }
             }
         }
-        echo "exiting match...<br />\n";
         return $result;
     }
     
