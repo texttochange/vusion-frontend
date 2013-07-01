@@ -13,11 +13,15 @@
             $actions = "";
             if ($dialogue['Active']) {
                 echo "<div class='ttc-dialogue ttc-dialogue-active'>";
-                $dialogueName = $dialogue['Active']['name'];
+                $dialogueNameToolTip = $dialogue['Active']['name'];
+                $dialogueName = $this->Text->truncate($dialogue['Active']['name'],
+                	115,
+                	array('ellipsis' => '...',
+                		'exact' => true));
                 echo $this->Html->link(
-                    $dialogue['Active']['name'], 
+                    $dialogueName,
                     array('program'=>$programDetails['url'], 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Active']['_id']),
-                    array('class'=>'ttc-dialogue-name'));
+                    array('class'=>'ttc-dialogue-name','title' => $dialogueNameToolTip));
                 if ($dialogue['Draft']) {
                     echo $this->Html->link(
                         '(draft)',
@@ -33,11 +37,15 @@
                     $draftOnlySeparator = true;
                 }
                 echo "<div class='ttc-dialogue'>";
-                $dialogueName = $dialogue['Draft']['name'];
+                $dialogueNameToolTip = $dialogue['Draft']['name'];
+                $dialogueName = $this->Text->truncate($dialogue['Draft']['name'],
+                	115,
+                	array('ellipsis' => '...',
+                		'exact' => true));
                 echo $this->Html->link(
-                        $dialogue['Draft']['name'],
+                        $dialogueName,
                         array('program'=>$programDetails['url'], 'controller'=>'programDialogues', 'action'=>'edit', 'id'=> $dialogue['Draft']['_id']),
-                        array('class'=>'ttc-dialogue-name')
+                        array('class'=>'ttc-dialogue-name','title' => $dialogueNameToolTip)
                         ); 
                 $actions = $this->Html->link(__('Activate'), array('program'=>$programDetails['url'],'action'=>'activate', 'id'=>$dialogue['Draft']['_id']), array('class'=>'ttc-button', 'style' => "float:right"));
             }
