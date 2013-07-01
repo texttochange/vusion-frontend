@@ -261,7 +261,10 @@ class Program extends AppModel
     
     
     public function matchProgramByShortcodeAndCountry($program, $conditions, $codes)
-    {
+    {/*echo "entering match...<br />\n";
+        echo "program: "; print_r($program);
+        echo "conditions: ";print_r($conditions);
+        echo "codes: ";print_r($codes);*/
         $result = array();
         $countryMatch = false;
         $shortcodeMatch = false;
@@ -338,6 +341,7 @@ class Program extends AppModel
                 }
             }
         }
+        echo "exiting match...<br />\n";
         return $result;
     }
     

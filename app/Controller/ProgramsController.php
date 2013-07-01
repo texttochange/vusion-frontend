@@ -88,16 +88,17 @@ class ProgramsController extends AppController
                 );
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->_getConditions();print_r($conditions);
+        $nameCondition = array();
         if (isset($conditions)) {
             $nameCondition = $this->_getNameSqlCondition($conditions);
         }
-        
+        print_r($nameCondition);
         if (isset($nameCondition) and $nameCondition != array()) {
             $this->paginate['conditions'] = $nameCondition;
         }
-        
-        $programs    =  $this->paginate();
+        print_r($this->paginate);
+        $programs    =  $this->paginate();//print_r($programs);
         $allPrograms = $this->Program->find('all');
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']))
@@ -114,12 +115,12 @@ class ProgramsController extends AppController
         }
         
         $filteredPrograms = array();
-
+//print_r($programs);
         foreach($programsList as &$program) {
             $programDetails = $this->_getProgramDetails($program);
             
             $program = array_merge($program, $programDetails['program']);
-            
+            //print_r($programDetails);
             $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
                 $programDetails['program'],
                 $conditions,
@@ -161,16 +162,16 @@ class ProgramsController extends AppController
     
 
     protected function _getProgramDetails($programData)
-    {
+    {//echo "enter _getProgDetails\n";
         $database           = $programData['Program']['database'];
         $tempProgramSetting = new ProgramSetting(array('database' => $database));
         $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
-
+//print_r($tempProgramSetting->find('all'));
         if (isset($shortcode[0]['ProgramSetting']['value'])) {
             $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
             $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
         }
-
+//print_r($code);
         if ($this->params['ext']!='json') {
             $tempParticipant                             = new Participant(array('database' => $database));
             $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
@@ -181,16 +182,16 @@ class ProgramsController extends AppController
             
             $programDetails = array(
                 'program' =>  $programData,
-                'shortcode' => (isset($code)) ? $code : null
+                'shortcode' => (isset($code)) ? $code : array()
                 );
         }
-        
+        //print_r($programDetails);
         return $programDetails;
     }
     
     
     protected function _getNameSqlCondition($conditions)
-    {
+    {echo "enter _getNameSql\n";
         $result = array();
         foreach ($conditions as $key => $value) {
             if (is_array($value)) {
