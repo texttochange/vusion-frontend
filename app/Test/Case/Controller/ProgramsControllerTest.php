@@ -72,7 +72,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    'paginate'
+                    //'paginate'
                     )
                 )
             );
@@ -200,10 +200,10 @@ class ProgramsControllerTestCase extends ControllerTestCase
             );
         //$Programs = $this->mockProgramAccess_with_paginate();
         $Programs = $this->mockProgramAccess();
-        $Programs
+        /*$Programs
                 ->expects($this->once())
                 ->method('paginate')
-                ->will($this->returnValue($programsArray));
+                ->will($this->returnValue($programsArray));*/
                 
         $this->testAction('programs/index');
         
@@ -216,13 +216,14 @@ class ProgramsControllerTestCase extends ControllerTestCase
          # filter by program name only
          echo "starting filter tests\n";
         //$this->mockProgramAccess_with_paginate();
-        //$this->mockProgramAccess();
-        $this->testAction('programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t');
+         $this->mockProgramAccess();
+         $this->testAction('programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t');
         //print_r($this->vars['programs']);
-        $this->assertEquals(1, count($this->vars['programs']));
-        
-        $this->testAction('programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h');
-        $this->assertEquals(1, count($this->vars['programs']));
+         $this->assertEquals(1, count($this->vars['programs']));
+
+         $this->mockProgramAccess();        
+         $this->testAction('programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h');
+         $this->assertEquals(1, count($this->vars['programs']));
         
         /*$this->mockProgramAccess_with_paginate();
         $this->testAction('programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h');
