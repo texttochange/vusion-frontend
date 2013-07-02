@@ -94,7 +94,7 @@ class ProgramTestCase extends CakeTestCase
         $result   = $this->Program->find(
             'count'
             );
-        $this->assertEquals(2, $result);
+        $this->assertEquals(3, $result);
     }
 
     public function testSaveProgram_ok()
@@ -162,7 +162,7 @@ class ProgramTestCase extends CakeTestCase
     {
         $this->Program->id = 1;
         $this->Program->deleteProgram();
-        $this->assertEquals(1,$this->Program->find('count'));
+        $this->assertEquals(2,$this->Program->find('count'));
     }
     
     

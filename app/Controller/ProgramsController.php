@@ -29,8 +29,23 @@ class ProgramsController extends AppController
         parent::constructClasses();
 
         $this->_instanciateVumiRabbitMQ();
-        $this->ShortCode  = new ShortCode(array('database' => 'vusion'));
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
+        $this->ShortCode  = new ShortCode($options);
+        //$this->_instanciateMongoModel('vusion');
     }
+
+
+    /*protected function _instanciateMongoModel($vusionDB){
+        $this->ShortCode  = new ShortCode(array('database' => $vusionDB));
+    }*/
 
 
     protected function _instanciateVumiRabbitMQ(){
@@ -120,18 +135,18 @@ class ProgramsController extends AppController
             $programDetails = $this->_getProgramDetails($program);
             
             $program = array_merge($program, $programDetails['program']);
-            //print_r($programDetails);
+//print_r($programDetails);
             $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
                 $programDetails['program'],
                 $conditions,
                 $programDetails['shortcode']);
             if (count($filterPrograms)>0) {
-                foreach ($filterPrograms as $fProgram) {
+                foreach ($filterPrograms as $fProgram) {//print_r($fProgram);
                     $filteredPrograms[] = $fProgram;
                 }
             }
         }
-        
+        //print_r($filteredPrograms);
         if (count($filteredPrograms)>0
             or (isset($conditions) && $nameCondition == array())
             or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
@@ -158,8 +173,7 @@ class ProgramsController extends AppController
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
-        $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
-        $this->set(compact('programs', 'isProgramEdit', 'countriesIndexes'));
+        $this->set(compact('programs', 'isProgramEdit'));
     }
     
 
@@ -168,9 +182,13 @@ class ProgramsController extends AppController
         $database           = $programData['Program']['database'];
         $tempProgramSetting = new ProgramSetting(array('database' => $database));
         $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+ //echo "database = ".$database."\n";
+ //print_r($shortcode);
 //print_r($tempProgramSetting->find('all'));
+//print_r($this->ShortCode);
         if (isset($shortcode[0]['ProgramSetting']['value'])) {
             $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
+            //print_r($code);
             $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
         }
 //print_r($code);
