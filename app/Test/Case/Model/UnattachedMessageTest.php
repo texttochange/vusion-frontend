@@ -277,7 +277,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         //2st assertion, error fixed time cannot be in the past
         $this->assertEquals(
             'Fixed time cannot be in the past.',
-            $this->UnattachedMessage->validationErrors['fixed-time'][0]);
+        $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
     
 
@@ -416,6 +416,27 @@ class UnattachedMessageTestCase extends CakeTestCase
         $now = new DateTime('now', timezone_open('Africa/Kampala'));   
         $check = array('fixed-time'=> $now->modify('-30 minutes')->format("Y-m-d\TH:i:s"));
         $this->assertFalse($this->UnattachedMessage->isNotPast($check));
+        //print_r($this->UnattachedMessage->isNotPast($check));
+    }
+    
+    public function testDraftFixedTime()
+    {  
+    	$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+    	
+        $unattachedMessage = array(
+            'name'=>'hello2',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'draft',
+            'created-by' => 1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage2 = $this->UnattachedMessage->save($unattachedMessage);
+        $this->assertEquals(1,$this->UnattachedMessage->find('count'));
+        $this->assertEquals('draft', $savedUnattachedMessage2['UnattachedMessage']['type-schedule']);
+        $this->assertEqual(
+            "",
+            $this->UnattachedMessage->data['UnattachedMessage']['fixed-time']);
     }
 
 

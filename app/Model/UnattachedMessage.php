@@ -100,15 +100,20 @@ class UnattachedMessage extends MongoModel
                 )
             ),
         'fixed-time' => array(
-            'notEmptyFixedTime' => array(
-                'rule' => array('notEmptyFixedTime'),
+        	'notempty' => array(
+                'rule' => array('notempty'),
                 'message' => 'Please enter a fixed time for this message.'
                 ),
-            'isNotPast' => array(
+        	'isNotPast' => array(
                 'rule' => 'isNotPast',
                 'required' => true,
                 'message' => 'Fixed time cannot be in the past.'
+                ),
+            'draftFixedTime' => array(
+                'rule' => array('draftFixedTime'),
+                'message' => 'Please enter a fixed time for this message.'
                 )
+            
             ),
         'created-by' => array(
             'notempty' => array(
@@ -201,20 +206,20 @@ class UnattachedMessage extends MongoModel
     
     public function isNotPast($check)
     {
-    	if($check['fixed-time'] = 'draft'){
+    	if($check['fixed-time'] == 'draft'){
     		return true;
     	}
-    	$programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));    		
-    	$fixedTimeDate = new DateTime($check['fixed-time'], timezone_open($programTimezone));
-    	return $this->ProgramSetting->isNotPast($fixedTimeDate);
+    		$programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));    		
+    		$fixedTimeDate = new DateTime($check['fixed-time'], timezone_open($programTimezone));
+    		return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
-    public function notEmptyFixedTime($check)
+    public function draftFixedTime($check)
     {    		
-    	if(!isset($check['draft'])){
-    		return true;
+    	if(isset($check['draft'])){
+    		return false;
     	}
-    	return false;
+    	return true;
     }  
     
     public function isVeryUnique($check)
