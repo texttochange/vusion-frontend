@@ -231,26 +231,35 @@ class ProgramUnattachedMessagesController extends AppController
         if (!$this->UnattachedMessage->exists()) {
             throw new NotFoundException(__('Invalid Message.'));
         }
-
         $this->UnattachedMessage->read();
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
-            $now = new DateTime('now');    
-            $programTimezone = $this->Session->read($this->params['program'].'_timezone');
-            date_timezone_set($now,timezone_open($programTimezone));      
-            $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
-            if ($now > $messageDate){   
-                throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
-            }
-            $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
-            if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
-                $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
-                'default',
-                array('class' => "message warning")
-                );
-            }
+            if($this->request->data['UnattachedMessage']['type-schedule'] == 'draft'){            	
+            	$selectorValues = $this->Participant->getDistinctTagsAndLabels();
+            	if (count($selectorValues) > 0) {
+            		$selectors = array_combine($selectorValues, $selectorValues);
+            	}
+            	$predefinedMessageOptions = $this->_getPredefinedMessageOptions();
+            	$this->set(compact('selectors', 'predefinedMessageOptions'));
+        		return $unattachedMessage;
+        	}
+        	$now = new DateTime('now');    
+        	$programTimezone = $this->Session->read($this->params['program'].'_timezone');
+        	date_timezone_set($now,timezone_open($programTimezone));      
+        	$messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
+        	if ($now > $messageDate){   
+        		throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
+        	}
+        	$this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
+        	if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
+        		$this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
+        			'default',
+        			array('class' => "message warning")
+        			);
+        	}
+        	
         }
 
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();

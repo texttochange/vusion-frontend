@@ -100,8 +100,8 @@ class UnattachedMessage extends MongoModel
                 )
             ),
         'fixed-time' => array(
-            'notempty' => array(
-                'rule' => array('notempty'),
+            'notEmptyFixedTime' => array(
+                'rule' => array('notEmptyFixedTime'),
                 'message' => 'Please enter a fixed time for this message.'
                 ),
             'isNotPast' => array(
@@ -183,27 +183,39 @@ class UnattachedMessage extends MongoModel
         parent::beforeValidate();
         
         /*if (!isset($this->data['UnattachedMessage']['created-by'])) {
-                $this->data['UnattachedMessage']['created-by'] = null;
+        $this->data['UnattachedMessage']['created-by'] = null;
         }*/
         
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
             if (isset($now))
                 $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");            
-        } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
+        }elseif ($this->data['UnattachedMessage']['type-schedule'] == 'draft'){        		
+        	$this->data['UnattachedMessage']['fixed-time'] = 'draft';
+        }elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
             //Convert fixed-time to vusion format
-            $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
-        }       
+            $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);             
+        }              
         return true;           	
     }    
     
     public function isNotPast($check)
     {
-        $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
-        $fixedTimeDate = new DateTime($check['fixed-time'], timezone_open($programTimezone));
-        return $this->ProgramSetting->isNotPast($fixedTimeDate);
+    	if($check['fixed-time'] = 'draft'){
+    		return true;
+    	}
+    	$programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));    		
+    	$fixedTimeDate = new DateTime($check['fixed-time'], timezone_open($programTimezone));
+    	return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
+    public function notEmptyFixedTime($check)
+    {    		
+    	if(!isset($check['draft'])){
+    		return true;
+    	}
+    	return false;
+    }  
     
     public function isVeryUnique($check)
     {
@@ -283,6 +295,4 @@ class UnattachedMessage extends MongoModel
         }     
         return  $nameIds;        
     }
-    
-    
 }

@@ -67,6 +67,9 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	    <td class="content"><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>		
     	    <td class="delivery">
     	        <?php 
+    	        if($unattachedMessage['UnattachedMessage']['fixed-time'] == 'draft'){
+    	        	echo '<em> <b> Draft </b> </em>';
+    	        }else{	
     	        if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     	            echo '<em><b>' .  __("scheduled") . '</b></em>';
     	        } else {
@@ -83,17 +86,29 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	            echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-nack'] . '</span>';
     	            echo ")";
     	        }
+    	        }
     	        ?>
     	    </td>
-    	    <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
+    	    <td class="date-time">
+    	    <?php 
+    	    if($unattachedMessage['UnattachedMessage']['fixed-time'] == 'draft'){
+    	    	echo '<em> Not Set Yet </em>';
+    	    }else{
+    	    	echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']);
+    	    }
+    	    ?>&nbsp;</td>
     	    <td id="direction-css"><?php echo $unattachedMessage['UnattachedMessage']['created-by']; ?>&nbsp;</th>
     	    <td class="action actions">
      	       <?php
-    	       $now = new DateTime('now');
-    	       date_timezone_set($now,timezone_open($programDetails['timezone']));      
-    	       $messageDate = new DateTime($unattachedMessage['UnattachedMessage']['fixed-time'], new DateTimeZone($programDetails['timezone']));
-    	       if ($now < $messageDate){    
-    	           echo $this->Html->link(__('Edit'), array('program'=>$programDetails['url'], 'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']));
+     	       if($unattachedMessage['UnattachedMessage']['fixed-time'] == 'draft'){
+     	       	   echo $this->Html->link(__('Edit'), array('program'=>$programDetails['url'], 'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']));
+    	       } else{    	       
+    	           $now = new DateTime('now');
+				   date_timezone_set($now,timezone_open($programDetails['timezone']));
+				   $messageDate = new DateTime($unattachedMessage['UnattachedMessage']['fixed-time'], new DateTimeZone($programDetails['timezone']));
+				   if ($now < $messageDate){    
+					   echo $this->Html->link(__('Edit'), array('program'=>$programDetails['url'], 'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']));
+				   }
     	       } 
     	       ?>
     	       <?php echo $this->Form->postLink(__('Delete'), array('program'=>$programDetails['url'], 'action' => 'delete', $unattachedMessage['UnattachedMessage']['_id']), null,
