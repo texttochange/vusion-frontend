@@ -108,12 +108,7 @@ class UnattachedMessage extends MongoModel
                 'rule' => 'isNotPast',
                 'required' => true,
                 'message' => 'Fixed time cannot be in the past.'
-                ),
-            'draftFixedTime' => array(
-                'rule' => array('draftFixedTime'),
-                'message' => 'Please enter a fixed time for this message.'
                 )
-            
             ),
         'created-by' => array(
             'notempty' => array(
@@ -187,9 +182,6 @@ class UnattachedMessage extends MongoModel
     {
         parent::beforeValidate();
         
-        /*if (!isset($this->data['UnattachedMessage']['created-by'])) {
-        $this->data['UnattachedMessage']['created-by'] = null;
-        }*/
         
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
@@ -214,14 +206,6 @@ class UnattachedMessage extends MongoModel
     		return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
-    public function draftFixedTime($check)
-    {    		
-    	if(isset($check['draft'])){
-    		return false;
-    	}
-    	return true;
-    }  
-    
     public function isVeryUnique($check)
     {
         if ($this->id) {
@@ -232,7 +216,6 @@ class UnattachedMessage extends MongoModel
         $result = $this->find('count', array(
             'conditions' => $conditions
             ));
-        //print_r($conditions);
         return $result < 1;
     }
     

@@ -419,7 +419,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         //print_r($this->UnattachedMessage->isNotPast($check));
     }
     
-    public function testDraftFixedTime()
+    public function testFixedTimeIsDraft()
     {  
     	$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
     	
