@@ -168,9 +168,7 @@ class Program extends AppModel
     
     public function _findAuthorized($state, $query, $results = array())
     {
-        //print_r($query);
         if ($state == 'before') {
-            //print_r($query);
             return $this->limitedAccessConditions($query);
         }
         return $results;
@@ -294,6 +292,9 @@ class Program extends AppModel
                             }
                         }
                     }
+                    #re-initialize countryMatch and shortcodeMatch to prevent duplicate results
+                    $countryMatch = false;
+                    $shortcodeMatch = false;
                 }
                 elseif ($conditionHas['country'] == 1) {
                     foreach ($conditions['$and'] as $key => $value) {
