@@ -15,7 +15,7 @@
                 echo "<div class='ttc-dialogue ttc-dialogue-active'>";
                 $dialogueNameToolTip = $dialogue['Active']['name'];
                 $dialogueName = $this->Text->truncate($dialogue['Active']['name'],
-                	115,
+                	40,
                 	array('ellipsis' => '...',
                 		'exact' => true));
                 echo $this->Html->link(
@@ -39,7 +39,7 @@
                 echo "<div class='ttc-dialogue'>";
                 $dialogueNameToolTip = $dialogue['Draft']['name'];
                 $dialogueName = $this->Text->truncate($dialogue['Draft']['name'],
-                	115,
+                	40,
                 	array('ellipsis' => '...',
                 		'exact' => true));
                 echo $this->Html->link(
