@@ -165,23 +165,25 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $Programs = $this->mockProgramAccess();                
         $this->testAction('/programs/index');
         
+        sort($this->vars['programs']);
+
         $program1 = $this->vars['programs'][0];
-        $db1 = $this->vars['programs'][0]['Program']['database'];
+        $db1      = $this->vars['programs'][0]['Program']['database'];
         $this->ProgramSetting = new ProgramSetting(array('database' => $db1));
-        $tz1 = $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-        $sc1 = $this->ProgramSetting->saveProgramSetting('shortcode','256-8282');
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode','256-8282');
         
         $program2 = $this->vars['programs'][1];
-        $db2 = $this->vars['programs'][1]['Program']['database'];
+        $db2      = $this->vars['programs'][1]['Program']['database'];
         $this->ProgramSetting = new ProgramSetting(array('database' => $db2));
-        $tz2 = $this->ProgramSetting->saveProgramSetting('timezone','Africa/Daresalaam');
-        $sc2 = $this->ProgramSetting->saveProgramSetting('shortcode','256-8181');
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Daresalaam');
+        $this->ProgramSetting->saveProgramSetting('shortcode','256-8181');
         
         $program3 = $this->vars['programs'][2];
-        $db3 = $this->vars['programs'][2]['Program']['database'];
+        $db3      = $this->vars['programs'][2]['Program']['database'];
         $this->ProgramSetting = new ProgramSetting(array('database' => $db3));
-        $tz3 = $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-        $sc3 = $this->ProgramSetting->saveProgramSetting('shortcode','254-21222');
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode','254-21222');
         
         # filter by program name only
         $this->mockProgramAccess();
@@ -194,50 +196,42 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
         # filter by shortcode only (8282)
         $this->mockProgramAccess();
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc1['ProgramSetting']['value']));
-        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=shortcode&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D='.$code['ShortCode']['shortcode']);
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=shortcode&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=8282');
         $this->assertEquals(1, count($this->vars['programs']));
         
         # filter by country only (Uganda)
         $this->mockProgramAccess();
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc1['ProgramSetting']['value']));
-        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=country&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D='.$code['ShortCode']['country']);
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=country&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=uganda');
         $this->assertEquals(2, count($this->vars['programs']));
         
-        # filter by program name AND shortcode (t, 8181)
+        # filter by program name AND shortcode (t, 8181) #8282
         $this->mockProgramAccess();
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc2['ProgramSetting']['value']));
-        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D='.$code['ShortCode']['shortcode']);
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=8282');
         $this->assertEquals(1, count($this->vars['programs']));
         
-        # filter by program name AND country (m6h, kenya)
+        # filter by program name AND country (m6h, kenya) #uganda
         $this->mockProgramAccess();
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc3['ProgramSetting']['value']));
-        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D='.$program3['Program']['name'].'&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D='.$code['ShortCode']['country']);
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=uganda');
         $this->assertEquals(1, count($this->vars['programs']));
         
         # filter by program name AND country AND shortcode (t, uganda, 8282)
         $this->mockProgramAccess();
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc1['ProgramSetting']['value']));                                   
-        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D='.$code['ShortCode']['country'].'&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D='.$code['ShortCode']['shortcode']);
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=8282');
         $this->assertEquals(1, count($this->vars['programs']));
         
         # filter by program name OR shortcode (t, 21222)
-        $this->mockProgramAccess();        
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc3['ProgramSetting']['value']));
-        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D='.$code['ShortCode']['shortcode']);
-        $this->assertEquals(3, count($this->vars['programs']));
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=21222');
+        $this->assertEquals(2, count($this->vars['programs']));
         
         # filter by program name OR country (trial, kenya)
         $this->mockProgramAccess();
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc3['ProgramSetting']['value']));                                   
-        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D='.$program2['Program']['name'].'&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D='.$code['ShortCode']['country']);
+        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=kenya');
         $this->assertEquals(2, count($this->vars['programs']));
         
         # filter by program name OR country OR shortcode (t, uganda, 21222)
         $this->mockProgramAccess();        
-        $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $sc3['ProgramSetting']['value']));
-        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=Uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D='.$code['ShortCode']['shortcode']);
+        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=Uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=21222');
         $this->assertEquals(3, count($this->vars['programs']));
         
         $this->ProgramSetting->deleteAll(true, false);
