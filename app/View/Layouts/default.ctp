@@ -70,7 +70,7 @@
 			if ($this->Session->read('Auth.User.id')) {	
 					echo $this->Html->tag(
 							'span', 
-							'log as '.$this->Session->read('Auth.User.username').' '
+							__('log as %s', $this->Session->read('Auth.User.username'))
 							);
 			}
 			?> 
