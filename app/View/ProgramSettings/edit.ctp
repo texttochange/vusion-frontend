@@ -59,7 +59,7 @@
         <?php
             echo $this->Form->input('international-prefix',
             		array('id' => 'international-prefix',
-            		      'label' => 'Supported International Prefix(es)',
+            		      'label' => __('Supported International Prefix(es)'),
             		      'readonly' => 'true',
             		      'style' => 'color:#AAAAAA')
             		);
@@ -105,7 +105,7 @@
     	        $customizedIdDisabled = true;
             echo $this->Form->input('customized-id',
             		array('id' => 'customized-id',
-            		      'label' => 'Customized Id',
+            		      'label' => __('Customized Id'),
             		      'disabled' => $customizedIdDisabled)
             		);
         ?>
@@ -124,11 +124,11 @@
         <?php
             echo $this->Form->input('double-matching-answer-feedback', 
                     array('rows' => 3,
-                        'label' => 'Double matching answer feedback'));
+                        'label' => __('Double matching answer feedback')));
 
             echo $this->Form->input('double-optin-error-feedback', 
                     array('rows' => 3,
-                        'label' => 'Double optin error feedback'));
+                        'label' => __('Double optin error feedback')));
         ?>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>
