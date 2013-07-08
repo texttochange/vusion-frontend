@@ -14,7 +14,7 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'EmulatePaginator');
     public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
     var $uses = array('Program', 'Group');
     var $paginate = array(
@@ -165,7 +165,9 @@ class ProgramsController extends AppController
         } else {
             $programs = $programsList;
         }
-        
+        //print_r($this->EmulatePaginator->paginate($programs));
+        print_r($this->EmulatePaginator->tester($programs));
+        //print_r($this->Paginator->Controller);
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
