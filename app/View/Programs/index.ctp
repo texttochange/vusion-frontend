@@ -22,22 +22,32 @@
 	<?php
 	foreach ($programs as $program): ?>
 
-	<div class='ttc-program-box' title= "<?php echo $program['Program']['name']?>" onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
+	<div class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
 	<?php $programName = $this->Text->truncate($program['Program']['name'], 
 			24, 
 			array('ellipsis' => '...',
 			'exact' => true ));
-	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title'));
+	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title','title' => $program['Program']['name']));
 	?>
 		<?php
 		if (isset($program['Program']['shortcode']))
 		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
 		<?php
-		    echo $this->Html->tag(
-		        'div',
-		        $program['Program']['participant-count'].__(' participant(s)').'<br/>'. $program['Program']['history-count'].__(' history(s)').'<br/>'. $program['Program']['schedule-count'].__(' schedule(s)'),
-		        array('class'=>'ttc-program-stats')
-		        );
+		//print_r($program['Program']);
+		echo $this->Html->tag(
+			'div',
+			'<b title = "Active participants / Total participants">'.$program['Program']['active-participant-count'].'/'.
+			$program['Program']['participant-count'].'</b> '.__(' participant(s)').'<br/>'.
+			'<b title = "Total messages(Total current month)">'.$program['Program']['history-count'].'('.
+			$program['Program']['history-count'].') </b>'.__(' total message(s)').'<br/>'.
+			'<b title = "Total received(current month) - Total sent(current month)">'.$program['Program']['all-received-messages-count'].'('.
+			$program['Program']['history-count'].') </b>'.__('received').' - <b>'. 
+			$program['Program']['all-sent-messages-count'].'('.
+			$program['Program']['history-count'].' )</b>'.__(' sent message(s)').'<br/>'.		         
+			'<b title = "Total schedules(today)">'.$program['Program']['schedule-count'].'('.
+			$program['Program']['today-schedule-count'].')</b>'.__(' schedule(s)'),
+			array('class'=>'ttc-program-stats')
+			);
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">

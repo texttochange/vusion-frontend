@@ -103,12 +103,42 @@ class ProgramsController extends AppController
                 $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);
             } 
             if ($this->params['ext']!='json') {
-                $tempParticipant = new Participant(array('database' => $database));
+                $tempParticipant = new Participant(array('database' => $database));                
+                $program['Program']['active-participant-count'] = $tempParticipant->find(
+                	'count', array(
+                		'conditions' => array('session-id' => array(
+                			'$ne' => null)
+                			)
+                		)
+                	);
                 $program['Program']['participant-count'] = $tempParticipant->find('count'); 
-                $tempHistory     = new History(array('database' => $database));
+                
+                $tempHistory     = new History(array('database' => $database)); 
+                $program['Program']['all-received-messages-count']     = $tempHistory->find(
+                    'count',array(
+                    	'conditions' => array('message-direction' => 'incoming'))
+                    );
+                
+                 $program['Program']['current-month-received-messages-count']     = $tempHistory->find(
+                    'count',array(
+                    	'conditions' => array('message-direction' => 'incoming',))
+                    );
+                $program['Program']['all-sent-messages-count']     = $tempHistory->find(
+                    'count',array(
+                    	'conditions' => array('message-direction' => 'outgoing'))
+                    );
                 $program['Program']['history-count']     = $tempHistory->find(
-                    'count', array('conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
+                    'count', array(
+                    	'conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
+                
                 $tempSchedule = new Schedule(array('database' => $database));
+                $now = new DateTime('now');
+               // $month = $now.getMonths();
+                print_r($now);
+                $program['Program']['today-schedule-count']    = $tempSchedule->find(
+                	'count',array(
+                		'conditions' => array('date-time' => $now)
+                		));
                 $program['Program']['schedule-count']    = $tempSchedule->find('count');
             }  
         }
