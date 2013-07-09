@@ -29,7 +29,6 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
 
     public function tearDown() {
         parent::tearDown();
-        // Clean up after we're done
         unset($this->EmulatePaginatorComponent);
         unset($this->Controller);
     }
@@ -37,7 +36,6 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
     
     public function testPaginate()
     {
-        //print_r($this->request);
         $Controller = new TestEmulatePaginatorComponentController($this->request);
 		$Controller->uses = array('PaginatorControllerPrograms');
         $Controller->request->params['pass'] = array('1');
@@ -46,13 +44,25 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
         
         $programs = array(1,2,3,4,5,6,7,8,9,10,11,12);
         
+        # test returned results
         $results = $Controller->EmulatePaginator->paginate($programs);
         $this->assertEqual($results, array(1,2,3,4,5,6,7,8,9,10,11,12));
         
-        $Controller->request->params['named'] = array('page' => '-1');
+        # test paging
+        $Controller->request->params['named'] = array('page' => '1');
         $results = $Controller->EmulatePaginator->paginate($programs);
 		$this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['page'], 1);
 		$this->assertEquals($results, array(1,2,3,4,5,6,7,8,9,10,11,12));
+		
+		# test limit records
+		$Controller->request->params['named'] = array();
+		$Controller->EmulatePaginator->settings = array('limit' => '1', 'page' => '1','maxLimit' => 10, 'paramType' => 'named');
+        $results = $Controller->EmulatePaginator->paginate($programs);
+        $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['limit'], 1);
+		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['page'], 1);
+		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['pageCount'], 12);
+		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['prevPage'], false);
+		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['nextPage'], true);
     }
     
 }

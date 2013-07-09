@@ -39,13 +39,8 @@ class ProgramsController extends AppController
                 );
         }
         $this->ShortCode  = new ShortCode($options);
-        //$this->_instanciateMongoModel('vusion');
+
     }
-
-
-    /*protected function _instanciateMongoModel($vusionDB){
-        $this->ShortCode  = new ShortCode(array('database' => $vusionDB));
-    }*/
 
 
     protected function _instanciateVumiRabbitMQ(){
@@ -130,23 +125,23 @@ class ProgramsController extends AppController
         }
         
         $filteredPrograms = array();
-//print_r($programs);
+
         foreach($programsList as &$program) {
             $programDetails = $this->_getProgramDetails($program);
             
             $program = array_merge($program, $programDetails['program']);
-//print_r($programDetails);
+
             $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
                 $programDetails['program'],
                 $conditions,
                 $programDetails['shortcode']);
             if (count($filterPrograms)>0) {
-                foreach ($filterPrograms as $fProgram) {//print_r($fProgram);
+                foreach ($filterPrograms as $fProgram) {
                     $filteredPrograms[] = $fProgram;
                 }
             }
         }
-        //print_r($filteredPrograms);
+
         if (count($filteredPrograms)>0
             or (isset($conditions) && $nameCondition == array())
             or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
@@ -165,9 +160,7 @@ class ProgramsController extends AppController
         } else {
             $programs = $programsList;
         }
-        //print_r($this->EmulatePaginator->paginate($programs));
-        print_r($this->EmulatePaginator->tester($programs));
-        //print_r($this->Paginator->Controller);
+
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -175,25 +168,23 @@ class ProgramsController extends AppController
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
+        # paginate using EmulatePaginator
+        $this->EmulatePaginator->paginate($programs);
         $this->set(compact('programs', 'isProgramEdit'));
     }
     
 
     protected function _getProgramDetails($programData)
-    {//echo "enter _getProgDetails\n";
+    {
         $database           = $programData['Program']['database'];
         $tempProgramSetting = new ProgramSetting(array('database' => $database));
         $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
- //echo "database = ".$database."\n";
- //print_r($shortcode);
-//print_r($tempProgramSetting->find('all'));
-//print_r($this->ShortCode);
+
         if (isset($shortcode[0]['ProgramSetting']['value'])) {
-            $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-            //print_r($code);
+            $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
             $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
         }
-//print_r($code);
+
         if ($this->params['ext']!='json') {
             $tempParticipant                             = new Participant(array('database' => $database));
             $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
@@ -207,7 +198,7 @@ class ProgramsController extends AppController
                 'shortcode' => (isset($code)) ? $code : array()
                 );
         }
-        //print_r($programDetails);
+
         return $programDetails;
     }
     

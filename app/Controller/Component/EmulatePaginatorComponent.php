@@ -28,8 +28,8 @@ class EmulatePaginatorComponent extends Component {
 		
 		$results = $array;
 		
-		$limit = $this->settings['limit'];
-		$page = $this->settings['page'];
+		$limit = (int)$this->settings['limit'];
+		$page = (int)$this->settings['page'];
 		$order = null;
 		$count =  count($results);
 		$pageCount = intVal(ceil($count / $limit));
@@ -54,13 +54,6 @@ class EmulatePaginatorComponent extends Component {
 		);
 			
         return $results;
-    }
-    
-    public function tester($arrayWithData) {
-        print_r($this->Paginator->Controller->request->params['paging']);
-        /*$count = $this->Paginator->counter('{:count}');
-        $count = count($arrayWithData);*/
-        return count($arrayWithData);        
     }    
     
 }
