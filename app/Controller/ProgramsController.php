@@ -134,7 +134,7 @@ class ProgramsController extends AppController
                 $tempSchedule = new Schedule(array('database' => $database));
                 $now = new DateTime('now');
                // $month = $now.getMonths();
-                print_r($now);
+                //print_r($now);
                 $program['Program']['today-schedule-count']    = $tempSchedule->find(
                 	'count',array(
                 		'conditions' => array('date-time' => $now)
