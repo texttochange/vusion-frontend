@@ -60,8 +60,7 @@ class ProgramHomeController extends AppController
         $activeInteractions = $this->Dialogue->getActiveInteractions();
 
         $timeNow = $this->ProgramSetting->getProgramTimeNow(); 
-        $rt = $timeNow->format("Y-m-d\TH:i:s");
-        //print_r($rt);
+        
         if (isset($timeNow)) 
             $timeNow->modify('+1 day');
         $schedules = $this->Schedule->generateSchedule(
