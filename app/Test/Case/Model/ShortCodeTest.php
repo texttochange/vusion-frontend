@@ -34,8 +34,9 @@ class ShortCodeTestCase extends CakeTestCase
             'international-prefix' => ' 256',
             'country' => 'uganda',
             'badfield' => 'something',
-            'supported-internationally' => "0",
-            'support-customized-id' => "1"
+            'supported-internationally' => '0',
+            'support-customized-id' => '1',
+            'max-character-per-sms' => '160',
             );
 
         $this->ShortCode->create();
@@ -59,7 +60,8 @@ class ShortCodeTestCase extends CakeTestCase
             'country' => 'netherland',
             'shortcode' => '8282',
             'international-prefix' => '31',
-            'supported-internationally' => 1
+            'supported-internationally' => 1,
+            'max-character-per-sms' => '160',
             );
         
         # Cannot save an international shortcode while another local shortcode is using the code
@@ -82,12 +84,14 @@ class ShortCodeTestCase extends CakeTestCase
             'country' => 'United States',
             'shortcode' => '8282',
             'international-prefix' => '1',
+            'max-character-per-sms' => '160',
             );
         
         $caymanShortCode = array(
             'country' => 'Cayman Islands',
             'shortcode' => '8282',
             'international-prefix' => '1345',
+            'max-character-per-sms' => '160',
             );
 
         $this->ShortCode->create();
@@ -95,6 +99,23 @@ class ShortCodeTestCase extends CakeTestCase
         $this->assertTrue(isset($savedShortCode['ShortCode']));
         $this->ShortCode->create();
         $this->assertFalse($this->ShortCode->save($caymanShortCode));
+    }
+
+    public function testSave_fail()
+    {
+
+        $shortCode = array(
+            'country' => 'Cayman Islands',
+            'shortcode' => '8282',
+            'international-prefix' => '256',
+            'max-character-per-sms' => '145',
+            );
+
+        $this->ShortCode->create();
+        $this->assertFalse($this->ShortCode->save($shortCode));
+        $this->assertEqual(
+            $this->ShortCode->validationErrors['max-character-per-sms'][0],
+            'The valid value are only 70, 140 and 160.');
     }
 
 }

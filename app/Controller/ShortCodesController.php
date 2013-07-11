@@ -1,8 +1,8 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ShortCode', 'Model');
 App::uses('Template', 'Model');
+
 
 class ShortCodesController extends AppController
 {
@@ -62,9 +62,7 @@ class ShortCodesController extends AppController
                 );
             }
         }
-        $countryOptions = $this->PhoneNumber->getCountries();
-        $errorTemplateOptions = $this->Template->getTemplateOptions('unmatching-keyword');
-        $this->set(compact('errorTemplateOptions', 'countryOptions'));
+        $this->setOptions();
     }
     
     
@@ -96,11 +94,18 @@ class ShortCodesController extends AppController
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
-        $countryOptions = $this->PhoneNumber->getCountries();
-        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
-        $this->set(compact('errorTemplateOptions', 'countryOptions'));
+        $this->setOptions();
     }
     
+    protected function setOptions()
+    {
+        $countryOptions = $this->PhoneNumber->getCountries();
+        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
+        $maxCharacterPerSmsOptions = array_combine(
+            $this->ShortCode->maxCharacterPerSmsOptions, 
+            $this->ShortCode->maxCharacterPerSmsOptions);
+        $this->set(compact('errorTemplateOptions', 'countryOptions', 'maxCharacterPerSmsOptions'));
+    }
     
     public function delete()
     {
