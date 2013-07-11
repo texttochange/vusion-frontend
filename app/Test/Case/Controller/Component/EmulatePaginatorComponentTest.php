@@ -54,6 +54,14 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
 		$this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['page'], 1);
 		$this->assertEquals($results, array(1,2,3,4,5,6,7,8,9,10,11,12));
 		
+		# limit set to 10 records per page
+		$Controller->request->params['named'] = array('page' => '2');
+		$Controller->EmulatePaginator->settings = array('limit' => '10', 'page' => '2','maxLimit' => 10, 'paramType' => 'named');
+        $results = $Controller->EmulatePaginator->paginate($programs);
+		$this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['page'], 2);
+        $this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['pageCount'], 2);
+		$this->assertEquals($results, array(11,12));
+		
 		# test limit records
 		$Controller->request->params['named'] = array();
 		$Controller->EmulatePaginator->settings = array('limit' => '1', 'page' => '1','maxLimit' => 10, 'paramType' => 'named');

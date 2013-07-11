@@ -18,21 +18,23 @@ class EmulatePaginatorComponent extends Component {
         parent::__construct($collection, $settings);
 	}
     
-    public function paginate($array)
+    public function paginate($paginateArray)
     {
-        if (!is_array($array)) {
-			throw new MissingModelException($array);
+        if (!is_array($paginateArray)) {
+			throw new MissingModelException($paginateArray);
 		}
 		
 		$object = $this->Controller->uses[0];
-		
-		$results = $array;
-		
+		$options = array();
+		$params = $this->Controller->request->params;		
 		$limit = (int)$this->settings['limit'];
-		$page = (int)$this->settings['page'];
+		$page = $options['page'] = (isset($params['named']['page'])) ? (int)$params['named']['page'] : 1;		
 		$order = null;
-		$count =  count($results);
+		$count =  count($paginateArray);
 		$pageCount = intVal(ceil($count / $limit));
+		$page_offset = ($page - 1) * $limit;
+		
+		$results = array_slice($paginateArray, $page_offset, $limit);
 
 		$paging = array(
 			'page' => $page,
@@ -43,8 +45,11 @@ class EmulatePaginatorComponent extends Component {
 			'pageCount' => $pageCount,
 			'order' => $order,
 			'limit' => $limit,
+			'options' => $options,
 			'paramType' => $this->settings['paramType']
 		);
+
+		# Use pagintor helper in the view to display our results
 		if (!isset($this->Controller->request['paging'])) {
 			$this->Controller->request['paging'] = array();
 		}
@@ -52,7 +57,12 @@ class EmulatePaginatorComponent extends Component {
 			(array)$this->Controller->request['paging'],
 			array($object => $paging)
 		);
-			
+
+		if (!in_array('Paginator', $this->Controller->helpers) &&
+			!array_key_exists('Paginator', $this->Controller->helpers))
+		{
+			$this->Controller->helpers[] = 'Paginator';
+		}
         return $results;
     }    
     

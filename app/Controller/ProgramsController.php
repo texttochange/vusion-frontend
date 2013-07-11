@@ -108,7 +108,13 @@ class ProgramsController extends AppController
             $this->paginate['conditions'] = $nameCondition;
         }
 
-        $programs    =  $this->paginate();
+        $programs    =  $this->Program->find('all', array(
+            'conditions' => $nameCondition,
+            'order' => array(
+                'Program.created' => 'desc'
+                ))
+            );
+        //$programs    =  $this->paginate();
         $allPrograms = $this->Program->find('all');
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']))
@@ -169,7 +175,9 @@ class ProgramsController extends AppController
                 'order'=> array('timestamp' => 'DESC'))));
         
         # paginate using EmulatePaginator
-        $this->EmulatePaginator->paginate($programs);
+        $this->EmulatePaginator->settings['limit'] = 10;
+        $programs = $this->EmulatePaginator->paginate($programs);
+        
         $this->set(compact('programs', 'isProgramEdit'));
     }
     
