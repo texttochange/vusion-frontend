@@ -3,10 +3,15 @@ App::uses('Component', 'Controller');
 App::uses('Program', 'Model');
 
 class StatsComponent extends Component {
-
-	public function getProgramStats($program)
+	
+	public function getRedis()
+    {
+        $redis = new Redis();
+        $redis->connect('127.0.0.1');
+        return $redis;
+    }
+	protected function _getProgramStats($program)
 	{
-		
 		$database           = $program['Program']['database'];
 		$tempParticipant = new Participant(array('database' => $database));                
 		$activeParticipantCount = $tempParticipant->find(
@@ -24,10 +29,6 @@ class StatsComponent extends Component {
 				'conditions' => array('message-direction' => 'incoming'))
 			);
 		
-		//$currentMonthReceivedMessagesCount = $tempHistory->find(
-		//	'count',array(
-		//		'conditions' => array('message-direction' => 'incoming',))
-		//	);
 		$AllSentMessagesCount = $tempHistory->find(
 			'count',array(
 				'conditions' => array('message-direction' => 'outgoing'))
@@ -43,17 +44,36 @@ class StatsComponent extends Component {
 				'conditions' => array('date-time' => $now)
 				));
 		$scheduleCount = $tempSchedule->find('count');
-		//$stats = array(
-		$program['Program']['active-participant-count'] = $activeParticipantCount;
-		$program['Program']['participant-count'] = $participantCount; 
-		$program['Program']['all-received-messages-count'] = $AllReceivedMessagesCount;
-		//array_values($currentMonthReceivedMessagesCount),
-		$program['Program']['all-sent-messages-count'] = $AllSentMessagesCount;
-		$program['Program']['history-count'] = $historyCount;
-		$program['Program']['today-schedule-count'] = $todayScheduleCount;
-		$program['Program']['schedule-count'] = $scheduleCount;
-		return $program;
 		
+		$programStats = array(
+			'active-participant-count' => $activeParticipantCount,
+			'participant-count' => $participantCount,
+			'all-received-messages-count'=> $AllReceivedMessagesCount,
+			'all-sent-messages-count' => $AllSentMessagesCount,
+			'history-count' => $historyCount,
+			'today-schedule-count' => $todayScheduleCount,
+			'schedule-count' => $scheduleCount);
+		
+		return $programStats;
+	}
+	
+	public function getProgramStats($program)
+	{
+		$database           = $program['Program']['database'];
+		$redis = $this->getRedis();
+		$statsKey = 'vusion:programs:'.$database.':stats';
+		
+		$stats = $redis->get($statsKey);
+		
+		if($redis->strlen($statsKey) > 0){
+			$programStats = (array)json_decode($stats);
+		}else{
+			$programStats = $this->_getProgramStats($program);
+			$redis->setex($statsKey, 6,json_encode($programStats));
+		}
+		
+		$program['Program']['stats'] = $programStats;
+		return $program;
 	}
 }
 ?>

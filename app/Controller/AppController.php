@@ -136,6 +136,7 @@ class AppController extends Controller
             $programLogs = array();
         
             $logs = $redis->zRange($program.':logs', -5, -1, true);
+            
             foreach ($logs as $key => $value) {
                 $programLogs[] = $key;
             }
