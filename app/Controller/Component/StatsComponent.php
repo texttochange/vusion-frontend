@@ -71,8 +71,7 @@ class StatsComponent extends Component {
 			$programStats = $this->_getProgramStats($program);
 			$redis->setex($statsKey, 6,json_encode($programStats));
 		}
-		
-		$program['Program']['stats'] = $programStats;
+		ie	
 		return $program;
 	}
 }
