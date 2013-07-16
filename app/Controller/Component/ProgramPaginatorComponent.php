@@ -2,7 +2,7 @@
 App::uses('Component', 'Controller');
 App::uses('ShortCode', 'Model');
 
-class EmulatePaginatorComponent extends Component {
+class ProgramPaginatorComponent extends Component {
     
     var $settings = array(
 		'page' => 1,

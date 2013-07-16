@@ -3,16 +3,16 @@ App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
-App::uses('EmulatePaginatorComponent', 'Controller/Component');
+App::uses('ProgramPaginatorComponent', 'Controller/Component');
 
-class TestEmulatePaginatorComponentController extends Controller {
-    public $components = array('EmulatePaginator');
+class TestProgramPaginatorComponentController extends Controller {
+    public $components = array('ProgramPaginator');
 }
 
 
-class EmulatePaginatorComponentTest extends CakeTestCase {
+class ProgramPaginatorComponentTest extends CakeTestCase {
 
-    public $EmulatePaginatorComponent = null;
+    public $ProgramPaginatorComponent = null;
     public $Controller = null;
     public $fixtures = array('app.program', 'app.user', 'app.programsUser');
 
@@ -20,7 +20,7 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
     public function setUp() 
     {
         parent::setUp();
-        $this->EmulatePaginator = new EmulatePaginatorComponent($this->getMock('ComponentCollection'), array());
+        $this->ProgramPaginator = new ProgramPaginatorComponent($this->getMock('ComponentCollection'), array());
         $this->request = new CakeRequest('programs/index');
 		$this->request->params['pass'] = $this->request->params['named'] = array();
         $this->Controller = new Controller($this->request);
@@ -29,14 +29,14 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
 
     public function tearDown() {
         parent::tearDown();
-        unset($this->EmulatePaginatorComponent);
+        unset($this->ProgramPaginatorComponent);
         unset($this->Controller);
     }
     
     
     public function testPaginate()
     {
-        $Controller = new TestEmulatePaginatorComponentController($this->request);
+        $Controller = new TestProgramPaginatorComponentController($this->request);
 		$Controller->uses = array('PaginatorControllerPrograms');
         $Controller->request->params['pass'] = array('1');
 		$Controller->request->query = array();
@@ -45,27 +45,27 @@ class EmulatePaginatorComponentTest extends CakeTestCase {
         $programs = array(1,2,3,4,5,6,7,8,9,10,11,12);
         
         # test returned results
-        $results = $Controller->EmulatePaginator->paginate($programs);
+        $results = $Controller->ProgramPaginator->paginate($programs);
         $this->assertEqual($results, array(1,2,3,4,5,6,7,8,9,10,11,12));
         
         # test paging
         $Controller->request->params['named'] = array('page' => '1');
-        $results = $Controller->EmulatePaginator->paginate($programs);
+        $results = $Controller->ProgramPaginator->paginate($programs);
 		$this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['page'], 1);
 		$this->assertEquals($results, array(1,2,3,4,5,6,7,8,9,10,11,12));
 		
 		# limit set to 10 records per page
 		$Controller->request->params['named'] = array('page' => '2');
-		$Controller->EmulatePaginator->settings = array('limit' => '10', 'page' => '2','maxLimit' => 10, 'paramType' => 'named');
-        $results = $Controller->EmulatePaginator->paginate($programs);
+		$Controller->ProgramPaginator->settings = array('limit' => '10', 'page' => '2','maxLimit' => 10, 'paramType' => 'named');
+        $results = $Controller->ProgramPaginator->paginate($programs);
 		$this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['page'], 2);
         $this->assertEquals($Controller->params['paging']['PaginatorControllerPrograms']['pageCount'], 2);
 		$this->assertEquals($results, array(11,12));
 		
 		# test limit records
 		$Controller->request->params['named'] = array();
-		$Controller->EmulatePaginator->settings = array('limit' => '1', 'page' => '1','maxLimit' => 10, 'paramType' => 'named');
-        $results = $Controller->EmulatePaginator->paginate($programs);
+		$Controller->ProgramPaginator->settings = array('limit' => '1', 'page' => '1','maxLimit' => 10, 'paramType' => 'named');
+        $results = $Controller->ProgramPaginator->paginate($programs);
         $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['limit'], 1);
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['page'], 1);
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['pageCount'], 12);

@@ -14,7 +14,7 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'EmulatePaginator');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
     public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
     var $uses = array('Program', 'Group');
     var $paginate = array(
@@ -92,7 +92,7 @@ class ProgramsController extends AppController
         
         $conditions = $this->_getConditions();
 
-        $nameCondition = $this->EmulatePaginator->getNameSqlCondition($conditions);
+        $nameCondition = $this->ProgramPaginator->getNameSqlCondition($conditions);
         
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
             $programs = $this->Program->find('authorized', array(
@@ -130,7 +130,7 @@ class ProgramsController extends AppController
         $filteredPrograms = array();
 
         foreach($programsList as &$program) {
-            $programDetails = $this->EmulatePaginator->getProgramDetails($program);
+            $programDetails = $this->ProgramPaginator->getProgramDetails($program);
             
             $program = array_merge($program, $programDetails['program']);
 
@@ -153,7 +153,7 @@ class ProgramsController extends AppController
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
             foreach($programs as &$program) {
-                $details = $this->EmulatePaginator->getProgramDetails($program);
+                $details = $this->ProgramPaginator->getProgramDetails($program);
                 $program = array_merge($program, $details['program']);            
             }
             foreach ($programsList as $listedProgram) {
@@ -171,9 +171,9 @@ class ProgramsController extends AppController
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
-        # paginate using EmulatePaginator
-        $this->EmulatePaginator->settings['limit'] = 10;
-        $programs = $this->EmulatePaginator->paginate($programs);
+        # paginate using ProgramPaginator
+        $this->ProgramPaginator->settings['limit'] = 10;
+        $programs = $this->ProgramPaginator->paginate($programs);
         
         $this->set(compact('programs', 'isProgramEdit'));
     }
