@@ -217,21 +217,24 @@ class Program extends AppModel
                             )
                         )
                     );
-                $query['conditions'] = array(
-                    'ProgramUser.user_id' => $query['user_id']
-                    );
+                if (empty($query['conditions']))
+                    $query['conditions'] = array();
+                    $query['conditions'] = array_merge(
+                            $query['conditions'],array(
+                        'ProgramUser.user_id' => $query['user_id']
+                        ));
                 if (!empty($query['program_url'])) {
                     $query['conditions'] = array_merge(
                         $query['conditions'],
                         array('Program.url' => $query['program_url'])
                     ); 
                 }
-            } else {
-                //TODO DRY it!
-                if (!empty($query['program_url'])) {
-                    $query['conditions'] = array('Program.url' => $query['program_url']);
-                }
+        } else {
+            //TODO DRY it!
+            if (!empty($query['program_url'])) {
+                $query['conditions'] = array('Program.url' => $query['program_url']);
             }
+        }
         return $query;
     }
     

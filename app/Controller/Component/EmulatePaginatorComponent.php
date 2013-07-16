@@ -1,5 +1,6 @@
 <?php
 App::uses('Component', 'Controller');
+App::uses('ShortCode', 'Model');
 
 class EmulatePaginatorComponent extends Component {
     
@@ -16,6 +17,17 @@ class EmulatePaginatorComponent extends Component {
 	    $settings = array_merge($this->settings, (array)$settings);
 	    $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
+
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
+        $this->ShortCode  = new ShortCode($options);
 	}
     
     public function paginate($paginateArray)
@@ -64,6 +76,92 @@ class EmulatePaginatorComponent extends Component {
 			$this->Controller->helpers[] = 'Paginator';
 		}
         return $results;
-    }    
+    }
+
+
+    public function getProgramDetails($programData)
+    {
+        $database           = $programData['Program']['database'];
+        $tempProgramSetting = new ProgramSetting(array('database' => $database));
+        $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+
+        if (isset($shortcode[0]['ProgramSetting']['value'])) {
+            $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
+            $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
+        }
+
+        if ($this->params['ext']!='json') {
+            $tempParticipant                             = new Participant(array('database' => $database));
+            $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
+            $tempHistory                                 = new History(array('database' => $database));
+            $programData['Program']['history-count']     = $tempHistory->find('count');
+            $tempSchedule                                = new Schedule(array('database' => $database));
+            $programData['Program']['schedule-count']    = $tempSchedule->find('count');
+            
+            $programDetails = array(
+                'program' =>  $programData,
+                'shortcode' => (isset($code)) ? $code : array()
+                );
+        }
+
+        return $programDetails;
+    }
+    
+    
+    public function getNameSqlCondition($conditions)
+    {
+        if (empty($conditions))
+            return array();
+        
+        $result = array();
+        foreach ($conditions as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, $this->getNameSqlCondition($value));
+            } else {
+                if ($key == 'name LIKE' or $key == 'name') {
+                    array_push($result, $conditions);
+                }
+            }
+        }
+        if (count($result) > 1) {
+            $newResult['OR'] = $result;
+            $result = $newResult;
+        }
+        return $result;
+    }
+    
+    /*
+    public function getProgramsList($conditions)
+    {
+        $nameCondition = $this->getNameSqlCondition($conditions);
+        if (isset($conditions['$or']) and !isset($nameCondition['OR'])) {
+            $programsList = $this->Program->find('all', array(
+                'conditions' => $nameCondition,
+                'order' => array(
+                    'Program.created' => 'desc'
+                    ))
+                );
+        } else {
+            $programsList =  $this->Program->find('all');
+        }
+        return $programsList;
+    }
+    
+    
+    public function getPrograms($conditions)
+    {
+        $nameCondition = $this->getNameSqlCondition($conditions);
+        if (isset($conditions['$or']) and !isset($nameCondition['OR'])) {
+            $programs = $this->Program->find('all', array(
+                'conditions' => $nameCondition,
+                'order' => array(
+                    'Program.created' => 'desc'
+                    ))
+                );
+        } else {
+            $programs =  $this->Program->find('all');
+        }
+        return $programs;
+    }*/
     
 }

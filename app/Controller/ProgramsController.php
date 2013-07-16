@@ -88,34 +88,31 @@ class ProgramsController extends AppController
         
         $this->Program->recursive = -1;
         
-        $user = $this->Auth->user();
-        
-        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-           $this->paginate = array(
-                'authorized',
-                'specific_program_access' => 'true',
-                'user_id' => $user['id'],
-                );
-        }
+        $user = $this->Auth->user();   
         
         $conditions = $this->_getConditions();
-        $nameCondition = array();
-        if (isset($conditions)) {
-            $nameCondition = $this->_getNameSqlCondition($conditions);
-        }
 
-        if (isset($nameCondition) and $nameCondition != array()) {
-            $this->paginate['conditions'] = $nameCondition;
+        $nameCondition = $this->EmulatePaginator->getNameSqlCondition($conditions);
+        
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
+            $programs = $this->Program->find('authorized', array(
+               'specific_program_access' => 'true',
+               'user_id' => $user['id'],
+               'conditions' => $nameCondition));
+            
+            $allPrograms = $this->Program->find('authorized', array(
+               'specific_program_access' => 'true',
+               'user_id' => $user['id']));
+        } else {
+            $programs    =  $this->Program->find('all', array(
+                'conditions' => $nameCondition,
+                'order' => array(
+                    'Program.created' => 'desc'
+                    ))
+                );
+            
+            $allPrograms = $this->Program->find('all');
         }
-
-        $programs    =  $this->Program->find('all', array(
-            'conditions' => $nameCondition,
-            'order' => array(
-                'Program.created' => 'desc'
-                ))
-            );
-        //$programs    =  $this->paginate();
-        $allPrograms = $this->Program->find('all');
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']))
             $programsList =  $allPrograms;
@@ -133,7 +130,7 @@ class ProgramsController extends AppController
         $filteredPrograms = array();
 
         foreach($programsList as &$program) {
-            $programDetails = $this->_getProgramDetails($program);
+            $programDetails = $this->EmulatePaginator->getProgramDetails($program);
             
             $program = array_merge($program, $programDetails['program']);
 
@@ -156,7 +153,7 @@ class ProgramsController extends AppController
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
             foreach($programs as &$program) {
-                $details = $this->_getProgramDetails($program);
+                $details = $this->EmulatePaginator->getProgramDetails($program);
                 $program = array_merge($program, $details['program']);            
             }
             foreach ($programsList as $listedProgram) {
@@ -179,55 +176,6 @@ class ProgramsController extends AppController
         $programs = $this->EmulatePaginator->paginate($programs);
         
         $this->set(compact('programs', 'isProgramEdit'));
-    }
-    
-
-    protected function _getProgramDetails($programData)
-    {
-        $database           = $programData['Program']['database'];
-        $tempProgramSetting = new ProgramSetting(array('database' => $database));
-        $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
-
-        if (isset($shortcode[0]['ProgramSetting']['value'])) {
-            $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-            $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
-        }
-
-        if ($this->params['ext']!='json') {
-            $tempParticipant                             = new Participant(array('database' => $database));
-            $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
-            $tempHistory                                 = new History(array('database' => $database));
-            $programData['Program']['history-count']     = $tempHistory->find('count');
-            $tempSchedule                                = new Schedule(array('database' => $database));
-            $programData['Program']['schedule-count']    = $tempSchedule->find('count');
-            
-            $programDetails = array(
-                'program' =>  $programData,
-                'shortcode' => (isset($code)) ? $code : array()
-                );
-        }
-
-        return $programDetails;
-    }
-    
-    
-    protected function _getNameSqlCondition($conditions)
-    {
-        $result = array();
-        foreach ($conditions as $key => $value) {
-            if (is_array($value)) {
-                $result = array_merge($result, $this->_getNameSqlCondition($value));
-            } else {
-                if ($key == 'name LIKE' or $key == 'name') {
-                    array_push($result, $conditions);
-                }
-            }
-        }
-        if (count($result) > 1) {
-            $newResult['OR'] = $result;
-            $result = $newResult;
-        }
-        return $result;
     }
     
     
