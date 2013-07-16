@@ -121,7 +121,7 @@
         echo "&nbsp";
         echo $this->Form->select('predefined-message',
             $options,
-            array('id' => 'predefined-message', 'empty' => 'Select one...')
+            array('id' => 'predefined-message', 'empty' => __('Select one...'))
             );
         $this->Js->get('#predefined-message')->event('change','addPredefinedContent();');
     }
