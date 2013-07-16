@@ -76,9 +76,9 @@
 	            <th class="phone"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="date-time"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="date-time"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programDetails['url']))); ?></th> 
-	            <th class="status"><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="profile"><?php echo $this->Paginator->sort('labels', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', 'Enrolled', array('url'=> array('program' => $programDetails['url']))); ?></th> 
+	            <th class="status"><?php echo $this->Paginator->sort('tags', 'Tags', array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="profile"><?php echo $this->Paginator->sort('profile','Labels', array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="action" class="actions"><?php echo __('Actions');?></th>
 	        </tr>
 	      </thead>	      
