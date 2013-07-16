@@ -73,13 +73,10 @@ class AppController extends Controller
         if (isset($programUrl)) {            
             $currentProgramData = $this->_getCurrentProgramData();
 
-            $redis = new Redis();
-            $redis->connect('127.0.0.1');
-            
-            $hasProgramLogs = $this->_hasProgramLogs($redis,$programUrl);
-            if ($this->_hasProgramLogs($redis,$programUrl))
-                $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
-            
+            $hasProgramLogs = $this->_hasProgramLogs($this->redis, $programUrl);
+            if ($this->_hasProgramLogs($this->redis, $programUrl)) {
+                $programLogsUpdates = $this->_processProgramLogs($this->redis, $programUrl);
+            }
             $this->set(compact('currentProgramData', 'hasProgramLogs', 'programLogsUpdates'));
         }
         $this->set(compact('programDetails', 'isAdmin', 'countryIndexedByPrefix'));
@@ -120,6 +117,19 @@ class AppController extends Controller
                     $this->Session->write($this->params['program'].'_timezone', null);
             }
         }
+        
+        $this->redis = new Redis()
+        if (Config::check('vusion.redis.host')) {
+            $redisHost = Config::read('vusion.redis.host');
+        } else {
+            $redisHost = '127.0.0.1';
+        } 
+        if (Config::check('vusion.redis.port')) {
+            $redisPort = Config::read('vusion.redis.port');
+        } else {
+            $redisPort = '6379';
+        }
+        $this->redis->connect($redisHost, $redisPort);
     }
     
     protected function _hasProgramLogs($redis,$program)
