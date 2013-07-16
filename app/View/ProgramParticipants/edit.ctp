@@ -45,7 +45,7 @@
 	            echo $this->Form->input('enrolled', array('options'=>$options,
 	                'type'=>'select',
 	                'multiple'=>true,
-	                'label'=>'Enrolled In',
+	                'label'=>__('Enrolled In'),
 	                'selected'=>$selected,
                     'style'=>'margin-bottom:0px'
                     ));
