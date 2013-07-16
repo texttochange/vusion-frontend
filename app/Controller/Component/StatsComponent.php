@@ -1,8 +1,10 @@
 <?php
 App::uses('Component', 'Controller');
 App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 class StatsComponent extends Component {
+	
 	
 	public function getRedis()
     {
@@ -13,6 +15,9 @@ class StatsComponent extends Component {
 	protected function _getProgramStats($program)
 	{
 		$database           = $program['Program']['database'];
+		$this->ProgramSetting = new ProgramSetting(array('database' => $database));
+		$programTimeNow = $this->ProgramSetting->getProgramTimeNow();
+		
 		$tempParticipant = new Participant(array('database' => $database));                
 		$activeParticipantCount = $tempParticipant->find(
 			'count', array(
@@ -23,13 +28,55 @@ class StatsComponent extends Component {
 			);
 		$participantCount = $tempParticipant->find('count'); 
 		
-		$tempHistory     = new History(array('database' => $database)); 
-		$AllReceivedMessagesCount = $tempHistory->find(
+		$tempSchedule = new Schedule(array('database' => $database));
+		$programTimeToday = $programTimeNow->modify('+1 day');
+		$todayScheduleCount = $tempSchedule->find(
+			'count',array(
+				'conditions' => array(
+					'date-time' => array(
+						'$lt' => $programTimeToday->format(DateTime::ISO8601))
+					)
+				));
+		
+		$scheduleCount = $tempSchedule->find('count');
+		
+		$tempHistory     = new History(array('database' => $database));
+		$programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");		
+		$first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
+		$last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
+		
+		$allReceivedMessagesCount = $tempHistory->find(
 			'count',array(
 				'conditions' => array('message-direction' => 'incoming'))
 			);
 		
-		$AllSentMessagesCount = $tempHistory->find(
+		$currentMonthReceivedMessagesCount = $tempHistory->find(
+			'count',array(
+				'conditions' => array(
+					'timestamp' => array(
+						'$gt' => $first_second,
+						'$lt' => $last_second
+						),
+					'message-direction' => 'incoming'
+					)
+				)
+			);
+		
+		$currentMonthSentMessagesCount = $tempHistory->find(
+			'count',array(
+				'conditions' => array(
+					'timestamp' => array(
+						'$gt' => $first_second,
+						'$lt' => $last_second
+						),
+					'message-direction' => 'outgoing'
+					)
+				)
+			);
+		
+		$totalCurrentMonthMessagesCount = $currentMonthSentMessagesCount + $currentMonthReceivedMessagesCount;
+		
+		$allSentMessagesCount = $tempHistory->find(
 			'count',array(
 				'conditions' => array('message-direction' => 'outgoing'))
 			);
@@ -37,22 +84,19 @@ class StatsComponent extends Component {
 			'count', array(
 				'conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
 		
-		$tempSchedule = new Schedule(array('database' => $database));
-		$now = new DateTime('now');
-		$todayScheduleCount = $tempSchedule->find(
-			'count',array(
-				'conditions' => array('date-time' => $now)
-				));
-		$scheduleCount = $tempSchedule->find('count');
-		
 		$programStats = array(
 			'active-participant-count' => $activeParticipantCount,
 			'participant-count' => $participantCount,
-			'all-received-messages-count'=> $AllReceivedMessagesCount,
-			'all-sent-messages-count' => $AllSentMessagesCount,
+			'all-received-messages-count'=> $allReceivedMessagesCount,
+			'current-month-received-messages-count' => $currentMonthReceivedMessagesCount,
+			'all-sent-messages-count' => $allSentMessagesCount,
+			'current-month-sent-messages-count' => $currentMonthSentMessagesCount,
+			'total-current-month-messages-count' => $totalCurrentMonthMessagesCount,
 			'history-count' => $historyCount,
 			'today-schedule-count' => $todayScheduleCount,
-			'schedule-count' => $scheduleCount);
+			'schedule-count' => $scheduleCount,
+			'object-type' => 'program-stats',
+			'model-version'=> '1');
 		
 		return $programStats;
 	}
@@ -71,7 +115,7 @@ class StatsComponent extends Component {
 			$programStats = $this->_getProgramStats($program);
 			$redis->setex($statsKey, 6,json_encode($programStats));
 		}
-		ie	
+		$program['Program']['stats'] = $programStats;
 		return $program;
 	}
 }

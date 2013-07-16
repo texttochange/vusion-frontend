@@ -102,10 +102,8 @@ class ProgramsController extends AppController
                 $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);
             } 
             if ($this->params['ext']!='json') {
-            	
             	$program = $this->Stats->getProgramStats($program);
-            	print_r($program);
-               	$this->set(compact('program'));
+            	$this->set(compact('program'));
             	
             }  
         }

@@ -39,11 +39,11 @@
 				'<b title = "Active participants / Total participants">'.$program['Program']['stats']['active-participant-count'].'/'.
 				$program['Program']['stats']['participant-count'].'</b> '.__(' participant(s)').'<br/>'.
 				'<b title = "Total messages(Total current month)">'.$program['Program']['stats']['history-count'].'('.
-				$program['Program']['stats']['history-count'].') </b>'.__(' total message(s)').'<br/>'.
+				$program['Program']['stats']['total-current-month-messages-count'].') </b>'.__(' total message(s)').'<br/>'.
 				'<b title = "Total received(current month) - Total sent(current month)">'.$program['Program']['stats']['all-received-messages-count'].'('.
-				$program['Program']['stats']['history-count'].') </b>'.__('received').' - <b>'. 
+				$program['Program']['stats']['current-month-received-messages-count'].') </b>'.__('received').' - <b>'. 
 				$program['Program']['stats']['all-sent-messages-count'].'('.
-				$program['Program']['stats']['history-count'].' )</b>'.__(' sent message(s)').'<br/>'.		         
+				$program['Program']['stats']['current-month-sent-messages-count'].')</b>'.__(' sent message(s)').'<br/>'.		         
 				'<b title = "Total schedules(today)">'.$program['Program']['stats']['schedule-count'].'('.
 				$program['Program']['stats']['today-schedule-count'].')</b>'.__(' schedule(s)'),
 				array('class'=>'ttc-program-stats')
