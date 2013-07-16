@@ -102,7 +102,7 @@
 		    echo "&nbsp;"; 
         }
 		?></dd>
-		<dt><?php echo __('Label'); ?></dt>
+		<dt><?php echo __('Labels'); ?></dt>
 		<dd><?php
 		if (count($participant['Participant']['profile']) > 0) {
 	        foreach ($participant['Participant']['profile'] as $profileItem) {
