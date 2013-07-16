@@ -189,15 +189,12 @@ class ProgramsController extends AppController
     protected function _getFilterParameterOptions()
     {
         $shortcodes = $this->ShortCode->getShortCodes();
-        $countriesAndPrefixes = $this->PhoneNumber->getCountriesByPrefixes();
-        foreach ($countriesAndPrefixes as $countryAndPrefix) {
-            $countries[$countryAndPrefix] = $countryAndPrefix;
-        }
+        $countries = $this->ShortCode->getCountriesWithShortCodes();
 
         return array(
             'operator' => $this->Program->filterOperatorOptions,
             'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
-            'country' => $countries
+            'country' => (count($countries)>0? array_combine($countries, $countries) : array())
             );
     }
 

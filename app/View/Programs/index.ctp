@@ -25,6 +25,8 @@
        <!-- Buffer zone -->
     </div>
 	<?php
+	if (preg_grep('/^filter/', array_keys($this->params['url'])) && empty($programs))
+	    echo "No results found.";
 	foreach ($programs as $program): ?>
 
 	<div class='ttc-program-box' title= "<?php echo $program['Program']['name']?>" onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
