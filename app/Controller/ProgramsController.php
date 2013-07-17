@@ -98,7 +98,11 @@ class ProgramsController extends AppController
             $programs = $this->Program->find('authorized', array(
                'specific_program_access' => 'true',
                'user_id' => $user['id'],
-               'conditions' => $nameCondition));
+               'conditions' => $nameCondition,
+                'order' => array(
+                    'Program.created' => 'desc'
+                    )
+                ));
             
             $allPrograms = $this->Program->find('authorized', array(
                'specific_program_access' => 'true',

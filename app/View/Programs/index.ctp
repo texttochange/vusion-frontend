@@ -42,7 +42,7 @@
 		<?php
 		    echo $this->Html->tag(
 		        'div',
-		        $program['Program']['participant-count'].__(' participant(s)').'<br/>'. $program['Program']['history-count'].__(' history(s)').'<br/>'. $program['Program']['schedule-count'].__(' schedule(s)'),
+		        $program['Program']['stats']['participant-count'].__(' participant(s)').'<br/>'. $program['Program']['stats']['history-count'].__(' history(s)').'<br/>'. $program['Program']['stats']['schedule-count'].__(' schedule(s)'),
 		        array('class'=>'ttc-program-stats')
 		        );
 		?>

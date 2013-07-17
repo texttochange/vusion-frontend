@@ -91,12 +91,7 @@ class ProgramPaginatorComponent extends Component {
         }
 
         if ($this->params['ext']!='json') {
-            $tempParticipant                             = new Participant(array('database' => $database));
-            $programData['Program']['participant-count'] = $tempParticipant->find('count'); 
-            $tempHistory                                 = new History(array('database' => $database));
-            $programData['Program']['history-count']     = $tempHistory->find('count');
-            $tempSchedule                                = new Schedule(array('database' => $database));
-            $programData['Program']['schedule-count']    = $tempSchedule->find('count');
+            $programData['Program']['stats'] = $this->_getProgramStats($database);
             
             $programDetails = array(
                 'program' =>  $programData,
@@ -105,6 +100,21 @@ class ProgramPaginatorComponent extends Component {
         }
 
         return $programDetails;
+    }
+    
+    
+    protected function _getProgramStats($database)
+    {
+        $programStats = array();
+        
+        $tempParticipant                   = new Participant(array('database' => $database));
+        $programStats['participant-count'] = $tempParticipant->find('count'); 
+        $tempHistory                       = new History(array('database' => $database));
+        $programStats['history-count']     = $tempHistory->find('count');
+        $tempSchedule                      = new Schedule(array('database' => $database));
+        $programStats['schedule-count']    = $tempSchedule->find('count');
+        
+        return $programStats;
     }
     
     

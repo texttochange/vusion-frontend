@@ -232,7 +232,6 @@ class Program extends AppModel
                     ); 
                 }
         } else {
-            //TODO DRY it!
             if (!empty($query['program_url'])) {
                 $query['conditions'] = array('Program.url' => $query['program_url']);
             }
