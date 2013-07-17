@@ -52,7 +52,7 @@ class ProgramSetting extends MongoModel
                 'message' => 'The sms-limit-type is required'
                 ),
             'validValue' => array(
-                'rule' => array('inList', array('none', 'outgoing-only', 'incoming-outgoing')),
+                'rule' => array('inList', array('none', 'outgoing-only', 'outgoing-incoming')),
                 'message' => 'The type of sms limit is not supported',
                 ),
             'validRequireFields' => array(
@@ -60,7 +60,7 @@ class ProgramSetting extends MongoModel
                     'valueRequireFields', array(
                         'none' => array(),
                         'outgoing-only' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
-                        'outgoing-incoming-outgoing' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
+                        'outgoing-incoming' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
                         )),
                 'message' => 'The sms-limit-type required fields are not present.'
                 ),
