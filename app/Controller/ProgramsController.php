@@ -15,7 +15,7 @@ class ProgramsController extends AppController
 {
 
     var $components = array('RequestHandler');
-    public $helpers = array('Time', 'Js' => array('Jquery'));    
+    var $helpers = array('Time', 'Js' => array('Jquery'));    
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,

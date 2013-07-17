@@ -87,42 +87,14 @@
 							array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
 							array('class' => 'ttc-link-header'));
 			}
-			if (isset($isAdmin) && $isAdmin) {
-					echo $this->Html->link(
-							__('Admin'),
-							array('controller'=>'admin'),
-							array('class'=>'ttc-link-header'));				
-			}
+			echo $this->AclLink->generateButton(
+			    __('Admin'), null, 'Admin', null, array('class'=>'ttc-link-header')); 
 			?>
 			</div> 
 		 </div>    
 		 <div class="status-message">
-		    <table class="status-table" cellpadding="0" cellspacing="0" align="center">
-		    <tr>
-		    <td>
-			<?php 
-			echo $this->Session->flash(); 
-			if (!$this->Session->flash()) {
-					echo $this->Html->tag('div', '', array(
-							'id' => 'flashMessage', 
-							'class' => 'message', 
-							'style' => 'display: none')
-							);
-			}
-			?>
-			</td></tr>
-			<tr>
-			<td>
-			<?php
-			echo $this->Html->tag('div', '', array(
-					'id' => 'connectionState',
-					'class' => 'connection-message',
-					'style' => 'display: none')
-					);			
-			 ?>
-			 </td></tr>
-			 </table>
-			</div>
+		    <?php echo $this->element('status_message'); ?>
+		 </div>
 			<!-- To be refact with all the Controllers and views -->
 			<?php 
 			if (isset($programDetails['name'])) { 

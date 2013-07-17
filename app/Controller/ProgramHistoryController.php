@@ -19,19 +19,18 @@ class ProgramHistoryController extends AppController
     function constructClasses()
     {
         parent::constructClasses();
-        
-        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->History           = new History($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->DialogueHelper    = new DialogueHelper();
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
     }
 
     public function beforeFilter()
     {
         parent::beforeFilter();
         //$this->Auth->allow('*');
+        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->History           = new History($options);
+        $this->Dialogue          = new Dialogue($options);
+        $this->DialogueHelper    = new DialogueHelper();
+        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
     }
 
 

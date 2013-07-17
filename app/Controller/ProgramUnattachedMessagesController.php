@@ -16,17 +16,17 @@ class ProgramUnattachedMessagesController extends AppController
     var $helpers = array('Js' => array('Jquery'), 'Time');
     
     public $uses = array('UnattachedMessage', 'User');
- 
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }
 
 
     public function constructClasses()
     {
         parent::constructClasses();
-        
+    }
+
+ 
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
         $options = array(
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
@@ -40,6 +40,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->PredefinedMessage = new PredefinedMessage($options);
         $this->_instanciateVumiRabbitMQ();
     }
+
 
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));

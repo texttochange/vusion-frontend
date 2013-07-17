@@ -10,17 +10,16 @@ class ShortCodesController extends AppController
     var $helpers    = array('Js' => array('Jquery'));
     var $components = array('PhoneNumber'); 
     
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }
-
-
     public function constructClasses()
     {
         // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
         parent::constructClasses();
-        
+    }
+
+
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
         if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
@@ -33,7 +32,7 @@ class ShortCodesController extends AppController
         $this->ShortCode = new ShortCode($options);
         $this->Template  = new Template($options);
     }
-    
+
     
     public function index()
     {
