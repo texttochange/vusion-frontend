@@ -1,7 +1,7 @@
 <div class="programsettings form width-size">
     <ul class="ttc-actions">		
         <li>
-        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save', 'onclick' => 'document.forms[0].submit()')); ?>
         <span class="actions">
         <?php
         echo $this->Html->link( __('Cancel'), 
