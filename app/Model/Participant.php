@@ -267,13 +267,12 @@ class Participant extends MongoModel
             $this->data['Participant']['session-id'] = $sessionId;
             $tags = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
             $this->data['Participant']['tags'] = $tags;
-            $condition = array('condition' => array('auto-enrollment'=>'all'));
-            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
             if ($autoEnrollDialogues == null)
                 $this->data['Participant']['enrolled'] = array();
             foreach ($autoEnrollDialogues as $autoEnroll) {
                 $this->data['Participant']['enrolled'][] = array(
-                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'dialogue-id' => $autoEnroll['Dialogue']['dialogue-id'],
                     'date-time' => $programNow->format("Y-m-d\TH:i:s")
                     );
             }
@@ -582,7 +581,6 @@ class Participant extends MongoModel
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
-            print_r($this->getID());
             if (!$replaceTagsAndLabels) {
                 $report = array(
                     'phone' => $participant['phone'],
