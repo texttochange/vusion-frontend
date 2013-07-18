@@ -90,8 +90,8 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	    <td class="action actions">
      	       <?php
     	       $now = new DateTime('now');
-    	       date_timezone_set($now,timezone_open($programDetails['timezone']));      
-    	       $messageDate = new DateTime($unattachedMessage['UnattachedMessage']['fixed-time'], new DateTimeZone($programDetails['timezone']));
+    	       date_timezone_set($now,timezone_open($programDetails['settings']['timezone']));      
+    	       $messageDate = new DateTime($unattachedMessage['UnattachedMessage']['fixed-time'], new DateTimeZone($programDetails['settings']['timezone']));
     	       if ($now < $messageDate){    
     	           echo $this->Html->link(__('Edit'), array('program'=>$programDetails['url'], 'action' => 'edit', $unattachedMessage['UnattachedMessage']['_id']));
     	       } 
