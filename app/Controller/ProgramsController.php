@@ -192,8 +192,15 @@ class ProgramsController extends AppController
 
     protected function _getFilterParameterOptions()
     {
-        $shortcodes = $this->ShortCode->getShortCodes();
-        $countries = $this->ShortCode->getCountriesWithShortCodes();
+        $shortcodes = $countries = array();
+        $codes = $this->ShortCode->find('all');
+        if (!empty($codes)) {
+            foreach ($codes as $code) {
+                $shortcodes[] = $code['ShortCode']['shortcode'];
+                $countries[] = $code['ShortCode']['country'];
+            }
+        }
+        sort($countries);
 
         return array(
             'operator' => $this->Program->filterOperatorOptions,
