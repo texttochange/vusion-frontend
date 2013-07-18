@@ -279,13 +279,13 @@ class Action extends VirtualModel
         if (!isset($data[$field])) {
             return true;
         }
-        if (!is_int($data[$field])) {
+        if (!is_int((int)$data[$field])) {
             return false;
         }
-        if (!(intval($data[$field]) >= 1)) {
-            return false;
+        if (intval($data[$field] >= 1)) {
+            return true;
         }
-        return true;
+        return false;
     }
 
 

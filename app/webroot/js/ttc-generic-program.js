@@ -936,6 +936,12 @@ function configToForm(item, elt, id_prefix, configTree){
                 "elements": []
             }; 
             elt["elements"].push(myelt);
+            if ('add-prefix' in dynamicForm[item]) {
+                id_prefix = id_prefix + '.' + item;
+                if (configTree && item in configTree) {
+                    configTree = configTree[item]
+                }
+            }
         } else {
             var myelt = elt;
         }
