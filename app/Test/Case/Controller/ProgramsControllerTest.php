@@ -52,7 +52,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
-                    'Session' => array('read')
+                    'Session' => array('read'),
+                    'Stats',
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
@@ -107,6 +108,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Auth' => array('user'),
+                    'Stats',
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
