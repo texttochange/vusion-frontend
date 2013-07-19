@@ -55,7 +55,6 @@ class ProgramRequestsController extends AppController
         $programUrl = $this->params['program'];
 
         if ($this->request->is('post')) {
-            //print_r($saveData);
             $this->Request->create();
             if ($this->Request->save($this->request->data)) {
                 $this->_notifyUpdateRegisteredKeywords($programUrl);

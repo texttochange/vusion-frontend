@@ -80,7 +80,6 @@ class ProgramHistoryController extends AppController
     {
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
 
-        //print_r();
         return array(
             'operator' => $this->History->filterOperatorOptions,
             'dialogue' => $dialoguesInteractionsContent,
@@ -182,7 +181,6 @@ class ProgramHistoryController extends AppController
             
             $this->set(compact('fileName'));
         } catch (Exception $e) {
-            print_r($e->getMessage());
             $this->set('errorMessage', $e->getMessage());
         }
     }

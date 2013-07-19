@@ -60,9 +60,7 @@ class Program extends AppModel
     
     public function _findAuthorized($state, $query, $results = array())
     {
-        //print_r($query);
         if ($state == 'before') {
-            //print_r($query);
             return $this->limitedAccessConditions($query);
         }
         return $results;

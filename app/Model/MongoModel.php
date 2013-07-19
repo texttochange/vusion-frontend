@@ -31,8 +31,6 @@ abstract class MongoModel extends Model
 
         $this->defaultFields = array_merge($this->vusionFields, $this->mongoFields);
 
-        //echo "Construct Model -";
-        //print_r($id);
         if ($this->specific) {
             // Get saved company/database name
             if (isset($id['database']) and $id['database']) {

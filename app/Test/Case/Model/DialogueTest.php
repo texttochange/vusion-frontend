@@ -125,7 +125,6 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
 
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
-        //print_r($saveResult);
         $this->assertTrue(!empty($saveResult) && is_array($saveResult));
     
         $result = $this->Dialogue->find('all');
@@ -139,7 +138,6 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['date-time'] = '2013-10-20 20:20:00';
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
-        print_r($saveResult);
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 

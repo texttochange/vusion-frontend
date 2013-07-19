@@ -582,7 +582,6 @@ class Participant extends MongoModel
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
-            print_r($this->getID());
             if (!$replaceTagsAndLabels) {
                 $report = array(
                     'phone' => $participant['phone'],
