@@ -185,4 +185,27 @@ class ScriptMaker
     }
 
 
+    public function getSettings($shortcode='256-8181', $timezone="Africa/Kampala", 
+                                $creditType="none", $creditNumber=null, $creditFromDate=null, $creditToDate=null)
+    {
+        return array(
+            'shortcode' => $shortcode,
+            'timezone' => $timezone,
+            'credit-type' => $creditType,
+            'credit-number' => $creditNumber,
+            'credit-from-date' => $creditFromDate,
+            'credit-to-date' => $creditToDate,
+            );
+    }
+
+
+    public function getCreditStatus($count='10', $status='ok', $since='2013-07-21T10:10:10')
+    {
+        return array(
+            'count' => $count,
+            'manager' => array(
+                'status' => $status,
+                'since' => $since));
+    }
+
 }
