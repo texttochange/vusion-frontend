@@ -218,7 +218,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual("+788601467", $savedParticipant['Participant']['phone']);
     }
-    
+   
     
     public function testSave_auto_enrollment()
     {
@@ -229,7 +229,7 @@ class ParticipantTestCase extends CakeTestCase
         
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-
+       
         $participant = array(
             'phone' => ' 07 ',
             );
@@ -246,7 +246,7 @@ class ParticipantTestCase extends CakeTestCase
         
     }
     
-    
+ 
     public function testAutoEnrollDialogue()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');

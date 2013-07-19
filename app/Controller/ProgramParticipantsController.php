@@ -471,14 +471,13 @@ class ProgramParticipantsController extends AppController
     
     protected function _getAutoEnrollments($programTime)
     {
-        $condition = array('condition' => array('auto-enrollment'=>'all'));
-        $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+        $autoEnrollDialogues = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
         if ($autoEnrollDialogues == null) {
             $enrolled = array();
         } else {
             foreach ($autoEnrollDialogues as $autoEnroll) {
                 $enrolled[] = array(
-                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'dialogue-id' => $autoEnroll['Dialogue']['dialogue-id'],
                     'date-time' => $programTime->format("Y-m-d\TH:i:s")
                     );
             }

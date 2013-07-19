@@ -53,41 +53,46 @@
             </li>
             <?php foreach ($currentProgramData['dialogues'] as $dialogue) { 
                 if ($dialogue['Active']) {
-                    $dialogue = $dialogue['Active'];
+                    //$dialogue = $dialogue['Active'];
+                    $dialogueName = $dialogue['Active']['name'];
+                    $dialogueId = $dialogue['Active']['_id'];
                     $isActive = true;
                 } else {
-                    $dialogue = $dialogue['Draft'];
+                    //$dialogue = $dialogue['Draft'];
+                    $dialogueName = $dialogue['Draft']['name'];
+                    $dialogueId = $dialogue['Draft']['_id'];
                     $isActive = false;
                 }
-                echo "<li title='".$dialogue['name']."'>";
+                echo "<li title='".$dialogueName."'>";
                 $dialogueLinkName = $this->Text->truncate(
-                    $dialogue['name'],
+                    $dialogueName,
                     18,
                     array('ellipsis' => '...',
                         'exact' => true
                         ));
                 echo $this->AclLink->generateLink($dialogueLinkName, 
-                    $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
+                    $programDetails['url'], 'programDialogues', 'edit', $dialogueId);
                 ?>
                 <ul>
                     <?php if ($isActive) {?>
                     <li>
                     <?php
                     echo $this->AclLink->generateLink(__('Active'), 
-                        $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
+                        $programDetails['url'], 'programDialogues', 'edit', $dialogue['Active']['_id']);
                     ?>
                     </li>
-                    <?php } else {?>
+                    <?php }
+                    if ($dialogue['Draft']) {?>
                     <li>
                     <?php
                     echo $this->AclLink->generateLink(__('Draft'),
-                        $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
+                        $programDetails['url'], 'programDialogues', 'edit', $dialogue['Draft']['_id']);
                     ?>
                     <ul>
                         <li>
                         <?php 
                         echo $this->AclLink->generateLink(__('Activate'),
-                            $programDetails['url'], 'programDialogues', 'edit', $dialogue['_id']);
+                            $programDetails['url'], 'programDialogues', 'activate', $dialogue['Draft']['_id']);
                         ?>
                         </li>
                     </ul>
