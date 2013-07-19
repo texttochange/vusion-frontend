@@ -986,7 +986,7 @@ function configToForm(item, elt, id_prefix, configTree){
         var checkedRadio = {};
         var checkedItem;
         //In order to support old model for action that used type-answer-action
-        if (item == 'type-action' && 'type-answer-action' in configTree) {
+        if (item == 'type-action' && configTree && 'type-answer-action' in configTree) {
              configTree['type-action'] = configTree['type-answer-action'];
         }
         $.each(dynamicForm[item]['options'],function(k,v) {
