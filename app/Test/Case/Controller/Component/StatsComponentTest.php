@@ -75,18 +75,18 @@ class TestStatsComponent extends CakeTestCase {
 		$key = "vusion:programs:test1:stats";
 		
 		$this->redis->set($key, json_encode($Stats));
-		$programTestStats = $this->StatsComponent->getProgramStats($program);
+		$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
 		
 		$this->assertEqual(
 			$Stats,
-			$programTestStats['Program']['stats']);
+			$programTestStats);
 	}
 	
-	public function testGetStats_fail()
+	public function testGetStats_noStatsInRedis()
 	{
 		$key = "vusion:programs:test1:stats";
 		$stats = $this->redis->get($key);
-		print_r($stats);
+
 		$this->assertEqual(
 			null,
 			$stats);

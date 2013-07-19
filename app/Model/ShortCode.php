@@ -172,5 +172,25 @@ class ShortCode extends MongoModel
 
         return $result < 1;   
     }
+    
+    public function getShortCodes()
+    {
+        $results = $this->find('all');
+        $shortcodes = array();
+        foreach ($results as $result) {
+            $shortcodes[] = $result['ShortCode']['shortcode'];
+        }
+        return $shortcodes;
+    }
+    
+    public function getCountriesWithShortCodes()
+    {
+        $results = $this->find('all');
+        $countries = array();
+        foreach ($results as $result) {
+            $countries[] = $result['ShortCode']['country'];
+        }
+        return $countries;
+    }
 
 }

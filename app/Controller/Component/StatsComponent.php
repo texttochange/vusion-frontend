@@ -12,9 +12,8 @@ class StatsComponent extends Component {
         $redis->connect('127.0.0.1');
         return $redis;
     }
-	protected function _getProgramStats($program)
+	protected function _getProgramStats($database)
 	{
-		$database           = $program['Program']['database'];
 		$this->ProgramSetting = new ProgramSetting(array('database' => $database));
 		$programTimeNow = $this->ProgramSetting->getProgramTimeNow();
 		
@@ -99,9 +98,8 @@ class StatsComponent extends Component {
 		return $programStats;
 	}
 	
-	public function getProgramStats($program)
+	public function getProgramStats($database)
 	{
-		$database           = $program['Program']['database'];
 		$redis = $this->getRedis();
 		$statsKey = 'vusion:programs:'.$database.':stats';
 		$stats = $redis->get($statsKey);
@@ -109,11 +107,10 @@ class StatsComponent extends Component {
 		if($redis->strlen($statsKey) > 0){
 			$programStats = (array)json_decode($stats);
 		}else{
-			$programStats = $this->_getProgramStats($program);
+			$programStats = $this->_getProgramStats($database);
 			$redis->setex($statsKey, 6,json_encode($programStats));
 		}
-		$program['Program']['stats'] = $programStats;
-		return $program;
+		return $programStats;
 	}
 }
 ?>
