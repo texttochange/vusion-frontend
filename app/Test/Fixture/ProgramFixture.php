@@ -37,6 +37,14 @@ class ProgramFixture extends CakeTestFixture
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
         ),
+        array(
+            'id' => 3,
+            'name' => 'trial',
+            'url' => 'trial',
+            'database' => 'trial',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+        ),
     );
 
 }

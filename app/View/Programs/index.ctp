@@ -4,22 +4,29 @@
             null,
             'programs',
             'add',
-            array('class' => 'ttc-button', 'style'=>'float:right')); ?>
-    <h3><?php echo __('Programs');?></h3>
-    <div class="paging" style="text-align:right">
-    <?php
-    echo "<span class='ttc-page-count'>";
-    if (isset($this->Paginator)) {
-        echo $this->Paginator->counter(array(
-            'format' => __('{:start} - {:end} of {:count}')
-            ));
-        echo "</span>";
-        echo $this->Paginator->prev('<', null, null, array('class' => 'prev disabled'));
-        echo $this->Paginator->next('>', null, null, array('class' => 'next disabled'));
-    }
+            array('class' => 'ttc-button', 'style'=>'float:right'));
+        echo $this->Html->tag(
+            'span', 
+            __('Filter'), 
+            array('class' => 'ttc-button', 'style'=>'float:right', 'name' => 'add-filter')); 
+        $this->Js->get('[name=add-filter]')->event(
+            'click',
+            '$("#advanced_filter_form").show();
+            createFilter();
+            addStackFilter();');
     ?>
+    <h3><?php echo __('Programs');?></h3>
+    <?php
+	    echo $this->element('filter_box', array(
+	        'controller' => 'programs'));
+	    $this->Js->get('document')->event('ready', '$(".ttc-paging").css("margin-right", "0px");');
+	?>
+    <div style="clear:both">
+       <!-- Buffer zone -->
     </div>
 	<?php
+	if (preg_grep('/^filter/', array_keys($this->params['url'])) && empty($programs))
+	    echo "No results found.";
 	foreach ($programs as $program): ?>
 
 	<div class='ttc-program-box' title= "<?php echo $program['Program']['name']?>" onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
@@ -35,7 +42,7 @@
 		<?php
 		    echo $this->Html->tag(
 		        'div',
-		        $program['Program']['participant-count'].__(' participant(s)').'<br/>'. $program['Program']['history-count'].__(' history(s)').'<br/>'. $program['Program']['schedule-count'].__(' schedule(s)'),
+		        $program['Program']['stats']['participant-count'].__(' participant(s)').'<br/>'. $program['Program']['stats']['history-count'].__(' history(s)').'<br/>'. $program['Program']['stats']['schedule-count'].__(' schedule(s)'),
 		        array('class'=>'ttc-program-stats')
 		        );
 		?>
