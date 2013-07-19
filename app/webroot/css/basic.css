@@ -904,6 +904,7 @@ width: 102px;
 .ttc-paging {
     float: right;
     width: 184px;
+    text-align: right;
 }
 
 .ttc-stack-filter input{
