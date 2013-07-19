@@ -140,38 +140,4 @@ class ProgramPaginatorComponent extends Component {
         return $result;
     }
     
-    /*
-    public function getProgramsList($conditions)
-    {
-        $nameCondition = $this->getNameSqlCondition($conditions);
-        if (isset($conditions['$or']) and !isset($nameCondition['OR'])) {
-            $programsList = $this->Program->find('all', array(
-                'conditions' => $nameCondition,
-                'order' => array(
-                    'Program.created' => 'desc'
-                    ))
-                );
-        } else {
-            $programsList =  $this->Program->find('all');
-        }
-        return $programsList;
-    }
-    
-    
-    public function getPrograms($conditions)
-    {
-        $nameCondition = $this->getNameSqlCondition($conditions);
-        if (isset($conditions['$or']) and !isset($nameCondition['OR'])) {
-            $programs = $this->Program->find('all', array(
-                'conditions' => $nameCondition,
-                'order' => array(
-                    'Program.created' => 'desc'
-                    ))
-                );
-        } else {
-            $programs =  $this->Program->find('all');
-        }
-        return $programs;
-    }*/
-    
 }
