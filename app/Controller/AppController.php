@@ -55,7 +55,8 @@ class AppController extends Controller
         'Js',
         'Time',
         'AclLink',
-        'Text');
+        'Text',
+        'CreditManager');
 
     var $redisProgramPrefix = "vusion:programs"; 
 
@@ -92,7 +93,7 @@ class AppController extends Controller
             if ($this->_hasProgramLogs($this->redis, $programDetails['database'])) {
                 $programLogsUpdates = $this->_processProgramLogs($this->redis, $programDetails['database']);
             }
-            $creditStatus = $this->CreditManager->getStatus($programDetails['database']);
+            $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('programDetails', 'currentProgramData', 'hasProgramLogs', 'programLogsUpdates', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();

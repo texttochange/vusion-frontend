@@ -162,10 +162,10 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-limit-type' => 'outgoing-only',
-            'sms-limit-number' => '2000',
-            'sms-limit-from-date' => '02/12/2013',
-            'sms-limit-to-date' => '03/12/2013',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            'credit-to-date' => '03/12/2013',
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -177,7 +177,7 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-limit-type' => 'none',
+            'credit-type' => 'none',
             );
 
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -188,16 +188,16 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-limit-type' => 'outgoing-only',
-            'sms-limit-number' => '2000',
-            'sms-limit-from-date' => '02/12/2013',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
             );
 
         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
         $this->assertEqual(0, $this->ProgramSetting->find('count'));
         $this->assertEqual(
-            $this->ProgramSetting->validationErrors['sms-limit-type'][0],
-            'The sms-limit-type field with value outgoing-only require the field sms-limit-to-date.');
+            $this->ProgramSetting->validationErrors['credit-type'][0],
+            'The credit-type field with value outgoing-only require the field credit-to-date.');
     }
 
 
@@ -205,16 +205,16 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-limit-type' => 'outgoing-only',
-            'sms-limit-number' => '2000',
-            'sms-limit-from-date' => '02/12/2013',
-            'sms-limit-to-date' => null,
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            'credit-to-date' => null,
             );
 
         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
         $this->assertEqual(0, $this->ProgramSetting->find('count'));
         $this->assertEqual(
-            $this->ProgramSetting->validationErrors['sms-limit-to-date'][0],
+            $this->ProgramSetting->validationErrors['credit-to-date'][0],
             'The format of the date has to be 15/02/2013.');
     }
 
@@ -222,19 +222,19 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-limit-type' => 'outgoing-only',
-            'sms-limit-number' => '2000',
-            'sms-limit-from-date' => '03/12/2013',
-            'sms-limit-to-date' => '02/12/2013',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '03/12/2013',
+            'credit-to-date' => '02/12/2013',
             );
         
         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
         $this->assertEqual(0, $this->ProgramSetting->find('count'));
         $this->assertEqual(
-            $this->ProgramSetting->validationErrors['sms-limit-from-date'][0],
+            $this->ProgramSetting->validationErrors['credit-from-date'][0],
             'This from date has to be before the to date.');
         $this->assertEqual(
-            $this->ProgramSetting->validationErrors['sms-limit-to-date'][0],
+            $this->ProgramSetting->validationErrors['credit-to-date'][0],
             'This to date has to be after the from date.');
     }
 

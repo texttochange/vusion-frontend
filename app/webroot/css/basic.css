@@ -960,11 +960,15 @@ width: 102px;
 	z-index: 100;
 }
 
-.credit-message {
+.credit {
 	clear: both;
 	position: absolute;
 	top: 80px;
 	z-index: 100;
+}
+
+.credit .warning {
+    background: orange;
 }
 
 .ttc-delete-icon {

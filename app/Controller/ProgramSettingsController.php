@@ -134,13 +134,13 @@ class ProgramSettingsController extends AppController
                 $this->request->data = $programSettings;
             }
             ## set a user friendly format
-            if (isset($this->request->data['ProgramSetting']['sms-limit-from-date'])) {
-                $fromDate = new DateTime($this->request->data['ProgramSetting']['sms-limit-from-date']);
-                $this->request->data['ProgramSetting']['sms-limit-from-date'] = $fromDate->format('d/m/Y');
+            if (isset($this->request->data['ProgramSetting']['credit-from-date'])) {
+                $fromDate = new DateTime($this->request->data['ProgramSetting']['credit-from-date']);
+                $this->request->data['ProgramSetting']['credit-from-date'] = $fromDate->format('d/m/Y');
             }
-            if (isset($this->request->data['ProgramSetting']['sms-limit-to-date'])) {
-                $fromDate = new DateTime($this->request->data['ProgramSetting']['sms-limit-to-date']);
-                $this->request->data['ProgramSetting']['sms-limit-to-date'] = $fromDate->format('d/m/Y');
+            if (isset($this->request->data['ProgramSetting']['credit-to-date'])) {
+                $fromDate = new DateTime($this->request->data['ProgramSetting']['credit-to-date']);
+                $this->request->data['ProgramSetting']['credit-to-date'] = $fromDate->format('d/m/Y');
             }
         }
     }

@@ -30,7 +30,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             '',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }
 
 
@@ -45,7 +45,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             '',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }
 
 
@@ -59,8 +59,8 @@ class CreditManagerHelperTest extends CakeTestCase {
         $creditStatus = $this->maker->getCreditStatus($count='60', $status='ok');
         
         $this->assertEqual(
-            'Warning only 40 credits are available for sending message.',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            'Warning only 40 credits are available for sending message(s).',
+            $this->CreditManagerRenderer->getWarningMessage($creditStatus, $settings));
     }
 
 
@@ -78,7 +78,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             'Warning the credits timeframe is ending tomorrow.',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getWarningMessage($creditStatus, $settings));
     }
 
 
@@ -94,7 +94,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             'The program cannot send any message since Fri, Jul 19th 2013, 13:15.',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }
      
 
@@ -110,7 +110,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             'The program cannot send any message since Fri, Jul 19th 2013, 13:15. It is exeeding allowed credit by 100.',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }  
 
 
@@ -129,7 +129,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             'The program cannot send any messages before Sat, Jul 20th 2013, 00:00.',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }
 
 
@@ -145,7 +145,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         
         $this->assertEqual(
             'The program cannot send any messages after Thu, Jul 18th 2013, 00:00.',
-            $this->CreditManagerRenderer->getStatusMessage($creditStatus, $settings));
+            $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }
 
 }

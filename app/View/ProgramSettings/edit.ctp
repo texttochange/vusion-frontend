@@ -148,40 +148,40 @@
                 );
             echo "<div>";
             echo $this->Form->radio(
-                'sms-limit-type',
+                'credit-type',
                 $options,
                 $attributes);
             $displaySmsLimitDetails = 'display:none';
             $disableSmsLimitDetails = true;      
-            if (isset($this->Form->data['ProgramSetting']['sms-limit-type'])) {
-                if (in_array($this->Form->data['ProgramSetting']['sms-limit-type'], array('outgoing-only','outgoing-incoming'))) {
+            if (isset($this->Form->data['ProgramSetting']['credit-type'])) {
+                if (in_array($this->Form->data['ProgramSetting']['credit-type'], array('outgoing-only','outgoing-incoming'))) {
                     $displaySmsLimitDetails  = '';
                     $disableSmsLimitDetails = false;
                 }
             }
-            echo "<fieldset id='sms-limit-details' style='$displaySmsLimitDetails'>";
-            echo $this->Form->input('sms-limit-number', array(
+            echo "<fieldset id='credit-details' style='$displaySmsLimitDetails'>";
+            echo $this->Form->input('credit-number', array(
                 'label' => __('Total limit'),
                 'disabled' => $disableSmsLimitDetails));
-            echo $this->Form->input('sms-limit-from-date', array(
+            echo $this->Form->input('credit-from-date', array(
                 'label' => __('Limit Count From'),
                 'disabled' => $disableSmsLimitDetails));
-            echo $this->Form->input('sms-limit-to-date', array(
+            echo $this->Form->input('credit-to-date', array(
                 'label' => __('Limit Count To'),
                 'disabled' => $disableSmsLimitDetails));
-            $this->Js->get("[name*='sms-limit-type'][type='radio']")->event(
+            $this->Js->get("[name*='credit-type'][type='radio']")->event(
                 'change',
-                "if ($(\"[name*='sms-limit-type'][type='radio']:checked\").val() == 'none') {
-                    $(\"[name*='sms-limit-']:not([type='radio'])\").val(null).prop('disabled', true);
-                    $('#sms-limit-details').hide();
+                "if ($(\"[name*='credit-type'][type='radio']:checked\").val() == 'none') {
+                    $(\"[name*='credit-']:not([type='radio'])\").val(null).prop('disabled', true);
+                    $('#credit-details').hide();
                 } else { 
-                    $(\"[name*='sms-limit-']:not([type='radio'])\").prop('disabled', false);
-                    $('#sms-limit-details').show();
+                    $(\"[name*='credit-']:not([type='radio'])\").prop('disabled', false);
+                    $('#credit-details').show();
                 }");
              $this->Js->get('document')->event(
                  'ready',
-                 '$("[name*=\'sms-limit-from-date\']").datepicker();
-                 $("[name*=\'sms-limit-to-date\']").datepicker();'
+                 '$("[name*=\'credit-from-date\']").datepicker();
+                 $("[name*=\'credit-to-date\']").datepicker();'
                  );
             echo '</div>';
         ?>

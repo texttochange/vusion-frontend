@@ -12,7 +12,6 @@ class ShortCodesController extends AppController
     
     public function constructClasses()
     {
-        // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
         parent::constructClasses();
     }
 

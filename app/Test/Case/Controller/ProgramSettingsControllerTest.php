@@ -126,7 +126,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 'shortcode'=>'8282',
                 'international-prefix'=>'256',
                 'timezone'=> 'EAT',
-                'sms-limit-type' => 'none'
+                'credit-type' => 'none'
                 )
             );
             
@@ -154,7 +154,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 'shortcode'=>'8282',
                 'international-prefix'=>'256',
                 'timezone'=> 'EAT',
-                'sms-limit-type' => 'none'
+                'credit-type' => 'none'
                 )
             );
             

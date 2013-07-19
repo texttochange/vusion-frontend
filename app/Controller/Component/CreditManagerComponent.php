@@ -47,4 +47,10 @@ class CreditManagerComponent extends Component{
         return (array)json_decode($statusRaw);
     }
 
+    public function getOverview($programDatabase){
+        return array(
+            'count' => $this->getCount($programDatabase),
+            'manager' => $this->getStatus($programDatabase));
+    }
+
 }

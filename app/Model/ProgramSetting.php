@@ -39,59 +39,59 @@ class ProgramSetting extends MongoModel
         'double-matching-answer-feedback',
         'double-optin-error-feedback',
         'request-and-feedback-prioritized',
-        'sms-limit-type',
-        'sms-limit-number',
-        'sms-limit-from-date',
-        'sms-limit-to-date'
+        'credit-type',
+        'credit-number',
+        'credit-from-date',
+        'credit-to-date'
         );
 
     public $validateSettings = array(
-        'sms-limit-type' => array(
+        'credit-type' => array(
             'required' => array(
                 'rule' => 'required',
-                'message' => 'The sms-limit-type is required'
+                'message' => 'The credit-type is required'
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('none', 'outgoing-only', 'outgoing-incoming')),
-                'message' => 'The type of sms limit is not supported',
+                'message' => 'The type of credit is not supported',
                 ),
             'validRequireFields' => array(
                 'rule' => array(
                     'valueRequireFields', array(
                         'none' => array(),
-                        'outgoing-only' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
-                        'outgoing-incoming' => array('sms-limit-number', 'sms-limit-to-date', 'sms-limit-from-date'),
+                        'outgoing-only' => array('credit-number', 'credit-to-date', 'credit-from-date'),
+                        'outgoing-incoming' => array('credit-number', 'credit-to-date', 'credit-from-date'),
                         )),
-                'message' => 'The sms-limit-type required fields are not present.'
+                'message' => 'The credit-type required fields are not present.'
                 ),
             ),
-        'sms-limit-number' => array(
+        'credit-number' => array(
             'validateValue' => array(
                 'rule' => array('custom', '/^\d+$/'),
-                'message' => 'The sms limit can only be an interger.',
+                'message' => 'The number can only be an interger.',
                 'required' => false
                 ),
             ),
-        'sms-limit-from-date' => array(
+        'credit-from-date' => array(
             'validateDate' => array(
                 'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
                 'message' => 'The format of the date has to be 15/02/2013.',
                 'required' => false
                 ),
             'lowerThan' => array(
-                'rule' => array('lowerThan', 'sms-limit-to-date'),
+                'rule' => array('lowerThan', 'credit-to-date'),
                 'message' => 'This from date has to be before the to date.',
                 'required' => false,
                 ),
             ),
-        'sms-limit-to-date' => array(
+        'credit-to-date' => array(
             'validateDate' => array(
                 'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
                 'message' => 'The format of the date has to be 15/02/2013.',
                 'required' => false,
                 ),
             'greaterThan' => array(
-                'rule' => array('greaterThan', 'sms-limit-from-date'),
+                'rule' => array('greaterThan', 'credit-from-date'),
                 'message' => 'This to date has to be after the from date.',
                 'required' => false,
                 ),
@@ -260,15 +260,15 @@ class ProgramSetting extends MongoModel
 
     protected function _runBeforeValidate($settings) 
     {
-        if (!isset($settings['sms-limit-type']) || $settings['sms-limit-type'] == null) {
-            $settings['sms-limit-type'] = 'none';
+        if (!isset($settings['credit-type']) || $settings['credit-type'] == null) {
+            $settings['credit-type'] = 'none';
         }
 
-        if (isset($settings['sms-limit-from-date'])) {
-            $settings['sms-limit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['sms-limit-from-date']);
+        if (isset($settings['credit-from-date'])) {
+            $settings['credit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-from-date']);
         }
-        if (isset($settings['sms-limit-to-date'])) {
-            $settings['sms-limit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['sms-limit-to-date']);
+        if (isset($settings['credit-to-date'])) {
+            $settings['credit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-to-date']);
         }
         return $settings;
     }
