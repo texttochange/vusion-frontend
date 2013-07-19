@@ -39,7 +39,6 @@ class StatsComponent extends Component {
 				));
 		
 		$scheduleCount = $tempSchedule->find('count');
-		
 		$tempHistory     = new History(array('database' => $database));
 		$programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");		
 		$first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
@@ -97,7 +96,6 @@ class StatsComponent extends Component {
 			'schedule-count' => $scheduleCount,
 			'object-type' => 'program-stats',
 			'model-version'=> '1');
-		
 		return $programStats;
 	}
 	
@@ -106,7 +104,6 @@ class StatsComponent extends Component {
 		$database           = $program['Program']['database'];
 		$redis = $this->getRedis();
 		$statsKey = 'vusion:programs:'.$database.':stats';
-		
 		$stats = $redis->get($statsKey);
 		
 		if($redis->strlen($statsKey) > 0){
