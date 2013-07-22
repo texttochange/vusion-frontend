@@ -1188,5 +1188,6 @@ margin-left: 63px;
 .break ul li a{
 	word-wrap:normal;
 	white-space:normal;
-	width:196px;
+	width:115px;
+	text-align:center;
 }
