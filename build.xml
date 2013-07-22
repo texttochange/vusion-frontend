@@ -263,6 +263,10 @@
 
 
 <target name="init-db" description="init the relational and mongo dbs">
+  <!-- copy for restor a big dataset already present on the test server -->
+  <copy todir="${vusiondir}/app/Test/data/mongoDB/" failonerror="false">
+     <fileset dir="/root/oldprogram"/>
+  </copy>
   <exec dir="${vusiondir}" executable="bash">
      <arg value="./app/Test/data/restore_data.sh"/>
   </exec>
