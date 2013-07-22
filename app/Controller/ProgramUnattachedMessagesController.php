@@ -66,6 +66,8 @@ class ProgramUnattachedMessagesController extends AppController
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
                 $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
                 $status['count-schedule'] = $countSchedule;                
+            } else if (0 < ($countNoCredit = $this->History->countUnattachedMessages($unattachId, array('no-credit', 'no-credit-timeframe')))){
+                $status['count-no-credit'] = $countNoCredit;   
             } else {               
                 $countSent = $this->History->countUnattachedMessages($unattachId);
                 $status['count-sent'] = $countSent;            
