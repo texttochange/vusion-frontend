@@ -128,7 +128,7 @@ class CreditManagerHelperTest extends CakeTestCase {
         $creditStatus = $this->maker->getCreditStatus($count='0', $status='no-credit-timeframe');
         
         $this->assertEqual(
-            'The program cannot send any messages before Sat, Jul 20th 2013, 00:00.',
+            __('The program cannot send any messages before %s.', $now->format('D, M dS Y, 00:00')),
             $this->CreditManagerRenderer->getErrorMessage($creditStatus, $settings));
     }
 
