@@ -139,8 +139,8 @@ class ProgramSettingsController extends AppController
                 $this->request->data['ProgramSetting']['credit-from-date'] = $fromDate->format('d/m/Y');
             }
             if (isset($this->request->data['ProgramSetting']['credit-to-date'])) {
-                $fromDate = new DateTime($this->request->data['ProgramSetting']['credit-to-date']);
-                $this->request->data['ProgramSetting']['credit-to-date'] = $fromDate->format('d/m/Y');
+                $toDate = new DateTime($this->request->data['ProgramSetting']['credit-to-date']);
+                $this->request->data['ProgramSetting']['credit-to-date'] = $toDate->format('d/m/Y');
             }
         }
     }
