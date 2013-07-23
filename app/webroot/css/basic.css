@@ -1185,3 +1185,10 @@ margin-left: 63px;
     color: #003d4c;
 }
 
+
+.break ul li a{
+	word-wrap:normal;
+	white-space:normal;
+	width:115px;
+	text-align:center;
+}
