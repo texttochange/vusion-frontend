@@ -8,7 +8,6 @@ class CreditManagerComponent extends Component{
     public $redisProgramPrefix = null;
 
     public function initialize(Controller $controller) {
-        parent::startup($controller);
         $this->Controller = $controller;
         if (!isset($this->Controller->redis) || $this->Controller->redisProgramPrefix == null) {
             throw new InternalErrorException("The CreditManager need a redis instance from his controller.");
