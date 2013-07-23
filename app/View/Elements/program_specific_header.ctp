@@ -26,10 +26,12 @@
 						'controller' => 'programHome',
 						'action' => 'index'
 						), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));
-		echo  '<l class = "blackets"> (</l>';		
-		$countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
-			        $programDetails['settings']['shortcode'],
-			        $countryIndexedByPrefix);
+		echo  '<l class = "blackets"> (</l>';
+		if (isset($programDetails['settings']['shortcode'])) {
+		    $countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
+		        $programDetails['settings']['shortcode'],
+		        $countryIndexedByPrefix);
+		}
 		if (isset($countryAndShortcode)){
 				echo '<l class ="blackets">'.$countryAndShortcode.'</l>';
 		}else{

@@ -10,6 +10,9 @@ class CreditManagerHelper extends AppHelper {
     public function flash($creditStatus, $settings) 
     {
         $out = false;
+        if (!isset($settings['timezone']) || !isset($settings['shortcode']) || !$creditStatus || $creditStatus['manager']['status']=='none') {
+            return $out;
+        }
 
         if (isset($creditStatus) && isset($settings)) {
             $message = $this->getErrorMessage($creditStatus, $settings);
