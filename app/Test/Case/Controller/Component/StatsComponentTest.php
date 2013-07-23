@@ -4,6 +4,11 @@ App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
 App::uses('StatsComponent', 'Controller/Component');
+App::uses('ScriptMaker', 'Lib');
+App::uses('Participant', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('History', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 
 
@@ -23,7 +28,8 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public $StatsComponent = null;
 	public $Controller = null;
-	
+	public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
+
 	public function setUp()
 	{
 		parent::setUp();
@@ -36,6 +42,15 @@ class TestStatsComponent extends CakeTestCase {
 		$this->Controller->constructClasses();
 		$this->StatsComponent->initialize($this->Controller);
 		$this->redis = $this->Controller->redis;
+		
+		
+		$this->Maker = new ScriptMaker();
+		$options = array('database' => 'testdbprogram');
+		
+		$this->Participant = new Participant($options);
+		$this->Schedule = new Schedule($options);
+		$this->History = new History($options);
+		$this->ProgramSetting = new ProgramSetting($options); 
 	}
 	
 	public function tearDown()
@@ -45,9 +60,14 @@ class TestStatsComponent extends CakeTestCase {
 			$this->redis->delete($key);
 		}
 		
+		$this->dropData();
+		unset($this->StatsComponent);
+		//unset($this->Controller);
+		parent::tearDown();
+		
 	}
 	
-	public function mockStats()
+	public function makeStats()
 	{
 		return array(
 			'active-participant-count' => '2',
@@ -57,7 +77,7 @@ class TestStatsComponent extends CakeTestCase {
 			'all-sent-messages-count' => '2',
 			'current-month-sent-messages-count' => '2',
 			'total-current-month-messages-count' => '2',
-			'history-count' => '2',
+			'history-count' => '1',
 			'today-schedule-count' => '2',
 			'schedule-count' => '2',
 			'object-type' => 'program-stats',
@@ -66,9 +86,16 @@ class TestStatsComponent extends CakeTestCase {
 		
 	}
 	
+	public function dropData()
+	{
+		$this->Participant->deleteAll(true, false);
+		$this->Schedule->deleteAll(true, false);
+		$this->History->deleteAll(true, false);
+	}
+	
 	public function testGetStats()
 	{
-		$Stats = $this->mockStats();
+		$Stats = $this->makeStats();
 		$program = array(
 			'Program'=> array(
 				'database' => 'test1'));
@@ -84,9 +111,41 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function testGetStats_noStatsInRedis()
 	{
-		$key = "vusion:programs:test1:stats";
+		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');    
+		$this->Participant->create();
+		$savedParticipant = $this->Participant->save($this->Maker->getParticipant());
+        $this->Schedule->create('dialogue-schedule');
+        $saveSchedule = $this->Schedule->save(array(
+            'Schedule' => array(
+                'participant-phone' => '+256712747841',
+                'dialogue-id' => 'def456',
+                )
+            )); 
+		$this->History->create('unattach-history');
+        $savedHistory = $this->History->save(array(
+            'participant-phone' => '256712747841',
+            'message-content' => 'Hello everyone!',
+            'timestamp' => '2012-02-08T12:20:43.882854',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered',
+            ));
+        $this->History->create('unattach-history');
+        $savedHistory2 = $this->History->save(array(
+            'participant-phone' => '256712747842',
+            'message-content' => 'Hello everyone!',
+            'timestamp' => '2012-03-08T12:20:43.882854',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered',
+            ));
+        
+		$key = "vusion:programs:testdbprogram:stats";
+		
 		$stats = $this->redis->get($key);
-
+		$programTestStats = $this->StatsComponent->getProgramStats('testdbprogram');
+	
+		$this->assertEqual(
+			null,
+			$stats);
 		$this->assertEqual(
 			null,
 			$stats);

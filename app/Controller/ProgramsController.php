@@ -14,7 +14,7 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
   
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'Stats');
     public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
     var $uses = array('Program', 'Group');
     var $paginate = array(

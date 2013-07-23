@@ -42,15 +42,15 @@
 		<?php	
 			echo $this->Html->tag(
 				'div',				
-				'<b title = "Active participants / Total participants">'.$program['Program']['stats']['active-participant-count'].'/'.
+				'<b title = "Optin / Total participant(s)">'.$program['Program']['stats']['active-participant-count'].'/'.
 				$program['Program']['stats']['participant-count'].'</b> '.__(' participant(s)').'<br/>'.
-				'<b title = "Total messages(Total current month)">'.$program['Program']['stats']['history-count'].'('.
+				'<b title = "Total (total current month) message(s)">'.$program['Program']['stats']['history-count'].'('.
 				$program['Program']['stats']['total-current-month-messages-count'].') </b>'.__(' total message(s)').'<br/>'.
-				'<b title = "Total received(current month) - Total sent(current month)">'.$program['Program']['stats']['all-received-messages-count'].'('.
-				$program['Program']['stats']['current-month-received-messages-count'].') </b>'.__('received').' - <b>'. 
-				$program['Program']['stats']['all-sent-messages-count'].'('.
+				'<b title = "Total (current month) received - Total(current month) sent">'.$program['Program']['stats']['all-received-messages-count'].'('.
+				$program['Program']['stats']['current-month-received-messages-count'].') </b>'.__('received').
+				' - <b title = "Total (current month) received - Total (current month) sent">'.$program['Program']['stats']['all-sent-messages-count'].'('.
 				$program['Program']['stats']['current-month-sent-messages-count'].')</b>'.__(' sent message(s)').'<br/>'.		         
-				'<b title = "Total schedules(today)">'.$program['Program']['stats']['schedule-count'].'('.
+				'<b title = "Total (today) schedule(s)">'.$program['Program']['stats']['schedule-count'].'('.
 				$program['Program']['stats']['today-schedule-count'].')</b>'.__(' schedule(s)'),
 				array('class'=>'ttc-program-stats')
 				);
