@@ -20,7 +20,9 @@ class CreditManagerHelper extends AppHelper {
                 $out = '<div id="credit-status" class="message credit">'.$message.'</div>';
             } else {
                 $message = $this->getWarningMessage($creditStatus, $settings);
-                $out = '<div id="credit-status" class="message credit warning">'.$message.'</div>';
+                if ($message) {
+                    $out = '<div id="credit-status" class="message credit warning">'.$message.'</div>';
+                }
             }
         }
 
