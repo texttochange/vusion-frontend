@@ -167,6 +167,18 @@
     </li>  
     <li>
         <?php
+        echo $this->AclLink->generateLink(__('Dynamic Content'),$programDetails['url'],'programDynamicContents','index');
+        ?>
+        <ul>
+            <li>
+                <?php 
+                     echo $this->AclLink->generateLink(__('Add Dynamic Content'),$programDetails['url'],'programDynamicContents','add');
+                ?>
+            </li>
+        </ul>
+    </li>  
+    <li>
+        <?php
         echo $this->AclLink->generateLink(__('Participants'),$programDetails['url'],'programParticipants','index');
         ?>
         <ul>

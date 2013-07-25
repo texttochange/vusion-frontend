@@ -22,8 +22,8 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th class="direction"><?php echo $this->Paginator->sort('name');?></th>
-			    <th class="responses"><?php echo $this->Paginator->sort('content');?></th>
+			    <th class="direction"><?php echo $this->Paginator->sort(__('name'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="responses"><?php echo $this->Paginator->sort(__('content'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="actions action"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>

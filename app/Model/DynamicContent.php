@@ -2,7 +2,7 @@
 
 App::uses('MongoModel', 'Model');
 
-class PredefinedMessage extends MongoModel
+class DynamicContent extends MongoModel
 {
     var $specific = true;
     var $name = 'DynamicContent';
