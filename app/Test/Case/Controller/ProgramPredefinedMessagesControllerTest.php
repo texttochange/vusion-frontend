@@ -1,6 +1,5 @@
 <?php
 App::uses('ProgramPredefinedMessagesController', 'Controller');
-App::uses('ProgramPredefinedMessages', 'Model');
 
 class TestProgramPredefinedMessagesController extends ProgramPredefinedMessagesController
 {
@@ -126,7 +125,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         $this->PredefinedMessage->create();
         $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
         
-        $this->testAction("/testurl/programPredefinedMessage/index");
+        $this->testAction("/testurl/programPredefinedMessages/index");
         $this->assertEquals(1, count($this->vars['predefinedMessages']));
     }
     
@@ -142,7 +141,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
              )
         );
         $this->testAction(
-            "/testurl/programPredefinedMessage/add", 
+            "/testurl/programPredefinedMessages/add", 
             array(
                 'method' => 'post',
                 'data' => $predefinedMessage
@@ -166,7 +165,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
         
         $this->testAction(
-            "/testurl/programPredefinedMessage/edit/".$savedMessage['PredefinedMessage']['_id'], 
+            "/testurl/programPredefinedMessages/edit/".$savedMessage['PredefinedMessage']['_id'], 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -200,7 +199,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
         
         $this->testAction(
-            "/testurl/programPredefinedMessage/delete/".$savedMessage['PredefinedMessage']['_id']);
+            "/testurl/programPredefinedMessages/delete/".$savedMessage['PredefinedMessage']['_id']);
         $this->assertEquals(0, $this->PredefinedMessage->find('count'));        
     }
     

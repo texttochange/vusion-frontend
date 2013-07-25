@@ -37,7 +37,7 @@ class DynamicContent extends MongoModel
         'value' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please enter a value for this key.'
+                'message' => 'Please enter a value for this dynamic content.'
                 ),
             ),
         );
