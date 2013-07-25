@@ -29,7 +29,7 @@ class TestStatsComponent extends CakeTestCase {
 	public $StatsComponent = null;
 	public $Controller = null;
 	public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
-
+	
 	public function setUp()
 	{
 		parent::setUp();
@@ -95,18 +95,18 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function testGetStats()
 	{
-		$Stats = $this->makeStats();
-		$program = array(
-			'Program'=> array(
-				'database' => 'test1'));
-		$key = "vusion:programs:test1:stats";
-		
-		$this->redis->set($key, json_encode($Stats));
-		$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
-		
-		$this->assertEqual(
-			$Stats,
-			$programTestStats);
+	$Stats = $this->makeStats();
+	$program = array(
+	'Program'=> array(
+	'database' => 'test1'));
+	$key = "vusion:programs:test1:stats";
+	
+	$this->redis->set($key, json_encode($Stats));
+	$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
+	
+	$this->assertEqual(
+	$Stats,
+	$programTestStats);
 	}
 	
 	public function testGetStats_noStatsInRedis()
@@ -142,13 +142,13 @@ class TestStatsComponent extends CakeTestCase {
 		
 		$stats = $this->redis->get($key);
 		$programTestStats = $this->StatsComponent->getProgramStats('testdbprogram');
-	
 		$this->assertEqual(
 			null,
 			$stats);
+		
 		$this->assertEqual(
-			null,
-			$stats);
+			'2',
+			$programTestStats['history-count']);
 	}
 }
 ?>
