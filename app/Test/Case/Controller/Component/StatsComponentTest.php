@@ -62,12 +62,11 @@ class TestStatsComponent extends CakeTestCase {
 		
 		$this->dropData();
 		unset($this->StatsComponent);
-		//unset($this->Controller);
 		parent::tearDown();
 		
 	}
 	
-	public function makeStats()
+	public function mkStats()
 	{
 		return array(
 			'active-participant-count' => '2',
@@ -95,7 +94,7 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function testGetStats()
 	{
-	$Stats = $this->makeStats();
+	$Stats = $this->mkStats();
 	$program = array(
 	'Program'=> array(
 	'database' => 'test1'));

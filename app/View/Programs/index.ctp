@@ -40,20 +40,38 @@
 		if (isset($program['Program']['shortcode']))
 		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
 		<?php	
+			echo '<div class ="ttc-program-stats">';
 			echo $this->Html->tag(
-				'div',				
-				'<b title = "Optin / Total participant(s)">'.$program['Program']['stats']['active-participant-count'].'/'.
-				$program['Program']['stats']['participant-count'].'</b> '.__(' participant(s)').'<br/>'.
-				'<b title = "Total (total current month) message(s)">'.$program['Program']['stats']['history-count'].'('.
-				$program['Program']['stats']['total-current-month-messages-count'].') </b>'.__(' total message(s)').'<br/>'.
-				'<b title = "Total (current month) received - Total(current month) sent">'.$program['Program']['stats']['all-received-messages-count'].'('.
-				$program['Program']['stats']['current-month-received-messages-count'].') </b>'.__('received').
-				' - <b title = "Total (current month) received - Total (current month) sent">'.$program['Program']['stats']['all-sent-messages-count'].'('.
-				$program['Program']['stats']['current-month-sent-messages-count'].')</b>'.__(' sent message(s)').'<br/>'.		         
-				'<b title = "Total (today) schedule(s)">'.$program['Program']['stats']['schedule-count'].'('.
-				$program['Program']['stats']['today-schedule-count'].')</b>'.__(' schedule(s)'),
-				array('class'=>'ttc-program-stats')
-				);
+				'b',
+				$program['Program']['stats']['active-participant-count'].'/'.
+				$program['Program']['stats']['participant-count'],
+				array('title' => __('Optin / Total participant(s)')));	
+			echo __(' participant(s)').'<br/>'; 
+			echo $this->Html->tag(
+				'b',
+				$program['Program']['stats']['history-count'].'('.
+				$program['Program']['stats']['total-current-month-messages-count'].')',
+				array('title' => __('Total (total current month) message(s)')));	
+			echo __(' total message(s)').'<br/>'; 
+			echo $this->Html->tag(
+				'b',
+				$program['Program']['stats']['all-received-messages-count'].'('.
+				$program['Program']['stats']['current-month-received-messages-count'].')',
+				array('title' => __('Total (current month) received - Total(current month) sent')));	
+			echo __(' received '); 
+			echo $this->Html->tag(
+				'b',
+				$program['Program']['stats']['all-sent-messages-count'].'('.
+				$program['Program']['stats']['current-month-sent-messages-count'].')',
+				array('title' => __('Total (current month) received - Total(current month) sent')));	
+			echo __(' sent message(s)').'<br/>'; 
+			echo $this->Html->tag(
+				'b',
+				$program['Program']['stats']['schedule-count'].'('.
+				$program['Program']['stats']['today-schedule-count'].')',
+				array('title' => __('Total (today) schedule(s)')));	
+			echo __(' schedule(s)'); 
+			echo '</div>';
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">
