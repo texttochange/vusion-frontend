@@ -14,8 +14,13 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
+<<<<<<< HEAD
     var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
     public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
+=======
+    var $components = array('RequestHandler');
+    var $helpers = array('Time', 'Js' => array('Jquery'));    
+>>>>>>> feature/sms_program_limit
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,

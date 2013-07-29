@@ -14,16 +14,22 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramHomeController extends AppController
 {
 
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler');
+
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Time'
-        );
+        'Time');
 
 
     function constructClasses()
     {
         parent::constructClasses();
+    }
+
+    function beforeFilter()
+    {
+        parent::beforeFilter();
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
         
@@ -38,7 +44,6 @@ class ProgramHomeController extends AppController
 
         $this->_instanciateVumiRabbitMQ();
     }
-
 
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));

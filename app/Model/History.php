@@ -437,23 +437,21 @@ class History extends MongoModel
     }
   
     
-    public function countUnattachedMessages($unattach_id, $message_status = null)
+    public function countUnattachedMessages($unattachId, $messageStatus = null)
     {
-        if ($message_status == null)
-        {
-            $historyCount = $this->find('count', array(
-                'conditions' => array(
-                    'message-direction'=>'outgoing',
-                    'unattach-id'=>$unattach_id)));
-        } else {
-            $historyCount = $this->find('count', array(
-                'conditions' => array(
-                    'message-direction'=>'outgoing',
-                    'unattach-id'=>$unattach_id,
-                    'message-status'=>$message_status)));
-        }
-        return $historyCount;       
-        
-    }   
+        $conditions = array(
+                'message-direction' => 'outgoing',
+                'unattach-id' => $unattachId);
+        if ($messageStatus != null) {
+            if (is_array($messageStatus)) {
+                $statusConditions = array('message-status' => array('$in' => $messageStatus));
+            } else {
+                $statusConditions = array('message-status' => $messageStatus);
+            }
+            $conditions = array_merge($conditions, $statusConditions);
+        } 
+        $historyCount = $this->find('count', array('conditions' => $conditions));
+        return $historyCount;
+    }
 
 }
