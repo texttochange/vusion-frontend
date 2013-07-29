@@ -47,14 +47,16 @@
 				$program['Program']['stats']['active-participant-count'].'/'.
 				$program['Program']['stats']['participant-count'],
 				array('title' => __('Optin / Total participant(s)'), 'class' => 'stat'));	
-			echo __(' participant(s)').'</div>';
+			echo __(' participant(s)');
+			echo '</div>';
 			echo '<div>';
 			echo $this->Html->tag(
 				'span',
 				$program['Program']['stats']['history-count'].'('.
 				$program['Program']['stats']['total-current-month-messages-count'].')',
 				array('title' => __('Total (total current month) message(s)'), 'class' => 'stat'));	
-			echo __(' total message(s)').'</div>';
+			echo __(' total message(s)');
+			echo '</div>';
 			echo '<div>';
 			echo $this->Html->tag(
 				'span',
@@ -67,14 +69,16 @@
 				$program['Program']['stats']['all-sent-messages-count'].'('.
 				$program['Program']['stats']['current-month-sent-messages-count'].')',
 				array('title' => __('Total (current month) received - Total(current month) sent'), 'class' => 'stat'));	
-			echo __(' sent message(s)').'</div>'; 
+			echo __(' sent message(s)');
+			echo '</div>';
 			echo '<div>';
 			echo $this->Html->tag(
 				'span',
 				$program['Program']['stats']['schedule-count'].'('.
 				$program['Program']['stats']['today-schedule-count'].')',
 				array('title' => __('Total (today) schedule(s)'), 'class' => 'stat'));	
-			echo __(' schedule(s)').'</div>'; 
+			echo __(' schedule(s)'); 
+			echo '</div>';
 			echo '</div>';
 		?>
 		<?php if ($isProgramEdit) { ?>
