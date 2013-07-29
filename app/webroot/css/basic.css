@@ -4,21 +4,21 @@
 
 /*Fix the default cake 'form div' CSS rule */
 .chzn-container{
-    margin-bottom: 0px
+	margin-bottom: 0px
 }
 
 .sublabel {
-    margin-left: 5px;
+	margin-left: 5px;
 }
 
 .subinput {
-    margin-left: 10px;
-    margin-bottom: 0px;
-    padding: 0px;
+	margin-lef	t: 10px;
+	margin-bottom: 0px;
+	padding: 0px;
 }
 
 .subinput input{
-    margin: 2px 0px 0px 5px;
+	margin: 2px 0px 0px 5px;
 }
 
 .ttc-link-header {
@@ -54,14 +54,14 @@
 
 .status-message {
 	/* width: 100%;*/
-    height: 0px;
+	height: 0px;
 }
 
 .status-table {
-    text-align: center;
-    border-spacing: 0px;
-    border-collapse: collapse;
-    width: 100%;
+	text-align: center;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 .ttc-button{
@@ -140,12 +140,12 @@
 }
 
 .ui-dform-checkbox{
-    padding-top: 6px;
-    padding-left: 4px;
+	padding-top: 6px;
+	padding-left: 4px;
 }
 
 .ui-dform-text {
-    width: 96%;
+	width: 96%;
 	margin-left : 10px;
 	margin-bottom : 10px;
 }
@@ -181,60 +181,60 @@
 }
 
 .ttc-actions {
-    float: right;
-    padding: 7px 0px 3px 3px;
-    margin-top: -8px;
-    margin-left: 0;
-    margin-right: 0px;
-    /*width: 77%;*/
+	float: right;
+	padding: 7px 0px 3px 3px;
+	margin-top: -8px;
+	margin-left: 0;
+	margin-right: 0px;
+	/*width: 77%;*/
 }   
 
 .ttc-actions li{
-    float: right;
-    list-style-type: none;
-    margin: 0;
-    padding: 3px;
+	float: right;
+	list-style-type: none;
+	margin: 0;
+	padding: 3px;
 }
 
 .ttc-actions li a{
-    border: 1px solid #BBBBBB;
-    /* border-radius: 4px 4px 4px 4px; */    
-    /*  padding: 4px 8px; */
-    /*  display: block; */
-    background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
-    text-decoration: none;
-    font-weight: normal;
+	border: 1px solid #BBBBBB;
+	/* border-radius: 4px 4px 4px 4px; */    
+	/*  padding: 4px 8px; */
+	/*  display: block; */
+	background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+	text-decoration: none;
+	font-weight: normal;
 }
 
 .ttc-actions li select{
-    margin-top: -8px;
+	margin-top: -8px;
 }
 
 .ttc-actions form{
-    margin: 0;
+	margin: 0;
 }
 
 .ttc-actions li div{
-    color: #003D4C;
-    /*background: #62af56;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#76BF6B), to(#3B8230));
-    background-image: -webkit-linear-gradient(top, #76BF6B, #3B8230);
-    background-image: -moz-linear-gradient(top, #76BF6B, #3B8230);*/
-    border-color: #2d6324;
-    padding: 4px 5px;
+	color: #003D4C;
+	/*background: #62af56;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#76BF6B), to(#3B8230));
+	background-image: -webkit-linear-gradient(top, #76BF6B, #3B8230);
+	background-image: -moz-linear-gradient(top, #76BF6B, #3B8230);*/
+	border-color: #2d6324;
+	padding: 4px 5px;
 }
 
 .ttc-actions li div:hover{
-    /*background:#5BA150;*/
-    color: #367889;
+	/*background:#5BA150;*/
+	color: #367889;
 }
 
 .ttc-info{
-    border: 0;
-    float: right;
-    padding: 0 2% 10px 2%;
-    width: 98%;    
-    height: 390px;
+	border: 0;
+	float: right;
+	padding: 0 2% 10px 2%;
+	width: 98%;    
+	height: 390px;
 }
 
 .ttc-status {
@@ -286,7 +286,7 @@
 	background: #19C1FF;
 	padding-left: 20px;
 	padding-right: 20px;
-    min-width: 800px;	
+	min-width: 800px;	
 }
 
 .ttc-program-title{
@@ -358,43 +358,43 @@
 }
 
 #dynamic-generic-program-form .error {
-    position: relative;
+	position: relative;
 }
 
 .ttc-validation-error {
-    position: absolute;
-    left: -700px;
-    top: -50px;
-    top: -35px\9;
-    background: pink;
-    border: solid white;
-    padding: 5px;
-    font-size: 12px;
+	position: absolute;
+	left: -700px;
+	top: -50px;
+	top: -35px\9;
+	background: pink;
+	border: solid white;
+	padding: 5px;
+	font-size: 12px;
 }
 
 .ttc-radio-validation-error {
-    left: 30px;
+	left: 30px;
 }
 
 .ttc-textarea-validation-error {   
-    top : -96px;
-    top: -52px\9;     
+	top : -96px;
+	top: -52px\9;     
 }
 
 .request.ttc-textarea-validation-error{  
-    left: -671px;   
+	left: -671px;   
 }
 
 .dialogue.ttc-textarea-validation-error{  
-    left: 191px;
-    top : -113px;
-    top: -59px\9;
+	left: 191px;
+	top : -113px;
+	top: -59px\9;
 }
 
 .ttc-input-validation-error {
-    top: -49px;
-    top: -64px\9;    
-    left: 191px\9;
+	top: -49px;
+	top: -64px\9;    
+	left: 191px\9;
 }
 
 /*Chrome hack*/
@@ -479,84 +479,84 @@ display: inline;
 }
 
 .ttc-program-index {
-    float: left;
-    padding: 15px 2%;
-    width: 60%;
-    min-width: 737px;
+	float: left;
+	padding: 15px 2%;
+	width: 60%;
+	min-width: 737px;
 }
 
 .ttc-program-index h3 {
-    border-bottom: solid;
-    padding-bottom: 5px;
+	border-bottom: solid;
+	padding-bottom: 5px;
 }
 
 .ttc-recent-issues {
-    float: right;
-    padding: 15px 2%;
-    width: 29%;
+	float: right;
+	padding: 15px 2%;
+	width: 29%;
 }
 .ttc-recent-issues h3 {
-    border-bottom: solid;
-    padding-bottom: 5px;
+	border-bottom: solid;
+	padding-bottom: 5px;
 }
 
 .ttc-issues-list {
-    list-style: none;
-    overflow: hidden;
-    margin: 0;
+	list-style: none;
+	overflow: hidden;
+	margin: 0;
 }
 
 .ttc-issues-list li {
-    padding: 2px 2px;
-    margin: 0 0 5px;
-    border-bottom: 1px solid #DDDDDD;
+	padding: 2px 2px;
+	margin: 0 0 5px;
+	border-bottom: 1px solid #DDDDDD;
 }
 
 .ttc-issues-list div.ttc-issue-content {
-    margin-right: 15px;
-    overflow: hidden;
+	margin-right: 15px;
+	overflow: hidden;
 }
 
 .ttc-issues-list div.ttc-issue-time {
-    float: right;
-    text-align: right;
-    /*margin-top: 17px;*/
-    width: 42%;
+	float: right;
+	text-align: right;
+	/*margin-top: 17px;*/
+	width: 42%;
 }
 
 .ttc-issue-content h3 {
-    display: inline;
-    font-size: 1em;
-    line-height: 1.2em;
-    border: 0;
-    padding: 0;
-    margin: 0;
+	display: inline;
+	font-size: 1em;
+	line-height: 1.2em;
+	border: 0;
+	padding: 0;
+	margin: 0;
 }
 
 .ttc-issue-content h3 a{
-    text-decoration: none;
-    font-weight: normal;
-    font-style: italic;
+	text-decoration: none;
+	font-weight: normal;
+	font-style: italic;
 }
 
 .ttc-issue-content h3 a:hover{
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 .ttc-issue-content p {
-    font-size: 1em;
-    padding: 0;
-    margin: 0;
+	font-size: 1em;
+	padding: 0;
+	margin: 0;
 }
 
 .ttc-program-box {
-    cursor: pointer;
-    position: relative;
-    padding-bottom: 30px;
-    margin-bottom: 14px;
-    height: 40px;
-    background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
-    border: 1px solid #BBBBBB;
+	cursor: pointer;
+	position: relative;
+	padding-bottom: 30px;
+	margin-bottom: 14px;
+	height: 40px;
+	background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+	border: 1px solid #BBBBBB;
 }
 
 .ttc-program-box:hover{
@@ -569,74 +569,74 @@ display: inline;
 }
 
 .ttc-program-index .ttc-program-title {
-    position: absolute;
-    left: 10px;
-    top: 15px;   
+	position: absolute;
+	left: 10px;
+	top: 15px;   
 }
 
 .ttc-program-details {
-    position: absolute;
-    left: 20px;
-    top: 37px;
+	position: absolute;
+	left: 20px;
+	top: 37px;
 }
 
 .ttc-program-stats {
-    position: absolute;
-    left:400px;
-    top: 7px;
+	position: absolute;
+	left:400px;
+	top: 7px;
 }
 
 .ttc-program-quicklinks{
-    position: absolute;
-    left: 622px;
-    top: 10px;
+	position: absolute;
+	left: 622px;
+	top: 10px;
 }
 
 .ttc-program-news .ttc-program-box {
-    height: 20px;
-    padding: 5px;
-    text-align: center;
+	height: 20px;
+	padding: 5px;
+	text-align: center;
 }
 
 .ttc-display-area {
-    height: 340px;
-    min-height: 250px;
-    overflow: auto;
-    width: 100%;
-    border: 2px solid lightgrey;
-    margin-bottom: 10px;
-    padding: 1%;    
-    max-width:1071px;
+	height: 340px;
+	min-height: 250px;
+	overflow: auto;
+	width: 100%;
+	border: 2px solid lightgrey;
+	margin-bottom: 10px;
+	padding: 1%;    
+	max-width:1071px;
 }
 
 .ttc-table-display-area {
-    /*height: 340px;*/
-    min-height: 250px;
-    padding: 10px 10px;
-    overflow: hidden;    
-    border: 2px solid lightgrey;
-    margin-bottom: 10px;   
-    background: none repeat scroll 0 0 ;
-    /*position: relative;*/
-    padding-bottom: 10px; 
-    float: left;
-    min-width: 728px;    
-    max-width:1071px;
+	/*height: 340px;*/
+	min-height: 250px;
+	padding: 10px 10px;
+	overflow: hidden;    
+	border: 2px solid lightgrey;
+	margin-bottom: 10px;   
+	background: none repeat scroll 0 0 ;
+	/*position: relative;*/
+	padding-bottom: 10px; 
+	float: left;
+	min-width: 728px;    
+	max-width:1071px;
 }
 .ttc-table-display-area-shortcode {
 	height: 340px;
-    min-height: 250px;
-    padding: 52px 10px 18px;
-    overflow: hidden;    
-    border: 2px solid lightgrey;
-    margin-bottom: 10px;   
-    background: none repeat scroll 0 0 ;
-    position: relative;    
+	min-height: 250px;
+	padding: 52px 10px 18px;
+	overflow: hidden;    
+	border: 2px solid lightgrey;
+	margin-bottom: 10px;   
+	background: none repeat scroll 0 0 ;
+	position: relative;    
 }
 
 .ttc-data-control {
-    width: 100%;
-    min-height: 35px;
+	width: 100%;
+	min-height: 35px;
 }
 
 /*
@@ -662,10 +662,10 @@ width: 186px;
 }*/
 
 .ttc-table-scrolling-area {
-    /*height: 343px;*/
-    min-height: 250px;
-    overflow: auto; 
-    
+	/*height: 343px;*/
+	min-height: 250px;
+	overflow: auto; 
+	
 }
 
 .ttc-table-scrolling-area thead tr{
@@ -801,27 +801,27 @@ width: 186px;
 } 
 
 .ttc-table-subelement {
-    width: 100%;
+	width: 100%;
 }
 
 .ttc-table-subelement tr td{
-    padding: 6px;
-    text-align: left;
+	padding: 6px;
+	text-align: left;
 }
 
 .ttc-table-display-area table{
-    margin-bottom: 10px;
-    width: 100%;
+	margin-bottom: 10px;
+	width: 100%;
 }
 
 .ttc-table-display-area table tr td {
-    padding: 6px;
-    text-align: left;
+	padding: 6px;
+	text-align: left;
 }
 
 .ttc-table-display-area-shortcode table tr td {
-    padding: 6px;
-    text-align: left;
+	padding: 6px;
+	text-align: left;
 }
 
 
@@ -863,70 +863,70 @@ width: 186px;
 }
 
 .ttc-advanced-filter {
-    display: none;
-    float: left;
-    width: 70%;
-    min-width: 450px;
-    clear: none;
-    border: 1px dashed grey;
-    background: #FFCB4B;
-    padding: 3px 2px 0px 3px;
-    margin-bottom: 3px;
+	display: none;
+	float: left;
+	width: 70%;
+	min-width: 450px;
+	clear: none;
+	border: 1px dashed grey;
+	background: #FFCB4B;
+	padding: 3px 2px 0px 3px;
+	margin-bottom: 3px;
 }
 
 .ttc-advanced-filter p {
-    margin: 0px 2px;
-    display: inline-block;
+	margin: 0px 2px;
+	display: inline-block;
 }
 
 .ttc-advanced-filter select {
 }
 
 .ttc-filter-stack-operator {
-    width: 100%;
-    margin-bottom: 0px;
+	width: 100%;
+	margin-bottom: 0px;
 }
 
 .ttc-filter-stack {
-    margin-bottom: 0px;
-    padding-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 0px;
 }
 
 .ttc-filter-title {
-    margin-bottom: 0px;
-    clear: none;
-    font-size: 18px;
-    padding: 0px 0px 3px 0px;
-    color: #666;
+	margin-bottom: 0px;
+	clear: none;
+	font-size: 18px;
+	padding: 0px 0px 3px 0px;
+	color: #666;
 }
 
 
 .ttc-paging {
-    float: right;
-    width: 184px;
-    text-align: right;
+	float: right;
+	width: 184px;
+	text-align: right;
 }
 
 .ttc-stack-filter input{
-    font-size: 90%;
-    width: 200px;
-    height: 16px;
+	font-size: 90%;
+	width: 200px;
+	height: 16px;
 }
 
 
 .ttc-filter-submit {
-    font-size : 13px;
-    padding: 4px;
-    width: 60px;
-    margin: 0px;
-    padding-left: 0px;
+	font-size : 13px;
+	padding: 4px;
+	width: 60px;
+	margin: 0px;
+	padding-left: 0px;
 }
 
 
 .ttc-advanced-filter .submit {
-    margin-top: -7px;
-    margin-left: -7px;
-    margin-bottom: 0px;
+	margin-top: -7px;
+	margin-left: -7px;
+	margin-bottom: 0px;
 }
 
 .ttc-advanced-filter form{
@@ -936,14 +936,14 @@ width: 186px;
 }
 
 .ttc-action-link {
-    font-size: 120%;
-    color: #2C6877;
+	font-size: 120%;
+	color: #2C6877;
 }
 
 .ttc-action-link:Hover {
-    text-decoration: underline;
-    cursor: pointer;
-    color: grey;
+	text-decoration: underline;
+	cursor: pointer;
+	color: grey;
 }
 
 .connection-message {
@@ -982,7 +982,7 @@ width: 186px;
 }
 
 .ttc-ok {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 .ttc-add-icon {
@@ -1039,13 +1039,13 @@ width: 186px;
 }
 
 .ttc-interaction-disabled {
-    background: #CCCCCC;
+	background: #CCCCCC;
 }
 
 .message a {
-    color : white;
-    text-decoration: none;
-    font-weight: normal; 
+	color : white;
+	text-decoration: none;
+	font-weight: normal; 
 }
 
 .masstag-error {
@@ -1060,73 +1060,73 @@ width: 186px;
 
 
 @media projection, screen  {    
-    body {        
-        margin: 0;
-        min-width: 1061px;      
-        
-    } 
-    #content { 
-    	/*padding: 10px 3px 20px 1px;*/
-    	/*min-width: 550px;*/
-    	padding-top: 10px;
-    	padding-left: 20px;
-    	padding-right: 20px;
-    	padding-bottom: 20px;
-    	min-width: 800px;
-    	/*max-width: 1366px;*/
-    	position: relative;
-    	overflow-x: hidden;
-    	height: 483px;
-    }         
-    .ttc-program-stats {             
-    	/*left:277px;*/
-    	left: 42%; 
-    	padding-left: 73px;
-    	font-size: 11px;
-    }
-    
-    .ttc-program-stats .stat {
-    	font-weight: bold;
-    }
-    
-    .ttc-program-quicklinks{             
-    	/*left: 435px;*/ 
-    	left: 90%;             
-    }
-    .ttc-program-index {
-    	float: left;
-    	padding: 15px 2%;
-    	width: 60%;
-    	min-width: 488px;
-    }         
+	body {        
+		margin: 0;
+		min-width: 1061px;      
+		
+	} 
+	#content { 
+		/*padding: 10px 3px 20px 1px;*/
+		/*min-width: 550px;*/
+		padding-top: 10px;
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 20px;
+		min-width: 800px;
+		/*max-width: 1366px;*/
+		position: relative;
+		overflow-x: hidden;
+		height: 483px;
+	}         
+	.ttc-program-stats {             
+		/*left:277px;*/
+		left: 42%; 
+		padding-left: 73px;
+		font-size: 11px;
+	}
+	
+	.ttc-program-stats .stat {
+		font-weight: bold;
+	}
+	
+	.ttc-program-quicklinks{             
+		/*left: 435px;*/ 
+		left: 90%;             
+	}
+	.ttc-program-index {
+		float: left;
+		padding: 15px 2%;
+		width: 60%;
+		min-width: 488px;
+	}         
 }
 
 .program-left-column {
-    /*width:202px;*/
-    float: left;
-    width: 200px;
-    /*position: absolute;*/
-    z-index: 99;
+	/*width:202px;*/
+	float: left;
+	width: 200px;
+	/*position: absolute;*/
+	z-index: 99;
 }
 
 .program-left-column1 {
-    width:300px;    
-    
+	width:300px;    
+	
 }
 
 .program-body {
 	min-width : 550px;	
-    margin-left: 20px;
+	margin-left: 20px;
 	float: left;
 }
 
 .admin-action {
-    position: absolute; 
-    padding-left: 13px;
+	position: absolute; 
+	padding-left: 13px;
 }
 
 .users-index {
-    min-width: 547px;	
+	min-width: 547px;	
 	padding:10px 20px 10px 0px;	
 	position: absolute;	
 	margin-left: 235px;
@@ -1145,7 +1145,7 @@ width: 186px;
 }
 
 .program-edit {
-    margin-left: 235px;
+	margin-left: 235px;
 }
 
 .participant-tuncated-profile {
@@ -1156,38 +1156,37 @@ width: 186px;
 }
 
 .participant-truncated-enroll {
-    width: 94px; 
+	width: 94px; 
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 .powered-by {
-    height: 30px;
-    display: table;
-    width: 100%;
+	height: 30px;
+	display: table;
+	width: 100%;
 }
 
 .powered-by-text {
-    color: #404040;
+	color: #404040;
 }
 
 .powered-by-logo {
-    height: 28px;
-    margin-left: 7px;
-    vertical-align: middle;
+	height: 28px;
+	margin-left: 7px;
+	vertical-align: middle;
 }
 
 .ttc-logo {
-    height: 43px;
-    margin-right: 7px;
-    vertical-align: middle;
-    float: right;
+	height: 43px;
+	margin-right: 7px;
+	vertical-align: middle;
+	float: right;
 }
 
 .program-body .ttc-link {
-    font-weight: normal;
-    font-size: 14px;
-    color: #003d4c;
+	font-weight: normal;
+	font-size: 14px;
+	color: #003d4c;
 }
-
