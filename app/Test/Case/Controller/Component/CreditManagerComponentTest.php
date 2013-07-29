@@ -6,9 +6,11 @@ App::uses('ComponentCollection', 'Controller');
 App::uses('CreditManagerComponent', 'Controller/Component');
 
 
-class TestCreditManagerController extends Controller {
+class TestCreditManagerController extends Controller 
+{
 
     var $components = array('CreditManager');
+
 
     function constructClasses() 
     {
@@ -17,10 +19,12 @@ class TestCreditManagerController extends Controller {
         $this->redisProgramPrefix = 'unittest';
     }
 
+
 }
 
 
-class CreditManagerComponentTest extends CakeTestCase {
+class CreditManagerComponentTest extends CakeTestCase
+{
 
     public $CreditManagerComponent = null;
     public $Controller = null;
@@ -71,7 +75,8 @@ class CreditManagerComponentTest extends CakeTestCase {
 
         $this->assertEqual(
             $status,
-            $this->CreditManagerComponent->getStatus('programdatabase'));
+            $this->CreditManagerComponent->getStatus('programdatabase')
+            );
     }
 
 
@@ -79,7 +84,8 @@ class CreditManagerComponentTest extends CakeTestCase {
     {
         $this->assertEqual(
             null,
-            $this->CreditManagerComponent->getStatus('programdatabase'));
+            $this->CreditManagerComponent->getStatus('programdatabase')
+            );
     }
 
     
@@ -90,15 +96,18 @@ class CreditManagerComponentTest extends CakeTestCase {
 
         $this->assertEqual(
             10,
-            $this->CreditManagerComponent->getCount('programdatabase'));
+            $this->CreditManagerComponent->getCount('programdatabase')
+            );
     }
+
 
     public function testGetCount_fail() 
     {
         $this->assertEqual(
             null,
-            $this->CreditManagerComponent->getCount('programdatabase'));
+            $this->CreditManagerComponent->getCount('programdatabase')
+            );
     }
-   
+
 
 }

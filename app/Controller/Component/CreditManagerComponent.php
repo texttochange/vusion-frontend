@@ -1,11 +1,13 @@
 <?php
 App::uses('Component', 'Controller');
 
-class CreditManagerComponent extends Component{
+class CreditManagerComponent extends Component
+{
 
-    public $Controller = null;
-    public $redis = null;
+    public $Controller         = null;
+    public $redis              = null;
     public $redisProgramPrefix = null;
+
 
     public function initialize(Controller $controller) {
         $this->Controller = $controller;
@@ -16,25 +18,29 @@ class CreditManagerComponent extends Component{
         $this->redisProgramPrefix = $this->Controller->redisProgramPrefix;
     }
 
+
     protected function getStatusKey($programDatabase)
     {
         return $this->redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status"; 
     }
+
 
     protected function getCountKey($programDatabase)
     {
         return $this->redisProgramPrefix . ":" . $programDatabase . ":creditmanager:count"; 
     }
 
+
     public function getCount($programDatabase)
     {   
         $countKey = $this->getCountKey($programDatabase);
-        $count = $this->redis->get($countKey);
+        $count    = $this->redis->get($countKey);
         if ($count == null || !isset($count)) {
             return null; 
         }
         return (int)$count;
     }
+
 
     public function getStatus($programDatabase)
     {
@@ -46,10 +52,12 @@ class CreditManagerComponent extends Component{
         return (array)json_decode($statusRaw);
     }
 
+
     public function getOverview($programDatabase){
         return array(
             'count' => $this->getCount($programDatabase),
             'manager' => $this->getStatus($programDatabase));
     }
+
 
 }
