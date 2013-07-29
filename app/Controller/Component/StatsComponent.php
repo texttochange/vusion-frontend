@@ -115,7 +115,7 @@ class StatsComponent extends Component {
 			$programStats = (array)json_decode($stats);
 		}else{
 			$programStats = $this->_getProgramStats($database);
-			$this->redis->setex($statsKey, 6,json_encode($programStats));
+			$this->redis->setex($statsKey, 60000,json_encode($programStats));
 		}
 		return $programStats;
 	}
