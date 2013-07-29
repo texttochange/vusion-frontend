@@ -6,17 +6,23 @@ App::uses('ProgramSetting', 'Model');
 class StatsComponent extends Component {
 	
 	public $Controller = null;
-	//public $redis = null;
 	
 	public function initialize(Controller $controller)
     {
     	parent::startup($controller);
     	$this->Controller = $controller;
+    	
     	if(isset($this->Controller->redis)){
     		$this->redis = $this->Controller->redis;
     	}else{ 
     		$this->redis = new Redis();
     		$this->redis->connect('127.0.0.1');
+    	}
+    	
+    	if(isset($this->Controller->redisProgramPrefix)){
+    		$this->redisProgramPrefix = $this->Controller->redisProgramPrefix;
+    	}else{
+    		$this->redisProgramPrefix = 'vusion:programs:';
     	}
     }
     
@@ -108,14 +114,14 @@ class StatsComponent extends Component {
 	
 	public function getProgramStats($database)
 	{
-		$statsKey = 'vusion:programs:'.$database.':stats';
+		$statsKey = $this->redisProgramPrefix.$database.':stats';
 		$stats = $this->redis->get($statsKey);
 		
 		if($this->redis->strlen($statsKey) > 0){
 			$programStats = (array)json_decode($stats);
 		}else{
 			$programStats = $this->_getProgramStats($database);
-			$this->redis->setex($statsKey, 60000,json_encode($programStats));
+			$this->redis->setex($statsKey, 60,json_encode($programStats));
 		}
 		return $programStats;
 	}
