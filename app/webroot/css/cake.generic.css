@@ -440,7 +440,7 @@ form .error-message {
 	margin: 0 0 1em 0;
 	padding: 5px;*/
 	position: fixed;
-	top: -15px;
+	top: 30px;
 	/*left: 37%;*/
 	background: yellow;
 	padding-left: 10px;
@@ -496,7 +496,7 @@ p.error,
 	background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
 	background-image: linear-gradient(top, #ee5f5b, #c43c35);
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
-	position: relative;
+	position: absolute;
 	display: inline-bloc;
 }
 .success {
