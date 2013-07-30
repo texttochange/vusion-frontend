@@ -11,7 +11,7 @@ class StatsComponent extends Component {
     {
     	parent::startup($controller);
     	$this->Controller = $controller;
-		$this->keyTimeout = 60;
+		$this->cacheStatsExpire = 60;
     	
     	if(isset($this->Controller->redis)){
     		$this->redis = $this->Controller->redis;
@@ -23,7 +23,7 @@ class StatsComponent extends Component {
     	if(isset($this->Controller->redisProgramPrefix)){
     		$this->redisProgramPrefix = $this->Controller->redisProgramPrefix;
     	}else{
-    		$this->redisProgramPrefix = 'vusion:programs:';
+    		$this->redisProgramPrefix = 'vusion:programs';
     	}
     }
     
@@ -115,7 +115,7 @@ class StatsComponent extends Component {
 	
 	protected function _getStatsKey($database)
 	{
-		return $this->redisProgramPrefix.$database.':stats';
+		return $this->redisProgramPrefix.':'.$database.':stats';
 	}
 	
 	public function getProgramStats($database)
@@ -127,7 +127,7 @@ class StatsComponent extends Component {
 			$programStats = (array)json_decode($stats);
 		}else{
 			$programStats = $this->_getProgramStats($database);
-			$this->redis->setex($statsKey, $this->keyTimeout,json_encode($programStats));
+			$this->redis->setex($statsKey, $this->cacheStatsExpire, json_encode($programStats));
 		}
 		return $programStats;
 	}

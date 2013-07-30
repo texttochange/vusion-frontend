@@ -101,7 +101,7 @@ class TestStatsComponent extends CakeTestCase {
 		$program = array(
 			'Program'=> array(
 				'database' => 'testdbprogram'));
-		$key = $this->redisProgramPrefix.$program['Program']['database'].':stats';
+		$key = $this->redisProgramPrefix.':'.$program['Program']['database'].':stats';
 		
 		$this->redis->set($key, json_encode($testStats));
 		$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
