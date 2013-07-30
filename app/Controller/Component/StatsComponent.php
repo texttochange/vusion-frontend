@@ -112,16 +112,22 @@ class StatsComponent extends Component {
 		return $programStats;
 	}
 	
+	protected function _getStatsKey($database)
+	{
+		return $this->redisProgramPrefix.$database.':stats';
+	}
+	
 	public function getProgramStats($database)
 	{
-		$statsKey = $this->redisProgramPrefix.$database.':stats';
+		$statsKey = $this->_getStatsKey($database);
 		$stats = $this->redis->get($statsKey);
 		
 		if($this->redis->strlen($statsKey) > 0){
 			$programStats = (array)json_decode($stats);
 		}else{
 			$programStats = $this->_getProgramStats($database);
-			$this->redis->setex($statsKey, 60,json_encode($programStats));
+			$keyTimeout = 60;
+			$this->redis->setex($statsKey, $keyTimeout,json_encode($programStats));
 		}
 		return $programStats;
 	}

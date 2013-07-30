@@ -47,22 +47,23 @@ class TestStatsComponent extends CakeTestCase {
 		
 		
 		$this->Maker = new ScriptMaker();
-		$this->dropData();
+		$options = array('database' => 'testdbprogram');
+		$this->instanciateModels($options);
 		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+		$this->dropData();
+		
 	}
 	
 	protected function dropData()
 	{
-		$this->instanciateStatsComponent();
 		$this->Participant->deleteAll(true, false);
 		$this->Schedule->deleteAll(true, false);
 		$this->History->deleteAll(true, false);
+		$this->ProgramSetting->deleteAll(true, false);
 	}
 	
-	protected function instanciateStatsComponent()
+	protected function instanciateModels($options)
     {
-       $options = array('database' => 'testdbprogram');
-		
 		$this->Participant = new Participant($options);
 		$this->Schedule = new Schedule($options);
 		$this->History = new History($options);
@@ -103,9 +104,7 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function testGetStats()
 	{
-		$this->redisProgramPrefix = 'unittest';
-		$this->ProgramSetting = new ProgramSetting(array('database' => 'test1'));
-		
+		$this->redisProgramPrefix = 'unittest';		
 		$testStats = $this->mkStats();
 		$program = array(
 			'Program'=> array(
@@ -122,6 +121,7 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function testGetStats_noStatsInRedis()
 	{
+		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
 		$this->Participant->create();
 		$savedParticipant = $this->Participant->save($this->Maker->getParticipant());
         $this->Schedule->create('dialogue-schedule');
@@ -161,6 +161,5 @@ class TestStatsComponent extends CakeTestCase {
 			'2',
 			$programTestStats['history-count']);
 	}
-	
 }
 ?>
