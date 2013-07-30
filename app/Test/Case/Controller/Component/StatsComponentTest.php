@@ -47,6 +47,7 @@ class TestStatsComponent extends CakeTestCase {
 		$options = array('database' => 'testdbprogram');
 		$this->instanciateModels($options);
 		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+		print_r($options['database']);
 	}
 	
 	protected function dropData()
@@ -67,11 +68,10 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function tearDown()
 	{
-		$keys = $this->redis->keys('unittest:*');
+		$keys = $this->redis->keys('unittest*');
 		foreach ($keys as $key){
 			$this->redis->delete($key);
 		}
-		
 		$this->dropData();
 		unset($this->StatsComponent);
 		parent::tearDown();
@@ -101,10 +101,10 @@ class TestStatsComponent extends CakeTestCase {
 		$testStats = $this->mkStats();
 		$program = array(
 			'Program'=> array(
-				'database' => 'test1'));
-		$testKey = $this->redisProgramPrefix.$program['Program']['database'].':stats';
+				'database' => 'testdbprogram'));
+		$key = $this->redisProgramPrefix.$program['Program']['database'].':stats';
 		
-		$this->redis->set($testKey, json_encode($testStats));
+		$this->redis->set($key, json_encode($testStats));
 		$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
 		
 		$this->assertEqual(
@@ -114,7 +114,6 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public function testGetStats_noStatsInRedis()
 	{
-		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
 		$this->Participant->create();
 		$savedParticipant = $this->Participant->save($this->Maker->getParticipant());
         $this->Schedule->create('dialogue-schedule');
