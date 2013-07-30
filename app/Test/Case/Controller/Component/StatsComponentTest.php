@@ -21,7 +21,6 @@ class TestStatsComponentController extends Controller {
 		$this->redis = new Redis();
 		$this->redis->connect('127.0.0.1');
 		$this->redisProgramPrefix = 'unittest';
-		
 	}
 }
 
@@ -30,7 +29,6 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public $StatsComponent = null;
 	public $Controller = null;
-	//public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 	
 	public function setUp()
 	{
@@ -44,7 +42,6 @@ class TestStatsComponent extends CakeTestCase {
 		$this->Controller->constructClasses();
 		$this->StatsComponent->initialize($this->Controller);
 		$this->redis = $this->Controller->redis;
-		
 		
 		$this->Maker = new ScriptMaker();
 		$options = array('database' => 'testdbprogram');
@@ -80,7 +77,6 @@ class TestStatsComponent extends CakeTestCase {
 		$this->dropData();
 		unset($this->StatsComponent);
 		parent::tearDown();
-		
 	}
 	
 	public function mkStats()
@@ -99,7 +95,6 @@ class TestStatsComponent extends CakeTestCase {
 			'object-type' => 'program-stats',
 			'model-version'=> '1'
 			);
-		
 	}
 	
 	public function testGetStats()
