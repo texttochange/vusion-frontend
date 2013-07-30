@@ -24,7 +24,7 @@ if (!$this->Session->flash()) {
 <tr><td class="flash-box">
 <?php
 ## Flash message for the credit manager's status
-echo $this->CreditManager->flash($creditStatus, $programDetails['settings']);
+echo $this->CreditManager->flash($creditStatus, (isset($programDetails['settings']) ? $programDetails['settings'] : null));
 ?>
 <div>
 </td></tr>
