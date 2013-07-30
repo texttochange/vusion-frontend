@@ -1,10 +1,10 @@
 <div class='ttc-program-header'>
 	<div class="ttc-program-time">
 		<?php
-		if (isset($programDetails['timezone'])) {
-				echo $this->Html->tag('span', $programDetails['timezone'].' - ');
+		if (isset($programDetails['settings']['timezone'])) {
+				echo $this->Html->tag('span', $programDetails['settings']['timezone'].' - ');
 				$now = new DateTime('now');
-				date_timezone_set($now,timezone_open($programDetails['timezone']));
+				date_timezone_set($now,timezone_open($programDetails['settings']['timezone']));
 				echo $this->Html->tag('span', $now->format('d/m/Y H:i:s'), array("id"=>"local-date-time") );
 				$this->Js->get('document')->event('ready',
 						'setInterval("updateClock()", 1000);'
@@ -26,10 +26,12 @@
 						'controller' => 'programHome',
 						'action' => 'index'
 						), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));
-		echo  '<l class = "blackets"> (</l>';		
-		$countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
-			        $programDetails['shortcode'],
-			        $countryIndexedByPrefix);
+		echo  '<l class = "blackets"> (</l>';
+		if (isset($programDetails['settings']['shortcode'])) {
+		    $countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
+		        $programDetails['settings']['shortcode'],
+		        $countryIndexedByPrefix);
+		}
 		if (isset($countryAndShortcode)){
 				echo '<l class ="blackets">'.$countryAndShortcode.'</l>';
 		}else{

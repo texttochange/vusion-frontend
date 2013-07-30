@@ -11,7 +11,7 @@ class AppController extends Controller
 
     var $uses = array('Program', 'Group');
 
-    public $components = array(
+    var $components = array(
         'Session',
         'Auth' => array(
             'loginAction' => array(
@@ -43,52 +43,29 @@ class AppController extends Controller
             ),
         'Acl',
         'Cookie', 
-        'PhoneNumber');
+        'PhoneNumber',
+        'CreditManager',
+        );
 
-    public $helpers = array('PhoneNumber', 'Html', 'Form', 'Session', 'Js', 'Time', 'AclLink', 'Text','BigNumber');
+    var $helpers = array(
+        'PhoneNumber',
+        'Html',
+        'Form',
+        'Session',
+        'Js',
+        'Time',
+        'AclLink',
+        'Text',
+        'BigNumber',
+        'CreditManager');
 
+    var $redisProgramPrefix = "vusion:programs"; 
 
     function beforeFilter()
     {    
         //In case of a Json request, no need to set up the variables
         if ($this->params['ext']=='json' or $this->params['ext']=='csv')
             return;
-
-        $programUrl = $this->params['program'];
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programTimezone = $this->Session->read($this->params['program'].'_timezone');
-        $databaseName = $this->Session->read($this->params['program'].'_db');
-        $shortCode = $this->Session->read($this->params['program'].'_shortcode');
-        $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();        
-        $programDetails = array('url' => $programUrl, 'name' => $programName, 'timezone' =>  $programTimezone, 'shortcode' => $shortCode);       
-        if ($this->Session->read('Auth.User.id')) {
-            $isAdmin = $this->Acl->check(
-                array(
-                    'User' => array(
-                        'id' => $this->Session->read('Auth.User.id')
-                        )
-                    ),
-                'controllers/Admin');
-        }
-        if (isset($programUrl)) {            
-            $currentProgramData = $this->_getCurrentProgramData();
-
-            $redis = new Redis();
-            $redis->connect('127.0.0.1');
-            
-            $hasProgramLogs = $this->_hasProgramLogs($redis,$programUrl);
-            if ($this->_hasProgramLogs($redis,$programUrl))
-                $programLogsUpdates = $this->_processProgramLogs($redis,$programUrl);
-            
-            $this->set(compact('currentProgramData', 'hasProgramLogs', 'programLogsUpdates'));
-        }
-        $this->set(compact('programDetails', 'isAdmin', 'countryIndexedByPrefix'));
-    }
-
-
-    function constructClasses()
-    {
-        parent::constructClasses();
 
         //Verify the access of user to this program
         if (!empty($this->params['program'])) {
@@ -102,25 +79,39 @@ class AppController extends Controller
                 ));
             if (count($data)==0) {
                throw new NotFoundException('Could not find this page.');
-            } else {
-            	$database_name = $data[0]['Program']['database'];
-                $this->Session->write($this->params['program'] . '_name', $data[0]['Program']['name']);
-                $this->Session->write($this->params['program'] . '_db', $database_name); 
-                $programSettingModel = new ProgramSetting(array('database' => $database_name));
-                $shortCode = $programSettingModel->find('programSetting', array('key' => 'shortcode'));
-                if (isset($shortCode[0]['ProgramSetting']['value'])){
-                $this->Session->write($this->params['program'].'_shortcode', $shortCode[0]['ProgramSetting']['value']);
-                }else{
-                $this->Session->write($this->params['program'].'_shortcode', null);
-                }
-                $programTimezone = $programSettingModel->find('programSetting', array('key' => 'timezone'));
-                if (isset($programTimezone[0]['ProgramSetting']['value']))
-                    $this->Session->write($this->params['program'].'_timezone', $programTimezone[0]['ProgramSetting']['value']);
-                else 
-                    $this->Session->write($this->params['program'].'_timezone', null);
             }
+            $programDetails = array(
+                'name' => $data[0]['Program']['name'],
+                'url' => $data[0]['Program']['url'],
+                'database' => $data[0]['Program']['database']);
+            $this->Session->write($programDetails['url']."_db", $programDetails['database']);
+            $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
+            $programDetails['settings'] = $programSettingModel->getProgramSettings();
+            
+            $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);
+            
+            $hasProgramLogs = $this->_hasProgramLogs($this->redis, $programDetails['database']);
+            if ($this->_hasProgramLogs($this->redis, $programDetails['database'])) {
+                $programLogsUpdates = $this->_processProgramLogs($this->redis, $programDetails['database']);
+            }
+            $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
+            $this->set(compact('programDetails', 'currentProgramData', 'hasProgramLogs', 'programLogsUpdates', 'creditStatus')); 
         }
+        $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
+        $this->set(compact('countryIndexedByPrefix'));
     }
+
+
+    function constructClasses()
+    {
+        parent::constructClasses();
+        
+        $this->redis = new Redis();
+        $redisConfig = Configure::read('vusion.redis');
+        $redisHost = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
+        $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
+        $this->redis->connect($redisHost, $redisPort);
+     }
     
     protected function _hasProgramLogs($redis,$program)
     {
@@ -146,10 +137,8 @@ class AppController extends Controller
     }
     
     
-    protected function _getcurrentProgramData()
+    protected function _getcurrentProgramData($databaseName)
     {
-        $databaseName = $this->Session->read($this->params['program'].'_db');
-        
         $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
         $unattachedMessages = $unattachedMessageModel->find('future');
         if (isset($unattachedMessages))

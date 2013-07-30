@@ -24,7 +24,17 @@ class ProgramParticipantsController extends AppController
     function constructClasses() 
     {
         parent::constructClasses();
+    }
 
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+    }
+
+
+    function beforeFilter() 
+    {
+        parent::beforeFilter();
+        //$this->Auth->allow('*');
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
 
         $this->Participant       = new Participant($options);
@@ -38,17 +48,6 @@ class ProgramParticipantsController extends AppController
         $this->_instanciateVumiRabbitMQ();
         
         $this->DialogueHelper = new DialogueHelper();
-    }
-
-    protected function _instanciateVumiRabbitMQ(){
-        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
-    }
-
-
-    function beforeFilter() 
-    {
-        parent::beforeFilter();
-        //$this->Auth->allow('*');
     }
 
     
@@ -471,14 +470,13 @@ class ProgramParticipantsController extends AppController
     
     protected function _getAutoEnrollments($programTime)
     {
-        $condition = array('condition' => array('auto-enrollment'=>'all'));
-        $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+        $autoEnrollDialogues = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
         if ($autoEnrollDialogues == null) {
             $enrolled = array();
         } else {
             foreach ($autoEnrollDialogues as $autoEnroll) {
                 $enrolled[] = array(
-                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'dialogue-id' => $autoEnroll['Dialogue']['dialogue-id'],
                     'date-time' => $programTime->format("Y-m-d\TH:i:s")
                     );
             }

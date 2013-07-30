@@ -15,6 +15,9 @@ class AclLinkHelper extends AppHelper{
     }
     
     function _allow($aclUrl) {
+        if ($this->Session->read('Auth.User.id') == null) {
+            return false;
+        }
         return $this->Acl->check(
             array('user'=>array('id'=>$this->Session->read('Auth.User.id'))),
             $aclUrl);

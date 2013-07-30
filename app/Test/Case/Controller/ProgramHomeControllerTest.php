@@ -135,43 +135,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->assertEquals($this->vars['programDetails']['url'], $this->programData[0]['Program']['url']);        
     }
 
-/* to be used in testing access write    
-    public function testIndex_existingDraftScript_asManager()
-    {
-        $this->mockProgramAccess();
-                
-        $script['Script'] = array(
-            'script' => array(
-                'do' => 'something'
-            )
-            );
-        $this->instanciateScriptModel();
-        $this->Home->Script->create();
-        $this->Home->Script->save($script);
-        
-        $this->testAction("/testurl/home", array('method' => 'get'));
-        
-        $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
-        $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
-    }
-
-    
-    public function testIndex_existingScripts_asManager()
-    {
-        $this->mockProgramAccess();
-            
-        $script = array('script' => 'do something');
-        $this->instanciateScriptModel();
-        $this->Home->Script->create();
-        $this->Home->Script->save($script);
-        
-        $this->testAction("/testurl/home", array('method' => 'get'));
-
-        $this->assertEquals($this->vars['programName'], $this->programData[0]['Program']['name']);
-        $this->assertEquals($this->vars['programUrl'], $this->programData[0]['Program']['url']);
-    }
-*/
-
+/*
     public function testIndex_displayScheduled()
     {
         $this->mockProgramAccess();
@@ -224,5 +188,6 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->assertEquals("Hello", $this->vars['schedules'][1]['content']);
         $this->assertEquals(1, $this->vars['schedules'][1]['csum']);
     }
+*/
 
 }

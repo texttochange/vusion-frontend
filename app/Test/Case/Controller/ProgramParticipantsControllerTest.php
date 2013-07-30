@@ -1180,7 +1180,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(0, $this->Schedule->find('count'));
         $this->assertNotEqual($participantFromDb['Participant']['last-optin-date'], '2012-12-02T18:30:10');
     }
-    
+   
     
     public function testReset_with_auto_enrollment()
     {
