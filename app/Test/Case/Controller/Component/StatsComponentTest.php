@@ -47,8 +47,6 @@ class TestStatsComponent extends CakeTestCase {
 		$options = array('database' => 'testdbprogram');
 		$this->instanciateModels($options);
 		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-		$this->dropData();
-		
 	}
 	
 	protected function dropData()

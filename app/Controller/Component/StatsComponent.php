@@ -11,6 +11,7 @@ class StatsComponent extends Component {
     {
     	parent::startup($controller);
     	$this->Controller = $controller;
+		$keyTimeout = 60;
     	
     	if(isset($this->Controller->redis)){
     		$this->redis = $this->Controller->redis;
@@ -126,8 +127,7 @@ class StatsComponent extends Component {
 			$programStats = (array)json_decode($stats);
 		}else{
 			$programStats = $this->_getProgramStats($database);
-			$keyTimeout = 60;
-			$this->redis->setex($statsKey, $keyTimeout,json_encode($programStats));
+			$this->redis->setex($statsKey, $this->keyTimeout,json_encode($programStats));
 		}
 		return $programStats;
 	}
