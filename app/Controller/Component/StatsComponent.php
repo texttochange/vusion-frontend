@@ -11,7 +11,7 @@ class StatsComponent extends Component {
     {
     	parent::startup($controller);
     	$this->Controller = $controller;
-		$keyTimeout = 60;
+		$this->keyTimeout = 60;
     	
     	if(isset($this->Controller->redis)){
     		$this->redis = $this->Controller->redis;
