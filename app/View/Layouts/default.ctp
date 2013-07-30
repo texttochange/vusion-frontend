@@ -57,6 +57,9 @@
 </head>
 <body>
 	<div id="container">
+	    <div class="status-message">
+		    <?php echo $this->element('status_message'); ?>
+		</div>
 		<div id="header">
 			<div class="ttc-left-header">
 		        <?php 
@@ -92,9 +95,6 @@
 			?>
 			</div> 
 		 </div>    
-		 <div class="status-message">
-		    <?php echo $this->element('status_message'); ?>
-		 </div>
 			<!-- To be refact with all the Controllers and views -->
 			<?php 
 			if (isset($programDetails['name'])) { 
