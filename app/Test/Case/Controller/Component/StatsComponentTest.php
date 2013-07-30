@@ -18,8 +18,10 @@ class TestStatsComponentController extends Controller {
 	
 	function constructClasses()
 	{
-		$this->redis =new Redis();
+		$this->redis = new Redis();
 		$this->redis->connect('127.0.0.1');
+		$this->redisProgramPrefix = 'unittest';
+		
 	}
 }
 
@@ -28,7 +30,7 @@ class TestStatsComponent extends CakeTestCase {
 	
 	public $StatsComponent = null;
 	public $Controller = null;
-	public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
+	//public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 	
 	public function setUp()
 	{
@@ -45,17 +47,31 @@ class TestStatsComponent extends CakeTestCase {
 		
 		
 		$this->Maker = new ScriptMaker();
-		$options = array('database' => 'testdbprogram');
+		$this->dropData();
+		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+	}
+	
+	protected function dropData()
+	{
+		$this->instanciateStatsComponent();
+		$this->Participant->deleteAll(true, false);
+		$this->Schedule->deleteAll(true, false);
+		$this->History->deleteAll(true, false);
+	}
+	
+	protected function instanciateStatsComponent()
+    {
+       $options = array('database' => 'testdbprogram');
 		
 		$this->Participant = new Participant($options);
 		$this->Schedule = new Schedule($options);
 		$this->History = new History($options);
 		$this->ProgramSetting = new ProgramSetting($options); 
-	}
+    }
 	
 	public function tearDown()
 	{
-		$keys = $this->redis->keys('vusion:programs:*');
+		$keys = $this->redis->keys('unittest:*');
 		foreach ($keys as $key){
 			$this->redis->delete($key);
 		}
@@ -85,32 +101,27 @@ class TestStatsComponent extends CakeTestCase {
 		
 	}
 	
-	public function dropData()
-	{
-		$this->Participant->deleteAll(true, false);
-		$this->Schedule->deleteAll(true, false);
-		$this->History->deleteAll(true, false);
-	}
-	
 	public function testGetStats()
 	{
-	$Stats = $this->mkStats();
-	$program = array(
-	'Program'=> array(
-	'database' => 'test1'));
-	$key = "vusion:programs:test1:stats";
-	
-	$this->redis->set($key, json_encode($Stats));
-	$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
-	
-	$this->assertEqual(
-	$Stats,
-	$programTestStats);
+		$this->redisProgramPrefix = 'unittest';
+		$this->ProgramSetting = new ProgramSetting(array('database' => 'test1'));
+		
+		$testStats = $this->mkStats();
+		$program = array(
+			'Program'=> array(
+				'database' => 'test1'));
+		$testKey = $this->redisProgramPrefix.$program['Program']['database'].':stats';
+		
+		$this->redis->set($testKey, json_encode($testStats));
+		$programTestStats = $this->StatsComponent->getProgramStats($program['Program']['database']);
+		
+		$this->assertEqual(
+			$testStats,
+			$programTestStats);
 	}
 	
 	public function testGetStats_noStatsInRedis()
 	{
-		$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');    
 		$this->Participant->create();
 		$savedParticipant = $this->Participant->save($this->Maker->getParticipant());
         $this->Schedule->create('dialogue-schedule');
@@ -137,10 +148,11 @@ class TestStatsComponent extends CakeTestCase {
             'message-status' => 'delivered',
             ));
         
-		$key = "vusion:programs:testdbprogram:stats";
+		$key = "unittest:testdbprogram:stats";
 		
 		$stats = $this->redis->get($key);
 		$programTestStats = $this->StatsComponent->getProgramStats('testdbprogram');
+		
 		$this->assertEqual(
 			null,
 			$stats);
@@ -149,5 +161,6 @@ class TestStatsComponent extends CakeTestCase {
 			'2',
 			$programTestStats['history-count']);
 	}
+	
 }
 ?>
