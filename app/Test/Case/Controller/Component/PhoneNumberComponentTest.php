@@ -5,6 +5,7 @@ App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
 App::uses('PhoneNumberComponent', 'Controller/Component');
 
+
 class TestPhoneNumberComponentController extends Controller {
 }
 
@@ -13,8 +14,7 @@ class PhoneNumberComponentTest extends CakeTestCase {
 
     public $PhoneNumberComponent = null;
     public $Controller = null;
-    public $fixtures = array('app.program', 'app.user', 'app.programsUser');
-
+    
     public function setUp() 
     {
         parent::setUp();

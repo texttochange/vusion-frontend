@@ -14,8 +14,8 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler');
-    public $helpers = array('Time', 'Js' => array('Jquery'));    
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
+    var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
@@ -29,6 +29,17 @@ class ProgramsController extends AppController
         parent::constructClasses();
 
         $this->_instanciateVumiRabbitMQ();
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
+        $this->ShortCode  = new ShortCode($options);
+
     }
 
 
@@ -72,18 +83,45 @@ class ProgramsController extends AppController
 
     public function index() 
     {
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+        
         $this->Program->recursive = -1;
         
-        $user = $this->Auth->user();
+        $user = $this->Auth->user();   
+        
+        $conditions = $this->_getConditions();
+
+        $nameCondition = $this->ProgramPaginator->getNameSqlCondition($conditions);
         
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-           $this->paginate = array(
-                'authorized',
-                'specific_program_access' => 'true',
-                'user_id' => $user['id'],
+            $programs = $this->Program->find('authorized', array(
+               'specific_program_access' => 'true',
+               'user_id' => $user['id'],
+               'conditions' => $nameCondition,
+                'order' => array(
+                    'Program.created' => 'desc'
+                    )
+                ));
+            
+            $allPrograms = $this->Program->find('authorized', array(
+               'specific_program_access' => 'true',
+               'user_id' => $user['id']));
+        } else {
+            $programs    =  $this->Program->find('all', array(
+                'conditions' => $nameCondition,
+                'order' => array(
+                    'Program.created' => 'desc'
+                    ))
                 );
+            
+            $allPrograms = $this->Program->find('all');
         }
-        $programs      =  $this->paginate();
+        
+        if (isset($conditions['$or']) and !isset($nameCondition['OR']))
+            $programsList =  $allPrograms;
+        else
+            $programsList =  $programs;
 
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
@@ -91,34 +129,101 @@ class ProgramsController extends AppController
                     'id' => $this->Session->read('Auth.User.id')
                     ),
                 ), 'controllers/Programs/edit');
-        } 
-
-        foreach($programs as &$program) {
-            $database           = $program['Program']['database'];
-            $tempProgramSetting = new ProgramSetting(array('database' => $database));
-            $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
-            if (isset($shortcode[0]['ProgramSetting']['value'])) {
-                $this->ShortCode  = new ShortCode(array('database' => 'vusion'));
-                $code            = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-                $program['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);
-            } 
-            if ($this->params['ext']!='json') {
-                $tempParticipant = new Participant(array('database' => $database));
-                $program['Program']['participant-count'] = $tempParticipant->find('count'); 
-                $tempHistory     = new History(array('database' => $database));
-                $program['Program']['history-count']     = $tempHistory->find(
-                    'count', array('conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
-                $tempSchedule = new Schedule(array('database' => $database));
-                $program['Program']['schedule-count']    = $tempSchedule->find('count');
-            }  
         }
+        
+        $filteredPrograms = array();
+
+        foreach($programsList as &$program) {
+            $programDetails = $this->ProgramPaginator->getProgramDetails($program);
+            
+            $program = array_merge($program, $programDetails['program']);
+
+            $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
+                $programDetails['program'],
+                $conditions,
+                $programDetails['shortcode']);
+            if (count($filterPrograms)>0) {
+                foreach ($filterPrograms as $fProgram) {
+                    $filteredPrograms[] = $fProgram;
+                }
+            }
+        }
+
+        if (count($filteredPrograms)>0
+            or (isset($conditions) && $nameCondition == array())
+            or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
+            $programsList = $filteredPrograms;
+        }
+        
+        if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
+            foreach($programs as &$program) {
+                $details = $this->ProgramPaginator->getProgramDetails($program);
+                $program = array_merge($program, $details['program']);            
+            }
+            foreach ($programsList as $listedProgram) {
+                if (!in_array($listedProgram, $programs))
+                    array_push($programs, $listedProgram);
+            }
+        } else {
+            $programs = $programsList;
+        }
+
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
             array('conditions' => array('direction' => 'incoming'), 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
+        
+        # paginate using ProgramPaginator
+        $this->ProgramPaginator->settings['limit'] = 10;
+        $programs = $this->ProgramPaginator->paginate($programs);
+        
         $this->set(compact('programs', 'isProgramEdit'));
+    }
+    
+    
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->Program->filterFields);
+    }
+
+
+    protected function _getFilterParameterOptions()
+    {
+        $shortcodes = $countries = array();
+        $codes = $this->ShortCode->find('all');
+        if (!empty($codes)) {
+            foreach ($codes as $code) {
+                $shortcodes[] = $code['ShortCode']['shortcode'];
+                $countries[] = $code['ShortCode']['country'];
+            }
+        }
+        sort($countries);
+
+        return array(
+            'operator' => $this->Program->filterOperatorOptions,
+            'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
+            'country' => (count($countries)>0? array_combine($countries, $countries) : array())
+            );
+    }
+
+
+    protected function _getConditions()
+    {
+        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
+
+        if (!isset($filter['filter_param'])) 
+            return null;
+
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Program->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
+
+        $this->set('urlParams', http_build_query($filter));
+
+        return $this->Program->fromFilterToQueryConditions($filter);
     }
 
 

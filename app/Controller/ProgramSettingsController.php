@@ -85,51 +85,63 @@ class ProgramSettingsController extends AppController
                     
             $keywordValidation = $this->Keyword->validateProgramKeywords(
                 $this->Session->read($programUrl.'_db'), 
-                $this->request->data['ProgramSettings']['shortcode']);
+                $this->request->data['ProgramSetting']['shortcode']);
             if ($keywordValidation['status'] == 'fail') {
                 $this->Session->setFlash(
                     __("Keyword already used on this shortcode: %s", $keywordValidation['message']),
                     'default',
                     array('class'=>'message failure')
                     );
-            } else {   
-            		foreach ($this->request->data['ProgramSettings'] as $key => $value) {
-            				if ($this->ProgramSetting->saveProgramSetting($key, $value)) {
-            						$this->Session->setFlash(__("Program Settings saved."),
-            								'default',
-            								array('class'=>'message success'));
-            				} else {
-            						$this->Session->setFlash(__("Save settings failed."),
-            								'default',
-            								array('class'=>'message failure'));            						
-            				}
-            		}
-                $this->_notifyUpdateProgramSettings($programUrl);                
-                $this->redirect(
-                		array(
-                				'program' => $programUrl,
-                				'controller' => 'programSettings',
-                				'action' => 'edit'));
+            } else { 
+                if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'])) {
+                    $this->_notifyUpdateProgramSettings($programUrl);
+                    $this->Session->setFlash(__("Program Settings saved."),
+                        'default',
+                        array('class'=>'message success'));
+                    $this->redirect(array(
+                        'program' => $programUrl,
+                        'controller' => 'programSettings',
+                        'action' => 'edit'));
+                    
+                } else {
+                    $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
+                    $this->Session->setFlash(__("Save settings failed."),
+                        'default',
+                        array('class'=>'message failure'));
+                }
             }
         }
+
+        ## Set all the form options
         $shortcodes = $this->ShortCode->find('all');
-        $this->set(compact('shortcodes'));
-       
         $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
         $closedQuestionTemplateOptions   = $this->Template->getTemplateOptions('closed-question');
         $unmatchingAnswerTemplateOptions = $this->Template->getTemplateOptions('unmatching-answer');
-        $this->set(compact('openQuestionTemplateOptions',
+        $this->set(compact(
+            'openQuestionTemplateOptions',
             'closedQuestionTemplateOptions',
-            'unmatchingAnswerTemplateOptions'));
+            'unmatchingAnswerTemplateOptions',
+            'shortcodes'));
 
-        $settings = $this->ProgramSetting->getProgramSettings();
-
-        if ($settings) {
-            $programSettings['ProgramSettings'] = $settings;
-    	    if (isset($settings['timezone']))
-    	        $this->set('programTimezone', $settings['timezone']);
-    	    
-            $this->request->data = $programSettings;
+        ## in case it's not an edit, the setting need to be retrieved from the database
+        if (!isset($this->request->data['ProgramSetting'])) {
+            $settings = $this->ProgramSetting->getProgramSettings();
+            if ($settings) {
+                $programSettings['ProgramSetting'] = $settings;
+                if (isset($settings['timezone'])) {
+                    $this->set('programTimezone', $settings['timezone']);
+                }
+                $this->request->data = $programSettings;
+            }
+            ## set a user friendly format
+            if (isset($this->request->data['ProgramSetting']['credit-from-date'])) {
+                $fromDate = new DateTime($this->request->data['ProgramSetting']['credit-from-date']);
+                $this->request->data['ProgramSetting']['credit-from-date'] = $fromDate->format('d/m/Y');
+            }
+            if (isset($this->request->data['ProgramSetting']['credit-to-date'])) {
+                $toDate = new DateTime($this->request->data['ProgramSetting']['credit-to-date']);
+                $this->request->data['ProgramSetting']['credit-to-date'] = $toDate->format('d/m/Y');
+            }
         }
     }
 

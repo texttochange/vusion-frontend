@@ -904,6 +904,7 @@ width: 102px;
 .ttc-paging {
     float: right;
     width: 184px;
+    text-align: right;
 }
 
 .ttc-stack-filter input{
@@ -945,11 +946,15 @@ width: 102px;
     color: grey;
 }
 
+.flash-box {
+    height: 30px;
+}
+
 .connection-message {
 	clear: both;
 	color: white;
 	position: relative;
-	top: -69px;
+	top: 0px;
 	padding-left: 8px;
 	padding-right: 8px;
 	border: 1.5px solid white;
@@ -957,6 +962,21 @@ width: 102px;
 	margin-left: auto;
 	margin-right: auto;
 	display: inline;
+	z-index: 100;
+	white-space: nowrap;
+}
+
+.credit {
+	clear: both;
+	position: relative;
+	top: 20px;
+	z-index: 100;
+	margin-bottom: 0px;
+	white-space: nowrap;
+}
+
+.credit .warning {
+    background: orange;
 }
 
 .ttc-delete-icon {
@@ -1148,9 +1168,17 @@ margin-left: 63px;
 	text-overflow: ellipsis;	
 }
 
+.participant-truncated-enroll {
+    width: 94px; 
+	white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+}
+
 .powered-by {
     height: 30px;
     display: table;
+    width: 100%;
 }
 
 .powered-by-text {
@@ -1161,6 +1189,13 @@ margin-left: 63px;
     height: 28px;
     margin-left: 7px;
     vertical-align: middle;
+}
+
+.ttc-logo {
+    height: 43px;
+    margin-right: 7px;
+    vertical-align: middle;
+    float: right;
 }
 
 .program-body .ttc-link {

@@ -1,6 +1,7 @@
 <?php
 /* Program Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 
 class ProgramTestCase extends CakeTestCase
@@ -94,7 +95,7 @@ class ProgramTestCase extends CakeTestCase
         $result   = $this->Program->find(
             'count'
             );
-        $this->assertEquals(2, $result);
+        $this->assertEquals(3, $result);
     }
 
     public function testSaveProgram_ok()
@@ -162,7 +163,77 @@ class ProgramTestCase extends CakeTestCase
     {
         $this->Program->id = 1;
         $this->Program->deleteProgram();
-        $this->assertEquals(1,$this->Program->find('count'));
+        $this->assertEquals(2,$this->Program->find('count'));
+    }
+    
+    
+    public function testMatchProgramByShortcodeAndCountry()
+    {
+        $program['Program'] = array(
+            'id' => 3,
+            'name' => 'M4h',
+            'url' => 'm4h',
+            'database' => 'm4h',
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $savedProgram = $this->Program->save($program);
+        
+        $program1['Program'] = array(
+            'id' => 4,
+            'name' => 'tester',
+            'url' => 'tester',
+            'database' => 'tester',
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $savedProgram1 = $this->Program->save($program1);
+        
+        $codes = array(
+            array(
+                'shortcode' => '8181',
+                'international-prefix' => '256',
+                'country' => 'uganda',
+                'supported-internationally' => "0",
+                'support-customized-id' => "1"
+                ),
+            array(
+                'shortcode' => '8282',
+                'international-prefix' => '256',
+                'country' => 'uganda',
+                'supported-internationally' => "0",
+                'support-customized-id' => "1"
+                )
+            );
+        
+        $this->ProgramSetting = new ProgramSetting($program['Program']['database']);
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $this->ProgramSetting = new ProgramSetting($program1['Program']['database']);
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8181');
+        
+        $conditions = array('shortcode' => '8282');
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgram, $conditions, $codes);
+        $this->assertEquals($result[0]['Program']['name'], 'M4h');
+        
+        $conditions1 = array(
+            '$and' => array(
+                array('shortcode' => '8181'),
+                array('country' => 'uganda')
+                )
+            );
+        
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgram1, $conditions1, $codes);
+        $this->assertEquals($result[0]['Program']['name'], 'tester');
+        $this->assertEquals(1, count($result));
+        $this->ProgramSetting->deleteAll(true, false);
+        
     }
 
 

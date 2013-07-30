@@ -24,7 +24,17 @@ class ProgramParticipantsController extends AppController
     function constructClasses() 
     {
         parent::constructClasses();
+    }
 
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+    }
+
+
+    function beforeFilter() 
+    {
+        parent::beforeFilter();
+        //$this->Auth->allow('*');
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
 
         $this->Participant       = new Participant($options);
@@ -38,17 +48,6 @@ class ProgramParticipantsController extends AppController
         $this->_instanciateVumiRabbitMQ();
         
         $this->DialogueHelper = new DialogueHelper();
-    }
-
-    protected function _instanciateVumiRabbitMQ(){
-        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
-    }
-
-
-    function beforeFilter() 
-    {
-        parent::beforeFilter();
-        //$this->Auth->allow('*');
     }
 
     

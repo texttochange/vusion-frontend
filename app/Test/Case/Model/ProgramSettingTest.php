@@ -58,7 +58,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->deleteAll(true,false);
     }
 
-    
+  
     public function testGetProgramSetting_notInDatabase()
     {         
         $result = $this->ProgramSetting->find('getProgramSetting', array(
@@ -157,6 +157,87 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual('prioritized', $settings[2]['ProgramSetting']['value']);
     }
 
-    
+
+    public function testSaveSettings_ok()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            'credit-to-date' => '03/12/2013',
+            );
+        
+        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(5, $this->ProgramSetting->find('count'));
+    }
+
+
+    public function testSaveSettings_ok_nolimit()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'none',
+            );
+
+        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(2, $this->ProgramSetting->find('count'));
+    }
+
+    public function testSaveSettings_failMissingField()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            );
+
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(0, $this->ProgramSetting->find('count'));
+        $this->assertEqual(
+            $this->ProgramSetting->validationErrors['credit-type'][0],
+            'The credit-type field with value outgoing-only require the field credit-to-date.');
+    }
+
+
+    public function testSaveSettings_failNullField()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            'credit-to-date' => null,
+            );
+
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(0, $this->ProgramSetting->find('count'));
+        $this->assertEqual(
+            $this->ProgramSetting->validationErrors['credit-to-date'][0],
+            'The format of the date has to be 15/02/2013.');
+    }
+
+    public function testSaveSettings_failDateNonValid()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '03/12/2013',
+            'credit-to-date' => '02/12/2013',
+            );
+        
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(0, $this->ProgramSetting->find('count'));
+        $this->assertEqual(
+            $this->ProgramSetting->validationErrors['credit-from-date'][0],
+            'This from date has to be before the to date.');
+        $this->assertEqual(
+            $this->ProgramSetting->validationErrors['credit-to-date'][0],
+            'This to date has to be after the from date.');
+    }
+
+  
 }
 

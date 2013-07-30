@@ -1,8 +1,8 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ShortCode', 'Model');
 App::uses('Template', 'Model');
+
 
 class ShortCodesController extends AppController
 {
@@ -10,17 +10,15 @@ class ShortCodesController extends AppController
     var $helpers    = array('Js' => array('Jquery'));
     var $components = array('PhoneNumber'); 
     
-    public function beforeFilter()
+    public function constructClasses()
     {
-        parent::beforeFilter();
+        parent::constructClasses();
     }
 
 
-    public function constructClasses()
+    public function beforeFilter()
     {
-        // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
-        parent::constructClasses();
-        
+        parent::beforeFilter();
         if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
@@ -33,7 +31,7 @@ class ShortCodesController extends AppController
         $this->ShortCode = new ShortCode($options);
         $this->Template  = new Template($options);
     }
-    
+
     
     public function index()
     {
@@ -62,9 +60,7 @@ class ShortCodesController extends AppController
                 );
             }
         }
-        $countryOptions = $this->PhoneNumber->getCountries();
-        $errorTemplateOptions = $this->Template->getTemplateOptions('unmatching-keyword');
-        $this->set(compact('errorTemplateOptions', 'countryOptions'));
+        $this->setOptions();
     }
     
     
@@ -96,11 +92,18 @@ class ShortCodesController extends AppController
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
         }
-        $countryOptions = $this->PhoneNumber->getCountries();
-        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
-        $this->set(compact('errorTemplateOptions', 'countryOptions'));
+        $this->setOptions();
     }
     
+    protected function setOptions()
+    {
+        $countryOptions = $this->PhoneNumber->getCountries();
+        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
+        $maxCharacterPerSmsOptions = array_combine(
+            $this->ShortCode->maxCharacterPerSmsOptions, 
+            $this->ShortCode->maxCharacterPerSmsOptions);
+        $this->set(compact('errorTemplateOptions', 'countryOptions', 'maxCharacterPerSmsOptions'));
+    }
     
     public function delete()
     {

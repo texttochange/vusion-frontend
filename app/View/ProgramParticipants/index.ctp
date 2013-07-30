@@ -76,9 +76,9 @@
 	            <th class="phone"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="date-time"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="date-time"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', null, array('url'=> array('program' => $programDetails['url']))); ?></th> 
-	            <th class="status"><?php echo $this->Paginator->sort('tags', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="profile"><?php echo $this->Paginator->sort('profile', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', __('Enrolled'), array('url'=> array('program' => $programDetails['url']))); ?></th> 
+	            <th class="status"><?php echo $this->Paginator->sort('tags', __('Tags'), array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="profile"><?php echo $this->Paginator->sort('profile',__('Labels'), array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="action" class="actions"><?php echo __('Actions');?></th>
 	        </tr>
 	      </thead>	      
@@ -108,9 +108,12 @@
 	              <td class="direction"><?php
 	                  if (count($participant['Participant']['enrolled']) > 0) {
 	                      foreach ($participant['Participant']['enrolled'] as $enrolled) {
-	                          foreach ($currentProgramData['dialogues'] as $dialogue) {
+	                          foreach ($currentProgramData['dialogues'] as $dialogue) {                	         
 	                              if ($dialogue['dialogue-id'] == $enrolled['dialogue-id']) {
-	                                  echo $this->Html->tag('div', __("%s at %s", $dialogue['Active']['name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
+	                                  $dialogueEnrollName = $dialogue['Active']['name'];
+	                          	      $dialogueEnrollDate = $this->Time->format('d/m/Y H:i:s', $enrolled['date-time']);
+	                          	      $participantEnroll = $dialogueEnrollName . ' at ' .$dialogueEnrollDate;
+	                                  echo $this->Html->tag('div', $participantEnroll, array('class'=> 'participant-truncated-enroll', 'title' => $participantEnroll)); 
 	                                  break;
 	                              }
 	                          }

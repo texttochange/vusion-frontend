@@ -6,20 +6,21 @@ App::uses('PredefinedMessage', 'Model');
 
 class ProgramPredefinedMessagesController extends AppController
 {
-    public $uses = array('PredefinedMessage');
+    var $uses = array('PredefinedMessage');
     
     function constructClasses()
     {
         parent::constructClasses();
-        
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-        
-        $this->PredefinedMessage = new PredefinedMessage($options);
-        
     }
     
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
+
+        $options = array(
+            'database' => ($this->Session->read($this->params['program'].'_db')));  
+        $this->PredefinedMessage = new PredefinedMessage($options); 
+    }
     
     public function index()
     {

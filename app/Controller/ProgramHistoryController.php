@@ -19,19 +19,18 @@ class ProgramHistoryController extends AppController
     function constructClasses()
     {
         parent::constructClasses();
-        
-        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->History           = new History($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->DialogueHelper    = new DialogueHelper();
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
     }
 
     public function beforeFilter()
     {
         parent::beforeFilter();
         //$this->Auth->allow('*');
+        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
+        $this->History           = new History($options);
+        $this->Dialogue          = new Dialogue($options);
+        $this->DialogueHelper    = new DialogueHelper();
+        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
     }
 
 
@@ -81,7 +80,6 @@ class ProgramHistoryController extends AppController
     {
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
 
-        //print_r();
         return array(
             'operator' => $this->History->filterOperatorOptions,
             'dialogue' => $dialoguesInteractionsContent,
@@ -183,7 +181,6 @@ class ProgramHistoryController extends AppController
             
             $this->set(compact('fileName'));
         } catch (Exception $e) {
-            print_r($e->getMessage());
             $this->set('errorMessage', $e->getMessage());
         }
     }
