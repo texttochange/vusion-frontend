@@ -40,7 +40,7 @@ class AclLinkHelper extends AppHelper{
     }
 
     function generateButton($label, $url, $controller, $action, $options=null, $id=null, $ext = null) {
-        $aclUrl = 'controllers/'.$controller.($action ? '/'.$action : '');
+        $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
                 $url = array(
                         'program'=>$url,

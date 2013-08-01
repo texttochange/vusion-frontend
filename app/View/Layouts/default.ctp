@@ -91,7 +91,7 @@
 							array('class' => 'ttc-link-header'));
 			}
 			echo $this->AclLink->generateButton(
-			    __('Admin'), null, 'Admin', null, array('class'=>'ttc-link-header')); 
+			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header')); 
 			?>
 			</div> 
 		 </div>    
