@@ -61,7 +61,7 @@ class AclLinkHelper extends AppHelper{
  
 
     function generatePostLink($label, $url, $controller, $action, $confirmation, $options=null, $id=null, $params=null, $ext = null) {
-        $aclUrl = 'controllers/'.$controller.($action ? '/'.$action : '');
+        $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
                 $url = array(
                         'program'=>$url,
