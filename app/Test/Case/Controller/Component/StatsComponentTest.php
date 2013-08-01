@@ -25,7 +25,7 @@ class TestStatsComponentController extends Controller {
 }
 
 
-class TestStatsComponent extends CakeTestCase {
+class StatsComponentTest extends CakeTestCase {
 	
 	public $StatsComponent = null;
 	public $Controller = null;
