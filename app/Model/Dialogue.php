@@ -239,7 +239,7 @@ class Dialogue extends MongoModel
             foreach($dialogue['Dialogue']['interactions'] as $interaction) {
                 $interactionContent[$interaction['interaction-id']] = $interaction['content'];
             }
-            $content[$dialogue['dialogue-id']] = array(
+            $content[$dialogue['Dialogue']['dialogue-id']] = array(
                 'name'=>$dialogue['Dialogue']['name'],
                 'interactions'=> $interactionContent);
         }

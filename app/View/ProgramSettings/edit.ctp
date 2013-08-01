@@ -182,7 +182,7 @@
                  '$("[name*=\'credit-from-date\']").datepicker();
                  $("[name*=\'credit-to-date\']").datepicker();'
                  );
-            echo '</div>';
+            echo '</div></div>';
         ?>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>

@@ -946,10 +946,14 @@ width: 186px;
     color: grey;
 }
 
+.flash-box {
+    height: 30px;
+}
+
 .connection-message {
 	clear: both;
 	color: white;
-	position: absolute;
+	position: relative;
 	top: 0px;
 	padding-left: 8px;
 	padding-right: 8px;
@@ -959,13 +963,16 @@ width: 186px;
 	margin-right: auto;
 	display: inline;
 	z-index: 100;
+	white-space: nowrap;
 }
 
 .credit {
 	clear: both;
-	position: absolute;
-	top: 80px;
+	position: relative;
+	top: 20px;
 	z-index: 100;
+	margin-bottom: 0px;
+	white-space: nowrap;
 }
 
 .credit .warning {
