@@ -241,7 +241,7 @@ class ProgramUnattachedMessagesController extends AppController
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    
-            $programTimezone = $this->Session->read($this->params['program'].'_timezone');
+            $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
             date_timezone_set($now,timezone_open($programTimezone));      
             $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
             if ($now > $messageDate){   
