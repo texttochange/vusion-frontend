@@ -4,7 +4,10 @@ App::uses('ShortCode', 'Model');
 
 class ProgramPaginatorComponent extends Component {
     
-    var $settings = array(
+    
+	public $components = array('Stats'); 
+	
+	var $settings = array(
 		'page' => 1,
 		'limit' => 20,
 		'maxLimit' => 100,
@@ -91,8 +94,7 @@ class ProgramPaginatorComponent extends Component {
         }
 
         if ($this->params['ext']!='json') {
-            $programData['Program']['stats'] = $this->_getProgramStats($database);
-            
+            $programData['Program']['stats'] = $this->Stats->getProgramStats($database);
             $programDetails = array(
                 'program' =>  $programData,
                 'shortcode' => (isset($code)) ? $code : array()
@@ -100,21 +102,6 @@ class ProgramPaginatorComponent extends Component {
         }
 
         return $programDetails;
-    }
-    
-    
-    protected function _getProgramStats($database)
-    {
-        $programStats = array();
-        
-        $tempParticipant                   = new Participant(array('database' => $database));
-        $programStats['participant-count'] = $tempParticipant->find('count'); 
-        $tempHistory                       = new History(array('database' => $database));
-        $programStats['history-count']     = $tempHistory->find('count');
-        $tempSchedule                      = new Schedule(array('database' => $database));
-        $programStats['schedule-count']    = $tempSchedule->find('count');
-        
-        return $programStats;
     }
     
     

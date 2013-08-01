@@ -64,14 +64,14 @@ class ProgramHomeController extends AppController
                 
         $activeInteractions = $this->Dialogue->getActiveInteractions();
 
-        $timeNow = $this->ProgramSetting->getProgramTimeNow();
+        $timeNow = $this->ProgramSetting->getProgramTimeNow(); 
+        
         if (isset($timeNow)) 
             $timeNow->modify('+1 day');
         $schedules = $this->Schedule->generateSchedule(
                                     $this->Schedule->summary($timeNow),
                                     $activeInteractions
                                 );
-                
         $this->set(compact(
             'hasScriptActive', 
             'hasScriptDraft',
