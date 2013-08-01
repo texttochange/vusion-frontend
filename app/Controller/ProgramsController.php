@@ -13,9 +13,9 @@ App::uses('ShortCode', 'Model');
 
 class ProgramsController extends AppController
 {
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'Stats');
+    public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
 
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
-    var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
@@ -75,7 +75,6 @@ class ProgramsController extends AppController
                'specific_program_access' => 'true',
                'user_id' => $user['id'],
                'conditions' => array('id' => $programId)));
-
         }
         $this->Program->id = $programId;
         return $this->Program->read();
@@ -129,6 +128,7 @@ class ProgramsController extends AppController
                     'id' => $this->Session->read('Auth.User.id')
                     ),
                 ), 'controllers/Programs/edit');
+
         }
         
         $filteredPrograms = array();
