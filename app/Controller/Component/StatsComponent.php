@@ -123,7 +123,7 @@ class StatsComponent extends Component {
 		$statsKey = $this->_getStatsKey($database);
 		$stats = $this->redis->get($statsKey);
 		
-		if($this->redis->strlen($statsKey) > 0){
+		if($stats != null){
 			$programStats = (array)json_decode($stats);
 		}else{
 			$programStats = $this->_getProgramStats($database);
