@@ -19,8 +19,8 @@
     <div class="ttc-display-area">
     <?php echo $this->Form->create('PredefinedMessage'); ?>
     <fieldset>
-       <?php echo $this->Form->input(__('name'), array('id' => 'name')); ?>
-       <?php echo $this->Form->input(__('content'), array('rows'=>5)); ?>
+       <?php echo $this->Form->input('name', array('label' => __('name'), 'id' => 'name')); ?>
+       <?php echo $this->Form->input('content', array('label' => __('content'), 'rows'=>5)); ?>
        <?php $this->Js->get('document')->event('ready','
            addContentFormHelp();
            addCounter();
