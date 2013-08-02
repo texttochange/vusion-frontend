@@ -24,6 +24,7 @@ class ProgramsController extends AppController
             )
         );
 
+
     function constructClasses()
     {
         parent::constructClasses();
@@ -48,10 +49,12 @@ class ProgramsController extends AppController
     }
 
 
+
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
+
 
     protected function _getPrograms()
     {
@@ -66,6 +69,7 @@ class ProgramsController extends AppController
         return $this->Program->find('all');
     }
 
+
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
@@ -79,6 +83,7 @@ class ProgramsController extends AppController
         $this->Program->id = $programId;
         return $this->Program->read();
     }
+
 
     public function index() 
     {
@@ -181,8 +186,8 @@ class ProgramsController extends AppController
         
         $this->set(compact('programs', 'isProgramEdit'));
     }
-    
-    
+   
+  
     protected function _getFilterFieldOptions()
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
@@ -335,6 +340,7 @@ class ProgramsController extends AppController
             $this->request->data = $this->Program->read(null, $id);
         }
     }
+
 
     public function delete($id = null)
     {

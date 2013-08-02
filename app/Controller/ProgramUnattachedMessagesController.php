@@ -42,7 +42,8 @@ class ProgramUnattachedMessagesController extends AppController
     }
 
 
-    protected function _instanciateVumiRabbitMQ(){
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
@@ -115,6 +116,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->set(compact('selectors', 'predefinedMessageOptions'));
    
     }
+
 
     protected function saveUnattachedMessage()
     {
@@ -189,6 +191,7 @@ class ProgramUnattachedMessagesController extends AppController
         return $savedUnattached;
     }
 
+
     protected function importParticipants()
     {    
         $programUrl = $this->params['program'];
@@ -222,6 +225,7 @@ class ProgramUnattachedMessagesController extends AppController
         unlink($filePath . DS . $fileName);
         return $report;
     }
+
 
     public function edit()
     {

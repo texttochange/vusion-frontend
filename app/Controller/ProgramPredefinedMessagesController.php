@@ -8,10 +8,12 @@ class ProgramPredefinedMessagesController extends AppController
 {
     var $uses = array('PredefinedMessage');
     
+    
     function constructClasses()
     {
         parent::constructClasses();
     }
+    
     
     public function beforeFilter()
     {
@@ -21,6 +23,7 @@ class ProgramPredefinedMessagesController extends AppController
             'database' => ($this->Session->read($this->params['program'].'_db')));  
         $this->PredefinedMessage = new PredefinedMessage($options); 
     }
+    
     
     public function index()
     {
@@ -36,19 +39,23 @@ class ProgramPredefinedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->PredefinedMessage->create();
             if ($this->PredefinedMessage->save($this->request->data)) {
-                $this->Session->setFlash(__('The predefined message has been saved.'),
+                $this->Session->setFlash(
+                	__('The predefined message has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
-                $this->redirect(array(
-                    'program' => $programUrl, 
-                    'controller' => 'programPredefinedMessages',
-                    'action' => 'index'
-                    ));
+                $this->redirect(
+                	array(
+                	    'program' => $programUrl, 
+                	    'controller' => 'programPredefinedMessages',
+                        'action' => 'index'
+                		)
+                	);
             } else {
-                $this->Session->setFlash(__('The predefined message could not be saved.'), 
-                'default',
-                array('class' => "message failure")
+                $this->Session->setFlash(
+                	__('The predefined message could not be saved.'), 
+                    'default',
+                    array('class' => "message failure")
                 );
             }
         }
@@ -68,7 +75,8 @@ class ProgramPredefinedMessagesController extends AppController
 
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->PredefinedMessage->save($this->request->data)) {
-                $this->Session->setFlash(__('The predefined message has been saved.'),
+                $this->Session->setFlash(
+                	__('The predefined message has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
@@ -78,9 +86,10 @@ class ProgramPredefinedMessagesController extends AppController
                     'action' => 'index'
                     ));
             } else {
-                $this->Session->setFlash(__('The predefined message could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
+                $this->Session->setFlash(
+                	__('The predefined message could not be saved. Please, try again.'), 
+                    'default',
+                    array('class' => "message failure")
                 );
             }
         } else {
@@ -109,18 +118,21 @@ class ProgramPredefinedMessagesController extends AppController
                 __('Predefined Message deleted'),
                 'default',
                 array('class'=>'message success')
-                );
+            );
             $this->redirect(
                 array(
                     'program' => $programUrl,
                     'controller' => 'programPredefinedMessages',
                     'action' => 'index'
                     )
-                );
+            );
         }
-        $this->Session->setFlash(__('Predefined Message was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+        $this->Session->setFlash(
+        	__('Predefined Message was not deleted.'), 
+            'default',
+            array('class' => "message failure")
+        );
     }
+    
+    
 }

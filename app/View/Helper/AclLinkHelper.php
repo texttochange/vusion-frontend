@@ -2,11 +2,13 @@
 App::uses('AppHelper', 'View/Helper');
 
 
-class AclLinkHelper extends AppHelper{
+class AclLinkHelper extends AppHelper
+{
     
     public $helpers = array('Html', 'Form');
     
-    public function __construct(View $View, $settings = array()) {
+    public function __construct(View $View, $settings = array())
+    {
 		parent::__construct($View, $settings);
         App::import('Component', 'Acl'); 
         App::import('Component', 'Session'); 
@@ -14,7 +16,9 @@ class AclLinkHelper extends AppHelper{
         $this->Session=new SessionComponent(new ComponentCollection()); 
     }
     
-    function _allow($aclUrl) {
+
+    function _allow($aclUrl)
+    {
         if ($this->Session->read('Auth.User.id') == null) {
             return false;
         }
@@ -23,7 +27,9 @@ class AclLinkHelper extends AppHelper{
             $aclUrl);
     }
 
-    function generateLink( $title, $url, $controller, $action = 'index', $id = null, $ext = null){
+
+    function generateLink( $title, $url, $controller, $action = 'index', $id = null, $ext = null)
+    {
         $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
             return $this->Html->link(__($title),
@@ -39,7 +45,9 @@ class AclLinkHelper extends AppHelper{
         }
     }
 
-    function generateButton($label, $url, $controller, $action, $options=null, $id=null, $ext = null) {
+
+    function generateButton($label, $url, $controller, $action, $options=null, $id=null, $ext = null)
+    {
         $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
                 $url = array(
@@ -60,7 +68,8 @@ class AclLinkHelper extends AppHelper{
     }
  
 
-    function generatePostLink($label, $url, $controller, $action, $confirmation, $options=null, $id=null, $params=null, $ext = null) {
+    function generatePostLink($label, $url, $controller, $action, $confirmation, $options=null, $id=null, $params=null, $ext = null)
+    {
         $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
                 $url = array(
@@ -84,6 +93,6 @@ class AclLinkHelper extends AppHelper{
             return;
     }
 
-  
+
     
 }
