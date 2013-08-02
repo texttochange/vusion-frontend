@@ -16,11 +16,13 @@ class ProgramHistoryController extends AppController
         'Time'
         );
 
+    
     function constructClasses()
     {
         parent::constructClasses();
     }
 
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -213,7 +215,9 @@ class ProgramHistoryController extends AppController
         return $conditions;        
     }
 
-    public function delete() {
+    
+    public function delete()
+    {
         
         $programUrl = $this->params['program'];
      
@@ -244,8 +248,7 @@ class ProgramHistoryController extends AppController
                 'program' => $programUrl,
                 'controller' => 'programHistory',
                 'action' => 'index'));
-        }
-                   
+        }                   
     }
     
 

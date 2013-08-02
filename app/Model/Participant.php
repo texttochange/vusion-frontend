@@ -286,6 +286,7 @@ class Participant extends MongoModel
         return true;
     }
 
+    
     public function getDistinctTagsAndLabels()
     {
         $results = $this->getDistinctTags();
@@ -295,6 +296,7 @@ class Participant extends MongoModel
         return array_merge($results, $distinctLabels);
     }
 
+    
     public function getDistinctTags()                 
     {
         $tagsQuery = array(
@@ -304,6 +306,7 @@ class Participant extends MongoModel
         return $distinctTags['values'];
     }
 
+    
     public function getDistinctLabels($conditions = null)
     {
         $results = array();
@@ -336,6 +339,7 @@ class Participant extends MongoModel
         return $results;  
     }
 
+    
     public function getExportHeaders($conditions = null)
     {
         $headers = array(
@@ -698,6 +702,7 @@ class Participant extends MongoModel
         return $report;
     }
 
+    
     private function array_filter_out_not_label($input) 
     {
         $tmp = array_filter(array_keys($input), function($k) {
@@ -842,6 +847,7 @@ class Participant extends MongoModel
         'any' => 'any'
         );
 
+    
 
     public function getFilters($subset = null) 
     {

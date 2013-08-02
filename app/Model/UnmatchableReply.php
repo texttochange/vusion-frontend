@@ -14,11 +14,13 @@ class UnmatchableReply extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'unmatchable_reply';
     
+    
     function getModelVersion()
     {
         return '1';
     }
    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
     	    parent::__construct($id, $table, $ds);
@@ -35,6 +37,7 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
+    
     
     public $filterFields = array(
         'country' => array(
@@ -98,6 +101,7 @@ class UnmatchableReply extends MongoModel
         'any' => 'any'
         );
 
+    
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
@@ -208,5 +212,6 @@ class UnmatchableReply extends MongoModel
         }
         return $conditions;
     }
+    
 
 }

@@ -13,6 +13,7 @@ App::uses('ShortCode', 'Model');
 
 class ProgramsController extends AppController
 {
+
     var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'Stats');
     public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
 
@@ -311,6 +312,7 @@ class ProgramsController extends AppController
         $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
     }
 
+    
     protected function _stopBackendWorker($workerName, $databaseName)
     {
         $this->VumiRabbitMQ->sendMessageToRemoveWorker($workerName, $databaseName);    	 

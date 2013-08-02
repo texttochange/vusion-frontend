@@ -26,6 +26,7 @@ class ProgramParticipantsController extends AppController
         parent::constructClasses();
     }
 
+    
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
@@ -110,6 +111,7 @@ class ProgramParticipantsController extends AppController
         $this->response->send();
     }
 
+    
     public function massTag()
     {       
         $programUrl = $this->params['program'];
@@ -159,6 +161,7 @@ class ProgramParticipantsController extends AppController
             }           
         } 
     }
+   
     
     public function export() 
     {

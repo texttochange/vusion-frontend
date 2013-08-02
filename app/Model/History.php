@@ -25,11 +25,13 @@ class History extends MongoModel
         'datepassed-action-marker-history',
         'oneway-marker-history');
 
+    
     function getModelVersion()
     {
         return '2';
     }
 
+    
     // TODO fail to express that a incoming message for dialogue id has 'matching-answer' field
     function getRequiredFields($object)
     {
@@ -75,6 +77,7 @@ class History extends MongoModel
         return $fields;
     }
 
+    
     public function checkFields($object)
     {       
         $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object));
@@ -171,6 +174,7 @@ class History extends MongoModel
          return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
 
+    
     public function addDialogueContent($histories, $dialoguesInteractionsContent)
     {
         foreach ($histories as &$history) {
@@ -189,6 +193,7 @@ class History extends MongoModel
          return $histories;
     }
 
+    
     #Filter variables and functions
     public $filterFields = array(
         'message-direction' => array( 
@@ -280,6 +285,7 @@ class History extends MongoModel
                 )), 
         );
 
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
@@ -298,6 +304,8 @@ class History extends MongoModel
         'ack' => 'ack'
         );
 
+    
+    
 
     public function validateFilter($filterParam)
     {

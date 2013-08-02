@@ -61,6 +61,7 @@ class AppController extends Controller
 
     var $redisProgramPrefix = "vusion:programs"; 
 
+    
     function beforeFilter()
     {    
         //In case of a Json request, no need to set up the variables
@@ -113,6 +114,7 @@ class AppController extends Controller
         $this->redis->connect($redisHost, $redisPort);
      }
     
+     
     protected function _hasProgramLogs($redis,$program)
     {
         if (count($redis->zRange($program.':logs', -5, -1, true)) > 0)

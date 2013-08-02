@@ -27,6 +27,7 @@ class ProgramHomeController extends AppController
         parent::constructClasses();
     }
 
+    
     function beforeFilter()
     {
         parent::beforeFilter();
@@ -45,7 +46,9 @@ class ProgramHomeController extends AppController
         $this->_instanciateVumiRabbitMQ();
     }
 
-    protected function _instanciateVumiRabbitMQ(){
+    
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
@@ -83,6 +86,7 @@ class ProgramHomeController extends AppController
             'workerStatus'));
     }
 
+    
     public function restartWorker()
     {
         $programUrl   = $this->params['program'];
