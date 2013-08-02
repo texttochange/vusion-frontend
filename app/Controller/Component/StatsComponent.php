@@ -32,19 +32,19 @@ class StatsComponent extends Component {
 		$this->ProgramSetting = new ProgramSetting(array('database' => $database));
 		$programTimeNow = $this->ProgramSetting->getProgramTimeNow();
 		if(empty($programTimeNow))
-		return array(
-			'active-participant-count' => 0,
-			'participant-count' => 0,
-			'all-received-messages-count'=> 0,
-			'current-month-received-messages-count' => 0,
-			'all-sent-messages-count' => 0,
-			'current-month-sent-messages-count' => 0,
-			'total-current-month-messages-count' => 0,
-			'history-count' => 0,
-			'today-schedule-count' => 0,
-			'schedule-count' => 0,
-			'object-type' => 'program-stats',
-			'model-version'=> '1');
+			return array(
+				'active-participant-count' => 0,
+				'participant-count' => 0,
+				'all-received-messages-count'=> 0,
+				'current-month-received-messages-count' => 0,
+				'all-sent-messages-count' => 0,
+				'current-month-sent-messages-count' => 0,
+				'total-current-month-messages-count' => 0,
+				'history-count' => 0,
+				'today-schedule-count' => 0,
+				'schedule-count' => 0,
+				'object-type' => 'program-stats',
+				'model-version'=> '1');
 		
 		$tempParticipant = new Participant(array('database' => $database));                
 		$activeParticipantCount = $tempParticipant->find(
