@@ -12,10 +12,11 @@ App::uses('ProgramSetting', 'Model');
 
 
 
-class TestStatsComponentController extends Controller 
-{  
-	
+class TestStatsComponentController extends Controller
+{
+
     var $components = array('Stats');
+    
     
     function constructClasses()
     {
@@ -23,15 +24,18 @@ class TestStatsComponentController extends Controller
         $this->redis->connect('127.0.0.1');
         $this->redisProgramPrefix = 'unittest';
     }
+
+    
 }
 
 
-class StatsComponentTest extends CakeTestCase 
+class StatsComponentTest extends CakeTestCase
 {
-	
+
     public $StatsComponent = null;
     public $Controller = null;
     
+
     public function setUp()
     {
         parent::setUp();
@@ -51,6 +55,7 @@ class StatsComponentTest extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
     }
     
+    
     protected function dropData()
     {
         $this->Participant->deleteAll(true, false);
@@ -59,6 +64,7 @@ class StatsComponentTest extends CakeTestCase
         $this->ProgramSetting->deleteAll(true, false);
     }
     
+    
     protected function instanciateModels($options)
     {
         $this->Participant = new Participant($options);
@@ -66,6 +72,7 @@ class StatsComponentTest extends CakeTestCase
         $this->History = new History($options);
         $this->ProgramSetting = new ProgramSetting($options); 
     }
+    
     
     public function tearDown()
     {
@@ -77,6 +84,7 @@ class StatsComponentTest extends CakeTestCase
         unset($this->StatsComponent);
         parent::tearDown();
     }
+    
     
     public function mkStats()
     {
@@ -96,6 +104,7 @@ class StatsComponentTest extends CakeTestCase
             );
     }
     
+    
     public function testGetStats()
     {
         $this->redisProgramPrefix = 'unittest';        
@@ -110,8 +119,10 @@ class StatsComponentTest extends CakeTestCase
         
         $this->assertEqual(
             $testStats,
-            $programTestStats);
+            $programTestStats
+            );
     }
+    
     
     public function testGetStats_noStatsInRedis()
     {
@@ -123,7 +134,8 @@ class StatsComponentTest extends CakeTestCase
                 'participant-phone' => '+256712747841',
                 'dialogue-id' => 'def456',
                 )
-            )); 
+            )
+            ); 
         $this->History->create('unattach-history');
         $savedHistory = $this->History->save(array(
             'participant-phone' => '256712747841',
@@ -131,7 +143,8 @@ class StatsComponentTest extends CakeTestCase
             'timestamp' => '2012-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
             'message-status' => 'delivered',
-            ));
+            )
+            );
         $this->History->create('unattach-history');
         $savedHistory2 = $this->History->save(array(
             'participant-phone' => '256712747842',
@@ -139,7 +152,8 @@ class StatsComponentTest extends CakeTestCase
             'timestamp' => '2012-03-08T12:20:43.882854',
             'message-direction' => 'outgoing',
             'message-status' => 'delivered',
-            ));
+            )
+            );
         
         $key = "unittest:testdbprogram:stats";
         
@@ -148,11 +162,14 @@ class StatsComponentTest extends CakeTestCase
         
         $this->assertEqual(
             null,
-            $stats);
+            $stats
+            );
         
         $this->assertEqual(
             '2',
-            $programTestStats['history-count']);
+            $programTestStats['history-count']
+            );
     }
+    
+    
 }
-?>

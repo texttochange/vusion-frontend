@@ -5,7 +5,8 @@ App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
 App::uses('ProgramPaginatorComponent', 'Controller/Component');
 
-class TestProgramPaginatorComponentController extends Controller {
+class TestProgramPaginatorComponentController extends Controller
+{
     public $components = array('ProgramPaginator');
 }
 
@@ -27,6 +28,7 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
 
     }
 
+    
     public function tearDown() {
         parent::tearDown();
         unset($this->ProgramPaginatorComponent);
@@ -72,5 +74,6 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['prevPage'], false);
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['nextPage'], true);
     }
+    
     
 }
