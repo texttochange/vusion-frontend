@@ -11,7 +11,7 @@
 		echo "</div>";
 		echo $this->Form->input('email');
 		$isAdmin = $this->AclLink->_allow('controllers/Admin');
-		if (isset($isAdmin) && $isAdmin) {
+		if ($isAdmin) {
 		    echo $this->Form->input('group_id');
 		    $options = $programs;		
 		    echo $this->Form->input('Program', array('options'=>$options,
@@ -32,19 +32,19 @@
 	<ul>
 
 		<li><?php
-		if (isset($isAdmin) && $isAdmin) {
+		if ($isAdmin) {
 		    echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete the user "%s" ?', $this->Form->value('User.username'))); 
 		}
 		?>
 		</li>
 		<li><?php
-		if (isset($isAdmin) && $isAdmin) {
+		if ($isAdmin) {
 		    echo $this->Html->link(__('List Users'), array('action' => 'index'));
 		}
 		?>
 		</li>
 		<li><?php 
-		if (isset($isAdmin) && $isAdmin) {
+		if ($isAdmin) {
 		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
 		}else{
 		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
