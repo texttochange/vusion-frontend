@@ -18,7 +18,8 @@
 		<dt><?php echo __('Group'); ?></dt>
 		<dd>
 			<?php
-			if ($this->AclLink->_allow('controllers/Admin')) {
+			$isAdmin = $this->AclLink->_allow('controllers/Admin');
+			if (isset($isAdmin) && $isAdmin) {
 			echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); 
 			}else{
 			    echo h($user['Group']['name']);
@@ -40,7 +41,7 @@
 	<tr>l
 		<th><?php echo __('Name'); ?></th>
 		<th class="actions"><?php
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		if (isset($isAdmin) && $isAdmin) {
 		    echo __('Actions');
 		}
 		?></th>
@@ -52,7 +53,7 @@
 		<td><?php echo $program['name'];?></td>			 
 			<td class="actions">
 			<?php
-			if ($this->AclLink->_allow('controllers/Admin')) {
+			if (isset($isAdmin) && $isAdmin) {
 				echo $this->Html->link(__('View'), array('controller' => 'programs', 'action' => 'view', $program['id']));				
 				echo $this->Html->link(__('Edit'), array('controller' => 'programs', 'action' => 'edit', $program['id'])); 
 			}
@@ -71,13 +72,13 @@
 		<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
 		</li>
 		<li><?php
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		if (isset($isAdmin) && $isAdmin) {
 		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
 		}
 		?> 
 		</li>
 		<li><?php
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		if (isset($isAdmin) && $isAdmin) {
 		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
 		}else{
 		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 

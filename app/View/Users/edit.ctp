@@ -10,7 +10,8 @@
 		echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $this->Form->value('User.id')));
 		echo "</div>";
 		echo $this->Form->input('email');
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		$isAdmin = $this->AclLink->_allow('controllers/Admin');
+		if (isset($isAdmin) && $isAdmin) {
 		    echo $this->Form->input('group_id');
 		    $options = $programs;		
 		    echo $this->Form->input('Program', array('options'=>$options,
@@ -30,20 +31,20 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
-		<li><?php 
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		<li><?php
+		if (isset($isAdmin) && $isAdmin) {
 		    echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete the user "%s" ?', $this->Form->value('User.username'))); 
 		}
 		?>
 		</li>
 		<li><?php
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		if (isset($isAdmin) && $isAdmin) {
 		    echo $this->Html->link(__('List Users'), array('action' => 'index'));
 		}
 		?>
 		</li>
 		<li><?php 
-		if ($this->AclLink->_allow('controllers/Admin')) {
+		if (isset($isAdmin) && $isAdmin) {
 		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
 		}else{
 		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
