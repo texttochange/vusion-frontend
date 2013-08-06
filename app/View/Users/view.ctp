@@ -18,6 +18,7 @@
 		<dt><?php echo __('Group'); ?></dt>
 		<dd>
 			<?php
+			$isAdmin = $this->AclLink->_allow('controllers/Admin');
 			if ($isAdmin) {
 			echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); 
 			}else{
