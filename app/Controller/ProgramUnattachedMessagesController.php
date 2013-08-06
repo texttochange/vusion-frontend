@@ -31,12 +31,12 @@ class ProgramUnattachedMessagesController extends AppController
             );
         
         $this->loadModel('UnattachedMessage', $options);
-        $this->Schedule = new Schedule($options);
-        $this->Participant = new Participant($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->History = new History($options);
+        $this->Schedule          = new Schedule($options);
+        $this->Participant       = new Participant($options);
+        $this->ProgramSetting    = new ProgramSetting($options);
+        $this->History           = new History($options);
         $this->PredefinedMessage = new PredefinedMessage($options);
-        $this->DialogueHelper = new DialogueHelper();
+        $this->DialogueHelper    = new DialogueHelper();
         $this->_instanciateVumiRabbitMQ();
     }
 
@@ -104,8 +104,6 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         }
-
-//        print_r($this->Participant);     
 
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
         if (count($selectorValues) > 0) {
