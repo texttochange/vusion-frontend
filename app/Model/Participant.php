@@ -771,8 +771,8 @@ class Participant extends MongoModel
     #Filter variables and functions
     public $filterFields = array(
         'phone' => array(
-                'label' => 'phone',
-                'operators'=> array(
+        	'label' => 'phone',
+        	'operators'=> array(
                 'start-with' => array(
                     'parameter-type' => 'text'),
                 'equal-to' => array(
@@ -780,8 +780,8 @@ class Participant extends MongoModel
                 'start-with-any' => array(
                     'parameter-type' => 'text'))),
         'optin' => array(
-                'label' => 'optin',
-                'operators' => array(
+        	'label' => 'optin',
+        	'operators' => array(
                 'now' => array(
                     'parameter-type' => 'none'),
                 'date-from' => array(
@@ -789,8 +789,8 @@ class Participant extends MongoModel
                 'date-to' => array(
                     'parameter-type' => 'date'))),
         'optout' => array(
-                'label' => 'optout',
-                'operators' => array(
+        	'label' => 'optout',
+        	'operators' => array(
                 'now' =>array(
                     'parameter-type' => 'none'),
                 'date-from' => array(
@@ -798,15 +798,15 @@ class Participant extends MongoModel
                 'date-to' => array(
                     'parameter-type' => 'date'))),
         'enrolled' => array(
-                'label' => 'enrolled',
-                'operators' => array(
+        	'label' => 'enrolled',
+        	'operators' => array(
                 'in' => array(
                     'parameter-type' => 'dialogue'),
                 'not-in' =>  array(
                     'parameter-type' => 'dialogue'))),
         'tagged' => array(
-                'label' => 'tagged',
-                'operators' => array(
+        	'label' => 'tagged',
+        	'operators' => array(
                 'with' =>  array(
                     'parameter-type' => 'tag',
                     'conditional-action' => true),
@@ -814,8 +814,8 @@ class Participant extends MongoModel
                     'parameter-type' => 'tag',
                     'conditional-action' => true))),
         'labelled' => array(
-                'label' => 'labelled',
-                'operators' => array(
+        	'label' => 'labelled',
+        	'operators' => array(
                 'with' =>  array(
                     'parameter-type' => 'label',
                     'conditional-action' => true),
