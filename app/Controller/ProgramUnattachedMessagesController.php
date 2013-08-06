@@ -104,9 +104,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         }
-
-//        print_r($this->Participant);     
-
+        
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);
