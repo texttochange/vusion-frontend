@@ -14,8 +14,7 @@ class ProgramUnattachedMessagesController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
-    
-    public $uses = array('UnattachedMessage', 'User');
+    var $uses = array('UnattachedMessage', 'User');
 
 
     public function constructClasses()
@@ -31,13 +30,13 @@ class ProgramUnattachedMessagesController extends AppController
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
         
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Participant       = new Participant($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->DialogueHelper    = new DialogueHelper();
-        $this->History           = new History($options);
+        $this->loadModel('UnattachedMessage', $options);
+        $this->Schedule = new Schedule($options);
+        $this->Participant = new Participant($options);
+        $this->ProgramSetting = new ProgramSetting($options);
+        $this->History = new History($options);
         $this->PredefinedMessage = new PredefinedMessage($options);
+        $this->DialogueHelper = new DialogueHelper();
         $this->_instanciateVumiRabbitMQ();
     }
 
@@ -105,7 +104,9 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         }
-        
+
+//        print_r($this->Participant);     
+
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);

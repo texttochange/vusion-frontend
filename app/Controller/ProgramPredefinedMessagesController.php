@@ -18,8 +18,8 @@ class ProgramPredefinedMessagesController extends AppController
         parent::beforeFilter();
 
         $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db')));  
-        $this->PredefinedMessage = new PredefinedMessage($options); 
+            'database' => ($this->Session->read($this->params['program'].'_db')));
+        $this->loadModel('PredefinedMessage', $options); 
     }
     
     public function index()

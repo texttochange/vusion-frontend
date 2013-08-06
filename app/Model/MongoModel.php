@@ -34,9 +34,11 @@ abstract class MongoModel extends Model
         if ($this->specific) {
             // Get saved company/database name
             if (isset($id['database']) and $id['database']) {
-                    $dbName = $id['database'];
+                $dbName = $id['database'];
+            } else if (isset($id['id']['database'])) {
+                $dbName = $id['id']['database'];
             } else {
-                    $dbName = 'mongo-test';
+                $dbName = 'mongo-test';
             }
       
             // Get common company-specific config (default settings in database.php)
