@@ -192,29 +192,29 @@ class History extends MongoModel
     #Filter variables and functions
     public $filterFields = array(
         'message-direction' => array( 
-            'label' => 'message direction',
-            'operators' => array(
+                'label' => 'message direction',
+                'operators' => array(
                 'is' => array(
                     'parameter-type' => 'message-direction'),
                 'not-is' => array(
                     'parameter-type' => 'message-direction'))),
         'message-status' => array(
-        	'label' => 'message status',
-            'operators' => array(
+        	    'label' => 'message status',
+                'operators' => array(
                 'is' => array(
                     'parameter-type' => 'message-status'),
                 'not-is' => array(
                     'parameter-type' => 'message-status'))),
         'date' => array(
-        	'label' => 'date',
-            'operators' => array(
+        	    'label' => 'date',
+                'operators' => array(
                 'from' => array(
                     'parameter-type' => 'date'),
                 'to' => array(
                     'parameter-type' => 'date'))),
         'participant-phone' => array(
-        	'label' => 'participant phone',
-            'operators' => array(
+        	    'label' => 'participant phone',
+                'operators' => array(
                 'start-with' => array(
                     'parameter-type' => 'text'),
                 'equal-to' => array(
@@ -222,14 +222,14 @@ class History extends MongoModel
                 'start-with-any' => array(
                     'parameter-type' => 'text'))),
         'separate-message' => array(
-        	'label' => 'separate message',
-            'operators' => array(
+        	    'label' => 'separate message',
+                'operators' => array(
                 'equal-to' => array(
                     'parameter-type' => 'unattach-message'),                
                 )),
         'message-content' => array(
-        	'label' => 'message content',
-            'operators' => array(
+        	    'label' => 'message content',
+                'operators' => array(
                 'equal-to' => array(
                     'parameter-type' => 'text'),
                 'contain' => array(
@@ -241,20 +241,20 @@ class History extends MongoModel
                     'parameter-validate' => VusionConst::KEYWORD_REGEX)
                 )),
         'dialogue-source' => array(
-        	'label' => 'dialogue source',
-            'operators' => array(
+        	    'label' => 'dialogue source',
+                'operators' => array(
                 'is' => array(
                     'parameter-type' => 'dialogue')
                 )),
         'interaction-source' => array(
-        	'label' => 'interaction source',
-            'operators' => array(
+        	    'label' => 'interaction source',
+                'operators' => array(
                 'is' => array(
                     'parameter-type' => 'interaction')
                 )),
         'answer' => array(
-        	'label' => 'answer',
-            'operators' => array(
+        	    'label' => 'answer',
+                'operators' => array(
                 'matching' => array(
                     'parameter-type' => 'none'),
                 'not-matching' => array(
