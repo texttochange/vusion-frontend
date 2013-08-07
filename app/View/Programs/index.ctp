@@ -4,40 +4,82 @@
             null,
             'programs',
             'add',
-            array('class' => 'ttc-button', 'style'=>'float:right')); ?>
-    <h3><?php echo __('Programs');?></h3>
-    <div class="paging" style="text-align:right">
-    <?php
-    echo "<span class='ttc-page-count'>";
-    if (isset($this->Paginator)) {
-        echo $this->Paginator->counter(array(
-            'format' => __('{:start} - {:end} of {:count}')
-            ));
-        echo "</span>";
-        echo $this->Paginator->prev('<', null, null, array('class' => 'prev disabled'));
-        echo $this->Paginator->next('>', null, null, array('class' => 'next disabled'));
-    }
+            array('class' => 'ttc-button', 'style'=>'float:right'));
+        echo $this->Html->tag(
+            'span', 
+            __('Filter'), 
+            array('class' => 'ttc-button', 'style'=>'float:right', 'name' => 'add-filter')); 
+        $this->Js->get('[name=add-filter]')->event(
+            'click',
+            '$("#advanced_filter_form").show();
+            createFilter();
+            addStackFilter();');
     ?>
+    <h3><?php echo __('Programs');?></h3>
+    <?php
+	    echo $this->element('filter_box', array(
+	        'controller' => 'programs'));
+	    $this->Js->get('document')->event('ready', '$(".ttc-paging").css("margin-right", "0px");');
+	?>
+    <div style="clear:both">
+       <!-- Buffer zone -->
     </div>
 	<?php
+	if (preg_grep('/^filter/', array_keys($this->params['url'])) && empty($programs))
+	    echo "No results found.";
 	foreach ($programs as $program): ?>
 
-	<div class='ttc-program-box' title= "<?php echo $program['Program']['name']?>" onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
+	<div class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
 	<?php $programName = $this->Text->truncate($program['Program']['name'], 
 			24, 
 			array('ellipsis' => '...',
 			'exact' => true ));
-	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title'));
+	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title','title' => $program['Program']['name']));
 	?>
 		<?php
 		if (isset($program['Program']['shortcode']))
 		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
-		<?php
-		    echo $this->Html->tag(
-		        'div',
-		        $program['Program']['participant-count'].__(' participant(s)').'<br/>'. $program['Program']['history-count'].__(' history(s)').'<br/>'. $program['Program']['schedule-count'].__(' schedule(s)'),
-		        array('class'=>'ttc-program-stats')
-		        );
+		<?php	
+			echo '<div class ="ttc-program-stats">';
+			echo '<div>';
+			echo $this->Html->tag(
+				'span',
+				$program['Program']['stats']['active-participant-count'].'/'.
+				$program['Program']['stats']['participant-count'],
+				array('title' => __('Optin / Total participant(s)'), 'class' => 'stat'));	
+			echo __(' participant(s)');
+			echo '</div>';
+			echo '<div>';
+			echo $this->Html->tag(
+				'span',
+				$program['Program']['stats']['history-count'].'('.
+				$program['Program']['stats']['total-current-month-messages-count'].')',
+				array('title' => __('Total (total current month) message(s)'), 'class' => 'stat'));	
+			echo __(' total message(s)');
+			echo '</div>';
+			echo '<div>';
+			echo $this->Html->tag(
+				'span',
+				$program['Program']['stats']['all-received-messages-count'].'('.
+				$program['Program']['stats']['current-month-received-messages-count'].')',
+				array('title' => __('Total (current month) received - Total(current month) sent'), 'class' => 'stat'));	
+			echo __(' received '); 
+			echo $this->Html->tag(
+				'span',
+				$program['Program']['stats']['all-sent-messages-count'].'('.
+				$program['Program']['stats']['current-month-sent-messages-count'].')',
+				array('title' => __('Total (current month) received - Total(current month) sent'), 'class' => 'stat'));	
+			echo __(' sent message(s)');
+			echo '</div>';
+			echo '<div>';
+			echo $this->Html->tag(
+				'span',
+				$program['Program']['stats']['schedule-count'].'('.
+				$program['Program']['stats']['today-schedule-count'].')',
+				array('title' => __('Total (today) schedule(s)'), 'class' => 'stat'));	
+			echo __(' schedule(s)'); 
+			echo '</div>';
+			echo '</div>';
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">

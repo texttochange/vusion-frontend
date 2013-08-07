@@ -31,6 +31,7 @@ class Dialogue extends MongoModel
             );
     }
     
+    
     public $validate = array(
         'dialogue-id' => array(
             'notempty' => array(
@@ -74,6 +75,8 @@ class Dialogue extends MongoModel
         	),
         );
 
+    
+    
     public function validateInteractions($check) 
     {
         $index = 0;
@@ -101,7 +104,8 @@ class Dialogue extends MongoModel
         'draft' => true,
         'first' => true,
         'count' => true,
-        );    
+        ); 
+    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -123,6 +127,7 @@ class Dialogue extends MongoModel
         return $results;
     }
 
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -208,24 +213,13 @@ class Dialogue extends MongoModel
                 'dialogue-id' => $dialogueId)));
     }
 
-    public function getActiveDialogues($options=null)
+    public function getActiveDialogues($moreConditions=null)
     {
-        $dialogueQuery = array(
-            'key' => array(
-                'dialogue-id' => true,
-                ),
-            'initial' => array('Dialogue' => 0),
-            'reduce' => 'function(obj, prev){
-                if (obj.activated==1 && (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified)) 
-                    prev.Dialogue = obj;
-                }',
-            'options'=> $options
-            );
-        $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
-        return array_filter(
-            $dialogues['retval'],
-            array($this, "_filterDraft")
-            );
+        $conditions = array('conditions' => array('activated' => 1));
+        if (isset($moreConditions)) {
+            $conditions['conditions'] = array_merge($conditions['conditions'], $moreConditions);
+        }
+        return $this->find('all', $conditions); 
     }
 
 
@@ -250,28 +244,11 @@ class Dialogue extends MongoModel
             foreach($dialogue['Dialogue']['interactions'] as $interaction) {
                 $interactionContent[$interaction['interaction-id']] = $interaction['content'];
             }
-            $content[$dialogue['dialogue-id']] = array(
+            $content[$dialogue['Dialogue']['dialogue-id']] = array(
                 'name'=>$dialogue['Dialogue']['name'],
                 'interactions'=> $interactionContent);
         }
         return $content;
-    }
-
-
-    public function getDialogues()
-    {
-        $dialogueQuery = array(
-            'key' => array(
-                'dialogue-id' => true,
-                ),
-            'initial' => array('Dialogue' => 0),
-            'reduce' => 'function(obj, prev){
-                if (prev.Dialogue==0 || prev.Dialogue.modified <= obj.modified) 
-                    prev.Dialogue = obj;
-                }',
-            );
-        $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
-        return $dialogues['retval'];
     }
 
 
@@ -283,11 +260,14 @@ class Dialogue extends MongoModel
                 ),
             'initial' => array('Active' => 0, 'Draft' => 0),
             'reduce' => 'function(obj, prev){
-                if (obj.activated==1 && (!prev.Active || prev.Active.modified <= obj.modified)) 
+                if (obj.activated==1) { 
                     prev.Active = obj;
-                else if (!obj.activated)
+                } else if (obj.activated==0) {
                     prev.Draft = obj;
-                }',
+                }
+             }',
+             'options' => array(
+                 'condition' => array('activated'=> array('$in' => array(0,1))))
             );
         $dialogues = $this->getDataSource()->group($this, $dialogueQuery);
         uasort($dialogues['retval'], array($this, '_compareDialogue'));
@@ -326,6 +306,7 @@ class Dialogue extends MongoModel
         if ($draft) { 
             $this->id                    = $draft[0]['Dialogue']['_id'];
             $dialogue['Dialogue']['_id'] = $draft[0]['Dialogue']['_id'];
+            $dialogue['Dialogue']['activated'] = 0;
         } else { 
             unset($dialogue['Dialogue']['_id']);
             $dialogue['Dialogue']['activated'] = 0;

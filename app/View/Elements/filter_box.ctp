@@ -7,8 +7,22 @@
         echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
         echo $this->BigNumber->replaceBigNumbers($count);       
         echo "</span>";
-        echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
-        echo $this->Paginator->next('>', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
+        echo $this->Paginator->prev(
+            '<', 
+            array(
+                'url'=> array(
+                    'program' => (isset($programDetails['url']) ? $programDetails['url'] : null),
+                    '?' => $this->params['url'])),
+                    null,
+                    array('class' => 'prev disabled'));
+        echo $this->Paginator->next(
+            '>',
+            array(
+                'url'=> array(
+                    'program' => (isset($programDetails['url']) ? $programDetails['url'] : null),
+                    '?' => $this->params['url'])),
+                    null,
+                    array('class' => 'next disabled'));
     }
     ?>
     </div>
@@ -18,7 +32,10 @@
     
     echo $this->Form->create(null, array(
         'type'=>'get', 
-        'url'=>array('program' => $programDetails['url'], 'controller' => $controller, 'action'=>'index'), 
+        'url'=>array(
+            'program' => (isset($programDetails['url']) ? $programDetails['url'] : null),
+            'controller' => $controller,
+            'action'=>'index'), 
         'id' => 'advanced_filter_form', 
         'class' => 'ttc-advanced-filter'));
     if (isset($this->params['url']['filter_operator']) && isset($this->params['url']['filter_param'])) {

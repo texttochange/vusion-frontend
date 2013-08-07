@@ -27,7 +27,7 @@
 	    $this->Js->get("#dynamic-generic-program-form");
 	    $this->Js->each('$(this).buildTtcForm("Request", null, "javascript:saveRequestOnServer()")', true);
 	    $dialogueOptions = array();
-        foreach($dialogues as $dialogue) {
+	    foreach($currentProgramData['dialogues'] as $dialogue) {
             if ($dialogue['Active']) {
                 $dialogueOptions[] = array(
                     'value' => $dialogue['Active']['dialogue-id'],
@@ -37,8 +37,7 @@
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
         $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
-        $this->Js->get('document')->event('ready','
-                addCounter(); ');
+        $this->Js->get('document')->event('ready','addCounter(); ');
 	    ?>
 	</div>
 </div>

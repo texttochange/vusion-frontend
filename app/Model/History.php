@@ -25,11 +25,13 @@ class History extends MongoModel
         'datepassed-action-marker-history',
         'oneway-marker-history');
 
+    
     function getModelVersion()
     {
         return '2';
     }
 
+    
     // TODO fail to express that a incoming message for dialogue id has 'matching-answer' field
     function getRequiredFields($object)
     {
@@ -75,6 +77,7 @@ class History extends MongoModel
         return $fields;
     }
 
+    
     public function checkFields($object)
     {       
         $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object));
@@ -171,6 +174,7 @@ class History extends MongoModel
          return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
 
+    
     public function addDialogueContent($histories, $dialoguesInteractionsContent)
     {
         foreach ($histories as &$history) {
@@ -189,6 +193,7 @@ class History extends MongoModel
          return $histories;
     }
 
+    
     #Filter variables and functions
     public $filterFields = array(
         'message-direction' => array( 
@@ -280,6 +285,7 @@ class History extends MongoModel
                 )), 
         );
 
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
@@ -298,6 +304,8 @@ class History extends MongoModel
         'ack' => 'ack'
         );
 
+    
+    
 
     public function validateFilter($filterParam)
     {
@@ -437,23 +445,21 @@ class History extends MongoModel
     }
   
     
-    public function countUnattachedMessages($unattach_id, $message_status = null)
+    public function countUnattachedMessages($unattachId, $messageStatus = null)
     {
-        if ($message_status == null)
-        {
-            $historyCount = $this->find('count', array(
-                'conditions' => array(
-                    'message-direction'=>'outgoing',
-                    'unattach-id'=>$unattach_id)));
-        } else {
-            $historyCount = $this->find('count', array(
-                'conditions' => array(
-                    'message-direction'=>'outgoing',
-                    'unattach-id'=>$unattach_id,
-                    'message-status'=>$message_status)));
-        }
-        return $historyCount;       
-        
-    }   
+        $conditions = array(
+                'message-direction' => 'outgoing',
+                'unattach-id' => $unattachId);
+        if ($messageStatus != null) {
+            if (is_array($messageStatus)) {
+                $statusConditions = array('message-status' => array('$in' => $messageStatus));
+            } else {
+                $statusConditions = array('message-status' => $messageStatus);
+            }
+            $conditions = array_merge($conditions, $statusConditions);
+        } 
+        $historyCount = $this->find('count', array('conditions' => $conditions));
+        return $historyCount;
+    }
 
 }

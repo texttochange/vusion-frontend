@@ -318,7 +318,8 @@ var action = {
     'offset-days': {
         'type': 'container',
         'contains': ['days', 'at-time'],
-        'skip': false
+        'skip': false,
+        'add-prefix': true
     },
     "proportional-tags": {
         'type': 'list',

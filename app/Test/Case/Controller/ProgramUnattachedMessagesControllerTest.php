@@ -4,6 +4,7 @@ App::uses('Schedule', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
 App::uses('Participant', 'Model');
+App::uses('PredefinedMessage', 'Model');
 
 /**
  * TestProgramUnattachedMessagesController *
@@ -42,6 +43,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
     public function setUp() 
     {
         Configure::write("mongo_db",$this->programData[0]['Program']['database']);
+        Configure::write("testurl_db",$this->programData[0]['Program']['database']);
         parent::setUp();
 
         $this->ProgramUnattachedMessages = new TestProgramUnattachedMessagesController();
@@ -58,6 +60,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->History           = new History($options);
         $this->Participant       = new Participant($options);
+        $this->PredefinedMessage = new PredefinedMessage($options);
     }	
   
     
@@ -66,7 +69,9 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->UnattachedMessage->deleteAll(true, false);
         $this->Schedule->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
+        $this->History->deleteAll(true, false);
         $this->Participant->deleteAll(true, false);
+        $this->PredefinedMessage->deleteAll(true, false);
     }
     
 

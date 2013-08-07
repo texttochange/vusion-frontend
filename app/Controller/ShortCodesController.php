@@ -6,21 +6,14 @@ App::uses('Template', 'Model');
 
 class ShortCodesController extends AppController
 {
-
     var $helpers    = array('Js' => array('Jquery'));
     var $components = array('PhoneNumber'); 
+
     
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }
-
-
     public function constructClasses()
     {
-        // print_r(Configure::read("mongo_db")); useful in checking what parameter is sent from the test case
         parent::constructClasses();
-        
+
         if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
@@ -31,9 +24,15 @@ class ShortCodesController extends AppController
                 );
         }
         $this->ShortCode = new ShortCode($options);
-        $this->Template  = new Template($options);
+        $this->Template = new Template($options);
     }
-    
+
+
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
+    }
+
     
     public function index()
     {
@@ -97,6 +96,7 @@ class ShortCodesController extends AppController
         $this->setOptions();
     }
     
+    
     protected function setOptions()
     {
         $countryOptions = $this->PhoneNumber->getCountries();
@@ -106,6 +106,7 @@ class ShortCodesController extends AppController
             $this->ShortCode->maxCharacterPerSmsOptions);
         $this->set(compact('errorTemplateOptions', 'countryOptions', 'maxCharacterPerSmsOptions'));
     }
+    
     
     public function delete()
     {

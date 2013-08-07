@@ -12,7 +12,6 @@ class Participant extends MongoModel
     var $specific = true;    
 
     var $name        = 'Participant';
-    var $useDbConfig = 'mongo';
     
     var $importErrors = array();
     
@@ -39,8 +38,11 @@ class Participant extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
-        $options              = array('database'=>$id['database']);
+        if (isset($id['id']['database'])) {
+            $options = array('database' => $id['id']['database']);
+        } else {
+            $options = array('database' => $id['database']);
+        }
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
         $this->DialogueHelper = new DialogueHelper();
@@ -267,13 +269,12 @@ class Participant extends MongoModel
             $this->data['Participant']['session-id'] = $sessionId;
             $tags = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
             $this->data['Participant']['tags'] = $tags;
-            $condition = array('condition' => array('auto-enrollment'=>'all'));
-            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues($condition);
+            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
             if ($autoEnrollDialogues == null)
                 $this->data['Participant']['enrolled'] = array();
             foreach ($autoEnrollDialogues as $autoEnroll) {
                 $this->data['Participant']['enrolled'][] = array(
-                    'dialogue-id' => $autoEnroll['dialogue-id'],
+                    'dialogue-id' => $autoEnroll['Dialogue']['dialogue-id'],
                     'date-time' => $programNow->format("Y-m-d\TH:i:s")
                     );
             }
@@ -287,6 +288,7 @@ class Participant extends MongoModel
         return true;
     }
 
+    
     public function getDistinctTagsAndLabels()
     {
         $results = $this->getDistinctTags();
@@ -296,6 +298,7 @@ class Participant extends MongoModel
         return array_merge($results, $distinctLabels);
     }
 
+    
     public function getDistinctTags()                 
     {
         $tagsQuery = array(
@@ -305,6 +308,7 @@ class Participant extends MongoModel
         return $distinctTags['values'];
     }
 
+    
     public function getDistinctLabels($conditions = null)
     {
         $results = array();
@@ -337,6 +341,7 @@ class Participant extends MongoModel
         return $results;  
     }
 
+    
     public function getExportHeaders($conditions = null)
     {
         $headers = array(
@@ -582,7 +587,6 @@ class Participant extends MongoModel
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
-            print_r($this->getID());
             if (!$replaceTagsAndLabels) {
                 $report = array(
                     'phone' => $participant['phone'],
@@ -700,6 +704,7 @@ class Participant extends MongoModel
         return $report;
     }
 
+    
     private function array_filter_out_not_label($input) 
     {
         $tmp = array_filter(array_keys($input), function($k) {
@@ -844,6 +849,7 @@ class Participant extends MongoModel
         'any' => 'any'
         );
 
+    
 
     public function getFilters($subset = null) 
     {

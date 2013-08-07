@@ -14,47 +14,51 @@ class ProgramUnattachedMessagesController extends AppController
 {
 
     var $helpers = array('Js' => array('Jquery'), 'Time');
-    
-    public $uses = array('UnattachedMessage', 'User');
- 
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }
+    var $uses = array('UnattachedMessage', 'User');
 
 
     public function constructClasses()
     {
         parent::constructClasses();
-        
+    }
+
+ 
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
         $options = array(
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
         
-        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->loadModel('UnattachedMessage', $options);
         $this->Schedule          = new Schedule($options);
         $this->Participant       = new Participant($options);
         $this->ProgramSetting    = new ProgramSetting($options);
-        $this->DialogueHelper    = new DialogueHelper();
         $this->History           = new History($options);
         $this->PredefinedMessage = new PredefinedMessage($options);
+        $this->DialogueHelper    = new DialogueHelper();
         $this->_instanciateVumiRabbitMQ();
     }
 
-    protected function _instanciateVumiRabbitMQ(){
+
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
+    
     protected function _notifyUpdateBackendWorkerUnattachedMessage($workerName, $unattach_id)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
     }
 
+    
     protected function _notifyUpdateBackendWorkerParticipant($workerName, $participantPhone)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
 
+    
     public function index()
     {
         $unattachedMessages = $this->paginate();
@@ -65,6 +69,8 @@ class ProgramUnattachedMessagesController extends AppController
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
                 $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
                 $status['count-schedule'] = $countSchedule;                
+            } else if (0 < ($countNoCredit = $this->History->countUnattachedMessages($unattachId, array('no-credit', 'no-credit-timeframe')))){
+                $status['count-no-credit'] = $countNoCredit;   
             } else {               
                 $countSent = $this->History->countUnattachedMessages($unattachId);
                 $status['count-sent'] = $countSent;            
@@ -102,7 +108,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         }
-        
+
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);
@@ -112,6 +118,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->set(compact('selectors', 'predefinedMessageOptions'));
    
     }
+
 
     protected function saveUnattachedMessage()
     {
@@ -186,6 +193,7 @@ class ProgramUnattachedMessagesController extends AppController
         return $savedUnattached;
     }
 
+
     protected function importParticipants()
     {    
         $programUrl = $this->params['program'];
@@ -220,6 +228,7 @@ class ProgramUnattachedMessagesController extends AppController
         return $report;
     }
 
+
     public function edit()
     {
         $unattachedMessage = $this->params['unattchedMessage'];
@@ -236,6 +245,7 @@ class ProgramUnattachedMessagesController extends AppController
             $this->saveUnattachedMessage();
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
+
             if($this->request->data['UnattachedMessage']['type-schedule'] == 'draft'){            	
             	$selectorValues = $this->Participant->getDistinctTagsAndLabels();
             	if (count($selectorValues) > 0) {
@@ -245,21 +255,22 @@ class ProgramUnattachedMessagesController extends AppController
             	$this->set(compact('selectors', 'predefinedMessageOptions'));
         		return $unattachedMessage;
         	}
-        	$now = new DateTime('now');    
-        	$programTimezone = $this->Session->read($this->params['program'].'_timezone');
-        	date_timezone_set($now,timezone_open($programTimezone));      
-        	$messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
-        	if ($now > $messageDate){   
-        		throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
-        	}
-        	$this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
-        	if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
-        		$this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
-        			'default',
-        			array('class' => "message warning")
-        			);
-        	}
         	
+            $now = new DateTime('now');    
+            $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
+            date_timezone_set($now,timezone_open($programTimezone));      
+            $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
+            if ($now > $messageDate){   
+                throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
+            }
+            $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
+            if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
+                $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
+                'default',
+                array('class' => "message warning")
+                );
+            }
+
         }
 
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();

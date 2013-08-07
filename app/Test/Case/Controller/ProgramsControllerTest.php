@@ -25,16 +25,25 @@ class TestProgramsController extends ProgramsController
 
 class ProgramsControllerTestCase extends ControllerTestCase
 {
-
     public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
 
 
     public function setUp()
     {
+        Configure::write("mongo_db", "testdbmongo");
         parent::setUp();
 
         $this->Programs = new TestProgramsController();
         $this->Programs->constructClasses();
+        
+        $this->ShortCode = new ShortCode(array('database' => "testdbmongo"));
+        $this->dropData();
+    }
+    
+    
+    protected function dropData()
+    {
+        $this->ShortCode->deleteAll(true, false);
     }
 
     
@@ -52,11 +61,11 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
-                    'Session' => array('read')
+                    'Session' => array('read'),
+                    'Stats',
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    'paginate'
                     )
                 )
             );
@@ -67,6 +76,34 @@ class ProgramsControllerTestCase extends ControllerTestCase
             ->will($this->returnValue('true'));
 
         return $programs;
+    }
+    
+    
+    protected function _saveShortcodesInMongoDatabase()
+    {
+        $shortcode1 = array(
+                'country' => 'uganda',
+                'shortcode' => 8282,
+                'international-prefix' => 256
+                );        
+        $this->ShortCode->create();
+        $this->ShortCode->save($shortcode1);
+        
+        $shortcode2 = array(
+                'country' => 'uganda',
+                'shortcode' => 8181,
+                'international-prefix' => 256
+                );
+        $this->ShortCode->create();
+        $this->ShortCode->save($shortcode2);
+        
+        $shortcode3 = array(
+                'country' => 'kenya',
+                'shortcode' => 21222,
+                'international-prefix' => 254
+                );
+        $this->ShortCode->create();
+        $this->ShortCode->save($shortcode3);
     }
 
 /**
@@ -82,31 +119,23 @@ class ProgramsControllerTestCase extends ControllerTestCase
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls('1','1','1'));
-        
-        $Programs
-                ->expects($this->once())
-                ->method('paginate')
-                ->will($this->returnValue(array(
-                    0 => array(
-                        'Program' => array(
-                            'database' => 'test1')),
-                    1 => array(
-                        'Program' => array(
-                            'database' => 'test2'))
-                    )));
 
+        $this->_saveShortcodesInMongoDatabase();
+        
         $this->testAction("/programs/index");
-        $this->assertEquals(2, count($this->vars['programs']));
+        $this->assertEquals(3, count($this->vars['programs']));
     }
 
 
     public function testIndex_hasSpecificProgramAccess_True()
     {
+        $this->_saveShortcodesInMongoDatabase();
     	
         $Programs = $this->generate('Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
                     'Auth' => array('user'),
+                    'Stats',
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
@@ -128,6 +157,87 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
+    }
+    
+    
+    public function testIndex_filter()
+    {
+        $this->_saveShortcodesInMongoDatabase();
+        
+        $Programs = $this->mockProgramAccess();                
+        $this->testAction('/programs/index');
+        
+        sort($this->vars['programs']);
+
+        $program1 = $this->vars['programs'][0];
+        $db1      = $this->vars['programs'][0]['Program']['database'];
+        $this->ProgramSetting = new ProgramSetting(array('database' => $db1));
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode','256-8282');
+        
+        $program2 = $this->vars['programs'][1];
+        $db2      = $this->vars['programs'][1]['Program']['database'];
+        $this->ProgramSetting = new ProgramSetting(array('database' => $db2));
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Daresalaam');
+        $this->ProgramSetting->saveProgramSetting('shortcode','256-8181');
+        
+        $program3 = $this->vars['programs'][2];
+        $db3      = $this->vars['programs'][2]['Program']['database'];
+        $this->ProgramSetting = new ProgramSetting(array('database' => $db3));
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode','254-21222');
+        
+        # filter by program name only
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t');
+        $this->assertEquals(2, count($this->vars['programs']));
+
+        $this->mockProgramAccess();        
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h');
+        $this->assertEquals(1, count($this->vars['programs']));
+        
+        # filter by shortcode only (8282)
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=shortcode&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=8282');
+        $this->assertEquals(1, count($this->vars['programs']));
+        
+        # filter by country only (Uganda)
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=country&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=uganda');
+        $this->assertEquals(2, count($this->vars['programs']));
+        
+        # filter by program name AND shortcode (t, 8181) #8282
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=8282');
+        $this->assertEquals(1, count($this->vars['programs']));
+        
+        # filter by program name AND country (m6h, kenya) #uganda
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=uganda');
+        $this->assertEquals(1, count($this->vars['programs']));
+        
+        # filter by program name AND country AND shortcode (t, uganda, 8282)
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=8282');
+        $this->assertEquals(1, count($this->vars['programs']));
+        
+        # filter by program name OR shortcode (t, 21222)
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=21222');
+        $this->assertEquals(2, count($this->vars['programs']));
+        
+        # filter by program name OR country (trial, kenya)
+        $this->mockProgramAccess();
+        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=kenya');
+        $this->assertEquals(2, count($this->vars['programs']));
+        
+        # filter by program name OR country OR shortcode (t, uganda, 21222)
+        $this->mockProgramAccess();        
+        $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=Uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=21222');
+        $this->assertEquals(3, count($this->vars['programs']));
+        
+        $this->ProgramSetting->deleteAll(true, false);
+        
     }
 
 
@@ -273,5 +383,5 @@ class ProgramsControllerTestCase extends ControllerTestCase
 
     }
 
-   
+  
 }
