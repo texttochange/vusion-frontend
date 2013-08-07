@@ -2,10 +2,10 @@
 
 App::uses('MongoModel', 'Model');
 
-class DynamicContent extends MongoModel
+class ContentVariable extends MongoModel
 {
     var $specific = true;
-    var $name = 'DynamicContent';
+    var $name = 'ContentVariable';
     var $useDbConfig = 'mongo';
     
     function getModelVersion()
@@ -17,6 +17,7 @@ class DynamicContent extends MongoModel
     function getRequiredFields($objectType=null)
     {
         return array(
+            //'keys',
             'key',
             'value'
             );
@@ -43,6 +44,14 @@ class DynamicContent extends MongoModel
         );
     
     
+    /*public function validateKays($check)
+    {
+        foreach ($check['keys'] as $element) {
+            
+        }
+    }*/
+    
+    
     public function isUnique($check)
     {
         if ($this->id) {
@@ -54,6 +63,12 @@ class DynamicContent extends MongoModel
             'conditions' => $conditions
             ));
         return $result < 1;
+    }
+    
+    
+    public function beforeValidate()
+    {
+        parent::beforeValidate();
     }
     
 }

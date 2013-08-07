@@ -1,4 +1,4 @@
-<div class='dynamic_contents index'>
+<div class='content_variables index'>
 	<ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('New Dynamic Content'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>	
@@ -27,20 +27,20 @@
 			</tr>
 		</thead>
 		<tbody>
-		    <?php foreach ($dynamicContents as $dynamicContent): ?>
+		    <?php foreach ($contentVariables as $contentVariable): ?>
 		    <tr>
-		        <td class="prefix"><?php echo h($dynamicContent['DynamicContent']['key']); ?>&nbsp;</td>
-		        <td class="details"><?php echo __($dynamicContent['DynamicContent']['value']) ?></td>
+		        <td class="prefix"><?php echo h($contentVariable['ContentVariable']['key']); ?>&nbsp;</td>
+		        <td class="details"><?php echo __($contentVariable['ContentVariable']['value']) ?></td>
 		        <td class="actions action">
-		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'controller' => 'programDynamicContents', 'action' => 'edit', $dynamicContent['DynamicContent']['_id'])); ?>
+		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'controller' => 'programContentVariables', 'action' => 'edit', $contentVariable['ContentVariable']['_id'])); ?>
 		            <?php echo $this->Form->postLink(
 		                __('Delete'),
 		                array('program' => $programDetails['url'],
-		                    'controller' => 'programDynamicContents',
+		                    'controller' => 'programContentVariables',
 		                    'action' => 'delete',
-		                    $dynamicContent['DynamicContent']['_id']),
+		                    $contentVariable['ContentVariable']['_id']),
 		                null,
-		                __('Are you sure you want to delete "%s"?', $dynamicContent['DynamicContent']['key'])); ?>
+		                __('Are you sure you want to delete "%s"?', $contentVariable['ContentVariable']['key'])); ?>
 		        </td>
 		    </tr>
 		   <?php endforeach; ?>

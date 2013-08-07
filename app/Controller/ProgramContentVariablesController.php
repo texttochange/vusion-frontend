@@ -1,12 +1,12 @@
 <?php
 
 App::uses('AppController', 'Controller');
-App::uses('DynamicContent', 'Model');
+App::uses('ContentVariable', 'Model');
 
 
-class ProgramDynamicContentsController extends AppController
+class ProgramContentVariablesController extends AppController
 {
-    public $uses = array('DynamicContent');
+    public $uses = array('ContentVariable');
     
     function constructClasses()
     {
@@ -16,15 +16,15 @@ class ProgramDynamicContentsController extends AppController
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
         
-        $this->DynamicContent = new DynamicContent($options);
+        $this->ContentVariable = new ContentVariable($options);
         
     }
     
     
     public function index()
     {
-        $dynamicContents = $this->paginate();
-        $this->set(compact('dynamicContents', $dynamicContents));
+        $contentVariables = $this->paginate();
+        $this->set(compact('contentVariables', $contentVariables));
     }
     
     
@@ -33,15 +33,15 @@ class ProgramDynamicContentsController extends AppController
         $programUrl = $this->params['program'];
         
         if ($this->request->is('post')) {
-            $this->DynamicContent->create();
-            if ($this->DynamicContent->save($this->request->data)) {
+            $this->ContentVariable->create();
+            if ($this->ContentVariable->save($this->request->data)) {
                 $this->Session->setFlash(__('The dynamic content has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
                 $this->redirect(array(
                     'program' => $programUrl, 
-                    'controller' => 'programDynamicContents',
+                    'controller' => 'programContentVariables',
                     'action' => 'index'
                     ));
             } else {
@@ -60,21 +60,21 @@ class ProgramDynamicContentsController extends AppController
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
         
-        $this->DynamicContent->id = $id;
-        if (!$this->DynamicContent->exists()) {
+        $this->ContentVariable->id = $id;
+        if (!$this->ContentVariable->exists()) {
             throw new NotFoundException(__('Invalid dynamic content'));
         }
-        $dynamicContent = $this->DynamicContent->read();
+        $contentVariable = $this->ContentVariable->read();
 
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->DynamicContent->save($this->request->data)) {
+            if ($this->ContentVariable->save($this->request->data)) {
                 $this->Session->setFlash(__('The dynamic content has been saved.'),
                     'default',
                     array('class'=>'message success')
                 );
                 $this->redirect(array(
                     'program' => $programUrl, 
-                    'controller' => 'programDynamicContents',
+                    'controller' => 'programContentVariables',
                     'action' => 'index'
                     ));
             } else {
@@ -84,7 +84,7 @@ class ProgramDynamicContentsController extends AppController
                 );
             }
         } else {
-            $this->request->data = $this->DynamicContent->read(null, $id);
+            $this->request->data = $this->ContentVariable->read(null, $id);
         }
     }
     
@@ -94,17 +94,17 @@ class ProgramDynamicContentsController extends AppController
         $id         = $this->params['id'];
         $programUrl = $this->params['program'];
         
-        $this->DynamicContent->id = $id;
+        $this->ContentVariable->id = $id;
         
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
         
-        if (!$this->DynamicContent->exists()) {
+        if (!$this->ContentVariable->exists()) {
             throw new NotFoundException(__('Invalid Dynamic Content.'));
         }
         
-        if ($this->DynamicContent->delete()) {
+        if ($this->ContentVariable->delete()) {
             $this->Session->setFlash(
                 __('Dynamic content deleted'),
                 'default',
@@ -113,7 +113,7 @@ class ProgramDynamicContentsController extends AppController
             $this->redirect(
                 array(
                     'program' => $programUrl,
-                    'controller' => 'programDynamicContents',
+                    'controller' => 'programContentVariables',
                     'action' => 'index'
                     )
                 );
