@@ -12,7 +12,6 @@ class Participant extends MongoModel
     var $specific = true;    
 
     var $name        = 'Participant';
-    var $useDbConfig = 'mongo';
     
     var $importErrors = array();
     
@@ -39,8 +38,11 @@ class Participant extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
-        $options              = array('database'=>$id['database']);
+        if (isset($id['id']['database'])) {
+            $options = array('database' => $id['id']['database']);
+        } else {
+            $options = array('database' => $id['database']);
+        }
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
         $this->DialogueHelper = new DialogueHelper();
