@@ -515,7 +515,7 @@ function supplyOperatorOptions(elt) {
 	$(operatorDropDown).attr('name', operatorDropDownName + '[2]');
 	$(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
 	$.each(operators, function(operator, details) {
-	        $(operatorDropDown).append(new Option(details['label'], operator));
+	        $(operatorDropDown).append(new Option(localize_label(operator), operator));
 	});
 	$(elt).after(operatorDropDown);
 	supplyParameterOptions(operatorDropDown);
