@@ -4,17 +4,19 @@
 	<fieldset>
 		
 	<?php
-		echo $this->Form->input('username');
-		echo $this->Form->input('password');
-		echo $this->Form->input('email');
-		echo $this->Form->input('group_id');
+		echo $this->Form->input('username', array('label' => __('Username')));
+		echo $this->Form->input('password', array('label' => __('Password')));
+		echo $this->Form->input('email', array('label' => __('email')));
+		echo $this->Form->input('group_id', array('label' =>__('Group id')));
 		$options = $programs;		
-		echo $this->Form->input('Program', array('options'=>$options,
-		    'type'=>'select',
-		    'multiple'=>true,
-		    'label'=>'Program',	                
-		    'style'=>'margin-bottom:0px'
-		    ));
+		echo $this->Form->input(
+			'Program', array(
+			    'options'=>$options,
+			    'type'=>'select',
+			    'multiple'=>true,
+			    'label'=>__('Program'),	                
+			    'style'=>'margin-bottom:0px'
+				));
 	    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');	    
 	?>
 	</fieldset>

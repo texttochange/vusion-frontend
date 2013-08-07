@@ -5,19 +5,19 @@
 		
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('username');
+		echo $this->Form->input('username', array('label' => __('Username')));
 		echo "<div>";
 		echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $this->Form->value('User.id')));
 		echo "</div>";
-		echo $this->Form->input('email');
+		echo $this->Form->input('email', array('label' => __('email')));
 		$isAdmin = $this->AclLink->_allow('controllers/Admin');
 		if ($isAdmin) {
-		    echo $this->Form->input('group_id');
+		    echo $this->Form->input('group_id', array('label' => __('Group id')));
 		    $options = $programs;		
 		    echo $this->Form->input('Program', array('options'=>$options,
 		        'type'=>'select',
 		        'multiple'=>true,
-		        'label'=>'Program',	                
+		        'label'=> __('Program'),	                
 		        'style'=>'margin-bottom:0px'
 		        ));
 		    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');		    
