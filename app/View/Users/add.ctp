@@ -6,7 +6,7 @@
 	<?php
 		echo $this->Form->input('username', array('label' => __('Username')));
 		echo $this->Form->input('password', array('label' => __('Password')));
-		echo $this->Form->input('email', array('label' => __('email')));
+		echo $this->Form->input('email', array('label' => __('Email')));
 		echo $this->Form->input('group_id', array('label' =>__('Group id')));
 		$options = $programs;		
 		echo $this->Form->input(

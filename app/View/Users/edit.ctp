@@ -9,7 +9,7 @@
 		echo "<div>";
 		echo $this->Html->link(__('Change Password'), array('action' => 'changePassword', $this->Form->value('User.id')));
 		echo "</div>";
-		echo $this->Form->input('email', array('label' => __('email')));
+		echo $this->Form->input('email', array('label' => __('Email')));
 		$isAdmin = $this->AclLink->_allow('controllers/Admin');
 		if ($isAdmin) {
 		    echo $this->Form->input('group_id', array('label' => __('Group id')));
