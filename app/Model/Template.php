@@ -12,11 +12,13 @@ class Template extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'templates';
     
+    
     function getModelVersion()
     {
         return '1';
     }
    
+    
     function getRequiredFields($objectType=null)
     {
         return array(
@@ -26,6 +28,7 @@ class Template extends MongoModel
             );
      }
 
+     
     public $typeTemplates = array(
         'open-question' => 'Open question',
         'closed-question' => 'Closed question',
@@ -62,6 +65,7 @@ class Template extends MongoModel
             ),
         );
 
+    
     public function isReallyUnique($check) {
          if ($this->id) {
             $conditions = array('id'=>array('$ne'=> $this->id),'name' => '/^'.$check['name'].'$/i');
@@ -74,12 +78,14 @@ class Template extends MongoModel
         return $result < 1;       
     }
 
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
         return true;
     }
 
+    
     public function getTemplateOptions($type)
     {
         $templates = $this->find('all', array('conditions' => array('Template.type-template' => $type)));
@@ -90,6 +96,7 @@ class Template extends MongoModel
         return $options;
     }
 
+    
     public function hasAllTemplateKeyword($check)
     {
 

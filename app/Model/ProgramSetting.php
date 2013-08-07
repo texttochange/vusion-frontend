@@ -1,7 +1,8 @@
 <?php
-
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('VusionConst', 'Lib');
+App::uses('ValidationHelper', 'Lib');
 
 
 class ProgramSetting extends MongoModel
@@ -12,6 +13,22 @@ class ProgramSetting extends MongoModel
     var $name        = 'ProgramSetting';
     var $useDbConfig = 'mongo';
 
+
+    function getModelVersion()
+    {
+        return "2";
+    }
+
+    
+    function getRequiredFields($objectType=null)
+    {
+        return array(
+            'key',
+            'value'
+            );
+    }
+
+    
     var $settings = array(
         'shortcode',
         'timezone',
@@ -23,21 +40,65 @@ class ProgramSetting extends MongoModel
         'customized-id',
         'double-matching-answer-feedback',
         'double-optin-error-feedback',
-        'request-and-feedback-prioritized'
+        'request-and-feedback-prioritized',
+        'credit-type',
+        'credit-number',
+        'credit-from-date',
+        'credit-to-date'
         );
 
-    function getModelVersion()
-    {
-        return "2";
-    }
-
-    function getRequiredFields($objectType=null)
-    {
-        return array(
-            'key',
-            'value'
-            );
-    }
+    public $validateSettings = array(
+        'credit-type' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The credit-type is required'
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array('none', 'outgoing-only', 'outgoing-incoming')),
+                'message' => 'The type of credit is not supported',
+                ),
+            'validRequireFields' => array(
+                'rule' => array(
+                    'valueRequireFields', array(
+                        'none' => array(),
+                        'outgoing-only' => array('credit-number', 'credit-to-date', 'credit-from-date'),
+                        'outgoing-incoming' => array('credit-number', 'credit-to-date', 'credit-from-date'),
+                        )),
+                'message' => 'The credit-type required fields are not present.'
+                ),
+            ),
+        'credit-number' => array(
+            'validateValue' => array(
+                'rule' => array('custom', '/^\d+$/'),
+                'message' => 'The number can only be an interger.',
+                'required' => false
+                ),
+            ),
+        'credit-from-date' => array(
+            'validateDate' => array(
+                'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
+                'message' => 'The format of the date has to be 15/02/2013.',
+                'required' => false
+                ),
+            'lowerThan' => array(
+                'rule' => array('lowerThan', 'credit-to-date'),
+                'message' => 'This from date has to be before the to date.',
+                'required' => false,
+                ),
+            ),
+        'credit-to-date' => array(
+            'validateDate' => array(
+                'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
+                'message' => 'The format of the date has to be 15/02/2013.',
+                'required' => false,
+                ),
+            'greaterThan' => array(
+                'rule' => array('greaterThan', 'credit-from-date'),
+                'message' => 'This to date has to be after the from date.',
+                'required' => false,
+                ),
+            ),   
+        );
 
 
     public $findMethods =  array(
@@ -53,6 +114,7 @@ class ProgramSetting extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $this->DialogueHelper = new DialogueHelper();
+        $this->ValidationHelper = new ValidationHelper();
     }
 
 
@@ -62,16 +124,15 @@ class ProgramSetting extends MongoModel
 
         if (!in_array($this->data['ProgramSetting']['key'], $this->settings)) {
             return false;
-        } 
+        }
 
         if ($this->data['ProgramSetting']['value'] == '') {
             $this->data['ProgramSetting']['value'] = null;
-        }
+        }   
 
         if ($this->data['ProgramSetting']['key'] == 'unmatching-answer-remove-reminder') {
             $this->data['ProgramSetting']['value'] = intval($this->data['ProgramSetting']['value']);
         }
-        
         if ($this->data['ProgramSetting']['key'] == 'request-and-feedback-prioritized'
                 and $this->data['ProgramSetting']['value'] == '1') {
             $this->data['ProgramSetting']['value'] = 'prioritized';
@@ -113,6 +174,7 @@ class ProgramSetting extends MongoModel
             return null;
     }
 
+    
     public function saveProgramSetting($key, $value) 
     {
         $setting = $this->find('all', array('conditions' => array('ProgramSetting.key' => $key)));
@@ -128,6 +190,22 @@ class ProgramSetting extends MongoModel
                 )
             );
     }
+
+
+    public function saveProgramSettings($settings)
+    {
+        $settings = $this->_runBeforeValidate($settings);
+        $validationErrors = $this->_runValidateRules($settings, $this->validateSettings);
+        if (!is_bool($validationErrors) || !$validationErrors) {
+            $this->validationErrors = $validationErrors;
+            return false;
+        }
+        foreach ($settings as $key => $value) {
+            $this->saveProgramSetting($key, $value);
+        }
+        return true;
+    }
+
 
     public function getProgramSettings()
     {
@@ -162,6 +240,7 @@ class ProgramSetting extends MongoModel
         return $now;       
     }
 
+
     public function hasRequired()
     {
         $shortCode = $this->find('getProgramSetting', array('key'=>'shortcode'));
@@ -170,6 +249,31 @@ class ProgramSetting extends MongoModel
             return true;
         }
         return false;
+    }
+
+
+    ## function required because the Setting model has a bad design: key/value
+    ## This key/value design to be replace in the future but in the mean time
+    ## one need a validation function to be run before.
+    protected function _runValidateRules($data, $validationRules)    
+    {
+        return $this->ValidationHelper->runValidationRules($data, $validationRules);
+    }
+
+
+    protected function _runBeforeValidate($settings) 
+    {
+        if (!isset($settings['credit-type']) || $settings['credit-type'] == null) {
+            $settings['credit-type'] = 'none';
+        }
+
+        if (isset($settings['credit-from-date'])) {
+            $settings['credit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-from-date']);
+        }
+        if (isset($settings['credit-to-date'])) {
+            $settings['credit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-to-date']);
+        }
+        return $settings;
     }
 
 

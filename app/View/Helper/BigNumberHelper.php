@@ -1,7 +1,8 @@
 <?php
 App::uses('AppHelper', 'View/Helper');
 
-class BigNumberHelper extends AppHelper{
+class BigNumberHelper extends AppHelper
+{
 
 		public function replaceBigNumbers($count) 
 		{   
@@ -17,5 +18,6 @@ class BigNumberHelper extends AppHelper{
 				}
 				return $count_format;   
 		}
+		
 }
 ?>

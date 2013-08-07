@@ -16,17 +16,17 @@ class ProgramUnattachedMessagesController extends AppController
     var $helpers = array('Js' => array('Jquery'), 'Time');
     
     public $uses = array('UnattachedMessage', 'User');
- 
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }
 
 
     public function constructClasses()
     {
         parent::constructClasses();
-        
+    }
+
+ 
+    public function beforeFilter()
+    {
+        parent::beforeFilter();
         $options = array(
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
@@ -41,20 +41,25 @@ class ProgramUnattachedMessagesController extends AppController
         $this->_instanciateVumiRabbitMQ();
     }
 
-    protected function _instanciateVumiRabbitMQ(){
+
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
+    
     protected function _notifyUpdateBackendWorkerUnattachedMessage($workerName, $unattach_id)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
     }
 
+    
     protected function _notifyUpdateBackendWorkerParticipant($workerName, $participantPhone)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
 
+    
     public function index()
     {
         $unattachedMessages = $this->paginate();
@@ -65,6 +70,8 @@ class ProgramUnattachedMessagesController extends AppController
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
                 $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
                 $status['count-schedule'] = $countSchedule;                
+            } else if (0 < ($countNoCredit = $this->History->countUnattachedMessages($unattachId, array('no-credit', 'no-credit-timeframe')))){
+                $status['count-no-credit'] = $countNoCredit;   
             } else {               
                 $countSent = $this->History->countUnattachedMessages($unattachId);
                 $status['count-sent'] = $countSent;            
@@ -112,6 +119,7 @@ class ProgramUnattachedMessagesController extends AppController
         $this->set(compact('selectors', 'predefinedMessageOptions'));
    
     }
+
 
     protected function saveUnattachedMessage()
     {
@@ -186,6 +194,7 @@ class ProgramUnattachedMessagesController extends AppController
         return $savedUnattached;
     }
 
+
     protected function importParticipants()
     {    
         $programUrl = $this->params['program'];
@@ -220,6 +229,7 @@ class ProgramUnattachedMessagesController extends AppController
         return $report;
     }
 
+
     public function edit()
     {
         $unattachedMessage = $this->params['unattchedMessage'];
@@ -238,7 +248,7 @@ class ProgramUnattachedMessagesController extends AppController
         } else {
             $this->request->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    
-            $programTimezone = $this->Session->read($this->params['program'].'_timezone');
+            $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
             date_timezone_set($now,timezone_open($programTimezone));      
             $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
             if ($now > $messageDate){   

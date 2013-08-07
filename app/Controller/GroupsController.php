@@ -6,8 +6,7 @@ App::uses('AppController', 'Controller');
  * @property Group $Group
  */
 class GroupsController extends AppController
-{
- 
+{ 
 
     public function beforeFilter()
     {
@@ -15,6 +14,7 @@ class GroupsController extends AppController
         //$this->Auth->allowedActions = array('*');
     }
 
+    
     /**
     * index method
     *
@@ -25,6 +25,7 @@ class GroupsController extends AppController
         $this->Group->recursive = 0;
         $this->set('groups', $this->paginate());
     }
+    
 
     /**
     * view method

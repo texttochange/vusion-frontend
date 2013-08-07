@@ -936,6 +936,12 @@ function configToForm(item, elt, id_prefix, configTree){
                 "elements": []
             }; 
             elt["elements"].push(myelt);
+            if ('add-prefix' in dynamicForm[item]) {
+                id_prefix = id_prefix + '.' + item;
+                if (configTree && item in configTree) {
+                    configTree = configTree[item]
+                }
+            }
         } else {
             var myelt = elt;
         }
@@ -979,6 +985,10 @@ function configToForm(item, elt, id_prefix, configTree){
     } else if (dynamicForm[item]['type'] == "radiobuttons") {
         var checkedRadio = {};
         var checkedItem;
+        //In order to support old model for action that used type-answer-action
+        if (item == 'type-action' && configTree && 'type-answer-action' in configTree) {
+             configTree['type-action'] = configTree['type-answer-action'];
+        }
         $.each(dynamicForm[item]['options'],function(k,v) {
                 if (configTree && v['value']==configTree[item]) {
                     checkedRadio[v['value']] = {

@@ -42,24 +42,38 @@ class DialogueTestCase extends CakeTestCase
     
         $saveDraftFirstVersion = $this->Dialogue->saveDialogue($dialogue['Dialogue']);
         $this->assertEquals(0, $saveDraftFirstVersion['Dialogue']['activated']);
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>0))));
+
         $saveActiveFirstVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, $saveActiveFirstVersion['Dialogue']['activated']);
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>1))));
        
         $this->Dialogue->saveDialogue($saveActiveFirstVersion);
         $this->assertEquals(2, $this->Dialogue->find('count'));
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>0)))); 
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>1)))); 
         
         $this->Dialogue->saveDialogue($saveActiveFirstVersion);
         $this->assertEquals(2, $this->Dialogue->find('count'));
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>0))));
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>1)))); 
         
         $saveActiveSecondVersion = $this->Dialogue->makeDraftActive($saveDraftFirstVersion['Dialogue']['dialogue-id']);
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
-        
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>1))));
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>2))));        
+
+
         //adding a new Dialogue
         unset($dialogue['dialogue-id']);
         $dialogue['Dialogue']['name'] = 'tom2';
         $saveDraftOtherDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>0))));
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>1))));
+        $this->assertEquals(1, $this->Dialogue->find('count', array('conditions' => array('activated'=>2))));        
+
         $this->assertEquals(1, count($this->Dialogue->getActiveDialogues()));
-        $this->assertEquals(2, count($this->Dialogue->getDialogues()));
+        //$this->assertEquals(2, count($this->Dialogue->getDialogues()));
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
         $this->assertEquals(2, count($activeAndDraft));
         $this->assertTrue($activeAndDraft[0]['Active']!=0);
@@ -71,7 +85,7 @@ class DialogueTestCase extends CakeTestCase
         //active the new Dialogue
         $saveActiveOtherDialogue = $this->Dialogue->makeDraftActive($saveDraftOtherDialogue['Dialogue']['dialogue-id']);
         $this->assertEquals(2, count($this->Dialogue->getActiveDialogues()));
-        $this->assertEquals(2, count($this->Dialogue->getDialogues()));
+        //$this->assertEquals(2, count($this->Dialogue->getDialogues()));
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
         $this->assertTrue($activeAndDraft[0]['Active']!=0);
         $this->assertTrue($activeAndDraft[0]['Draft']==0);
@@ -125,7 +139,6 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
 
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
-        //print_r($saveResult);
         $this->assertTrue(!empty($saveResult) && is_array($saveResult));
     
         $result = $this->Dialogue->find('all');
@@ -139,7 +152,6 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['date-time'] = '2013-10-20 20:20:00';
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
-        print_r($saveResult);
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
@@ -397,4 +409,5 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertEqual(1,$output);
 		$this->assertTrue($output);    	
     }
+
 }

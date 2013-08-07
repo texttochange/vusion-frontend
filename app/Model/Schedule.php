@@ -13,10 +13,12 @@ class Schedule extends MongoModel
     var $specific = true;
     var $useDbConfig = 'mongo';
     
+    
     function getModelVersion()
     {
         return '1';
     }
+    
     
     function getRequiredFields($objectType='dialogue-schedule')
     {
@@ -57,6 +59,7 @@ class Schedule extends MongoModel
         'summary' => true
         );
     
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
@@ -77,6 +80,7 @@ class Schedule extends MongoModel
         return $results;
     }
     
+    
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
         foreach($activeDialogues as $activeDialogue) {
@@ -86,6 +90,7 @@ class Schedule extends MongoModel
         }
         return __("Error: dialogue not found");
     }
+    
     
     public function getParticipantSchedules($phone, $dialoguesInteractionsContent)
     {
@@ -119,6 +124,7 @@ class Schedule extends MongoModel
         }
         return $schedules;
     }
+    
     
     public function summary($dateTime)
     {
@@ -175,6 +181,7 @@ class Schedule extends MongoModel
         
     }
     
+    
     private function _compareSchedule($a, $b)
     {
         if ($a['date-time'] == $b['date-time'])
@@ -216,6 +223,8 @@ class Schedule extends MongoModel
         }
         return $schedules;
     }
+    
+    
     public function countScheduleFromUnattachedMessage($unattach_id)
     {
         $scheduleCount = $this->find('count', array(
@@ -224,4 +233,6 @@ class Schedule extends MongoModel
         
         return $scheduleCount; 
     }
+    
+    
 }

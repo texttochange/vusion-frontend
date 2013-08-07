@@ -12,21 +12,21 @@ class ProgramRequestsController extends AppController
 {
 
     var $components = array('RequestHandler', 'LocalizeUtils', 'Utils');
-    public $uses = array('Request');
+    var $uses = array('Request');
     
+
+    function constructClasses()
+    {
+        parent::constructClasses();
+    }
     
+
     public function beforeFilter()
     {
         parent::beforeFilter();
         //$this->Auth->allow('*');
         $this->RequestHandler->accepts('json');
         $this->RequestHandler->addInputType('json', array('json_decode'));
-    }
-
-
-    function constructClasses()
-    {
-        parent::constructClasses();
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Request        = new Request($options);
         $this->Dialogue       = new Dialogue($options);
@@ -55,7 +55,6 @@ class ProgramRequestsController extends AppController
         $programUrl = $this->params['program'];
 
         if ($this->request->is('post')) {
-            //print_r($saveData);
             $this->Request->create();
             if ($this->Request->save($this->request->data)) {
                 $this->_notifyUpdateRegisteredKeywords($programUrl);

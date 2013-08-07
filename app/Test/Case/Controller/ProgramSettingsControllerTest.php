@@ -122,10 +122,11 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             ->will($this->returnValue(array('status' =>'ok')));
 
         $programSettings = array(
-            'ProgramSettings' => array(
+            'ProgramSetting' => array(
                 'shortcode'=>'8282',
                 'international-prefix'=>'256',
-                'timezone'=> 'EAT'
+                'timezone'=> 'EAT',
+                'credit-type' => 'none'
                 )
             );
             
@@ -149,10 +150,11 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                                             'message' => 'keyword already used')));
 
         $programSettings = array(
-            'ProgramSettings' => array(
+            'ProgramSetting' => array(
                 'shortcode'=>'8282',
                 'international-prefix'=>'256',
-                'timezone'=> 'EAT'
+                'timezone'=> 'EAT',
+                'credit-type' => 'none'
                 )
             );
             

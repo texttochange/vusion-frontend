@@ -5,6 +5,10 @@ $config = array(
             'vhost' => '/develop',
             'username' => 'vumi',
             'password' => 'vumi',
-            )
+            ),
+        'redis' => array(
+            'host' => 'localhost',
+            'port' => '6379'
+            )  
         )
     );      

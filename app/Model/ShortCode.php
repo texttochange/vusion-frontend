@@ -13,11 +13,13 @@ class ShortCode extends MongoModel
     var $internationalShortCodePattern = '/^\+[0-9]+/';
     var $maxCharacterPerSmsOptions = array(70, 140, 160);
     
+    
     function getModelVersion()
     {
         return '2';
     }
    
+    
     function getRequiredFields($objectType=null)
     {
         return array(
@@ -37,6 +39,7 @@ class ShortCode extends MongoModel
         'first' => true,
         );
 
+    
     protected function _findPrefixShortCode($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -54,6 +57,7 @@ class ShortCode extends MongoModel
         return $results[0];
     }
 
+    
     //Need to validate the couple shortcode country is unique
     public $validate = array(
         'shortcode' => array(
@@ -100,7 +104,7 @@ class ShortCode extends MongoModel
             )
         );
 
-
+    
     public function isShortCodeCountryUnique($check)
     {
         if ($this->id) {
@@ -124,6 +128,7 @@ class ShortCode extends MongoModel
         return $result < 1;            
     }
 
+    
     public function beforeValidate()
     {
         
@@ -139,6 +144,7 @@ class ShortCode extends MongoModel
         return true;
     }
 
+    
     public function hasToIncludePrefix($check)
     {
         if (isset($this->data['ShortCode']['supported-internationally']) and $this->data['ShortCode']['supported-internationally']==1) {
@@ -148,6 +154,7 @@ class ShortCode extends MongoModel
         return true;
     }
 
+    
     public function notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix($check)
     {
         if ($this->data['ShortCode']['supported-internationally']==1)  {
@@ -172,5 +179,28 @@ class ShortCode extends MongoModel
 
         return $result < 1;   
     }
+    
+    
+    public function getShortCodes()
+    {
+        $results = $this->find('all');
+        $shortcodes = array();
+        foreach ($results as $result) {
+            $shortcodes[] = $result['ShortCode']['shortcode'];
+        }
+        return $shortcodes;
+    }
+    
+    
+    public function getCountriesWithShortCodes()
+    {
+        $results = $this->find('all');
+        $countries = array();
+        foreach ($results as $result) {
+            $countries[] = $result['ShortCode']['country'];
+        }
+        return $countries;
+    }
 
+    
 }
