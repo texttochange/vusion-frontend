@@ -233,7 +233,24 @@ class Participant extends MongoModel
         return true;
     }
 
-
+    
+    public function deleteMassTags($tag, $conditions)
+    {   
+        $tag = trim($tag);       
+        $valid = $this->validateTag($tag);
+        if (!is_bool($valid) || $valid != true){
+            return $valid;
+        }
+        $massUntag = array(
+            '$push' => array(
+                'tags' => $tag              
+                )
+            );    
+        $this->deleteAll($massUntag, $conditions);        
+        return true;
+    }
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();

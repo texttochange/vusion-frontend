@@ -661,7 +661,36 @@ function submitMassTag(){
 		window.location= url+"?tag="+tag;
 	}		
 }
-          
+        
+function generateMassUntagDialogue(obj){
+	var url = $(obj).attr("url") + window.location.search;
+	
+	var dialog = $('<div id="massuntag-dialogue" style="display:none">'+
+		'<form name="formTag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+		'<input type="text" name="tag" id="massuntag-tags">'+
+		'<div id="masstag-error-message" class="mass-error" style="display:none"/>'+
+		'<input type="submit" value="untag" id="clicky">'+
+		'</form>'+
+		'</div>').appendTo('body');
+	dialog.dialog({
+			title: localized_actions['mass_untag'], 
+			close:function(event, ui){
+			dialog.remove(); 
+			},
+			model: true
+	});
+}
+
+function submitMassUntag(){	
+	var tag = $('[name*="tag"]').val();	
+	var url = $('#massuntag-dialogue').find('form').attr('url');
+	if(url.contains('?')){
+		window.location= url+"&tag="+tag;
+	}else{
+		window.location= url+"?tag="+tag;
+	}		
+}
+
 function alphanumeric() {
 	var tagRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');	
 	var tag = $('#masstag-tags').val();

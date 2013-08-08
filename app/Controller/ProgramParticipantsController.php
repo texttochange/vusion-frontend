@@ -163,6 +163,58 @@ class ProgramParticipantsController extends AppController
     }
    
     
+    
+    public function massUntag()
+    {       
+        $programUrl = $this->params['program'];
+        if ($this->request->is('get')){            
+            $conditions = $this->_getConditions();
+            
+            if(!$conditions){
+                $conditions = array();
+            }  
+            
+            if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
+                
+                $this->Session->setFlash(__('The MassUntag has been done successfully.'),
+                    'default',
+                    array('class'=>'message success'));
+                if (isset($this->viewVars['urlParams'])) {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index',
+                        '?' => $this->viewVars['urlParams']));
+                    
+                } else {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }
+                
+            } else{                
+                $this->Session->setFlash(__('The MassUntag'.$tag.' could not be done successfully.'), 
+                	'default',
+                	array('class' => "message failure"));
+                if (isset($this->viewVars['urlParams'])) {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index',
+                        '?' => $this->viewVars['urlParams']));
+                    
+                } else {
+                    $this->redirect(array(  
+                        'program' => $programUrl,
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }                
+            }           
+        } 
+    }
+   
+    
     public function export() 
     {
         $programUrl = $this->params['program'];

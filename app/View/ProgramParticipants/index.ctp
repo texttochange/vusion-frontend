@@ -20,6 +20,15 @@
     ?>
     </li>
     <li><?php 
+    $massUntagUrl = $this->Html->url(array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'massUntag'));
+    echo $this->Html->tag(
+        'span', 
+        __('Untag'), 
+        array('class' => 'ttc-button', 'name' => 'masstag', 'url' => $massUntagUrl)); 
+    $this->Js->get('[name=masstag]')->event('click',
+        'generateMassUntagDialogue(this);');    
+    ?></li>
+    <li><?php 
     $massTagUrl = $this->Html->url(array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'massTag'));
     echo $this->Html->tag(
         'span', 
