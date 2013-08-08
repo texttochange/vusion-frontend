@@ -17,5 +17,18 @@ class LocalizeUtilsComponent extends Component {
             $item = __($item);
         }
     }
+    
+    public function localizeValueInArray($arrayToLocalize)
+    {
+    	array_walk_recursive(
+    		$arrayToLocalize,
+    		array($this, '_localizedValue'));
+    	return $arrayToLocalize;
+    }
+    
+    protected function _localizedValue(&$item)
+    {
+    	$item = __($item);
+    }
 
 }

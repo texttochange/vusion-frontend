@@ -83,10 +83,10 @@ class ProgramHistoryController extends AppController
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
 
         return array(
-            'operator' => $this->History->filterOperatorOptions,
+            'operator' => $this->LocalizeUtils->localizeValueInArray($this->History->filterOperatorOptions),
             'dialogue' => $dialoguesInteractionsContent,
-            'message-direction' => $this->History->filterMessageDirectionOptions,
-            'message-status' => $this->History->filterMessageStatusOptions,
+            'message-direction' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageDirectionOptions),
+            'message-status' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageStatusOptions),
             'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()            
             );
        
