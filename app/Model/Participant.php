@@ -225,7 +225,7 @@ class Participant extends MongoModel
             return $valid;
         }
         $massTag = array(
-            '$push' => array(
+           '$push' => array(
                 'tags' => $tag              
                 )
             );    
@@ -236,17 +236,17 @@ class Participant extends MongoModel
     
     public function deleteMassTags($tag, $conditions)
     {   
-        $tag = trim($tag);       
+        $tag = trim($tag);  
         $valid = $this->validateTag($tag);
         if (!is_bool($valid) || $valid != true){
             return $valid;
         }
         $massUntag = array(
-            '$push' => array(
+            '$pull' => array(
                 'tags' => $tag              
                 )
             );    
-        $this->deleteAll($massUntag, $conditions);        
+        $this->updateAll($massUntag, $conditions);        
         return true;
     }
     
@@ -439,18 +439,18 @@ class Participant extends MongoModel
     
     protected function _editProfile()
     {
-        if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {   				
-            $profiles = trim(stripcslashes($this->data['Participant']['profile']));    				
-            $profiles = array_filter(explode(",", $profiles));    				
+        if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {                   
+            $profiles = trim(stripcslashes($this->data['Participant']['profile']));                    
+            $profiles = array_filter(explode(",", $profiles));                    
             $profileList = array();
-            foreach ($profiles as $profile) {   						
+            foreach ($profiles as $profile) {                           
                 $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
                 list($label,$value) = explode(":", $profile);
                 $newProfile = array();
                 $newProfile['label'] = trim($label);
                 $newProfile['value'] = trim($value);
                 $newProfile['raw'] = null;
-                $profileList[] = $newProfile;    						
+                $profileList[] = $newProfile;                            
             }
             $this->data['Participant']['profile'] = $profileList;
         }    

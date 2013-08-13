@@ -24,8 +24,8 @@
     echo $this->Html->tag(
         'span', 
         __('Untag'), 
-        array('class' => 'ttc-button', 'name' => 'masstag', 'url' => $massUntagUrl)); 
-    $this->Js->get('[name=masstag]')->event('click',
+        array('class' => 'ttc-button', 'name' => 'unTag', 'url' => $massUntagUrl)); 
+    $this->Js->get('[name=unTag]')->event('click',
         'generateMassUntagDialogue(this);');    
     ?></li>
     <li><?php 

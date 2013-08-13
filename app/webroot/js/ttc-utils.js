@@ -650,7 +650,7 @@ function generateMassTagDialogue(obj){
 			},
 			model: true
 	});
-}
+}l
 
 function submitMassTag(){	
 	var tag = $('[name*="tag"]').val();	
@@ -666,10 +666,10 @@ function generateMassUntagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
 	
 	var dialog = $('<div id="massuntag-dialogue" style="display:none">'+
-		'<form name="formTag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
-		'<input type="text" name="tag" id="massuntag-tags">'+
+		'<form name="formUntag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+		'<input type="text" name="untag" id="masstag-tags">'+
 		'<div id="masstag-error-message" class="mass-error" style="display:none"/>'+
-		'<input type="submit" value="untag" id="clicky">'+
+		'<input type="submit" value="Untag" id="clicky">'+
 		'</form>'+
 		'</div>').appendTo('body');
 	dialog.dialog({
@@ -682,7 +682,7 @@ function generateMassUntagDialogue(obj){
 }
 
 function submitMassUntag(){	
-	var tag = $('[name*="tag"]').val();	
+	var tag = $('[name*="untag"]').val();	
 	var url = $('#massuntag-dialogue').find('form').attr('url');
 	if(url.contains('?')){
 		window.location= url+"&tag="+tag;

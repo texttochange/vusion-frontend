@@ -165,7 +165,7 @@ class ProgramParticipantsController extends AppController
     
     
     public function massUntag()
-    {       
+    {   
         $programUrl = $this->params['program'];
         if ($this->request->is('get')){            
             $conditions = $this->_getConditions();
@@ -176,7 +176,7 @@ class ProgramParticipantsController extends AppController
             
             if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
                 
-                $this->Session->setFlash(__('The MassUntag has been done successfully.'),
+                $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
                     'default',
                     array('class'=>'message success'));
                 if (isset($this->viewVars['urlParams'])) {
@@ -194,9 +194,9 @@ class ProgramParticipantsController extends AppController
                 }
                 
             } else{                
-                $this->Session->setFlash(__('The MassUntag'.$tag.' could not be done successfully.'), 
-                	'default',
-                	array('class' => "message failure"));
+                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
+                    'default',
+                    array('class' => "message failure"));
                 if (isset($this->viewVars['urlParams'])) {
                     $this->redirect(array(  
                         'program' => $programUrl,
