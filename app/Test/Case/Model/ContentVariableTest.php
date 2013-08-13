@@ -37,16 +37,16 @@ class ContentVariableTestCase extends CakeTestCase
     public function testSave()
     {
         $contentVariable = array(
-            'key' => '',
+            'keys' => '',
             'value' => '28C'
             );
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
-        $this->assertEquals('Dynamic content must have a key.',
-            $this->ContentVariable->validationErrors['key'][0]);
+        $this->assertEquals('Only letters and numbers for keys. The correct format is "key.key".',
+            $this->ContentVariable->validationErrors['keys'][0]);
         
         $contentVariable02 = array(
-            'key' => 'a key',
+            'keys' => 'my.key',
             'value' => ''
             );
         $this->ContentVariable->create();
@@ -55,7 +55,7 @@ class ContentVariableTestCase extends CakeTestCase
             $this->ContentVariable->validationErrors['value'][0]);
         
         $contentVariable03 = array(
-            'key' => 'myKey',
+            'keys' => 'my.Key',
             'value' => 'myValue'
             );
         $this->ContentVariable->create();
@@ -67,20 +67,20 @@ class ContentVariableTestCase extends CakeTestCase
     public function testSave_fail_keyNotUnique()
     {
         $contentVariable = array(
-            'key' => 'new key',
+            'keys' => 'new.key',
             'value' => 'meat'
             );
         $this->ContentVariable->create();
         $savedMessage = $this->ContentVariable->save($contentVariable);
         
         $contentVariable02 = array(
-            'key' => 'new key',
+            'keys' => 'new.key',
             'value' => 'new value'
             );
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable02));
-        $this->assertEquals('This key already exists. Please choose another.',
-            $this->ContentVariable->validationErrors['key'][0]);
+        $this->assertEquals('This keys pair already exists. Please choose another.',
+            $this->ContentVariable->validationErrors['keys'][0]);
     }
 
 }

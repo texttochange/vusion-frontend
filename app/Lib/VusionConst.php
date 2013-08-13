@@ -28,4 +28,7 @@ class VusionConst
 
     const ATTIME_REGEX = '/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
     const ATTIME_FAIL_MESSAGE = 'The at-time is not valid.';
+    
+    const CONTENT_VARIABLE_KEYS_REGEX = '/^[a-z0-9A-Z\s]+\.[a-z0-9A-Z\s]+$/';
+    const CONTENT_VARIABLE_KEYS_FAIL_MESSAGE = 'Only letters and numbers for keys. The correct format is "key.key".';
 }

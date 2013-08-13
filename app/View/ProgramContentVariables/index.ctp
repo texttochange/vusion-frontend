@@ -21,7 +21,7 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th class="direction"><?php echo $this->Paginator->sort(__('key'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="direction"><?php echo $this->Paginator->sort(__('keys'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="responses"><?php echo $this->Paginator->sort(__('value'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="actions action"><?php echo __('Actions');?></th>
 			</tr>
@@ -29,7 +29,18 @@
 		<tbody>
 		    <?php foreach ($contentVariables as $contentVariable): ?>
 		    <tr>
-		        <td class="prefix"><?php echo h($contentVariable['ContentVariable']['key']); ?>&nbsp;</td>
+		        <td class="prefix">
+		            <?php
+		                $keypair = '';
+                        foreach ($contentVariable['ContentVariable']['keys'] as $key => $value) {
+                            foreach ($value as $key1 => $value1) {
+                                $keypair = $keypair . $value1 . ".";
+                            }                            
+                        }
+                        $keypair = rtrim($keypair, '.');
+		                echo h($keypair);
+		            ?>&nbsp;
+		        </td>
 		        <td class="details"><?php echo __($contentVariable['ContentVariable']['value']) ?></td>
 		        <td class="actions action">
 		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'controller' => 'programContentVariables', 'action' => 'edit', $contentVariable['ContentVariable']['_id'])); ?>
@@ -40,7 +51,7 @@
 		                    'action' => 'delete',
 		                    $contentVariable['ContentVariable']['_id']),
 		                null,
-		                __('Are you sure you want to delete "%s"?', $contentVariable['ContentVariable']['key'])); ?>
+		                __('Are you sure you want to delete "%s"?', $keypair)); ?>
 		        </td>
 		    </tr>
 		   <?php endforeach; ?>

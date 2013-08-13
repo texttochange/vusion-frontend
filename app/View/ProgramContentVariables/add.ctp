@@ -19,8 +19,8 @@
     <div class="ttc-display-area">
     <?php echo $this->Form->create('ContentVariable'); ?>
     <fieldset>
-       <?php echo $this->Form->input(__('key')); ?>
-       <?php echo $this->Form->input(__('value')); ?>
+       <?php echo $this->Form->input('keys', array('label' => __('keys pair'))); ?>
+       <?php echo $this->Form->input('value', array('label' => __('value'))); ?>
     </fieldset>
        <?php echo $this->Form->end(__('Save')); ?>
    </div>

@@ -1,7 +1,7 @@
 <?php
-App::uses('ProgramDynamicContentsController', 'Controller');
+App::uses('ProgramContentVariablesController', 'Controller');
 
-class TestProgramDynamicContentsController extends ProgramDynamicContentsController
+class TestProgramContentVariablesController extends ProgramContentVariablesController
 {
 
     public $autoRender = false;
@@ -16,7 +16,7 @@ class TestProgramDynamicContentsController extends ProgramDynamicContentsControl
 }
 
 
-class ProgramDynamicContentsControllerTestCase extends ControllerTestCase
+class ProgramContentVariablesControllerTestCase extends ControllerTestCase
 {
     /**
     * Data
@@ -37,38 +37,38 @@ class ProgramDynamicContentsControllerTestCase extends ControllerTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->ProgramDynamicContents = new ProgramDynamicContentsController();
+        $this->ProgramContentVariables = new ProgramContentVariablesController();
         $this->dropData();
     }
 
 
     protected function dropData()
     {
-        $this->instanciateDynamicContentModel();
-        $this->DynamicContent->deleteAll(true, false);
+        $this->instanciateContentVariableModel();
+        $this->ContentVariable->deleteAll(true, false);
     }
 
 
-    protected function instanciateDynamicContentModel() 
+    protected function instanciateContentVariableModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
         
-        $this->DynamicContent = new DynamicContent($options);
+        $this->ContentVariable = new ContentVariable($options);
     }
     
 
     public function tearDown()
     {
         $this->dropData();
-        unset($this->DynamicContent);
+        unset($this->ContentVariable);
         parent::tearDown();
     }
 
     
     public function mock_program_access()
     {
-        $dynamicContents = $this->generate(
-            'ProgramDynamicContents', array(
+        $contentVariables = $this->generate(
+            'ProgramContentVariables', array(
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
@@ -81,17 +81,17 @@ class ProgramDynamicContentsControllerTestCase extends ControllerTestCase
                 )
             );
 
-        $dynamicContents->Acl
+        $contentVariables->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->returnValue('true'));
             
-        $dynamicContents->Program
+        $contentVariables->Program
             ->expects($this->any())
             ->method('find')
             ->will($this->returnValue($this->programData));
 
-        $dynamicContents->Session
+        $contentVariables->Session
             ->expects($this->any())
             ->method('read')
             ->will($this->onConsecutiveCalls(
@@ -103,7 +103,7 @@ class ProgramDynamicContentsControllerTestCase extends ControllerTestCase
                 'testdbprogram'
                 ));
  
-        return $dynamicContents;
+        return $contentVariables;
 
     }
     
@@ -114,93 +114,93 @@ class ProgramDynamicContentsControllerTestCase extends ControllerTestCase
     
     public function testIndex()
     {
-        $dynamicContents = $this->mock_program_access();  
+        $contentVariables = $this->mock_program_access();  
 
-        $dynamicContent =  array(
-            'DynamicContent' => array(
-                'key' => 'weather',
+        $contentVariable =  array(
+            'ContentVariable' => array(
+                'keys' => 'program.weather',
                 'value' => '30C'
              )
         );
-        $this->DynamicContent->create();
-        $savedMessage = $this->DynamicContent->save($dynamicContent);
+        $this->ContentVariable->create();
+        $savedMessage = $this->ContentVariable->save($contentVariable);
         
-        $this->testAction("/testurl/programDynamicContents/index");
-        $this->assertEquals(1, count($this->vars['dynamicContents']));
+        $this->testAction("/testurl/programContentVariables/index");
+        $this->assertEquals(1, count($this->vars['contentVariables']));
     }
     
     
     public function testAdd()
     {
-        $dynamicContents = $this->mock_program_access();  
+        $contentVariables = $this->mock_program_access();  
 
-        $dynamicContent =  array(
-            'DynamicContent' => array(
-                'key' => 'myKey',
+        $contentVariable =  array(
+            'ContentVariable' => array(
+                'keys' => 'my.Key',
                 'value' => 'my value!!!!'
              )
         );
         $this->testAction(
-            "/testurl/programDynamicContents/add", 
+            "/testurl/programContentVariables/add", 
             array(
                 'method' => 'post',
-                'data' => $dynamicContent
+                'data' => $contentVariable
                 )
             );
-        $this->assertEquals(1, $this->DynamicContent->find('count'));
+        $this->assertEquals(1, $this->ContentVariable->find('count'));
     }
     
     
     public function testEdit()
     {
-        $dynamicContents = $this->mock_program_access();  
+        $contentVariables = $this->mock_program_access();  
 
-        $dynamicContent =  array(
-            'DynamicContent' => array(
-                'key' => 'your key',
+        $contentVariable =  array(
+            'ContentVariable' => array(
+                'keys' => 'your.key',
                 'value' => 'your value'
              )
         );
-        $this->DynamicContent->create();
-        $savedMessage = $this->DynamicContent->save($dynamicContent);
+        $this->ContentVariable->create();
+        $savedMessage = $this->ContentVariable->save($contentVariable);
         
         $this->testAction(
-            "/testurl/programDynamicContents/edit/".$savedMessage['DynamicContent']['_id'], 
+            "/testurl/programContentVariables/edit/".$savedMessage['ContentVariable']['_id'], 
             array(
                 'method' => 'post',
                 'data' => array(
-                    'DynamicContent' => array(
-                        'key' => 'a Key',
+                    'ContentVariable' => array(
+                        'keys' => 'a.Key',
                         'value' => 'a value'
                         )
                     )
                 )
             );
-        $this->DynamicContent->id = $savedMessage['DynamicContent']['_id']."";
-        $dynamicContent = $this->DynamicContent->read(); 
+        $this->ContentVariable->id = $savedMessage['ContentVariable']['_id']."";
+        $contentVariable = $this->ContentVariable->read(); 
         $this->assertEquals(
            'a value',
-            $dynamicContent['DynamicContent']['value']
+            $contentVariable['ContentVariable']['value']
         );
     }
     
     
     public function testDelete()
     {
-        $dynamicContents = $this->mock_program_access();  
+        $contentVariables = $this->mock_program_access();  
 
-        $dynamicContent =  array(
-            'DynamicContent' => array(
-                'key' => 'myKey',
+        $contentVariable =  array(
+            'ContentVariable' => array(
+                'keys' => 'my.Key',
                 'value' => 'my value!!!!'
              )
         );
-        $this->DynamicContent->create();
-        $savedMessage = $this->DynamicContent->save($dynamicContent);
+        $this->ContentVariable->create();
+        $savedMessage = $this->ContentVariable->save($contentVariable);
         
         $this->testAction(
-            "/testurl/programDynamicContents/delete/".$savedMessage['DynamicContent']['_id']);
-        $this->assertEquals(0, $this->DynamicContent->find('count'));        
+            "/testurl/programContentVariables/delete/".$savedMessage['ContentVariable']['_id']);
+        $this->assertEquals(0, $this->ContentVariable->find('count'));        
     }
     
 }
