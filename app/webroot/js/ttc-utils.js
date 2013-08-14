@@ -661,7 +661,23 @@ function submitMassTag(){
 		window.location= url+"?tag="+tag;
 	}		
 }
-        
+   
+
+
+function dodelete(msg)
+{
+	var conTran = msg;
+	if(conTran == null)
+		conTran = confirm("Do you want to delete this tag?");
+	else
+		conTran = confirm(msg);
+	
+	if(conTran == true)
+		doSubmit()
+	
+}
+
+
 function generateMassUntagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
 	
@@ -684,11 +700,15 @@ function generateMassUntagDialogue(obj){
 function submitMassUntag(){	
 	var tag = $('[name*="untag"]').val();	
 	var url = $('#massuntag-dialogue').find('form').attr('url');
-	if(url.contains('?')){
-		window.location= url+"&tag="+tag;
-	}else{
-		window.location= url+"?tag="+tag;
-	}		
+	var untagConfirm = confirm("Do you want to delete this tag?");
+	if (untagConfirm == true)
+	{
+		if(url.contains('?')){
+			window.location= url+"&tag="+tag;
+		}else{
+			window.location= url+"?tag="+tag;
+		}
+	}	
 }
 
 function alphanumeric() {

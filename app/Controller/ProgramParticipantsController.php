@@ -166,52 +166,74 @@ class ProgramParticipantsController extends AppController
     
     public function massUntag()
     {   
-        $programUrl = $this->params['program'];
-        if ($this->request->is('get')){            
-            $conditions = $this->_getConditions();
-            
-            if(!$conditions){
-                $conditions = array();
-            }  
-            
-            if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
-                
-                $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
-                    'default',
-                    array('class'=>'message success'));
-                if (isset($this->viewVars['urlParams'])) {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index',
-                        '?' => $this->viewVars['urlParams']));
-                    
-                } else {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index'));
-                }
-                
-            } else{                
-                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
-                    'default',
-                    array('class' => "message failure"));
-                if (isset($this->viewVars['urlParams'])) {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index',
-                        '?' => $this->viewVars['urlParams']));
-                    
-                } else {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index'));
-                }                
-            }           
-        } 
+    	$programUrl = $this->params['program'];
+    	$tag = $this->params['url']['tag'];
+        $arrayOfTags = $this->Participant->getDistinctTags();
+        
+    	if(in_array($tag, $arrayOfTags)){
+    		if ($this->request->is('get')){            
+    			$conditions = $this->_getConditions();
+    			
+    			if(!$conditions){
+    				$conditions = array();
+    			}  
+    			
+    			if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
+    				
+    				$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
+    					'default',
+    					array('class'=>'message success'));
+    				if (isset($this->viewVars['urlParams'])) {
+    					$this->redirect(array(  
+    						'program' => $programUrl,
+    						'controller' => 'programParticipants',
+    						'action' => 'index',
+    						'?' => $this->viewVars['urlParams']));
+    					
+    				} else {
+    					$this->redirect(array(  
+    						'program' => $programUrl,
+    						'controller' => 'programParticipants',
+    						'action' => 'index'));
+    				}
+    				
+    			} else{                
+    				$this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
+    					'default',
+    					array('class' => "message failure"));
+    				if (isset($this->viewVars['urlParams'])) {
+    					$this->redirect(array(  
+    						'program' => $programUrl,
+    						'controller' => 'programParticipants',
+    						'action' => 'index',
+    						'?' => $this->viewVars['urlParams']));
+    					
+    				} else {
+    					$this->redirect(array(  
+    						'program' => $programUrl,
+    						'controller' => 'programParticipants',
+    						'action' => 'index'));
+    				}                
+    			}           
+    		} 
+    	}else{
+    		$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' was not found'), 
+    			'default',
+    			array('class' => "message failure"));
+    		if (isset($this->viewVars['urlParams'])) {
+    			$this->redirect(array(  
+    				'program' => $programUrl,
+    				'controller' => 'programParticipants',
+    				'action' => 'index',
+    				'?' => $this->viewVars['urlParams']));
+    			
+    		} else {
+    			$this->redirect(array(  
+    				'program' => $programUrl,
+    				'controller' => 'programParticipants',
+    				'action' => 'index'));
+    		}          
+    	}
     }
    
     
