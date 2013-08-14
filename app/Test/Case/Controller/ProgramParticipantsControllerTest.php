@@ -61,6 +61,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Dialogue->deleteAll(true, false);
     }
 
+    
     public function tearDown()
     {
         
@@ -71,6 +72,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
 
+    
     public function mock_program_access_withoutSession()
     {
            $participants = $this->generate(
@@ -1344,5 +1346,42 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
     }
 
+    
+    public function testMassUntagFilteredParticipant_ok()
+    {
+        $this->mock_program_access();
+    
+        $participant_01 = array(
+            'phone' => '+6',
+            'tags' => array('test','hi')
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant_01);        
+
+        $participant_02 = array(
+            'phone' => '+7',
+            'tags' => array('test','hi','home')
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant_02); 
+       
+        $this->testAction(("/testurl/programParticipants/massuntag?"
+            .'filter_operator=all'
+            .'&filter_param[1][1]=tagged'
+            .'&filter_param[1][2]=with'
+            .'&filter_param[1][3]=test'
+            .'&tag=test'),
+            array('method' => 'get'));
+                     
+        $allTags = $this->Participant->getDistinctTags();        
+        $this->assertEqual(array('hi', 'home'), $allTags);
+        
+        $conditions = array(
+            'conditions' => array(               
+                'phone' => '+6')); 
+        $participants = $this->Participant->find('all', $conditions);
+        $this->assetEqual(array('hi'), $participants[0]['Participant']['tags']);
+    }
+    
   
 }
