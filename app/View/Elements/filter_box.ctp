@@ -28,6 +28,20 @@
     </div>
     <?php
     $this->Js->set('filterFieldOptions', $filterFieldOptions);
+    foreach ($filterParameterOptions as $parameter => &$options) {
+        if (isset($options['_ajax'])) {
+            $ajaxUrl = $this->Html->url(array(
+                'program' => $programDetails['url'], 
+                'action' => $options['_action'],
+                'ext' => 'json',
+                '?' => $this->params['url']));
+            $this->Js->get('document')->event(
+                'ready',
+                'loadParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
+            );
+            $filterParameterOptions[$parameter] = array("Loading...");
+        }
+    }
     $this->Js->set('filterParameterOptions', $filterParameterOptions);
     
     echo $this->Form->create(null, array(

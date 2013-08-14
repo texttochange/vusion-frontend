@@ -53,7 +53,7 @@ class ProgramParticipantsController extends AppController
 
     
     public function index() 
-    {
+    {      
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
                 
@@ -82,15 +82,32 @@ class ProgramParticipantsController extends AppController
 
 
     protected function _getFilterParameterOptions()
-    {
-        $tagValues = $this->Participant->getDistinctTags();
-        $labelValues = $this->Participant->getDistinctLabels();
-        
+    {        
         return array(
             'operator' => $this->Participant->filterOperatorOptions,
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
-            'tag' => (count($tagValues)>0? array_combine($tagValues, $tagValues) : array()),
-            'label' => (count($labelValues)>0? array_combine($labelValues, $labelValues) : array()));
+            'tag' => array('_ajax' => 'ready', '_action' => 'getTags'),
+            'label' => array('_ajax' => 'ready', '_action' => 'getLabels'));
+    }
+
+
+    public function getTags()
+    {
+        $conditions = $this->_getConditions();
+        $tagValues = $this->Participant->getDistinctTags($conditions);
+        $results = $tagValues;
+        $this->set(compact('results'));
+        $this->render('ajaxResults');
+    }
+
+
+    public function getLabels()
+    {
+        $conditions = $this->_getConditions();
+        $labelValues = $this->Participant->getDistinctLabels($conditions);
+        $results = $labelValues;
+        $this->set(compact('results'));
+        $this->render('ajaxResults');
     }
 
 
