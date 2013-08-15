@@ -87,7 +87,11 @@ class Request extends MongoModel
             'noForbiddenApostrophe' => array(
                 'rule' => array('customNot', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),/*
+            'validDynamicContent' => array(
+                'rule' => 'validDynamicContent',
+                'message' => 'Incorrect use of dynamic content. The correct format is [participant.key] or [contentVariable.key.key].'
+                ),*/
             )
         );
 
@@ -279,6 +283,20 @@ class Request extends MongoModel
         } 
         return null;
     }
-
+/*    
+    
+    public function validDynamicContent($check)
+    {
+        preg_match_all('/\[\w*(\.\w*){1,2}\]/', $check['content'], $matches);
+        foreach ($matches[0] as $match) {
+            if (preg_match('/\[\w*\.\w*\]/', $match) && !preg_match('/\[\bparticipant\b\.\w*\]/', $match)) {echo "here";
+                return false;
+            } elseif (preg_match('/\[\w*\.\w*\.\w*\]/', $match) && !preg_match('/\[\bcontentVariable\b\.\w*\.\w*\]/', $match)) {echo "there";print_r($match);
+                return false;
+            }
+        }
+        return true;
+    }
+*/
 
 }

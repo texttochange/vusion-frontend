@@ -248,6 +248,22 @@ class RequestTestCase extends CakeTestCase
             'The apostrophe used is not allowed.',
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
+/*
 
-
+    public function testSave_fail_dynamic_content()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'The weather today is [program.weather].'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            'Incorrect use of dynamic content. The correct format is [participant.key] or [contentVariable.key.key].',
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+    }
+*/
 }

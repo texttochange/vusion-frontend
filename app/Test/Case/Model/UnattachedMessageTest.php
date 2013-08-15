@@ -419,4 +419,25 @@ class UnattachedMessageTestCase extends CakeTestCase
     }
 
 
+    public function testSave_fail_invalidDynamicContent()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
+        $unattachedMessage = array(
+            'name' => 'hello',
+            'send-to-type'=> 'all', 
+            'content' => 'There is a an [shoe.box] here.',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => $date->format('d/m/Y H:i')
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
+        $this->assertEquals(
+            'Incorrect use of dynamic content. The correct format is [participant.key] or [contentVariable.key.key].',
+            $this->UnattachedMessage->validationErrors['content'][0]);
+    }
+
+
 }
