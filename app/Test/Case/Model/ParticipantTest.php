@@ -1519,7 +1519,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $this->Participant->save($participant_09);   
         
-        $this->Participant->deleteMassTags('geek', array());
+        $this->Participant->deleteMassTags(' geek', array());
         
         $allTags= $this->Participant->getDistinctTags();
         $this->assertEqual(array('cool', 'hi', 'another tag'), $allTags);      
