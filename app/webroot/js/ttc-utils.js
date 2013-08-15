@@ -661,22 +661,7 @@ function submitMassTag(){
 		window.location= url+"?tag="+tag;
 	}		
 }
-   
-
-
-function dodelete(msg)
-{
-	var conTran = msg;
-	if(conTran == null)
-		conTran = confirm("Do you want to delete this tag?");
-	else
-		conTran = confirm(msg);
-	
-	if(conTran == true)
-		doSubmit()
-	
-}
-
+ 
 
 function generateMassUntagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
@@ -684,7 +669,7 @@ function generateMassUntagDialogue(obj){
 	var dialog = $('<div id="massuntag-dialogue" style="display:none">'+
 		'<form name="formUntag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
 		'<input type="text" name="untag" id="masstag-tags">'+
-		'<div id="masstag-error-message" class="mass-error" style="display:none"/>'+
+		'<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
 		'<input type="submit" value="Untag" id="clicky">'+
 		'</form>'+
 		'</div>').appendTo('body');
