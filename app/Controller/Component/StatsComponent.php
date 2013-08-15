@@ -110,7 +110,12 @@ class StatsComponent extends Component
             );
         $historyCount  = $tempHistory->find(
             'count', array(
-                'conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
+            	'conditions' =>array(
+            		'$or' => array(
+            			array('object-type' => array('$in' => $tempHistory->messageType)),
+            			array('object-type' => array('$exists' => false ))
+            			)
+            		)));
         
         $programStats = array(
             'active-participant-count' => $activeParticipantCount,
