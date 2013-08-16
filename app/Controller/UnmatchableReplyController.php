@@ -3,6 +3,7 @@
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('ShortCode', 'Model');
 
 class UnmatchableReplyController extends AppController
 {
@@ -30,7 +31,7 @@ class UnmatchableReplyController extends AppController
                 'database' => Configure::read("mongo_db")
                 );
         }
-        
+        $this->ShortCode  = new ShortCode($options);
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
     }
@@ -63,13 +64,24 @@ class UnmatchableReplyController extends AppController
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->UnmatchableReply->filterFields);
     }
-
+   
 
     protected function _getFilterParameterOptions()
     {
+    	$shortcodes = $countries = array();
+        $codes = $this->ShortCode->find('all');
+        if (!empty($codes)) {
+            foreach ($codes as $code) {
+                $shortcodes[] = $code['ShortCode']['shortcode'];
+                $countries[] = $code['ShortCode']['country'];
+            }
+        }
+    	sort($countries);
+    	
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
-            'country' => $this->PhoneNumber->getCountriesByPrefixes());
+            'country' => (count($countries)>0? array_combine($countries, $countries) : array())
+            );
     }
 
     
