@@ -37,7 +37,7 @@ class ProgramParticipantsController extends AppController
         parent::beforeFilter();
         //$this->Auth->allow('*');
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-
+       
         $this->Participant       = new Participant($options);
         $this->History           = new History($options);
         $this->Schedule          = new Schedule($options);
@@ -86,26 +86,31 @@ class ProgramParticipantsController extends AppController
         return array(
             'operator' => $this->Participant->filterOperatorOptions,
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
-            'tag' => array('_ajax' => 'ready', '_action' => 'getTags'),
-            'label' => array('_ajax' => 'ready', '_action' => 'getLabels'));
+            'tag' => array('_ajax' => 'ready'),
+            'label' => array('_ajax' => 'ready'));
     }
 
 
-    public function getTags()
+    public function getFilterParameterOptions()
     {
-        $conditions = $this->_getConditions();
-        $tagValues = $this->Participant->getDistinctTags($conditions);
-        $results = $tagValues;
-        $this->set(compact('results'));
-        $this->render('ajaxResults');
-    }
+        if (!isset($this->request->query['parameter'])) {
+            throw new Exception(__("The requiered filter parameter option is missing."));
+        }
 
+        $requestedParameterOption = $this->request->query['parameter'];
 
-    public function getLabels()
-    {
         $conditions = $this->_getConditions();
-        $labelValues = $this->Participant->getDistinctLabels($conditions);
-        $results = $labelValues;
+      
+        switch ($requestedParameterOption) {
+        case "tag":
+            $results = $this->Participant->getDistinctTags($conditions);
+            break;
+        case "label":
+            $results = $this->Participant->getDistinctLabels($conditions, -1);
+            break;
+        default:
+            throw new Exception(__("The requested parameter option %s is not supported.", $requestedParameterOption));
+        }        
         $this->set(compact('results'));
         $this->render('ajaxResults');
     }

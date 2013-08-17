@@ -696,7 +696,9 @@ function addPredefinedContent() {
 	});
 }
 
-function loadParameterOptions(parameter, url) {
+function loadFilterParameterOptions(parameter, url) {
+    //Dirty: passing of the rule require rencoding the & in the url parameters 
+    url = url.replace(/&amp;/g, "&");
     $.ajax({
         url: url,
         success: function(data){

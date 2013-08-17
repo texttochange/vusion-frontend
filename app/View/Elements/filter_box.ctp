@@ -30,14 +30,16 @@
     $this->Js->set('filterFieldOptions', $filterFieldOptions);
     foreach ($filterParameterOptions as $parameter => &$options) {
         if (isset($options['_ajax'])) {
+            $urlParameters = $this->params['url'];
+            $urlParameters['parameter'] = $parameter;
             $ajaxUrl = $this->Html->url(array(
                 'program' => $programDetails['url'], 
-                'action' => $options['_action'],
+                'action' => 'getFilterParameterOptions',
                 'ext' => 'json',
-                '?' => $this->params['url']));
+                '?' => $urlParameters));
             $this->Js->get('document')->event(
-                'ready',
-                'loadParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
+                $options['_ajax'],
+                'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
             );
             $filterParameterOptions[$parameter] = array("Loading...");
         }
