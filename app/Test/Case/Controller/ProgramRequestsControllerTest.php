@@ -137,15 +137,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             ->expects($this->any())
             ->method('read')
             ->will(
-                $this->onConsecutiveCalls(
-                    '4',
-                    '2',
-                    $this->programData[0]['Program']['database'], 
-                    $this->programData[0]['Program']['name'],
-                    $this->programData[0]['Program']['name'],
-                    $this->otherProgramData[0]['Program']['database'],
-                    'testdbprogram'
-                    )
+                $this->returnValue($this->programData[0]['Program']['database'])
                 );
             
         return $requests;
