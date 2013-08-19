@@ -94,7 +94,7 @@ class ProgramParticipantsController extends AppController
     public function getFilterParameterOptions()
     {
         if (!isset($this->request->query['parameter'])) {
-            throw new Exception(__("The requiered filter parameter option is missing."));
+            throw new Exception(__("The required filter parameter option is missing."));
         }
 
         $requestedParameterOption = $this->request->query['parameter'];
@@ -106,7 +106,8 @@ class ProgramParticipantsController extends AppController
             $results = $this->Participant->getDistinctTags($conditions);
             break;
         case "label":
-            $results = $this->Participant->getDistinctLabels($conditions, -1);
+            ## Set a 5 minutes timeout on the mapreduce
+            $results = $this->Participant->getDistinctLabels($conditions, 5 * 60 * 1000);  
             break;
         default:
             throw new Exception(__("The requested parameter option %s is not supported.", $requestedParameterOption));
