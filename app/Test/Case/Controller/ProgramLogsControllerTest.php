@@ -88,14 +88,9 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         $logs->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls(
-                '4', 
-                '2',
-                $this->programData[0]['Program']['database'],
-                $this->programData[0]['Program']['name'],
-                'utc',
-                'testdbprogram'
-            ));
+            ->will(
+                $this->returnValue($this->programData[0]['Program']['database'])
+                );
      
         return $logs;
     }
