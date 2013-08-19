@@ -283,7 +283,7 @@ class Participant extends MongoModel
             
             $this->_editProfile();
             
-            $this->_editEnrolls();            
+            $this->_editEnrolls();
         }
         return true;
     }
@@ -299,17 +299,20 @@ class Participant extends MongoModel
     }
 
     
-    public function getDistinctTags()                 
+    public function getDistinctTags($conditions = null)  
     {
         $tagsQuery = array(
             'distinct'=>'participants',
             'key'=> 'tags');
+        if (isset($conditions)) {
+            $tagsQuery['query'] = $conditions;
+        }
         $distinctTags = $this->query($tagsQuery);
         return $distinctTags['values'];
     }
 
     
-    public function getDistinctLabels($conditions = null)
+    public function getDistinctLabels($conditions = null, $timeout = 30000)
     {
         $results = array();
         $map = new MongoCode("function() { 
@@ -324,14 +327,14 @@ class Participant extends MongoModel
             'map'=> $map,
             'reduce' => $reduce,
             'query' => array(),
-            'out' => 'map_reduce_participantLabels');
+            'out' => 'inline');
         
         if (isset($conditions)) {
             $labelsQuery['query'] = $conditions;
         }
 
         $mongo = $this->getDataSource();
-        $cursor = $mongo->mapReduce($labelsQuery);
+        $cursor = $mongo->mapReduce($labelsQuery, $timeout);
         if ($cursor == false){ 
             return $results;
         }

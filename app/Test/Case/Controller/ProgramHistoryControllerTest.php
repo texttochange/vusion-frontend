@@ -78,7 +78,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     protected function mockProgramAccess_withoutSession()
     {
-        $Status = $this->generate('ProgramHistory', array(
+        $histories = $this->generate('ProgramHistory', array(
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
@@ -89,37 +89,34 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             ),
         ));
         
-        $Status->Acl
+        $histories->Acl
             ->expects($this->any())
             ->method('check')
             ->will($this->returnValue('true'));
         
-        $Status->Program
+        $histories->Program
             ->expects($this->once())
             ->method('find')
             ->will($this->returnValue($this->programData));
             
-        return $Status;
+        return $histories;
     }
     
     
     protected function mockProgramAccess()
     {
-        $Status = $this->mockProgramAccess_withoutSession();
+        $histories = $this->mockProgramAccess_withoutSession();
             
-        $Status->Session
+        $histories->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls(
-                '4', 
-                '2',
-                $this->programData[0]['Program']['database'],
-                $this->programData[0]['Program']['name'],
-                'Africa/Kampala',
-                'testdbprogram'
-                ));
+            ->will(
+                $this->returnValue(
+                    $this->programData[0]['Program']['database']
+                    )
+                );
             
-        return $Status;
+        return $histories;
     }
 
 
