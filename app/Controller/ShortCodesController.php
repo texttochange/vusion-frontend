@@ -9,7 +9,7 @@ class ShortCodesController extends AppController
     var $helpers    = array('Js' => array('Jquery'));
     var $components = array('PhoneNumber'); 
 
-    
+
     public function constructClasses()
     {
         parent::constructClasses();
