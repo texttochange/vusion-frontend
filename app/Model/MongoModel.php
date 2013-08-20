@@ -146,6 +146,7 @@ abstract class MongoModel extends Model
             $this->data[$this->alias][$field] = $default;
         } 
     }
+    
 
     # Need to overwrite to avoid validation error message to be written
     public function invalidate($field, $value = true) {
@@ -157,6 +158,7 @@ abstract class MongoModel extends Model
 		}
 		$this->validationErrors[$field] []= $value;
 	}
+	
 
     # Need to be overwrite to take into accound array field in mongo
     public function save($data = null, $validate = true, $fieldList = array()) {
@@ -325,6 +327,7 @@ abstract class MongoModel extends Model
         $this->whitelist = $_whitelist;
         return $success;
     }
+    
 
 }
 ?> 

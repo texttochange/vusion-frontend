@@ -8,8 +8,7 @@ App::uses('AppModel', 'Model');
  */
 class ProgramsUser extends AppModel
 {
-
-
+	
     public $validate = array(
         'program_id' => array(
             'notempty' => array(

@@ -283,11 +283,12 @@ class Participant extends MongoModel
             
             $this->_editProfile();
             
-            $this->_editEnrolls();            
+            $this->_editEnrolls();
         }
         return true;
     }
 
+    
     public function getDistinctTagsAndLabels()
     {
         $results = $this->getDistinctTags();
@@ -297,16 +298,21 @@ class Participant extends MongoModel
         return array_merge($results, $distinctLabels);
     }
 
-    public function getDistinctTags()                 
+    
+    public function getDistinctTags($conditions = null)  
     {
         $tagsQuery = array(
             'distinct'=>'participants',
             'key'=> 'tags');
+        if (isset($conditions)) {
+            $tagsQuery['query'] = $conditions;
+        }
         $distinctTags = $this->query($tagsQuery);
         return $distinctTags['values'];
     }
 
-    public function getDistinctLabels($conditions = null)
+    
+    public function getDistinctLabels($conditions = null, $timeout = 30000)
     {
         $results = array();
         $map = new MongoCode("function() { 
@@ -321,14 +327,14 @@ class Participant extends MongoModel
             'map'=> $map,
             'reduce' => $reduce,
             'query' => array(),
-            'out' => 'map_reduce_participantLabels');
+            'out' => 'inline');
         
         if (isset($conditions)) {
             $labelsQuery['query'] = $conditions;
         }
 
         $mongo = $this->getDataSource();
-        $cursor = $mongo->mapReduce($labelsQuery);
+        $cursor = $mongo->mapReduce($labelsQuery, $timeout);
         if ($cursor == false){ 
             return $results;
         }
@@ -338,6 +344,7 @@ class Participant extends MongoModel
         return $results;  
     }
 
+    
     public function getExportHeaders($conditions = null)
     {
         $headers = array(
@@ -700,6 +707,7 @@ class Participant extends MongoModel
         return $report;
     }
 
+    
     private function array_filter_out_not_label($input) 
     {
         $tmp = array_filter(array_keys($input), function($k) {
@@ -771,70 +779,55 @@ class Participant extends MongoModel
     #Filter variables and functions
     public $filterFields = array(
         'phone' => array(
-            'label' => 'phone',
-            'operators'=> array(
+        	'label' => 'phone',
+        	'operators'=> array(
                 'start-with' => array(
-                    'label' => 'start with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
-                    'label' => 'equal to',
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'label' => 'start with any of',
                     'parameter-type' => 'text'))),
         'optin' => array(
-            'label' => 'optin',
-            'operators' => array(
+        	'label' => 'optin',
+        	'operators' => array(
                 'now' => array(
-                    'label' => 'now',
                     'parameter-type' => 'none'),
                 'date-from' => array(
-                    'label' => 'date from',
                     'parameter-type' => 'date'),
                 'date-to' => array(
-                    'label' => 'date to',
                     'parameter-type' => 'date'))),
         'optout' => array(
-            'label' => 'optout',
-            'operators' => array(
+        	'label' => 'optout',
+        	'operators' => array(
                 'now' =>array(
-                    'label' => 'now',
                     'parameter-type' => 'none'),
                 'date-from' => array(
-                    'label' => 'date from',
                     'parameter-type' => 'date'),
                 'date-to' => array(
-                    'label' => 'date to',
                     'parameter-type' => 'date'))),
         'enrolled' => array(
-            'label' => 'enrolled',
-            'operators' => array(
+        	'label' => 'enrolled',
+        	'operators' => array(
                 'in' => array(
-                    'label' => 'in',
                     'parameter-type' => 'dialogue'),
                 'not-in' =>  array(
-                    'label' => 'not in',
                     'parameter-type' => 'dialogue'))),
         'tagged' => array(
-            'label' => 'tagged',
-            'operators' => array(
+        	'label' => 'tagged',
+        	'operators' => array(
                 'with' =>  array(
-                    'label' => 'with',
                     'parameter-type' => 'tag',
                     'conditional-action' => true),
                 'not-with' =>  array(
-                    'label' => 'not with',
                     'parameter-type' => 'tag',
                     'conditional-action' => true))),
         'labelled' => array(
-            'label' => 'labelled',
-            'operators' => array(
+        	'label' => 'labelled',
+        	'operators' => array(
                 'with' =>  array(
-                    'label' => 'with',
                     'parameter-type' => 'label',
                     'conditional-action' => true),
                 'not-with' =>  array(
-                    'label' => 'not with',
                     'parameter-type' => 'label',
                     'conditional-action' => true)))
     );
@@ -844,6 +837,7 @@ class Participant extends MongoModel
         'any' => 'any'
         );
 
+    
 
     public function getFilters($subset = null) 
     {

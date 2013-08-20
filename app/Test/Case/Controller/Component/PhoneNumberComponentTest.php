@@ -6,7 +6,8 @@ App::uses('ComponentCollection', 'Controller');
 App::uses('PhoneNumberComponent', 'Controller/Component');
 
 
-class TestPhoneNumberComponentController extends Controller {
+class TestPhoneNumberComponentController extends Controller
+{
 }
 
 
@@ -14,6 +15,7 @@ class PhoneNumberComponentTest extends CakeTestCase {
 
     public $PhoneNumberComponent = null;
     public $Controller = null;
+    
     
     public function setUp() 
     {
@@ -27,18 +29,21 @@ class PhoneNumberComponentTest extends CakeTestCase {
         $this->PhoneNumberComponent->startup($this->Controller);
     }
 
+    
     public function tearDown() {
         parent::tearDown();
         unset($this->PhoneNumberComponent);
         unset($this->Controller);
     }
 
+    
     public function testGetCountriesByPrefixes()
     {
         $countriesPrefixes = $this->PhoneNumberComponent->getCountriesByPrefixes();
         $this->assertEqual($countriesPrefixes['33'], 'France');
     }
 
+    
     public function testGetCountries()
     {
         $countriesPrefixes = $this->PhoneNumberComponent->getCountries();

@@ -96,6 +96,7 @@ class ShortCodesController extends AppController
         $this->setOptions();
     }
     
+    
     protected function setOptions()
     {
         $countryOptions = $this->PhoneNumber->getCountries();
@@ -105,6 +106,7 @@ class ShortCodesController extends AppController
             $this->ShortCode->maxCharacterPerSmsOptions);
         $this->set(compact('errorTemplateOptions', 'countryOptions', 'maxCharacterPerSmsOptions'));
     }
+    
     
     public function delete()
     {

@@ -12,6 +12,7 @@ class ProgramSettingsController extends AppController
     var $helpers = array('Js' => array('Jquery'));
     public $components = array('Keyword');
 
+    
     public function beforeFilter()
     {
         parent::beforeFilter();

@@ -6,11 +6,13 @@ App::uses('ComponentCollection', 'Controller');
 App::uses('KeywordComponent', 'Controller/Component');
 App::uses('ScriptMaker', 'Lib');
 
-class TestKeywordComponentController extends Controller {
+class TestKeywordComponentController extends Controller
+{
 }
 
 
-class KewyordComponentTest extends CakeTestCase {
+class KewyordComponentTest extends CakeTestCase
+{
 
     public $KeywordComponent = null;
     public $Controller = null;
@@ -33,8 +35,8 @@ class KewyordComponentTest extends CakeTestCase {
         $this->Maker = new ScriptMaker();
         $this->instanciateModels();
         $this->instanciateExternalModels('m6h');
-
     }
+
 
     public function tearDown() {
         $this->dropData();
@@ -43,6 +45,7 @@ class KewyordComponentTest extends CakeTestCase {
         unset($this->KeywordComponent);
         unset($this->Controller);
     }
+
 
     protected function instanciateModels()
     {
@@ -75,6 +78,7 @@ class KewyordComponentTest extends CakeTestCase {
         
     }
 
+
     public function testValidateProgramKeywords_failed_dialogueKeywordUsedInOtherProgramDialogue() 
     {
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
@@ -95,6 +99,7 @@ class KewyordComponentTest extends CakeTestCase {
         $valid = $this->KeywordComponent->validateProgramKeywords('testdbprogram', '256-8181');
         $this->assertEqual($valid['status'], 'fail');    
     }
+
 
     public function testValidateProgramKeywords_failed_dialogueKeywordUsedInOtherProgramRequest() 
     {
@@ -117,6 +122,7 @@ class KewyordComponentTest extends CakeTestCase {
         $valid = $this->KeywordComponent->validateProgramKeywords('testdbprogram', '256-8181');
         $this->assertEqual($valid['status'], 'fail');    
     }
+
 
     public function testValidateProgramKeywords_failed_requestKeywordUsedInOtherProgramRequest() 
     {

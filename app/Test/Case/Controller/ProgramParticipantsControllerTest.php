@@ -86,7 +86,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    '_notifyUpdateBackendWorker'
+                    '_notifyUpdateBackendWorker',
+                    'render',
                     )
                 )
             );
@@ -113,17 +114,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls(
-                '4', 
-                '2',
-                $this->programData[0]['Program']['database'],
-                $this->programData[0]['Program']['name'],
-                'Africa/Kampala',
-                'testdbprogram',
-                'name1', #?
-                'name2', #?
-                $this->programData[0]['Program']['name'] #only for export test
-                ));
+            ->will($this->returnValue($this->programData[0]['Program']['database']));
 
         return $participants;
     }
@@ -1066,7 +1057,44 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->mock_program_access();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
         $this->assertEquals(1, count($this->vars['participants']));
+    }
 
+
+    public function testGetFilterParameterIndex()
+    {
+        $exprectedTags = array('Geek');
+        $exprectedLabels = array('gender:male');
+
+        $this->Participant->create();
+        $this->Participant->save(array(
+            'phone' => '+26',
+            'session-id' => '1',
+            'last-optin-date' => '2012-12-01T18:30:10',
+            'enrolled' => array(),
+            'tags' => array('Geek'),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'male',
+                'raw' => null))
+            ));
+
+        $this->Participant->create();
+        $this->Participant->save(array(
+            'phone' => '+27',
+            'session-id' => null,
+            'last-optin-date' => null,
+            'enrolled' => array(),
+            'tags' => array('Hipster'),
+            'profile' => array()
+            ));
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/getFilterParameterOptions.json?parameter=tag&filter_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=Geek");
+        $this->assertEquals($exprectedTags, $this->vars['results']);
+
+        $this->mock_program_access();
+        $this->testAction("/testurl/programParticipants/getFilterParameterOptions.json?parameter=label&filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:male");
+        $this->assertEquals($exprectedLabels, $this->vars['results']);
     }
 
 
@@ -1344,5 +1372,5 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
     }
 
-  
+
 }

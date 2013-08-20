@@ -31,6 +31,7 @@ class Dialogue extends MongoModel
             );
     }
     
+    
     public $validate = array(
         'dialogue-id' => array(
             'notempty' => array(
@@ -74,6 +75,8 @@ class Dialogue extends MongoModel
         	),
         );
 
+    
+    
     public function validateInteractions($check) 
     {
         $index = 0;
@@ -101,7 +104,8 @@ class Dialogue extends MongoModel
         'draft' => true,
         'first' => true,
         'count' => true,
-        );    
+        ); 
+    
 
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -123,6 +127,7 @@ class Dialogue extends MongoModel
         return $results;
     }
 
+    
     public function beforeValidate()
     {
         parent::beforeValidate();

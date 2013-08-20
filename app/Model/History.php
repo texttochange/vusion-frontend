@@ -25,11 +25,13 @@ class History extends MongoModel
         'datepassed-action-marker-history',
         'oneway-marker-history');
 
+    
     function getModelVersion()
     {
         return '2';
     }
 
+    
     // TODO fail to express that a incoming message for dialogue id has 'matching-answer' field
     function getRequiredFields($object)
     {
@@ -75,6 +77,7 @@ class History extends MongoModel
         return $fields;
     }
 
+    
     public function checkFields($object)
     {       
         $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object));
@@ -171,6 +174,7 @@ class History extends MongoModel
          return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
 
+    
     public function addDialogueContent($histories, $dialoguesInteractionsContent)
     {
         foreach ($histories as &$history) {
@@ -189,90 +193,74 @@ class History extends MongoModel
          return $histories;
     }
 
+    
     #Filter variables and functions
     public $filterFields = array(
         'message-direction' => array( 
-            'label' => 'message direction',
-            'operators' => array(
+        	'label' => 'message direction',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'message-direction'),
                 'not-is' => array(
-                    'label' => 'is not',
                     'parameter-type' => 'message-direction'))),
         'message-status' => array(
-            'label' => 'message status',
-            'operators' => array(
+        	'label' => 'message status',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'message-status'),
                 'not-is' => array(
-                    'label' => 'is not',
                     'parameter-type' => 'message-status'))),
         'date' => array(
-            'label' => 'date',
-            'operators' => array(
+        	'label' => 'date',
+        	'operators' => array(
                 'from' => array(
-                    'label' => 'since',
                     'parameter-type' => 'date'),
                 'to' => array(
-                    'label' => 'until',
                     'parameter-type' => 'date'))),
         'participant-phone' => array(
-            'label' => 'participant phone',
-            'operators' => array(
+        	'label' => 'participant phone',
+        	'operators' => array(
                 'start-with' => array(
-                    'label' => 'stats with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
-                    'label' => 'equal to',
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'label' => 'starts with any of',
                     'parameter-type' => 'text'))),
         'separate-message' => array(
-            'label' => 'separate message',
-            'operators' => array(
+        	'label' => 'separate message',
+        	'operators' => array(
                 'equal-to' => array(
-                    'label' => 'name is',
                     'parameter-type' => 'unattach-message'),                
                 )),
         'message-content' => array(
-            'label' => 'message content',
-            'operators' => array(
+        	'label' => 'message content',
+        	'operators' => array(
                 'equal-to' => array(
-                    'label' => 'equals',
                     'parameter-type' => 'text'),
                 'contain' => array(
-                    'label' => 'contains',
                     'parameter-type' => 'text'),
                 'has-keyword' => array(
-                    'label' => 'has keyword',
                     'parameter-type' => 'text'),
                 'has-keyword-any' => array(
-                    'label' => 'has keyword any of',
                     'parameter-type' => 'text',
                     'parameter-validate' => VusionConst::KEYWORD_REGEX)
                 )),
         'dialogue-source' => array(
-            'label' => 'dialogue source',
-            'operators' => array(
+        	'label' => 'dialogue source',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'dialogue')
                 )),
         'interaction-source' => array(
-            'label' => 'interaction source',
-            'operators' => array(
+        	'label' => 'interaction source',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'interaction')
                 )),
         'answer' => array(
-            'label' => 'answers',
-            'operators' => array(
+        	'label' => 'answer',
+        	'operators' => array(
                 'matching' => array(
-                    'label' => 'matching one question',
                     'parameter-type' => 'none'),
                 'not-matching' => array(
                     'label' => 'not matching any question',
@@ -280,6 +268,7 @@ class History extends MongoModel
                 )), 
         );
 
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
@@ -298,6 +287,8 @@ class History extends MongoModel
         'ack' => 'ack'
         );
 
+    
+    
 
     public function validateFilter($filterParam)
     {

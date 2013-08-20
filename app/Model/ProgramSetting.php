@@ -19,6 +19,7 @@ class ProgramSetting extends MongoModel
         return "2";
     }
 
+    
     function getRequiredFields($objectType=null)
     {
         return array(
@@ -27,6 +28,7 @@ class ProgramSetting extends MongoModel
             );
     }
 
+    
     var $settings = array(
         'shortcode',
         'timezone',
@@ -172,6 +174,7 @@ class ProgramSetting extends MongoModel
             return null;
     }
 
+    
     public function saveProgramSetting($key, $value) 
     {
         $setting = $this->find('all', array('conditions' => array('ProgramSetting.key' => $key)));

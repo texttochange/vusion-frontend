@@ -26,7 +26,8 @@ class ProgramSimulatorController extends AppController
     }
 
 
-    protected function _instanciateVumiRabbitMQ(){
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 

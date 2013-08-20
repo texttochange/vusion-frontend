@@ -61,10 +61,13 @@ class ProgramSettingTestCase extends CakeTestCase
   
     public function testGetProgramSetting_notInDatabase()
     {         
-        $result = $this->ProgramSetting->find('getProgramSetting', array(
-            'key'=>'shortcode', 
-            'value' => '8282'
-            ));
+        $result = $this->ProgramSetting->find(
+        	'getProgramSetting', 
+        	array(
+        	    'key'=>'shortcode', 
+        	    'value' => '8282'
+        	    )
+            );
         
         $this->assertNull($result);    
     }
@@ -72,10 +75,13 @@ class ProgramSettingTestCase extends CakeTestCase
 
     public function testGetProgramSetting_searchNullInDatabase()
     {         
-        $result = $this->ProgramSetting->find('getProgramSetting', array(
-            'key'=>'shortcode', 
-            'value' => null
-            ));
+        $result = $this->ProgramSetting->find(
+            'getProgramSetting',
+            array(
+        	    'key'=>'shortcode', 
+        	    'value' => null
+        	    )
+            );
         
         $this->assertNull($result);    
     }
@@ -99,7 +105,9 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
         $this->ProgramSetting->saveProgramSetting('timezone', 'value2');
         $this->assertEqual(
-            array('shortcode' => 'value1', 'timezone'=>'value2'),
+            array(
+                'shortcode' => 'value1',
+                'timezone'=>'value2'),
             $this->ProgramSetting->getProgramSettings()
             ); 
     }

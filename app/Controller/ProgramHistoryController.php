@@ -16,11 +16,13 @@ class ProgramHistoryController extends AppController
         'Time'
         );
 
+    
     function constructClasses()
     {
         parent::constructClasses();
     }
 
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -81,10 +83,10 @@ class ProgramHistoryController extends AppController
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
 
         return array(
-            'operator' => $this->History->filterOperatorOptions,
+            'operator' => $this->LocalizeUtils->localizeValueInArray($this->History->filterOperatorOptions),
             'dialogue' => $dialoguesInteractionsContent,
-            'message-direction' => $this->History->filterMessageDirectionOptions,
-            'message-status' => $this->History->filterMessageStatusOptions,
+            'message-direction' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageDirectionOptions),
+            'message-status' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageStatusOptions),
             'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()            
             );
        
@@ -213,7 +215,9 @@ class ProgramHistoryController extends AppController
         return $conditions;        
     }
 
-    public function delete() {
+    
+    public function delete()
+    {
         
         $programUrl = $this->params['program'];
      
@@ -244,8 +248,7 @@ class ProgramHistoryController extends AppController
                 'program' => $programUrl,
                 'controller' => 'programHistory',
                 'action' => 'index'));
-        }
-                   
+        }                   
     }
     
 

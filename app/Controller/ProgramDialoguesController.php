@@ -34,7 +34,9 @@ class ProgramDialoguesController extends AppController
         parent::constructClasses();
     }
 
-    protected function _instanciateVumiRabbitMQ(){
+    
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
@@ -70,6 +72,7 @@ class ProgramDialoguesController extends AppController
         }
     }
 
+    
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
@@ -309,8 +312,10 @@ class ProgramDialoguesController extends AppController
                  )
              );
     }
-                                                              
-    public function validateName() {
+      
+    
+    public function validateName()
+    {
         $dialogueName = $this->request->data['name'];
         $dialogueId = $this->request->data['dialogue-id'];
         $isValid = $this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId);
@@ -326,5 +331,6 @@ class ProgramDialoguesController extends AppController
         $this->set('result', array('status'=>'ok'));
       
     }
+    
     
 }

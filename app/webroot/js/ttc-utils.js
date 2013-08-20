@@ -429,6 +429,10 @@ function createFilter(minimize, selectedStackOperator, stackRules){
        if (typeof(rule[2]) === 'undefined') return true;
        $("[name='filter_param["+count+"][2]']").val(rule[2]).click();
  	   if (typeof(rule[3]) === 'undefined') return true;
+ 	   // If the selected element is not loaded, add it to the drop down
+ 	   if ($("[name='filter_param["+count+"][3]']select").size() > 0 && $("[name='filter_param["+count+"][3]'] option").size() == 1) {
+ 	       $("[name='filter_param["+count+"][3]']").prepend(new Option(rule[3],rule[3]))
+ 	   } 
 	   $("[name='filter_param["+count+"][3]']").val(rule[3]);
        count++;	   
     });
@@ -515,7 +519,7 @@ function supplyOperatorOptions(elt) {
 	$(operatorDropDown).attr('name', operatorDropDownName + '[2]');
 	$(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
 	$.each(operators, function(operator, details) {
-	        $(operatorDropDown).append(new Option(details['label'], operator));
+	        $(operatorDropDown).append(new Option(localize_label(operator), operator));
 	});
 	$(elt).after(operatorDropDown);
 	supplyParameterOptions(operatorDropDown);
@@ -559,7 +563,7 @@ function supplyParameterOptions(operatorElt) {
         })
         break;
 	default:
-	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
+	    $(operatorElt).after("<select name='"+name+"[3]' data='"+operatorType+"'></select>");
 	    var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value, key));      
@@ -690,4 +694,33 @@ function addPredefinedContent() {
 		$("#unattached-content").val(predefinedMessage.content);
 	    }
 	});
+}
+
+function loadFilterParameterOptions(parameter, url) {
+    //Dirty: passing of the rule require rencoding the & in the url parameters 
+    url = url.replace(/&amp;/g, "&");
+    $.ajax({
+        url: url,
+        success: function(data){
+            $('#connectionState').hide();
+            if (data['results']) {
+                var options = {};
+                for (var i = 0; i < data['results'].length; i++) {
+                    options[data['results'][i]] = data['results'][i];
+                }
+                window.app.filterParameterOptions[parameter] = options;
+                $("select[data='"+parameter+"']").each( function(index, select) {
+                    currentVal = $(select).val();
+                    $(select).empty();
+                    $.each(options, function(key, value){
+                            $(select).append(new Option(value, key));      
+                    })
+                    $(select).val(curentVal);
+                });
+
+            }
+        },
+        timeout: 0,
+        error: vusionAjaxError
+    });
 }
