@@ -14,8 +14,13 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'Stats');
-    public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
+    var $components = array(
+        'RequestHandler', 
+        'LocalizeUtils', 
+        'PhoneNumber', 
+        'ProgramPaginator', 
+        'Stats');
+    var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
 
     var $uses = array('Program', 'Group');
     var $paginate = array(
@@ -172,6 +177,12 @@ class ProgramsController extends AppController
             }
         } else {
             $programs = $programsList;
+        }
+
+        if ($this->params['ext'] != 'json') {
+            foreach ($programs as &$program) {
+                $program['Program']['stats'] = $this->Stats->getProgramStats($program['Program']['database']);
+            }
         }
 
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));

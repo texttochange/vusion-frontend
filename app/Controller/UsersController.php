@@ -326,6 +326,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/view');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/export');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/download');
+            $this->Acl->allow($Group, 'controllers/ProgramParticipants/getFilterParameterOptions');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/reset');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/optin');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/optout');
