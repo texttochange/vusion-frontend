@@ -5,7 +5,7 @@
     	$count = $this->Paginator->counter('{:count}');
     	echo "<span class='ttc-page-count' title = $count>";
         echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
-        echo $this->BigNumber->replaceBigNumbers($count);       
+        echo $this->BigNumber->replaceBigNumbers($count, 5);       
         echo "</span>";
         echo $this->Paginator->prev(
             '<', 
