@@ -99,15 +99,13 @@ class ProgramParticipantsController extends AppController
 
         $requestedParameterOption = $this->request->query['parameter'];
 
-        $conditions = $this->_getConditions();
-      
         switch ($requestedParameterOption) {
         case "tag":
-            $results = $this->Participant->getDistinctTags($conditions);
+            $results = $this->Participant->getDistinctTags();
             break;
         case "label":
             ## Set a 5 minutes timeout on the mapreduce
-            $results = $this->Participant->getDistinctLabels($conditions, 5 * 60 * 1000);  
+            $results = $this->Participant->getDistinctLabels(array(), 5 * 60 * 1000);  
             break;
         default:
             throw new Exception(__("The requested parameter option %s is not supported.", $requestedParameterOption));
