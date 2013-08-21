@@ -1,4 +1,4 @@
-<?php
+    <?php
 App::uses('AppController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
@@ -49,9 +49,7 @@ class ProgramHistoryController extends AppController
         }
 
         // Only get messages and avoid other stuff like markers
-        $defaultConditions = array('$or' => array(
-            array('object-type' => array('$in' => $this->History->messageType)),
-            array('object-type' => array('$exists' => false))));
+        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
 
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
             $statuses = $this->History->find(
