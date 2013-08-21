@@ -159,7 +159,7 @@ class History extends MongoModel
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
-           return $this->find('count', $conditions);
+           return $this->find('count', array('conditions' => $conditions));
         } catch (MongoCursorTimeoutException $e) {
           return $this->find('count');
         }
