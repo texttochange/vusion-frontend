@@ -68,7 +68,7 @@ class UnmatchableReplyController extends AppController
 
     protected function _getFilterParameterOptions()
     {
-    	$shortcodes = $countries = array();
+        $shortcodes = $countries = array();
         $codes = $this->ShortCode->find('all');
         if (!empty($codes)) {
             foreach ($codes as $code) {
@@ -76,8 +76,8 @@ class UnmatchableReplyController extends AppController
                 $countries[] = $code['ShortCode']['country'];
             }
         }
-    	sort($countries);
-    	
+        sort($countries);
+        
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
             'country' => (count($countries)>0? array_combine($countries, $countries) : array())
@@ -88,7 +88,8 @@ class UnmatchableReplyController extends AppController
     protected function _getConditions($conditions = null)
     {
        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-
+       $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+       
         if (!isset($filter['filter_param'])) 
             return null;
 
@@ -98,7 +99,7 @@ class UnmatchableReplyController extends AppController
 
         $this->set('urlParams', http_build_query($filter));
 
-        return $this->UnmatchableReply->fromFilterToQueryConditions($filter);
+        return $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
     }
 
 
