@@ -654,7 +654,7 @@ function generateMassTagDialogue(obj){
 			},
 			model: true
 	});
-}l
+}
 
 function submitMassTag(){	
 	var tag = $('[name*="tag"]').val();	
