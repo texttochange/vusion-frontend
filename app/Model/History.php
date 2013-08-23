@@ -137,7 +137,6 @@ class History extends MongoModel
                     ));
             }
             $query['order'] = false;
-            
             return $query;
         } elseif ($state === 'after') {
             foreach (array(0, $this->alias) as $key) {
@@ -153,6 +152,18 @@ class History extends MongoModel
             return false;
         }
     }    
+
+    
+    ## TODO: quick and dirty hot fix to avoid the timeout, indeed the conditions are making 
+    ## the count very long. Would be better to have a temporary solution
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+           return $this->find('count', array('conditions' => $conditions));
+        } catch (MongoCursorTimeoutException $e) {
+          return $this->find('count');
+        }
+    }
 
 
     public function _findScriptFilter($state, $query, $results = array())
@@ -197,87 +208,70 @@ class History extends MongoModel
     #Filter variables and functions
     public $filterFields = array(
         'message-direction' => array( 
-            'label' => 'message direction',
-            'operators' => array(
+        	'label' => 'message direction',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'message-direction'),
                 'not-is' => array(
-                    'label' => 'is not',
                     'parameter-type' => 'message-direction'))),
         'message-status' => array(
-            'label' => 'message status',
-            'operators' => array(
+        	'label' => 'message status',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'message-status'),
                 'not-is' => array(
-                    'label' => 'is not',
                     'parameter-type' => 'message-status'))),
         'date' => array(
-            'label' => 'date',
-            'operators' => array(
+        	'label' => 'date',
+        	'operators' => array(
                 'from' => array(
-                    'label' => 'since',
                     'parameter-type' => 'date'),
                 'to' => array(
-                    'label' => 'until',
                     'parameter-type' => 'date'))),
         'participant-phone' => array(
-            'label' => 'participant phone',
-            'operators' => array(
+        	'label' => 'participant phone',
+        	'operators' => array(
                 'start-with' => array(
-                    'label' => 'stats with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
-                    'label' => 'equal to',
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'label' => 'starts with any of',
                     'parameter-type' => 'text'))),
         'separate-message' => array(
-            'label' => 'separate message',
-            'operators' => array(
+        	'label' => 'separate message',
+        	'operators' => array(
                 'equal-to' => array(
-                    'label' => 'name is',
                     'parameter-type' => 'unattach-message'),                
                 )),
         'message-content' => array(
-            'label' => 'message content',
-            'operators' => array(
+        	'label' => 'message content',
+        	'operators' => array(
                 'equal-to' => array(
-                    'label' => 'equals',
                     'parameter-type' => 'text'),
                 'contain' => array(
-                    'label' => 'contains',
                     'parameter-type' => 'text'),
                 'has-keyword' => array(
-                    'label' => 'has keyword',
                     'parameter-type' => 'text'),
                 'has-keyword-any' => array(
-                    'label' => 'has keyword any of',
                     'parameter-type' => 'text',
                     'parameter-validate' => VusionConst::KEYWORD_REGEX)
                 )),
         'dialogue-source' => array(
-            'label' => 'dialogue source',
-            'operators' => array(
+        	'label' => 'dialogue source',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'dialogue')
                 )),
         'interaction-source' => array(
-            'label' => 'interaction source',
-            'operators' => array(
+        	'label' => 'interaction source',
+        	'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'interaction')
                 )),
         'answer' => array(
-            'label' => 'answers',
-            'operators' => array(
+        	'label' => 'answer',
+        	'operators' => array(
                 'matching' => array(
-                    'label' => 'matching one question',
                     'parameter-type' => 'none'),
                 'not-matching' => array(
                     'label' => 'not matching any question',

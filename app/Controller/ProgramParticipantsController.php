@@ -37,7 +37,7 @@ class ProgramParticipantsController extends AppController
         parent::beforeFilter();
         //$this->Auth->allow('*');
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-
+       
         $this->Participant       = new Participant($options);
         $this->History           = new History($options);
         $this->Schedule          = new Schedule($options);
@@ -53,7 +53,7 @@ class ProgramParticipantsController extends AppController
 
     
     public function index() 
-    {
+    {      
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
                 
@@ -82,15 +82,36 @@ class ProgramParticipantsController extends AppController
 
 
     protected function _getFilterParameterOptions()
-    {
-        $tagValues = $this->Participant->getDistinctTags();
-        $labelValues = $this->Participant->getDistinctLabels();
-        
+    {        
         return array(
             'operator' => $this->Participant->filterOperatorOptions,
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
-            'tag' => (count($tagValues)>0? array_combine($tagValues, $tagValues) : array()),
-            'label' => (count($labelValues)>0? array_combine($labelValues, $labelValues) : array()));
+            'tag' => array('_ajax' => 'ready'),
+            'label' => array('_ajax' => 'ready'));
+    }
+
+
+    public function getFilterParameterOptions()
+    {
+        if (!isset($this->request->query['parameter'])) {
+            throw new Exception(__("The required filter parameter option is missing."));
+        }
+
+        $requestedParameterOption = $this->request->query['parameter'];
+
+        switch ($requestedParameterOption) {
+        case "tag":
+            $results = $this->Participant->getDistinctTags();
+            break;
+        case "label":
+            ## Set a 5 minutes timeout on the mapreduce
+            $results = $this->Participant->getDistinctLabels(array(), 5 * 60 * 1000);  
+            break;
+        default:
+            throw new Exception(__("The requested parameter option %s is not supported.", $requestedParameterOption));
+        }        
+        $this->set(compact('results'));
+        $this->render('ajaxResults');
     }
 
 

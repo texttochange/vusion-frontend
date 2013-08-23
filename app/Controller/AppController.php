@@ -67,10 +67,6 @@ class AppController extends Controller
     
     function beforeFilter()
     {    
-        //In case of a Json request, no need to set up the variables
-        if ($this->params['ext']=='json' or $this->params['ext']=='csv')
-            return;
-
         //Verify the access of user to this program
         if (!empty($this->params['program'])) {
             $this->Program->recursive = -1;
@@ -89,6 +85,11 @@ class AppController extends Controller
                 'url' => $data[0]['Program']['url'],
                 'database' => $data[0]['Program']['database']);
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
+
+            //In case of a Json request, no need to set up the variables
+            if ($this->params['ext']=='json' or $this->params['ext']=='csv')
+                return;
+
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             

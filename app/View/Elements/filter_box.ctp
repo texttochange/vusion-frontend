@@ -5,7 +5,7 @@
     	$count = $this->Paginator->counter('{:count}');
     	echo "<span class='ttc-page-count' title = $count>";
         echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
-        echo $this->BigNumber->replaceBigNumbers($count);       
+        echo $this->BigNumber->replaceBigNumbers($count, 5);       
         echo "</span>";
         echo $this->Paginator->prev(
             '<', 
@@ -28,6 +28,22 @@
     </div>
     <?php
     $this->Js->set('filterFieldOptions', $filterFieldOptions);
+    foreach ($filterParameterOptions as $parameter => &$options) {
+        if (isset($options['_ajax'])) {
+            $urlParameters = $this->params['url'];
+            $urlParameters['parameter'] = $parameter;
+            $ajaxUrl = $this->Html->url(array(
+                'program' => $programDetails['url'], 
+                'action' => 'getFilterParameterOptions',
+                'ext' => 'json',
+                '?' => $urlParameters));
+            $this->Js->get('document')->event(
+                $options['_ajax'],
+                'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
+            );
+            $filterParameterOptions[$parameter] = array("Loading...");
+        }
+    }
     $this->Js->set('filterParameterOptions', $filterParameterOptions);
     
     echo $this->Form->create(null, array(
