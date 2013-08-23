@@ -174,6 +174,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['subconditions'][0]['subcondition-parameter'][0]);
     }
 
+
     public function testValidateAction_fail_proportionalTagging() {
         $action = array(
             'type-action' => 'proportional-tagging',
@@ -192,4 +193,52 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['proportional-tags'][0]['weight'][0]);
     }
 
+
+    public function testValidateAction_ok_forwarding() {
+        $action = array(
+            'type-action' => 'forwarding',
+            'url' => 'http://partner.com/receive_mo.php');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'forwarding',
+            'url' => 'http://partner.com/receive_mo.php?message=[Content]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'forwarding',
+            'url' => 'http://partner.com/receive_mo.php?message=[Content]&origin=[ORIGIN]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+    
+    public function testValidateAction_fail_forwarding() {
+        $action = array(
+            'type-action' => 'forwarding',
+            'url' => 'partner.com/receive_mo.php');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'forwarding',
+            'url' => 'http://partner.com/receive_mo.php?message=[Content]?origin=[ORIGIN]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'forwarding',
+            'url' => 'http://partner.com/receive_mo.php?message=[Content]&origin=[OR[IGIN]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        
+    }
+    
 } 

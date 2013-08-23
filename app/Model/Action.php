@@ -74,7 +74,8 @@ class Action extends VirtualModel
                         'tagging', 
                         'reset', 
                         'feedback',
-                        'proportional-tagging')),
+                        'proportional-tagging',
+                        'forwarding')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -87,7 +88,8 @@ class Action extends VirtualModel
                         'tagging' => array('tag'),
                         'reset' => array(),
                         'feedback' => array('content'),
-                        'proportional-tagging' => array('proportional-tags'))),
+                        'proportional-tagging' => array('proportional-tags'),
+                        'forwarding' => array('url'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -136,7 +138,21 @@ class Action extends VirtualModel
                 'rule' => 'validProportionalTags',
                 'message' => 'noMessage',
                 ),
-            )      
+            ),
+        'url' => array(            
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'forwarding'),
+                'message' => 'The forwarding field require an url field.',
+                ),
+            'validUrlFormat' => array(
+                'rule' => array('regex', VusionConst::FORWARDING_URL_REGEX),
+                'message' => VusionConst::FORWARDING_URL_FAIL_MESSAGE,
+                ),
+            'validUrlReplacement' => array(
+                'rule' => 'validUrlReplacement',
+                'message' => 'noMessage',
+                ),
+            )
         );
 
     
@@ -345,5 +361,7 @@ class Action extends VirtualModel
         return true;
     }
 
+
+    public function validReplacedElement($field, $data)
 
 }
