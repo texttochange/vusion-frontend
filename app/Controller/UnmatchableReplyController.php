@@ -3,7 +3,6 @@
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
-App::uses('ShortCode', 'Model');
 
 class UnmatchableReplyController extends AppController
 {
@@ -31,7 +30,6 @@ class UnmatchableReplyController extends AppController
                 'database' => Configure::read("mongo_db")
                 );
         }
-        $this->ShortCode  = new ShortCode($options);
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
     }
