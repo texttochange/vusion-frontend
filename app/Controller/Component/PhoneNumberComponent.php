@@ -8,20 +8,13 @@ class PhoneNumberComponent extends Component {
     {
         parent::startup($controller);
     }
-    
-    
-    public function openCountriesAndCodesFile()
-    {
-        $filePath = WWW_ROOT . "files"; 
-        $fileName = "countries and codes.csv";
-        $importedPrefixes = fopen($filePath . DS . $fileName,"r");
-        return $importedPrefixes;
-    }
-    
+        
     
     public function getCountriesByPrefixes()
     { 
-        $importedCountries = $this->openCountriesAndCodesFile();
+    	$filePath = WWW_ROOT . "files"; 
+        $fileName = "countries and codes.csv";
+        $importedCountries = fopen($filePath . DS . $fileName,"r");
         $countries=array();
         $count = 0;
         $options = array();
@@ -40,20 +33,7 @@ class PhoneNumberComponent extends Component {
     
     public function getPrefixesByCountries() 
     { 
-    	$importedPrefixes = $this->openCountriesAndCodesFile();
-        $prefixes=array();
-        $count = 0;
-        $options = array();
-        while(!feof($importedPrefixes)){
-            $prefixes[] = fgets($importedPrefixes);
-            if($count > 0 && $prefixes[$count]){
-                $prefixes[$count] = str_replace("\n", "", $prefixes[$count]);
-                $explodedLine = explode(",", $prefixes[$count]);
-                $options[trim($explodedLine[0])] = trim($explodedLine[1]);
-            }
-            $count++;           
-        }
-        return $options;
+        return array_flip($this->getCountriesByPrefixes());
     }
     
     
