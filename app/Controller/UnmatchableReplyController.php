@@ -68,19 +68,9 @@ class UnmatchableReplyController extends AppController
 
     protected function _getFilterParameterOptions()
     {
-        $shortcodes = $countries = array();
-        $codes = $this->ShortCode->find('all');
-        if (!empty($codes)) {
-            foreach ($codes as $code) {
-                $shortcodes[] = $code['ShortCode']['shortcode'];
-                $countries[] = $code['ShortCode']['country'];
-            }
-        }
-        sort($countries);
-        
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
-            'country' => (count($countries)>0? array_combine($countries, $countries) : array())
+            'country' => $this->PhoneNumber->getCountries()
             );
     }
 
