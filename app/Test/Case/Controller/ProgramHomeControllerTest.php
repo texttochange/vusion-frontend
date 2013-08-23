@@ -110,14 +110,7 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $home->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls(
-                '4',
-                '2',
-                $this->programData[0]['Program']['database'], 
-                $this->programData[0]['Program']['name'],
-                'Africa/Kampala',
-                'testdbprogram'
-                ));
+            ->will($this->returnValue($this->programData[0]['Program']['database']));
 
         return $home;
     }

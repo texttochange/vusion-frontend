@@ -5,8 +5,6 @@ App::uses('ShortCode', 'Model');
 class ProgramPaginatorComponent extends Component 
 {  
     
-    public $components = array('Stats'); 
-    
     var $settings = array(
         'page' => 1,
         'limit' => 20,
@@ -94,7 +92,6 @@ class ProgramPaginatorComponent extends Component
         }
 
         if ($this->params['ext']!='json') {
-            $programData['Program']['stats'] = $this->Stats->getProgramStats($database);
             $programDetails = array(
                 'program' =>  $programData,
                 'shortcode' => (isset($code)) ? $code : array()
