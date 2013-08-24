@@ -75,7 +75,7 @@ class Action extends VirtualModel
                         'reset', 
                         'feedback',
                         'proportional-tagging',
-                        'forwarding')),
+                        'message-forwarding')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -89,7 +89,7 @@ class Action extends VirtualModel
                         'reset' => array(),
                         'feedback' => array('content'),
                         'proportional-tagging' => array('proportional-tags'),
-                        'forwarding' => array('url'))),
+                        'message-forwarding' => array('url'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -141,7 +141,7 @@ class Action extends VirtualModel
             ),
         'url' => array(            
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldValue', 'type-action', 'forwarding'),
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'message-forwarding'),
                 'message' => 'The forwarding field require an url field.',
                 ),
             'validUrlFormat' => array(
@@ -361,7 +361,25 @@ class Action extends VirtualModel
         return true;
     }
 
+    var $urlReplacement = array(
+        '[MESSAGE]',
+        '[FROM]',
+        '[TO]',
+        '[PROGRAM]');
 
-    public function validReplacedElement($field, $data)
+    public function validUrlReplacement($field, $data) 
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $matches = array();
+        preg_match('/\[[-\+&;%@.\w_]*\]/', $data[$field], $matches);
+        foreach ($matches as $match) {
+            if (!in_array($match, $this->urlReplacement)) {
+                return "The replacement $match is not allowed.";
+            }
+        }
+        return true;
+    }
 
 }

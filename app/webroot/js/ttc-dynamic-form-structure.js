@@ -308,7 +308,7 @@ var action = {
             'subfields': ['content']},
             {'value': 'proportional-tagging',
             'subfields': ['proportional-tags']},
-            {'value': 'forwarding',
+            {'value': 'message-forwarding',
             'subfields': ['url']}
         ]
     },
