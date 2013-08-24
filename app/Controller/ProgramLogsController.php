@@ -5,7 +5,9 @@ App::uses('AppController','Controller');
 class ProgramLogsController extends AppController
 {
 	
-    var $components = array('RequestHandler', 'LogManager');
+    var $components = array(
+        'RequestHandler', 
+        'LogManager');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time');
@@ -15,6 +17,7 @@ class ProgramLogsController extends AppController
     {
         parent::constructClasses();
     }
+
 
     function beforeFilter() 
     {
