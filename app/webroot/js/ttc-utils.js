@@ -637,6 +637,7 @@ function generateExportDialogue(obj) {
         });
 } 
 
+
 function generateMassTagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
 	
@@ -656,16 +657,17 @@ function generateMassTagDialogue(obj){
 	});
 }
 
+
 function submitMassTag(){	
 	var tag = $('[name*="tag"]').val();	
 	var url = $('#masstag-dialogue').find('form').attr('url');
-	if(url.contains('?')){
+	if(url.indexOf('?') != -1){
 		window.location= url+"&tag="+tag;
 	}else{
 		window.location= url+"?tag="+tag;
 	}		
 }
- 
+
 
 function generateMassUntagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
@@ -686,19 +688,21 @@ function generateMassUntagDialogue(obj){
 	});
 }
 
+
 function submitMassUntag(){	
 	var tag = $('[name*="untag"]').val();	
 	var url = $('#massuntag-dialogue').find('form').attr('url');
 	var untagConfirm = confirm("Do you want to delete this tag?");
 	if (untagConfirm == true)
 	{
-		if(url.contains('?')){
+		if(url.indexOf('?') != -1){
 			window.location= url+"&tag="+tag;
 		}else{
 			window.location= url+"?tag="+tag;
 		}
 	}	
 }
+
 
 function alphanumeric() {
 	var tagRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');	
