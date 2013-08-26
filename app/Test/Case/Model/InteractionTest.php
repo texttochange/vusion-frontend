@@ -84,6 +84,69 @@ class InteractionTestCase extends CakeTestCase
     }
 
 
+    public function testValidate_content_dynamicContent_ok()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['content'] = "Hello [participant.first name] the temperature in [contentVariable.mombasa] is [contentVariable.mombasa.temperature]";        
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertTrue($this->Interaction->validates());
+    }
+
+
+    public function testValidate_content_dynamicContent_fail()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['content'] = "Hello [participant.first %name]";        
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        
+        $this->assertEqual(
+            $this->Interaction->validationErrors['content'][0], 
+            "To be used as dynamic content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s)."
+            );
+
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['content'] = "Hello [participant.gender.name]";        
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        
+        $this->assertEqual(
+            $this->Interaction->validationErrors['content'][0], 
+            "To be used as dynamic concent, participant only accept one key."
+            );
+
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['content'] = "Hello [contentVariable.mombasa.chichen.female]";        
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        
+        $this->assertEqual(
+            $this->Interaction->validationErrors['content'][0], 
+            "To be used as dynamic concent, contentVariable only accept max two keys."
+            );
+
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['content'] = "Hello [participants.name]";        
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        
+        $this->assertEqual(
+            $this->Interaction->validationErrors['content'][0], 
+            "To be used as dynamic content, 'participants' can only either 'participant' and 'contentVariable'."
+            );
+    }
+
+
     public function testValidate_openQuestion_keyword_fail()
     {
         $interaction = $this->Maker->getInteractionOpenQuestion();
@@ -154,5 +217,6 @@ class InteractionTestCase extends CakeTestCase
              'The type-schedule field with value fixed-time require the field date-time.'
              );
     }
+
 
 }

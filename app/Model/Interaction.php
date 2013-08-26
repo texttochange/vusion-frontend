@@ -135,11 +135,11 @@ class Interaction extends VirtualModel
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                ),/*
+                ),
             'validDynamicContent' => array(
                 'rule' => 'validDynamicContent',
-                'message' => 'Incorrect use of dynamic content. The correct format is [participant.key] or [contentVariable.key.key].'
-                ),*/
+                'message' => 'noMessage'
+                ),
             ),
         'keyword'=> array(
             'requiredConditional' => array(
@@ -371,24 +371,38 @@ class Interaction extends VirtualModel
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                ),/*
+                ),
             'validDynamicContent' => array(
                 'rule' => 'validDynamicContent',
-                'message' => 'Incorrect use of dynamic content. The correct format is [participant.key] or [contentVariable.key.key].'
-                ),*/
+                'message' => 'noMessage'
+                ),
             )
         );
     
     
-    public function validDynamicContent($check)
+    public function validDynamicContent($field, $data)
     {
-        preg_match_all('/\[\w*(\.\w*){1,2}\]/', $check['content'], $matches);
-        foreach ($matches[0] as $match) {
-            if (preg_match('/\[\w*\.\w*\]/', $match) && !preg_match('/\[\bparticipant\b\.\w*\]/', $match)) {echo "here";
-                return false;
-            } elseif (preg_match('/\[\w*\.\w*\.\w*\]/', $match) && !preg_match('/\[\bcontentVariable\b\.\w*\.\w*\]/', $match)) {echo "there";print_r($match);
-                return false;
+        preg_match_all(VusionConst::DYNAMIC_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+        $allowed = array("domain", "key1", "key2", "otherkey");
+        foreach($matches as $match) {
+            $match = array_intersect_key($match, array_flip($allowed));
+            foreach ($match as $key=>$value) {
+                if (!preg_match(VusionConst::DYNAMIC_CONTENT_ALLOWED_REGEX, $value)) {
+                    return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                }
             }
+            if (!preg_match(VusionConst::DYNAMIC_CONTENT_DOMAIN_REGEX, $match['domain'])) {
+                return __("To be used as dynamic content, '%s' can only either 'participant' and 'contentVariable'.", $match['domain']);
+            }
+            if ($match['domain'] == 'participant') {
+                if (isset($match['key2'])) {
+                    return __("To be used as dynamic concent, participant only accept one key.");
+                }
+            } else if ($match['domain'] == 'contentVariable') {
+                if (isset($match['otherkey'])) {
+                    return __("To be used as dynamic concent, contentVariable only accept max two keys.");
+                }
+            } 
         }
         return true;
     }
