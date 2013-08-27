@@ -138,6 +138,8 @@ var localized_labels = {
     "proportional-tagging": "<?php echo __('Proportional Tagging')?>",
     "proportional-tags": "<?php echo __('Proportional Tags')?>",
     "proportional-tag": "<?php echo __('Proportional Tag')?>",
+    "message-forwarding": "<?php echo __('Forward')?>",
+    "url": "<?php echo __('URL')?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
     "is-not": "<?php echo __('is not')?>",
@@ -158,7 +160,5 @@ var localized_labels = {
     "has-keyword-any": "<?php echo __('has keyword any')?>", 
     "matching": "<?php echo __('matching')?>",
     "not-matching": "<?php echo __('not matching')?>", 
-    
-    
 };
 

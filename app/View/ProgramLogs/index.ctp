@@ -11,14 +11,20 @@
 	        </tr>
 	    </thead>
 	    </tbody>
-	        <?php foreach ($programLogs as $key=>$log): ?>
+	        <?php foreach ($programLogs as $log): ?>
 	        <?php
-	        $newDate = $this->Time->format('d/m/Y H:i:s', substr($key, 1, 19));
-	        $newKey = substr_replace($key, $newDate, 1, 19);
-	        ?>
+		        ?>
 	        <tr>
-	            <td class="date-time"><?php echo substr($newKey, 1, 19); ?></td>
-	            <td ><?php echo htmlspecialchars(substr($newKey, 21)); ?></td>
+	            <td class="date-time">
+	            <?php 
+	                $isoDate = substr($log, 1, 19);
+	                $uiDate = $this->Time->format('d/m/Y H:i:s', $isoDate);
+	                echo $uiDate;
+	            ?></td>
+	            <td >
+	            <?php 
+	            echo htmlspecialchars(substr($log, 21));
+	            ?></td>
 	        </tr>
 	        <?php endforeach; ?>
 	    </tbody>
