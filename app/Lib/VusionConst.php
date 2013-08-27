@@ -33,7 +33,7 @@ class VusionConst
     const CONTENT_VARIABLE_KEYS_FAIL_MESSAGE = 'Only letters and numbers for keys. The correct format is "key.key".';
 
     # group of regex to hepl at different stage of the validation of dynamic content
-    const DYNAMIC_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[\!\?:;@#%&*(),\w\s]+)\.(?P<key1>[\!\?:;@#%&*(),\w\s]+)(\.(?<key2>[\!\?:;@#%&*(),\w\s]+))?(\.(?<otherkey>[\!\?:;@#%&*(),\w\s]+))?\]/';
+    const DYNAMIC_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?<key2>[^\.\]]+))?(\.(?<otherkey>[^\.\]]+))?\]/';
     const DYNAMIC_CONTENT_ALLOWED_REGEX = '/^[a-z0-9A-Z\s\.]+$/';
     const DYNAMIC_CONTENT_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
 
