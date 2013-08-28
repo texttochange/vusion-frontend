@@ -1388,7 +1388,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
         $participant_02 = array(
             'phone' => '+7',
-            'tags' => array('test','hi','home')
+            'tags' => array('test2','hi','home')
             );
         $this->Participant->create();
         $this->Participant->save($participant_02); 
@@ -1400,15 +1400,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             .'&filter_param[1][3]=test'
             .'&tag=test'),
             array('method' => 'get'));
-                     
-        $allTags = $this->Participant->getDistinctTags();        
-        $this->assertEqual(array('hi', 'home'), $allTags);
         
-        $conditions = array(
-            'conditions' => array(               
-                'phone' => '+6')); 
-        $participants = $this->Participant->find('all', $conditions);
+        $participants = $this->Participant->find('all');
         $this->assetEqual(array('hi'), $participants[0]['Participant']['tags']);
+        $this->assertEqual(array('test2', 'hi', 'home'), $participants[1]['Participant']['tags']);
     }
     
   
