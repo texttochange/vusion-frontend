@@ -705,7 +705,7 @@ function submitMassUntag(){
 
 
 function alphanumeric() {
-	var tagRegex = new RegExp('^(?=[a-zA-Z0-9])[a-zA-Z0-9 _]*$');	
+	var tagRegex = new RegExp('^[a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*$');	
 	var tag = $('#masstag-tags').val();
 	if(tag.match(tagRegex)){  				
 		return true;  
