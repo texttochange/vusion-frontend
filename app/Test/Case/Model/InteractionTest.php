@@ -142,7 +142,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as dynamic content, 'participants' can only either 'participant' and 'contentVariable'."
+            "To be used as dynamic content, 'participants' can only be either 'participant' or 'contentVariable'."
             );
     }
 

@@ -124,7 +124,11 @@ class Action extends VirtualModel
             'notForbiddenApostrophe' => array(
                 'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validDynamicContent' => array(
+                'rule' => 'validDynamicContent',
+                'message' => 'noMessage'
+                ),
             ),
         'proportional-tags' => array(
             'requiredConditional' => array (
@@ -336,6 +340,34 @@ class Action extends VirtualModel
             return array(
                 'subcondition-parameter' => array(
                     $operators[$subcondition['subcondition-operator']]['message']));
+        }
+        return true;
+    }
+    
+    
+    public function validDynamicContent($check)
+    {print_r($check);
+        preg_match_all(VusionConst::DYNAMIC_CONTENT_MATCHER_REGEX, $check['content'], $matches, PREG_SET_ORDER);
+        $allowed = array("domain", "key1", "key2", "otherkey");
+        foreach($matches as $match) {
+            $match = array_intersect_key($match, array_flip($allowed));
+            foreach ($match as $key=>$value) {
+                if (!preg_match(VusionConst::DYNAMIC_CONTENT_ALLOWED_REGEX, $value)) {
+                    return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                }
+            }
+            if (!preg_match(VusionConst::DYNAMIC_CONTENT_DOMAIN_REGEX, $match['domain'])) {
+                return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+            }
+            if ($match['domain'] == 'participant') {
+                if (isset($match['key2'])) {
+                    return __("To be used as dynamic concent, participant only accept one key.");
+                }
+            } else if ($match['domain'] == 'contentVariable') {
+                if (isset($match['otherkey'])) {
+                    return __("To be used as dynamic concent, contentVariable only accept max two keys.");
+                }
+            } 
         }
         return true;
     }

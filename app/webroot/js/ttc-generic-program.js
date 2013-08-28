@@ -112,6 +112,9 @@ function handleResponseValidationErrors(validationErrors){
            case 'subcondition-parameter':
                style = 'left:-200px';
                break;
+           case 'content':
+               errorClass = "ttc-textarea-validation-error dialogue";
+               break;
            default:
                if (dynamicForm[item]['type'] == 'list') {
                    style = 'left:20px;top:-76px';
@@ -400,7 +403,7 @@ function activeForm(){
     $("textarea[name*='content']").each(function (key, elt) {          
             $(this).rules("add",{
                     required:true,
-                    forbiddenApostrophe: true,
+                    //forbiddenApostrophe: true,
                     messages:{                        
                         required: function(){
                             if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               

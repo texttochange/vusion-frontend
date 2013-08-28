@@ -392,7 +392,7 @@ class Interaction extends VirtualModel
                 }
             }
             if (!preg_match(VusionConst::DYNAMIC_CONTENT_DOMAIN_REGEX, $match['domain'])) {
-                return __("To be used as dynamic content, '%s' can only either 'participant' and 'contentVariable'.", $match['domain']);
+                return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
             }
             if ($match['domain'] == 'participant') {
                 if (isset($match['key2'])) {
