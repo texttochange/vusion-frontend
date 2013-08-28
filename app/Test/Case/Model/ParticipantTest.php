@@ -1529,7 +1529,7 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testDeleteMassTags_trim()
+    public function testUntag_trim()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         
