@@ -18,7 +18,8 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->click("css=input[type=\"submit\"]");
     $this->waitForPageToLoad("30000");
     $this->click("link=Programs Management");
-    $this->waitForPageToLoad("30000");
+    ## Issue with the program index that is very slow to load until we introduce AJAX
+    $this->waitForPageToLoad("60000");
     $this->click("css=div.ttc-program-box");
     $this->waitForPageToLoad("30000");
     $this->click("link=Participants »");
