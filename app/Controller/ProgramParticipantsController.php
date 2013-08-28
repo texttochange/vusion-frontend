@@ -193,8 +193,9 @@ class ProgramParticipantsController extends AppController
     	$tag = $this->params['url']['tag'];
         $arrayOfTags = $this->Participant->getDistinctTags();
         
-    	if(in_array($tag, $arrayOfTags)){
-    		if ($this->request->is('get')){            
+    	
+        if ($this->request->is('get')){
+        	if(in_array($tag, $arrayOfTags)){
     			$conditions = $this->_getConditions();
     			
     			if(!$conditions){
@@ -205,18 +206,18 @@ class ProgramParticipantsController extends AppController
     				$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
     					'default',
     					array('class'=>'message success'));
-    				
     			} else{                
     				$this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
     					'default',
     					array('class' => "message failure"));    				            
-    			}           
-    		} 
-    	}else{
-    		$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' was not found'), 
-    			'default',
-    			array('class' => "message failure"));    		        
-    	}
+    			}
+    		}else{
+    			$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' was not found'), 
+    				'default',
+    				array('class' => "message failure"));    		        
+    		}
+    	} 
+    	
     	if (isset($this->viewVars['urlParams'])) {
     		$this->redirect(array(  
     			'program' => $programUrl,
