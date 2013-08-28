@@ -202,61 +202,34 @@ class ProgramParticipantsController extends AppController
     			}  
     			
     			if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
-    				
     				$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
     					'default',
     					array('class'=>'message success'));
-    				if (isset($this->viewVars['urlParams'])) {
-    					$this->redirect(array(  
-    						'program' => $programUrl,
-    						'controller' => 'programParticipants',
-    						'action' => 'index',
-    						'?' => $this->viewVars['urlParams']));
-    					
-    				} else {
-    					$this->redirect(array(  
-    						'program' => $programUrl,
-    						'controller' => 'programParticipants',
-    						'action' => 'index'));
-    				}
     				
     			} else{                
     				$this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
     					'default',
-    					array('class' => "message failure"));
-    				if (isset($this->viewVars['urlParams'])) {
-    					$this->redirect(array(  
-    						'program' => $programUrl,
-    						'controller' => 'programParticipants',
-    						'action' => 'index',
-    						'?' => $this->viewVars['urlParams']));
-    					
-    				} else {
-    					$this->redirect(array(  
-    						'program' => $programUrl,
-    						'controller' => 'programParticipants',
-    						'action' => 'index'));
-    				}                
+    					array('class' => "message failure"));    				            
     			}           
     		} 
     	}else{
     		$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' was not found'), 
     			'default',
-    			array('class' => "message failure"));
-    		if (isset($this->viewVars['urlParams'])) {
-    			$this->redirect(array(  
-    				'program' => $programUrl,
-    				'controller' => 'programParticipants',
-    				'action' => 'index',
-    				'?' => $this->viewVars['urlParams']));
-    			
-    		} else {
-    			$this->redirect(array(  
-    				'program' => $programUrl,
-    				'controller' => 'programParticipants',
-    				'action' => 'index'));
-    		}          
+    			array('class' => "message failure"));    		        
     	}
+    	if (isset($this->viewVars['urlParams'])) {
+    		$this->redirect(array(  
+    			'program' => $programUrl,
+    			'controller' => 'programParticipants',
+    			'action' => 'index',
+    			'?' => $this->viewVars['urlParams']));
+    		
+    	} else {
+    		$this->redirect(array(  
+    			'program' => $programUrl,
+    			'controller' => 'programParticipants',
+    			'action' => 'index'));
+    	}  
     }
    
     
