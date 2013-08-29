@@ -30,7 +30,6 @@ class UnmatchableReplyController extends AppController
                 'database' => Configure::read("mongo_db")
                 );
         }
-        
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
     }
@@ -63,20 +62,22 @@ class UnmatchableReplyController extends AppController
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->UnmatchableReply->filterFields);
     }
-
+   
 
     protected function _getFilterParameterOptions()
     {
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
-            'country' => $this->PhoneNumber->getCountriesByPrefixes());
+            'country' => $this->PhoneNumber->getCountries()
+            );
     }
 
     
     protected function _getConditions($conditions = null)
     {
        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-
+       $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+       
         if (!isset($filter['filter_param'])) 
             return null;
 
@@ -86,7 +87,7 @@ class UnmatchableReplyController extends AppController
 
         $this->set('urlParams', http_build_query($filter));
 
-        return $this->UnmatchableReply->fromFilterToQueryConditions($filter);
+        return $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
     }
 
 
