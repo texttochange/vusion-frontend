@@ -145,6 +145,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
      
     }
 
+
     public function testImport_csv_no_settings() 
     {
         $this->mock_program_access();
@@ -1374,7 +1375,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
     }
 
-    
+
     public function testMassUntagFilteredParticipant_ok()
     {
         $this->mock_program_access();
@@ -1401,9 +1402,16 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             .'&tag=test'),
             array('method' => 'get'));
         
-        $participants = $this->Participant->find('all');
-        $this->assetEqual(array('hi'), $participants[0]['Participant']['tags']);
-        $this->assertEqual(array('test2', 'hi', 'home'), $participants[1]['Participant']['tags']);
+        $condition1 = array(
+        	'conditions' => array(
+        		'phone' => '+6'));
+        $Participant1 = $this->Participant->find('all', $condition1);
+        $this->assetEqual(array('hi'), $Participant1[0]['Participant']['tags']);
+        $condition2 = array(
+        	'conditions' => array(
+        		'phone' => '+7'));
+       $Participant2 = $this->Participant->find('all', $condition2);
+       $this->assertEqual(array('test2', 'hi', 'home'), $Participant2[0]['Participant']['tags']);
     }
     
   
