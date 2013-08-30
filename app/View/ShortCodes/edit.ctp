@@ -13,10 +13,10 @@
 	?>
 	</div>
 	<?php
-	echo $this->Form->input(__('shortcode'));
-	echo $this->Form->input(__('international-prefix'),
+	echo $this->Form->input('shortcode', array('label' => __('Shortcode')));
+	echo $this->Form->input('international-prefix',
 	    array('id' => 'international-prefix',
-	        'label' =>'International Prefix',
+	        'label' => __('International Prefix'),
 	        'readonly' => true)
 	    );
 	?>

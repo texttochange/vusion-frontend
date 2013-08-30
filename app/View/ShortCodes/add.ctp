@@ -13,11 +13,13 @@
 	?>
 	</div>
 	<?php
-	echo $this->Form->input(__('shortcode'));
+	echo $this->Form->input('shortcode', array('label' => __('Shortcode')));
 	echo $this->Form->input('international-prefix',
-	    array('id' => 'international-prefix',
+	    array(
+	    	'id' => 'international-prefix',
 	        'label' =>__('International Prefix'),
-	        'readonly' => true)
+	        'readonly' => true
+	        )
 	    );
 	?>
 	<div>
@@ -33,14 +35,14 @@
 	</div>
 	<div>
 	<?php
-	echo $this->Html->tag('label',__('Support Customized Id'));
 	echo $this->Form->checkbox('support-customized-id');
+	echo $this->Html->tag('label',__('Support Customized Id'));
 	?>
 	</div>
 	<div>
 	<?php
-	echo $this->Html->tag('label',__('Supported Internationally'));
 	echo $this->Form->checkbox('supported-internationally');
+	echo $this->Html->tag('label',__('Supported Internationally'));
 	?>
 	</div>
 	<?php
