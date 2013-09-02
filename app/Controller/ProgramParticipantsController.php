@@ -190,29 +190,21 @@ class ProgramParticipantsController extends AppController
     public function massUntag()
     {   
         $programUrl = $this->params['program'];
-        $tag = $this->params['url']['tag'];
         $conditions = $this->_getConditions();
-        $arrayOfTags = $this->Participant->getDistinctTags($conditions);
         
         if ($this->request->is('get')){
-            if(in_array($tag, $arrayOfTags)){
-                if(!$conditions){
-                    $conditions = array();
-                } 
-                if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
-                    $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
-                        'default',
-                        array('class'=>'message success'));
-                } else{                
-                    $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
-                        'default',
-                        array('class' => "message failure"));                                
-                }
-            }else{
-                $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' was not found'), 
-                    'default',
-                    array('class' => "message failure"));                    
-            }
+        	if(!$conditions){
+        		$conditions = array();
+        	} 
+        	if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
+        		$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
+        			'default',
+        			array('class'=>'message success'));
+        	} else{                
+        		$this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
+        			'default',
+        			array('class' => "message failure"));                                
+        	}
         } 
     	
     	if (isset($this->viewVars['urlParams'])) {
