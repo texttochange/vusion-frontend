@@ -177,7 +177,10 @@ class ProgramSettingTestCase extends CakeTestCase
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
-        $this->assertEqual(5, $this->ProgramSetting->find('count'));
+        $this->assertEqual('outgoing-only', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-type')));
+        $this->assertEqual(2000, $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-number')));
+        $this->assertEqual('2013-12-02T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-from-date')));
+        $this->assertEqual('2013-12-03T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-to-date')));
     }
 
 
@@ -189,7 +192,7 @@ class ProgramSettingTestCase extends CakeTestCase
             );
 
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
-        $this->assertEqual(2, $this->ProgramSetting->find('count'));
+        $this->assertEqual('none', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-type')));
     }
 
     public function testSaveSettings_failMissingField()
@@ -246,6 +249,30 @@ class ProgramSettingTestCase extends CakeTestCase
             'This to date has to be after the from date.');
     }
 
-  
+
+    public function testSaveSettings_smsForwardingAllow_ok() 
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'sms-forwarding-allowed' => 'none'
+            );
+        
+        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
+    }
+
+
+    public function testSaveSettings_smsForwardingAllow_fail() 
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'sms-forwarding-allowed' => 'not-allowed-value'
+            );
+        
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(
+            'The sms forwarding value is not valid.',
+            $this->ProgramSetting->validationErrors['sms-forwarding-allowed'][0]);
+    }
+ 
 }
 
