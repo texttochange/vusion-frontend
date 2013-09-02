@@ -191,13 +191,12 @@ class ProgramParticipantsController extends AppController
     {   
     	$programUrl = $this->params['program'];
     	$tag = $this->params['url']['tag'];
-        $arrayOfTags = $this->Participant->getDistinctTags();
+    	$conditions = $this->_getConditions();
+        $arrayOfTags = $this->Participant->getDistinctTags($conditions);
         
     	
         if ($this->request->is('get')){
         	if(in_array($tag, $arrayOfTags)){
-    			$conditions = $this->_getConditions();
-    			
     			if(!$conditions){
     				$conditions = array();
     			}  
