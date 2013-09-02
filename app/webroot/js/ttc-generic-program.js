@@ -121,7 +121,7 @@ function handleResponseValidationErrors(validationErrors){
                    $('[name="'+error['name']+'"] > button').on('click', function() {hideValidationLabel(error['name']);});
                }
            }
-           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style, error['name']);
+           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style, null);
            if (dynamicForm[item]['type'] != 'list') {
                $('[name="'+error['name']+'"]').on('click', function() {hideValidationLabel(error['name']);});
            }
@@ -344,7 +344,7 @@ function activeForm(){
     });
     $("input[name*='type-schedule']").each(function (item) {
         $(this).rules("add",{
-            atLeastOneIsChecked:true,
+            //atLeastOneIsChecked:true,
             messages:{
                 atLeastOneIsChecked: wrapErrorMessageInClass(
                     localized_errors.validation_required_checked,

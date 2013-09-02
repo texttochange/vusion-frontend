@@ -45,6 +45,44 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['type-action']));
     }
+    
+    
+    public function testValidateAction_fail_feedback_dynamic_content() {
+        $action = array(
+            'type-action' => 'feedback',
+            'content' => 'Hello [shoe.box]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "To be used as dynamic content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->Action->validationErrors['content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['content']));
+        
+        $action['content'] = 'hello [participant.$%name]';
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "To be used as dynamic content, '$%name' can only be composed of letter(s), digit(s) and/or space(s).",
+            $this->Action->validationErrors['content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['content']));
+        
+        $action['content'] = 'hello [contentVariable.name.age.person]';
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "To be used as dynamic concent, contentVariable only accept max two keys.",
+            $this->Action->validationErrors['content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['content']));
+    }
 
    
     public function testValidateAction_fail_delayedEnrolling() {

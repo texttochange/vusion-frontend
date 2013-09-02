@@ -271,6 +271,10 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
                 'message' => 'A reminder-actions field is required.',
                 ),
+            /*'validValue' => array(
+                'rule' => 'validateReminderActions',
+                'message' => null
+                ),*/
             ),
         ### Reminder Schedule Subtype
         'reminder-days' => array(
@@ -291,6 +295,32 @@ class Interaction extends VirtualModel
                 'message' => 'A reminder-minutes field is required.',
                 ),
             ),
+        ## Reminder Actions subtype
+        /*'type-action' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'reminder', 'reminder-actions'),
+                'message' => 'A reminder action is required.'
+                ),
+            'validateActions' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
+            ),*/
+        #type-unmatching-feedback
+        /*'unmatching-feedback-content' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'type-unmatching-feedback', 'interaction-unmatching-feedback'),
+                'message' => 'Custom unmatching feedback must have content.',
+                ),
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validDynamicContent' => array(
+                'rule' => 'validDynamicContent',
+                'message' => 'noMessage'
+                ),
+            ),*/
         # Other Interaction Fields
         'activated'  => array(
             'required' => array(
@@ -311,6 +341,15 @@ class Interaction extends VirtualModel
                 'rule' => array('inList', array(null, 'prioritized')),
                 'message' => 'Prioritized field value is not valid.'
                 )
+            )
+        );
+    
+    public $validateReminderAction = array(
+        'type-action' => array( 
+            'validateActions' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
             )
         );
     
@@ -381,7 +420,7 @@ class Interaction extends VirtualModel
     
     
     public function validDynamicContent($field, $data)
-    {
+    {//print_r($data);
         preg_match_all(VusionConst::DYNAMIC_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
         $allowed = array("domain", "key1", "key2", "otherkey");
         foreach($matches as $match) {
@@ -407,7 +446,13 @@ class Interaction extends VirtualModel
         return true;
     }
 
-
+/*
+    public function validateReminderActions($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateReminderAction); 
+    }
+    */
+    
     public function validateAnswers($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswer); 
@@ -429,7 +474,7 @@ class Interaction extends VirtualModel
     public function validateActions($field, $data)
     {
         $count = 0;
-        $validationErrors = array();
+        $validationErrors = array();print_r($field);
         foreach($data[$field] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {

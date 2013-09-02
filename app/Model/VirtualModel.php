@@ -98,13 +98,13 @@ abstract class VirtualModel
 
     public function requiredConditionalFieldValue($field, $data, $cField, $cValue) 
     {
-        if (!array_key_exists($field, $data)) {
+        if (!array_key_exists($field, $data)) {//print_r($field); echo "<br />";
             return true;
         }
-        if (!array_key_exists($cField, $data)) {
+        if (!array_key_exists($cField, $data)) {echo "cfield not in data here<br />";
             return false;
         }
-        if ($data[$cField] != $cValue) {
+        if ($data[$cField] != $cValue) {echo " cfield not equal to cvalue there<br />";
             return false;
         }
         return true;
