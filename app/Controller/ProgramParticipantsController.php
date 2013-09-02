@@ -184,7 +184,6 @@ class ProgramParticipantsController extends AppController
             }           
         } 
     }
-   
     
     
     public function massUntag()
@@ -193,33 +192,33 @@ class ProgramParticipantsController extends AppController
         $conditions = $this->_getConditions();
         
         if ($this->request->is('get')){
-        	if(!$conditions){
-        		$conditions = array();
-        	} 
-        	if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
-        		$this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
-        			'default',
-        			array('class'=>'message success'));
-        	} else{                
-        		$this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
-        			'default',
-        			array('class' => "message failure"));                                
-        	}
+            if(!$conditions){
+                $conditions = array();
+            } 
+            if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
+                $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
+                    'default',
+                    array('class'=>'message success'));
+            } else{                
+                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
+                    'default',
+                    array('class' => "message failure"));                                
+            }
         } 
-    	
-    	if (isset($this->viewVars['urlParams'])) {
-    		$this->redirect(array(  
-    			'program' => $programUrl,
-    			'controller' => 'programParticipants',
-    			'action' => 'index',
-    			'?' => $this->viewVars['urlParams']));
-    		
-    	} else {
-    		$this->redirect(array(  
-    			'program' => $programUrl,
-    			'controller' => 'programParticipants',
-    			'action' => 'index'));
-    	}  
+        
+        if (isset($this->viewVars['urlParams'])) {
+            $this->redirect(array(  
+                'program' => $programUrl,
+                'controller' => 'programParticipants',
+                'action' => 'index',
+                '?' => $this->viewVars['urlParams']));
+            
+        } else {
+            $this->redirect(array(  
+                'program' => $programUrl,
+                'controller' => 'programParticipants',
+                'action' => 'index'));
+        }  
     }
    
     
