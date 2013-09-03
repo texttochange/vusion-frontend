@@ -14,16 +14,18 @@ class UnmatchableReply extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'unmatchable_reply';
     
+    
     function getModelVersion()
     {
         return '1';
     }
    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
-    	    parent::__construct($id, $table, $ds);
-    	    
-    	    $this->dialogueHelper = new DialogueHelper();
+            parent::__construct($id, $table, $ds);
+            
+            $this->dialogueHelper = new DialogueHelper();
     }
 
 
@@ -35,6 +37,7 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
+    
     
     public $filterFields = array(
         'country' => array(
@@ -98,6 +101,7 @@ class UnmatchableReply extends MongoModel
         'any' => 'any'
         );
 
+    
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
@@ -126,8 +130,7 @@ class UnmatchableReply extends MongoModel
     }
 
 
-    public function fromFilterToQueryConditions($filter) {
-
+    public function fromFilterToQueryConditions($filter, $countryPrefixes = array()) {
         $conditions = array();
 
         foreach($filter['filter_param'] as $filterParam) {
@@ -137,8 +140,9 @@ class UnmatchableReply extends MongoModel
             $this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'country') {
+                $countryPrefix = $countryPrefixes[$filterParam[3]];
                 if ($filterParam[2] == 'is') {
-                    $condition['participant-phone'] = new MongoRegex("/^(\\+)?".$filterParam[3]."/");
+                    $condition['participant-phone'] = new MongoRegex("/^(\\+)?".$countryPrefix."/");
                 }
             } elseif ($filterParam[1] == 'shortcode') {
                 if ($filterParam[2] == 'is') {
@@ -208,5 +212,6 @@ class UnmatchableReply extends MongoModel
         }
         return $conditions;
     }
+    
 
 }

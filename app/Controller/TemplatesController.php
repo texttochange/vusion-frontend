@@ -7,6 +7,7 @@ class TemplatesController extends AppController
 {
     var $helpers = array('Time','Js'=>array('Jquery'));
     
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -41,6 +42,7 @@ class TemplatesController extends AppController
         $templates = $this->paginate();
         $this->set(compact('templates'));
     }
+    
     
     public function add()
     { 

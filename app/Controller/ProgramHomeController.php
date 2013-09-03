@@ -14,16 +14,23 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramHomeController extends AppController
 {
 
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler');
+
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Time'
-        );
+        'Time');
 
 
     function constructClasses()
     {
         parent::constructClasses();
+    }
+
+    
+    function beforeFilter()
+    {
+        parent::beforeFilter();
 
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
         
@@ -39,8 +46,9 @@ class ProgramHomeController extends AppController
         $this->_instanciateVumiRabbitMQ();
     }
 
-
-    protected function _instanciateVumiRabbitMQ(){
+    
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
 
@@ -59,14 +67,14 @@ class ProgramHomeController extends AppController
                 
         $activeInteractions = $this->Dialogue->getActiveInteractions();
 
-        $timeNow = $this->ProgramSetting->getProgramTimeNow();
+        $timeNow = $this->ProgramSetting->getProgramTimeNow(); 
+        
         if (isset($timeNow)) 
             $timeNow->modify('+1 day');
         $schedules = $this->Schedule->generateSchedule(
                                     $this->Schedule->summary($timeNow),
                                     $activeInteractions
                                 );
-                
         $this->set(compact(
             'hasScriptActive', 
             'hasScriptDraft',
@@ -78,6 +86,7 @@ class ProgramHomeController extends AppController
             'workerStatus'));
     }
 
+    
     public function restartWorker()
     {
         $programUrl   = $this->params['program'];

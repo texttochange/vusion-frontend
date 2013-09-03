@@ -19,12 +19,14 @@ class Interaction extends VirtualModel
         'activated',
         'prioritized');
 
+    
     public function __construct()
     {     
         parent::__construct();
         $this->Action = new Action();
     }
 
+    
     public $validate = array(
         'interaction-id' => array(
             'required' => array(
@@ -530,6 +532,7 @@ class Interaction extends VirtualModel
         return true;
     }
 
+    
     protected function _beforeValidateActions($actions)
     {
         foreach($actions as &$action) {
@@ -539,6 +542,7 @@ class Interaction extends VirtualModel
         }
     }
 
+    
     protected function _beforeValidateAnswerKeywords() 
     {
         foreach ($this->data['answer-keywords'] as &$answer) {
@@ -550,6 +554,7 @@ class Interaction extends VirtualModel
         }
     }
 
+    
     protected function _beforeValidateAnswers() 
     {
         foreach ($this->data['answers'] as &$answer) {
@@ -560,5 +565,6 @@ class Interaction extends VirtualModel
             $this->_beforeValidateActions(&$answer['answer-actions']);
         }
     }
+    
 
 }

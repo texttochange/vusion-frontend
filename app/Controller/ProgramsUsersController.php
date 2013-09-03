@@ -10,7 +10,6 @@ App::uses('AppController', 'Controller');
 class ProgramsUsersController extends AppController
 {
 
-
     /**
     * index method
     *
@@ -22,6 +21,7 @@ class ProgramsUsersController extends AppController
         $this->set('programsUsers', $this->paginate());
     }
 
+    
     /**
     * view method
     *

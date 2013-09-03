@@ -10,11 +10,13 @@ class Request extends MongoModel
     var $specific = true;
     var $name     = 'Request';
 
+    
     function getModelVersion()
     {
         return '2';
     }
 
+    
     function getRequiredFields($objectType=null)
     {
         return array(
@@ -25,6 +27,7 @@ class Request extends MongoModel
             );
     }
 
+    
     ##Construtor
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -95,6 +98,7 @@ class Request extends MongoModel
             )
         );
 
+    
     public function keywordFormat($check) 
     {
         $keywordRegex = '/^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$/';

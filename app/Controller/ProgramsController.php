@@ -14,8 +14,14 @@ App::uses('ShortCode', 'Model');
 class ProgramsController extends AppController
 {
 
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
-    public $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber');    
+    var $components = array(
+        'RequestHandler', 
+        'LocalizeUtils', 
+        'PhoneNumber', 
+        'ProgramPaginator', 
+        'Stats');
+    var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
+
     var $uses = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
@@ -23,6 +29,7 @@ class ProgramsController extends AppController
             'Program.created' => 'desc'
             )
         );
+
 
     function constructClasses()
     {
@@ -48,10 +55,12 @@ class ProgramsController extends AppController
     }
 
 
+
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
+
 
     protected function _getPrograms()
     {
@@ -66,6 +75,7 @@ class ProgramsController extends AppController
         return $this->Program->find('all');
     }
 
+
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
@@ -75,11 +85,11 @@ class ProgramsController extends AppController
                'specific_program_access' => 'true',
                'user_id' => $user['id'],
                'conditions' => array('id' => $programId)));
-
         }
         $this->Program->id = $programId;
         return $this->Program->read();
     }
+
 
     public function index() 
     {
@@ -129,6 +139,7 @@ class ProgramsController extends AppController
                     'id' => $this->Session->read('Auth.User.id')
                     ),
                 ), 'controllers/Programs/edit');
+
         }
         
         $filteredPrograms = array();
@@ -168,6 +179,12 @@ class ProgramsController extends AppController
             $programs = $programsList;
         }
 
+        if ($this->params['ext'] != 'json') {
+            foreach ($programs as &$program) {
+                $program['Program']['stats'] = $this->Stats->getProgramStats($program['Program']['database']);
+            }
+        }
+
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -181,8 +198,8 @@ class ProgramsController extends AppController
         
         $this->set(compact('programs', 'isProgramEdit'));
     }
-    
-    
+   
+  
     protected function _getFilterFieldOptions()
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
@@ -306,6 +323,7 @@ class ProgramsController extends AppController
         $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
     }
 
+    
     protected function _stopBackendWorker($workerName, $databaseName)
     {
         $this->VumiRabbitMQ->sendMessageToRemoveWorker($workerName, $databaseName);    	 
@@ -335,6 +353,7 @@ class ProgramsController extends AppController
             $this->request->data = $this->Program->read(null, $id);
         }
     }
+
 
     public function delete($id = null)
     {

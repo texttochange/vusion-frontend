@@ -439,16 +439,18 @@ form .error-message {
 	font-weight: bold; 
 	margin: 0 0 1em 0;
 	padding: 5px;*/
-	position: fixed;
-	top: -15px;
+	position: relative;
+	top: 5px;
 	/*left: 37%;*/
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
+	margin-bottom: 0px;
 	z-index: 10;
 	margin-left: auto;
 	margin-right: auto;
 	display: inline;
+	white-space: nowrap;
 }
 
 .success,

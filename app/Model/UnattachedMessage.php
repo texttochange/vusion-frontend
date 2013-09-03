@@ -16,10 +16,12 @@ class UnattachedMessage extends MongoModel
     
     var $mongoNoSetOperator = true;
 
+    
     function getModelVersion()
     {
         return '4';
     }
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -32,6 +34,7 @@ class UnattachedMessage extends MongoModel
             'created-by'
             );
     }
+    
     
     var $matchFields = array(
         'send-to-match-operator',
@@ -130,6 +133,7 @@ class UnattachedMessage extends MongoModel
         'count' => true,
         'future' => true);
     
+    
     protected function _findFuture($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -203,6 +207,7 @@ class UnattachedMessage extends MongoModel
         return true;           	
     }    
     
+    
     public function isNotPast($check)
     {
         $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
@@ -221,9 +226,9 @@ class UnattachedMessage extends MongoModel
         $result = $this->find('count', array(
             'conditions' => $conditions
             ));
-        //print_r($conditions);
         return $result < 1;
     }
+    
     
     public function conditions($check)
     {
@@ -242,6 +247,7 @@ class UnattachedMessage extends MongoModel
         }
         return true;
     }
+    
     
     public function matchOperator($check) 
     {   

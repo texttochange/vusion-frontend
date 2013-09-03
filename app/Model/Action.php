@@ -12,6 +12,7 @@ class Action extends VirtualModel
         'set-condition',
         'type-action');
     
+    
     public $validate = array(
         'set-condition' => array(
             'required' => array(
@@ -142,6 +143,7 @@ class Action extends VirtualModel
             )      
         );
 
+    
     public $validateOffsetDays = array(
         'days' => array(
             'required' => array(
@@ -187,6 +189,7 @@ class Action extends VirtualModel
             ),
         );
 
+    
     public $validateSubconditionValues = array(
         'labelled' => array(
             'with' => array(
@@ -211,6 +214,7 @@ class Action extends VirtualModel
         );
 
 
+    
     public $validateProportionalTag = array(
         'tag' => array(
             'required' => array(
@@ -233,6 +237,7 @@ class Action extends VirtualModel
                 ),
             ),
         );
+    
 
     public function trimArray($Input)
     {
