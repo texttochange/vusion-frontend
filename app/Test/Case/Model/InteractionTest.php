@@ -144,6 +144,21 @@ class InteractionTestCase extends CakeTestCase
             $this->Interaction->validationErrors['content'][0], 
             "To be used as dynamic content, 'participants' can only be either 'participant' or 'contentVariable'."
             );
+        
+        ## test feedback action
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['reminder-actions'] = array(
+            array('type-action' => 'feedback',
+                  'content' => "Hello [person.name]"));        
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+
+        $this->assertEqual(
+            $this->Interaction->validationErrors['reminder-actions'][0]['content'][0], 
+            "To be used as dynamic content, 'person' can only be either 'participant' or 'contentVariable'."
+            );
     }
 
 

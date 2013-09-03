@@ -115,6 +115,9 @@ function handleResponseValidationErrors(validationErrors){
            case 'content':
                errorClass = "ttc-textarea-validation-error dialogue";
                break;
+           case 'unmatching-feedback-content':
+               errorClass = "ttc-textarea-validation-error dialogue";
+               break;
            default:
                if (dynamicForm[item]['type'] == 'list') {
                    style = 'left:20px;top:-76px';
@@ -338,13 +341,13 @@ function activeForm(){
             uniqueDialogueName: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                //uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
+                uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
     });
     $("input[name*='type-schedule']").each(function (item) {
         $(this).rules("add",{
-            //atLeastOneIsChecked:true,
+            atLeastOneIsChecked:true,
             messages:{
                 atLeastOneIsChecked: wrapErrorMessageInClass(
                     localized_errors.validation_required_checked,
@@ -403,7 +406,7 @@ function activeForm(){
     $("textarea[name*='content']").each(function (key, elt) {          
             $(this).rules("add",{
                     required:true,
-                    //forbiddenApostrophe: true,
+                    forbiddenApostrophe: true,
                     messages:{                        
                         required: function(){
                             if($(elt).attr('name') == $(":regex(name,^Dialogue.interactions\\[\\d+\\].content$)").attr('name')){                               

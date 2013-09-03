@@ -271,10 +271,10 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
                 'message' => 'A reminder-actions field is required.',
                 ),
-            /*'validValue' => array(
-                'rule' => 'validateReminderActions',
+            'validValue' => array(
+                'rule' => 'validateActions',
                 'message' => null
-                ),*/
+                ),
             ),
         ### Reminder Schedule Subtype
         'reminder-days' => array(
@@ -295,19 +295,8 @@ class Interaction extends VirtualModel
                 'message' => 'A reminder-minutes field is required.',
                 ),
             ),
-        ## Reminder Actions subtype
-        /*'type-action' => array(
-            'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'reminder', 'reminder-actions'),
-                'message' => 'A reminder action is required.'
-                ),
-            'validateActions' => array(
-                'rule' => 'validateActions',
-                'message' => null
-                ),
-            ),*/
         #type-unmatching-feedback
-        /*'unmatching-feedback-content' => array(
+        'unmatching-feedback-content' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-unmatching-feedback', 'interaction-unmatching-feedback'),
                 'message' => 'Custom unmatching feedback must have content.',
@@ -320,7 +309,7 @@ class Interaction extends VirtualModel
                 'rule' => 'validDynamicContent',
                 'message' => 'noMessage'
                 ),
-            ),*/
+            ),
         # Other Interaction Fields
         'activated'  => array(
             'required' => array(
@@ -420,28 +409,30 @@ class Interaction extends VirtualModel
     
     
     public function validDynamicContent($field, $data)
-    {//print_r($data);
-        preg_match_all(VusionConst::DYNAMIC_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
-        $allowed = array("domain", "key1", "key2", "otherkey");
-        foreach($matches as $match) {
-            $match = array_intersect_key($match, array_flip($allowed));
-            foreach ($match as $key=>$value) {
-                if (!preg_match(VusionConst::DYNAMIC_CONTENT_ALLOWED_REGEX, $value)) {
-                    return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+    {
+        if (isset($data[$field])) {
+            preg_match_all(VusionConst::DYNAMIC_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            $allowed = array("domain", "key1", "key2", "otherkey");
+            foreach($matches as $match) {
+                $match = array_intersect_key($match, array_flip($allowed));
+                foreach ($match as $key=>$value) {
+                    if (!preg_match(VusionConst::DYNAMIC_CONTENT_ALLOWED_REGEX, $value)) {
+                        return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    }
                 }
+                if (!preg_match(VusionConst::DYNAMIC_CONTENT_DOMAIN_REGEX, $match['domain'])) {
+                    return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                }
+                if ($match['domain'] == 'participant') {
+                    if (isset($match['key2'])) {
+                        return __("To be used as dynamic concent, participant only accept one key.");
+                    }
+                } else if ($match['domain'] == 'contentVariable') {
+                    if (isset($match['otherkey'])) {
+                        return __("To be used as dynamic concent, contentVariable only accept max two keys.");
+                    }
+                } 
             }
-            if (!preg_match(VusionConst::DYNAMIC_CONTENT_DOMAIN_REGEX, $match['domain'])) {
-                return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
-            }
-            if ($match['domain'] == 'participant') {
-                if (isset($match['key2'])) {
-                    return __("To be used as dynamic concent, participant only accept one key.");
-                }
-            } else if ($match['domain'] == 'contentVariable') {
-                if (isset($match['otherkey'])) {
-                    return __("To be used as dynamic concent, contentVariable only accept max two keys.");
-                }
-            } 
         }
         return true;
     }
@@ -473,17 +464,19 @@ class Interaction extends VirtualModel
     
     public function validateActions($field, $data)
     {
-        $count = 0;
-        $validationErrors = array();print_r($field);
-        foreach($data[$field] as $action) {
-            $this->Action->set($action);
-            if (!$this->Action->validates()) {
-                $validationErrors[$count] = $this->Action->validationErrors;
+        if (isset($data[$field])) {
+            $count = 0;
+            $validationErrors = array();
+            foreach($data[$field] as $action) {
+                $this->Action->set($action);
+                if (!$this->Action->validates()) {
+                    $validationErrors[$count] = $this->Action->validationErrors;
+                }
+                $count++;
             }
-            $count++;
-        }
-        if ($validationErrors != array()) {
-            return $validationErrors;
+            if ($validationErrors != array()) {
+                return $validationErrors;
+            }
         }
         return true;
     }
