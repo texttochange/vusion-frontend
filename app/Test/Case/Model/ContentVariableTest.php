@@ -42,7 +42,7 @@ class ContentVariableTestCase extends CakeTestCase
             );
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
-        $this->assertEquals('Only letters and numbers for keys. The correct format is "key.key".',
+        $this->assertEquals('The correct format is "key.key".',
             $this->ContentVariable->validationErrors['keys'][0]);
         
         $contentVariable02 = array(

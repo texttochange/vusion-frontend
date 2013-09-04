@@ -47,15 +47,31 @@ class ContentVariable extends MongoModel
     public function validateKeys($check)
     {
         $keyString = '';
-        foreach ($check['keys'] as $key => $element) {
-            foreach ($element as $key1 => $element1) {
-                $keyString = $keyString . $element1 . ".";
+        $regex = VusionConst::CONTENT_VARIABLE_KEYS_FULL_REGEX;
+        $index = 0;
+        foreach ($check['keys'] as $keyItem) {
+            if (is_string($validationError = $this->validateKey($keyItem))) {
+               if (!isset($this->validationErrors['keys'])) {
+                    $this->validationErrors['keys'] = array();
+                }
+                $this->validationErrors['keys'][$index] = $validationError;
             }
+            $index++;
+            $keyString = $keyString . $keyItem['key'] . ".";
         }
-        $keyString = rtrim($keyString, '.');
-        $regex = VusionConst::CONTENT_VARIABLE_KEYS_REGEX;
-        if (!preg_match($regex, $keyString)) {
-            return VusionConst::CONTENT_VARIABLE_KEYS_FAIL_MESSAGE;
+        if (isset($this->validationErrors['keys'])) {
+            return false;
+        } else if (!preg_match($regex, rtrim($keyString, '.'))) {
+            return VusionConst::CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE;
+        }
+        return true;
+    }
+    
+    
+    public function validateKey($check) {
+        $regex = VusionConst::CONTENT_VARIABLE_KEY_REGEX;
+        if (!preg_match($regex, $check['key'])) {
+            return VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE;
         }
         return true;
     }
@@ -80,7 +96,6 @@ class ContentVariable extends MongoModel
         parent::beforeValidate();
         
         if (isset($this->data['ContentVariable']['keys']) and !is_array($this->data['ContentVariable']['keys'])) {
-            //echo "here";
             $keys = trim(stripcslashes($this->data['ContentVariable']['keys']));
             $keys = array_filter(explode(".", $keys));
             $cleanKeys = array();
@@ -89,7 +104,6 @@ class ContentVariable extends MongoModel
             }
             $this->data['ContentVariable']['keys'] = $cleanKeys;
         }
-        //print_r($this->data['ContentVariable']['keys']);
     }
     
 }
