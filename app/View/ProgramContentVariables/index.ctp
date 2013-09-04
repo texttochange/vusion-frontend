@@ -1,8 +1,8 @@
 <div class='content_variables index'>
 	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Dynamic Content'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('New Content Variable'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>	
-	<h3><?php echo __('Dynamic Contents');?></h3>
+	<h3><?php echo __('Content Variables');?></h3>
   <div class="ttc-data-control">
 	<div id="data-control-nav" class="ttc-paging paging">
 	<?php

@@ -15,7 +15,7 @@
         </li>
         <?php $this->Js->get('#button-save')->event('click', '$("#ContentVariableEditForm").submit()' , true);?>
 	</ul>
-    <h3><?php echo __('Edit Dynamic Content'); ?></h3>
+    <h3><?php echo __('Edit Content Variable'); ?></h3>
     <div class="ttc-display-area">
     <?php echo $this->Form->create('ContentVariable'); ?>
     <fieldset>

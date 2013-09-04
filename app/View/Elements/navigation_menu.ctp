@@ -167,12 +167,12 @@
     </li>  
     <li>
         <?php
-        echo $this->AclLink->generateLink(__('Dynamic Content'),$programDetails['url'],'programContentVariables','index');
+        echo $this->AclLink->generateLink(__('Content Variables'),$programDetails['url'],'programContentVariables','index');
         ?>
         <ul>
             <li>
                 <?php 
-                     echo $this->AclLink->generateLink(__('Add Dynamic Content'),$programDetails['url'],'programContentVariables','add');
+                     echo $this->AclLink->generateLink(__('Add Content Variable'),$programDetails['url'],'programContentVariables','add');
                 ?>
             </li>
         </ul>
