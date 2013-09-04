@@ -206,19 +206,14 @@ class ProgramParticipantsController extends AppController
             }
         } 
         
+        $redirectUrl = array(  
+            'program' => $programUrl,
+            'controller' => 'programParticipants',
+            'action' => 'index'); 
         if (isset($this->viewVars['urlParams'])) {
-            $this->redirect(array(  
-                'program' => $programUrl,
-                'controller' => 'programParticipants',
-                'action' => 'index',
-                '?' => $this->viewVars['urlParams']));
-            
-        } else {
-            $this->redirect(array(  
-                'program' => $programUrl,
-                'controller' => 'programParticipants',
-                'action' => 'index'));
-        }  
+            $redirectUrl['?'] = $this->viewVars['urlParams'];
+        }
+        $this->redirect($redirectUrl);
     }
    
     
