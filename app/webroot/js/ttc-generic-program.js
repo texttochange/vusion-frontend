@@ -341,7 +341,7 @@ function activeForm(){
             uniqueDialogueName: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
+                uniqueDialogueName: wrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
     });
