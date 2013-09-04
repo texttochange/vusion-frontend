@@ -8,7 +8,7 @@
 	echo "<br />";
 	echo $this->Form->select('country', $countryOptions, array('id'=> 'country'));
 	$this->Js->get('#country')->event('change', '	       
-	    $("#international-prefix").val(getCountryCodes($("#country option:selected").text()));
+	    $("#international-prefix").val($("#country option:selected").val());
 	    ');
 	?>
 	</div>
