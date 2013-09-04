@@ -41,9 +41,12 @@ class VusionConst
     const CONTENT_VARIABLE_VALUE_REGEX = '/^[a-z0-9A-Z\s\.]+$/';
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
 
-    # group of regex to hepl at different stage of the validation of dynamic content
+    # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
     const DYNAMIC_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?<key2>[^\.\]]+))?(\.(?<otherkey>[^\.\]]+))?\]/';
     const DYNAMIC_CONTENT_ALLOWED_REGEX = '/^[a-z0-9A-Z\s\.]+$/';
     const DYNAMIC_CONTENT_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
+    
+    const DYNAMIC_CONTENT_DOMAIN_PARTICIPANT_FAIL = 'To be used as dynamic concent, participant only accept one key.';
+    const DYNAMIC_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used as dynamic concent, contentVariable only accept max two keys.';
 
 }
