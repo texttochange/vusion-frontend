@@ -37,7 +37,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->ProgramContentVariables = new ProgramContentVariablesController();
+        $this->ProgramContentVariables = new TestProgramContentVariablesController();
         $this->dropData();
     }
 
@@ -94,14 +94,9 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariables->Session
             ->expects($this->any())
             ->method('read')
-            ->will($this->onConsecutiveCalls(
-                '4', 
-                '2',
-                $this->programData[0]['Program']['database'],
-                $this->programData[0]['Program']['name'],
-                'utc',
-                'testdbprogram'
-                ));
+            ->will(
+                $this->returnValue($this->programData[0]['Program']['database'])
+                );
  
         return $contentVariables;
 
@@ -137,7 +132,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariable =  array(
             'ContentVariable' => array(
                 'keys' => 'my.Key',
-                'value' => 'my value!!!!'
+                'value' => 'my value!!!'
              )
         );
         $this->testAction(
@@ -150,7 +145,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, $this->ContentVariable->find('count'));
     }
     
-    
+  
     public function testEdit()
     {
         $contentVariables = $this->mock_program_access();  
@@ -163,7 +158,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         );
         $this->ContentVariable->create();
         $savedMessage = $this->ContentVariable->save($contentVariable);
-        
+
         $this->testAction(
             "/testurl/programContentVariables/edit/".$savedMessage['ContentVariable']['_id'], 
             array(
@@ -184,7 +179,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         );
     }
     
-    
+  
     public function testDelete()
     {
         $contentVariables = $this->mock_program_access();  
@@ -202,7 +197,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
             "/testurl/programContentVariables/delete/".$savedMessage['ContentVariable']['_id']);
         $this->assertEquals(0, $this->ContentVariable->find('count'));        
     }
-    
+ 
 }
 
 

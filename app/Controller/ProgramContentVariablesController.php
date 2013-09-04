@@ -45,7 +45,6 @@ class ProgramContentVariablesController extends AppController
                     'action' => 'index'
                     ));
             } else {
-                print_r($this->validationErrors);
                 $this->Session->setFlash(__('The dynamic content could not be saved.'), 
                 'default',
                 array('class' => "message failure")
@@ -59,7 +58,7 @@ class ProgramContentVariablesController extends AppController
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
-        
+
         $this->ContentVariable->id = $id;
         if (!$this->ContentVariable->exists()) {
             throw new NotFoundException(__('Invalid dynamic content'));
