@@ -132,7 +132,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariable =  array(
             'ContentVariable' => array(
                 'keys' => 'my.Key',
-                'value' => 'my value!!!'
+                'value' => 'my value'
              )
         );
         $this->testAction(
@@ -187,7 +187,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariable =  array(
             'ContentVariable' => array(
                 'keys' => 'my.Key',
-                'value' => 'my value!!!!'
+                'value' => 'my value'
              )
         );
         $this->ContentVariable->create();
