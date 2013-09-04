@@ -36,6 +36,7 @@ class ContentVariableTestCase extends CakeTestCase
     
     public function testSave()
     {
+        ## keys field is empty
         $contentVariable = array(
             'keys' => '',
             'value' => '28C'
@@ -45,6 +46,7 @@ class ContentVariableTestCase extends CakeTestCase
         $this->assertEquals('The correct format is "key" or "key.key".',
             $this->ContentVariable->validationErrors['keys'][0]);
         
+        ## value field is empty
         $contentVariable02 = array(
             'keys' => 'my.key',
             'value' => ''
@@ -52,6 +54,16 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable02));
         $this->assertEquals('Please enter a value for this dynamic content.',
+            $this->ContentVariable->validationErrors['value'][0]);
+        
+        ## value field has special characters
+        $contentVariable02 = array(
+            'keys' => 'my.key',
+            'value' => '#$@*good'
+            );
+        $this->ContentVariable->create();
+        $this->assertFalse($this->ContentVariable->save($contentVariable02));
+        $this->assertEquals("Use only DOT, space, letters and numbers for a value, e.g 'new value1'.",
             $this->ContentVariable->validationErrors['value'][0]);
         
         $contentVariable03 = array(

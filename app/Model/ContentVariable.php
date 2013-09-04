@@ -40,6 +40,10 @@ class ContentVariable extends MongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please enter a value for this dynamic content.'
                 ),
+            'validateValue' => array(
+                'rule' => array('custom', VusionConst::CONTENT_VARIABLE_VALUE_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_VALUE_FAIL_MESSAGE,
+                ),
             ),
         );
     
