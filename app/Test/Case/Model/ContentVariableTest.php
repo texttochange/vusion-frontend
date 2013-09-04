@@ -42,7 +42,7 @@ class ContentVariableTestCase extends CakeTestCase
             );
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
-        $this->assertEquals('The correct format is "key.key".',
+        $this->assertEquals('The correct format is "key" or "key.key".',
             $this->ContentVariable->validationErrors['keys'][0]);
         
         $contentVariable02 = array(
@@ -61,6 +61,15 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $savedMessage = $this->ContentVariable->save($contentVariable03);
         $this->assertTrue(isset($savedMessage['ContentVariable']));
+        
+        #single key
+        $contentVariable04 = array(
+            'keys' => 'myKey',
+            'value' => 'myValue'
+            );
+        $this->ContentVariable->create();
+        $otherSavedMessage = $this->ContentVariable->save($contentVariable04);
+        $this->assertTrue(isset($otherSavedMessage['ContentVariable']));
     }
     
     

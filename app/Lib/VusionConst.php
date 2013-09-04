@@ -35,8 +35,8 @@ class VusionConst
     const CONTENT_VARIABLE_KEY_REGEX = '/^[a-z0-9A-Z\s]+$/';
     const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
     
-    const CONTENT_VARIABLE_KEYS_FULL_REGEX = '/^[a-z0-9A-Z\s]+\.[a-z0-9A-Z\s]+$/';
-    const CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE = 'The correct format is "key.key".';
+    const CONTENT_VARIABLE_KEYS_FULL_REGEX = '/^[a-z0-9A-Z\s]+(\.[a-z0-9A-Z\s]+)?$/';
+    const CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE = 'The correct format is "key" or "key.key".';
 
     # group of regex to hepl at different stage of the validation of dynamic content
     const DYNAMIC_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?<key2>[^\.\]]+))?(\.(?<otherkey>[^\.\]]+))?\]/';
