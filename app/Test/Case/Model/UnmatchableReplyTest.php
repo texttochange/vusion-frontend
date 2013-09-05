@@ -117,11 +117,12 @@ class UnmatchableReplyTestCase extends CakeTestCase
                 array(
                     1 => 'country', 
                     2 => 'is', 
-                    3 => '256'),
+                    3 => 'Uganda'),
                 )
-            ); 
+            );
+        $countryPrefixes = array('Uganda' => 256);
         $this->assertEqual(
-            $this->UnmatchableReply->fromFilterToQueryConditions($filter),
+            $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes),
             array('participant-phone' => new MongoRegex('/^(\\+)?256/'))
             );
     }

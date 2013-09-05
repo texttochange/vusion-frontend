@@ -1065,7 +1065,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
     public function testGetFilterParameterIndex()
     {
-        $exprectedTags = array('Geek');
+        $exprectedTags = array('Geek', 'Hipster');
         $exprectedLabels = array('gender:male');
 
         $this->Participant->create();

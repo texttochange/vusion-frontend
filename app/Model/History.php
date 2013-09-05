@@ -137,7 +137,6 @@ class History extends MongoModel
                     ));
             }
             $query['order'] = false;
-            
             return $query;
         } elseif ($state === 'after') {
             foreach (array(0, $this->alias) as $key) {
@@ -153,6 +152,18 @@ class History extends MongoModel
             return false;
         }
     }    
+
+    
+    ## TODO: quick and dirty hot fix to avoid the timeout, indeed the conditions are making 
+    ## the count very long. Would be better to have a temporary solution
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+           return $this->find('count', array('conditions' => $conditions));
+        } catch (MongoCursorTimeoutException $e) {
+          return $this->find('count');
+        }
+    }
 
 
     public function _findScriptFilter($state, $query, $results = array())
