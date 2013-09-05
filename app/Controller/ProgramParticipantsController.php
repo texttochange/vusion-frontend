@@ -138,51 +138,32 @@ class ProgramParticipantsController extends AppController
     public function massTag()
     {       
         $programUrl = $this->params['program'];
-        if ($this->request->is('get')){            
-            $conditions = $this->_getConditions();
-            
+        $conditions = $this->_getConditions();
+        
+        if ($this->request->is('get')){
             if(!$conditions){
                 $conditions = array();
-            }  
-            
-            if($this->Participant->addMassTags($this->params['url']['tag'], $conditions)){
-                
+            }
+            if($this->Participant->addMassTags($this->params['url']['tag'], $conditions)){                
                 $this->Session->setFlash(__('The MassTag has been added successfully.'),
                     'default',
                     array('class'=>'message success'));
-                if (isset($this->viewVars['urlParams'])) {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index',
-                        '?' => $this->viewVars['urlParams']));
-                    
-                } else {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index'));
-                }
-                
             } else{                
                 $this->Session->setFlash(__('The MassTag'.$tag.' could not be added successfully.'), 
-                        'default',
-                        array('class' => "message failure"));
-                if (isset($this->viewVars['urlParams'])) {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index',
-                        '?' => $this->viewVars['urlParams']));
-                    
-                } else {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index'));
-                }                
+                	'default',
+                	array('class' => 'message failure'));                            
             }           
-        } 
+        }
+        
+        $redirectUrl = array(  
+        	'program' => $programUrl,
+        	'controller' => 'programParticipants',
+        	'action' => 'index'); 
+        if (isset($this->viewVars['urlParams'])) {
+        	$redirectUrl['?'] = $this->viewVars['urlParams'];
+        } else {
+        	$this->redirect($redirectUrl);
+        }
     }
     
     
@@ -202,7 +183,7 @@ class ProgramParticipantsController extends AppController
             } else{                
                 $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
                     'default',
-                    array('class' => "message failure"));                                
+                    array('class' => 'message failure'));                                
             }
         } 
         
