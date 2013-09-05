@@ -1206,7 +1206,7 @@ width: 186px;
 
 .program-body .ttc-link {
     font-weight: normal;
-    font-size: 14px;
+    
     color: #003d4c;
 }
 
@@ -1217,3 +1217,6 @@ width: 186px;
 	text-align:center;
 }
 
+#masstag-tags{
+	margin-bottom: 12px;	
+}
