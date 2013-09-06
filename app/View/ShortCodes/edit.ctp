@@ -6,10 +6,12 @@
 	<?php
 	echo $this->Html->tag('label',__('Country'));
 	echo "<br />";
-	echo $this->Form->select('country', $countryOptions, array('id'=> 'country'));
-	$this->Js->get('document')->event('ready','$("#country").val('.$oldPrefix.')');
-	$this->Js->get('#country')->event('change', '	       
-	    $("#international-prefix").val($("#country option:selected").val());
+	echo $this->Form->select('country', $countries, array('id'=> 'country'));
+	$this->Js->set('countryOptions', $countryOptions);
+	$this->Js->get('#country')->event('change',
+		'var country = $("#country :selected").val();
+		var internationalPrefix = window.app.countryOptions[country];
+		$("#international-prefix").val(internationalPrefix);
 	    ');
 	?>
 	</div>

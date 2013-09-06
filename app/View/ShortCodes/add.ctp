@@ -7,8 +7,11 @@
 	echo $this->Html->tag('label',__('Country'));
 	echo "<br />";
 	echo $this->Form->select('country', $countries, array('id'=> 'country'));
+	$this->Js->set('countryOptions', $countryOptions);
 	$this->Js->get('#country')->event('change',
-		'$("#international-prefix").val($("#country :selected").val());
+		'var country = $("#country :selected").val();
+		var internationalPrefix = window.app.countryOptions[country];
+		$("#international-prefix").val(internationalPrefix);
 	    ');
 	?>
 	</div>
