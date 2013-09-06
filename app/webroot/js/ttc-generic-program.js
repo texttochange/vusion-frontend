@@ -112,13 +112,19 @@ function handleResponseValidationErrors(validationErrors){
            case 'subcondition-parameter':
                style = 'left:-200px';
                break;
+           case 'content':
+               errorClass = "ttc-textarea-validation-error dialogue";
+               break;
+           case 'unmatching-feedback-content':
+               errorClass = "ttc-textarea-validation-error dialogue";
+               break;
            default:
                if (dynamicForm[item]['type'] == 'list') {
                    style = 'left:20px;top:-76px';
                    $('[name="'+error['name']+'"] > button').on('click', function() {hideValidationLabel(error['name']);});
                }
            }
-           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style, error['name']);
+           errorMessages[error['name']] = wrapErrorMessageInClass(error['value'], errorClass, style, null);
            if (dynamicForm[item]['type'] != 'list') {
                $('[name="'+error['name']+'"]').on('click', function() {hideValidationLabel(error['name']);});
            }
@@ -335,7 +341,7 @@ function activeForm(){
             uniqueDialogueName: true,
             messages:{
                 required: wrapErrorMessage(localized_errors.validation_required_error),
-                //uniqueDialogueName: WrapErrorMessage(localized_errors.validation_unique_dialogue_name),
+                uniqueDialogueName: wrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
     });

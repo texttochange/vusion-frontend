@@ -419,4 +419,70 @@ class UnattachedMessageTestCase extends CakeTestCase
     }
 
 
+    public function testSave_ok_dynamicContent()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
+        $unattachedMessage = array(
+            'name' => 'hello',
+            'send-to-type'=> 'all', 
+            'content' => 'There is a an [participant.name] here.',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => $date->format('d/m/Y H:i'),
+            'created-by' => 1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $this->UnattachedMessage->save($unattachedMessage);
+        $this->assertEquals(1,$this->UnattachedMessage->find('count'));
+        
+        $unattachedMessage02 = array(
+            'name' => 'weather',
+            'send-to-type'=> 'all', 
+            'content' => 'The weather today is [contentVariable.program.weather].',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => $date->format('d/m/Y H:i'),
+            'created-by' => 1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $this->UnattachedMessage->save($unattachedMessage02);
+        $this->assertEquals(2,$this->UnattachedMessage->find('count'));
+    }
+
+
+    public function testSave_fail_dynamicContent()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $date = new DateTime('tomorrow'); 
+        $date->modify("+4 hour");
+        $unattachedMessage = array(
+            'name' => 'hello',
+            'send-to-type'=> 'all', 
+            'content' => 'There is a an [shoe.box] here.',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => $date->format('d/m/Y H:i'),
+            'created-by' => 1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
+        $this->assertEquals(
+            "To be used as dynamic content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->UnattachedMessage->validationErrors['content'][0]);
+        
+        $unattachedMessage['content'] = "Hello [participant.gender.name]";
+        $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
+        $this->assertEquals(
+            "To be used as dynamic concent, participant only accept one key.",
+            $this->UnattachedMessage->validationErrors['content'][0]);
+        
+        $unattachedMessage['content'] = "Hello [contentVariable.kampala.pork.male]";
+        $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
+        $this->assertEquals(
+            "To be used as dynamic concent, contentVariable only accept max two keys.",
+            $this->UnattachedMessage->validationErrors['content'][0]);
+    }
+
+
 }

@@ -125,7 +125,11 @@ class Action extends VirtualModel
             'notForbiddenApostrophe' => array(
                 'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
             ),
         'proportional-tags' => array(
             'requiredConditional' => array (
@@ -341,6 +345,36 @@ class Action extends VirtualModel
             return array(
                 'subcondition-parameter' => array(
                     $operators[$subcondition['subcondition-operator']]['message']));
+        }
+        return true;
+    }
+    
+    
+    public function validContentVariable($field, $data)
+    {
+        if (isset($data[$field])) {
+            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            $allowed = array("domain", "key1", "key2", "otherkey");
+            foreach($matches as $match) {
+                $match = array_intersect_key($match, array_flip($allowed));
+                foreach ($match as $key=>$value) {
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_ALLOWED_REGEX, $value)) {
+                        return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    }
+                }
+                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
+                    return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                }
+                if ($match['domain'] == 'participant') {
+                    if (isset($match['key2'])) {
+                        return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                    }
+                } else if ($match['domain'] == 'contentVariable') {
+                    if (isset($match['otherkey'])) {
+                        return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                    }
+                } 
+            }
         }
         return true;
     }
