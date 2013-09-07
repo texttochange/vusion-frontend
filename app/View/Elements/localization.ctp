@@ -139,7 +139,7 @@ var localized_labels = {
     "proportional-tags": "<?php echo __('Proportional Tags')?>",
     "proportional-tag": "<?php echo __('Proportional Tag')?>",
     "message-forwarding": "<?php echo __('Forward')?>",
-    "url": "<?php echo __('URL')?>",
+    "forward-url": "<?php echo __('Forward URL')?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
     "is-not": "<?php echo __('is not')?>",

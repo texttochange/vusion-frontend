@@ -197,70 +197,95 @@ class ActionTestCase extends CakeTestCase
     public function testValidateAction_ok_forwarding() {
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php');
+            'forward-url' => 'http://partner.com/receive_mo.php');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertTrue($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
         
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]');
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[FROM]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
-        
+
+         $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/index.php?login=login&message=[MESSAGE]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[FROM]');
+            'forward-url' => 'http://partner.com/index.php?login=login&password=password&message=[MESSAGE]&other=other');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
     }
+
     
     public function testValidateAction_fail_forwarding_format() {
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'partner.com/receive_mo.php');
+            'forward-url' => 'partner.com/receive_mo.php');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The forward url is not valid.',
+            $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]?origin=[TO]');
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]?origin=[TO]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The forward url is not valid.',
+            $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
-        $this->assertFalse($this->Action->validates());     
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The forward url is not valid.',
+            $this->Action->validationErrors['forward-url'][0]);
     }
 
 
     public function testValidateAction_fail_forwarding_replace() {        
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php?message=[Message]');
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[Message]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
             'The replacement [Message] is not allowed.',
-            $this->Action->validationErrors['url'][0]);
+            $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
             'type-action' => 'message-forwarding',
-            'url' => 'http://partner.com/receive_mo.php?message=[content]');
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[content]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
             'The replacement [content] is not allowed.',
-            $this->Action->validationErrors['url'][0]);
+            $this->Action->validationErrors['forward-url'][0]);
     }
 
     

@@ -89,7 +89,7 @@ class Action extends VirtualModel
                         'reset' => array(),
                         'feedback' => array('content'),
                         'proportional-tagging' => array('proportional-tags'),
-                        'message-forwarding' => array('url'))),
+                        'message-forwarding' => array('forward-url'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -139,17 +139,22 @@ class Action extends VirtualModel
                 'message' => 'noMessage',
                 ),
             ),
-        'url' => array(            
+        'forward-url' => array(            
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'message-forwarding'),
                 'message' => 'The forwarding field require an url field.',
                 ),
             'validUrlFormat' => array(
-                'rule' => array('regex', VusionConst::FORWARDING_URL_REGEX),
-                'message' => VusionConst::FORWARDING_URL_FAIL_MESSAGE,
+                'rule' => array('regex', VusionConst::FORWARD_URL_REGEX),
+                'message' => VusionConst::FORWARD_URL_FAIL_MESSAGE,
                 ),
             'validUrlReplacement' => array(
-                'rule' => 'validUrlReplacement',
+                'rule' => array(
+                    'validUrlReplacement', array(
+                        '[MESSAGE]',
+                        '[FROM]',
+                        '[TO]',
+                        '[PROGRAM]')),
                 'message' => 'noMessage',
                 ),
             )
@@ -361,13 +366,8 @@ class Action extends VirtualModel
         return true;
     }
 
-    var $urlReplacement = array(
-        '[MESSAGE]',
-        '[FROM]',
-        '[TO]',
-        '[PROGRAM]');
 
-    public function validUrlReplacement($field, $data) 
+    public function validUrlReplacement($field, $data, $urlReplacement) 
     {
         if (!isset($data[$field])) {
             return true;
@@ -375,7 +375,7 @@ class Action extends VirtualModel
         $matches = array();
         preg_match('/\[[-\+&;%@.\w_]*\]/', $data[$field], $matches);
         foreach ($matches as $match) {
-            if (!in_array($match, $this->urlReplacement)) {
+            if (!in_array($match, $urlReplacement)) {
                 return "The replacement $match is not allowed.";
             }
         }
