@@ -53,7 +53,6 @@
 			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
 			    <th class="direction"><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
 			    <th class="status"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
-			    <th class="failure-reason"><?php echo $this->Paginator->sort('failure-reason', __('Failure Reason'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
 			    <th class="details2"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
 			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
 			</tr>
@@ -69,9 +68,31 @@
 	        <tr>
 	            <td class="phone"><?php echo $history['History']['participant-phone']; ?></td>
 	            <td class="direction"><?php echo ucfirst($history['History']['message-direction']); ?></td>
-	            <td class="status"><?php if (isset($history['History']['message-status'])) echo $history['History']['message-status']; ?></td>
-	            <td class="failure-reason"><?php if (isset($history['History']['failure-reason'])) echo $history['History']['failure-reason']; ?></td>
-	            <td class="details2"><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+	            <?php
+	            $status = "&nbsp;";
+	            $title = null;
+	            if (isset($history['History']['message-status'])) { 
+	                $status = $history['History']['message-status'];
+	                if ($status == 'failed') {
+	                    $title = $history['History']['failure-reason'];
+	                } else if ($status=='forwarded') {
+	                    $tmp=array();
+	                    foreach ($history['History']['forwards'] as $forward) {
+	                        $timestamp = $this->Time->format('d/m/Y H:i:s', $forward['timestamp']);
+	                        if ($forward['status'] == 'failed') {
+	                            $tmp[] = __("forward is %s reason %s at %s by %s", $forward['status'], $forward['failure-reason'], $timestamp, $forward['to-addr']);
+	                        } else {
+	                            $tmp[] = __("forward is %s at %s by %s", $forward['status'], $timestamp, $forward['to-addr']);
+	                        }
+	                    }
+	                    $title = implode("&#013;", $tmp);
+	                } else if ($status=='received') {
+	                    $status = "&nbsp;";
+	                }
+	            }
+	            echo '<td class="status" '. (isset($title)? 'title="' . $title . '"' : '') . '>'. $status.'</td>';
+	            ?>
+	            <td class="details"><?php echo $history['History']['message-content']; ?>&nbsp;</td>
 	            <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
 	        </tr>
 	        <?php endforeach; ?>

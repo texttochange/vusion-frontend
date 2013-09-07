@@ -31,6 +31,9 @@ class VusionConst
 
     const ATTIME_REGEX = '/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
     const ATTIME_FAIL_MESSAGE = 'The at-time is not valid.';
+
+    const FORWARD_URL_REGEX = '/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))(&[-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))*)?)?$/';
+    const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
     
     const CONTENT_VARIABLE_KEY_REGEX = '/^[a-z0-9A-Z\s]+$/';
     const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
@@ -48,5 +51,4 @@ class VusionConst
     
     const CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL = 'To be used as dynamic concent, participant only accept one key.';
     const CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used as dynamic concent, contentVariable only accept max two keys.';
-
 }

@@ -182,8 +182,19 @@
                  '$("[name*=\'credit-from-date\']").datepicker();
                  $("[name*=\'credit-to-date\']").datepicker();'
                  );
-            echo '</div></div>';
+            echo '</div>';
         ?>
+        <div>
+        <?php
+            echo $this->Form->checkbox(
+                'sms-forwarding-allowed',
+                array(
+                    'value' => 'full',
+                    'hiddenField' => 'none'));
+            echo $this->Html->tag('label',__('Allow SMS Forwarding.'));
+        ?>
+        </div>
+        </div>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>
   </div>

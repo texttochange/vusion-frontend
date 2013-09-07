@@ -44,7 +44,8 @@ class ProgramSetting extends MongoModel
         'credit-type',
         'credit-number',
         'credit-from-date',
-        'credit-to-date'
+        'credit-to-date',
+        'sms-forwarding-allowed',
         );
 
     public $validateSettings = array(
@@ -97,7 +98,14 @@ class ProgramSetting extends MongoModel
                 'message' => 'This to date has to be after the from date.',
                 'required' => false,
                 ),
-            ),   
+            ),
+        'sms-forwarding-allowed' => array(
+            'validateValue' => array(
+                'rule' => array('inList', array('none', 'full')),
+                'message' => 'The sms forwarding value is not valid.',
+                'required' => true,
+                )
+            )
         );
 
 
@@ -137,7 +145,7 @@ class ProgramSetting extends MongoModel
                 and $this->data['ProgramSetting']['value'] == '1') {
             $this->data['ProgramSetting']['value'] = 'prioritized';
         }
-    
+
     }
 
     
@@ -272,6 +280,11 @@ class ProgramSetting extends MongoModel
         }
         if (isset($settings['credit-to-date'])) {
             $settings['credit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-to-date']);
+        }
+        if (!isset($settings['sms-forwarding-allowed'])) {
+            $settings['sms-forwarding-allowed'] = 'full';
+        } else if ($settings['sms-forwarding-allowed'] == '0') {
+            $settings['sms-forwarding-allowed'] = 'none';   
         }
         return $settings;
     }

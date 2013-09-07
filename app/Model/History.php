@@ -295,7 +295,9 @@ class History extends MongoModel
         'failed'=>'failed',
         'delivered'=>'delivered',
         'pending'=>'pending',
-        'ack' => 'ack'
+        'ack' => 'ack',
+        'forwarded' => 'forwarded',
+        'received' => 'received'
         );
 
     
