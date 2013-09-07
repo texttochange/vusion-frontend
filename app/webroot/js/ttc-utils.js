@@ -395,6 +395,7 @@ function generateExportDialogue(obj) {
         });
 } 
 
+
 function generateMassTagDialogue(obj){
 	var url = $(obj).attr("url") + window.location.search;
 	
@@ -414,18 +415,55 @@ function generateMassTagDialogue(obj){
 	});
 }
 
+
 function submitMassTag(){	
 	var tag = $('[name*="tag"]').val();	
 	var url = $('#masstag-dialogue').find('form').attr('url');
-	if(url.contains('?')){
+	if(url.indexOf('?') != -1){
 		window.location= url+"&tag="+tag;
 	}else{
 		window.location= url+"?tag="+tag;
 	}		
 }
-          
+
+
+function generateMassUntagDialogue(obj){
+	var url = $(obj).attr("url") + window.location.search;
+	
+	var dialog = $('<div id="massuntag-dialogue" style="display:none">'+
+		'<form name="formUntag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+		'<input type="text" name="untag" id="masstag-tags">'+
+		'<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
+		'<input type="submit" value="Untag" id="clicky">'+
+		'</form>'+
+		'</div>').appendTo('body');
+	dialog.dialog({
+			title: localized_actions['mass_untag'], 
+			close:function(event, ui){
+			dialog.remove(); 
+			},
+			model: true
+	});
+}
+
+
+function submitMassUntag(){	
+	var tag = $('[name*="untag"]').val();	
+	var url = $('#massuntag-dialogue').find('form').attr('url');
+	var untagConfirm = confirm("Do you want to delete this tag?");
+	if (untagConfirm == true)
+	{
+		if(url.indexOf('?') != -1){
+			window.location= url+"&tag="+tag;
+		}else{
+			window.location= url+"?tag="+tag;
+		}
+	}	
+}
+
+
 function alphanumeric() {
-	var tagRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');	
+	var tagRegex = new RegExp('^[a-zA-Z0-9]+((\\s)[a-zA-Z0-9]+)*$');	
 	var tag = $('#masstag-tags').val();
 	if(tag.match(tagRegex)){  				
 		return true;  
