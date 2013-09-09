@@ -100,12 +100,12 @@ class ShortCodesController extends AppController
     protected function setOptions()
     {
     	$countries = $this->PhoneNumber->getCountries();
-        $countryOptions = $this->PhoneNumber->getPrefixesByCountries();
+        $prefixesByCountriesOptions = $this->PhoneNumber->getPrefixesByCountries();
         $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
         $maxCharacterPerSmsOptions = array_combine(
             $this->ShortCode->maxCharacterPerSmsOptions, 
             $this->ShortCode->maxCharacterPerSmsOptions);
-        $this->set(compact('errorTemplateOptions', 'countryOptions', 'maxCharacterPerSmsOptions', 'countries'));
+        $this->set(compact('errorTemplateOptions', 'prefixesByCountriesOptions', 'maxCharacterPerSmsOptions', 'countries'));
     }
     
     

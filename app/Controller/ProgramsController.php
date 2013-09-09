@@ -196,7 +196,8 @@ class ProgramsController extends AppController
         $this->ProgramPaginator->settings['limit'] = 10;
         $programs = $this->ProgramPaginator->paginate($programs);
         
-        $this->set(compact('programs', 'isProgramEdit'));
+        $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
+        $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
     }
    
   

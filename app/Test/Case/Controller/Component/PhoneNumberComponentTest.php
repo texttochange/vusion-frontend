@@ -42,6 +42,7 @@ class PhoneNumberComponentTest extends CakeTestCase {
     {
         $countriesPrefixes = $this->PhoneNumberComponent->getCountriesByPrefixes();
         $this->assertEqual($countriesPrefixes['33'], 'France');
+        $this->assertEqual($countriesPrefixes['1 242'], 'Bahamas');
     }
 
     

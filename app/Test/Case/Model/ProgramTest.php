@@ -169,7 +169,7 @@ class ProgramTestCase extends CakeTestCase
     
     public function testMatchProgramByShortcodeAndCountry()
     {
-        $program['Program'] = array(
+        $programM4H['Program'] = array(
             'id' => 3,
             'name' => 'M4h',
             'url' => 'm4h',
@@ -179,9 +179,9 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->Program->create();
-        $savedProgram = $this->Program->save($program);
+        $savedProgramM4H = $this->Program->save($programM4H);
         
-        $program1['Program'] = array(
+        $programTester['Program'] = array(
             'id' => 4,
             'name' => 'tester',
             'url' => 'tester',
@@ -191,49 +191,63 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->Program->create();
-        $savedProgram1 = $this->Program->save($program1);
+        $savedProgramTester = $this->Program->save($programTester);
         
         $codes = array(
             array(
                 'shortcode' => '8181',
                 'international-prefix' => '256',
                 'country' => 'uganda',
-                'supported-internationally' => "0",
-                'support-customized-id' => "1"
+                'supported-internationally' => '0',
+                'support-customized-id' => '1'
                 ),
             array(
                 'shortcode' => '8282',
                 'international-prefix' => '256',
                 'country' => 'uganda',
-                'supported-internationally' => "0",
-                'support-customized-id' => "1"
+                'supported-internationally' => '0',
+                'support-customized-id' => '1'
                 )
             );
         
-        $this->ProgramSetting = new ProgramSetting($program['Program']['database']);
-        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSettingM4H = new ProgramSetting($programM4H['Program']['database']);
+        $this->ProgramSettingM4H->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSettingM4H->saveProgramSetting('shortcode', '256-8282');
         
-        $this->ProgramSetting = new ProgramSetting($program1['Program']['database']);
-        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        $this->ProgramSetting->saveProgramSetting('shortcode', '8181');
-        
+        $this->ProgramSettingTester = new ProgramSetting($programTester['Program']['database']);
+        $this->ProgramSettingTester->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSettingTester->saveProgramSetting('shortcode', '256-8181');
+
+        //Test simple condition        
         $conditions = array('shortcode' => '8282');
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgram, $conditions, $codes);
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
         $this->assertEquals($result[0]['Program']['name'], 'M4h');
-        
-        $conditions1 = array(
+        $this->assertEquals(1, count($result));        
+
+        //Test Or condtions
+        $conditions = array(
+            '$or' => array(
+                array('shortcode' => '8234'),
+                array('shortcode' => '8181')
+                )
+            );
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
+        $this->assertEquals(1, count($result));
+
+        //Test And conditions
+        $conditions = array(
             '$and' => array(
                 array('shortcode' => '8181'),
                 array('country' => 'uganda')
                 )
             );
-        
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgram1, $conditions1, $codes);
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramTester, $conditions, $codes);
         $this->assertEquals($result[0]['Program']['name'], 'tester');
         $this->assertEquals(1, count($result));
-        $this->ProgramSetting->deleteAll(true, false);
         
+        //Clear data in program settings
+        $this->ProgramSettingM4H->deleteAll(true, false);
+        $this->ProgramSettingTester->deleteAll(true, false);
     }
 
 

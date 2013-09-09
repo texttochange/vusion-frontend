@@ -29,7 +29,7 @@
             echo $this->Html->tag('label',__('Shortcode'));    
             foreach($shortcodes as $shortcode) {
                 if ($shortcode['ShortCode']['supported-internationally']==0) {
-                    $countyShortCode = trim($shortcode['ShortCode']['country'])." - ".$shortcode['ShortCode']['shortcode'];
+                    $countyShortCode = trim($shortcode['ShortCode']['country'])."-".$shortcode['ShortCode']['shortcode'];
                     $prefixShortCode = $shortcode['ShortCode']['international-prefix']."-".$shortcode['ShortCode']['shortcode'];
                 } else {
                     $countyShortCode = $shortcode['ShortCode']['shortcode'];
