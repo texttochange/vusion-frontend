@@ -88,7 +88,7 @@ class ProgramPaginatorComponent extends Component
 
         if (isset($shortcode[0]['ProgramSetting']['value'])) {
             $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-            $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
+            $programData['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];    
         }
 
         if ($this->params['ext']!='json') {
@@ -97,7 +97,7 @@ class ProgramPaginatorComponent extends Component
                 'shortcode' => (isset($code)) ? $code : array()
                 );
         }
-
+        
         return $programDetails;
     }
     

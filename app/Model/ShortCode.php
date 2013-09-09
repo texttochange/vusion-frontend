@@ -9,7 +9,7 @@ class ShortCode extends MongoModel
     var $useDbConfig = 'mongo';
     var $useTable    = 'shortcodes';
 
-    var $localPrefixedShortCodePattern = '/^[0-9]+-[0-9]+/';
+    var $localPrefixedShortCodePattern = '/^[ 0-9]+-[0-9]+/';
     var $internationalShortCodePattern = '/^\+[0-9]+/';
     var $maxCharacterPerSmsOptions = array(70, 140, 160);
     

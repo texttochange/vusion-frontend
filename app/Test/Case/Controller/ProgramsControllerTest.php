@@ -44,6 +44,12 @@ class ProgramsControllerTestCase extends ControllerTestCase
     protected function dropData()
     {
         $this->ShortCode->deleteAll(true, false);
+        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
+        $this->ProgramSettingTest->deleteAll(true, false);  
+        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
+        $this->ProgramSettingM6H->deleteAll(true, false);
+        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
+        $this->ProgramSettingTrial->deleteAll(true, false);
     }
 
     
@@ -83,24 +89,24 @@ class ProgramsControllerTestCase extends ControllerTestCase
     {
         $shortcode1 = array(
                 'country' => 'uganda',
-                'shortcode' => 8282,
-                'international-prefix' => 256
+                'shortcode' => '8282',
+                'international-prefix' => '256'
                 );        
         $this->ShortCode->create();
         $this->ShortCode->save($shortcode1);
         
         $shortcode2 = array(
                 'country' => 'uganda',
-                'shortcode' => 8181,
-                'international-prefix' => 256
+                'shortcode' => '8181',
+                'international-prefix' => '256'
                 );
         $this->ShortCode->create();
         $this->ShortCode->save($shortcode2);
         
         $shortcode3 = array(
                 'country' => 'kenya',
-                'shortcode' => 21222,
-                'international-prefix' => 254
+                'shortcode' => '21222',
+                'international-prefix' => '254'
                 );
         $this->ShortCode->create();
         $this->ShortCode->save($shortcode3);
@@ -158,34 +164,23 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
     }
-    
+ 
     
     public function testIndex_filter()
     {
         $this->_saveShortcodesInMongoDatabase();
         
-        $Programs = $this->mockProgramAccess();                
-        $this->testAction('/programs/index');
+        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
+        $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
-        sort($this->vars['programs']);
-
-        $program1 = $this->vars['programs'][0];
-        $db1      = $this->vars['programs'][0]['Program']['database'];
-        $this->ProgramSetting = new ProgramSetting(array('database' => $db1));
-        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-        $this->ProgramSetting->saveProgramSetting('shortcode','256-8282');
+        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
+        $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Daresalaam');
+        $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8181');
         
-        $program2 = $this->vars['programs'][1];
-        $db2      = $this->vars['programs'][1]['Program']['database'];
-        $this->ProgramSetting = new ProgramSetting(array('database' => $db2));
-        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Daresalaam');
-        $this->ProgramSetting->saveProgramSetting('shortcode','256-8181');
-        
-        $program3 = $this->vars['programs'][2];
-        $db3      = $this->vars['programs'][2]['Program']['database'];
-        $this->ProgramSetting = new ProgramSetting(array('database' => $db3));
-        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-        $this->ProgramSetting->saveProgramSetting('shortcode','254-21222');
+        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
+        $this->ProgramSettingTrial->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSettingTrial->saveProgramSetting('shortcode','254-21222');
         
         # filter by program name only
         $this->mockProgramAccess();
@@ -235,8 +230,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();        
         $this->testAction('/programs/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=Uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=21222');
         $this->assertEquals(3, count($this->vars['programs']));
-        
-        $this->ProgramSetting->deleteAll(true, false);
         
     }
 

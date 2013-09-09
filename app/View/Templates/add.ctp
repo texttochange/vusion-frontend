@@ -2,7 +2,7 @@
     <h3><?php echo __('Add Template'); ?></h3>
     <?php echo $this->Form->create('Template'); ?>
     <fieldset>
-       <?php echo $this->Form->input(__('name')); ?>
+       <?php echo $this->Form->input('name', array('label' => __('Name'))); ?>
        <div class="input select required <?php if ($this->Form->isFieldError('type-template')) {echo "error";}?>">
        <?php 
        echo $this->Form->label(__('Template type'));
@@ -14,7 +14,7 @@
        }
        ?>
        </div>
-       <?php echo $this->Form->input(__('template'), array('rows'=>3)); ?>
+       <?php echo $this->Form->input('template', array('rows'=>3, 'label' => __('template'))); ?>
        <?php $this->Js->get('document')->event('ready','addContentFormHelp();'); ?>
    </fieldset>
        <?php echo $this->Form->end(__('Submit')); ?>
