@@ -43,11 +43,11 @@
             //pack the shortcodes info to be easy to read in JS
             $this->Js->set('shortcodes', $shortcodeCompact);
             $this->Js->get('#shortcode')->event('change','
-            			var countryShortcode = $("#shortcode option:selected").text();
-            			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-1);
+            			var countryShortcode = $("#shortcode option:selected").val();
+            			var countryInternationalPrefix = countryShortcode.slice(0, countryShortcode.lastIndexOf("-"));
                         var prefixShortcode = $("#shortcode").val();	            			
             			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
-                            $("#international-prefix").val(getCountryCodes(countryname));
+                            $("#international-prefix").val(countryInternationalPrefix);
                         } else {
                             $("#international-prefix").val("all");
                         }
