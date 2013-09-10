@@ -11,7 +11,7 @@
  </condition>
 
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,caketest,webtest,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,caketest,webtest,phpcb"/>
 
  <target name="tools-parallel"
          description="Run tools in parallel">
