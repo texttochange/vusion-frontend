@@ -761,6 +761,11 @@ display: inline;
     width: 140px;
 }
 
+.ttc-table-scrolling-area .participants .optout {
+    background: #A60000;
+    color: white;
+}
+
 /* REQUEST SPECIFIC */
 .ttc-table-scrolling-area .requests .keywords {
     width: 140px;
