@@ -665,10 +665,6 @@ display: inline;
 }
 
 /* TO SORT */
-.source {
-    width: 102px;
-}
-
 .ttc-table-scrolling-area .action-admin {
     width: 522px;
     text-align: center;
@@ -690,24 +686,6 @@ display: inline;
     width: 630px;
 }
 
-.send-to {
-    width: 165px;
-}
-
-/*.content {
-    max-width: 230px;
-    min-width: 220px;
-    width: 230px;
-    word-wrap: break-word;
-}*/
-
-.content-sending {
-    min-width: 224px;
-    max-width: 537px;
-    width: 535px;
-    word-wrap: break-word;
-}
-
 .ttc-table-scrolling-area .prefix {
     width: 255px;
     word-wrap: break-word;
@@ -716,6 +694,27 @@ display: inline;
 .status {
     text-align: left;
 }
+
+/* HOME SPECIFIC */
+.ttc-table-scrolling-area .schedules .date-time {
+    width: 160px;
+}
+
+.ttc-table-scrolling-area .schedules .send-to {
+    width: 160px;
+}
+
+.ttc-table-scrolling-area .schedules .content-sending {
+    min-width: 224px;
+    max-width: 537px;
+    width: 530px;
+    word-wrap: break-word;
+}
+
+.ttc-table-scrolling-area .schedules .source {
+    width: 160px;
+}
+
 
 /* HISTORY SPECIFIC */
 .ttc-table-scrolling-area .histories .direction {
@@ -762,8 +761,8 @@ display: inline;
 }
 
 .ttc-table-scrolling-area .participants .optout {
-    background: #A60000;
-    color: white;
+    background: #CE3F3F;
+    color: #FFA5A5;
 }
 
 /* REQUEST SPECIFIC */

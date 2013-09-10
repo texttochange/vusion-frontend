@@ -16,7 +16,7 @@
 	
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
+	<table class="schedules" cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
 			    <th class="date-time"><?php echo __('At');?></th>			   
