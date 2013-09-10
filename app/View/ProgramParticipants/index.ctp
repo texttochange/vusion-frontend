@@ -98,7 +98,7 @@
 	          </tr>
 	      <?php } else {?>   
 	      <?php foreach ($participants as $participant): ?>
-	      <tr class="<?php echo ((isset($participant['Participant']['last-optout-date']) && $participant['Participant']['last-optout-date']!='') ? 'optout' : '');?>">
+	      <tr class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>">
 	              <td><?php echo $participant['Participant']['phone']; ?></td>
 	              <td><?php 
 	                  if ($participant['Participant']['last-optin-date']) {
