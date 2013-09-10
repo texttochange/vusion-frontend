@@ -80,7 +80,8 @@
 	                    foreach ($history['History']['forwards'] as $forward) {
 	                        $timestamp = $this->Time->format('d/m/Y H:i:s', $forward['timestamp']);
 	                        if ($forward['status'] == 'failed') {
-	                            $tmp[] = __("forward is %s reason %s at %s by %s", $forward['status'], $forward['failure-reason'], $timestamp, $forward['to-addr']);
+	                            $reason = str_replace('"',"'",$forward['failure-reason']);
+	                            $tmp[] = __("forward is %s reason %s at %s by %s", $forward['status'], $reason, $timestamp, $forward['to-addr']);
 	                        } else {
 	                            $tmp[] = __("forward is %s at %s by %s", $forward['status'], $timestamp, $forward['to-addr']);
 	                        }
