@@ -1,3 +1,16 @@
-You can personalize the content of a message with participant's information by using tags.
-Example: [participant.name] will be replace by the name of this participant. 
-If the Tag is not defined, the message will not be send and a error will appear in the program's history.
+You can personalize the content of a message with:
+<ul>
+<li>
+<b>Participant's Label</b><br/>
+The participant label value will used in the message to this participant.
+Example: "Hello <i>[participant.name]</i>" for participant with lable name:Bob, the message "Hello <i>Bob</i>" will be send.
+A second feature allow you to use a sligh different the value of the label, but the exact content of the message that set this label.
+The exact content of the message that set the lable can be optain with adding "_raw" after the label example <i>[participant.name_raw]</i>.
+</li>
+<li>
+<b>Program's Content Variables</b><br/>
+Example: <i>[contentVariable.temperature.mombasa]</i> will be replace by the value of the content variable with keys "temperature.mombasa".
+</li>
+</ul>
+<br/>
+WARNING: a missing label or content variable will result in an error and the message will not send. An error will appear in the program's history.

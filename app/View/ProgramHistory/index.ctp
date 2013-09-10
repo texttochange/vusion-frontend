@@ -73,9 +73,11 @@
 	            $title = null;
 	            if (isset($history['History']['message-status'])) { 
 	                $status = $history['History']['message-status'];
-	                if ($status == 'failed') {
+	                switch ($status) {
+	                case 'failed': 
 	                    $title = $history['History']['failure-reason'];
-	                } else if ($status=='forwarded') {
+	                    break;
+	                case 'forwarded':
 	                    $tmp=array();
 	                    foreach ($history['History']['forwards'] as $forward) {
 	                        $timestamp = $this->Time->format('d/m/Y H:i:s', $forward['timestamp']);
@@ -87,8 +89,13 @@
 	                        }
 	                    }
 	                    $title = implode("&#013;", $tmp);
-	                } else if ($status=='received') {
+	                    break;
+	                case 'received':
 	                    $status = "&nbsp;";
+	                    break;
+	                case 'missing-data':
+	                    $title = $history['History']['missing-data'][0];
+	                    break;
 	                }
 	            }
 	            echo '<td class="status" '. (isset($title)? 'title="' . $title . '"' : '') . '>'. $status.'</td>';

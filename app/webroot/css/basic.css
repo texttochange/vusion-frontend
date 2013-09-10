@@ -722,8 +722,7 @@ display: inline;
 }
 
 .ttc-table-scrolling-area .histories .status {
-    width: 88px;
-    text-align: left;
+    min-width: 96px;
 }
 
 .ttc-table-scrolling-area .histories .details {
