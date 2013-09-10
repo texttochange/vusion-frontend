@@ -18,11 +18,11 @@
   </div>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
+	<table class="content-variables" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th class="direction"><?php echo $this->Paginator->sort(__('keys'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
-			    <th class="responses"><?php echo $this->Paginator->sort(__('value'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="keys"><?php echo $this->Paginator->sort(__('keys'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="value"><?php echo $this->Paginator->sort(__('value'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="actions action"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>

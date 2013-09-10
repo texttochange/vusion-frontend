@@ -47,7 +47,7 @@
 	?>
 	<div class="ttc-table-display-area">
 	<div  class="ttc-table-scrolling-area display-height-size">
-	<table  cellpadding="0" cellspacing="0">
+	<table  class="histories" cellpadding="0" cellspacing="0">
 	    <thead >
 	        <tr>                                                                        
 			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>

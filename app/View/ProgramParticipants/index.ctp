@@ -79,14 +79,14 @@
 	?>	
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
+	<table class="participants" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >
 	            <th class="phone"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="date-time"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="date-time"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="direction"><?php echo $this->Paginator->sort('enrolled', __('Enrolled'), array('url'=> array('program' => $programDetails['url']))); ?></th> 
-	            <th class="status"><?php echo $this->Paginator->sort('tags', __('Tags'), array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="enrolled"><?php echo $this->Paginator->sort('enrolled', __('Enrolled'), array('url'=> array('program' => $programDetails['url']))); ?></th> 
+	            <th class="tags"><?php echo $this->Paginator->sort('tags', __('Tags'), array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="profile"><?php echo $this->Paginator->sort('profile',__('Labels'), array('url'=> array('program' => $programDetails['url']))); ?></th>
 	            <th class="action" class="actions"><?php echo __('Actions');?></th>
 	        </tr>
@@ -99,22 +99,22 @@
 	      <?php } else {?>   
 	      <?php foreach ($participants as $participant): ?>
 	          <tr>
-	              <td class="phone"><?php echo $participant['Participant']['phone']; ?></td>
-	              <td class="date-time"><?php 
+	              <td><?php echo $participant['Participant']['phone']; ?></td>
+	              <td><?php 
 	                  if ($participant['Participant']['last-optin-date']) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 
 	                  } else {
 	                      echo $this->Html->tag('div', ''); 
 	                  }
 	                  ?></td>
-	              <td class="date-time"><?php 
+	              <td><?php 
 	                  if (isset($participant['Participant']['last-optout-date'])) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optout-date']); 
 	                  } else {
 	                      echo $this->Html->tag('div', ''); 
 	                  }
 	              ?></td>  
-	              <td class="direction"><?php
+	              <td><?php
 	                  if (count($participant['Participant']['enrolled']) > 0) {
 	                      foreach ($participant['Participant']['enrolled'] as $enrolled) {
 	                          foreach ($currentProgramData['dialogues'] as $dialogue) {                	         
@@ -131,7 +131,7 @@
 	                      echo $this->Html->tag('div', ''); 
 	                  }
 	              ?></td> 
-	              <td class="status"><?php 
+	              <td><?php 
 	                  if (count($participant['Participant']['tags']) > 0) {
 	                      foreach ($participant['Participant']['tags'] as $tag) {
 	                          echo $this->Html->tag('div', __("%s", $tag));
@@ -140,7 +140,7 @@
 	                      echo $this->Html->tag('div', '');
 	                  }
 	              ?></td>
-	              <td class="profile">
+	              <td>
 	              <?php
 	              if (count($participant['Participant']['profile']) > 0) {
 	              		  foreach ($participant['Participant']['profile'] as $profileItem) {
