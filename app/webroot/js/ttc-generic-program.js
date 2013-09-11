@@ -913,7 +913,7 @@ function supplySubconditionOperatorOptions(elt) {
         $(operatorDropDown).empty();
         $(operatorDropDown).append(new Option(localized_messages['select_one']));
         $.each(operatorOptions, function(operator, details) {
-                var option = new Option(details['label'], operator);
+                var option = new Option(localize_label(operator), operator);
                 if (operatorValue && operator == operatorValue) {
                     $(option).prop('selected', true);
                 }
@@ -1065,7 +1065,7 @@ function configToForm(item, elt, id_prefix, configTree){
         }
     } else if (dynamicForm[item]["type"] == "select") {
         options = [{
-                'value': 'select one...',
+                'value': '',
                 'html': localized_messages.select_one}];
         switch (dynamicForm[item]["data"]) {
         case 'server-dynamic':
