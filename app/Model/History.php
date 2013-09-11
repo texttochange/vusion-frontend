@@ -32,7 +32,7 @@ class History extends MongoModel
     }
 
     
-    // TODO fail to express that a incoming message for dialogue id has 'matching-answer' field
+    // TODO refactor validation to have a more cakelike model description
     function getRequiredFields($object)
     {
         $fields = array(
@@ -297,7 +297,12 @@ class History extends MongoModel
         'pending'=>'pending',
         'ack' => 'ack',
         'forwarded' => 'forwarded',
-        'received' => 'received'
+        'received' => 'received',
+        'no-credit' => 'no-credit',
+        'no-credit-timeframe' => 'no-credit-timeframe',
+        'missing-data' => 'missing-data',
+        'received' => 'received',
+        'forwarded' => 'forward'
         );
 
     

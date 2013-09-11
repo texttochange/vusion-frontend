@@ -68,9 +68,9 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	    <td class="delivery">
     	        <?php 
     	        if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
-    	            echo '<em><b>' .  __("scheduled") . '</b></em>';
+    	            echo '<em><b>' .  __("%s scheduled", $unattachedMessage['UnattachedMessage']['count-schedule']) . '</b></em>';
     	        } else if (isset($unattachedMessage['UnattachedMessage']['count-no-credit'])) {
-    	            echo '<em><b>' .  __("None Send") . '<br/>' . __("No credit") . '</b></em>';
+    	            echo '<em><b>' .  __("no credit") . '<br/>' . __("none sent") . '</b></em>';
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
     	            echo "(";
