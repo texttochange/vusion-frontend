@@ -341,9 +341,9 @@ class UsersController extends AppController
         }
 
         //allow partner messager to
-        $group = $Group->find('first', array('conditions' => array('name' => 'partner messenger')));
+        $group = $Group->find('first', array('conditions' => array('name' => 'partner manager')));
         if ($group == null) {
-            echo "Acl ERROR: cannot find the group partner messenger</br>";
+            echo "Acl ERROR: cannot find the group partner manager</br>";
         } else {
     
             $Group->id = $group['Group']['id'];

@@ -20,16 +20,16 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
 </div>
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table  cellpadding="0" cellspacing="0">
+	<table class="unattached-messages" cellpadding="0" cellspacing="0">
 	<thead>
 	    <tr>
-	        <th class="direction"><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programDetails['url'])));?></th>
+	        <th class="name"><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="send-to"><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="content"><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="delivery" title="<?php echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ?>">
 	        <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="date-time"><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programDetails['url'])));?></th>
-	        <th id="direction-css"><?php echo $this->Paginator->sort('created-by', __('Creator'), array('url'=> array('program' => $programDetails['url'])));?></th>
+	        <th class="creator"><?php echo $this->Paginator->sort('created-by', __('Creator'), array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="action" class="actions"><?php echo __('Actions');?></th>
 	    </tr>
 	    </thead>
@@ -68,9 +68,9 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	    <td class="delivery">
     	        <?php 
     	        if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
-    	            echo '<em><b>' .  __("scheduled") . '</b></em>';
+    	            echo '<em><b>' .  __("%s scheduled", $unattachedMessage['UnattachedMessage']['count-schedule']) . '</b></em>';
     	        } else if (isset($unattachedMessage['UnattachedMessage']['count-no-credit'])) {
-    	            echo '<em><b>' .  __("None Send") . '<br/>' . __("No credit") . '</b></em>';
+    	            echo '<em><b>' .  __("no credit") . '<br/>' . __("none sent") . '</b></em>';
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
     	            echo "(";

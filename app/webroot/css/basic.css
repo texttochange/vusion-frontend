@@ -639,28 +639,8 @@ display: inline;
     min-height: 35px;
 }
 
-/*
-.ttc-data-control li{
-list-style-type: none;
-margin: 0px;
-padding: 0px;
-float: left;
-display: inline-block;
-}
 
-.ttc-data-control ul {
-margin: 0px auto;
-}
-*/
-
-/*.ttc-table-display-area tr td.data-time-css{
-width: 186px;
-}
-
-.ttc-table-display-area tr th.data-time-css{
-width: 186px;
-}*/
-
+/* INDEX TABLE GENERAL */
 .ttc-table-scrolling-area {
     /*height: 343px;*/
     min-height: 250px;
@@ -679,47 +659,12 @@ width: 186px;
     width: 118px;
 }
 
-.ttc-table-scrolling-area .direction {
-    width: 94px;
-}
-
-.ttc-table-scrolling-area .status {
-    width: 88px;
-    text-align: left;
-}
-
-.ttc-table-scrolling-area .failure-reason {
-    width: 153px;
-}
-
-.ttc-table-scrolling-area .details {
-    width: 474px;
-}
-
-.ttc-table-scrolling-area .details2 {
-    width: 320px;
-}
-
-.ttc-table-scrolling-area .date-time {
-    width: 186px;
-    /*min-width: 282px;*/
-}
-
 .ttc-table-scrolling-area .action {
     width: 183px;
     text-align: center;
 }
 
-.ttc-table-scrolling-area .action-requests {
-    width: 202px;
-    text-align: center;
-}
-.ttc-table-scrolling-area .delivery {
-    width: 150px;
-}
-.source {
-    width: 102px;
-}
+/* TO SORT */
 .ttc-table-scrolling-area .action-admin {
     width: 522px;
     text-align: center;
@@ -727,11 +672,6 @@ width: 186px;
 
 .ttc-table-scrolling-area .profile {
     width: 112px;
-    /*word-break: break-all;
-    hyphens: auto;
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;*/
 }
 
 .profile {
@@ -746,24 +686,6 @@ width: 186px;
     width: 630px;
 }
 
-.send-to {
-    width: 165px;
-}
-
-.content {
-    max-width: 230px;
-    min-width: 220px;
-    width: 230px;
-    word-wrap: break-word;
-}
-
-.content-sending {
-    min-width: 224px;
-    max-width: 537px;
-    width: 535px;
-    word-wrap: break-word;
-}
-
 .ttc-table-scrolling-area .prefix {
     width: 255px;
     word-wrap: break-word;
@@ -773,9 +695,132 @@ width: 186px;
     text-align: left;
 }
 
-.phone {
-    width: 118px;
+/* HOME SPECIFIC */
+.ttc-table-scrolling-area .schedules .date-time {
+    width: 160px;
 }
+
+.ttc-table-scrolling-area .schedules .send-to {
+    width: 160px;
+}
+
+.ttc-table-scrolling-area .schedules .content-sending {
+    min-width: 224px;
+    max-width: 537px;
+    width: 530px;
+    word-wrap: break-word;
+}
+
+.ttc-table-scrolling-area .schedules .source {
+    width: 160px;
+}
+
+
+/* HISTORY SPECIFIC */
+.ttc-table-scrolling-area .histories .direction {
+    width: 94px;
+}
+
+.ttc-table-scrolling-area .histories .status {
+    min-width: 96px;
+}
+
+.ttc-table-scrolling-area .histories .details {
+    width: 474px;
+}
+
+.ttc-table-scrolling-area .histories .details2 {
+    width: 520px;
+}
+
+.ttc-table-scrolling-area .histories .date-time {
+    width: 186px;
+}
+
+.ttc-table-scrolling-area .action-requests {
+    width: 202px;
+    text-align: center;
+}
+
+/* PARTICIPANT SPECIFIC */
+.ttc-table-scrolling-area .participants .opt-date {
+    width: 150px;
+}
+
+.ttc-table-scrolling-area .participants .enrolled {
+    width: 140px;
+}
+
+.ttc-table-scrolling-area .participants .tags {
+    width: 140px;
+}
+
+.ttc-table-scrolling-area .participants .profile {
+    width: 140px;
+}
+
+.ttc-table-scrolling-area .participants .optout {
+    background: #CE3F3F;
+    color: #FFA5A5;
+}
+
+/* REQUEST SPECIFIC */
+.ttc-table-scrolling-area .requests .keywords {
+    width: 140px;
+}
+
+.ttc-table-scrolling-area .requests .responses {
+    width: 500px;
+}
+
+.ttc-table-scrolling-area .requests .do {
+    width: 200px;
+}
+
+/* UNATTACHED MESSAGE SPECIFIC */
+.ttc-table-scrolling-area .unattached-messages .name {
+    width: 100px;
+}
+
+.ttc-table-scrolling-area .unattached-messages .sent-to {
+    width: 165px;
+}
+
+.ttc-table-scrolling-area .unattached-messages .content {
+    width: 230px;
+}
+
+.ttc-table-scrolling-area .unattached-messages .delivery {
+    width: 110px;
+}
+
+.ttc-table-scrolling-area .unattached-messages .date-time {
+    width: 150px;
+}
+
+.ttc-table-scrolling-area .unattached-messages .creator {
+    width: 100px;
+}
+
+/* CONTENT VARIABLE SPECIFIC */
+.ttc-table-scrolling-area .content-variables .keys {
+    width: 200px;
+}
+
+.ttc-table-scrolling-area .content-variables .value {
+    width: 700px;
+}
+
+/* PREDEFINE MESSAGE SPECIFIC */
+.ttc-table-scrolling-area .predefined-messages .name {
+    width: 200px;
+}
+
+.ttc-table-scrolling-area .predefined-messages .content {
+    width: 700px;
+}
+
+
 .message-unmatchable {
     width: 593px;
 }
@@ -1206,7 +1251,7 @@ width: 186px;
 
 .program-body .ttc-link {
     font-weight: normal;
-    font-size: 14px;
+    
     color: #003d4c;
 }
 
@@ -1217,3 +1262,6 @@ width: 186px;
 	text-align:center;
 }
 
+#masstag-tags{
+	margin-bottom: 12px;	
+}

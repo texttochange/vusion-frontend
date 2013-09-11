@@ -74,7 +74,8 @@ class Action extends VirtualModel
                         'tagging', 
                         'reset', 
                         'feedback',
-                        'proportional-tagging')),
+                        'proportional-tagging',
+                        'message-forwarding')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -87,7 +88,8 @@ class Action extends VirtualModel
                         'tagging' => array('tag'),
                         'reset' => array(),
                         'feedback' => array('content'),
-                        'proportional-tagging' => array('proportional-tags'))),
+                        'proportional-tagging' => array('proportional-tags'),
+                        'message-forwarding' => array('forward-url'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -125,7 +127,11 @@ class Action extends VirtualModel
             'notForbiddenApostrophe' => array(
                 'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
             ),
         'proportional-tags' => array(
             'requiredConditional' => array (
@@ -136,7 +142,26 @@ class Action extends VirtualModel
                 'rule' => 'validProportionalTags',
                 'message' => 'noMessage',
                 ),
-            )      
+            ),
+        'forward-url' => array(            
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'message-forwarding'),
+                'message' => 'The forwarding field require an url field.',
+                ),
+            'validUrlFormat' => array(
+                'rule' => array('regex', VusionConst::FORWARD_URL_REGEX),
+                'message' => VusionConst::FORWARD_URL_FAIL_MESSAGE,
+                ),
+            'validUrlReplacement' => array(
+                'rule' => array(
+                    'validUrlReplacement', array(
+                        '[MESSAGE]',
+                        '[FROM]',
+                        '[TO]',
+                        '[PROGRAM]')),
+                'message' => 'noMessage',
+                ),
+            )
         );
 
     
@@ -344,6 +369,51 @@ class Action extends VirtualModel
         }
         return true;
     }
+    
+    
+    public function validContentVariable($field, $data)
+    {
+        if (isset($data[$field])) {
+            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            $allowed = array("domain", "key1", "key2", "otherkey");
+            foreach($matches as $match) {
+                $match = array_intersect_key($match, array_flip($allowed));
+                foreach ($match as $key=>$value) {
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_ALLOWED_REGEX, $value)) {
+                        return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    }
+                }
+                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
+                    return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                }
+                if ($match['domain'] == 'participant') {
+                    if (isset($match['key2'])) {
+                        return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                    }
+                } else if ($match['domain'] == 'contentVariable') {
+                    if (isset($match['otherkey'])) {
+                        return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                    }
+                } 
+            }
+        }
+        return true;
+    }
 
+
+    public function validUrlReplacement($field, $data, $urlReplacement) 
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $matches = array();
+        preg_match('/\[[-\+&;%@.\w_]*\]/', $data[$field], $matches);
+        foreach ($matches as $match) {
+            if (!in_array($match, $urlReplacement)) {
+                return "The replacement $match is not allowed.";
+            }
+        }
+        return true;
+    }
 
 }

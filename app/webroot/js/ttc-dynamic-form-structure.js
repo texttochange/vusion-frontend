@@ -307,7 +307,10 @@ var action = {
             {'value': "feedback",
             'subfields': ['content']},
             {'value': 'proportional-tagging',
-            'subfields': ['proportional-tags']}]
+            'subfields': ['proportional-tags']},
+            {'value': 'message-forwarding',
+            'subfields': ['forward-url']}
+        ]
     },
     "tag": {'type': 'text'},
     "enroll": {
@@ -332,5 +335,6 @@ var action = {
         'skip': true,
     },
     "weight": {'type': 'text'},
+    'forward-url': {'type': 'text'}
 }
 $.extend(dynamicForm, action);

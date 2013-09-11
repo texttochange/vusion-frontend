@@ -45,6 +45,44 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['type-action']));
     }
+    
+    
+    public function testValidateAction_fail_feedback_dynamic_content() {
+        $action = array(
+            'type-action' => 'feedback',
+            'content' => 'Hello [shoe.box]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "To be used as dynamic content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->Action->validationErrors['content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['content']));
+        
+        $action['content'] = 'hello [participant.$%name]';
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "To be used as dynamic content, '$%name' can only be composed of letter(s), digit(s) and/or space(s).",
+            $this->Action->validationErrors['content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['content']));
+        
+        $action['content'] = 'hello [contentVariable.name.age.person]';
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "To be used as dynamic concent, contentVariable only accept max two keys.",
+            $this->Action->validationErrors['content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['content']));
+    }
 
    
     public function testValidateAction_fail_delayedEnrolling() {
@@ -174,6 +212,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['subconditions'][0]['subcondition-parameter'][0]);
     }
 
+
     public function testValidateAction_fail_proportionalTagging() {
         $action = array(
             'type-action' => 'proportional-tagging',
@@ -192,4 +231,100 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['proportional-tags'][0]['weight'][0]);
     }
 
+
+    public function testValidateAction_ok_forwarding() {
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertTrue($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[FROM]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+
+         $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/index.php?login=login&message=[MESSAGE]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/index.php?login=login&password=password&message=[MESSAGE]&other=other');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+
+    
+    public function testValidateAction_fail_forwarding_format() {
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'partner.com/receive_mo.php');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The forward url is not valid.',
+            $this->Action->validationErrors['forward-url'][0]);
+        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]?origin=[TO]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The forward url is not valid.',
+            $this->Action->validationErrors['forward-url'][0]);
+        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The forward url is not valid.',
+            $this->Action->validationErrors['forward-url'][0]);
+    }
+
+
+    public function testValidateAction_fail_forwarding_replace() {        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[Message]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The replacement [Message] is not allowed.',
+            $this->Action->validationErrors['forward-url'][0]);
+        
+        $action = array(
+            'type-action' => 'message-forwarding',
+            'forward-url' => 'http://partner.com/receive_mo.php?message=[content]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The replacement [content] is not allowed.',
+            $this->Action->validationErrors['forward-url'][0]);
+    }
+
+    
 } 

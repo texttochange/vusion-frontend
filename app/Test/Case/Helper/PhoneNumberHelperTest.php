@@ -17,17 +17,24 @@ class PhoneNumberHelperTest extends CakeTestCase {
     }
 
 
-    public function testRemoveCountryCodeOfShortcode()
+    public function testReplaceCountryCodeOfShortcode()
     {
-        $countriesPrefixes = array(256 => 'Uganda');
+        $countriesPrefixes = array(
+            '256' => 'Uganda',
+            '1' => 'United States',
+            '1 242' => 'Bahamas');
 
         $this->assertEqual(
             'Uganda-8181',
             $this->PhoneNumberRenderer->replaceCountryCodeOfShortcode('256-8181', $countriesPrefixes));
         
-           $this->assertEqual(
+        $this->assertEqual(
             'Unknown-8181',
             $this->PhoneNumberRenderer->replaceCountryCodeOfShortcode('123-8181', $countriesPrefixes));
+
+        $this->assertEqual(
+            'Bahamas-8181',
+            $this->PhoneNumberRenderer->replaceCountryCodeOfShortcode('1 242-8181', $countriesPrefixes));
     }
 
    

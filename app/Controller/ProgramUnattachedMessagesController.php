@@ -78,7 +78,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $status['count-delivered'] = $countDelivered;
                 $countPending = $this->History->countUnattachedMessages($unattachId, 'pending');
                 $status['count-pending'] = $countPending;
-                $countFailed = $this->History->countUnattachedMessages($unattachId, 'failed');
+                $countFailed = $this->History->countUnattachedMessages($unattachId, array('failed', 'no-credit', 'no-credit-timeframe', 'missing-data'));
                 $status['count-failed'] = $countFailed;
                 $countAck = $this->History->countUnattachedMessages($unattachId, 'ack');
                 $status['count-ack'] = $countAck; 

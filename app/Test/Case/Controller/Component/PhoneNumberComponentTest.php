@@ -30,7 +30,8 @@ class PhoneNumberComponentTest extends CakeTestCase {
     }
 
     
-    public function tearDown() {
+    public function tearDown() 
+    {
         parent::tearDown();
         unset($this->PhoneNumberComponent);
         unset($this->Controller);
@@ -41,6 +42,7 @@ class PhoneNumberComponentTest extends CakeTestCase {
     {
         $countriesPrefixes = $this->PhoneNumberComponent->getCountriesByPrefixes();
         $this->assertEqual($countriesPrefixes['33'], 'France');
+        $this->assertEqual($countriesPrefixes['1 242'], 'Bahamas');
     }
 
     
@@ -51,5 +53,11 @@ class PhoneNumberComponentTest extends CakeTestCase {
     }
 
 
-
+    public function testGetPrefixesByCountries()
+    {
+        $prefixesOfCountries = $this->PhoneNumberComponent->getPrefixesByCountries();
+        $this->assertEqual($prefixesOfCountries['France'], 33);
+    }
+    
+    
 }

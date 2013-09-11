@@ -48,7 +48,8 @@ var localized_actions= {
     filter_operator_suffix: "<?php echo __('of the following rules:')?>",
     filter_operator_any: "<?php echo __('any')?>",
     filter_operator_all: "<?php echo __('all')?>",
-    mass_tag:"<?php echo __('Tag all filtered Participants') ?>"
+    mass_tag:"<?php echo __('Tag participants') ?>",
+    mass_untag:"<?php echo __('Untag participants')?>"
 };
 
 var localized_labels = {
@@ -138,6 +139,8 @@ var localized_labels = {
     "proportional-tagging": "<?php echo __('Proportional Tagging')?>",
     "proportional-tags": "<?php echo __('Proportional Tags')?>",
     "proportional-tag": "<?php echo __('Proportional Tag')?>",
+    "message-forwarding": "<?php echo __('Forward')?>",
+    "forward-url": "<?php echo __('Forward URL')?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
     "is-not": "<?php echo __('is not')?>",
@@ -158,7 +161,5 @@ var localized_labels = {
     "has-keyword-any": "<?php echo __('has keyword any')?>", 
     "matching": "<?php echo __('matching')?>",
     "not-matching": "<?php echo __('not matching')?>", 
-    
-    
 };
 

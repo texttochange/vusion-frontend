@@ -137,7 +137,11 @@ class Interaction extends VirtualModel
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
             ),
         'keyword'=> array(
             'requiredConditional' => array(
@@ -269,6 +273,10 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
                 'message' => 'A reminder-actions field is required.',
                 ),
+            'validValue' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
             ),
         ### Reminder Schedule Subtype
         'reminder-days' => array(
@@ -287,6 +295,21 @@ class Interaction extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule-reminder', 'reminder-offset-time'),
                 'message' => 'A reminder-minutes field is required.',
+                ),
+            ),
+        #type-unmatching-feedback
+        'unmatching-feedback-content' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'type-unmatching-feedback', 'interaction-unmatching-feedback'),
+                'message' => 'Custom unmatching feedback must have content.',
+                ),
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
                 ),
             ),
         # Other Interaction Fields
@@ -309,6 +332,15 @@ class Interaction extends VirtualModel
                 'rule' => array('inList', array(null, 'prioritized')),
                 'message' => 'Prioritized field value is not valid.'
                 )
+            )
+        );
+    
+    public $validateReminderAction = array(
+        'type-action' => array( 
+            'validateActions' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
             )
         );
     
@@ -369,11 +401,51 @@ class Interaction extends VirtualModel
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
             )
         );
+    
+    
+    public function validContentVariable($field, $data)
+    {
+        if (isset($data[$field])) {
+            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            $allowed = array("domain", "key1", "key2", "otherkey");
+            foreach($matches as $match) {
+                $match = array_intersect_key($match, array_flip($allowed));
+                foreach ($match as $key=>$value) {
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_ALLOWED_REGEX, $value)) {
+                        return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    }
+                }
+                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
+                    return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                }
+                if ($match['domain'] == 'participant') {
+                    if (isset($match['key2'])) {
+                        return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                    }
+                } else if ($match['domain'] == 'contentVariable') {
+                    if (isset($match['otherkey'])) {
+                        return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                    }
+                } 
+            }
+        }
+        return true;
+    }
 
-
+/*
+    public function validateReminderActions($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateReminderAction); 
+    }
+    */
+    
     public function validateAnswers($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswer); 
@@ -394,17 +466,19 @@ class Interaction extends VirtualModel
     
     public function validateActions($field, $data)
     {
-        $count = 0;
-        $validationErrors = array();
-        foreach($data[$field] as $action) {
-            $this->Action->set($action);
-            if (!$this->Action->validates()) {
-                $validationErrors[$count] = $this->Action->validationErrors;
+        if (isset($data[$field])) {
+            $count = 0;
+            $validationErrors = array();
+            foreach($data[$field] as $action) {
+                $this->Action->set($action);
+                if (!$this->Action->validates()) {
+                    $validationErrors[$count] = $this->Action->validationErrors;
+                }
+                $count++;
             }
-            $count++;
-        }
-        if ($validationErrors != array()) {
-            return $validationErrors;
+            if ($validationErrors != array()) {
+                return $validationErrors;
+            }
         }
         return true;
     }

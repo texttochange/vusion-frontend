@@ -1,0 +1,3 @@
+The url should look like "http://partner.com/mo.php?program=[FROM]&message=[MESSAGE]". <br/>
+The '[MESSAGE]', '[FROM]', '[TO]' and '[PROGRAM]' are dynamic parameter that will be replace according to the incoming message.
+Any static parameter can be added to the url if necessary by the patner server.
