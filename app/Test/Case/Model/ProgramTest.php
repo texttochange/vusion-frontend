@@ -115,7 +115,7 @@ class ProgramTestCase extends CakeTestCase
     }
 
 
-    public function testSaveProgram_fail()
+    public function testSaveProgram_fail_url_database_format()
     {
         $program = array(
             'id' => 5,
@@ -157,6 +157,30 @@ class ProgramTestCase extends CakeTestCase
             $this->Program->validationErrors['database'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
     }
+
+
+    public function testSaveProgram_fail_url_database_static()
+    {
+        $program = array(
+            'id' => 5,
+            'name' => 'something new',
+            'url' => 'img',
+            'database' => 'vusion',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $this->assertFalse($this->Program->save($program));
+        $this->assertEqual(
+            $this->Program->validationErrors['url'][0], 
+            'This url is not allowed to avoid overwriting a static Vusion url, please choose a different one.');
+        $this->assertEqual(
+            $this->Program->validationErrors['database'][0], 
+            'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.');
+
+    }
+        
 
 
     public function testDeleteProgram()
