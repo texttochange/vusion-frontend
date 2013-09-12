@@ -178,9 +178,7 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEqual(
             $this->Program->validationErrors['database'][0], 
             'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.');
-
     }
-        
 
 
     public function testDeleteProgram()
