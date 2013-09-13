@@ -40,6 +40,10 @@ class Program extends AppModel
                 'rule' => array('custom','/^[a-z0-9]{3,}$/'),
                 'message' => 'Minimum of 3 characters, can only be composed of lowercase letters and digits.'
                 ),
+            'notInList' => array(
+                'rule' => array('notInList', array('test','groups', 'users', 'admin', 'shortcodes', 'templates',  'programs', 'files', 'js', 'css', 'img')),
+                'message' => 'This url is not allowed to avoid overwriting a static Vusion url, please choose a different one.'
+                )
             ),
         'database' => array(
             'notempty' => array(
@@ -55,7 +59,11 @@ class Program extends AppModel
                'rule' => array('custom','/^[a-z0-9]{3,}$/'),
                 'message' => 'Minimum of 3 characters, can only be composed of lowercase letters and digits.'
                 ),
-            )
+           'notInList' => array(
+               'rule' => array('notInList', array('test', 'vusion')),
+               'message' => 'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.'
+               )
+           )
         );
     
     #Filter variables and functions
@@ -89,6 +97,16 @@ class Program extends AppModel
         );
     
     
+    public function notInList($check, $list) {
+
+        $value = array_values($check);
+        if (in_array(strtolower($value[0]), $list)) {
+            return false;
+        }
+        return true;
+    }
+
+
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
