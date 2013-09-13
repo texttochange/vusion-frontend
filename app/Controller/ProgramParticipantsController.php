@@ -159,9 +159,8 @@ class ProgramParticipantsController extends AppController
         	'action' => 'index'); 
         if (isset($this->viewVars['urlParams'])) {
         	$redirectUrl['?'] = $this->viewVars['urlParams'];
-        } else {
-        	$this->redirect($redirectUrl);
         }
+        $this->redirect($redirectUrl);
     }
     
     
