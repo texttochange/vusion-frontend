@@ -93,6 +93,9 @@ class ProgramsController extends AppController
 
     public function index() 
     {
+    	
+        $t = $this->getProgramStats();
+        print_r($t);
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
@@ -178,13 +181,7 @@ class ProgramsController extends AppController
         } else {
             $programs = $programsList;
         }
-
-        if ($this->params['ext'] != 'json') {
-            foreach ($programs as &$program) {
-                $program['Program']['stats'] = $this->Stats->getProgramStats($program['Program']['database']);
-            }
-        }
-
+        
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -378,6 +375,17 @@ class ProgramsController extends AppController
             array('class' => "message failure")
             );
         $this->redirect(array('action' => 'index'));
+    }
+    
+    
+    public function getProgramStats()
+    { 
+    	if(isset($this->params['url']['program'])){
+    		$programUrl = $this->Program->find('first', array('conditions' => array('url'=> $this->params['url']['program'])));
+    		$programStats = $this->Stats->getProgramStats($programUrl['Program']['database']);
+    		$result = array('status' =>'ok', 'programURL' => $programUrl['Program']['url'], 'programStats' => $programStats);
+    		$this->set(compact('result'));
+        }
     }
 
 

@@ -520,3 +520,39 @@ function loadFilterParameterOptions(parameter, url) {
         error: vusionAjaxError
     });
 }
+
+function loadProgramStats(){
+	var  programs = window.app.programs;
+	if(programs != null){
+		var program = {};
+		for(var i = 0; i< programs.length; i++){
+			program = programs[i];
+			var programUrl = program['Program']['url'];
+			$.ajax({
+					type: "GET",
+					dataType: "json",
+					url: "/programs/getProgramStats.json?program="+programUrl,
+					success: function(data){
+						$("#"+data['programURL']+" .ttc-program-stats").empty().append(
+							'<div><span title = Optin/Totalparticipant(s) class = stat>'
+							+data['programStats']['active-participant-count']+'/'
+							+ data['programStats']['participant-count']+
+							'</span> participant(s)</div><div><span title = Total(totalcurrentmonth)message(s) class = stat>'
+							+data['programStats']['history-count']+'('
+							+ data['programStats']['total-current-month-messages-count']+
+							')</span> total message(s)</div><div><span title = Total(currentmonth)received class = stat>'
+							+data['programStats']['all-received-messages-count']+'('
+							+ data['programStats']['current-month-received-messages-count']+
+							')</span> received - <span title = Total(currentmonth)sent class = stat>'
+							+data['programStats']['all-sent-messages-count']+'('
+							+ data['programStats']['current-month-sent-messages-count']+
+							')</span> sent message(s)</div><div><span title = Total(today)schedule(s) class = stat>'
+							+data['programStats']['schedule-count']+'('
+							+ data['programStats']['today-schedule-count']+')</span> schedule(s)</div>')
+					},
+					timeout: 2000,
+					error: vusionAjaxError
+			});
+		}
+    }
+}
