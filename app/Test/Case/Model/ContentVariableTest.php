@@ -92,8 +92,16 @@ class ContentVariableTestCase extends CakeTestCase
             'value' => 'meat'
             );
         $this->ContentVariable->create();
-        $savedMessage = $this->ContentVariable->save($contentVariable);
+        $this->ContentVariable->save($contentVariable);
         
+        $splitOrdercontentVariable = array(
+            'keys' => 'key.new',
+            'value' => 'somethingelse'
+            );
+        $this->ContentVariable->create();
+        $savedMessage = $this->ContentVariable->save($splitOrdercontentVariable);
+        $this->assertTrue(isset($savedMessage['ContentVariable']));
+
         $contentVariable02 = array(
             'keys' => 'new.key',
             'value' => 'new value'
@@ -103,5 +111,23 @@ class ContentVariableTestCase extends CakeTestCase
         $this->assertEquals('This keys pair already exists. Please choose another.',
             $this->ContentVariable->validationErrors['keys'][0]);
     }
+
+
+    public function test_findContentVariableFromKeys()
+    {
+        $contentVariable = array(
+            'keys' => 'new.key',
+            'value' => 'meat'
+            );
+        $this->ContentVariable->create();
+        $this->ContentVariable->save($contentVariable);
+        
+        $foundContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('new', 'key'))));
+        $this->assertEqual('meat', $foundContentVariable[0]['ContentVariable']['value']);
+
+        $foundContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('key', 'new'))));
+        $this->assertEqual(0, count($foundContentVariable));
+    }
+
 
 }

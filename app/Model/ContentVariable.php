@@ -11,7 +11,7 @@ class ContentVariable extends MongoModel
     
     function getModelVersion()
     {
-        return '1';
+        return '2';
     }
     
     
@@ -19,6 +19,7 @@ class ContentVariable extends MongoModel
     {
         return array(
             'keys',
+            'table',
             'value'
             );
     }
@@ -34,6 +35,8 @@ class ContentVariable extends MongoModel
                 'rule' => 'isUnique',
                 'message' => 'This keys pair already exists. Please choose another.'
                 ),
+            ),
+        'table' => array(
             ),
         'value' => array(
             'notempty' => array(
@@ -83,15 +86,16 @@ class ContentVariable extends MongoModel
     
     public function isUnique($check)
     {
-        if ($this->id) {
-            $conditions = array('id'=>array('$ne'=> $this->id),'keys' => $check['keys']);
-        } else {
-            $conditions = array('keys' => $check['keys']);
+        foreach($check['keys'] as &$key) {
+            $key = $key['key'];
         }
-        $result = $this->find('count', array(
-            'conditions' => $conditions
-            ));
-        return $result < 1;
+        if ($this->id) {
+            $conditions = array('id'=>array('$ne'=> $this->id), $check);
+        } else {
+            $conditions = $check;
+        }
+        $result = $this->find('fromKeys', array('conditions' => $conditions));
+        return count($result) < 1;
     }
     
     
@@ -110,4 +114,28 @@ class ContentVariable extends MongoModel
         }
     }
     
+    public  $findMethods = array(
+        'count' => true,
+        'first' => true,
+        'all' => true,
+        'fromKeys' => true,
+        );
+
+
+    public function _findFromKeys($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            $conditions = array();
+            $keys = $query['conditions']['keys'];
+            for($i = 0 ; $i < count($keys) ; $i++) {
+                $conditions['keys.'.$i] = array('key' => $keys[$i]);
+            }
+            $conditions['keys'] = array('$size' => count($keys));
+            $query['conditions'] = $conditions;
+            return $query;
+        } 
+        return $results;
+    }
+
+
 }
