@@ -7,6 +7,11 @@ App::uses('VusionValidation', 'Lib');
 class ValidationHelper 
 {
 
+    public function __construct($model=null){
+        $this->model = $model;
+    }
+    
+
     public function runValidationRules($data, $validationRules)    
     {
         $validationErrors = array();
@@ -19,7 +24,7 @@ class ValidationHelper
                     $func = $rule['rule'];
                     $args = array();
                 }
-                $required = (isset($rule['required'])? $rule['required']: true);
+                $required = (isset($rule['required'])? $rule['requ  ired']: true);
                 $result = false;
                 if ($func == 'required') {
                      if (array_key_exists($field, $data)) {
@@ -33,7 +38,11 @@ class ValidationHelper
                             $result = false;
                         } else {
                             $check = array($field => $data[$field]);
-                            $result = call_user_func_array(array($this, $func), array($check, $args, $data));
+                            if ($this->model != null && method_exists($this->model, $func)) {
+                                $result = call_user_func_array(array($this->model, $func), array($check, $args, $data));
+                            } else {
+                                $result = call_user_func_array(array($this, $func), array($check, $args, $data));
+                            }
                         }
                     }
                 }
@@ -121,6 +130,27 @@ class ValidationHelper
         $gt = $data[$greaterThan];
         if (strcmp($data[$greaterThan], $check) >= 0) {
             return false;
+        }
+        return true;
+    }
+
+    public function notEmpty($check)
+    {
+        $value = array_values($check);
+        if ($value[0]==null) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function listRegex($check, $regex)
+    {
+        $list = array_values($check);
+        foreach ($list[0] as $element) {
+            if (!preg_match($regex[0], $element)) {
+                return false;
+            }
         }
         return true;
     }
