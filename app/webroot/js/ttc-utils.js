@@ -535,7 +535,7 @@ function loadProgramStats(){
 					success: function(data){
 						$("#"+data['programURL']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
 					},
-					timeout: 2000,
+					timeout: 10000,
 					error: vusionAjaxError
 			});
 		}
