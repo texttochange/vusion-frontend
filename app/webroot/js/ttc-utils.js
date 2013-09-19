@@ -552,24 +552,27 @@ function generateHtmlProgramStats(programStats) {
 			'</div>'+
 			'<div>'+
 				'<span title = Total(totalcurrentmonth)message(s) class = stat>'+
-				programStats['history-count']+'('+
+				programStats['history-count']+
+				'('+
 				programStats['total-current-month-messages-count']+')'+
 				'</span> total message(s)'+
 			'</div>'+
 			'<div>'+
 				'<span title = Total(currentmonth)received class = stat>'+
-				programStats['all-received-messages-count']+'('+
+				programStats['all-received-messages-count']+
+				'('+
 				programStats['current-month-received-messages-count']+')'+
 				'</span> received - <span title = Total(currentmonth)sent class = stat>'+
-				programStats['all-sent-messages-count']+'('+
+				programStats['all-sent-messages-count']+
+				'('+
 				programStats['current-month-sent-messages-count']+')'+
 				'</span> sent message(s)'+
 			'</div>'+
 			'<div>'+
 				'<span title = Total(today)schedule(s) class = stat>'+
-				programStats['schedule-count']+'('+
+				programStats['schedule-count']+
+				'('+
 				programStats['today-schedule-count']+')'+
 				'</span> schedule(s)'+
 			'</div>'
-			
 }
