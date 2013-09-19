@@ -40,6 +40,7 @@
 		if (isset($program['Program']['shortcode']))
 		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
 		<?php
+		if (isset($program['Program']['shortcode'])) {
 			echo '<div class ="ttc-program-stats">';
 			$this->Js->set('programs', $programs);
 			$this->Js->get('document')->event(
@@ -48,20 +49,17 @@
 				');
 			
 			echo '<div>';
-			if (isset($program['Program']['shortcode'])) {
-				
-				echo '<img src="/img/ajax-loader.gif">';
-				
-			}else{
-				echo $this->Html->link('Configure Shortcode and TimeZone', 
-					array('program' => $program['Program']['url'],
-						'controller' => 'programSettings',
-						'action' => 'index'
-						),
-					array('style'=>'text-decoration:none;font-weight:normal; font-size:14px; color:#C43C35;', 'class' => 'stat'));
-			}
+			echo '<img src="/img/ajax-loader.gif">';
 			echo '</div>';
 			echo '</div>';
+		}else{
+			echo $this->Html->link('Configure Shortcode and TimeZone', 
+				array('program' => $program['Program']['url'],
+					'controller' => 'programSettings',
+					'action' => 'index'
+					),
+				array('class' => 'configure-program-settings'));
+		}
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">
