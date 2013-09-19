@@ -93,9 +93,6 @@ class ProgramsController extends AppController
 
     public function index() 
     {
-    	
-        $t = $this->getProgramStats();
-        print_r($t);
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
