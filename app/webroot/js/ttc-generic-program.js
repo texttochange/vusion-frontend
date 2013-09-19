@@ -1,4 +1,4 @@
-(function($)
+    (function($)
 {
 
     function _addToObject(obj, data, fn)
@@ -1004,7 +1004,7 @@ function configToForm(item, elt, id_prefix, configTree){
                         "checked":"checked"
                     }
                     checkedItem = v;
-                    checkedItemLabel = localize_label(v['value']);
+                    //checkedItemLabel = localize_label(v['value']);
                 } else {
                     checkedRadio[v['value']] = { 
                         'value': v['value'],
@@ -1077,7 +1077,7 @@ function configToForm(item, elt, id_prefix, configTree){
                 } else {
                     options.push({
                          'value': option,
-                         'html': localized_labels[option]})
+                         'html': localize_label(option)})
                 }
             }
             break;
@@ -1086,7 +1086,7 @@ function configToForm(item, elt, id_prefix, configTree){
                  var opt = dynamicForm[item]["options"][option];
                  options.push({
                          'value': opt,
-                         'html': localized_labels[opt]})
+                         'html': localize_label(opt)})
             }
             break;
         }
@@ -1098,7 +1098,7 @@ function configToForm(item, elt, id_prefix, configTree){
             if (options.length == 1) {
                 options.push({
                         'value': configTree[item],
-                        'html': localized_labels[configTree[item]],
+                        'html': localize_label(configTree[item]),
                         'selected': true});
             }
         }
