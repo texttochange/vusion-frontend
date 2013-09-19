@@ -544,35 +544,38 @@ function loadProgramStats(){
 
 
 function generateHtmlProgramStats(programStats) {
-	return '<div>'+
-				'<span title = Optin/Totalparticipant(s) class = stat>'+
-				programStats['active-participant-count']+'/'+
-				programStats['participant-count']+
-				'</span> participant(s)'+
-			'</div>'+
-			'<div>'+
-				'<span title = Total(totalcurrentmonth)message(s) class = stat>'+
-				programStats['history-count']+
-				'('+
-				programStats['total-current-month-messages-count']+')'+
-				'</span> total message(s)'+
-			'</div>'+
-			'<div>'+
-				'<span title = Total(currentmonth)received class = stat>'+
-				programStats['all-received-messages-count']+
-				'('+
-				programStats['current-month-received-messages-count']+')'+
-				'</span> received - <span title = Total(currentmonth)sent class = stat>'+
-				programStats['all-sent-messages-count']+
-				'('+
-				programStats['current-month-sent-messages-count']+')'+
-				'</span> sent message(s)'+
-			'</div>'+
-			'<div>'+
-				'<span title = Total(today)schedule(s) class = stat>'+
-				programStats['schedule-count']+
-				'('+
-				programStats['today-schedule-count']+')'+
-				'</span> schedule(s)'+
-			'</div>'
+	var myTemplate ='<div>'+
+						'<span title = Optin/Totalparticipant(s) class = stat>'+
+						'Activeparticipant/Totalparticipantstats'+						
+						'</span> participant(s)'+
+					'</div>'+
+					'<div>'+
+						'<span title = Total(totalcurrentmonth)message(s) class = stat>'+
+						'Totalhistory(Totalcurrentmonthmessages)'+
+						'</span> total message(s)'+
+					'</div>'+
+					'<div>'+
+						'<span title = Total(currentmonth)received class = stat>'+
+						'Allreceivedmessages(Currentmonthreceivedmessages)'+
+						'</span> received - <span title = Total(currentmonth)sent class = stat>'+
+						'Allsentmessages(Currentmonthsentmessages)'+
+						'</span> sent message(s)'+
+					'</div>'+
+					'<div>'+
+						'<span title = Total(today)schedule(s) class = stat>'+
+						'Schedule(Todayschedule)'+
+						'</span> schedule(s)'+
+					'</div>'
+			
+		myTemplate = myTemplate.replace('Activeparticipant', programStats['active-participant-count']);
+		myTemplate = myTemplate.replace('Totalparticipantstats', programStats['participant-count']);
+		myTemplate = myTemplate.replace('Totalhistory', programStats['history-count']);
+		myTemplate = myTemplate.replace('Totalcurrentmonthmessages', programStats['total-current-month-messages-count']);
+		myTemplate = myTemplate.replace('Allreceivedmessages', programStats['all-received-messages-count']);
+		myTemplate = myTemplate.replace('Currentmonthreceivedmessages', programStats['current-month-received-messages-count']);
+		myTemplate = myTemplate.replace('Allsentmessages', programStats['all-sent-messages-count']);
+		myTemplate = myTemplate.replace('Currentmonthsentmessages', programStats['current-month-sent-messages-count']);
+		myTemplate = myTemplate.replace('Schedule', programStats['schedule-count']);
+		myTemplate = myTemplate.replace('Todayschedule', programStats['today-schedule-count']);
+	return myTemplate;
 }
