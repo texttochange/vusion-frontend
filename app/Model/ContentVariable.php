@@ -111,7 +111,14 @@ class ContentVariable extends MongoModel
                 $cleanKeys[] = array('key' => trim($key));
             }
             $this->data['ContentVariable']['keys'] = $cleanKeys;
+        } else if (is_array($this->data['ContentVariable']['keys'])) {
+            foreach($this->data['ContentVariable']['keys'] as &$key) {
+                if (!is_array($key['key'])) {
+                    $key = array('key' => $key);
+                }
+            }
         }
+        return true;
     }
     
     public  $findMethods = array(

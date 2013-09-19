@@ -34,7 +34,38 @@ class ContentVariableTestCase extends CakeTestCase
     }
     
     
-    public function testSave()
+    public function testSave_ok()
+    {      
+        #two key
+        $contentVariable = array(
+            'keys' => 'my.Key',
+            'value' => 'myValue'
+            );
+        $this->ContentVariable->create();
+        $savedMessage = $this->ContentVariable->save($contentVariable);
+        $this->assertTrue(isset($savedMessage['ContentVariable']));
+        
+        #single key
+        $contentVariable = array(
+            'keys' => 'myKey',
+            'value' => 'myValue'
+            );
+        $this->ContentVariable->create();
+        $otherSavedMessage = $this->ContentVariable->save($contentVariable);
+        $this->assertTrue(isset($otherSavedMessage['ContentVariable']));
+
+        #already array of keys
+        $contentVariable = array(
+            'keys' => array('last', 'Key'),
+            'value' => 'myValue'
+            );
+        $this->ContentVariable->create();
+        $lastSavedMessage = $this->ContentVariable->save($contentVariable);
+        $this->assertTrue(isset($lastSavedMessage['ContentVariable']));
+
+    }
+
+    public function testSave_fail_empty() 
     {
         ## keys field is empty
         $contentVariable = array(
@@ -47,43 +78,28 @@ class ContentVariableTestCase extends CakeTestCase
             $this->ContentVariable->validationErrors['keys'][0]);
         
         ## value field is empty
-        $contentVariable02 = array(
+        $contentVariable = array(
             'keys' => 'my.key',
             'value' => ''
             );
         $this->ContentVariable->create();
-        $this->assertFalse($this->ContentVariable->save($contentVariable02));
+        $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals('Please enter a value for this dynamic content.',
             $this->ContentVariable->validationErrors['value'][0]);
-        
+    }
+
+    
+    public function testSave_fail_valueSpecialCharacter() {
         ## value field has special characters
-        $contentVariable02 = array(
+        $contentVariable = array(
             'keys' => 'my.key',
             'value' => '#$@*good'
             );
         $this->ContentVariable->create();
-        $this->assertFalse($this->ContentVariable->save($contentVariable02));
+        $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals("Use only DOT, space, letters and numbers for a value, e.g 'new value1'.",
             $this->ContentVariable->validationErrors['value'][0]);
-        
-        $contentVariable03 = array(
-            'keys' => 'my.Key',
-            'value' => 'myValue'
-            );
-        $this->ContentVariable->create();
-        $savedMessage = $this->ContentVariable->save($contentVariable03);
-        $this->assertTrue(isset($savedMessage['ContentVariable']));
-        
-        #single key
-        $contentVariable04 = array(
-            'keys' => 'myKey',
-            'value' => 'myValue'
-            );
-        $this->ContentVariable->create();
-        $otherSavedMessage = $this->ContentVariable->save($contentVariable04);
-        $this->assertTrue(isset($otherSavedMessage['ContentVariable']));
     }
-    
     
     public function testSave_fail_keyNotUnique()
     {
@@ -94,12 +110,12 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $this->ContentVariable->save($contentVariable);
         
-        $splitOrdercontentVariable = array(
+        $splitOrderContentVariable = array(
             'keys' => 'key.new',
             'value' => 'somethingelse'
             );
         $this->ContentVariable->create();
-        $savedMessage = $this->ContentVariable->save($splitOrdercontentVariable);
+        $savedMessage = $this->ContentVariable->save($splitOrderContentVariable);
         $this->assertTrue(isset($savedMessage['ContentVariable']));
 
         $contentVariable02 = array(
