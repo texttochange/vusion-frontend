@@ -24,7 +24,7 @@ class ValidationHelper
                     $func = $rule['rule'];
                     $args = array();
                 }
-                $required = (isset($rule['required'])? $rule['requ  ired']: true);
+                $required = (isset($rule['required'])? $rule['required']: true);
                 $result = false;
                 if ($func == 'required') {
                      if (array_key_exists($field, $data)) {
