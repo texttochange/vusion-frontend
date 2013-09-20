@@ -77,7 +77,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as dynamic concent, contentVariable only accept max two keys.",
+            "To be used in message, contentVariable only accept max two keys.",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 

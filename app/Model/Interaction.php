@@ -418,7 +418,7 @@ class Interaction extends VirtualModel
             foreach($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
-                    if (!preg_match(VusionConst::CONTENT_VARIABLE_ALLOWED_REGEX, $value)) {
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
                         return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }

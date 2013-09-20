@@ -474,13 +474,13 @@ class UnattachedMessageTestCase extends CakeTestCase
         $unattachedMessage['content'] = "Hello [participant.gender.name]";
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(
-            "To be used as dynamic concent, participant only accept one key.",
+            "To be used in message, participant only accept one key.",
             $this->UnattachedMessage->validationErrors['content'][0]);
         
         $unattachedMessage['content'] = "Hello [contentVariable.kampala.pork.male]";
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(
-            "To be used as dynamic concent, contentVariable only accept max two keys.",
+            "To be used in message, contentVariable only accept max two keys.",
             $this->UnattachedMessage->validationErrors['content'][0]);
     }
 

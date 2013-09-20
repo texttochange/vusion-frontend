@@ -217,7 +217,7 @@ class RequestTestCase extends CakeTestCase
         $savedRequest = $this->Request->save($request);
         $this->assertFalse($savedRequest);
         $this->assertEqual(
-            "To be used as dynamic concent, participant only accept one key.",
+            "To be used in message, participant only accept one key.",
             $this->Request->validationErrors['responses'][0]['content'][0]);
         
         $request['Request']['responses'][0]['content'] = "here is [contentVariable.pen.%#color]";

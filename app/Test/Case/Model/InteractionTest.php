@@ -118,7 +118,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as dynamic concent, participant only accept one key."
+            "To be used in message, participant only accept one key."
             );
 
         $interaction = $this->Maker->getInteractionOpenQuestion();
@@ -130,7 +130,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as dynamic concent, contentVariable only accept max two keys."
+            "To be used in message, contentVariable only accept max two keys."
             );
 
         $interaction = $this->Maker->getInteractionOpenQuestion();
