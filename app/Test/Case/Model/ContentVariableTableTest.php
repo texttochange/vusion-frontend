@@ -11,9 +11,9 @@ class ContentVariableTableTestCase extends CakeTestCase
     {
         parent::setUp();
 
-        $option        = array('database'=>'test');
+        $option                     = array('database' => 'testdbprogram');
         $this->ContentVariableTable = new ContentVariableTable($option);
-        $this->ContentVariable = new ContentVariable($option);
+        $this->ContentVariable      = new ContentVariable($option);
 
         $this->clearData();       
     }
@@ -46,7 +46,7 @@ class ContentVariableTableTestCase extends CakeTestCase
                     ),
                 array(
                     'header' => 'Chicken price',
-                    'values' => array('300 Ksh', '400 Ksh')
+                    'values' => array('300 Ksh', '')
                     )
                 )
             );
@@ -62,7 +62,7 @@ class ContentVariableTableTestCase extends CakeTestCase
 
         $nairobiContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('nairobi', 'Chicken price'))));
         $this->assertEqual(
-                '400 Ksh',
+                '',
                 $nairobiContentVariable[0]['ContentVariable']['value']);      
     }
 

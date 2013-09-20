@@ -10,7 +10,7 @@ class ContentVariableTestCase extends CakeTestCase
     {
         parent::setUp();
 
-        $options                 = array('database' => 'testdbprogram');
+        $options               = array('database' => 'testdbprogram');
         $this->ContentVariable = new ContentVariable($options);
         
         $this->dropData();
@@ -63,6 +63,15 @@ class ContentVariableTestCase extends CakeTestCase
         $lastSavedMessage = $this->ContentVariable->save($contentVariable);
         $this->assertTrue(isset($lastSavedMessage['ContentVariable']));
 
+        ## value field is empty
+        $contentVariable = array(
+            'keys' => 'my.key',
+            'value' => ''
+            );
+        $this->ContentVariable->create();
+        $savedContentVariable = $this->ContentVariable->save($contentVariable);
+        $this->assertTrue(isset($savedContentVariable['ContentVariable']));
+        
     }
 
     public function testSave_fail_empty() 
@@ -76,16 +85,6 @@ class ContentVariableTestCase extends CakeTestCase
         $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals('The correct format is "key" or "key.key".',
             $this->ContentVariable->validationErrors['keys'][0]);
-        
-        ## value field is empty
-        $contentVariable = array(
-            'keys' => 'my.key',
-            'value' => ''
-            );
-        $this->ContentVariable->create();
-        $this->assertFalse($this->ContentVariable->save($contentVariable));
-        $this->assertEquals('Please enter a value for this dynamic content.',
-            $this->ContentVariable->validationErrors['value'][0]);
     }
 
     

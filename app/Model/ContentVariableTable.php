@@ -8,7 +8,7 @@ App::uses('ContentVariable', 'Model');
 class ContentVariableTable extends MongoModel
 {
     var $specific = true;
-    var $name = 'ContentVariableTable';
+    var $name     = 'ContentVariableTable';
     
     
     function getModelVersion()
@@ -104,14 +104,14 @@ class ContentVariableTable extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        $this->ValidationHelper = new ValidationHelper(&$this);
-
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
             $options = array('database' => $id['database']);
         }
+        
         $this->ContentVariable = new ContentVariable($options);
+        $this->ValidationHelper = new ValidationHelper(&$this);
     }    
 
 
