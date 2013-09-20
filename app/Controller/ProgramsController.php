@@ -379,14 +379,17 @@ class ProgramsController extends AppController
     { 
     	$user = $this->Auth->user();
     	if(isset($this->params['url']['program'])){
-    		$programUrls = $this->Program->find('authorized', array(
-    			'specific_program_access' => 'true',
+    		$programUrl = $this->Program->find('authorized', array(
+    			'specific_program_access' => $this->Group->hasSpecificProgramAccess(
+                    $this->Session->read('Auth.User.group_id')),
     			'user_id' => $user['id'],
     			'conditions' => array('url'=> $this->params['url']['program'])));
-    		foreach($programUrls as $programUrl)
-    			$programDatabase = $programUrl['Program']['database'];
-    		$programStats = $this->Stats->getProgramStats($programDatabase);
-    		$result = array('status' =>'ok', 'programURL' => $programUrl['Program']['url'], 'programStats' => $programStats);
+    		if(count($programUrl) > 0){
+    		$programStats = $this->Stats->getProgramStats($programUrl[0]['Program']['database']);
+    		$result = array('status' =>'ok', 'programURL' => $programUrl[0]['Program']['url'], 'programStats' => $programStats);
+    		}else{
+    		$result = array('status' =>'fail', 'programURL' => $this->params['url']['program'], 'reason' => "No stats to this program");
+    		}
     		$this->set(compact('result'));
         }
     }
