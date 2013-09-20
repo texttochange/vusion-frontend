@@ -146,4 +146,49 @@ class ContentVariableTestCase extends CakeTestCase
     }
 
 
+    public function testAllowToEdit()
+    {
+        $contentVariable = array(
+            'keys' => 'new.key',
+            'table' => 'my table',
+            'value' => 'meat'
+            );
+        $this->ContentVariable->create();
+        $oldContentVariable = $this->ContentVariable->save($contentVariable);
+
+        $newContentVariable = array(
+            'keys' => 'new.keys',
+            'table' => 'my table',
+            'value' => 'meat'
+            );
+        
+        $this->assertEquals(
+            "Editing a keys/value's keys without the editing the table is not allowed.",
+            $this->ContentVariable->allowToEdit($oldContentVariable['ContentVariable'], $newContentVariable));
+
+        $newContentVariable = array(
+            'keys' => 'new.key',
+            'table' => 'my other table',
+            'value' => 'meat'
+            );
+        $this->assertEquals(
+            "Editing a keys/value's table without the editing the table is not allowed.",
+            $this->ContentVariable->allowToEdit($oldContentVariable['ContentVariable'], $newContentVariable));
+
+        $newContentVariable = array(
+            'keys' => 'new.key',
+            'value' => 'meat'
+            );
+        $this->assertEquals(
+            "Editing a keys/value's table without the editing the table is not allowed.",
+            $this->ContentVariable->allowToEdit($oldContentVariable['ContentVariable'], $newContentVariable));
+
+        $newContentVariable = array(
+            'keys' => 'new.key',
+            'table' => 'my table',
+            'value' => 'beans'
+            );
+        $this->assertTrue($this->ContentVariable->allowToEdit($oldContentVariable['ContentVariable'], $newContentVariable));
+    }
+
 }

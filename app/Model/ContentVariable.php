@@ -105,13 +105,7 @@ class ContentVariable extends MongoModel
         parent::beforeValidate();
         
         if (isset($this->data['ContentVariable']['keys']) and !is_array($this->data['ContentVariable']['keys'])) {
-            $keys = trim(stripcslashes($this->data['ContentVariable']['keys']));
-            $keys = array_filter(explode(".", $keys));
-            $cleanKeys = array();
-            foreach ($keys as $key) {
-                $cleanKeys[] = array('key' => trim($key));
-            }
-            $this->data['ContentVariable']['keys'] = $cleanKeys;
+            $this->data['ContentVariable']['keys'] = $this->fromKeysStringToKeysArray($this->data['ContentVariable']['keys']);
         } else if (is_array($this->data['ContentVariable']['keys'])) {
             foreach($this->data['ContentVariable']['keys'] as &$key) {
                 if (!is_array($key)) {
@@ -121,7 +115,20 @@ class ContentVariable extends MongoModel
         }
         return true;
     }
+
+
+    protected function fromKeysStringToKeysArray($keysString)
+    {
+        $keys = trim(stripcslashes($keysString));
+        $keys = array_filter(explode(".", $keys));
+        $keysArray = array();
+        foreach ($keys as $key) {
+            $keysArray[] = array('key' => trim($key));
+        }
+        return $keysArray;
+    }
     
+
     public  $findMethods = array(
         'count' => true,
         'first' => true,
@@ -144,6 +151,27 @@ class ContentVariable extends MongoModel
             return $query;
         } 
         return $results;
+    }
+
+
+    public function allowToEdit($oldContentVariable, $newContentVariable)
+    {
+        if (isset($oldContentVariable['ContentVariable'])) {
+            $oldContentVariable = $oldContentVariable['ContentVariable'];
+        }
+        if (isset($newContentVariable['ContentVariable'])) {
+            $newContentVariable = $newContentVariable['ContentVariable'];
+        }
+        if (!isset($oldContentVariable['table'])) {
+            return true;
+        }
+        if (isset($newContentVariable['keys']) && $oldContentVariable['keys'] != $this->fromKeysStringToKeysArray($newContentVariable['keys'])) {
+            return __("Editing a keys/value's keys without the editing the table is not allowed.");
+        }
+        if (!isset($newContentVariable['table']) || $oldContentVariable['table'] != $newContentVariable['table']) {
+            return __("Editing a keys/value's table without the editing the table is not allowed.");
+        }
+        return true;
     }
 
 

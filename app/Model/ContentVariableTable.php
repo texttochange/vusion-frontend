@@ -342,6 +342,7 @@ class ContentVariableTable extends MongoModel
                 for ($j = $i; $j < count($contentVariableTable['ContentVariableTable']['columns']); $j++) {
                     if ($contentVariableTable['ContentVariableTable']['columns'][$j]['header'] == $key) {
                         $contentVariableTable['ContentVariableTable']['columns'][$j]['values'][$index[0]] = $contentVariable['ContentVariable']['value'];
+                        $this->id = $contentVariableTable['ContentVariableTable']['_id'];
                         return $this->save($contentVariableTable, array('skipKeysValues' => true));
                     }
                 }
