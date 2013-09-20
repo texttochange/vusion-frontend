@@ -282,7 +282,8 @@ class UsersController extends AppController
             $Group->id = $group['Group']['id']."</br";
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->deny($Group, 'controllers/Programs');
-            $this->Acl->allow($Group, 'controllers/Programs/index');        
+            $this->Acl->allow($Group, 'controllers/Programs/index');
+            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -316,6 +317,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
+            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -350,6 +352,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
+            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
