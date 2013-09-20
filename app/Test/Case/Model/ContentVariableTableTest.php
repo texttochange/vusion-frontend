@@ -493,4 +493,72 @@ class ContentVariableTableTestCase extends CakeTestCase
     }
 
 
+    public function testUpdateKeysValue()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'nairobi')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh', '400 Ksh')
+                    )
+                )
+            );
+        $this->ContentVariableTable->create();
+        $this->ContentVariableTable->save($contentVariableTable);
+        
+        $savedKeysValue = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('nairobi', 'Chicken price'))));
+        $savedKeysValue[0]['ContentVariable']['value'] = "600 Ksh";
+        $this->ContentVariable->id = $savedKeysValue[0]['ContentVariable']['_id'];
+        $updatedKeysValue = $this->ContentVariable->save($savedKeysValue[0]['ContentVariable']);
+       
+        $this->assertTrue(
+            $this->ContentVariableTable->updateTableFromKeysValue($updatedKeysValue) != false);
+        
+        $savedTable = $this->ContentVariableTable->find('first');
+        $this->assertEquals(
+            array('300 Ksh', '600 Ksh'),
+            $savedTable['ContentVariableTable']['columns'][1]['values']    
+            );
+    }
+
+
+    public function testUpdateTable()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'nairobi')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh', '400 Ksh')
+                    )
+                )
+            );
+        $this->ContentVariableTable->create();
+        $savedTable = $this->ContentVariableTable->save($contentVariableTable);
+        $savedTable['ContentVariableTable']['columns'][1]['values'][1] = '200 Ksh';
+        $updateResult = $this->ContentVariableTable->save($savedTable);
+       
+        $this->assertTrue(isset($updateResult['ContentVariableTable']));
+        
+        $savedTable = $this->ContentVariableTable->find('first');
+        $this->assertEquals(
+            array('300 Ksh', '200 Ksh'),
+            $savedTable['ContentVariableTable']['columns'][1]['values']    
+            );
+
+        $this->assertEquals(
+            2,
+            $this->ContentVariable->find('count'));
+    }
+
+
 }

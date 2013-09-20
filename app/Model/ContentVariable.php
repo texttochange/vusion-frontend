@@ -36,8 +36,7 @@ class ContentVariable extends MongoModel
                 'message' => 'This keys pair already exists. Please choose another.'
                 ),
             ),
-        'table' => array(
-            ),
+        'table' => array(),
         'value' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
@@ -90,7 +89,9 @@ class ContentVariable extends MongoModel
             $key = $key['key'];
         }
         if ($this->id) {
-            $conditions = array('id'=>array('$ne'=> $this->id), $check);
+            $conditions = array(
+                'id' => array('$ne'=> $this->id), 
+                'keys' => $check['keys']);
         } else {
             $conditions = $check;
         }
@@ -113,7 +114,7 @@ class ContentVariable extends MongoModel
             $this->data['ContentVariable']['keys'] = $cleanKeys;
         } else if (is_array($this->data['ContentVariable']['keys'])) {
             foreach($this->data['ContentVariable']['keys'] as &$key) {
-                if (!is_array($key['key'])) {
+                if (!is_array($key)) {
                     $key = array('key' => $key);
                 }
             }
@@ -132,13 +133,14 @@ class ContentVariable extends MongoModel
     public function _findFromKeys($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $conditions = array();
+            $keyConditions = array();
             $keys = $query['conditions']['keys'];
+            unset($query['conditions']['keys']);
             for($i = 0 ; $i < count($keys) ; $i++) {
-                $conditions['keys.'.$i] = array('key' => $keys[$i]);
+                $keyConditions['keys.'.$i] = array('key' => $keys[$i]);
             }
-            $conditions['keys'] = array('$size' => count($keys));
-            $query['conditions'] = $conditions;
+            $keyConditions['keys'] = array('$size' => count($keys));
+            $query['conditions'] = array_merge($query['conditions'], $keyConditions);
             return $query;
         } 
         return $results;

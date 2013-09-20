@@ -313,6 +313,43 @@ class ContentVariableTable extends MongoModel
         return $allKeys;
     }
 
+    function updateTableFromKeysValue($contentVariable) 
+    {
+        if (!isset($contentVariable['ContentVariable']['table'])) {
+            return true;
+        }
+        $contentVariableTable = $this->find(
+            'first', 
+            array('conditions' => array('name' => $contentVariable['ContentVariable']['table'])));
+        if (!isset($contentVariableTable)) {
+            return false;
+        }
+        
+        $indexes = array_keys(array_fill(0,count($contentVariableTable['ContentVariableTable']['columns'][0]['values']), '0'));
+        for ($i = 0; $i < count($contentVariable['ContentVariable']['keys']); $i++) {
+            $key = $contentVariable['ContentVariable']['keys'][$i]['key'];
+            if ($contentVariableTable['ContentVariableTable']['columns'][$i]['type'] == 'key') {
+                $keyIndexesCurrentColumn = array_keys($contentVariableTable['ContentVariableTable']['columns'][$i]['values'], $key);
+                $indexes = array_intersect($keyIndexesCurrentColumn, $indexes);
+                if (count($indexes) == 0) {
+                    return false;
+                }
+            } else {
+                if (count($indexes) != 1) {
+                    return false;
+                }
+                $index = array_values($indexes);
+                for ($j = $i; $j < count($contentVariableTable['ContentVariableTable']['columns']); $j++) {
+                    if ($contentVariableTable['ContentVariableTable']['columns'][$j]['header'] == $key) {
+                        $contentVariableTable['ContentVariableTable']['columns'][$j]['values'][$index[0]] = $contentVariable['ContentVariable']['value'];
+                        return $this->save($contentVariableTable, array('skipKeysValues' => true));
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     
     function hasDupes($array){
         return count($array) !== count(array_unique($array));
@@ -321,14 +358,20 @@ class ContentVariableTable extends MongoModel
 
     function beforeSave($option = array())
     {
+        if (isset($option['skipKeysValues'])) {
+            return true;
+        }
         $keysValues = $this->getAllKeysValue($this->data['ContentVariableTable']['columns']);
+        //Need to remove all ContentVariable keys/value of this table before saving them again
+        $this->ContentVariable->deleteAll(array('table' => $this->data['ContentVariableTable']['name']), false);
         foreach($keysValues as $keysValue) {
             $keysValue['table'] = $this->data['ContentVariableTable']['name'];
             $this->ContentVariable->create();
             $saved = $this->ContentVariable->save($keysValue);
             if ($saved == false) {
-                $this->ContentVariable->deleteAll(array('name' => $this->data['ContentVariableTable']['name']));
-                throw new Exception("Failed to save keys.");
+                //A failure in saving 1 contentvarible, all content varible of this table are removed... dangerous state.
+                $this->ContentVariable->deleteAll(array('table' => $this->data['ContentVariableTable']['name']), false);
+                throw new Exception("Failed to save keys value from table.");
             }
         }
         return true;
