@@ -377,9 +377,15 @@ class ProgramsController extends AppController
     
     public function getProgramStats()
     { 
+    	$user = $this->Auth->user();
     	if(isset($this->params['url']['program'])){
-    		$programUrl = $this->Program->find('first', array('conditions' => array('url'=> $this->params['url']['program'])));
-    		$programStats = $this->Stats->getProgramStats($programUrl['Program']['database']);
+    		$programUrls = $this->Program->find('authorized', array(
+    			'specific_program_access' => 'true',
+    			'user_id' => $user['id'],
+    			'conditions' => array('url'=> $this->params['url']['program'])));
+    		foreach($programUrls as $programUrl)
+    			$programDatabase = $programUrl['Program']['database'];
+    		$programStats = $this->Stats->getProgramStats($programDatabase);
     		$result = array('status' =>'ok', 'programURL' => $programUrl['Program']['url'], 'programStats' => $programStats);
     		$this->set(compact('result'));
         }
