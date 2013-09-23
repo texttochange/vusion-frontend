@@ -538,11 +538,7 @@ function loadProgramStats(){
 					},
 					timeout: 360000,
 					error: function(){
-						$("#"+this.url.substring(39)+" .ttc-program-stats").empty().append('<div>'+
-							'<span title = "ProgramStats NotAvailable", class = stat>'+
-							'N/A'+						
-							'</span>'+
-							'</div>')
+						$("#"+this.url.substring(39)+" .ttc-program-stats").empty().append(generateHtmlProgramStatsError())
 					}
 			});
 		}
@@ -584,5 +580,32 @@ function generateHtmlProgramStats(programStats) {
 		myTemplate = myTemplate.replace('Currentmonthsentmessages', programStats['current-month-sent-messages-count']);
 		myTemplate = myTemplate.replace('Schedule', programStats['schedule-count']);
 		myTemplate = myTemplate.replace('Todayschedule', programStats['today-schedule-count']);
+	return myTemplate;
+}
+
+
+function generateHtmlProgramStatsError() {
+	var myTemplate ='<div>'+
+						'<span title = "ProgramStats NotAvailable" class = stat>'+
+						'N/A'+						
+						'</span> participant(s)'+
+					'</div>'+
+					'<div>'+
+						'<span title = "ProgramStats NotAvailable" class = stat>'+
+						'N/A'+
+						'</span> total message(s)'+
+					'</div>'+
+					'<div>'+
+						'<span title = "ProgramStats NotAvailable" class = stat>'+
+						'N/A'+
+						'</span> received - <span title = "ProgramStats NotAvailable" class = stat>'+
+						'N/A'+
+						'</span> sent message(s)'+
+					'</div>'+
+					'<div>'+
+						'<span title = "ProgramStats NotAvailable" class = stat>'+
+						'N/A'+
+						'</span> schedule(s)'+
+					'</div>'
 	return myTemplate;
 }
