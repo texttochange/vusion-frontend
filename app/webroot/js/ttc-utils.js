@@ -531,12 +531,19 @@ function loadProgramStats(){
 			$.ajax({
 					type: "GET",
 					dataType: "json",
-					url: "/programs/getProgramStats.json?program="+programUrl,
+					url: "/programs/getProgramStats.json",
+					data: {"program": programUrl},
 					success: function(data){
 						$("#"+data['programURL']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
 					},
 					timeout: 360000,
-					error: vusionAjaxError
+					error: function(){
+						$("#"+this.url.substring(39)+" .ttc-program-stats").empty().append('<div>'+
+							'<span title = "ProgramStats NotAvailable", class = stat>'+
+							'N/A'+						
+							'</span>'+
+							'</div>')
+					}
 			});
 		}
     }
