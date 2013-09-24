@@ -532,7 +532,7 @@ function loadProgramStats(){
 					type: "GET",
 					dataType: "json",
 					url: "/programs/getProgramStats.json",
-					data: {"program": programUrl},
+					data: {"programUrl": programUrl},
 					success: function(data){
 						$("#"+data['programURL']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
 					},
