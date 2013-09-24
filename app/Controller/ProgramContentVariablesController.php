@@ -141,8 +141,8 @@ class ProgramContentVariablesController extends AppController
     public function indexTable()
     {
         $this->paginate = array('all');
-        $contentVariablesTable = $this->paginate('ContentVariableTable');
-        $this->set(compact('contentVariablesTable', $contentVariablesTable));
+        $contentVariableTables = $this->paginate('ContentVariableTable');
+        $this->set(compact('contentVariableTables', $contentVariableTables));
     }
 
 

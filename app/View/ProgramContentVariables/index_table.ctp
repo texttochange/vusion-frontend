@@ -4,12 +4,12 @@
 	</ul>	
 	<h3><?php echo __('Content Variables');?></h3>
 	<div class="tabs">
-	<ul>
-    <li class="selected"><label><?php echo __("Keys/Values") ?></label></li>
-    <li><a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" ><label><?php echo __("Tables") ?></a></label></li>
-    </ul>
+	    <ul>
+        <li><a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" ><label><?php echo __("Keys/Values") ?></label></a></li>
+        <li class="selected"><label><?php echo __("Tables") ?></label></li>
+        </ul>
     </div>
-  <div class="ttc-data-control">
+    <div class="ttc-data-control">
   
 	<div id="data-control-nav" class="ttc-paging paging">
 	<?php
@@ -25,30 +25,19 @@
   </div>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table class="content-variables" cellpadding="0" cellspacing="0">
+	<table class="content-variable-tables" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th class="keys"><?php echo $this->Paginator->sort(__('keys'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
-			    <th class="value"><?php echo $this->Paginator->sort(__('value'), null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="name"><?php echo $this->Paginator->sort('name', __('Name'), array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="values"><?php echo __('Values')?></th>
 			    <th class="actions action"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>
 		<tbody>
-		    <?php foreach ($contentVariables as $contentVariable): ?>
+		    <?php foreach ($contentVariableTables as $contentVariableTable): ?>
 		    <tr>
-		        <td class="prefix">
-		            <?php
-		                $keypair = '';
-                        foreach ($contentVariable['ContentVariable']['keys'] as $key => $value) {
-                            foreach ($value as $key1 => $value1) {
-                                $keypair = $keypair . $value1 . ".";
-                            }                            
-                        }
-                        $keypair = rtrim($keypair, '.');
-		                echo h($keypair);
-		            ?>&nbsp;
-		        </td>
-		        <td class="details"><?php echo __($contentVariable['ContentVariable']['value']) ?></td>
+		        <td><?php echo $contentVariableTable['ContentVariableTable']['name'] ?></td>
+		        <td ><?php echo $contentVariableTable['ContentVariableTable']['value'] ?></td>
 		        <td class="actions action">
 		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'controller' => 'programContentVariables', 'action' => 'edit', $contentVariable['ContentVariable']['_id'])); ?>
 		            <?php echo $this->Form->postLink(

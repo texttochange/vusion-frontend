@@ -811,6 +811,14 @@ display: inline;
     width: 700px;
 }
 
+.ttc-table-scrolling-area .content-variable-tables .name {
+    width: 100px;
+}
+
+.ttc-table-scrolling-area .content-variable-tables .values {
+    width: 750px;
+}
+
 /* PREDEFINE MESSAGE SPECIFIC */
 .ttc-table-scrolling-area .predefined-messages .name {
     width: 200px;
@@ -1264,4 +1272,43 @@ display: inline;
 
 #masstag-tags{
 	margin-bottom: 12px;	
+}
+
+.tabs {
+    border-bottom: 2px solid #19C1FF;
+    height: 22px;
+}
+
+.tabs ul {
+    list-style-type: none;
+    margin: 0px;
+}
+
+.tabs li {
+    float: left;
+    margin: 0px 20px 0px 0px;
+    border-bottom: 5px solid #81DCFF;
+    color: #81CDFF;
+}
+
+.tabs li.selected {
+    border-bottom: 5px solid #19C1FF;
+    color: #19C1FF;
+}
+
+.tabs label {
+    display: block;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tabs li a {
+    /*font-weight: normal;*/
+    text-decoration: none;
+    color: inherit;
+}
+
+.tabs a:hover {
+    text-decoration: none;
+    background: rgba(255,255,255,0.5);
 }
