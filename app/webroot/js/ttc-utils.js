@@ -538,7 +538,7 @@ function loadProgramStats(){
 					},
 					timeout: 360000,  // 6 minutes
 					error: function(){
-						$("#"+this.url.substring(39)+" .ttc-program-stats").empty().append(generateHtmlProgramStatsError())
+						$("#"+this.url.substring(42)+" .ttc-program-stats").empty().append(generateHtmlProgramStatsError())
 					}
 			});
 		}
