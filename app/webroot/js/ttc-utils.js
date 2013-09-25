@@ -538,7 +538,7 @@ function loadProgramStats(){
 					},
 					timeout: 360000,  // 6 minutes
 					error: function(){
-						$("#"+this.url.substring(42)+" .ttc-program-stats").empty().append(generateHtmlProgramStatsError())
+						$("#"+this.url.substring(42)+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
 					}
 			});
 		}
@@ -547,6 +547,7 @@ function loadProgramStats(){
 
 
 function generateHtmlProgramStats(programStats) {
+	if(programStats != null){
 	var myTemplate ='<div>'+
 						'<span title = Optin/Totalparticipant(s) class = stat>'+
 						'Activeparticipant/Totalparticipantstats'+						
@@ -580,11 +581,7 @@ function generateHtmlProgramStats(programStats) {
 		myTemplate = myTemplate.replace('Currentmonthsentmessages', programStats['current-month-sent-messages-count']);
 		myTemplate = myTemplate.replace('Schedule', programStats['schedule-count']);
 		myTemplate = myTemplate.replace('Todayschedule', programStats['today-schedule-count']);
-	return myTemplate;
-}
-
-
-function generateHtmlProgramStatsError() {
+	}else{
 	var myTemplate ='<div>'+
 						'<span title = "ProgramStats NotAvailable" class = stat>'+
 						'N/A'+						
@@ -607,5 +604,6 @@ function generateHtmlProgramStatsError() {
 						'N/A'+
 						'</span> schedule(s)'+
 					'</div>'
+	}
 	return myTemplate;
 }
