@@ -262,6 +262,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramSettings');
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
+            $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
             $this->Acl->allow($Group, 'controllers/ShortCodes');
             $this->Acl->allow($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
@@ -296,6 +297,7 @@ class UsersController extends AppController
             //$this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
+            $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
             $this->Acl->allow($Group, 'controllers/ShortCodes');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
