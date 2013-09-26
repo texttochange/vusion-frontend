@@ -536,7 +536,7 @@ function loadProgramStats(){
 					success: function(data){
 						$("#"+data['programURL']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
 					},
-					timeout: 360000,  // 6 minutes
+					timeout: 10,  // 6 minutes
 					error: function(){
 						$("#"+this.url.substring(42)+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
 					}
@@ -547,30 +547,45 @@ function loadProgramStats(){
 
 
 function generateHtmlProgramStats(programStats) {
-	if(programStats != null){
 	var myTemplate ='<div>'+
-						'<span title = Optin/Totalparticipant(s) class = stat>'+
+						'<span class=stat '+ ((programStats != null) ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
 						'Activeparticipant/Totalparticipantstats'+						
 						'</span> participant(s)'+
 					'</div>'+
 					'<div>'+
-						'<span title = Total(totalcurrentmonth)message(s) class = stat>'+
+						'<span class=stat '+ ((programStats != null) ? 'title="Total(total currentmonth) message(s)"' : 'title="Stats Not Available"') +'>'+
 						'Totalhistory(Totalcurrentmonthmessages)'+
 						'</span> total message(s)'+
 					'</div>'+
 					'<div>'+
-						'<span title = Total(currentmonth)received class = stat>'+
+						'<span class=stat '+ ((programStats != null) ? 'title="Total(currentmonth) received"' : 'title="Stats Not Available"') +'>'+
 						'Allreceivedmessages(Currentmonthreceivedmessages)'+
-						'</span> received - <span title = Total(currentmonth)sent class = stat>'+
+						'</span> received -'+
+						'<span class=stat '+ ((programStats != null) ? 'title="Total(currentmonth) sent"' : 'title="Stats Not Available"') +'>'+
 						'Allsentmessages(Currentmonthsentmessages)'+
 						'</span> sent message(s)'+
 					'</div>'+
 					'<div>'+
-						'<span title = Total(today)schedule(s) class = stat>'+
+						'<span class=stat '+ ((programStats != null) ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
 						'Schedule(Todayschedule)'+
 						'</span> schedule(s)'+
 					'</div>'
-			
+		
+		if(programStats == null){
+			programStats = {'active-participant-count': 'N/A',
+							'participant-count' : 'N/A',
+							'all-received-messages-count': 'N/A',
+							'current-month-received-messages-count' : 'N/A',
+							'all-sent-messages-count' : 'N/A',
+							'current-month-sent-messages-count' : 'N/A',
+							'total-current-month-messages-count' : 'N/A',
+							'history-count' : 'N/A',
+							'today-schedule-count' : 'N/A',
+							'schedule-count' : 'N/A',
+							'object-type' : 'program-stats',
+							'model-version': '1'};
+		}
+	
 		myTemplate = myTemplate.replace('Activeparticipant', programStats['active-participant-count']);
 		myTemplate = myTemplate.replace('Totalparticipantstats', programStats['participant-count']);
 		myTemplate = myTemplate.replace('Totalhistory', programStats['history-count']);
@@ -581,29 +596,5 @@ function generateHtmlProgramStats(programStats) {
 		myTemplate = myTemplate.replace('Currentmonthsentmessages', programStats['current-month-sent-messages-count']);
 		myTemplate = myTemplate.replace('Schedule', programStats['schedule-count']);
 		myTemplate = myTemplate.replace('Todayschedule', programStats['today-schedule-count']);
-	}else{
-	var myTemplate ='<div>'+
-						'<span title = "ProgramStats NotAvailable" class = stat>'+
-						'N/A'+						
-						'</span> participant(s)'+
-					'</div>'+
-					'<div>'+
-						'<span title = "ProgramStats NotAvailable" class = stat>'+
-						'N/A'+
-						'</span> total message(s)'+
-					'</div>'+
-					'<div>'+
-						'<span title = "ProgramStats NotAvailable" class = stat>'+
-						'N/A'+
-						'</span> received - <span title = "ProgramStats NotAvailable" class = stat>'+
-						'N/A'+
-						'</span> sent message(s)'+
-					'</div>'+
-					'<div>'+
-						'<span title = "ProgramStats NotAvailable" class = stat>'+
-						'N/A'+
-						'</span> schedule(s)'+
-					'</div>'
-	}
 	return myTemplate;
 }
