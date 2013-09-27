@@ -566,7 +566,7 @@ function generateHtmlProgramStats(programStats, UseNotAvailableToolTip = false) 
 		
 	var myTemplate ='<div>'+
 						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
-						((UseNotAvailableToolTip == false) ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'TOTAL_PARTICIPANT')+					
+						((UseNotAvailableToolTip == false) ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+					
 						'</span> participant(s)'+
 					'</div>'+
 					'<div>'+
