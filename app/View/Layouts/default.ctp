@@ -11,16 +11,21 @@
 		echo $this->Html->css(array(
 		    'cake.generic',
 		    'basic',
-		    'jquery-ui-1.8.16.custom',
-		    'superfish',
-		    'superfish-vertical',
-		    'chosen'
-		    ));
-		echo $scripts_for_layout;		
-		echo $this->Html->script('jquery-1.7.2.min.js');
-		echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
-		echo $this->Html->script('jqueryui/js/jquery.ui.datepicker.js');
+		    'jquery-ui/jquery-ui-1.10.3.custom.min',
+		    'superfish/superfish-1.7.4',
+		    'superfish/superfish-vertical-1.7.4',
+		    //'superfish/superfish-navbar-1.7.4',		    
+		    'superfish/megafish-1.7.4',
+		    'chosen/chosen-1.0.min',
+		    'handsontable/jquery.handsontable.full'
+		    ));		
+		//echo $this->Html->script('jquery-1.7.2.min.js');
+		echo $this->Html->script('jquery-1.10.2.min.js');
+		//echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
+		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');
+		//echo $this->Html->script('jqueryui/js/jquery.ui.datepicker.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
+		## dynamic form
 		echo $this->Html->script('jquery.validate-1.9.0.js');
 		echo $this->Html->script('dform/dform.js');
 		echo $this->Html->script('dform/dform.extensions.js');
@@ -28,18 +33,22 @@
 		echo $this->Html->script('dform/dform.converters.js');
 		echo $this->Html->script('form2js/form2js.js');
 		echo $this->Html->script('form2js/js2form.utils.js');
-		echo $this->Html->script('superfish-1.4.8/superfish.js');
-		echo $this->Html->script('superfish-1.4.8/hoverIntent.js');
-		echo $this->Html->script('superfish-1.4.8/supersubs.js');
+		## nav menu
+		echo $this->Html->script('superfish-1.7.4/superfish.min.js');
+		echo $this->Html->script('superfish-1.7.4/hoverIntent.js');
+		echo $this->Html->script('superfish-1.7.4/supersubs.js');
+		## general
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('moment.js');
-		echo $this->Html->script('chosen.jquery.min.js');
+		//echo $this->Html->script('chosen.jquery.min.js');
+		echo $this->Html->script('chosen-1.0.jquery.min.js');
 		## home brewed javascript
 		echo $this->Html->script('ttc-dynamic-form-structure.js');
 		echo $this->Html->script('ttc-generic-program.js');
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('counter.js');
 		echo $this->Html->script('screen.js');
+		echo $scripts_for_layout;
     ?><script>
     <?php echo $this->element('localization');?>
     </script>

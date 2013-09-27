@@ -15,7 +15,7 @@
         </li>
         <?php $this->Js->get('#button-save')->event('click', '$("#ContentVariableAddForm").submit()' , true);?>
 	</ul>
-    <h3><?php echo __('Add Content Variable'); ?></h3>
+    <h3><?php echo __('Add Content Variable - Keys/Value'); ?></h3>
     <div class="ttc-display-area">
     <?php echo $this->Form->create('ContentVariable'); ?>
     <fieldset>

@@ -12,7 +12,7 @@
 }
 
 .subinput {
-    margin-lef    t: 10px;
+    margin-left: 10px;
     margin-bottom: 0px;
     padding: 0px;
 }
@@ -1174,9 +1174,8 @@ display: inline;
 }
 
 .program-left-column {
-    /*width:202px;*/
     float: left;
-    width: 200px;
+    width: 202px;
     /*position: absolute;*/
     z-index: 99;
 }
@@ -1312,3 +1311,11 @@ display: inline;
     text-decoration: none;
     background: rgba(255,255,255,0.5);
 }
+
+#columns {
+    overflow: scroll;
+}
+
+.handsontable div {
+    padding: 0px;
+} 

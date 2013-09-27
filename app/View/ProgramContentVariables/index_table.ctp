@@ -1,6 +1,9 @@
+<?php 
+$this->Html->script("jquery.handsontable.full.js", array("inline" => false)) 
+?>
 <div class='content_variables index'>
 	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Keys/Value'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('New Table'), array('program'=>$programDetails['url'], 'action' => 'addTable'), array('class' => 'ttc-button')); ?></li>
 	</ul>	
 	<h3><?php echo __('Content Variables');?></h3>
 	<div class="tabs">
