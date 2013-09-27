@@ -549,8 +549,8 @@ function loadProgramStats(){
 
 function generateHtmlProgramStats(programStats, UseNotAvailableToolTip = false) {
 	if(programStats == null){
-			programStats = {'active-participant-count': 'N',
-							'participant-count' : 'A',
+			programStats = {'active-participant-count': 'N/A',
+							'participant-count' : 'N/A',
 							'all-received-messages-count': 'N/A',
 							'current-month-received-messages-count' : 'N/A',
 							'all-sent-messages-count' : 'N/A',
@@ -566,7 +566,7 @@ function generateHtmlProgramStats(programStats, UseNotAvailableToolTip = false) 
 		
 	var myTemplate ='<div>'+
 						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
-						'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT'+						
+						((UseNotAvailableToolTip == false) ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'TOTAL_PARTICIPANT')+					
 						'</span> participant(s)'+
 					'</div>'+
 					'<div>'+
