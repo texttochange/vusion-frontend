@@ -46,7 +46,11 @@ class ContentVariableTableTestCase extends CakeTestCase
                     ),
                 array(
                     'header' => 'Chicken price',
-                    'values' => array('300 Ksh', '')
+                    'values' => array('300 Ksh', null)
+                    ),
+                array(
+                    'header' => null,
+                    'values' => array(null, null)
                     )
                 )
             );
@@ -54,6 +58,10 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->ContentVariableTable->create();
         $result = $this->ContentVariableTable->save($contentVariableTable);
         $this->assertTrue(isset($result));
+        $this->assertEqual(
+            2,
+            count($result['ContentVariableTable']['columns'])
+            );
 
         $mombasaContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price'))));
         $this->assertEqual(
@@ -349,77 +357,7 @@ class ContentVariableTableTestCase extends CakeTestCase
     }
 
 
-    public function testSelectColumnsForKeys()
-    {
-        $columns = array(   
-            array(  
-                'header' => 'Town',
-                'values' => array('mombasa', 'nairobi')
-                ),
-            array(
-                'header' => 'Chicken price',
-                'values' => array('300 Ksh', '400 Ksh')
-                )
-            );
-
-        $result = $this->ContentVariableTable->selectColumnsForKeys($columns);
-        $this->assertEqual($columns[0]['type'], 'key');
-        $this->assertEqual($columns[1]['type'], 'contentvariable');
-
-        $columns = array(   
-            array(  
-                'header' => 'Town',
-                'values' => array('mombasa', 'mombasa', 'nairobi')
-                ),
-            array(  
-                'header' => 'market',
-                'values' => array('central','bamburi', 'central')
-                ),
-            array(
-                'header' => 'Chicken price',
-                'values' => array('300 Ksh', '350 Ksh', '400 Ksh')
-                )
-            );
-
-        $result = $this->ContentVariableTable->selectColumnsForKeys($columns);
-        $this->assertEqual($columns[0]['type'], 'key');
-        $this->assertEqual($columns[1]['type'], 'key');
-        $this->assertEqual($columns[2]['type'], 'contentvariable');
-    }
-
-
-    public function testGetAllKeysValue() 
-    {
-        $expected = array(
-            array('keys' => array('mombasa', 'central', 'Chicken price'), 'value' => '300 Ksh'),
-            array('keys' => array('mombasa', 'bamburi', 'Chicken price'), 'value' => '350 Ksh'),
-            array('keys' => array('nairobi', 'central', 'Chicken price'), 'value' => '400 Ksh'),
-            );
-
-        $columns = array(   
-            array(  
-                'header' => 'Town',
-                'values' => array('mombasa', 'mombasa', 'nairobi'),
-                'type' => 'key'
-                ),
-            array(  
-                'header' => 'market',
-                'values' => array('central','bamburi', 'central'),
-                'type' => 'key'
-                ),
-            array(
-                'header' => 'Chicken price',
-                'values' => array('300 Ksh', '350 Ksh', '400 Ksh'),
-                'type' => 'contentvariable'
-                )
-            );
-
-        $result = $this->ContentVariableTable->getAllKeysValue($columns);
-        $this->assertEqual($result, $expected);
-    }
-
-
-    public function testSave_fail_notUniqueName() 
+   public function testSave_fail_notUniqueName() 
     {
         $contentVariableTable = array(
             'name' => 'my table',
@@ -459,6 +397,109 @@ class ContentVariableTableTestCase extends CakeTestCase
             'Another table already exist with this name.',
             $this->ContentVariableTable->validationErrors['name'][0]
             );
+    }
+
+
+    public function testSelectColumnsForKeys()
+    {
+        $columns = array(   
+            array(  
+                'header' => 'Town',
+                'values' => array('mombasa', 'nairobi')
+                ),
+            array(
+                'header' => 'Chicken price',
+                'values' => array('300 Ksh', '400 Ksh')
+                )
+            );
+
+        $result = $this->ContentVariableTable->selectColumnsForKeys($columns);
+        $this->assertEqual($columns[0]['type'], 'key');
+        $this->assertEqual($columns[1]['type'], 'contentvariable');
+
+        $columns = array(   
+            array(  
+                'header' => 'Town',
+                'values' => array('mombasa', 'mombasa', 'nairobi')
+                ),
+            array(  
+                'header' => 'market',
+                'values' => array('central','bamburi', 'central')
+                ),
+            array(
+                'header' => 'Chicken price',
+                'values' => array('300 Ksh', '350 Ksh', '400 Ksh')
+                )
+            );
+
+        $result = $this->ContentVariableTable->selectColumnsForKeys($columns);
+        $this->assertEqual($columns[0]['type'], 'key');
+        $this->assertEqual($columns[1]['type'], 'key');
+        $this->assertEqual($columns[2]['type'], 'contentvariable');
+    }
+
+
+    public function testRemoveEmptyCell()
+    {
+        $columns = array(   
+            array(  
+                'header' => 'Town',
+                'values' => array('mombasa', 'nairobi', null, null)
+                ),
+            array(
+                'header' => 'Chicken price',
+                'values' => array('300 Ksh', '400 Ksh', null, null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null, null, '200 Ksh', null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, '300 Ksh', null, null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null, null, null, null)
+                )
+            );
+
+        $result = $this->ContentVariableTable->removeEmptyCells($columns);
+        $this->assertEqual(count($columns), 4);
+        for ($i=0; $i<4; $i++) {
+            $this->assertEqual(count($columns[$i]['values']), 4);
+        }
+    }
+
+
+    public function testGetAllKeysValue() 
+    {
+        $expected = array(
+            array('keys' => array('mombasa', 'central', 'Chicken price'), 'value' => '300 Ksh'),
+            array('keys' => array('mombasa', 'bamburi', 'Chicken price'), 'value' => '350 Ksh'),
+            array('keys' => array('nairobi', 'central', 'Chicken price'), 'value' => '400 Ksh'),
+            );
+
+        $columns = array(   
+            array(  
+                'header' => 'Town',
+                'values' => array('mombasa', 'mombasa', 'nairobi'),
+                'type' => 'key'
+                ),
+            array(  
+                'header' => 'market',
+                'values' => array('central','bamburi', 'central'),
+                'type' => 'key'
+                ),
+            array(
+                'header' => 'Chicken price',
+                'values' => array('300 Ksh', '350 Ksh', '400 Ksh'),
+                'type' => 'contentvariable'
+                )
+            );
+
+        $result = $this->ContentVariableTable->getAllKeysValue($columns);
+        $this->assertEqual($result, $expected);
     }
 
 

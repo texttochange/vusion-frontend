@@ -253,10 +253,37 @@ class ContentVariableTable extends MongoModel
         parent::beforeValidate();
         
         if (isset($this->data['ContentVariableTable']['columns'])) {
+            $this->removeEmptyCells($this->data['ContentVariableTable']['columns']);
             $this->selectColumnsForKeys($this->data['ContentVariableTable']['columns']);
         }
     }
 
+    function removeEmptyCells(&$columns)
+    {
+        $lastUsedRow = 0;
+        $lastUsedCol = 0;
+        //First scan the all object
+        for ($i=0; $i<count($columns); $i++) {
+            if ($columns[$i]['header'] != null) {
+                $lastUsedCol = $i;
+            }
+            for ($j=0; $j<count($columns[$i]['values']); $j++) {
+                if ($columns[$i]['values'][$j] != null) {
+                    $lastUsedCol = ($lastUsedCol < $i ? $i : $lastUsedCol);
+                    $lastUsedRow = ($lastUsedRow < $j ? $j : $lastUsedRow);
+                }
+            }
+        }
+        //Second remove what is out
+        for ($i=$lastUsedCol+1; $i<count($columns); $i++) {
+            unset($columns[$i]);
+        }
+        for ($i=0; $i<=$lastUsedCol; $i++) {
+            for ($j=$lastUsedRow+1; $j<=count($columns[$i]['values']); $j++) {
+                unset($columns[$i]['values'][$j]);
+            }
+        }
+    }
     
     function selectColumnsForKeys(&$columns) 
     {
