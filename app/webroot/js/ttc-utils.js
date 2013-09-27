@@ -536,7 +536,7 @@ function loadProgramStats(){
 					success: function(data){
 						$("#"+data['programURL']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
 					},
-					timeout: 10,  // 6 minutes
+					timeout: 360000,  // 6 minutes
 					error: function(){
 						var url = this.url;
 						$("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
