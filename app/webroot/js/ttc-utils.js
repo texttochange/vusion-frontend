@@ -570,15 +570,15 @@ function generateHtmlProgramStats(programStats, UseNotAvailableToolTip = false) 
 						'</span> participant(s)'+
 					'</div>'+
 					'<div>'+
-						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(total currentmonth) message(s)"' : 'title="Stats Not Available"') +'>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(total current month) message(s)"' : 'title="Stats Not Available"') +'>'+
 						'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
 						'</span> total message(s)'+
 					'</div>'+
 					'<div>'+
-						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(currentmonth) received"' : 'title="Stats Not Available"') +'>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(current month) received"' : 'title="Stats Not Available"') +'>'+
 						'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
 						'</span> received -'+
-						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(currentmonth) sent"' : 'title="Stats Not Available"') +'>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(current month) sent"' : 'title="Stats Not Available"') +'>'+
 						'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)'+
 						'</span> sent message(s)'+
 					'</div>'+
