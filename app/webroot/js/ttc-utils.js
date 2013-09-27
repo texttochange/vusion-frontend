@@ -538,7 +538,8 @@ function loadProgramStats(){
 					},
 					timeout: 360000,  // 6 minutes
 					error: function(){
-						$("#"+this.url.match(/programUrl=(.*)+/)[1]+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
+						var url = this.url;
+						$("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
 					}
 			});
 		}
@@ -597,4 +598,12 @@ function generateHtmlProgramStats(programStats) {
 		myTemplate = myTemplate.replace('Schedule', programStats['schedule-count']);
 		myTemplate = myTemplate.replace('Todayschedule', programStats['today-schedule-count']);
 	return myTemplate;
+}
+
+
+function getParameterByName(url, name){
+	name = name.replace (/[\[]/, "\\\[").replace (/[\]]/, "\\\]");
+	var regex = new RegExp("[\\?&]" + name +"=([^&#]*)"),
+	results = regex.exec(url);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, ""));
 }
