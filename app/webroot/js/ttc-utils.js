@@ -547,34 +547,10 @@ function loadProgramStats(){
 }
 
 
-function generateHtmlProgramStats(programStats) {
-	var myTemplate ='<div>'+
-						'<span class=stat '+ ((programStats != null) ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
-						'Activeparticipant/Totalparticipantstats'+						
-						'</span> participant(s)'+
-					'</div>'+
-					'<div>'+
-						'<span class=stat '+ ((programStats != null) ? 'title="Total(total currentmonth) message(s)"' : 'title="Stats Not Available"') +'>'+
-						'Totalhistory(Totalcurrentmonthmessages)'+
-						'</span> total message(s)'+
-					'</div>'+
-					'<div>'+
-						'<span class=stat '+ ((programStats != null) ? 'title="Total(currentmonth) received"' : 'title="Stats Not Available"') +'>'+
-						'Allreceivedmessages(Currentmonthreceivedmessages)'+
-						'</span> received -'+
-						'<span class=stat '+ ((programStats != null) ? 'title="Total(currentmonth) sent"' : 'title="Stats Not Available"') +'>'+
-						'Allsentmessages(Currentmonthsentmessages)'+
-						'</span> sent message(s)'+
-					'</div>'+
-					'<div>'+
-						'<span class=stat '+ ((programStats != null) ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
-						'Schedule(Todayschedule)'+
-						'</span> schedule(s)'+
-					'</div>'
-		
-		if(programStats == null){
-			programStats = {'active-participant-count': 'N/A',
-							'participant-count' : 'N/A',
+function generateHtmlProgramStats(programStats, UseNotAvailableToolTip = false) {
+	if(programStats == null){
+			programStats = {'active-participant-count': 'N',
+							'participant-count' : 'A',
 							'all-received-messages-count': 'N/A',
 							'current-month-received-messages-count' : 'N/A',
 							'all-sent-messages-count' : 'N/A',
@@ -585,18 +561,43 @@ function generateHtmlProgramStats(programStats) {
 							'schedule-count' : 'N/A',
 							'object-type' : 'program-stats',
 							'model-version': '1'};
+			 UseNotAvailableToolTip = true;
 		}
+		
+	var myTemplate ='<div>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
+						'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT'+						
+						'</span> participant(s)'+
+					'</div>'+
+					'<div>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(total currentmonth) message(s)"' : 'title="Stats Not Available"') +'>'+
+						'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
+						'</span> total message(s)'+
+					'</div>'+
+					'<div>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(currentmonth) received"' : 'title="Stats Not Available"') +'>'+
+						'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
+						'</span> received -'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(currentmonth) sent"' : 'title="Stats Not Available"') +'>'+
+						'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)'+
+						'</span> sent message(s)'+
+					'</div>'+
+					'<div>'+
+						'<span class=stat '+ ((UseNotAvailableToolTip == false) ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
+						'SCHEDULE(TODAY_SCHEDULE)'+
+						'</span> schedule(s)'+
+					'</div>'
 	
-		myTemplate = myTemplate.replace('Activeparticipant', programStats['active-participant-count']);
-		myTemplate = myTemplate.replace('Totalparticipantstats', programStats['participant-count']);
-		myTemplate = myTemplate.replace('Totalhistory', programStats['history-count']);
-		myTemplate = myTemplate.replace('Totalcurrentmonthmessages', programStats['total-current-month-messages-count']);
-		myTemplate = myTemplate.replace('Allreceivedmessages', programStats['all-received-messages-count']);
-		myTemplate = myTemplate.replace('Currentmonthreceivedmessages', programStats['current-month-received-messages-count']);
-		myTemplate = myTemplate.replace('Allsentmessages', programStats['all-sent-messages-count']);
-		myTemplate = myTemplate.replace('Currentmonthsentmessages', programStats['current-month-sent-messages-count']);
-		myTemplate = myTemplate.replace('Schedule', programStats['schedule-count']);
-		myTemplate = myTemplate.replace('Todayschedule', programStats['today-schedule-count']);
+		myTemplate = myTemplate.replace('ACTIVE_PARTICIPANT', programStats['active-participant-count']);
+		myTemplate = myTemplate.replace('TOTAL_PARTICIPANT', programStats['participant-count']);
+		myTemplate = myTemplate.replace('TOTAL_HISTORY', programStats['history-count']);
+		myTemplate = myTemplate.replace('TOTAL_CURRENT_MONTH_MESSAGES', programStats['total-current-month-messages-count']);
+		myTemplate = myTemplate.replace('ALL_RECEIVED_MESSAGES', programStats['all-received-messages-count']);
+		myTemplate = myTemplate.replace('CURRENT_MONTH_RECEIVED_MESSAGES', programStats['current-month-received-messages-count']);
+		myTemplate = myTemplate.replace('ALL_SENT_MESSAGES', programStats['all-sent-messages-count']);
+		myTemplate = myTemplate.replace('CURRENT_MONTH_SENT_MESSAGES', programStats['current-month-sent-messages-count']);
+		myTemplate = myTemplate.replace('SCHEDULE', programStats['schedule-count']);
+		myTemplate = myTemplate.replace('TODAY_SCHEDULE', programStats['today-schedule-count']);
 	return myTemplate;
 }
 
