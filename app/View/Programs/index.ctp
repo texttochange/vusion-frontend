@@ -27,6 +27,7 @@
 	<?php
 	if (preg_grep('/^filter/', array_keys($this->params['url'])) && empty($programs))
 	    echo "No results found.";
+	$programStatsToCompute =array();
 	foreach ($programs as $program): ?>
 
 	<div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
@@ -42,12 +43,7 @@
 		<?php
 		if (isset($program['Program']['shortcode'])) {
 			echo '<div class ="ttc-program-stats">';
-			$this->Js->set('programs', $programs);
-			$this->Js->get('document')->event(
-				'ready',
-				'loadProgramStats();             
-				');
-			
+			$programStatsToCompute[] = $program;			
 			echo '<div>';
 			echo '<img src="/img/ajax-loader.gif">';
 			echo '</div>';
@@ -72,6 +68,13 @@
 		?>
 	</div>
     <?php endforeach; ?>
+    <?php
+		$this->Js->set('programs', $programStatsToCompute);
+		$this->Js->get('document')->event(
+				'ready',
+				'loadProgramStats();             
+				');
+			?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
 

@@ -35,7 +35,7 @@ class StatsComponent extends Component
             $programTimeNow = $this->ProgramSetting->getProgramTimeNow();
             if(empty($programTimeNow))
             return array(
-                'active-participant-count' => 'N/A',
+            	'active-participant-count' => 'N/A',
                 'participant-count' => 'N/A',
                 'all-received-messages-count'=> 'N/A',
                 'current-month-received-messages-count' => 'N/A',
