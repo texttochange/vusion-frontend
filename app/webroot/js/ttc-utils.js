@@ -549,19 +549,20 @@ function loadProgramStats(){
 
 function generateHtmlProgramStats(programStats) {
     if(programStats == null){
-            programStats = {'active-participant-count': 'N/A',
-                            'participant-count' : 'N/A',
-                            'all-received-messages-count': 'N/A',
-                            'current-month-received-messages-count' : 'N/A',
-                            'all-sent-messages-count' : 'N/A',
-                            'current-month-sent-messages-count' : 'N/A',
-                            'total-current-month-messages-count' : 'N/A',
-                            'history-count' : 'N/A',
-                            'today-schedule-count' : 'N/A',
-                            'schedule-count' : 'N/A',
-                            'object-type' : 'program-stats',
-                            'model-version': '1'};
-        }
+        programStats = {
+            'active-participant-count': 'N/A',
+            'participant-count' : 'N/A',
+            'all-received-messages-count': 'N/A',
+            'current-month-received-messages-count' : 'N/A',
+            'all-sent-messages-count' : 'N/A',
+            'current-month-sent-messages-count' : 'N/A',
+            'total-current-month-messages-count' : 'N/A',
+            'history-count' : 'N/A',
+            'today-schedule-count' : 'N/A',
+            'schedule-count' : 'N/A',
+            'object-type' : 'program-stats',
+            'model-version': '1'};
+    }
         
     var myTemplate ='<div>'+
                         '<span class=stat '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
