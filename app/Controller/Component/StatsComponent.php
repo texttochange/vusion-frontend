@@ -46,8 +46,8 @@ class StatsComponent extends Component
         try{
             $this->ProgramSetting = new ProgramSetting(array('database' => $database));
             $programTimeNow = $this->ProgramSetting->getProgramTimeNow();            
-            if(empty($programTimeNow)){
-            return $programStats;
+           if(empty($programTimeNow)){
+                return $programStats;
             }
             $tempParticipant = new Participant(array('database' => $database));                
             $activeParticipantCount = $tempParticipant->find(
