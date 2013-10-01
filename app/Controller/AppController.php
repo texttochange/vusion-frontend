@@ -45,6 +45,7 @@ class AppController extends Controller
         'Cookie', 
         'PhoneNumber',
         'CreditManager',
+        'LogManager'
         );
 
     var $helpers = array(
@@ -57,8 +58,10 @@ class AppController extends Controller
         'AclLink',
         'Text',
         'BigNumber',
-        'CreditManager');
+        'CreditManager'
+        );
 
+    var $redis = null;
     var $redisProgramPrefix = "vusion:programs"; 
 
     
@@ -90,14 +93,11 @@ class AppController extends Controller
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             
-            $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);
-            
-            $hasProgramLogs = $this->_hasProgramLogs($this->redis, $programDetails['database']);
-            if ($this->_hasProgramLogs($this->redis, $programDetails['database'])) {
-                $programLogsUpdates = $this->_processProgramLogs($this->redis, $programDetails['database']);
-            }
+            $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
+            $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);      
+
             $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
-            $this->set(compact('programDetails', 'currentProgramData', 'hasProgramLogs', 'programLogsUpdates', 'creditStatus')); 
+            $this->set(compact('programDetails', 'currentProgramData', 'programLogsUpdates', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
@@ -114,30 +114,6 @@ class AppController extends Controller
         $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
         $this->redis->connect($redisHost, $redisPort);
      }
-    
-     
-    protected function _hasProgramLogs($redis,$program)
-    {
-        if (count($redis->zRange($program.':logs', -5, -1, true)) > 0)
-            return true;
-        return false;
-    }
-    
-    
-    protected function _processProgramLogs($redis,$program)
-    {
-        if ($this->_hasProgramLogs($redis,$program)) {
-            $programLogs = array();
-        
-            $logs = $redis->zRange($program.':logs', -5, -1, true);
-            
-            foreach ($logs as $key => $value) {
-                $programLogs[] = $key;
-            }
-            return array_reverse($programLogs);
-        }
-        return array();    	    	    
-    }
     
     
     protected function _getcurrentProgramData($databaseName)

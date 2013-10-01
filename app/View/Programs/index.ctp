@@ -29,7 +29,7 @@
 	    echo "No results found.";
 	$programStatsToCompute =array();
 	foreach ($programs as $program): ?>
-
+	
 	<div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
 	<?php $programName = $this->Text->truncate($program['Program']['name'], 
 			24, 

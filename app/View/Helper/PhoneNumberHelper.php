@@ -10,7 +10,7 @@ class PhoneNumberHelper extends AppHelper {
             return $code;
         }
         $explodedCode = explode("-", $code);
-        $prefix = intval($explodedCode[0]);
+        $prefix = $explodedCode[0];
         if (!isset($countriesPrefixes[$prefix])) {
             $explodedCode[0] = __("Unknown");
         } else {
@@ -53,7 +53,7 @@ class PhoneNumberHelper extends AppHelper {
 
     public function isShortcodeWithPrefix($code)
     {
-        return (preg_match('/^\\d*-\\d*$/', $code) == true);
+        return (preg_match('/^(\\d )?\\d*-\\d*$/', $code) == true);
     }
 
     public function isShortcode($code)

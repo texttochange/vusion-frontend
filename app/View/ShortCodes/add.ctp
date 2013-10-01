@@ -6,18 +6,23 @@
 	<?php	
 	echo $this->Html->tag('label',__('Country'));
 	echo "<br />";
-	echo $this->Form->select('country', $countryOptions, array('id'=> 'country'));
-	$this->Js->get('#country')->event('change', '		       
-	    $("#international-prefix").val(getCountryCodes($("#country option:selected").text()));
+	echo $this->Form->select('country', $countries, array('id'=> 'country'));
+	$this->Js->set('prefixesByCountriesOptions', $prefixesByCountriesOptions);
+	$this->Js->get('#country')->event('change',
+		'var country = $("#country :selected").val();
+		var internationalPrefix = window.app.prefixesByCountriesOptions[country];
+		$("#international-prefix").val(internationalPrefix);
 	    ');
 	?>
 	</div>
 	<?php
-	echo $this->Form->input(__('shortcode'));
+	echo $this->Form->input('shortcode', array('label' => __('Shortcode')));
 	echo $this->Form->input('international-prefix',
-	    array('id' => 'international-prefix',
+	    array(
+	    	'id' => 'international-prefix',
 	        'label' =>__('International Prefix'),
-	        'readonly' => true)
+	        'readonly' => true
+	        )
 	    );
 	?>
 	<div>
@@ -33,14 +38,14 @@
 	</div>
 	<div>
 	<?php
-	echo $this->Html->tag('label',__('Support Customized Id'));
 	echo $this->Form->checkbox('support-customized-id');
+	echo $this->Html->tag('label',__('Support Customized Id'));
 	?>
 	</div>
 	<div>
 	<?php
-	echo $this->Html->tag('label',__('Supported Internationally'));
 	echo $this->Form->checkbox('supported-internationally');
+	echo $this->Html->tag('label',__('Supported Internationally'));
 	?>
 	</div>
 	<?php

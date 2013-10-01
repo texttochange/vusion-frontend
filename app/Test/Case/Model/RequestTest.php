@@ -180,7 +180,7 @@ class RequestTestCase extends CakeTestCase
     }
 
     
-    public function testSave_validateContent_fail()
+    public function testSave_validateContent_fail_apostrophe_not_allowed()
     {
         $request = array(
             'Request' => array(
@@ -195,6 +195,40 @@ class RequestTestCase extends CakeTestCase
             'The apostrophe used is not allowed.',
             $this->Request->validationErrors['responses'][0]['content'][0]);
     }
+    
+    
+    public function testSave_validateContent_fail_dynamic_content()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'the box is [show.box]'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            "To be used as dynamic content, 'show' can only be either 'participant' or 'contentVariable'.",
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+        
+        $request['Request']['responses'][0]['content'] = "here is [participant.name.gender]";
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            "To be used as dynamic concent, participant only accept one key.",
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+        
+        $request['Request']['responses'][0]['content'] = "here is [contentVariable.pen.%#color]";
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            "To be used as dynamic content, '%#color' can only be composed of letter(s), digit(s) and/or space(s).",
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+    }
+    
 
     public function testSave_beforeValidate_removeEmptyReponses()
     {
@@ -248,6 +282,22 @@ class RequestTestCase extends CakeTestCase
             'The apostrophe used is not allowed.',
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
+/*
 
-
+    public function testSave_fail_dynamic_content()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'The weather today is [program.weather].'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            'Incorrect use of dynamic content. The correct format is [participant.key] or [contentVariable.key.key].',
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+    }
+*/
 }

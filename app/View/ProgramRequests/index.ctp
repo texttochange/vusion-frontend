@@ -19,12 +19,12 @@
 	</div>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
+	<table class="requests" cellpadding="0" cellspacing="0">
 	    <thead>	
 	        <tr>
-			    <th class="direction"><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="keywords"><?php echo $this->Paginator->sort('keyword', null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="responses"><?php echo $this->Paginator->sort('responses', null, array('url'=> array('program' => $programDetails['url'])));?></th>
-			    <th class="status"><?php echo $this->Paginator->sort('do', null, array('url'=> array('program' => $programDetails['url'])));?></th>
+			    <th class="do"><?php echo $this->Paginator->sort('do', null, array('url'=> array('program' => $programDetails['url'])));?></th>
 			    <th class="action-requests"><?php echo __('Actions');?></th>
 			</tr>
 		</thead>

@@ -31,4 +31,24 @@ class VusionConst
 
     const ATTIME_REGEX = '/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
     const ATTIME_FAIL_MESSAGE = 'The at-time is not valid.';
+
+    const FORWARD_URL_REGEX = '/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))(&[-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))*)?)?$/';
+    const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
+    
+    const CONTENT_VARIABLE_KEY_REGEX = '/^[a-z0-9A-Z\s]+$/';
+    const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
+    
+    const CONTENT_VARIABLE_KEYS_FULL_REGEX = '/^[a-z0-9A-Z\s]+(\.[a-z0-9A-Z\s]+)?$/';
+    const CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE = 'The correct format is "key" or "key.key".';
+    
+    const CONTENT_VARIABLE_VALUE_REGEX = '/^[a-z0-9A-Z\s\.\,]+$/';
+    const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
+
+    # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
+    const CONTENT_VARIABLE_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
+    const CONTENT_VARIABLE_ALLOWED_REGEX = '/^[a-z0-9A-Z\s\.]+$/';
+    const CONTENT_VARIABLE_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
+    
+    const CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL = 'To be used as dynamic concent, participant only accept one key.';
+    const CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used as dynamic concent, contentVariable only accept max two keys.';
 }
