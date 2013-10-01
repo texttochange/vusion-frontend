@@ -27,82 +27,54 @@
 	<?php
 	if (preg_grep('/^filter/', array_keys($this->params['url'])) && empty($programs))
 	    echo "No results found.";
+	$programStatsToCompute =array();
 	foreach ($programs as $program): ?>
-
-	<div class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
-	<?php 
-	$programName = $this->Text->truncate($program['Program']['name'], 
-	    24, 
-	    array('ellipsis' => '...',
+	
+	<div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
+	<?php $programName = $this->Text->truncate($program['Program']['name'], 
+			24, 
+			array('ellipsis' => '...',
 			'exact' => true ));
 	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title','title' => $program['Program']['name']));
-	if (isset($program['Program']['shortcode'])) {
-	    $shortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
-	        $program['Program']['shortcode'],
-	        $countryIndexedByPrefix);
-	    echo $this->Html->tag('div', $shortcode, array('class'=>'ttc-program-details'));
-	} 
-	echo '<div class ="ttc-program-stats">';
-	echo '<div>';
-	if (isset($program['Program']['shortcode'])) {
-	    echo $this->Html->tag(
-	        'span',
-	        $program['Program']['stats']['active-participant-count'].'/'.
-	        $program['Program']['stats']['participant-count'],
-	        array('title' => __('Optin / Total participant(s)'), 'class' => 'stat'));	
-	    echo __(' participant(s)');
-	    echo '</div>';
-	    echo '<div>';
-	    echo $this->Html->tag(
-	        'span',
-	        $program['Program']['stats']['history-count'].'('.
-	        $program['Program']['stats']['total-current-month-messages-count'].')',
-	        array('title' => __('Total (total current month) message(s)'), 'class' => 'stat'));	
-	    echo __(' total message(s)');
-	    echo '</div>';
-	    echo '<div>';
-	    echo $this->Html->tag(
-	        'span',
-	        $program['Program']['stats']['all-received-messages-count'].'('.
-	        $program['Program']['stats']['current-month-received-messages-count'].')',
-	        array('title' => __('Total (current month) received - Total(current month) sent'), 'class' => 'stat'));	
-	    echo __(' received '); 
-	    echo $this->Html->tag(
-	        'span',
-	        $program['Program']['stats']['all-sent-messages-count'].'('.
-	        $program['Program']['stats']['current-month-sent-messages-count'].')',
-	        array('title' => __('Total (current month) received - Total(current month) sent'), 'class' => 'stat'));	
-	    echo __(' sent message(s)');
-	    echo '</div>';
-	    echo '<div>';
-	    echo $this->Html->tag(
-	        'span',
-	        $program['Program']['stats']['schedule-count'].'('.
-	        $program['Program']['stats']['today-schedule-count'].')',
-	        array('title' => __('Total (today) schedule(s)'), 'class' => 'stat'));	
-	    echo __(' schedule(s)'); 				
-	}else{
-	    echo $this->Html->link('Configure Shortcode and TimeZone', 
-	        array('program' => $program['Program']['url'],
-	            'controller' => 'programSettings',
-	            'action' => 'index'
-	            ),
-	        array('style'=>'text-decoration:none;font-weight:normal; font-size:14px; color:#C43C35;', 'class' => 'stat'));
-	}
-	echo '</div>';
-	echo '</div>';
 	?>
-	<?php if ($isProgramEdit) { ?>
-	<div class="ttc-program-quicklinks">
-		<?php echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id'])); ?>
-		<br>
-		<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), array('name'=>'delete-program'), __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
-	</div>
-	<?php };
-	    $this->Js->get("[name='delete-program']")->event("click", "event.stopPropagation()");
-	?>
+		<?php
+		if (isset($program['Program']['shortcode']))
+		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
+		<?php
+		if (isset($program['Program']['shortcode'])) {
+			echo '<div class ="ttc-program-stats">';
+			$programStatsToCompute[] = $program;			
+			echo '<div>';
+			echo '<img src="/img/ajax-loader.gif">';
+			echo '</div>';
+			echo '</div>';
+		}else{
+			echo $this->Html->link('Configure Shortcode and TimeZone', 
+				array('program' => $program['Program']['url'],
+					'controller' => 'programSettings',
+					'action' => 'index'
+					),
+				array('class' => 'configure-program-settings'));
+		}
+		?>
+		<?php if ($isProgramEdit) { ?>
+		<div class="ttc-program-quicklinks">
+			<?php echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id'])); ?>
+			<br>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), array('name'=>'delete-program'), __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
+		</div>
+		<?php };
+		$this->Js->get("[name='delete-program']")->event("click", "event.stopPropagation()");
+		?>
 	</div>
     <?php endforeach; ?>
+    <?php
+		$this->Js->set('programs', $programStatsToCompute);
+		$this->Js->get('document')->event(
+				'ready',
+				'loadProgramStats();             
+				');
+			?>
 </div>
 <?php echo $this->Js->writeBuffer(); ?>
 
