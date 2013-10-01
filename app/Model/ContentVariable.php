@@ -31,6 +31,10 @@ class ContentVariable extends MongoModel
                 'rule' => 'validateKeys',
                 'message' => 'noMessage'
                 ),
+            'validateKeysCount' => array(
+                'rule' => 'validateKeysCount',
+                'message' => 'A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example "key1.key2".'
+                ),            
             'isUnique' => array(
                 'rule' => 'isUnique',
                 'message' => 'This keys pair already exists. Please choose another.'
@@ -45,12 +49,17 @@ class ContentVariable extends MongoModel
             ),
         );
     
+    public function validateKeysCount($check) 
+    {
+        if (count($check['keys']) < 1 || count($check['keys']) > 3) {
+            return false;
+        }
+        return true;
+    }
+
     
     public function validateKeys($check)
     {
-        $keyString = '';
-        $regex = VusionConst::CONTENT_VARIABLE_KEYS_FULL_REGEX;
-        $index = 0;
         foreach ($check['keys'] as $keyItem) {
             if (is_string($validationError = $this->validateKey($keyItem))) {
                if (!isset($this->validationErrors['keys'])) {
@@ -58,14 +67,10 @@ class ContentVariable extends MongoModel
                 }
                 $this->validationErrors['keys'][$index] = $validationError;
             }
-            $index++;
-            $keyString = $keyString . $keyItem['key'] . ".";
         }
         if (isset($this->validationErrors['keys'])) {
             return false;
-        } else if (!preg_match($regex, rtrim($keyString, '.'))) {
-            return VusionConst::CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE;
-        }
+        } 
         return true;
     }
     

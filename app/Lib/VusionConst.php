@@ -37,10 +37,7 @@ class VusionConst
     
     const CONTENT_VARIABLE_KEY_REGEX = '/^[a-z0-9A-Z\s]+$/';
     const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
-    
-    const CONTENT_VARIABLE_KEYS_FULL_REGEX = '/^[a-z0-9A-Z\s]+(\.[a-z0-9A-Z\s]+)?$/';
-    const CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE = 'The correct format is "key" or "key.key".';
-    
+        
     const CONTENT_VARIABLE_VALUE_REGEX = '/^[a-z0-9A-Z\s\.\,]*$/';
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
 

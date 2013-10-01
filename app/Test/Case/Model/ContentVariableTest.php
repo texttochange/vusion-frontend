@@ -74,7 +74,7 @@ class ContentVariableTestCase extends CakeTestCase
         
     }
 
-    public function testSave_fail_empty() 
+    public function testSave_fail_keyEmpty() 
     {
         ## keys field is empty
         $contentVariable = array(
@@ -83,7 +83,21 @@ class ContentVariableTestCase extends CakeTestCase
             );
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
-        $this->assertEquals('The correct format is "key" or "key.key".',
+        $this->assertEquals(
+            'A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example "key1.key2".',
+            $this->ContentVariable->validationErrors['keys'][0]);
+    }
+
+    public function testSave_fail_tooManyKeys() 
+    {
+        $contentVariable = array(
+            'keys' => 'key1.key2.key3.key4',
+            'value' => '28C'
+            );
+        $this->ContentVariable->create();
+        $this->assertFalse($this->ContentVariable->save($contentVariable));
+        $this->assertEquals(
+            'A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example "key1.key2".',
             $this->ContentVariable->validationErrors['keys'][0]);
     }
 
