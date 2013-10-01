@@ -30,24 +30,25 @@ class StatsComponent extends Component
     
     protected function _getProgramStats($database)
     {
+        $programStats = array(
+            'active-participant-count' => 'N/A',
+            'participant-count' => 'N/A',
+            'all-received-messages-count'=> 'N/A',
+            'current-month-received-messages-count' => 'N/A',
+            'all-sent-messages-count' => 'N/A',
+            'current-month-sent-messages-count' => 'N/A',
+            'total-current-month-messages-count' => 'N/A',
+            'history-count' => 'N/A',
+            'today-schedule-count' => 'N/A',
+            'schedule-count' => 'N/A',
+            'object-type' => 'program-stats',
+            'model-version'=> '1');
         try{
             $this->ProgramSetting = new ProgramSetting(array('database' => $database));
-            $programTimeNow = $this->ProgramSetting->getProgramTimeNow();
-            if(empty($programTimeNow))
-            return array(
-                'active-participant-count' => 0,
-                'participant-count' => 0,
-                'all-received-messages-count'=> 0,
-                'current-month-received-messages-count' => 0,
-                'all-sent-messages-count' => 0,
-                'current-month-sent-messages-count' => 0,
-                'total-current-month-messages-count' => 0,
-                'history-count' => 0,
-                'today-schedule-count' => 0,
-                'schedule-count' => 0,
-                'object-type' => 'program-stats',
-                'model-version'=> '1');
-            
+            $programTimeNow = $this->ProgramSetting->getProgramTimeNow();            
+            if(empty($programTimeNow)){
+                return $programStats;
+            }
             $tempParticipant = new Participant(array('database' => $database));                
             $activeParticipantCount = $tempParticipant->find(
                 'count', array(
@@ -133,19 +134,7 @@ class StatsComponent extends Component
                 'model-version'=> '1');
             return $programStats;
         } catch (Exception $e) {
-            return array(
-                'active-participant-count' => 'N/A',
-                'participant-count' => 'N/A',
-                'all-received-messages-count'=> 'N/A',
-                'current-month-received-messages-count' => 'N/A',
-                'all-sent-messages-count' => 'N/A',
-                'current-month-sent-messages-count' => 'N/A',
-                'total-current-month-messages-count' => 'N/A',
-                'history-count' => 'N/A',
-                'today-schedule-count' => 'N/A',
-                'schedule-count' => 'N/A',
-                'object-type' => 'program-stats',
-                'model-version'=> '1');
+            return $programStats;
         }
     }
     

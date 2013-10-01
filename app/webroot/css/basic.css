@@ -583,7 +583,7 @@ display: inline;
 .ttc-program-stats {
     position: absolute;
     left:400px;
-    top: 7px;
+    top: 4px;
 }
 
 .ttc-program-quicklinks{
@@ -1265,3 +1265,12 @@ display: inline;
 #masstag-tags{
 	margin-bottom: 12px;	
 }
+
+.configure-program-settings {
+	font-size:14px; 
+	color:#C43C35; 
+	position: absolute; 
+	padding-left: 341px; 
+	top: 22px
+}
+
