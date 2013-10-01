@@ -30,7 +30,7 @@ class StatsComponent extends Component
     
     protected function _getProgramStats($database)
     {
-    	$programStats = array(
+        $programStats = array(
             'active-participant-count' => 'N/A',
             'participant-count' => 'N/A',
             'all-received-messages-count'=> 'N/A',
@@ -46,7 +46,7 @@ class StatsComponent extends Component
         try{
             $this->ProgramSetting = new ProgramSetting(array('database' => $database));
             $programTimeNow = $this->ProgramSetting->getProgramTimeNow();            
-           if(empty($programTimeNow)){
+            if(empty($programTimeNow)){
                 return $programStats;
             }
             $tempParticipant = new Participant(array('database' => $database));                
