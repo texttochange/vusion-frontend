@@ -534,7 +534,7 @@ function loadProgramStats(){
                     url: "/programs/getProgramStats.json",
                     data: {"programUrl": programUrl},
                     success: function(data){
-                        $("#"+data['programURL']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
+                        $("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
                     },
                     timeout: 360000,  // 6 minutes
                     error: function(){

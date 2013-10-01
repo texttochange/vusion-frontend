@@ -387,9 +387,9 @@ class ProgramsController extends AppController
                 'conditions' => array('url'=> $programParamsUrl)));
             if(count($programUrl) > 0){
             $programStats = $this->Stats->getProgramStats($programUrl[0]['Program']['database']);
-            $result = array('status' =>'ok', 'programURL' => $programUrl[0]['Program']['url'], 'programStats' => $programStats);
+            $result = array('status' =>'ok', 'programUrl' => $programUrl[0]['Program']['url'], 'programStats' => $programStats);
             }else{
-            $result = array('status' =>'fail', 'programURL' => $programParamsUrl, 'reason' => "This program url ". $programParamsUrl." doesn't exist", 'programStats' => null);
+            $result = array('status' =>'fail', 'programUrl' => $programParamsUrl, 'reason' => "This program url ". $programParamsUrl." doesn't exist", 'programStats' => null);
             }
             $this->set(compact('result'));
         }
