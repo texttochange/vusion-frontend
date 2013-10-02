@@ -7,6 +7,7 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 class UsersController extends AppController
 {
     var $components = array('LocalizeUtils');
+    var $uses = array('User');
     
     public function beforeFilter()
     {
@@ -39,9 +40,9 @@ class UsersController extends AppController
         }
         
         $this->paginate = $paginate;
-        print_r($this->User->find('all'));
+        //print_r($paginate);
         $this->User->recursive = 0;
-        $this->set('users', $this->paginate());
+        $this->set('users', $this->paginate("User"));
     }
 
 

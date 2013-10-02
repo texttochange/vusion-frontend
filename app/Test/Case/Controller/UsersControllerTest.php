@@ -42,7 +42,7 @@ class UsersControllerTestCase extends ControllerTestCase
     *
     * @var array
     */
-    // public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
+    public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
 
    /**
     * setUp method
@@ -72,56 +72,31 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
 
-
-   /**
-    * testIndex method
-    *
-    * @return void
-    */
+/*
     public function testIndex() 
     {
 
     }
 
 
-   /**
-    * testView method
-    *
-    * @return void
-    */
     public function testView()
     {
 
     }
 
 
-   /**
-    * testAdd method
-    *
-    * @return void
-    */
     public function testAdd() 
     {
 
     }
 
 
-   /**
-    * testEdit method
-    *
-    * @return void
-    */
     public function testEdit() 
     {
 
     }
 
 
-   /**
-    * testDelete method
-    *
-    * @return void
-    */
     public function testDelete() 
     {
 
@@ -195,7 +170,7 @@ class UsersControllerTestCase extends ControllerTestCase
         
         $this->assertContains('/users/view/', $this->headers['Location']);
     }
-    
+*/    
     
     public function testFilters()
     {
@@ -205,8 +180,8 @@ class UsersControllerTestCase extends ControllerTestCase
                 'Session' => array('read')
             ),
             'models' => array(
-                'User' => array(/*'exists',*/ 'find', '_findCount', 'read', 'save'),
-                'Group' => array()
+                /*'User' => array('exists', 'find', '_findCount', 'read', 'save'),*/
+                /*'Group' => array()*/
                 )
             ));
         
@@ -224,7 +199,7 @@ class UsersControllerTestCase extends ControllerTestCase
             ->expects($this->once())
             ->method('exists')
             ->will($this->returnValue('true'));
-         */   
+            
          $user = array(
                     'User'=> array(
                         'id' => 1,
@@ -241,10 +216,10 @@ class UsersControllerTestCase extends ControllerTestCase
         
         $users->User
             ->expects($this->any())
-            ->method('_finCount')
-            ->will($this->returnValue(1));
-        
-        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=m");
+            ->method('_findCount')
+            ->will($this->returnValue(array(1)));
+        */
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
     }
 
 
