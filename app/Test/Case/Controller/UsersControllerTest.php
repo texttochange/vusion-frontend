@@ -195,6 +195,57 @@ class UsersControllerTestCase extends ControllerTestCase
         
         $this->assertContains('/users/view/', $this->headers['Location']);
     }
+    
+    
+    public function testFilters()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+            ),
+            'models' => array(
+                'User' => array(/*'exists',*/ 'find', '_findCount', 'read', 'save'),
+                'Group' => array()
+                )
+            ));
+        
+        $users->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+
+        $users->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->returnValue('User'));
+            
+        /*$users->User
+            ->expects($this->once())
+            ->method('exists')
+            ->will($this->returnValue('true'));
+         */   
+         $user = array(
+                    'User'=> array(
+                        'id' => 1,
+                        'username' => 'mark',
+                        'password' => Security::hash($this->hash.'gerald'),
+                        'group_id' => 1
+                        )
+                    );
+                
+        $users->User
+            ->expects($this->any())
+            ->method('find')
+            ->will($this->returnValue($user));
+        
+        $users->User
+            ->expects($this->any())
+            ->method('_finCount')
+            ->will($this->returnValue(1));
+        
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=m");
+    }
 
 
 }

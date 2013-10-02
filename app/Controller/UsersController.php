@@ -39,7 +39,7 @@ class UsersController extends AppController
         }
         
         $this->paginate = $paginate;
-        
+        print_r($this->User->find('all'));
         $this->User->recursive = 0;
         $this->set('users', $this->paginate());
     }
