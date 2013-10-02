@@ -29,18 +29,21 @@
 	    echo "No results found.";
 	$programStatsToCompute =array();
 	foreach ($programs as $program): ?>
-	
-	<div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
-	<?php $programName = $this->Text->truncate($program['Program']['name'], 
-			24, 
-			array('ellipsis' => '...',
-			'exact' => true ));
-	echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title','title' => $program['Program']['name']));
-	?>
-		<?php
-		if (isset($program['Program']['shortcode']))
-		    echo $this->Html->tag('div', $program['Program']['shortcode'], array('class'=>'ttc-program-details')); ?>
-		<?php
+    
+        <div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
+        <?php $programName = $this->Text->truncate($program['Program']['name'], 
+            24, 
+            array('ellipsis' => '...',
+            'exact' => true ));
+        echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title','title' => $program['Program']['name']));
+        if (isset($program['Program']['shortcode'])){
+            $shortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
+                $program['Program']['shortcode'],
+                $countryIndexedByPrefix);
+            echo $this->Html->tag('div', $shortcode, array('class'=>'ttc-program-details'));
+        }
+        ?>
+        <?php
 		if (isset($program['Program']['shortcode'])) {
 			echo '<div class ="ttc-program-stats">';
 			$programStatsToCompute[] = $program;			
