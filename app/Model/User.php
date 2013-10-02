@@ -171,30 +171,6 @@ class User extends AppModel
         'any' => 'any'
         );
 
-    
-
-    /*public function getFilters($subset = null) 
-    {
-        if (!isset($subset)) {
-            return $this->filterFields;
-        }
-        $subsetFilterFields = array();
-        foreach ($this->filterFields as $field => $filterField) {
-            $subsetOperator = array();
-            foreach ($filterField['operators'] as $operator => $details) {
-                if (isset($details[$subset])) {
-                    $subsetOperator[$operator] = $details;
-                }
-            }
-            if ($subsetOperator != array()) {
-                $subsetFilterField = $filterField;
-                $subsetFilterField['operators'] = $subsetOperator;
-                $subsetFilterFields[$field] = $subsetFilterField;
-            }
-        }
-        return $subsetFilterFields;
-    }*/
-
 
    public function validateFilter($filterParam)
     {
@@ -251,18 +227,18 @@ class User extends AppModel
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
-                } elseif (!isset($conditions['$and'])) {
-                    $conditions = array('$and' => array($conditions, $condition));
+                } elseif (!isset($conditions['AND'])) {
+                    $conditions = array('AND' => array($conditions, $condition));
                 } else {
-                    array_push($conditions['$and'], $condition);
+                    array_push($conditions['AND'], $condition);
                 }
             }  elseif ($filter['filter_operator'] == "any") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
-                } elseif (!isset($conditions['$or'])) {
-                    $conditions = array('$or' => array($conditions, $condition));
+                } elseif (!isset($conditions['OR'])) {
+                    $conditions = array('OR' => array($conditions, $condition));
                 } else {
-                    array_push($conditions['$or'], $condition);
+                    array_push($conditions['OR'], $condition);
                 }
             }
 
