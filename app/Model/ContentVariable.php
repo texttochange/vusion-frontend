@@ -40,7 +40,12 @@ class ContentVariable extends MongoModel
                 'message' => 'This keys pair already exists. Please choose another.'
                 ),
             ),
-        'table' => array(),
+        'table' => array(
+            'nonMutable' => array(
+                'rule' => 'nonMutable',
+                'message' => 'Editing table is not allowed.',
+                ),
+            ),
         'value' => array(
             'validateValue' => array(
                 'rule' => array('custom', VusionConst::CONTENT_VARIABLE_VALUE_REGEX),
@@ -101,6 +106,28 @@ class ContentVariable extends MongoModel
     }
     
     
+    public function nonMutable($check)
+    {
+        if ($this->id === false) {
+            return true;
+        }
+        $conditions = array(
+                'id' => $this->id,
+                'table' => array('$ne' => $check['table']));
+        $result = $this->find('count', array('conditions' => $conditions));
+        return $result == 0;
+    }
+
+
+    public function getListKeys($keys) {
+        $result = array();
+        foreach($keys as $key) {
+            $result[] = $key['key'];
+        }
+        return $result;
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -152,27 +179,6 @@ class ContentVariable extends MongoModel
             return $query;
         } 
         return $results;
-    }
-
-
-    public function allowToEdit($oldContentVariable, $newContentVariable)
-    {
-        if (isset($oldContentVariable['ContentVariable'])) {
-            $oldContentVariable = $oldContentVariable['ContentVariable'];
-        }
-        if (isset($newContentVariable['ContentVariable'])) {
-            $newContentVariable = $newContentVariable['ContentVariable'];
-        }
-        if (!isset($oldContentVariable['table'])) {
-            return true;
-        }
-        if (isset($newContentVariable['keys']) && $oldContentVariable['keys'] != $this->fromKeysStringToKeysArray($newContentVariable['keys'])) {
-            return __("Editing a keys/value's keys without the editing the table is not allowed.");
-        }
-        if (!isset($newContentVariable['table']) || $oldContentVariable['table'] != $newContentVariable['table']) {
-            return __("Editing a keys/value's table without the editing the table is not allowed.");
-        }
-        return true;
     }
 
 

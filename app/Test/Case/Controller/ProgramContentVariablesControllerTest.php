@@ -316,8 +316,8 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
             );
         $this->ContentVariableTable->create();
         $this->ContentVariableTable->save($contentVariableTable);
-        $savedContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
-
+        $savedContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price'))));
+ 
         $this->testAction(
             "/testurl/programContentVariables/edit/".$savedContentVariable[0]['ContentVariable']['_id'], 
             array(
@@ -376,6 +376,9 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
         $this->assertEquals(1, count($contentVariable));
         $this->assertEquals('200 Ksh', $contentVariable[0]['ContentVariable']['value']);
+
+        $contentVariableTable = $this->ContentVariableTable->find('first');
+        $this->assertEquals('200 Ksh', $contentVariableTable['ContentVariableTable']['columns'][1]['values'][0]);
     }
 
 

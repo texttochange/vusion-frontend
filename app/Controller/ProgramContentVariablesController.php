@@ -71,15 +71,11 @@ class ProgramContentVariablesController extends AppController
 
         $this->ContentVariable->id = $id;
         if (!$this->ContentVariable->exists()) {
-            throw new NotFoundException(__('The keys/value cannot found in the Content Variables.'));
+            throw new NotFoundException(__('The keys/value cannot be found in the Content Variables.'));
         }
-        $oldContentVariable = $this->ContentVariable->read();
 
         if ($this->request->is('post')) {
-            $allowed =  $this->ContentVariable->allowToEdit($oldContentVariable, $this->request->data);
-            if (is_string($allowed)) {
-                $this->Session->setFlash($allowed, 'default', array('class' => "message failure"));
-            } else if ($newContentVariable = $this->ContentVariable->save($this->request->data)) {
+            if ($newContentVariable = $this->ContentVariable->save($this->request->data)) {
                 $this->ContentVariableTable->updateTablefromKeysValue($newContentVariable);
                 $this->Session->setFlash(__('The keys/value has been saved in Content Variable.'),
                     'default',
@@ -243,6 +239,7 @@ class ProgramContentVariablesController extends AppController
         }
     }
 
+
     public function editTableValue()
     {
         $programUrl = $this->params['program'];
@@ -250,7 +247,7 @@ class ProgramContentVariablesController extends AppController
         if (!isset($this->request->data['ContentVariable']['keys'])) {
             throw new Exception('Missing keys');
         }
-        $contentVariables = array();
+
         $contentVariables = $this->ContentVariable->find('fromKeys',  array('conditions' => array('keys' => $this->request->data['ContentVariable']['keys'])));
         if (count($contentVariables) == 0) {
             throw new NotFoundException(__('This table value cannot be found in Content Variable.'));
@@ -261,11 +258,8 @@ class ProgramContentVariablesController extends AppController
             $this->ContentVariable->id = $contentVariable['ContentVariable']['_id'];
             $contentVariable['ContentVariable']['value'] = $this->request->data['ContentVariable']['value'];
             if ($this->ContentVariable->save($contentVariable)) {
-                $result = array('status'=> 'ok');
-            } else {
-                $result = array('status'=> 'fail');
+                $this->ContentVariableTable->updateTableFromKeysValue($contentVariable);
             }
-            $this->set(compact('result'));
         }
     }
 
