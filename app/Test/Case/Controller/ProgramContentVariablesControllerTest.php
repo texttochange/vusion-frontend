@@ -110,7 +110,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
  * Test methods
  *
  */    
-    
+ 
     public function testIndex_keysValue_table()
     {
         $contentVariable =  array(
@@ -150,7 +150,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
 
         $contentVariables = $this->mock_program_access();  
         $this->testAction("/testurl/programContentVariables/indexTable");
-        $indexedContentVariables = $this->vars['contentVariablesTable'];
+        $indexedContentVariables = $this->vars['contentVariableTables'];
         $this->assertEquals(1, count($indexedContentVariables));
         $this->assertEquals(
             $savedTable['ContentVariableTable']['_id'], 
@@ -201,7 +201,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
             );
 
         $this->testAction(
-            "/testurl/programContentVariables/addTable", 
+            "/testurl/programContentVariables/addTable.json", 
             array(
                 'method' => 'post',
                 'data' => $contentVariableTable
@@ -335,37 +335,89 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testEditTable()
+    public function testEditTableValue()
     {
         $contentVariables = $this->mock_program_access();  
-
-        $contentVariable =  array(
-            'ContentVariable' => array(
-                'keys' => 'your.key',
-                'value' => 'your value'
-             )
-        );
-        $this->ContentVariable->create();
-        $savedMessage = $this->ContentVariable->save($contentVariable);
-
-        $this->testAction(
-            "/testurl/programContentVariables/edit/".$savedMessage['ContentVariable']['_id'], 
-            array(
-                'method' => 'post',
-                'data' => array(
-                    'ContentVariable' => array(
-                        'keys' => 'a.Key',
-                        'value' => 'a value'
+        
+        $contentVariableTable =  array(
+            'ContentVariableTable' => array(
+                'name' => 'my table',
+                'columns' => array(
+                    array(
+                        'header' => 'Town',
+                        'values' => array('mombasa', 'nairobi')
+                        ),
+                    array(
+                        'header' => 'Chicken price',
+                        'values' => array('300 Ksh', '400 Ksh')
                         )
                     )
                 )
             );
-        $this->ContentVariable->id = $savedMessage['ContentVariable']['_id']."";
-        $contentVariable = $this->ContentVariable->read(); 
-        $this->assertEquals(
-           'a value',
-            $contentVariable['ContentVariable']['value']
-        );
+        $this->ContentVariableTable->create();
+        $this->ContentVariableTable->save($contentVariableTable);
+        $savedContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
+
+        $this->testAction(
+            "/testurl/programContentVariables/editTableValue.json", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'ContentVariable' => array(
+                        'keys' => array(
+                            'mombasa',
+                            'Chicken price'
+                            ),
+                        'value' => '200 Ksh'
+                        )
+                    )
+                )
+            );
+        $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
+        $this->assertEquals(1, count($contentVariable));
+        $this->assertEquals('200 Ksh', $contentVariable[0]['ContentVariable']['value']);
+    }
+
+
+    public function testEditTable()
+    {
+        $contentVariables = $this->mock_program_access();  
+        
+        $contentVariableTable =  array(
+            'ContentVariableTable' => array(
+                'name' => 'my table',
+                'columns' => array(
+                    array(
+                        'header' => 'Town',
+                        'values' => array('mombasa', 'nairobi')
+                        ),
+                    array(
+                        'header' => 'Chicken price',
+                        'values' => array('300 Ksh', '400 Ksh')
+                        )
+                    )
+                )
+            );
+        $this->ContentVariableTable->create();
+        $savedTable = $this->ContentVariableTable->save($contentVariableTable);
+
+
+        $contentVariableTable['ContentVariableTable']['columns'][0]['values'] = array('kisumu', 'mombasa');
+       
+        $this->testAction(
+            "/testurl/programContentVariables/editTable/".$savedTable['ContentVariableTable']['_id'], 
+            array(
+                'method' => 'post',
+                'data' => $contentVariableTable
+                )
+            );
+
+        $this->assertEquals(2, $this->ContentVariable->find('count'));
+        $this->assertEquals(1, $this->ContentVariableTable->find('count'));
+        $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
+        $this->assertEquals('400 Ksh', $contentVariable[0]['ContentVariable']['value']);
+        $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('kisumu', 'Chicken price')))); 
+        $this->assertEquals('300 Ksh', $contentVariable[0]['ContentVariable']['value']);
     }
   
     public function testDelete()

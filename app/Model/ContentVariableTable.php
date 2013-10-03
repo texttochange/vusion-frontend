@@ -256,6 +256,7 @@ class ContentVariableTable extends MongoModel
             $this->removeEmptyCells($this->data['ContentVariableTable']['columns']);
             $this->selectColumnsForKeys($this->data['ContentVariableTable']['columns']);
         }
+        return true;
     }
 
     function removeEmptyCells(&$columns)
@@ -275,11 +276,13 @@ class ContentVariableTable extends MongoModel
             }
         }
         //Second remove what is out
-        for ($i=$lastUsedCol+1; $i<count($columns); $i++) {
+        $totalCol = count($columns);
+        for ($i=$lastUsedCol+1; $i<=$totalCol; $i++) {
             unset($columns[$i]);
         }
         for ($i=0; $i<=$lastUsedCol; $i++) {
-            for ($j=$lastUsedRow+1; $j<=count($columns[$i]['values']); $j++) {
+            $totalRow = count($columns[$i]['values']);
+            for ($j=$lastUsedRow+1; $j<=$totalRow; $j++) {
                 unset($columns[$i]['values'][$j]);
             }
         }
@@ -399,7 +402,8 @@ class ContentVariableTable extends MongoModel
             if ($saved == false) {
                 //A failure in saving 1 contentvarible, all content varible of this table are removed... dangerous state.
                 $this->ContentVariable->deleteAll(array('table' => $this->data['ContentVariableTable']['name']), false);
-                throw new Exception("Failed to save keys value from table.");
+                $errors = array_values($this->ContentVariable->validationErrors);
+                throw new Exception(__("Failed to save keys/value from table: %s", $errors[0]));
             }
         }
         return true;

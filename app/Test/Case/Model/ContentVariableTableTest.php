@@ -461,6 +461,18 @@ class ContentVariableTableTestCase extends CakeTestCase
             array(
                 'header' => null,
                 'values' => array(null, null, null, null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null, null, null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null, null, null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null, null, null, null)
                 )
             );
 

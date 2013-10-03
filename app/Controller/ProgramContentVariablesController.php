@@ -6,7 +6,8 @@ App::uses('ContentVariableTable', 'Model');
 
 class ProgramContentVariablesController extends AppController
 {
-    public $uses = array('ContentVariable', 'ContentVariableTable');
+    var $components = array('RequestHandler');
+    var $uses = array('ContentVariable', 'ContentVariableTable');
 
     
     function constructClasses()
@@ -117,7 +118,7 @@ class ProgramContentVariablesController extends AppController
         
         if ($this->ContentVariable->delete()) {
             $this->Session->setFlash(
-                __('The keys/value has been deleted from Content Variable.'),
+                __('The keys/value has been deleted from the Content Variables.'),
                 'default',
                 array('class'=>'message success')
                 );
@@ -129,7 +130,7 @@ class ProgramContentVariablesController extends AppController
                     )
                 );
         }
-        $this->Session->setFlash(__('The keys/calue was not deleted from Content Variable.'), 
+        $this->Session->setFlash(__('The keys/calue was not deleted from the Content Variables.'), 
                 'default',
                 array('class' => "message failure")
                 );
@@ -149,7 +150,6 @@ class ProgramContentVariablesController extends AppController
     public function addTable()
     {   
         $programUrl = $this->params['program'];
-        
         if ($this->request->is('post')) {
             $this->ContentVariableTable->create();
             if ($this->ContentVariableTable->save($this->request->data)) {
@@ -157,11 +157,13 @@ class ProgramContentVariablesController extends AppController
                     'default',
                     array('class'=>'message success')
                 );
-                $this->redirect(array(
-                    'program' => $programUrl, 
-                    'controller' => 'programContentVariables',
-                    'action' => 'indexTable'
-                    ));
+                if ($this->params['ext'] != 'json') {
+                    $this->redirect(array(
+                        'program' => $programUrl, 
+                        'controller' => 'programContentVariables',
+                        'action' => 'indexTable'
+                        ));
+                }
             } else {
                 $this->Session->setFlash(__('The table could not be saved in Content Variable.'), 
                 'default',
@@ -189,7 +191,7 @@ class ProgramContentVariablesController extends AppController
         
         if ($this->ContentVariableTable->deleteTableAndValues($id)) {
             $this->Session->setFlash(
-                __('Dynamic Content Table deleted'),
+                __('Table deleted from the Content Variables.'),
                 'default',
                 array('class'=>'message success')
                 );
@@ -213,14 +215,14 @@ class ProgramContentVariablesController extends AppController
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
 
-        $this->ContentVariable->id = $id;
-        if (!$this->ContentVariable->exists()) {
+        $this->ContentVariableTable->id = $id;
+        if (!$this->ContentVariableTable->exists()) {
             throw new NotFoundException(__('The table cannot be found in Content Variable.'));
         }
-        $contentVariable = $this->ContentVariable->read();
+        $contentVariableTable = $this->ContentVariableTable->read();
 
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->ContentVariable->save($this->request->data)) {
+            if ($this->ContentVariableTable->save($this->request->data)) {
                 $this->Session->setFlash(__('The Table has been saved as Content Variable.'),
                     'default',
                     array('class'=>'message success')
@@ -237,7 +239,33 @@ class ProgramContentVariablesController extends AppController
                 );
             }
         } else {
-            $this->request->data = $this->ContentVariable->read(null, $id);
+            $this->request->data = $this->ContentVariableTable->read(null, $id);
+        }
+    }
+
+    public function editTableValue()
+    {
+        $programUrl = $this->params['program'];
+        
+        if (!isset($this->request->data['ContentVariable']['keys'])) {
+            throw new Exception('Missing keys');
+        }
+        $contentVariables = array();
+        $contentVariables = $this->ContentVariable->find('fromKeys',  array('conditions' => array('keys' => $this->request->data['ContentVariable']['keys'])));
+        if (count($contentVariables) == 0) {
+            throw new NotFoundException(__('This table value cannot be found in Content Variable.'));
+        }
+        
+        if ($this->request->is("post")) {
+            $contentVariable = $contentVariables[0];
+            $this->ContentVariable->id = $contentVariable['ContentVariable']['_id'];
+            $contentVariable['ContentVariable']['value'] = $this->request->data['ContentVariable']['value'];
+            if ($this->ContentVariable->save($contentVariable)) {
+                $result = array('status'=> 'ok');
+            } else {
+                $result = array('status'=> 'fail');
+            }
+            $this->set(compact('result'));
         }
     }
 
