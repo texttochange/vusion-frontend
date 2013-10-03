@@ -42,7 +42,7 @@ class UsersControllerTestCase extends ControllerTestCase
     *
     * @var array
     */
-    public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
+    public $fixtures = array('app.user', 'app.group');
 
    /**
     * setUp method
