@@ -55,6 +55,10 @@ class ContentVariableTable extends MongoModel
                 'rule' => 'uniqueKeys',
                 'message' => null
                 ),
+            'maxKeys' => array(
+                'rule' => 'maxKeys',
+                'message' => 'There are too many keys.',
+                )
             )
         );
     
@@ -203,6 +207,18 @@ class ContentVariableTable extends MongoModel
         return true;
     }
 
+    
+    function maxKeys($check)
+    {
+        $keyOnly = function($column) {
+            return ($column["type"] == "key");
+        };
+        if (count(array_filter($check['columns'], $keyOnly)) > 2) {
+            return __("A maximum of 2 column can be keys, this table needs %s keys.", count(array_filter($check['columns'], $keyOnly)));
+        }
+        return true;
+    }
+
 
     function atLeastOneContentVariableColumn($check) 
     {
@@ -313,7 +329,7 @@ class ContentVariableTable extends MongoModel
                 }
             }
             if (!$this->hasDupes($keys)) {
-                $hasUniqueKeys = true;
+               $hasUniqueKeys = true;
             }
         }
         return $columns;

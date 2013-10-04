@@ -34,7 +34,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->ContentVariable->deleteAll(true, false);
     }
 
-/*
+
     public function testSave_ok()
     {
         $contentVariableTable = array(
@@ -281,6 +281,41 @@ class ContentVariableTableTestCase extends CakeTestCase
             );
     }
 
+
+    public function testSave_fail_maxKeyColumn()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'mombasa')
+                    ),
+                array(
+                    'header' => 'Market',
+                    'values' => array('central', 'central')
+                    ),
+                array(
+                    'header' => 'Item',
+                    'values' => array('chicken', 'fish')
+                    ),
+                array(
+                    'header' => 'price',
+                    'values' => array('300 Ksh', '400 Ksh'),
+                    )
+                )
+            );
+
+        $this->ContentVariableTable->create();
+        $result = $this->ContentVariableTable->save($contentVariableTable);
+        $this->assertFalse($result);
+        $this->assertEqual(
+            "A maximum of 2 column can be keys, this table needs 3 keys.",
+            $this->ContentVariableTable->validationErrors['columns'][0]
+            );
+    }
+
+
     public function testSave_fail_keysNotUnique_keysValue() 
     {
         $contentVariable = array(
@@ -402,6 +437,7 @@ class ContentVariableTableTestCase extends CakeTestCase
 
     public function testSelectColumnsForKeys()
     {
+        
         $columns = array(   
             array(  
                 'header' => 'Town',
@@ -436,6 +472,33 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertEqual($columns[0]['type'], 'key');
         $this->assertEqual($columns[1]['type'], 'key');
         $this->assertEqual($columns[2]['type'], 'contentvariable');
+
+
+        $columns = array(
+            array(
+                'header' => 'Town',
+                'values' => array('mombasa', 'mombasa')
+                ),
+            array(
+                'header' => 'Market',
+                'values' => array('central', 'central')
+                ),
+            array(
+                'header' => 'Item',
+                'values' => array('chicken', 'fish')
+                ),
+            array(
+                'header' => 'price',
+                'values' => array('300 Ksh', '400 Ksh'),
+                )
+            );
+
+        $result = $this->ContentVariableTable->selectColumnsForKeys($columns);
+        $this->assertEqual($columns[0]['type'], 'key');
+        $this->assertEqual($columns[1]['type'], 'key');
+        $this->assertEqual($columns[2]['type'], 'key');
+        $this->assertEqual($columns[3]['type'], 'contentvariable');
+
     }
 
 
@@ -482,7 +545,7 @@ class ContentVariableTableTestCase extends CakeTestCase
             $this->assertEqual(count($columns[$i]['values']), 4);
         }
     }
-*/
+
 
     public function testGetAllKeysValue() 
     {
@@ -522,7 +585,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertEqual($result, $expected);
     }
 
-/*
+
     public function testDelete()
     {
         $contentVariableTable = array(
@@ -620,6 +683,6 @@ class ContentVariableTableTestCase extends CakeTestCase
             2,
             $this->ContentVariable->find('count'));
     }
-*/
+
 
 }
