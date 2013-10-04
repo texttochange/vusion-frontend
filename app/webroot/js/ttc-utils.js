@@ -532,3 +532,91 @@ function loadFilterParameterOptions(parameter, url) {
         error: vusionAjaxError
     });
 }
+
+function loadProgramStats(){
+    var  programs = window.app.programs;
+    if(programs != null){
+        var program = {};
+        for(var i = 0; i< programs.length; i++){
+            program = programs[i];
+            var programUrl = program['Program']['url'];
+            $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "/programs/getProgramStats.json",
+                    data: {"programUrl": programUrl},
+                    success: function(data){
+                        $("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
+                    },
+                    timeout: 360000,  // 6 minutes
+                    error: function(){
+                        var url = this.url;
+                        $("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
+                    }
+            });
+        }
+    }
+}
+
+
+function generateHtmlProgramStats(programStats) {
+    if(programStats == null){
+        programStats = {
+            'active-participant-count': 'N/A',
+            'participant-count' : 'N/A',
+            'all-received-messages-count': 'N/A',
+            'current-month-received-messages-count' : 'N/A',
+            'all-sent-messages-count' : 'N/A',
+            'current-month-sent-messages-count' : 'N/A',
+            'total-current-month-messages-count' : 'N/A',
+            'history-count' : 'N/A',
+            'today-schedule-count' : 'N/A',
+            'schedule-count' : 'N/A',
+            'object-type' : 'program-stats',
+            'model-version': '1'};
+    }
+        
+    var myTemplate ='<div>'+
+                        '<span class=stat '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
+                        ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+                    
+                        '</span> participant(s)'+
+                    '</div>'+
+                    '<div>'+
+                        '<span class=stat '+ ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Total(total current month) message(s)"' : 'title="Stats Not Available"') +'>'+
+                        'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
+                        '</span> total message(s)'+
+                    '</div>'+
+                    '<div>'+
+                        '<span class=stat '+ ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Total(current month) received"' : 'title="Stats Not Available"') +'>'+
+                        'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
+                        '</span> received -'+
+                        '<span class=stat '+ ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Total(current month) sent"' : 'title="Stats Not Available"') +'>'+
+                        'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)'+
+                        '</span> sent message(s)'+
+                    '</div>'+
+                    '<div>'+
+                        '<span class=stat '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
+                        'SCHEDULE(TODAY_SCHEDULE)'+
+                        '</span> schedule(s)'+
+                    '</div>'
+    
+        myTemplate = myTemplate.replace('ACTIVE_PARTICIPANT', programStats['active-participant-count']);
+        myTemplate = myTemplate.replace('TOTAL_PARTICIPANT', programStats['participant-count']);
+        myTemplate = myTemplate.replace('TOTAL_HISTORY', programStats['history-count']);
+        myTemplate = myTemplate.replace('TOTAL_CURRENT_MONTH_MESSAGES', programStats['total-current-month-messages-count']);
+        myTemplate = myTemplate.replace('ALL_RECEIVED_MESSAGES', programStats['all-received-messages-count']);
+        myTemplate = myTemplate.replace('CURRENT_MONTH_RECEIVED_MESSAGES', programStats['current-month-received-messages-count']);
+        myTemplate = myTemplate.replace('ALL_SENT_MESSAGES', programStats['all-sent-messages-count']);
+        myTemplate = myTemplate.replace('CURRENT_MONTH_SENT_MESSAGES', programStats['current-month-sent-messages-count']);
+        myTemplate = myTemplate.replace('SCHEDULE', programStats['schedule-count']);
+        myTemplate = myTemplate.replace('TODAY_SCHEDULE', programStats['today-schedule-count']);
+    return myTemplate;
+}
+
+
+function getParameterByName(url, name){
+    name = name.replace (/[\[]/, "\\\[").replace (/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name +"=([^&#]*)"),
+    results = regex.exec(url);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, ""));
+}
