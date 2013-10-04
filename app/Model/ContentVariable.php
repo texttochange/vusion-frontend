@@ -56,8 +56,10 @@ class ContentVariable extends MongoModel
     
     public function validateKeysCount($check) 
     {
-        if (count($check['keys']) < 1 || count($check['keys']) > 3) {
-            return false;
+        if (count($check['keys']) < 1) {
+            return __('The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".');
+        } else if (count($check['keys']) > 3) {
+            return __('The content variable "%s" has %s keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".', implode('.', $this->getListKeys($check['keys'])), count($check['keys']));
         }
         return true;
     }

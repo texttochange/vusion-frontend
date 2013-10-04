@@ -323,20 +323,22 @@ class ContentVariableTable extends MongoModel
     function getAllKeysValue($columns) 
     {
         foreach ($columns as $column) {
-            if (!isset($allKeys)) {
-                $allKeys = array_fill(0, count($column['values']) - 1, array('keys'=> array()));
+            if (!isset($rowKeys)) {
+                $rowKeys = array_fill(0, count($column['values']) - 1, array());
+                $allKeys = array();
             }
             if ($column['type'] == 'key') {
                 for ($i = 0; $i < count($column['values']); $i++) {
-                    $allKeys[$i]['keys'][] = $column['values'][$i];
+                    $rowKeys[$i][] = $column['values'][$i];
                 }
-            }
-        }
-        foreach ($columns as $column) {
+            } 
             if ($column['type'] == 'contentvariable') {
-                for ($i = 0; $i < count($allKeys); $i++) {
-                    $allKeys[$i]['keys'][] = $column['header'];
-                    $allKeys[$i]['value'] = $column['values'][$i];
+                for ($i = 0; $i < count($rowKeys); $i++) {
+                    $keys = $rowKeys[$i];
+                    $keys[] = $column['header'];
+                    $allKeys[] = array(
+                        'keys' => $keys,
+                        'value' => $column['values'][$i]);
                 }
             }
         }

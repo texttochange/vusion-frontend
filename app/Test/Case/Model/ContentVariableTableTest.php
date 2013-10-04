@@ -34,7 +34,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->ContentVariable->deleteAll(true, false);
     }
 
-
+/*
     public function testSave_ok()
     {
         $contentVariableTable = array(
@@ -482,7 +482,7 @@ class ContentVariableTableTestCase extends CakeTestCase
             $this->assertEqual(count($columns[$i]['values']), 4);
         }
     }
-
+*/
 
     public function testGetAllKeysValue() 
     {
@@ -490,6 +490,9 @@ class ContentVariableTableTestCase extends CakeTestCase
             array('keys' => array('mombasa', 'central', 'Chicken price'), 'value' => '300 Ksh'),
             array('keys' => array('mombasa', 'bamburi', 'Chicken price'), 'value' => '350 Ksh'),
             array('keys' => array('nairobi', 'central', 'Chicken price'), 'value' => '400 Ksh'),
+            array('keys' => array('mombasa', 'central', 'Fish price'), 'value' => '600 Ksh'),
+            array('keys' => array('mombasa', 'bamburi', 'Fish price'), 'value' => '500 Ksh'),
+            array('keys' => array('nairobi', 'central', 'Fish price'), 'value' => '400 Ksh'),
             );
 
         $columns = array(   
@@ -507,6 +510,11 @@ class ContentVariableTableTestCase extends CakeTestCase
                 'header' => 'Chicken price',
                 'values' => array('300 Ksh', '350 Ksh', '400 Ksh'),
                 'type' => 'contentvariable'
+                ),
+            array(
+                'header' => 'Fish price',
+                'values' => array('600 Ksh', '500 Ksh', '400 Ksh'),
+                'type' => 'contentvariable'
                 )
             );
 
@@ -514,7 +522,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertEqual($result, $expected);
     }
 
-
+/*
     public function testDelete()
     {
         $contentVariableTable = array(
@@ -612,6 +620,6 @@ class ContentVariableTableTestCase extends CakeTestCase
             2,
             $this->ContentVariable->find('count'));
     }
-
+*/
 
 }
