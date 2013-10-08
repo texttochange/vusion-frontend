@@ -157,16 +157,22 @@ class ContentVariableTable extends MongoModel
     {
         $values = $check['values'];
         $type = $data['type'];
+        $index = 0;
+        $valueValidationErrors = array();
         foreach ($values as $element) {
             if (!preg_match($regex[0][$type], $element)) {
                 if ($type == 'key') {
-                    return __("The key %s can only be made of letter, digit and space.", $element);
+                    $valueValidationErrors[$index] = __("The key %s can only be made of letter, digit and space.", $element);
                 } else if ($type == 'contentvariable') {
-                    return __("The variable %s can only be made of letter, digit, space, dot and comma.", $element);
+                    $valueValidationErrors[$index] = __("The variable %s can only be made of letter, digit, space, dot and comma.", $element);
                 } else {
                     return false;
                 }
             }
+            $index++;
+        }
+        if ($valueValidationErrors != array()) {
+            return $valueValidationErrors;
         }
         return true;
     }

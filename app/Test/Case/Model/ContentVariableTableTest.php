@@ -96,7 +96,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertFalse($result);
         $this->assertEqual(
             'The key nair.obi can only be made of letter, digit and space.',
-            $this->ContentVariableTable->validationErrors['columns'][0][0]['values']['0']
+            $this->ContentVariableTable->validationErrors['columns'][0][0]['values'][0][1]
             );
     }
 
@@ -112,7 +112,7 @@ class ContentVariableTableTestCase extends CakeTestCase
                     ),
                 array(
                     'header' => 'Chicken price',
-                    'values' => array('$300', '400')
+                    'values' => array('$300', '#@!400')
                     )
                 )
             );
@@ -122,7 +122,11 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertFalse($result);
         $this->assertEqual(
             'The variable $300 can only be made of letter, digit, space, dot and comma.',
-            $this->ContentVariableTable->validationErrors['columns'][0][1]['values']['0']
+            $this->ContentVariableTable->validationErrors['columns'][0][1]['values'][0][0]
+            );
+        $this->assertEqual(
+            'The variable #@!400 can only be made of letter, digit, space, dot and comma.',
+            $this->ContentVariableTable->validationErrors['columns'][0][1]['values'][0][1]
             );
     }
 
