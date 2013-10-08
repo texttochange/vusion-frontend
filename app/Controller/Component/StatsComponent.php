@@ -28,7 +28,7 @@ class StatsComponent extends Component
         }
     }
     
-    protected function _getProgramStat($model, $conditions=array())
+    public function getProgramStat($model, $conditions=array())
     {
         try {            
             return $model->find('count', $conditions);
@@ -58,46 +58,42 @@ class StatsComponent extends Component
         if(empty($programTimeNow)){
             return $programStats;
         }
-        $tempParticipant = new Participant(array('database' => $database));                
-        $activeParticipantCount = $tempParticipant->find(
-            'count', array(
-                'conditions' => array('session-id' => array(
-                    '$ne' => null)
-                    )
-                )
-            );
-        $programStats['active-participant-count'] = $this->_getProgramStat($tempParticipant, $activeParticipantCount);
-        
-        $participantCount = $tempParticipant->find('count'); 
-        $programStats['participant-count'] = $this->_getProgramStat($tempParticipant, $participantCount);
+        $tempParticipant = new Participant(array('database' => $database));
+        $programStats['active-participant-count'] = $this->getProgramStat(
+        	$tempParticipant,
+        	array(
+        		'conditions' => array('session-id' => array(
+        			'$ne' => null)
+        			)
+        		)
+        	);
+            
+        $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
         $tempSchedule = new Schedule(array('database' => $database));
-        $programTimeToday = $programTimeNow->modify('+1 day');
-        $todayScheduleCount = $tempSchedule->find(
-            'count',array(
+        $programTimeToday = $programTimeNow->modify('+1 day');        
+        $programStats['today-schedule-count'] = $this->getProgramStat($tempSchedule, 
+        	array(
                 'conditions' => array(
                     'date-time' => array(
                         '$lt' => $programTimeToday->format(DateTime::ISO8601))
                     )
-                ));
-        $programStats['today-schedule-count'] = $this->_getProgramStat($tempSchedule, $todayScheduleCount);
+                )
+        	);
         
-        $scheduleCount = $tempSchedule->find('count');
-        $programStats['schedule-count'] = $this->_getProgramStat($tempSchedule, $scheduleCount);
+        $programStats['schedule-count'] = $this->getProgramStat($tempSchedule);
         
         $tempHistory     = new History(array('database' => $database));
         $programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");        
         $first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
-        
-        $allReceivedMessagesCount = $tempHistory->find(
-            'count',array(
+        $programStats['all-received-messages-count'] = $this->getProgramStat($tempHistory,
+        	array(
                 'conditions' => array('message-direction' => 'incoming'))
-            );
-        $programStats['all-received-messages-count'] = $this->_getProgramStat($tempHistory, $allReceivedMessagesCount);
-        
-        $currentMonthReceivedMessagesCount = $tempHistory->find(
-            'count',array(
+        	);
+       
+        $programStats['current-month-received-messages-count'] = $this->getProgramStat($tempHistory,
+        	array(
                 'conditions' => array(
                     'timestamp' => array(
                         '$gt' => $first_second,
@@ -106,11 +102,10 @@ class StatsComponent extends Component
                     'message-direction' => 'incoming'
                     )
                 )
-            );
-        $programStats['current-month-received-messages-count'] = $this->_getProgramStat($tempHistory, $currentMonthReceivedMessagesCount);
+        	);
         
-        $currentMonthSentMessagesCount = $tempHistory->find(
-            'count',array(
+        $programStats['current-month-sent-messages-count'] = $this->getProgramStat($tempHistory,
+        	array(
                 'conditions' => array(
                     'timestamp' => array(
                         '$gt' => $first_second,
@@ -119,27 +114,26 @@ class StatsComponent extends Component
                     'message-direction' => 'outgoing'
                     )
                 )
-            );
-        $programStats['current-month-sent-messages-count'] = $this->_getProgramStat($tempHistory, $currentMonthSentMessagesCount);
+        	);
         
         $totalCurrentMonthMessagesCount = $currentMonthSentMessagesCount + $currentMonthReceivedMessagesCount;
         $programStats['total-current-month-messages-count'] = $totalCurrentMonthMessagesCount;
         
-        $allSentMessagesCount = $tempHistory->find(
-            'count',array(
+        $programStats['all-sent-messages-count'] = $this->getProgramStat($tempHistory,
+        	array(
                 'conditions' => array('message-direction' => 'outgoing'))
-            );
-        $programStats['all-sent-messages-count'] = $this->_getProgramStat($tempHistory, $allSentMessagesCount);
+        	);
         
-        $historyCount  = $tempHistory->find(
-            'count', array(
+        $programStats['history-count'] = $this->getProgramStat($tempHistory,
+        	array(
                 'conditions' =>array(
                     '$or' => array(
                         array('object-type' => array('$in' => $tempHistory->messageType)),
                         array('object-type' => array('$exists' => false ))
                         )
-                    )));
-        $programStats['history-count'] = $this->_getProgramStat($tempHistory, $historyCount);  
+                    )
+                )
+        	);  
         
         return $programStats;        
     }
