@@ -12,7 +12,7 @@ class StatsComponent extends Component
     {
         parent::startup($controller);
         $this->Controller = $controller;
-        $this->cacheStatsExpire = 60;
+        $this->cacheStatsExpire = 10;
         
         if(isset($this->Controller->redis)){
             $this->redis = $this->Controller->redis;
@@ -116,7 +116,11 @@ class StatsComponent extends Component
                 )
         	);
         
-        $totalCurrentMonthMessagesCount = $currentMonthSentMessagesCount + $currentMonthReceivedMessagesCount;
+        if($programStats['current-month-sent-messages-count'] === 'N/A' || $programStats['current-month-received-messages-count'] === 'N/A' ){
+        	$totalCurrentMonthMessagesCount = 'N/A';
+        } else {
+        	$totalCurrentMonthMessagesCount =  $programStats['current-month-sent-messages-count'] + $programStats['current-month-received-messages-count'];
+        }
         $programStats['total-current-month-messages-count'] = $totalCurrentMonthMessagesCount;
         
         $programStats['all-sent-messages-count'] = $this->getProgramStat($tempHistory,
