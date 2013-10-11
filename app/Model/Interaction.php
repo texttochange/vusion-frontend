@@ -439,12 +439,6 @@ class Interaction extends VirtualModel
         return true;
     }
 
-/*
-    public function validateReminderActions($field, $data)
-    {
-        return $this->validList($field, $data, $this->validateReminderAction); 
-    }
-    */
     
     public function validateAnswers($field, $data)
     {

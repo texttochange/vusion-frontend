@@ -578,9 +578,9 @@ function formatKeywordValidation(value, element, param) {
     var errors = {};
     
     if (isDialogueView()) {
-        var keywordRegex = new RegExp('^[a-zA-Z0-9]+(,(\\s)?[a-zA-Z0-9]+)*$','i');
+        var keywordRegex = XRegExp('^[\\p{L}\\p{N}]+(,(\\s)?[\\p{L}\\p{N}]+)*$');
     } else {
-        var keywordRegex = new RegExp('^[a-zA-Z0-9\\s]+(,(\\s)?[a-zA-Z0-9\\s]+)*$','i');
+        var keywordRegex = XRegExp('^[\\p{L}\\p{N}\\s]+(,(\\s)?[\\p{L}\\p{N}\\s]+)*$');
     }
     
     if (keywordRegex.test(value)) {    	  
@@ -606,7 +606,7 @@ function duplicateKeywordValidation(value, element, param) {
     var errors = {}
     var keywords = $(keywordInput).val().replace(/\s/g, '').split(',');
     keywords = getAnswerAcceptNoSpaceKeywords(element, keywords);
-    var pattern = /[^a-zA-Z0-9]/g;
+    var pattern = XRegExp('^[^\\p{L}\\p{N}]+$');
     for(var x=0;x<keywords.length;x++) {
         if (pattern.test(keywords[x])) {
             errors[$(element).attr('name')] = wrapErrorMessage(keywords[x] + localized_errors.validation_keyword_invalid_character_error);  

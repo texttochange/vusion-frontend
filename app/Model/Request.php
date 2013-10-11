@@ -101,7 +101,7 @@ class Request extends MongoModel
     
     public function keywordFormat($check) 
     {
-        $keywordRegex = '/^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$/';
+        $keywordRegex = '/^[\p{L}\p{Mn}\p{N}\s]+(,(\s)?[\p{L}\p{Mn}\p{N}\s]+)*$/u';
         if (preg_match($keywordRegex, $check['keyword'])) 
             return true;
         return false;
