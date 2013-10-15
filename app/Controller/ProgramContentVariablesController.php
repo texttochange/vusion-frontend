@@ -146,26 +146,9 @@ class ProgramContentVariablesController extends AppController
     public function addTable()
     {   
         $programUrl = $this->params['program'];
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') && $this->params['ext'] === 'json') {
             $this->ContentVariableTable->create();
-            if ($this->ContentVariableTable->save($this->request->data)) {
-                $this->Session->setFlash(__('The table has been saved in Content Variable.'),
-                    'default',
-                    array('class'=>'message success')
-                );
-                if ($this->params['ext'] != 'json') {
-                    $this->redirect(array(
-                        'program' => $programUrl, 
-                        'controller' => 'programContentVariables',
-                        'action' => 'indexTable'
-                        ));
-                }
-            } else {
-                $this->Session->setFlash(__('The table could not be saved in Content Variable.'), 
-                'default',
-                array('class' => "message failure")
-                );
-            }
+            $this->ContentVariableTable->save($this->request->data); 
         }
     }
 
@@ -217,23 +200,8 @@ class ProgramContentVariablesController extends AppController
         }
         $contentVariableTable = $this->ContentVariableTable->read();
 
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->ContentVariableTable->save($this->request->data)) {
-                $this->Session->setFlash(__('The Table has been saved as Content Variable.'),
-                    'default',
-                    array('class'=>'message success')
-                );
-                $this->redirect(array(
-                    'program' => $programUrl, 
-                    'controller' => 'programContentVariables',
-                    'action' => 'indexTable'
-                    ));
-            } else {
-                $this->Session->setFlash(__('The Table could not be saved in Content Variable. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
-            }
+        if ($this->request->is('post') && $this->params['ext'] === 'json') {
+            $this->ContentVariableTable->save($this->request->data);
         } else {
             $this->request->data = $this->ContentVariableTable->read(null, $id);
         }

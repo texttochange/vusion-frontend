@@ -28,7 +28,10 @@ class ContentVariableTable extends MongoModel
     
     public $validate = array(
         'name' => array(
-            'notempty',
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The table name cannot be empty.'
+                ),
             'uniqueName' => array(
                 'rule' => 'isVeryUnique',
                 'message' => 'Another table already exist with this name.'
@@ -346,7 +349,7 @@ class ContentVariableTable extends MongoModel
     {
         foreach ($columns as $column) {
             if (!isset($rowKeys)) {
-                $rowKeys = array_fill(0, count($column['values']) - 1, array());
+                $rowKeys = array_fill(0, count($column['values']), array());
                 $allKeys = array();
             }
             if ($column['type'] == 'key') {

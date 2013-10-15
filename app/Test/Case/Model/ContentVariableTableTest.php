@@ -75,6 +75,61 @@ class ContentVariableTableTestCase extends CakeTestCase
     }
 
 
+    public function testSave_ok_miniTable()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh')
+                    ),
+                )
+            );
+
+        $this->ContentVariableTable->create();
+        $result = $this->ContentVariableTable->save($contentVariableTable);
+        $this->assertTrue(isset($result));
+        $this->assertEqual(
+            2,
+            count($result['ContentVariableTable']['columns'])
+            );
+
+        $mombasaContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price'))));
+        $this->assertEqual(
+                '300 Ksh',
+                $mombasaContentVariable[0]['ContentVariable']['value']);      
+    }
+
+
+    public function testSave_fail_nameEmpty()
+    {
+        $contentVariableTable = array(
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'nair.obi')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh', '400 Ksh')
+                    )
+                )
+            );
+        $this->ContentVariableTable->create();
+        $result = $this->ContentVariableTable->save($contentVariableTable);
+        $this->assertFalse($result);
+        $this->assertEqual(
+            'The table name cannot be empty.',
+            $this->ContentVariableTable->validationErrors['name'][0]
+            );
+    }
+
+
     public function testSave_fail_columnValues_key()
     {
         $contentVariableTable = array(
