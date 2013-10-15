@@ -17,7 +17,7 @@
     padding: 0px;
 }
 
-.subinput input{
+.subinput input{                                              
    margin: 2px 0px 0px 5px;
 }
 
@@ -1273,49 +1273,82 @@ display: inline;
 	margin-bottom: 12px;	
 }
 
-.tabs {
-    border-bottom: 2px solid #19C1FF;
-    height: 22px;
+/** page title **/
+.ttc-page-title {
 }
 
-.tabs ul {
+.ttc-page-title .tabs {
+    display: inline-block;
+    /*border-bottom: 2px solid #19C1FF;*/
+    /*height: 22px;*/
+}
+
+.ttc-page-title .tabs ul {
     list-style-type: none;
-    margin: 0px;
+    margin: 0px 0px 0px 10px;
 }
 
-.tabs li {
+.ttc-page-title .tabs li {
     float: left;
-    margin: 0px 20px 0px 0px;
-    border-bottom: 5px solid #81DCFF;
+    margin: 0px 10px 0px 0px;
+    /*border-bottom: 5px solid #81DCFF;*/ 
     color: #81CDFF;
 }
 
-.tabs li.selected {
+.ttc-page-title .tabs li.selected {
     border-bottom: 5px solid #19C1FF;
     color: #19C1FF;
 }
 
-.tabs label {
+.ttc-page-title .tabs label {
     display: block;
     cursor: pointer;
     font-weight: bold;
 }
 
-.tabs li a {
+.ttc-page-title .tabs li a {
     /*font-weight: normal;*/
     text-decoration: none;
     color: inherit;
 }
 
-.tabs a:hover {
+.ttc-page-title .tabs a:hover {
     text-decoration: none;
     background: rgba(255,255,255,0.5);
 }
 
+.ttc-page-title h3 {
+    display: inline-block;
+}
+
+.ttc-page-title .ttc-action {
+    display: inline-block;
+}
+
+/** content Variable table **/
 #columns {
     overflow: scroll;
 }
 
 .handsontable div {
     padding: 0px;
-} 
+}
+
+.handsontable .key {
+    font-weight: bold;
+    background: lightgrey;
+}
+
+.handsontable .value {
+
+}
+
+.handsontable .cell-success {
+    color: #fff;
+    background: #c43c35;
+}
+
+.handsontable .cell-failure {
+    color: #fff;
+    background: #3B8230
+}

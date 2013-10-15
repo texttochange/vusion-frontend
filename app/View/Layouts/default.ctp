@@ -17,7 +17,7 @@
 		    //'superfish/superfish-navbar-1.7.4',		    
 		    'superfish/megafish-1.7.4',
 		    'chosen/chosen-1.0.min',
-		    'handsontable/jquery.handsontable.full'
+		    'handsontable/jquery.handsontable-0.9.18.full'
 		    ));		
 		//echo $this->Html->script('jquery-1.7.2.min.js');
 		echo $this->Html->script('jquery-1.10.2.min.js');

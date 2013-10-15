@@ -37,6 +37,7 @@ var localized_messages = {
     generating_file: "<?php echo __('Generating export file...')?>",
     download_should_start: "<?php echo __('The export file has been generated. The download should start shortly.')?>",
     select_one: "<?php echo __('Select one...')?>",
+    table_saved: "<?php echo __('Table saved.')?>",
 };
 
 var localized_actions= {
