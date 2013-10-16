@@ -67,12 +67,13 @@ class StatsComponent extends Component
         			)
         		)
         	);
-            
+        
         $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
         $tempSchedule = new Schedule(array('database' => $database));
         $programTimeToday = $programTimeNow->modify('+1 day');        
-        $programStats['today-schedule-count'] = $this->getProgramStat($tempSchedule, 
+        $programStats['today-schedule-count'] = $this->getProgramStat(
+            $tempSchedule, 
         	array(
                 'conditions' => array(
                     'date-time' => array(
@@ -87,12 +88,14 @@ class StatsComponent extends Component
         $programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");        
         $first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
-        $programStats['all-received-messages-count'] = $this->getProgramStat($tempHistory,
+        $programStats['all-received-messages-count'] = $this->getProgramStat(
+            $tempHistory,
         	array(
                 'conditions' => array('message-direction' => 'incoming'))
         	);
-       
-        $programStats['current-month-received-messages-count'] = $this->getProgramStat($tempHistory,
+        
+        $programStats['current-month-received-messages-count'] = $this->getProgramStat(
+            $tempHistory,
         	array(
                 'conditions' => array(
                     'timestamp' => array(
@@ -104,7 +107,8 @@ class StatsComponent extends Component
                 )
         	);
         
-        $programStats['current-month-sent-messages-count'] = $this->getProgramStat($tempHistory,
+        $programStats['current-month-sent-messages-count'] = $this->getProgramStat(
+            $tempHistory,
         	array(
                 'conditions' => array(
                     'timestamp' => array(
@@ -123,12 +127,14 @@ class StatsComponent extends Component
         }
         $programStats['total-current-month-messages-count'] = $totalCurrentMonthMessagesCount;
         
-        $programStats['all-sent-messages-count'] = $this->getProgramStat($tempHistory,
+        $programStats['all-sent-messages-count'] = $this->getProgramStat(
+            $tempHistory,
         	array(
                 'conditions' => array('message-direction' => 'outgoing'))
         	);
         
-        $programStats['history-count'] = $this->getProgramStat($tempHistory,
+        $programStats['history-count'] = $this->getProgramStat(
+            $tempHistory,
         	array(
                 'conditions' =>array(
                     '$or' => array(
