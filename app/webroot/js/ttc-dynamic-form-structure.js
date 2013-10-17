@@ -308,8 +308,10 @@ var action = {
             'subfields': ['content']},
             {'value': 'proportional-tagging',
             'subfields': ['proportional-tags']},
-            {'value': 'message-forwarding',
-            'subfields': ['forward-url']}
+            {'value': 'url-forwarding',
+            'subfields': ['forward-url']},
+            {'value': 'sms-forwarding',
+            'subfields': ['forward-to', 'forward-content']}
         ]
     },
     "tag": {'type': 'text'},
@@ -335,6 +337,9 @@ var action = {
         'skip': true,
     },
     "weight": {'type': 'text'},
-    'forward-url': {'type': 'text'}
+    'forward-url': {'type': 'text'},
+    'forward-to': {'type': 'text'},
+    'forward-content': {'type': 'textarea'}
+    
 }
 $.extend(dynamicForm, action);

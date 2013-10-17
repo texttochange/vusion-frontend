@@ -234,7 +234,7 @@ class ActionTestCase extends CakeTestCase
 
     public function testValidateAction_ok_forwarding() {
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -242,28 +242,28 @@ class ActionTestCase extends CakeTestCase
         $this->assertTrue($this->Action->validates());
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[FROM]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
 
          $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/index.php?login=login&message=[MESSAGE]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
 
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/index.php?login=login&password=password&message=[MESSAGE]&other=other');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -273,7 +273,7 @@ class ActionTestCase extends CakeTestCase
     
     public function testValidateAction_fail_forwarding_format() {
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'partner.com/receive_mo.php');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -283,7 +283,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]?origin=[TO]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -293,7 +293,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -306,7 +306,7 @@ class ActionTestCase extends CakeTestCase
 
     public function testValidateAction_fail_forwarding_replace() {        
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[Message]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -316,7 +316,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[content]');
         $this->Action->set($action);
         $this->Action->beforeValidate();

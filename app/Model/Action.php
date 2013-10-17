@@ -75,7 +75,8 @@ class Action extends VirtualModel
                         'reset', 
                         'feedback',
                         'proportional-tagging',
-                        'message-forwarding')),
+                        'url-forwarding',
+                        'sms-forwarding')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -89,7 +90,8 @@ class Action extends VirtualModel
                         'reset' => array(),
                         'feedback' => array('content'),
                         'proportional-tagging' => array('proportional-tags'),
-                        'message-forwarding' => array('forward-url'))),
+                        'url-forwarding' => array('forward-url'),
+                        'sms-forwarding' => array('forward-to', 'forward-content'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -145,7 +147,7 @@ class Action extends VirtualModel
             ),
         'forward-url' => array(            
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldValue', 'type-action', 'message-forwarding'),
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'url-forwarding'),
                 'message' => 'The forwarding field require an url field.',
                 ),
             'validUrlFormat' => array(
@@ -160,6 +162,30 @@ class Action extends VirtualModel
                         '[TO]',
                         '[PROGRAM]')),
                 'message' => 'noMessage',
+                ),
+            ),
+        'forward-to' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The Receiver Tag field require atag.',
+                ),
+            'validTag' => array(
+                'rule' => array('regex', VusionConst::TAG_REGEX),
+                'message' => VusionConst::TAG_FAIL_MESSAGE
+                ),
+            ),
+        'forward-content' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The content field require a SMS Forward action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
                 ),
             )
         );
