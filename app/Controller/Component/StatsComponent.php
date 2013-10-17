@@ -60,13 +60,13 @@ class StatsComponent extends Component
         }
         $tempParticipant = new Participant(array('database' => $database));
         $programStats['active-participant-count'] = $this->getProgramStat(
-        	$tempParticipant,
-        	array(
-        		'conditions' => array('session-id' => array(
-        			'$ne' => null)
-        			)
-        		)
-        	);
+            $tempParticipant,
+            array(
+                'conditions' => array('session-id' => array(
+                    '$ne' => null)
+                    )
+                )
+            );
         
         $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
@@ -74,13 +74,13 @@ class StatsComponent extends Component
         $programTimeToday = $programTimeNow->modify('+1 day');        
         $programStats['today-schedule-count'] = $this->getProgramStat(
             $tempSchedule, 
-        	array(
+            array(
                 'conditions' => array(
                     'date-time' => array(
                         '$lt' => $programTimeToday->format(DateTime::ISO8601))
                     )
                 )
-        	);
+            );
         
         $programStats['schedule-count'] = $this->getProgramStat($tempSchedule);
         
@@ -90,13 +90,13 @@ class StatsComponent extends Component
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
         $programStats['all-received-messages-count'] = $this->getProgramStat(
             $tempHistory,
-        	array(
+            array(
                 'conditions' => array('message-direction' => 'incoming'))
-        	);
+            );
         
         $programStats['current-month-received-messages-count'] = $this->getProgramStat(
             $tempHistory,
-        	array(
+            array(
                 'conditions' => array(
                     'timestamp' => array(
                         '$gt' => $first_second,
@@ -105,11 +105,11 @@ class StatsComponent extends Component
                     'message-direction' => 'incoming'
                     )
                 )
-        	);
+            );
         
         $programStats['current-month-sent-messages-count'] = $this->getProgramStat(
             $tempHistory,
-        	array(
+            array(
                 'conditions' => array(
                     'timestamp' => array(
                         '$gt' => $first_second,
@@ -118,24 +118,24 @@ class StatsComponent extends Component
                     'message-direction' => 'outgoing'
                     )
                 )
-        	);
+            );
         
         if($programStats['current-month-sent-messages-count'] === 'N/A' || $programStats['current-month-received-messages-count'] === 'N/A' ){
-        	$totalCurrentMonthMessagesCount = 'N/A';
+            $totalCurrentMonthMessagesCount = 'N/A';
         } else {
-        	$totalCurrentMonthMessagesCount =  $programStats['current-month-sent-messages-count'] + $programStats['current-month-received-messages-count'];
+            $totalCurrentMonthMessagesCount =  $programStats['current-month-sent-messages-count'] + $programStats['current-month-received-messages-count'];
         }
         $programStats['total-current-month-messages-count'] = $totalCurrentMonthMessagesCount;
         
         $programStats['all-sent-messages-count'] = $this->getProgramStat(
             $tempHistory,
-        	array(
+            array(
                 'conditions' => array('message-direction' => 'outgoing'))
-        	);
+            );
         
         $programStats['history-count'] = $this->getProgramStat(
             $tempHistory,
-        	array(
+            array(
                 'conditions' =>array(
                     '$or' => array(
                         array('object-type' => array('$in' => $tempHistory->messageType)),
@@ -143,7 +143,7 @@ class StatsComponent extends Component
                         )
                     )
                 )
-        	);  
+            );  
         
         return $programStats;        
     }
