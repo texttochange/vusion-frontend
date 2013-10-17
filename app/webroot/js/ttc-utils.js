@@ -577,25 +577,25 @@ function generateHtmlProgramStats(programStats) {
     }
         
     var myTemplate ='<div>'+
-                        '<span class=stat '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
+                        '<span class="stat" '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
                         ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+                    
                         '</span> participant(s)'+
                     '</div>'+
                     '<div>'+
-                        '<span class=stat '+ ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Total(total current month) message(s)"' : 'title="Stats Not Available"') +'>'+
+                        '<span class="stat" '+ ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Total(total current month) message(s)"' : 'title="Stats Not Available"') +'>'+
                         'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
                         '</span> total message(s)'+
                     '</div>'+
                     '<div>'+
-                        '<span class=stat '+ ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Total(current month) received"' : 'title="Stats Not Available"') +'>'+
+                        '<span class="stat" '+ ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Total(current month) received"' : 'title="Stats Not Available"') +'>'+
                         'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
                         '</span> received -'+
-                        '<span class=stat '+ ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Total(current month) sent"' : 'title="Stats Not Available"') +'>'+
+                        '<span class="stat" '+ ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Total(current month) sent"' : 'title="Stats Not Available"') +'>'+
                         'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)'+
                         '</span> sent message(s)'+
                     '</div>'+
                     '<div>'+
-                        '<span class=stat '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
+                        '<span class="stat" '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
                         'SCHEDULE(TODAY_SCHEDULE)'+
                         '</span> schedule(s)'+
                     '</div>'
