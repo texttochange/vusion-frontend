@@ -103,10 +103,12 @@
 	    ?>
 	    </div>
 	    <?php
-	        if (isset($this->data["ProgramSettings"]["shortcode"]))
-	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSettings"]["shortcode"]]["support-customized-id"] ? false : true;
-	        else
+	        if (isset($this->data["ProgramSetting"]["shortcode"])) {
+	            echo "there is a shortcode<br/>";
+	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]]["support-customized-id"] ? false : true;
+	        } else {
     	        $customizedIdDisabled = true;
+    	    }
             echo $this->Form->input('customized-id',
             		array('id' => 'customized-id',
             		      'label' => __('Customized Id'),
