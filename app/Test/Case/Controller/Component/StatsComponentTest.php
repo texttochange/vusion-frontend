@@ -132,8 +132,7 @@ class StatsComponentTest extends CakeTestCase
         $saveSchedule = $this->Schedule->save(array(
             'Schedule' => array(
                 'participant-phone' => '+256712747841',
-                'dialogue-id' => 'def456',
-                )
+                'dialogue-id' => 'def456')
             )
             ); 
         $this->History->create('unattach-history');
@@ -142,8 +141,7 @@ class StatsComponentTest extends CakeTestCase
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered',
-            )
+            'message-status' => 'delivered')
             );
         $this->History->create('unattach-history');
         $savedHistory2 = $this->History->save(array(
@@ -151,8 +149,7 @@ class StatsComponentTest extends CakeTestCase
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-03-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered',
-            )
+            'message-status' => 'delivered')
             );
         
         $key = "unittest:testdbprogram:stats";
@@ -171,5 +168,16 @@ class StatsComponentTest extends CakeTestCase
             );
     }
     
-    
+    public function testGetStats_mongoTimeout_fewSeconds()
+    {
+        $dummyHistory = $this->getMock('Model', array('find'));
+        $dummyHistory
+        	->expects($this->once())
+        	->method('find')
+        	->will($this->throwException(new Exception));
+        	
+        $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory);
+        
+        $this->assertEqual('N/A', $programTestStats);
+    }
 }
