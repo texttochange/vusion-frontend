@@ -47,7 +47,8 @@ class VusionConst
     # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
     const CONTENT_VARIABLE_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
     const CONTENT_VARIABLE_ALLOWED_REGEX = '/^[a-z0-9A-Z\s\.]+$/';
-    const CONTENT_VARIABLE_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
+    const CONTENT_VARIABLE_DOMAIN_REGEX = '/^(participant|contentVariable|time)$/';
+    const CONTENT_VARIABLE_DOMAIN_WITH_CONTEXT_REGEX = '/^(participant|contentVariable|context|time)$/';
     
     const CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL = 'To be used as dynamic concent, participant only accept one key.';
     const CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used as dynamic concent, contentVariable only accept max two keys.';
