@@ -104,7 +104,6 @@
 	    </div>
 	    <?php
 	        if (isset($this->data["ProgramSetting"]["shortcode"])) {
-	            echo "there is a shortcode<br/>";
 	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]]["support-customized-id"] ? false : true;
 	        } else {
     	        $customizedIdDisabled = true;
