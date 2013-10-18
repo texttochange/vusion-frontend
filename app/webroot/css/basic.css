@@ -1344,11 +1344,11 @@ display: inline;
 }
 
 .handsontable .cell-success {
-    color: #fff;
-    background: #c43c35;
+    border: 1px solid #3B8230;
+    padding: 5px;
 }
 
 .handsontable .cell-failure {
-    color: #fff;
-    background: #3B8230
+    border: 1px solid #c43c35;
+    padding: 5px;
 }

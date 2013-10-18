@@ -2,6 +2,43 @@ function createTable(selector, options) {
     $(selector).handsontable(options);
 }
 
+function tableRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.TextCell.renderer.apply(this, arguments);
+    if (row === 0) {
+        td.className = "key";
+        td.setAttribute("title", "This is a readonly key.")
+        cellProperties.readOnly = true;
+    } else if (col < cellProperties.lastColKey){
+        td.className = "key";
+        td.setAttribute("title", "This is a readonly key.")
+        cellProperties.readOnly = true;
+    } else {
+        td.setAttribute("title", "This value is editable and can be used in message.");
+        /*if ('className' in cellProperties && cellProperties!="") {
+            td.className = cellProperties.className; 
+        }
+        if ($(td).attr('class') == 'cell-failure') {
+            cellProperties.className = td.className;
+        }*/
+    }
+}
+
+function keyRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.TextCell.renderer.apply(this, arguments);
+    td.className = "key";
+    td.setAttribute("title", "This is a readonly key.")
+    cellProperties.readOnly = true;
+}
+
+function valueRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.TextCell.renderer.apply(this, arguments);
+    if (cellProperties.valid) {
+        td.setAttribute("title", "This value is editable and can be used in message.");
+    } else {
+        td.setAttribute("title", cellProperties.validationError);
+    }
+}
+
 function saveTable() {
     //Remove validation errors
     $(".error").removeClass("error");
@@ -13,7 +50,7 @@ function saveTable() {
     if (!("ContentVariableTable" in formData)) {
         formData.ContentVariableTable = [];
     }
-    tableData = $("#columns").data('handsontable').getData();
+    tableData = $("#columns").handsontable("getData");
     vusionTable = fromHandsontableToVusionTable(tableData);
     formData.ContentVariableTable['columns'] = vusionTable;
     var data= JSON.stringify(formData, null, '\t');
@@ -86,7 +123,7 @@ function fromHandsontableToVusionTable(table) {
     return vusionTable;
 }
 
-function fromVusionToHandsontableTable(table) {
+function fromVusionToHandsontableData(table) {
     table = $.parseJSON(table);
     var handsontable = [];
     var nbrCols = table.length,
@@ -104,6 +141,20 @@ function fromVusionToHandsontableTable(table) {
         }
     }
     return handsontable;
+}
+
+function fromVusionToHandsontableColumns(table, defaultRegex) {
+    var columns = []
+    table = $.parseJSON(table);
+    var nbrCols = table.length;
+    for (var i=0; i<nbrCols; i++) {
+        if (table[i]['type'] === 'key') {
+            columns.push({});
+        } else {
+            columns.push({'validator': defaultRegex, 'allowInvalid': true});
+        }
+    }
+    return columns;
 }
 
 
