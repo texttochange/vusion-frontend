@@ -12,7 +12,12 @@ class StatsComponent extends Component
     {
         parent::startup($controller);
         $this->Controller = $controller;
-        $this->cacheStatsExpire = 10;
+        $this->cacheStatsExpire = Configure::read('vusion.cacheStatsExpire');
+        if ($this->cacheStatsExpire == null) {
+            //A default value for all
+            $this->cacheStatsExpire = array(
+                '1000' => '120');
+        } 
         
         if(isset($this->Controller->redis)){
             $this->redis = $this->Controller->redis;
@@ -161,10 +166,27 @@ class StatsComponent extends Component
         if($stats != null){
             $programStats = (array)json_decode($stats);
         }else{
+            $start = time();
             $programStats = $this->_getProgramStats($database);
-            $this->redis->setex($statsKey, $this->cacheStatsExpire, json_encode($programStats));
+            $end = time();
+            $duration = $end - $start;
+            $expiring = $this->_getTimeToCacheStatsExpire($duration);
+            $this->redis->setex($statsKey, $expiring, json_encode($programStats));
         }
         return $programStats;
     }
+
+
+    public function _getTimeToCacheStatsExpire($duration) 
+    {
+        foreach ($this->cacheStatsExpire as $computationDuration => $cacheDuration) {
+            if ($duration <= $computationDuration) {
+                return $cacheDuration;
+            }
+        }
+        return end($this->cacheStatsExpire);
+    }
+
+
 }
 ?>
