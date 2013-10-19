@@ -45,6 +45,6 @@ class VusionConst
     const CONTENT_VARIABLE_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
     const CONTENT_VARIABLE_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
     
-    const CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL = 'To be used in message, participant only accept one key.';
-    const CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used in message, contentVariable only accept a maximum three keys.';
+    const CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL = 'To be used in message, participant only accepts one key.';
+    const CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used in message, contentVariable only accepts maximum three keys.';
 }

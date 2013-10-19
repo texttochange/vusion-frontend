@@ -178,16 +178,16 @@ class Request extends MongoModel
     public function validContentVariable($check)
     {
         preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $check['content'], $matches, PREG_SET_ORDER);
-        $allowed = array("domain", "key1", "key2", "otherkey");
+        $allowed = array("domain", "key1", "key2", "key3", "otherkey");
         foreach($matches as $match) {
             $match = array_intersect_key($match, array_flip($allowed));
             foreach ($match as $key=>$value) {
                 if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
-                    return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                 }
             }
             if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
-                return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                return __("To be used as customized content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
             }
             if ($match['domain'] == 'participant') {
                 if (isset($match['key2'])) {

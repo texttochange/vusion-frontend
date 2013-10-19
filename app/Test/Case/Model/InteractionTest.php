@@ -87,7 +87,7 @@ class InteractionTestCase extends CakeTestCase
     public function testValidate_content_dynamicContent_ok()
     {
         $interaction = $this->Maker->getInteractionOpenQuestion();
-        $interaction['content'] = "Hello [participant.first name] the temperature in [contentVariable.mombasa] is [contentVariable.mombasa.temperature]";        
+        $interaction['content'] = "Hello [participant.first name] the temperature in [contentVariable.mombasa] is [contentVariable.mombasa.temperature.night]";        
 
         $this->Interaction->set($interaction);
         $this->Interaction->beforeValidate();
@@ -106,7 +106,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as dynamic content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s)."
+            "To be used as customized content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s)."
             );
 
         $interaction = $this->Maker->getInteractionOpenQuestion();
@@ -118,11 +118,11 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used in message, participant only accept one key."
+            "To be used in message, participant only accepts one key."
             );
 
         $interaction = $this->Maker->getInteractionOpenQuestion();
-        $interaction['content'] = "Hello [contentVariable.mombasa.chichen.female]";        
+        $interaction['content'] = "Hello [contentVariable.mombasa.chichen.female.price]";        
 
         $this->Interaction->set($interaction);
         $this->Interaction->beforeValidate();
@@ -130,7 +130,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used in message, contentVariable only accept max two keys."
+            "To be used in message, contentVariable only accepts maximum three keys."
             );
 
         $interaction = $this->Maker->getInteractionOpenQuestion();
@@ -142,7 +142,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as dynamic content, 'participants' can only be either 'participant' or 'contentVariable'."
+            "To be used as customized content, 'participants' can only be either 'participant' or 'contentVariable'."
             );
         
         ## test feedback action
@@ -157,7 +157,7 @@ class InteractionTestCase extends CakeTestCase
 
         $this->assertEqual(
             $this->Interaction->validationErrors['reminder-actions'][0]['content'][0], 
-            "To be used as dynamic content, 'person' can only be either 'participant' or 'contentVariable'."
+            "To be used as customized content, 'person' can only be either 'participant' or 'contentVariable'."
             );
     }
 
