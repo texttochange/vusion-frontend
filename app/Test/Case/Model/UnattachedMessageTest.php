@@ -468,7 +468,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(
-            "To be used as dynamic content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
             $this->UnattachedMessage->validationErrors['content'][0]);
         
         $unattachedMessage['content'] = "Hello [participant.gender.name]";
@@ -477,12 +477,29 @@ class UnattachedMessageTestCase extends CakeTestCase
             "To be used in message, participant only accept one key.",
             $this->UnattachedMessage->validationErrors['content'][0]);
         
-        $unattachedMessage['content'] = "Hello [contentVariable.kampala.pork.male]";
+        $unattachedMessage['content'] = "Hello [contentVariable.kampala.pork.male.price]";
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(
-            "To be used in message, contentVariable only accept max two keys.",
+            "To be used in message, contentVariable only accept a maximum three keys.",
             $this->UnattachedMessage->validationErrors['content'][0]);
     }
 
+
+    public function testSave_ok_customizedContent_contentVariable()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $otherUnattachedMessage = array(
+            'name'=>'hello',
+            'send-to-type'=> 'all',
+            'content'=>'hello the price of chicken today is [contentVariable.mombasa.chicken.price]',
+            'type-schedule'=>'immediately',
+            'created-by' => 1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($otherUnattachedMessage);
+        
+        $this->assertEquals(1,$this->UnattachedMessage->find('count'));
+    }
 
 }
