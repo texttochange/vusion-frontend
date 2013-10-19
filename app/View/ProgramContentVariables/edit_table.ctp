@@ -58,7 +58,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                       height: 120,
                       strechH: \'all\',
                       contextMenu: [\'row_above\', \'row_below\', \'remove_row\', \'col_left\', \'col_right\', \'remove_col\'],
-                      data: fromVusionToHandsontableTable(\''.json_encode($contentVariableTable['ContentVariableTable']['columns']).'\'),
+                      data: fromVusionToHandsontableData(\''.json_encode($contentVariableTable['ContentVariableTable']['columns']).'\'),
                       }
                      )');
            ?>
