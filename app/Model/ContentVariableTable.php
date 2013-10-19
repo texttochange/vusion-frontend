@@ -245,17 +245,24 @@ class ContentVariableTable extends MongoModel
         $data = $this->data['ContentVariableTable'];
         $keysValues = $this->getAllKeysValue($check['columns']);
         for($i = 0; $i < count($keysValues); $i++) {
-            $cursor = $this->ContentVariable->find('fromKeys', array('conditions' => array(
-                'keys' => $keysValues[$i]['keys'],
-                'table' => array('$ne' => $data['name']))));
+            if ($this->id) {
+                $conditions = array(
+                    'keys' => $keysValues[$i]['keys'],
+                    'table' => array('$ne' => $this->id)
+                    );
+            } else {
+                $conditions = array('keys' => $keysValues[$i]['keys']);
+            }
+            $cursor = $this->ContentVariable->find('fromKeys', array('conditions' => $conditions));
             if (count($cursor) > 0) {
                 $contentVariable = $cursor[0]['ContentVariable']; 
                 if (!isset($contentVariable['table'])) {
-                    return __("The key %s is already used by a keys/value.", implode('.', $keysValues[$i]['keys']));
+                    return __("The keys %s is already used by a keys/value.", implode('.', $keysValues[$i]['keys']));
                 } else {
-                    return __("The key %s is already used by the table %s.", implode('.', $keysValues[$i]['keys']), $contentVariable['table']);
+                    $contentVariableTable = $this->find('first', array('conditions' => array('_id' => new MongoId($contentVariable['table']))));
+                    return __("The keys %s is already used by the table %s.", implode('.', $keysValues[$i]['keys']), $contentVariableTable['ContentVariableTable']['name']);
                 }
-            }  
+            }
         }
         return true;
     }
@@ -377,7 +384,7 @@ class ContentVariableTable extends MongoModel
         }
         $contentVariableTable = $this->find(
             'first', 
-            array('conditions' => array('name' => $contentVariable['ContentVariable']['table'])));
+            array('conditions' => array('_id' => new MongoId($contentVariable['ContentVariable']['table']))));
         if (!isset($contentVariableTable)) {
             return false;
         }
@@ -414,24 +421,19 @@ class ContentVariableTable extends MongoModel
     }
 
 
-    function beforeSave($option = array())
+    function afterSave($created, $option = array())
     {
         if (isset($option['skipKeysValues'])) {
             return true;
         }
-        $keysValues = $this->getAllKeysValue($this->data['ContentVariableTable']['columns']);
-        //Need to remove all ContentVariable keys/value of this table before saving them again
-        $this->ContentVariable->deleteAll(array('table' => $this->data['ContentVariableTable']['name']), false);
-        foreach($keysValues as $keysValue) {
-            $keysValue['table'] = $this->data['ContentVariableTable']['name'];
+        $contentVariables = $this->getAllKeysValue($this->data['ContentVariableTable']['columns']);
+        //A a quick implementation we remove all ContentVariable keys/value of this table before saving them again
+        $this->ContentVariable->deleteAll(array('table' => $this->id), false);
+        foreach ($contentVariables as $contentVariable) {
+            $contentVariable['keys'] = $this->ContentVariable->setListKeys($contentVariable['keys']);
+            $contentVariable['table'] = $this->id;
             $this->ContentVariable->create();
-            $saved = $this->ContentVariable->save($keysValue);
-            if ($saved == false) {
-                //A failure in saving 1 contentvarible, all content varible of this table are removed... dangerous state.
-                $this->ContentVariable->deleteAll(array('table' => $this->data['ContentVariableTable']['name']), false);
-                $errors = array_values($this->ContentVariable->validationErrors);
-                throw new Exception(__("Failed to save keys/value from table: %s", $errors[0]));
-            }
+            $saved = $this->ContentVariable->save($contentVariable, false);
         }
         return true;
     }
@@ -439,8 +441,7 @@ class ContentVariableTable extends MongoModel
 
     function deleteTableAndValues($id) 
     {
-        $table = $this->read('name', $id);
-        $this->ContentVariable->deleteAll(array('table' => $table['ContentVariableTable']['name']), false);
+        $this->ContentVariable->deleteAll(array('table' => $id), false);
         return $this->delete($id);
     }
 

@@ -67,11 +67,17 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertEqual(
                 '300 Ksh',
                 $mombasaContentVariable[0]['ContentVariable']['value']);
+        $this->assertEqual(
+                $this->ContentVariableTable->id,
+                $mombasaContentVariable[0]['ContentVariable']['table']);
 
         $nairobiContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('nairobi', 'Chicken price'))));
         $this->assertEqual(
                 '',
-                $nairobiContentVariable[0]['ContentVariable']['value']);      
+                $nairobiContentVariable[0]['ContentVariable']['value']);     
+        $this->assertEqual(
+                $this->ContentVariableTable->id,
+                $mombasaContentVariable[0]['ContentVariable']['table']); 
     }
 
 
@@ -402,7 +408,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $result = $this->ContentVariableTable->save($contentVariableTable);
         $this->assertFalse($result);
         $this->assertEqual(
-            'The key mombasa.Chicken price is already used by a keys/value.',
+            'The keys mombasa.Chicken price is already used by a keys/value.',
             $this->ContentVariableTable->validationErrors['columns'][0]
             );
     }
@@ -445,7 +451,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $result = $this->ContentVariableTable->save($contentVariableTable);
         $this->assertFalse($result);
         $this->assertEqual(
-            'The key mombasa.Chicken price is already used by the table my table.',
+            'The keys mombasa.Chicken price is already used by the table my table.',
             $this->ContentVariableTable->validationErrors['columns'][0]
             );
     }
@@ -699,8 +705,8 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->ContentVariable->id = $savedKeysValue[0]['ContentVariable']['_id'];
         $updatedKeysValue = $this->ContentVariable->save($savedKeysValue[0]['ContentVariable']);
        
-        $this->assertTrue(
-            $this->ContentVariableTable->updateTableFromKeysValue($updatedKeysValue) != false);
+        $result = $this->ContentVariableTable->updateTableFromKeysValue($updatedKeysValue);
+        $this->assertTrue($result != false);
         
         $savedTable = $this->ContentVariableTable->find('first');
         $this->assertEquals(
@@ -727,15 +733,22 @@ class ContentVariableTableTestCase extends CakeTestCase
             );
         $this->ContentVariableTable->create();
         $savedTable = $this->ContentVariableTable->save($contentVariableTable);
+
+        $savedTable['ContentVariableTable']['name'] = 'another table';
         $savedTable['ContentVariableTable']['columns'][1]['values'][1] = '200 Ksh';
+        $this->ContentVariableTable->create();
+        $this->ContentVariableTable->id = $savedTable['ContentVariableTable']['_id']; 
         $updateResult = $this->ContentVariableTable->save($savedTable);
-       
         $this->assertTrue(isset($updateResult['ContentVariableTable']));
         
         $savedTable = $this->ContentVariableTable->find('first');
         $this->assertEquals(
             array('300 Ksh', '200 Ksh'),
             $savedTable['ContentVariableTable']['columns'][1]['values']    
+            );
+        $this->assertEquals(
+            'another table',
+            $savedTable['ContentVariableTable']['name']    
             );
 
         $this->assertEquals(

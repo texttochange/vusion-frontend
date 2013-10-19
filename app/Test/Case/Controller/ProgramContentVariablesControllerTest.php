@@ -209,6 +209,14 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
             );
         $this->assertEquals(2, $this->ContentVariable->find('count'));
         $this->assertEquals(1, $this->ContentVariableTable->find('count'));
+        
+        $savedTable = $this->ContentVariableTable->find('first');
+        $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
+        $this->assertEquals(1, count($contentVariable));
+        $this->assertEquals('300 Ksh', $contentVariable[0]['ContentVariable']['value']);
+        $this->assertEquals(
+            $savedTable['ContentVariableTable']['_id']."",
+            $contentVariable[0]['ContentVariable']['table']);
     }
 
   
@@ -276,7 +284,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
                 'data' => array(
                     'ContentVariable' => array(
                         'keys' => 'mombasa.Chicken price',
-                        'table' => 'my table',
+                        'table' => $savedTable['ContentVariableTable']['_id']."",
                         'value' => '200 Ksh'
                         )
                     )
@@ -355,7 +363,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
                 )
             );
         $this->ContentVariableTable->create();
-        $this->ContentVariableTable->save($contentVariableTable);
+        $savedTable = $this->ContentVariableTable->save($contentVariableTable);
         $savedContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
 
         $this->testAction(
@@ -376,6 +384,9 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
         $this->assertEquals(1, count($contentVariable));
         $this->assertEquals('200 Ksh', $contentVariable[0]['ContentVariable']['value']);
+        $this->assertEquals(
+            $savedTable['ContentVariableTable']['_id']."", 
+            $contentVariable[0]['ContentVariable']['table']);
 
         $contentVariableTable = $this->ContentVariableTable->find('first');
         $this->assertEquals('200 Ksh', $contentVariableTable['ContentVariableTable']['columns'][1]['values'][0]);
@@ -404,7 +415,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $this->ContentVariableTable->create();
         $savedTable = $this->ContentVariableTable->save($contentVariableTable);
 
-
+        $contentVariableTable['ContentVariableTable']['name'] = "another table";
         $contentVariableTable['ContentVariableTable']['columns'][0]['values'] = array('kisumu', 'mombasa');
        
         $this->testAction(
@@ -419,10 +430,14 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, $this->ContentVariableTable->find('count'));
         $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price')))); 
         $this->assertEquals('400 Ksh', $contentVariable[0]['ContentVariable']['value']);
+        $this->assertEquals(
+            $savedTable['ContentVariableTable']['_id']."", 
+            $contentVariable[0]['ContentVariable']['table']);
         $contentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('kisumu', 'Chicken price')))); 
         $this->assertEquals('300 Ksh', $contentVariable[0]['ContentVariable']['value']);
     }
-  
+
+
     public function testDelete()
     {
         $contentVariables = $this->mock_program_access();  

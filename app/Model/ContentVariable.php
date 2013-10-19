@@ -127,6 +127,15 @@ class ContentVariable extends MongoModel
             $result[] = $key['key'];
         }
         return $result;
+    } 
+
+    public function setListKeys($keys) {
+        foreach($keys as &$key) {
+            if (!is_array($key)) {
+                $key = array('key' => $key);
+            }
+        }
+        return $keys;
     }
 
 
@@ -137,11 +146,7 @@ class ContentVariable extends MongoModel
         if (isset($this->data['ContentVariable']['keys']) and !is_array($this->data['ContentVariable']['keys'])) {
             $this->data['ContentVariable']['keys'] = $this->fromKeysStringToKeysArray($this->data['ContentVariable']['keys']);
         } else if (is_array($this->data['ContentVariable']['keys'])) {
-            foreach($this->data['ContentVariable']['keys'] as &$key) {
-                if (!is_array($key)) {
-                    $key = array('key' => $key);
-                }
-            }
+            $this->data['ContentVariable']['keys'] = $this->setListKeys($this->data['ContentVariable']['keys']);
         }
         return true;
     }

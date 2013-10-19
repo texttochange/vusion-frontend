@@ -44,6 +44,9 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $savedMessage = $this->ContentVariable->save($contentVariable);
         $this->assertTrue(isset($savedMessage['ContentVariable']));
+        $this->assertEqual(
+            'contentvariable',
+            $savedMessage['ContentVariable']['object-type']);
         
         #single key
         $contentVariable = array(
