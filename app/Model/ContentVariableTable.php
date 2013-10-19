@@ -420,6 +420,11 @@ class ContentVariableTable extends MongoModel
         return count($array) !== count(array_unique($array));
     }
 
+    function beforeSave($option = array())
+    {
+        $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
+        return true;
+    }
 
     function afterSave($created, $option = array())
     {

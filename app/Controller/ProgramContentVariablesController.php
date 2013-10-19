@@ -137,7 +137,7 @@ class ProgramContentVariablesController extends AppController
     /** by differenciating between table and keys/value, the ACL could be use to manage permissions **/
     public function indexTable()
     {
-        $this->paginate = array('all');
+        $this->paginate = array('all', 'order' => array('modified' => 'desc'));
         $contentVariableTables = $this->paginate('ContentVariableTable');
         $this->set(compact('contentVariableTables', $contentVariableTables));
     }

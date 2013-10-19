@@ -63,15 +63,18 @@ $this->Html->script("ttc-table.js", array("inline" => false))
 		            }
 		            $lastColKey++;
 		        }
+		        $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);
+		        //echo $numberOfRows;
 		        $this->Js->get('document')->event('ready',
-		            '
-		            createTable(
+		            'createTable(
     		            "#'.$elementId.'", 
     		            {
     		            startRows: 5,
     		            startCols: 10,
     		            width: 700,
-    		            height: 120,
+    		            height: '.($numberOfRows*40+30).',
+    		            fixedRowsTop: 1,
+    		            fixedColumnsLeft: '.$lastColKey.', 
     		            strechH: \'all\',
     		            cells: function(row, col, prop) {
     		              var cellProperties = {};
