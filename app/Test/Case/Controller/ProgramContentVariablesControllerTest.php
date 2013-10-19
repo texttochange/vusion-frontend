@@ -408,7 +408,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariableTable['ContentVariableTable']['columns'][0]['values'] = array('kisumu', 'mombasa');
        
         $this->testAction(
-            "/testurl/programContentVariables/editTable/".$savedTable['ContentVariableTable']['_id'], 
+            "/testurl/programContentVariables/editTable/".$savedTable['ContentVariableTable']['_id'].".json", 
             array(
                 'method' => 'post',
                 'data' => $contentVariableTable
