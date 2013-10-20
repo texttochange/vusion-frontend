@@ -80,37 +80,38 @@ $this->Html->script("ttc-table.js", array("inline" => false))
     		            fixedColumnsLeft: '.$lastColKey.', 
     		            strechH: \'all\',
     		            cells: function(row, col, prop) {
-    		              var cellProperties = {};
-    		              if (row === 0 || col < '.$lastColKey.') { 
-     		                  cellProperties.renderer = keyRenderer;
-                          } else {
-                              cellProperties.renderer = '.($canEditTableValue? 'valueRenderer' : 'valueReadOnlyRenderer').';
-    		              }
-    		              return cellProperties;
-    		              },
+    		                var cellProperties = {};
+    		                if (row === 0 || col < '.$lastColKey.') { 
+     		                    cellProperties.renderer = keyRenderer;
+                            } else {
+                                cellProperties.renderer = '.($canEditTableValue? 'valueRenderer' : 'valueReadOnlyRenderer').';
+    		                }
+    		                return cellProperties;
+    		            },
     		            afterInit: setTableTitles,
     		            afterRender: setTableTitles,
     		            data: fromVusionToHandsontableData(\''.json_encode($contentVariableTable['ContentVariableTable']['columns']).'\'),
     		            afterChange: function (change,source) {
-    		              if (change == null) {
-    		                  return;
-    		              }
-    		              keys = getKeysFromCellPosition(this, change[0][0], change[0][1]);
-    		              formData = {"ContentVariable": {"keys": keys, "value": change[0][3]}};
-    		              data = JSON.stringify(formData, null, "\t");
-    		              $.ajax({
-    		                  url: "'.$this->Html->url(array('program'=> $programDetails['url'], 'action'=>'editTableValue', 'ext'=>'json')).'",
-    		                  contentType: "application/json; charset=utf-8",
-    		                  dataType: "json",
-    		                  type: "POST",
-    		                  data: data,
-    		                  callbackData: { "table": "'.$elementId.'",
-                                              "change": change[0]},
-    		                  success: saveValueCallback
-    		                  });
-    		              }
-    		            }
-    		        )'
+    		                if (change == null) {
+    		                    return;
+    		                }
+    		                for (var index in change) {
+    		                    keys = getKeysFromCellPosition(this, change[index][0], change[index][1]);
+    		                    formData = {"ContentVariable": {"keys": keys, "value": change[index][3]}};
+    		                    data = JSON.stringify(formData, null, "\t");
+    		                    $.ajax({
+    		                        url: "'.$this->Html->url(array('program'=> $programDetails['url'], 'action'=>'editTableValue', 'ext'=>'json')).'",
+    		                        contentType: "application/json; charset=utf-8",
+    		                        dataType: "json",
+    		                        type: "POST",
+    		                        data: data,
+    		                        callbackData: { "table": "'.$elementId.'",
+                                                    "change": change[index]},
+                                    success: saveValueCallback
+                                });
+                            }
+                        }
+    		            })'
                  );
 		        ?></td>
 		        <td class="actions action">
