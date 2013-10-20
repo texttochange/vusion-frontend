@@ -315,6 +315,8 @@ fieldset fieldset div {
 	clear: left;
 	/*	margin: 0 20px;*/
 }
+
+/* Cakephp generic css are messing up handsontable css*/
 form div {
 	clear: both;
 	margin-bottom: 1em;

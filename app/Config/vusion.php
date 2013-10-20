@@ -9,6 +9,14 @@ $config = array(
         'redis' => array(
             'host' => 'localhost',
             'port' => '6379'
-            )  
+            ),
+        'cacheStatsExpire' => array(
+            1 => 30,       #1sec cache 30sec 
+            5 => 240,      #5sec cache 4mins
+            40 => 900,     #40sec cache 15mins
+            90 => 3600,    #90sec cache 1h
+            150 => 10800,  #150sec cache 3h
+            151 => 32400  #above 150sec cache 9h
+            )
         )
     );      

@@ -42,7 +42,7 @@ class UsersControllerTestCase extends ControllerTestCase
     *
     * @var array
     */
-    // public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
+    public $fixtures = array('app.user', 'app.group');
 
    /**
     * setUp method
@@ -73,55 +73,30 @@ class UsersControllerTestCase extends ControllerTestCase
     }
 
 
-   /**
-    * testIndex method
-    *
-    * @return void
-    */
     public function testIndex() 
     {
 
     }
 
 
-   /**
-    * testView method
-    *
-    * @return void
-    */
     public function testView()
     {
 
     }
 
 
-   /**
-    * testAdd method
-    *
-    * @return void
-    */
     public function testAdd() 
     {
 
     }
 
 
-   /**
-    * testEdit method
-    *
-    * @return void
-    */
     public function testEdit() 
     {
 
     }
 
 
-   /**
-    * testDelete method
-    *
-    * @return void
-    */
     public function testDelete() 
     {
 
@@ -194,6 +169,63 @@ class UsersControllerTestCase extends ControllerTestCase
                     ));
         
         $this->assertContains('/users/view/', $this->headers['Location']);
+    }
+    
+    
+    public function testFilters()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+            )));
+        
+        $users->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+
+        $users->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->returnValue('User'));
+        
+        $expected = array(
+                'id' => 2,
+                'username' => 'oliv',
+                'password' => 'olivpassword',
+                'email' => 'oliv@there.com',
+                'group_id' => 2,
+                'created' => '2012-01-24 15:34:07',
+                'modified' => '2012-01-24 15:34:07'
+            );
+        
+        $expected01 = array(
+                'id' => 1,
+                'username' => 'gerald',
+                'password' => 'geraldpassword',
+                'email' => 'gerald@here.com',
+                'group_id' => 1,
+                'created' => '2012-01-24 15:34:07',
+                'modified' => '2012-01-24 15:34:07'
+            );
+        
+        # filter by username only
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
+        $this->assertEquals($this->vars['users'][0]['User'], $expected);
+        
+        #filter by group_id only
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=group_id&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=1");
+        $this->assertEquals($this->vars['users'][0]['User'], $expected01);
+        
+        # filter by username AND group_id
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
+        $this->assertEqual(count($this->vars['users']), 0);
+        
+        # filter by username OR group_id
+        $this->testAction("/users/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
+        $this->assertEqual(count($this->vars['users']), 2);
+        
     }
 
 

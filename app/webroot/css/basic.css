@@ -12,12 +12,12 @@
 }
 
 .subinput {
-    margin-lef    t: 10px;
+    margin-left: 10px;
     margin-bottom: 0px;
     padding: 0px;
 }
 
-.subinput input{
+.subinput input{                                              
    margin: 2px 0px 0px 5px;
 }
 
@@ -583,7 +583,7 @@ display: inline;
 .ttc-program-stats {
     position: absolute;
     left:400px;
-    top: 7px;
+    top: 4px;
 }
 
 .ttc-program-quicklinks{
@@ -809,6 +809,14 @@ display: inline;
 
 .ttc-table-scrolling-area .content-variables .value {
     width: 700px;
+}
+
+.ttc-table-scrolling-area .content-variable-tables .name {
+    width: 100px;
+}
+
+.ttc-table-scrolling-area .content-variable-tables .values {
+    width: 750px;
 }
 
 /* PREDEFINE MESSAGE SPECIFIC */
@@ -1166,9 +1174,8 @@ display: inline;
 }
 
 .program-left-column {
-    /*width:202px;*/
     float: left;
-    width: 200px;
+    width: 202px;
     /*position: absolute;*/
     z-index: 99;
 }
@@ -1264,4 +1271,93 @@ display: inline;
 
 #masstag-tags{
 	margin-bottom: 12px;	
+}
+
+<<<<<<< HEAD
+/** page title **/
+.ttc-page-title {
+}
+
+.ttc-page-title .tabs {
+    display: inline-block;
+    /*border-bottom: 2px solid #19C1FF;*/
+    /*height: 22px;*/
+}
+
+.ttc-page-title .tabs ul {
+    list-style-type: none;
+    margin: 0px 0px 0px 10px;
+}
+
+.ttc-page-title .tabs li {
+    float: left;
+    margin: 0px 10px 0px 0px;
+    /*border-bottom: 5px solid #81DCFF;*/ 
+    color: #81CDFF;
+}
+
+.ttc-page-title .tabs li.selected {
+    border-bottom: 5px solid #19C1FF;
+    color: #19C1FF;
+}
+
+.ttc-page-title .tabs label {
+    display: block;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.ttc-page-title .tabs li a {
+    /*font-weight: normal;*/
+    text-decoration: none;
+    color: inherit;
+}
+
+.ttc-page-title .tabs a:hover {
+    text-decoration: none;
+    background: rgba(255,255,255,0.5);
+}
+
+.ttc-page-title h3 {
+    display: inline-block;
+}
+
+.ttc-page-title .ttc-action {
+    display: inline-block;
+}
+
+/** content Variable table **/
+#columns {
+    overflow: scroll;
+}
+
+.handsontable div {
+    padding: 0px;
+}
+
+.handsontable .key {
+    font-weight: bold;
+    background: lightgrey;
+}
+
+.handsontable .value {
+
+}
+
+.handsontable .cell-success {
+    border: 1px solid #3B8230;
+    padding: 5px;
+}
+
+.handsontable .cell-failure {
+    border: 1px solid #c43c35;
+    padding: 5px;
+}
+
+.configure-program-settings {
+	font-size:14px; 
+	color:#C43C35; 
+	position: absolute; 
+	padding-left: 341px; 
+	top: 22px
 }
