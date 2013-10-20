@@ -103,6 +103,12 @@ function handleResponseValidationErrors(validationErrors){
            case 'type-action':
                errorClass = "ttc-radio-validation-error";
                break;
+           case 'type-unmatching-feedback':
+               errorClass = "ttc-radio-validation-error";
+               break;
+           case 'type-question':
+               errorClass = "ttc-radio-validation-error";
+               break;
            case 'subcondition-field':
                style = 'left:-80px';
                break;
@@ -210,7 +216,7 @@ function clickBasicButton(){
     
     $(this).parent().children("button").each(
         function(index,elt){
-            $(elt).clone().appendTo($(parent));
+            $(elt).clone(true).appendTo($(parent));
             $(elt).remove();    
     });
     activeForm();
@@ -222,15 +228,13 @@ function hiddeUndisabled(key, item){
 }
 
 function activeForm(){
-    $.each($('.ui-dform-addElt'),function(item,value){
-            if (!$.data(value,'events')) {
-                $(value).click(clickBasicButton);
-            }
+    $.each($('.ui-dform-addElt:not(.activated)'),function(key,elt){
+            $(elt).click(clickBasicButton);
+            $(elt).addClass("activated");    
     });
-    $.each($("input[name*='type-']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateRadioButtonSubmenu);
-            };
+    $.each($("input[name*='type-']:not(.activated)"),function (key, elt){
+            $(elt).change(updateRadioButtonSubmenu);
+            $(elt).addClass("activated");
     });
     $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
@@ -241,30 +245,24 @@ function activeForm(){
             $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/minimize-icon-16.png').on('click', foldForm);
             $(elt).before(foldButton);
             $(elt).before(deleteButton);
-            
     });
-    $.each($("input[name*='at-time']"), function (key,elt){
-            if (!$.data(elt,'events')){
-                $(elt).timepicker({
-                timeFormat: 'hh:mm'});
-            };
+    $.each($("input[name*='at-time']:not(.activated)"), function (key,elt){
+            $(elt).timepicker({timeFormat: 'hh:mm'});
+            $(elt).addClass("activated");            
     });
-    $.each($("input[name*='reminder']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateCheckboxSubmenu);
-            };
+    $.each($("input[name*='reminder']:not(.activated)"),function (key, elt){
+            $(elt).change(updateCheckboxSubmenu);
+            $(elt).addClass("activated");
     });
-    $.each($("input[name*='condition']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateCheckboxSubmenu);
-            };
+    $.each($("input[name*='condition']:not(.activated)"),function (key, elt){
+            $(elt).change(updateCheckboxSubmenu);
+            $(elt).addClass("activated");
     });
-    $.each($("input[name*='max-unmatching-answers']"),function (key, elt){
-            if (!$.data(elt,'events')){    
-                $(elt).change(updateCheckboxSubmenu);
-            };
+    $.each($("input[name*='max-unmatching-answers']:not(.activated)"),function (key, elt){
+            $(elt).change(updateCheckboxSubmenu);
+            $(elt).addClass("activated");
     });
-    $("input[name*='date-time']").each(function (key, item) {
+    $("input[name*='date-time']:not(.activated)").each(function (key, elt) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
                 $(this).parent().parent().find("input").attr("readonly", true);
                 $(this).parent().parent().find("textarea").attr("readonly", true);
@@ -272,46 +270,47 @@ function activeForm(){
                 $(this).parent().parent().find("input[type='checkbox']:checked").each(hiddeUndisabled);
                 $(this).parent().parent().addClass("ttc-interaction-disabled");
             } else {
-                if (!$.data(item,'events')){
-                    $(item).datetimepicker({
-                            timeFormat: 'hh:mm',
-                            timeOnly: false,
-                            dateFormat:'dd/mm/yy',
-                            defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
-                            onSelect:function(){
-                                $("#dynamic-generic-program-form").valid()},
-                            onClose: function(){
-                                $("#dynamic-generic-program-form").valid()
-                    }});
-                    $(item).rules("add",{
-                            required:true,
-                            isInThePast: $("#local-date-time").html(),
-                            messages:{
-                                required: wrapErrorMessage(localized_errors.validation_required_error),
-                            }
-                    });
-                };
+                $(elt).datetimepicker({
+                        timeFormat: 'hh:mm',
+                        timeOnly: false,
+                        dateFormat:'dd/mm/yy',
+                        defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
+                        onSelect:function(){
+                        $("#dynamic-generic-program-form").valid()},
+                        onClose: function(){
+                            $("#dynamic-generic-program-form").valid()
+                }});
+                $(elt).rules("add",{
+                        required:true,
+                        isInThePast: $("#local-date-time").html(),
+                        messages:{
+                            required: wrapErrorMessage(localized_errors.validation_required_error),
+                        }
+                });
+                $(elt).addClass("activated");
             } 
     });
-    $("input[name*='at-time']").each(function (item) {
+    $("input[name*='at-time']:not(.activated)").each(function (elt) {
             $(this).rules("add",{
                 required:true,
                 messages:{
                     required: wrapErrorMessage(localized_errors.validation_required_error),
                 }
             });
+            $(elt).addClass('activated');
     });
-    $("input[name*='\.keyword']").each(function (item) {
-               $(this).rules("add",{
+    $("input[name*='\.keyword']:not(.activated)").each(function (elt) {
+            $(this).rules("add",{
                     required:true,
                     doubleSpace:true,
                     keywordFormat:true,
                     keywordUnique:true,
                     messages:{
-                         required: wrapErrorMessage(localized_errors.validation_required_error),
-                         keywordFormat: wrapErrorMessage(localized_errors.validation_keywords_invalid_character_error),
+                        required: wrapErrorMessage(localized_errors.validation_required_error),
+                        keywordFormat: wrapErrorMessage(localized_errors.validation_keywords_invalid_character_error),
                     }
-                });
+            });
+            $(elt).addClass("activated");
     });
     $("input[name*='type-question']:checked").each(function (item) {
         if ($("input[name*='type-question']:checked").val() == "close-question") {
@@ -320,7 +319,7 @@ function activeForm(){
                 }
         }
     });
-    $("input[name*='choice']").each(function (item) {
+    $("input[name*='choice']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             required:true,
             doubleSpace:true,
@@ -334,8 +333,9 @@ function activeForm(){
                 choiceIndex: wrapErrorMessage(localized_errors.validation_choice_index),
             } 
         });
+        $(elt).addClass('activated');
     });
-    $("input[name*='name']").each(function (item) {
+    $("input[name*='name']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             required:true,
             uniqueDialogueName: true,
@@ -344,8 +344,9 @@ function activeForm(){
                 uniqueDialogueName: wrapErrorMessage(localized_errors.validation_unique_dialogue_name),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name*='type-schedule']").each(function (item) {
+    $("input[name*='type-schedule']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
@@ -354,8 +355,9 @@ function activeForm(){
                     "ttc-radio-validation-error"),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name*='type-interaction'], input[name*='type-action']").each(function (item) {
+    $("input[name*='type-interaction']:not(.activated), input[name*='type-action']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
@@ -364,8 +366,20 @@ function activeForm(){
                     "ttc-radio-validation-error"),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name*='type-question']").each(function (item) {
+    $("input[name*='type-question']:not(.activated)").each(function (elt) {
+        $(this).rules("add",{
+            atLeastOneIsChecked:true,
+            messages:{
+                atLeastOneIsChecked: wrapErrorMessageInClass(
+                    localized_errors.validation_required_checked,
+                    "ttc-radio-validation-error"),
+            }
+        })
+        $(elt).addClass("activated");
+    });
+    $("input[name*='type-unmatching-feedback']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             atLeastOneIsChecked:true,
             messages:{
@@ -374,18 +388,9 @@ function activeForm(){
                     "ttc-radio-validation-error"),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name*='type-unmatching-feedback']").each(function (item) {
-        $(this).rules("add",{
-            atLeastOneIsChecked:true,
-            messages:{
-                atLeastOneIsChecked: wrapErrorMessageInClass(
-                    localized_errors.validation_required_checked,
-                    "ttc-radio-validation-error"),
-            }
-        });
-    });
-    $("input[name*='answer-label']").each(function (item) {
+    $("input[name*='answer-label']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             required:true,
             requireLetterDigitSpace: true,
@@ -394,16 +399,18 @@ function activeForm(){
                 requireLetterDigitSpace: wrapErrorMessage(localized_errors.validation_required_letter_digit_space),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name$='label-for-participant-profiling']").each(function (item) {
+    $("input[name$='label-for-participant-profiling']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             requireLetterDigitSpace: true,
             messages:{
                 requireLetterDigitSpace: wrapErrorMessage(localized_errors.validation_required_letter_digit_space),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("textarea[name*='content']").each(function (key, elt) {          
+    $("textarea[name*='content']:not(activated)").each(function (key, elt) {          
             $(this).rules("add",{
                     required:true,
                     forbiddenApostrophe: true,
@@ -423,19 +430,21 @@ function activeForm(){
                             }
                         }
                     }  
-            });             
+            });
+            $(elt).addClass('activated');             
     });   
-    $("input[name$='days']").each(function (item) {
+    $("input[name$='days']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             required:true,
             min: 1,
             messages:{
-                required: wrapErrorMessageInClass(localized_errors.validation_required_error, "ttc-input-validation-error"),
-                min: wrapErrorMessageInClass(localized_errors.validation_offset_days_min, "ttc-input-validation-error"),
+                required: wrapErrorMessage(localized_errors.validation_required_error),
+                min: wrapErrorMessage(localized_errors.validation_offset_days_min),
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name$='minutes']").each(function (item) {
+    $("input[name$='minutes']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             required:true,         
             minutesSeconds: true,
@@ -444,8 +453,9 @@ function activeForm(){
                 minutesSeconds: wrapErrorMessage(localized_errors.validation_offset_time_min),                
             }
         });
+        $(elt).addClass("activated");
     });
-    $("input[name$='number']").each(function (item) {
+    $("input[name$='number']:not(.activated)").each(function (elt) {
         $(this).rules("add",{
             required:true,
             min: 1,
@@ -454,6 +464,7 @@ function activeForm(){
                 min: wrapErrorMessage(localized_errors.validation_number_min),
             }
         });
+        $(elt).addClass("activated");
     });
     
     addContentFormHelp();
@@ -881,7 +892,7 @@ function updateCheckboxSubmenu() {
         $(box).remove();
     }
     
-    if ($(elt).attr('checked') && "subfields" in dynamicForm[item]) {
+    if ($(elt).is(':checked') && "subfields" in dynamicForm[item]) {
         var newContent = {
              "type":"fieldset",
              "caption": label,

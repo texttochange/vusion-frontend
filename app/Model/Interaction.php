@@ -178,7 +178,7 @@ class Interaction extends VirtualModel
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback')),
-                'message' => 'Type Question value is not valid.',
+                'message' => 'Type unmatching feedback is not valid.',
                 )
             ),
         'type-question'=> array(
@@ -188,7 +188,7 @@ class Interaction extends VirtualModel
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('closed-question', 'open-question')),
-                'message' => 'Type Question value is not valid.',
+                'message' => 'Please select a valid type of Question.',
                 )
             ),
         'answer-keywords' => array(
@@ -500,8 +500,9 @@ class Interaction extends VirtualModel
             return true;
  
         if ($this->data['type-interaction'] == 'question-answer') {
+            $this->_setDefault('type-question', null);
             $this->_setDefault('set-use-template', null);
-            $this->_setDefault('type-unmatching-feedback', 'none');                        
+            $this->_setDefault('type-unmatching-feedback', 'no-unmatching-feedback');                        
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('set-max-unmatching-answers', null);
             if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {
