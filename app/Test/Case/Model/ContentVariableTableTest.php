@@ -314,7 +314,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $result = $this->ContentVariableTable->save($contentVariableTable);
         $this->assertFalse($result);
         $this->assertEqual(
-            "The table cannot have duplicate headers.",
+            "The table cannot have duplicate headers \"Town\".",
             $this->ContentVariableTable->validationErrors['columns'][0]
             );
     }

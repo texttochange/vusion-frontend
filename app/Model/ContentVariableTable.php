@@ -44,7 +44,7 @@ class ContentVariableTable extends MongoModel
                 ),
             'noDuplicateHeader' => array(
                 'rule' => array('noDuplicateHeader'),
-                'message' => 'The table cannot have duplicate headers.',
+                'message' => null,
                 ),
             'sameNumberOfValues' => array(
                 'rule' => array('sameNumberOfValues'),
@@ -202,7 +202,7 @@ class ContentVariableTable extends MongoModel
         $headers = array();
         for($i = 0; $i < count($check['columns']); $i++) {
             if (isset($headers[$check['columns'][$i]['header']])) {
-                return false;
+                return __('The table cannot have duplicate headers "%s".', $check['columns'][$i]['header']);
             }
             $headers[$check['columns'][$i]['header']] = true;
         }
