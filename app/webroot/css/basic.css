@@ -583,7 +583,7 @@ display: inline;
 .ttc-program-stats {
     position: absolute;
     left:400px;
-    top: 7px;
+    top: 4px;
 }
 
 .ttc-program-quicklinks{
@@ -1273,6 +1273,7 @@ display: inline;
 	margin-bottom: 12px;	
 }
 
+<<<<<<< HEAD
 /** page title **/
 .ttc-page-title {
 }
@@ -1351,4 +1352,12 @@ display: inline;
 .handsontable .cell-failure {
     border: 1px solid #c43c35;
     padding: 5px;
+}
+
+.configure-program-settings {
+	font-size:14px; 
+	color:#C43C35; 
+	position: absolute; 
+	padding-left: 341px; 
+	top: 22px
 }

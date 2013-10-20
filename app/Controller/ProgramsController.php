@@ -178,13 +178,7 @@ class ProgramsController extends AppController
         } else {
             $programs = $programsList;
         }
-
-        if ($this->params['ext'] != 'json') {
-            foreach ($programs as &$program) {
-                $program['Program']['stats'] = $this->Stats->getProgramStats($program['Program']['database']);
-            }
-        }
-
+        
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
@@ -380,6 +374,25 @@ class ProgramsController extends AppController
             );
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
+    public function getProgramStats()
+    { 
+        $user = $this->Auth->user();
+        $programParamsUrl = $this->params['url']['programUrl'];
+        if(isset($programParamsUrl)){
+            $programUrl = $this->Program->find('authorized', array(
+                'specific_program_access' => $this->Group->hasSpecificProgramAccess(
+                    $this->Session->read('Auth.User.group_id')),
+                'user_id' => $user['id'],
+                'conditions' => array('url'=> $programParamsUrl)));
+            if(count($programUrl) > 0){
+            $programStats = $this->Stats->getProgramStats($programUrl[0]['Program']['database']);
+            $result = array('status' =>'ok', 'programUrl' => $programUrl[0]['Program']['url'], 'programStats' => $programStats);
+            }else{
+            $result = array('status' =>'fail', 'programUrl' => $programParamsUrl, 'reason' => "This program url ". $programParamsUrl." doesn't exist", 'programStats' => null);
+            }
+            $this->set(compact('result'));
+        }
+    }
 }
