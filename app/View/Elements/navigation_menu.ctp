@@ -172,7 +172,12 @@
         <ul>
             <li>
                 <?php 
-                     echo $this->AclLink->generateLink(__('Add Content Variable'),$programDetails['url'],'programContentVariables','add');
+                     echo $this->AclLink->generateLink(__('Keys/Value'), $programDetails['url'], 'programContentVariables', 'index');
+                ?>
+            </li>
+            <li>
+                <?php 
+                     echo $this->AclLink->generateLink(__('Tables'), $programDetails['url'], 'programContentVariables', 'indexTable');
                 ?>
             </li>
         </ul>

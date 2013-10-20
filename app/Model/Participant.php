@@ -10,8 +10,7 @@ class Participant extends MongoModel
 {
 
     var $specific = true;    
-
-    var $name        = 'Participant';
+    var $name     = 'Participant';
     
     var $importErrors = array();
     
