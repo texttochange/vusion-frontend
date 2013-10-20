@@ -50,6 +50,10 @@ $this->Html->script("ttc-table.js", array("inline" => false))
 		<tbody>
 		    <?php
 		    $tableIndex = 0;
+		    $canEditTableValue = false;
+		    if ($this->AclLink->_allow('controllers/ProgramContentVariables/editTableValue')) {
+		        $canEditTableValue = true;
+		    }
 		    foreach ($contentVariableTables as $contentVariableTable): ?>
 		    <tr>
 		        <td><?php echo $contentVariableTable['ContentVariableTable']['name'] ?></td>
@@ -64,7 +68,6 @@ $this->Html->script("ttc-table.js", array("inline" => false))
 		            $lastColKey++;
 		        }
 		        $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);
-		        //echo $numberOfRows;
 		        $this->Js->get('document')->event('ready',
 		            'createTable(
     		            "#'.$elementId.'", 
@@ -81,7 +84,7 @@ $this->Html->script("ttc-table.js", array("inline" => false))
     		              if (row === 0 || col < '.$lastColKey.') { 
      		                  cellProperties.renderer = keyRenderer;
                           } else {
-    		                  cellProperties.renderer = valueRenderer;
+                              cellProperties.renderer = '.($canEditTableValue? 'valueRenderer' : 'valueReadOnlyRenderer').';
     		              }
     		              return cellProperties;
     		              },

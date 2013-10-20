@@ -30,6 +30,11 @@ function valueRenderer(instance, td, row, col, prop, value, cellProperties) {
     Handsontable.TextCell.renderer.apply(this, arguments);
 }
 
+function valueReadOnlyRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.TextCell.renderer.apply(this, arguments);
+    cellProperties.readOnly = true;
+}
+
 // the title can only be define after the all table has been render.
 // otherwise we cannot construct the customized key. 
 function setTableTitles(isForced) {
