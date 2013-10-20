@@ -12,6 +12,7 @@ class FlashWebTest extends PHPUnit_Extensions_SeleniumTestCase
 
   public function testFlashMessageDisappear()
   {
+    $this->windowMaximize();
     $this->open("/users/login");
     $this->type("id=UserEmail", "marcus@texttochange.com");
     $this->type("id=UserPassword", "marcus");

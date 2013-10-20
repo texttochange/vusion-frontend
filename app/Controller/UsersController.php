@@ -6,7 +6,8 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
 class UsersController extends AppController
 {
-
+    var $components = array('LocalizeUtils');
+    var $uses = array('User');
     
     public function beforeFilter()
     {
@@ -24,8 +25,60 @@ class UsersController extends AppController
     */
     public function index()
     {
+        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
+        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+        
+        $paginate = array('all');
+        
+        if (isset($this->params['named']['sort'])) {
+            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+        
+        $conditions = $this->_getConditions();
+        if ($conditions != null) {
+            $paginate['conditions'] = $conditions;
+        }
+        
+        $this->paginate = $paginate;
+        //print_r($paginate);
         $this->User->recursive = 0;
-        $this->set('users', $this->paginate());
+        $this->set('users', $this->paginate("User"));
+    }
+
+
+    protected function _getFilterFieldOptions()
+    {   
+        return $this->LocalizeUtils->localizeLabelInArray(
+            $this->User->filterFields);
+    }
+
+
+    protected function _getFilterParameterOptions()
+    {
+        $groups = $this->User->Group->find('list');
+        
+        return array(
+            'operator' => $this->LocalizeUtils->localizeValueInArray($this->User->filterOperatorOptions),
+            'group' => $groups           
+            );
+       
+    }
+    
+    
+    protected function _getConditions()
+    {
+       $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
+
+        if (!isset($filter['filter_param'])) 
+            return null;
+
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->User->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }     
+
+        $this->set('urlParams', http_build_query($filter));
+
+        return $this->User->fromFilterToQueryConditions($filter);
     }
 
 
@@ -283,7 +336,8 @@ class UsersController extends AppController
             $Group->id = $group['Group']['id']."</br";
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->deny($Group, 'controllers/Programs');
-            $this->Acl->allow($Group, 'controllers/Programs/index');        
+            $this->Acl->allow($Group, 'controllers/Programs/index');
+            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -318,6 +372,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
+            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -352,6 +407,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
+            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
