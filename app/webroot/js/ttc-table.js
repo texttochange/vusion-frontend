@@ -2,25 +2,21 @@ function createTable(selector, options) {
     $(selector).handsontable(options);
 }
 
-function tableRenderer(instance, td, row, col, prop, value, cellProperties) {
-    Handsontable.TextCell.renderer.apply(this, arguments);
-    if (row === 0) {
-        td.className = "key";
-        td.setAttribute("title", "This is a readonly key.")
-        cellProperties.readOnly = true;
-    } else if (col < cellProperties.lastColKey){
-        td.className = "key";
-        td.setAttribute("title", "This is a readonly key.")
-        cellProperties.readOnly = true;
-    } else {
-        td.setAttribute("title", "This value is editable and can be used in message.");
-        /*if ('className' in cellProperties && cellProperties!="") {
-            td.className = cellProperties.className; 
-        }
-        if ($(td).attr('class') == 'cell-failure') {
-            cellProperties.className = td.className;
-        }*/
+function getKeysFromCellPosition(handsontable, row, col) {
+    var i = 0,
+        keys = [];
+    while (handsontable.getCell(row, i).className === "key") {
+        keys.push(handsontable.getDataAtCell(row, i));
+        i++;
     }
+    keys.push(handsontable.getDataAtCell(0, col));
+    return keys;
+}
+
+function fromKeysToCustomizedContent(keys) {
+    contentVariableList = ['contentVariable'].concat(keys);
+    contentVariable = contentVariableList.join('.');
+    return '['+contentVariable+']';
 }
 
 function keyRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -32,12 +28,32 @@ function keyRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function valueRenderer(instance, td, row, col, prop, value, cellProperties) {
     Handsontable.TextCell.renderer.apply(this, arguments);
-    if (cellProperties.valid) {
-        td.setAttribute("title", "This value is editable and can be used in message.");
-    } else {
-        td.setAttribute("title", cellProperties.validationError);
+}
+
+// the title can only be define after the all table has been render.
+// otherwise we cannot construct the customized key. 
+function setTableTitles(isForced) {
+    if (!isForced) {
+        return;
+    }
+    for (var r=0; r<this.countRows(); r++) {
+        for (var c=0; c<this.countCols(); c++) {
+            cellProperties = this.getCellMeta(r, c);
+            if (cellProperties.renderer != valueRenderer) {
+                continue;
+            }
+            if ('valid' in cellProperties && (!cellProperties.valid)) {
+                title = cellProperties.validationError; 
+            } else {
+                customizedContent = fromKeysToCustomizedContent(getKeysFromCellPosition(this, r, c));
+                title = localized_messages.content_variable_table_value + customizedContent;
+            }
+            cell = this.getCell(r,c);
+            cell.setAttribute("title", title);
+        }
     }
 }
+
 
 function saveTable() {
     //Remove validation errors
@@ -160,4 +176,23 @@ function fromVusionToHandsontableColumns(table, defaultRegex) {
 
 function saveContentVariableValue() {
 
+}
+
+function saveValueCallback(data) {
+    var cell = $("#"+this.callbackData.table).handsontable("getCell", this.callbackData.change[0], this.callbackData.change[1]);
+    var cellClass = "htInvalid";
+    if (data.status == "ok") {
+        cellClass = "cell-success";
+        setTimeout(function(){
+                $(cell).removeClass();
+        },2000);
+        var cellProperties = $("#"+this.callbackData.table).handsontable("getCellMeta", this.callbackData.change[0], this.callbackData.change[1]);
+        cellProperties.valid = true;
+    } else {
+        var cellProperties = $("#"+this.callbackData.table).handsontable("getCellMeta", this.callbackData.change[0], this.callbackData.change[1]);
+        cellProperties.valid = false;
+        cellProperties.validationError = data.reason;
+        cell.setAttribute('title', cellProperties.validationError);
+    }
+    cell.className = cellClass;
 }

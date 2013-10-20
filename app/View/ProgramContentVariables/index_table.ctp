@@ -85,20 +85,14 @@ $this->Html->script("ttc-table.js", array("inline" => false))
     		              }
     		              return cellProperties;
     		              },
+    		            afterInit: setTableTitles,
+    		            afterRender: setTableTitles,
     		            data: fromVusionToHandsontableData(\''.json_encode($contentVariableTable['ContentVariableTable']['columns']).'\'),
     		            afterChange: function (change,source) {
     		              if (change == null) {
     		                  return;
     		              }
-    		              var row = change[0][0], 
-    		                  col = change[0][1],
-    		                  i = 0,
-    		                  keys = [];
-    		              while (this.getCell(row, i).className ==="key") {
-    		                  keys.push(this.getDataAtCell(row, i));
-    		                  i++;
-    		              }
-    		              keys.push(this.getDataAtCell(0, col));
+    		              keys = getKeysFromCellPosition(this, change[0][0], change[0][1]);
     		              formData = {"ContentVariable": {"keys": keys, "value": change[0][3]}};
     		              data = JSON.stringify(formData, null, "\t");
     		              $.ajax({
@@ -109,23 +103,7 @@ $this->Html->script("ttc-table.js", array("inline" => false))
     		                  data: data,
     		                  callbackData: { "table": "'.$elementId.'",
                                               "change": change[0]},
-    		                  success: function(data) {
-    		                          var cell = $("#"+this.callbackData.table).handsontable("getCell", this.callbackData.change[0], this.callbackData.change[1]);
-    		                          var cellClass = "htInvalid";
-    		                          if (data.status == "ok") {
-    		                              cellClass = "cell-success";
-    		                              setTimeout(function(){
-    		                                  $(cell).removeClass();
-    		                              },2000);
-    		                              var cellProperties = $("#"+this.callbackData.table).handsontable("getCellMeta", this.callbackData.change[0], this.callbackData.change[1]);
-    		                              cellProperties.valid = true;
-    		                          } else {
-    		                              var cellProperties = $("#"+this.callbackData.table).handsontable("getCellMeta", this.callbackData.change[0], this.callbackData.change[1]);
-    		                              cellProperties.valid = false;
-    		                              cellProperties.validationError = "This is an error";
-    		                          }
-    		                          cell.className = cellClass;
-    		                      },
+    		                  success: saveValueCallback
     		                  });
     		              }
     		            }

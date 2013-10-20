@@ -4,6 +4,6 @@ if ($this->validationErrors['ContentVariable']==array()) {
 } else {
     $result = array(
         "status" => "fail", 
-        "reason" => $this->validationErrors['ContentVariable']);
+        "reason" => $this->validationErrors['ContentVariable']['value']);
 }
 echo $this->Js->object($result);
