@@ -11,7 +11,7 @@ class ContentVariable extends MongoModel
     
     function getModelVersion()
     {
-        return '1';
+        return '2';
     }
     
     
@@ -19,6 +19,7 @@ class ContentVariable extends MongoModel
     {
         return array(
             'keys',
+            'table',
             'value'
             );
     }
@@ -30,16 +31,22 @@ class ContentVariable extends MongoModel
                 'rule' => 'validateKeys',
                 'message' => 'noMessage'
                 ),
+            'validateKeysCount' => array(
+                'rule' => 'validateKeysCount',
+                'message' => 'A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example "key1.key2".'
+                ),            
             'isUnique' => array(
                 'rule' => 'isUnique',
                 'message' => 'This keys pair already exists. Please choose another.'
                 ),
             ),
-        'value' => array(
-            'notempty' => array(
-                'rule' => array('notempty'),
-                'message' => 'Please enter a value for this dynamic content.'
+        'table' => array(
+            'nonMutable' => array(
+                'rule' => 'nonMutable',
+                'message' => 'Editing table is not allowed.',
                 ),
+            ),
+        'value' => array(
             'validateValue' => array(
                 'rule' => array('custom', VusionConst::CONTENT_VARIABLE_VALUE_REGEX),
                 'message' => VusionConst::CONTENT_VARIABLE_VALUE_FAIL_MESSAGE,
@@ -47,12 +54,19 @@ class ContentVariable extends MongoModel
             ),
         );
     
+    public function validateKeysCount($check) 
+    {
+        if (count($check['keys']) < 1) {
+            return __('The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".');
+        } else if (count($check['keys']) > 3) {
+            return __('The content variable "%s" has %s keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".', implode('.', $this->getListKeys($check['keys'])), count($check['keys']));
+        }
+        return true;
+    }
+
     
     public function validateKeys($check)
     {
-        $keyString = '';
-        $regex = VusionConst::CONTENT_VARIABLE_KEYS_FULL_REGEX;
-        $index = 0;
         foreach ($check['keys'] as $keyItem) {
             if (is_string($validationError = $this->validateKey($keyItem))) {
                if (!isset($this->validationErrors['keys'])) {
@@ -60,14 +74,10 @@ class ContentVariable extends MongoModel
                 }
                 $this->validationErrors['keys'][$index] = $validationError;
             }
-            $index++;
-            $keyString = $keyString . $keyItem['key'] . ".";
         }
         if (isset($this->validationErrors['keys'])) {
             return false;
-        } else if (!preg_match($regex, rtrim($keyString, '.'))) {
-            return VusionConst::CONTENT_VARIABLE_KEYS_FULL_FAIL_MESSAGE;
-        }
+        } 
         return true;
     }
     
@@ -83,31 +93,100 @@ class ContentVariable extends MongoModel
     
     public function isUnique($check)
     {
-        if ($this->id) {
-            $conditions = array('id'=>array('$ne'=> $this->id),'keys' => $check['keys']);
-        } else {
-            $conditions = array('keys' => $check['keys']);
+        foreach($check['keys'] as &$key) {
+            $key = $key['key'];
         }
-        $result = $this->find('count', array(
-            'conditions' => $conditions
-            ));
-        return $result < 1;
+        if ($this->id) {
+            $conditions = array(
+                'id' => array('$ne'=> $this->id), 
+                'keys' => $check['keys']);
+        } else {
+            $conditions = $check;
+        }
+        $result = $this->find('fromKeys', array('conditions' => $conditions));
+        return count($result) < 1;
     }
     
     
+    public function nonMutable($check)
+    {
+        if ($this->id === false) {
+            return true;
+        }
+        $conditions = array(
+                'id' => $this->id,
+                'table' => array('$ne' => $check['table']));
+        $result = $this->find('count', array('conditions' => $conditions));
+        return $result == 0;
+    }
+
+
+    public function getListKeys($keys) {
+        $result = array();
+        foreach($keys as $key) {
+            $result[] = $key['key'];
+        }
+        return $result;
+    } 
+
+    public function setListKeys($keys) {
+        foreach($keys as &$key) {
+            if (!is_array($key)) {
+                $key = array('key' => $key);
+            }
+        }
+        return $keys;
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
         
         if (isset($this->data['ContentVariable']['keys']) and !is_array($this->data['ContentVariable']['keys'])) {
-            $keys = trim(stripcslashes($this->data['ContentVariable']['keys']));
-            $keys = array_filter(explode(".", $keys));
-            $cleanKeys = array();
-            foreach ($keys as $key) {
-                $cleanKeys[] = array('key' => trim($key));
-            }
-            $this->data['ContentVariable']['keys'] = $cleanKeys;
+            $this->data['ContentVariable']['keys'] = $this->fromKeysStringToKeysArray($this->data['ContentVariable']['keys']);
+        } else if (is_array($this->data['ContentVariable']['keys'])) {
+            $this->data['ContentVariable']['keys'] = $this->setListKeys($this->data['ContentVariable']['keys']);
         }
+        return true;
+    }
+
+
+    protected function fromKeysStringToKeysArray($keysString)
+    {
+        $keys = trim(stripcslashes($keysString));
+        $keys = array_filter(explode(".", $keys));
+        $keysArray = array();
+        foreach ($keys as $key) {
+            $keysArray[] = array('key' => trim($key));
+        }
+        return $keysArray;
     }
     
+
+    public  $findMethods = array(
+        'count' => true,
+        'first' => true,
+        'all' => true,
+        'fromKeys' => true,
+        );
+
+
+    public function _findFromKeys($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            $keyConditions = array();
+            $keys = $query['conditions']['keys'];
+            unset($query['conditions']['keys']);
+            for($i = 0 ; $i < count($keys) ; $i++) {
+                $keyConditions['keys.'.$i] = array('key' => $keys[$i]);
+            }
+            $keyConditions['keys'] = array('$size' => count($keys));
+            $query['conditions'] = array_merge($query['conditions'], $keyConditions);
+            return $query;
+        } 
+        return $results;
+    }
+
+
 }

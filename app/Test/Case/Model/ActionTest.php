@@ -47,6 +47,15 @@ class ActionTestCase extends CakeTestCase
     }
     
     
+    public function testValidateAction_ok_feedback_dynamic_content() {
+        $action = array(
+            'type-action' => 'feedback',
+            'content' => 'Hello [contentVariable.mombasa.chicken.price]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+
     public function testValidateAction_fail_feedback_dynamic_content() {
         $action = array(
             'type-action' => 'feedback',
@@ -55,7 +64,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as dynamic content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 
@@ -66,18 +75,18 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as dynamic content, '$%name' can only be composed of letter(s), digit(s) and/or space(s).",
+            "To be used as customized content, '$%name' can only be composed of letter(s), digit(s) and/or space(s).",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 
             count($this->Action->validationErrors['content']));
         
-        $action['content'] = 'hello [contentVariable.name.age.person]';
+        $action['content'] = 'hello [contentVariable.name.age.person.gender]';
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as dynamic concent, contentVariable only accept max two keys.",
+            "To be used in message, contentVariable only accepts maximum three keys.",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 
