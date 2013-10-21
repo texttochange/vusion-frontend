@@ -12,6 +12,7 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
 
   public function testParticipantAddDelete()
   {
+    $this->windowMaximize();
     $this->open("/users/login");
     $this->type("id=UserEmail", "marcus@texttochange.com");
     $this->type("id=UserPassword", "marcus");
@@ -22,7 +23,7 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->waitForPageToLoad("60000");
     $this->click("css=div.ttc-program-box");
     $this->waitForPageToLoad("30000");
-    $this->click("link=Participants »");
+    $this->click("link=Participants");
     $this->waitForPageToLoad("30000");
     $this->click("link=Add");
     $this->waitForPageToLoad("30000");

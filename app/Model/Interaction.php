@@ -178,7 +178,7 @@ class Interaction extends VirtualModel
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback')),
-                'message' => 'Type Question value is not valid.',
+                'message' => 'Type unmatching feedback is not valid.',
                 )
             ),
         'type-question'=> array(
@@ -188,7 +188,7 @@ class Interaction extends VirtualModel
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('closed-question', 'open-question')),
-                'message' => 'Type Question value is not valid.',
+                'message' => 'Please select a valid type of Question.',
                 )
             ),
         'answer-keywords' => array(
@@ -414,16 +414,16 @@ class Interaction extends VirtualModel
     {
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
-            $allowed = array("domain", "key1", "key2", "otherkey");
+            $allowed = array("domain", "key1", "key2", "keys3", "otherkey");
             foreach($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
-                    if (!preg_match(VusionConst::CONTENT_VARIABLE_ALLOWED_REGEX, $value)) {
-                        return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
+                        return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }
                 if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
-                    return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                    return __("To be used as customized content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
@@ -500,8 +500,9 @@ class Interaction extends VirtualModel
             return true;
  
         if ($this->data['type-interaction'] == 'question-answer') {
+            $this->_setDefault('type-question', null);
             $this->_setDefault('set-use-template', null);
-            $this->_setDefault('type-unmatching-feedback', 'none');                        
+            $this->_setDefault('type-unmatching-feedback', 'no-unmatching-feedback');                        
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('set-max-unmatching-answers', null);
             if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {

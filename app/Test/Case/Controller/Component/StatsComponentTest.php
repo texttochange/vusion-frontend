@@ -180,4 +180,33 @@ class StatsComponentTest extends CakeTestCase
         
         $this->assertEqual('N/A', $programTestStats);
     }
+    
+
+    public function testGetTimeToCacheStatsExpire()
+    {
+        $this->StatsComponent->cacheStatsExpire = array(
+            1000 => 30,
+            2000 => 60,
+            3000 => 120);
+
+        $this->assertEqual(
+           30,
+           $this->StatsComponent->_getTimeToCacheStatsExpire(100));
+
+        $this->assertEqual(
+           60,
+           $this->StatsComponent->_getTimeToCacheStatsExpire(1100));
+        
+        $this->assertEqual(
+           60,
+           $this->StatsComponent->_getTimeToCacheStatsExpire(2000));
+
+        $this->assertEqual(
+           120,
+           $this->StatsComponent->_getTimeToCacheStatsExpire(4000));
+
+
+    }
+
+
 }
