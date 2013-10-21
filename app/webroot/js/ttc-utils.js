@@ -311,7 +311,11 @@ function supplyParameterOptions(operatorElt) {
         break;
     case "date":
 	    $(operatorElt).after("<input name='"+name+"[3]'></input>");
-	    $("[name='"+name+"[3]']").datepicker();
+	    $("[name='"+name+"[3]']").datepicker({
+            timeFormat: "hh:mm",
+            timeOnly: false,
+            dateFormat:"dd/mm/yy"
+	    });
         break;
     case "text":
         $(operatorElt).after("<input name='"+name+"[3]'></input>");
