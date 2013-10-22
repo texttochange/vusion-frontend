@@ -1,9 +1,26 @@
 <div class='content_variables index'>
+  <div class="ttc-page-title">
+	<h3><?php echo __('Content Variables'); ?></h3>
+	<span class="tabs">
+	<ul>
+    <li class="selected">
+        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
+            <label><?php echo __("Keys/Values") ?></label>
+        </a>
+    </li>
+    <li>
+        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
+            <label><?php echo __("Tables") ?></label>
+        </a>
+    </li>
+    </ul>
+    </span>
+	</h3>
 	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Content Variable'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
-	</ul>	
-	<h3><?php echo __('Content Variables');?></h3>
-  <div class="ttc-data-control">
+		<li><?php echo $this->Html->link(__('New'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
+	</ul>
+  </div>
+  <div class="ttc-data-control">  
 	<div id="data-control-nav" class="ttc-paging paging">
 	<?php
 	echo "<span class='ttc-page-count'>";

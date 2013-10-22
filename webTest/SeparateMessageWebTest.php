@@ -12,6 +12,7 @@ class RequestWebTest extends PHPUnit_Extensions_SeleniumTestCase
 
   public function testRequestAddDelet()
   {
+    $this->windowMaximize();
     $this->open("/users/login");
     $this->type("id=UserEmail", "marcus@texttochange.com");
     $this->type("id=UserPassword", "marcus");

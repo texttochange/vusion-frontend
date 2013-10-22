@@ -159,6 +159,11 @@ abstract class MongoModel extends Model
 		$this->validationErrors[$field] []= $value;
 	}
 	
+	function beforeSave($option = array())
+    {
+        $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
+        return true;
+    }
 
     # Need to be overwrite to take into accound array field in mongo
     public function save($data = null, $validate = true, $fieldList = array()) {

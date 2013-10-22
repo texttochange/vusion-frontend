@@ -45,5 +45,67 @@ class UserTestCase extends CakeTestCase
         $this->assertTrue(true);
     }
     
+    //TEST FILTERS
+    public function testFromFilterToQueryConditions_username()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'username', 
+                    2 => 'equal-to', 
+                    3 => 'john')
+                )
+            );
+        $this->assertEqual(
+            $this->User->fromFilterToQueryConditions($filter),
+            array("username" => "john"));
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => "username", 
+                    2 => "start-with", 
+                    3 => "jo")
+                )
+            );        
+        $this->assertEqual(
+            $this->User->fromFilterToQueryConditions($filter),
+            array("username LIKE" => "jo%"));
+    }
+    
+    
+    public function testFromFilterToQueryConditions_group()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'group_id', 
+                    2 => 'is', 
+                    3 => '1')
+                )
+            );        
+        $this->assertEqual(
+            $this->User->fromFilterToQueryConditions($filter),
+            array('group_id' => '1')
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'group_id', 
+                    2 => 'not-is', 
+                    3 => '1')
+                )
+            );        
+        $this->assertEqual(
+            $this->User->fromFilterToQueryConditions($filter),
+            array('group_id' => array('$ne' => '1'))
+            );
+    }
+    
 
 }

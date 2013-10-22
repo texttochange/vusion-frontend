@@ -3013,8 +3013,8 @@ class Model extends Object {
 						}
 					}
 
-					if ($requiredFail || !$valid || (is_string($valid) && strlen($valid) > 0)) {
-						if (is_string($valid)) {
+					if ($requiredFail || !$valid || (is_string($valid) && strlen($valid) > 0) || is_array($valid)) {
+						if (is_string($valid) || is_array($valid)) {
 							$message = $valid;
 						} elseif (isset($validator['message'])) {
 							$args = null;
