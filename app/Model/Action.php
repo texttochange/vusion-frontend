@@ -409,8 +409,8 @@ class Action extends VirtualModel
                         return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }
-                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
-                    return __("To be used as dynamic content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_WITH_CONTEXT_REGEX, $match['domain'])) {
+                    return __("To be used as dynamic content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
