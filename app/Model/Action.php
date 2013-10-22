@@ -7,7 +7,7 @@ class Action extends VirtualModel
 {
     var $name = 'action';
     var $version = '2'; 
-
+    
     var $fields = array(
         'set-condition',
         'type-action');
@@ -102,14 +102,14 @@ class Action extends VirtualModel
                 ),
             ),
         'offset-days' => array(
-           'requiredConditional' => array (
+            'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'delayed-enrolling'),
                 'message' => 'The enroll field require an enrolling or delayed-enrolling action.',
                 ),
-           'validSubfield' => array(
+            'validSubfield' => array(
                 'rule' => 'validOffsetDays',
                 'message' => 'noMessage'
-               ),
+                ),
             ),
         'tag' => array(
             'requiredConditional' => array (
@@ -189,7 +189,7 @@ class Action extends VirtualModel
                 ),
             )
         );
-
+    
     
     public $validateOffsetDays = array(
         'days' => array(
@@ -213,8 +213,8 @@ class Action extends VirtualModel
                 )
             )
         );
-
-
+    
+    
     public $validateSubcondition = array(
         'subcondition-field' => array(
             'required' => array(
@@ -235,7 +235,7 @@ class Action extends VirtualModel
                 ),
             ),
         );
-
+    
     
     public $validateSubconditionValues = array(
         'labelled' => array(
@@ -259,8 +259,8 @@ class Action extends VirtualModel
                 ),
             )
         );
-
-
+    
+    
     
     public $validateProportionalTag = array(
         'tag' => array(
@@ -285,15 +285,15 @@ class Action extends VirtualModel
             ),
         );
     
-
+    
     public function trimArray($Input)
     {
         if (!is_array($Input))
             return trim(stripcslashes($Input));
- 
+        
         return array_map(array($this,'TrimArray'), $Input);
     }
-
+    
     
     public function beforeValidate()
     {
@@ -305,18 +305,18 @@ class Action extends VirtualModel
         $this->_setDefault('type-action', null);
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {
-             $this->_setDefault('condition-operator', null);
-             $this->_setDefault('subconditions', array());
-             foreach ($this->data['subconditions'] as &$subconditions) {
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
-             }
+            $this->_setDefault('condition-operator', null);
+            $this->_setDefault('subconditions', array());
+            foreach ($this->data['subconditions'] as &$subconditions) {
+                $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
+                $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
+                $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
+            }
         }
         return true;
     }
-
-
+    
+    
     public function validOffsetDays($field, $data)
     {
         if (!isset($data[$field])) {
@@ -328,8 +328,8 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validDays($field, $data)
     {
         if (!isset($data[$field])) {
@@ -343,8 +343,8 @@ class Action extends VirtualModel
         }
         return false;
     }
-
-
+    
+    
     public function validSubconditions($field, $data)
     {
         if (!isset($data[$field])) {
@@ -367,14 +367,14 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validProportionalTags($field, $data)
     {
         return $this->validList($field, $data, $this->validateProportionalTag);
     }
-
-
+    
+    
     public function validSubconditionValue($subcondition)
     {
         if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
@@ -425,8 +425,8 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validUrlReplacement($field, $data, $urlReplacement) 
     {
         if (!isset($data[$field])) {
@@ -441,5 +441,5 @@ class Action extends VirtualModel
         }
         return true;
     }
-
+    
 }

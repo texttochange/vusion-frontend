@@ -9,23 +9,23 @@ class Interaction extends VirtualModel
 {
     var $name = 'interaction';
     var $version = '3'; 
-
+    
     var $payload = array();
-
+    
     var $fields = array(
         'interaction-id',
         'type-schedule',
         'type-interaction',
         'activated',
         'prioritized');
-
+    
     
     public function __construct()
     {     
         parent::__construct();
         $this->Action = new Action();
     }
-
+    
     
     public $validate = array(
         'interaction-id' => array(
@@ -205,8 +205,8 @@ class Interaction extends VirtualModel
         'label-for-participant-profiling'=> array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldOrKeyValue', array(
-                                                                'type-interaction'=>'question-answer-keyword',
-                                                                'type-question' => 'closed-question')),
+                    'type-interaction'=>'question-answer-keyword',
+                    'type-question' => 'closed-question')),
                 'message' => 'A label-for-participant-profiling is required.',
                 ),
             ),
@@ -335,6 +335,7 @@ class Interaction extends VirtualModel
             )
         );
     
+    
     public $validateReminderAction = array(
         'type-action' => array( 
             'validateActions' => array(
@@ -343,6 +344,7 @@ class Interaction extends VirtualModel
                 ),
             )
         );
+    
     
     public $validateAnswer = array(
         'choice' => array(
@@ -364,7 +366,7 @@ class Interaction extends VirtualModel
                 ),
             )
         );
-
+    
     
     public $validateAnswerKeyword = array(
         'keyword' => array(
@@ -390,8 +392,8 @@ class Interaction extends VirtualModel
                 ),
             )
         );
-
-
+    
+    
     public $validateFeedback = array(
         'content' => array(
             'notempty' => array(
@@ -438,7 +440,7 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-
+    
     
     public function validContentVariableWithContext($field, $data)
     {
@@ -470,30 +472,23 @@ class Interaction extends VirtualModel
     }
     
     
-/*
-    public function validateReminderActions($field, $data)
-    {
-        return $this->validList($field, $data, $this->validateReminderAction); 
-    }
-    */
-    
     public function validateAnswers($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswer); 
     }
-
-
+    
+    
     public function validateAnswerKeywords($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswerKeyword);      
     }
-
-
+    
+    
     public function validateFeedbacks($field, $data)
     {
         return $this->validList($field, $data, $this->validateFeedback);
     }
-
+    
     
     public function validateActions($field, $data)
     {
@@ -513,8 +508,8 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -522,14 +517,14 @@ class Interaction extends VirtualModel
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
-
+        
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
-
+        
         //Exit the function in case of announcement
         if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
             return true;
- 
+        
         if ($this->data['type-interaction'] == 'question-answer') {
             $this->_setDefault('type-question', null);
             $this->_setDefault('set-use-template', null);
@@ -549,21 +544,21 @@ class Interaction extends VirtualModel
                 $this->_setDefault('feedbacks', array());
             }
         }
-      
+        
         if ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
             $this->_beforeValidateAnswerKeywords();
         }
-
+        
         if ($this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
-
+        
         return true;
     }
-
+    
     
     protected function _beforeValidateActions($actions)
     {
@@ -573,7 +568,7 @@ class Interaction extends VirtualModel
             $action = $this->Action->getCurrent();
         }
     }
-
+    
     
     protected function _beforeValidateAnswerKeywords() 
     {
@@ -585,7 +580,7 @@ class Interaction extends VirtualModel
             $this->_beforeValidateActions(&$answer['answer-actions']);
         }
     }
-
+    
     
     protected function _beforeValidateAnswers() 
     {
@@ -598,5 +593,5 @@ class Interaction extends VirtualModel
         }
     }
     
-
+    
 }
