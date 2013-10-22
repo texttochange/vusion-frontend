@@ -88,7 +88,7 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals(
-            'The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".',
+            'The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example \"key1.key2\".',
             $this->ContentVariable->validationErrors['keys'][0]);
     }
 
@@ -102,7 +102,7 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals(
-            'The content variable "key1.key2.key3.key4" has 4 keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".',
+            'The content variable "key1.key2.key3.key4" has 4 keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example \"key1.key2\".',
             $this->ContentVariable->validationErrors['keys'][0]);
     }
 
