@@ -1,12 +1,14 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('ContentVariable', 'Model');
+App::uses('ContentVariableTable', 'Model');
 
 
 class ProgramContentVariablesController extends AppController
 {
-    public $uses = array('ContentVariable');
+    var $components = array('RequestHandler');
+    var $uses = array('ContentVariable', 'ContentVariableTable');
+
     
     function constructClasses()
     {
@@ -17,13 +19,21 @@ class ProgramContentVariablesController extends AppController
             );
         
         $this->ContentVariable = new ContentVariable($options);
-        
+        $this->ContentVariableTable = new ContentVariableTable($options);
     }
     
     
     public function index()
     {
-        $contentVariables = $this->paginate();
+        //Only load the one that don't have a link to a table
+        $this->paginate = array(
+            'all',
+            'conditions' => array('$or' => array(
+                array('table' => null),
+                array('table' => array('$exists' => false))
+                ))
+            );
+        $contentVariables = $this->paginate('ContentVariable');
         $this->set(compact('contentVariables', $contentVariables));
     }
     
@@ -35,7 +45,7 @@ class ProgramContentVariablesController extends AppController
         if ($this->request->is('post')) {
             $this->ContentVariable->create();
             if ($this->ContentVariable->save($this->request->data)) {
-                $this->Session->setFlash(__('The dynamic content has been saved.'),
+                $this->Session->setFlash(__('The keys/values has been saved in Content Variables.'),
                     'default',
                     array('class'=>'message success')
                 );
@@ -45,14 +55,14 @@ class ProgramContentVariablesController extends AppController
                     'action' => 'index'
                     ));
             } else {
-                $this->Session->setFlash(__('The dynamic content could not be saved.'), 
+                $this->Session->setFlash(__('The keys/value could not be saved in Content Variables.'), 
                 'default',
                 array('class' => "message failure")
                 );
             }
         }
     }
-    
+
     
     public function edit()
     {
@@ -61,23 +71,22 @@ class ProgramContentVariablesController extends AppController
 
         $this->ContentVariable->id = $id;
         if (!$this->ContentVariable->exists()) {
-            throw new NotFoundException(__('Invalid dynamic content'));
+            throw new NotFoundException(__('The keys/value cannot be found in the Content Variables.'));
         }
-        $contentVariable = $this->ContentVariable->read();
 
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->ContentVariable->save($this->request->data)) {
-                $this->Session->setFlash(__('The dynamic content has been saved.'),
+        if ($this->request->is('post')) {
+            if ($newContentVariable = $this->ContentVariable->save($this->request->data)) {
+                $this->ContentVariableTable->updateTablefromKeysValue($newContentVariable);
+                $this->Session->setFlash(__('The keys/value has been saved in Content Variable.'),
                     'default',
-                    array('class'=>'message success')
-                );
+                    array('class'=>'message success'));
                 $this->redirect(array(
                     'program' => $programUrl, 
                     'controller' => 'programContentVariables',
                     'action' => 'index'
                     ));
             } else {
-                $this->Session->setFlash(__('The dynamic content could not be saved. Please, try again.'), 
+                $this->Session->setFlash(__('The keys/value could not be saved in Content Variable. Please, try again.'), 
                 'default',
                 array('class' => "message failure")
                 );
@@ -100,12 +109,12 @@ class ProgramContentVariablesController extends AppController
         }
         
         if (!$this->ContentVariable->exists()) {
-            throw new NotFoundException(__('Invalid Dynamic Content.'));
+            throw new NotFoundException(__('The keys/value cannot be found in Content Variables.'));
         }
         
         if ($this->ContentVariable->delete()) {
             $this->Session->setFlash(
-                __('Dynamic content deleted'),
+                __('The keys/value has been deleted from the Content Variables.'),
                 'default',
                 array('class'=>'message success')
                 );
@@ -117,9 +126,110 @@ class ProgramContentVariablesController extends AppController
                     )
                 );
         }
-        $this->Session->setFlash(__('Dynamic content was not deleted.'), 
+        $this->Session->setFlash(__('The keys/calue was not deleted from the Content Variables.'), 
                 'default',
                 array('class' => "message failure")
                 );
     }
+
+
+    /** All function specific to ContentVariableTable **/
+    /** by differenciating between table and keys/value, the ACL could be use to manage permissions **/
+    public function indexTable()
+    {
+        $this->paginate = array('all', 'order' => array('modified' => 'desc'));
+        $contentVariableTables = $this->paginate('ContentVariableTable');
+        $this->set(compact('contentVariableTables', $contentVariableTables));
+    }
+
+
+    public function addTable()
+    {   
+        $programUrl = $this->params['program'];
+        if ($this->request->is('post') && $this->params['ext'] === 'json') {
+            $this->ContentVariableTable->create();
+            $this->ContentVariableTable->save($this->request->data); 
+        }
+    }
+
+
+    public function deleteTable()
+    {
+        $id         = $this->params['id'];
+        $programUrl = $this->params['program'];
+        
+        $this->ContentVariableTable->id = $id;
+        
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        if (!$this->ContentVariableTable->exists()) {
+            throw new NotFoundException(__('The table cannot be found in Content Variable.'));
+        }
+        
+        if ($this->ContentVariableTable->deleteTableAndValues($id)) {
+            $this->Session->setFlash(
+                __('Table deleted from the Content Variables.'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->redirect(
+                array(
+                    'program' => $programUrl,
+                    'controller' => 'programContentVariables',
+                    'action' => 'indexTable'
+                    )
+                );
+        }
+        $this->Session->setFlash(__('A Table was not deleted from Content Variable.'), 
+                'default',
+                array('class' => "message failure")
+                );
+    }
+
+
+    public function editTable()
+    {
+        $programUrl = $this->params['program'];
+        $id         = $this->params['id'];
+
+        $this->ContentVariableTable->id = $id;
+        if (!$this->ContentVariableTable->exists()) {
+            throw new NotFoundException(__('The table cannot be found in Content Variable.'));
+        }
+        $contentVariableTable = $this->ContentVariableTable->read();
+
+        if ($this->request->is('post') && $this->params['ext'] === 'json') {
+            $this->ContentVariableTable->save($this->request->data);
+        } else {
+            $this->request->data = $this->ContentVariableTable->read(null, $id);
+        }
+    }
+
+
+    public function editTableValue()
+    {
+        $programUrl = $this->params['program'];
+        
+        if (!isset($this->request->data['ContentVariable']['keys'])) {
+            throw new Exception('Missing keys');
+        }
+
+        $contentVariables = $this->ContentVariable->find('fromKeys',  array('conditions' => array('keys' => $this->request->data['ContentVariable']['keys'])));
+        if (count($contentVariables) == 0) {
+            throw new NotFoundException(__('This table value cannot be found in Content Variable.'));
+        }
+        
+        if ($this->request->is("post")) {
+            $contentVariable = $contentVariables[0];
+            $this->ContentVariable->id = $contentVariable['ContentVariable']['_id'];
+            $contentVariable['ContentVariable']['value'] = $this->request->data['ContentVariable']['value'];
+            if ($this->ContentVariable->save($contentVariable)) {
+                $this->ContentVariableTable->updateTableFromKeysValue($contentVariable);
+            }
+        }
+    }
+
+
 }
