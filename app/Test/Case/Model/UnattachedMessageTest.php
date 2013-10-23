@@ -468,7 +468,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(
-            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            "To be used as customized content, 'shoe' can only be either 'participant', 'contentVariable' or 'time'.",
             $this->UnattachedMessage->validationErrors['content'][0]);
         
         $unattachedMessage['content'] = "Hello [participant.gender.name]";
