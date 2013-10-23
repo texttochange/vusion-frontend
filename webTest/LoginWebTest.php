@@ -14,8 +14,8 @@ class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
 
   public function testLogin()
   {
+    $this->windowMaximize();
   	$this->open("/users/login");
-    // $this->assertTitleEquals('Example Web Page');
     $this->type("id=UserEmail", "marcus@texttochange.com");
     $this->type("id=UserPassword", "marcus");
     $this->click("css=input[type=\"submit\"]");
@@ -26,6 +26,7 @@ class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
 
   public function testProgramManagerCanEditProgramSettings()
   {
+    $this->windowMaximize();
     $this->open("/users/login");
     $this->type("id=UserEmail", "maureen@texttochange.com");
     $this->type("id=UserPassword", "maureen");

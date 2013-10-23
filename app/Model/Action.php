@@ -401,12 +401,12 @@ class Action extends VirtualModel
     {
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
-            $allowed = array("domain", "key1", "key2", "otherkey");
+            $allowed = array("domain", "key1", "key2", "key3", "otherkey");
             foreach($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
-                    if (!preg_match(VusionConst::CONTENT_VARIABLE_ALLOWED_REGEX, $value)) {
-                        return __("To be used as dynamic content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
+                        return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }
                 if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_WITH_CONTEXT_REGEX, $match['domain'])) {

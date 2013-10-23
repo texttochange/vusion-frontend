@@ -158,24 +158,28 @@
     } 
     echo "</div>";
     $this->Js->get('document')->event('ready','
-        $("#fixed-time").datetimepicker();
+        $("#fixed-time").datetimepicker({
+            timeFormat: "hh:mm",
+            timeOnly: false,
+            dateFormat:"dd/mm/yy"
+        });
         addContentFormHelp();
         addCounter();
         $("#UnattachedMessageSend-to-match-conditions").chosen();');
     $this->Js->get("input[name*='send-to-type']")->event('change','
         switch ($(this).val()) {
         case "match":
-            $("select[name*=\"send-to-match-conditions\"]").attr("disabled",false).trigger("liszt:updated");
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled",false).trigger("chosen:updated");
             $("select[name*=\"send-to-match-operator\"]").attr("disabled",false);
             $("input[name*=\"file\"]").attr("disabled",true);
             break;
         case "all":
-            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("chosen:updated");
             $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
             $("input[name*=\"file\"]").attr("disabled",true);
             break;
         case "phone":
-            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("chosen:updated");
             $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
             $("input[name*=\"file\"]").attr("disabled", false);
         }');
