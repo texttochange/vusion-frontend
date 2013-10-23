@@ -177,7 +177,7 @@ class Action extends VirtualModel
         'forward-content' => array(
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
-                'message' => 'The content field require a SMS Forward action.',
+                'message' => 'The content field require an SMS Forward action.',
                 ),
             'notForbiddenApostrophe' => array(
                 'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
@@ -410,7 +410,7 @@ class Action extends VirtualModel
                     }
                 }
                 if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_WITH_CONTEXT_REGEX, $match['domain'])) {
-                    return __("To be used as dynamic content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
+                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
