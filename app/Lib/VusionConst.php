@@ -42,7 +42,7 @@ class VusionConst
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
 
     # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
-    const CONTENT_VARIABLE_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
+    const CUSTOMIZE_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
     const CONTENT_VARIABLE_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
     const CONTENT_VARIABLE_DOMAIN_WITH_CONTEXT_REGEX = '/^(participant|contentVariable|context|time)$/';
     

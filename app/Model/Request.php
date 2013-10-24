@@ -177,7 +177,7 @@ class Request extends MongoModel
     
     public function validContentVariable($check)
     {
-        preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $check['content'], $matches, PREG_SET_ORDER);
+        preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $check['content'], $matches, PREG_SET_ORDER);
         $allowed = array("domain", "key1", "key2", "key3", "otherkey");
         foreach($matches as $match) {
             $match = array_intersect_key($match, array_flip($allowed));

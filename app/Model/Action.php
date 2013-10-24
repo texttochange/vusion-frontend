@@ -400,7 +400,7 @@ class Action extends VirtualModel
     public function validContentVariable($field, $data)
     {
         if (isset($data[$field])) {
-            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
             foreach($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
