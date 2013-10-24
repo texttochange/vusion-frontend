@@ -424,7 +424,7 @@ class Interaction extends VirtualModel
                         return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }                   
-                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
+                if (!preg_match(VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX, $match['domain'])) {
                     return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
