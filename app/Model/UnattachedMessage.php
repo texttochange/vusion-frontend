@@ -300,11 +300,11 @@ class UnattachedMessage extends MongoModel
             }
             if ($match['domain'] == 'participant') {
                 if (isset($match['key2'])) {
-                    return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                    return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
                 }
             } else if ($match['domain'] == 'contentVariable') {
                 if (isset($match['otherkey'])) {
-                    return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                    return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
                 }
             } 
         }
