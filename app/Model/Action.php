@@ -7,7 +7,7 @@ class Action extends VirtualModel
 {
     var $name = 'action';
     var $version = '2'; 
-
+    
     var $fields = array(
         'set-condition',
         'type-action');
@@ -95,19 +95,23 @@ class Action extends VirtualModel
             ),
         'enroll' => array(
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldOrValue', 'type-action', 'enrolling', 'delayed-enrolling'),
+                'rule' => array(
+                    'requiredConditionalFieldOrValue',
+                    'type-action',
+                    'enrolling',
+                    'delayed-enrolling'),
                 'message' => 'The enroll field require an enrolling or delayed-enrolling action.',
                 ),
             ),
         'offset-days' => array(
-           'requiredConditional' => array (
+            'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'delayed-enrolling'),
                 'message' => 'The enroll field require an enrolling or delayed-enrolling action.',
                 ),
-           'validSubfield' => array(
+            'validSubfield' => array(
                 'rule' => 'validOffsetDays',
                 'message' => 'noMessage'
-               ),
+                ),
             ),
         'tag' => array(
             'requiredConditional' => array (
@@ -163,7 +167,7 @@ class Action extends VirtualModel
                 ),
             )
         );
-
+    
     
     public $validateOffsetDays = array(
         'days' => array(
@@ -187,8 +191,8 @@ class Action extends VirtualModel
                 )
             )
         );
-
-
+    
+    
     public $validateSubcondition = array(
         'subcondition-field' => array(
             'required' => array(
@@ -209,7 +213,7 @@ class Action extends VirtualModel
                 ),
             ),
         );
-
+    
     
     public $validateSubconditionValues = array(
         'labelled' => array(
@@ -233,8 +237,8 @@ class Action extends VirtualModel
                 ),
             )
         );
-
-
+    
+    
     
     public $validateProportionalTag = array(
         'tag' => array(
@@ -259,15 +263,15 @@ class Action extends VirtualModel
             ),
         );
     
-
+    
     public function trimArray($Input)
     {
         if (!is_array($Input))
             return trim(stripcslashes($Input));
- 
+        
         return array_map(array($this,'TrimArray'), $Input);
     }
-
+    
     
     public function beforeValidate()
     {
@@ -279,18 +283,18 @@ class Action extends VirtualModel
         $this->_setDefault('type-action', null);
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {
-             $this->_setDefault('condition-operator', null);
-             $this->_setDefault('subconditions', array());
-             foreach ($this->data['subconditions'] as &$subconditions) {
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
-             }
+            $this->_setDefault('condition-operator', null);
+            $this->_setDefault('subconditions', array());
+            foreach ($this->data['subconditions'] as &$subconditions) {
+                $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
+                $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
+                $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
+            }
         }
         return true;
     }
-
-
+    
+    
     public function validOffsetDays($field, $data)
     {
         if (!isset($data[$field])) {
@@ -302,8 +306,8 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validDays($field, $data)
     {
         if (!isset($data[$field])) {
@@ -317,8 +321,8 @@ class Action extends VirtualModel
         }
         return false;
     }
-
-
+    
+    
     public function validSubconditions($field, $data)
     {
         if (!isset($data[$field])) {
@@ -326,7 +330,7 @@ class Action extends VirtualModel
         }
         $count = 0;
         $validationError = array();
-        foreach($data[$field] as $subcondition) {
+        foreach ($data[$field] as $subcondition) {
             $result = $this->_runValidateRules($subcondition, $this->validateSubcondition);
             if (is_bool($result) && $result) {
                 $result = $this->validSubconditionValue($subcondition);
@@ -341,14 +345,14 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validProportionalTags($field, $data)
     {
         return $this->validList($field, $data, $this->validateProportionalTag);
     }
-
-
+    
+    
     public function validSubconditionValue($subcondition)
     {
         if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
@@ -362,7 +366,9 @@ class Action extends VirtualModel
                 'subcondition-operator' => array( 
                     __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
         }
-        if (!preg_match($operators[$subcondition['subcondition-operator']]['regex'], $subcondition['subcondition-parameter'])) {
+        $subconditionOperator  =  $subcondition['subcondition-operator'];
+        $subconditionParameter = $subcondition['subcondition-parameter'];
+        if (!preg_match($operators[$subconditionOperator]['regex'], $subconditionParameter)) {
             return array(
                 'subcondition-parameter' => array(
                     $operators[$subcondition['subcondition-operator']]['message']));
@@ -376,7 +382,7 @@ class Action extends VirtualModel
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
-            foreach($matches as $match) {
+            foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
                     if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
@@ -399,8 +405,8 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validUrlReplacement($field, $data, $urlReplacement) 
     {
         if (!isset($data[$field])) {
@@ -415,5 +421,6 @@ class Action extends VirtualModel
         }
         return true;
     }
-
+    
+    
 }
