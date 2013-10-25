@@ -6,16 +6,16 @@ App::uses('VusionValidation', 'Lib');
 
 class Request extends MongoModel
 {
-
+    
     var $specific = true;
     var $name     = 'Request';
-
+    
     
     function getModelVersion()
     {
         return '2';
     }
-
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -26,7 +26,7 @@ class Request extends MongoModel
             'responses'
             );
     }
-
+    
     
     ##Construtor
     public function __construct($id = false, $table = null, $ds = null)
@@ -35,8 +35,8 @@ class Request extends MongoModel
         
         $this->Action = new Action();
     }
-
-
+    
+    
     ## Validate
     public $validate = array(
         'keyword' => array(
@@ -80,7 +80,7 @@ class Request extends MongoModel
                 )
             )
         );
-
+    
     public $validateResponse = array(
         'content' => array(
             'notempty' => array(
@@ -97,7 +97,7 @@ class Request extends MongoModel
                 ),
             )
         );
-
+    
     
     public function keywordFormat($check) 
     {
@@ -106,16 +106,16 @@ class Request extends MongoModel
             return true;
         return false;
     }
-
-
+    
+    
     public function validateArray($check) {
         if (!is_array(reset($check))) {
             return false;
         }
         return true;
     }
-
-
+    
+    
     public function validateResponses($check)
     {
         $count = 0;
@@ -139,7 +139,7 @@ class Request extends MongoModel
                         $valid = forward_static_call_array(array("VusionValidation", $func), array($response[$field], $args));
                     }
                     if (!is_bool($valid) || $valid == false) {
-                       $validationErrors[$field][] = $rule['message']; 
+                        $validationErrors[$field][] = $rule['message']; 
                     }
                 }
             }
@@ -153,8 +153,8 @@ class Request extends MongoModel
         }
         return true;
     }
-
-
+    
+    
     public function validateAction($check)
     {
         $count = 0;
@@ -201,8 +201,8 @@ class Request extends MongoModel
         }
         return true;
     }
-
-
+    
+    
     var $findMethods = array(
         'count' => true,
         'first' => true,
@@ -210,14 +210,14 @@ class Request extends MongoModel
         'keyword' => true,
         'keyphrase' => true,
         );
-
-
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
-
+        
         $this->data['Request']['object-type'] = strtolower($this->name);
-
+        
         $this->_setDefault('actions', array());
         $this->_setDefault('responses', array());
         $this->_setDefault('set-no-request-matching-try-keyword-only', 0);
@@ -225,14 +225,14 @@ class Request extends MongoModel
         $this->_beforeValidateRequests();
         $this->_beforeValidateActions();
     }
-
-
+    
+    
     protected function _beforeValidateRequests()
     {
         $this->data['Request']['responses'] = array_map(
             function($element) {
                 $element['content'] = trim($element['content']); 
-                return $element; }, 
+            return $element; }, 
             $this->data['Request']['responses']);
         $this->data['Request']['responses'] = array_filter(
             $this->data['Request']['responses'], 
@@ -240,9 +240,9 @@ class Request extends MongoModel
                 return ($element['content'] != '');
             });
         $this->data['Request']['responses'] = array_values($this->data['Request']['responses']);
-     }
-
-
+    }
+    
+    
     protected function _beforeValidateActions()
     {
         foreach($this->data['Request']['actions'] as &$action) {
@@ -251,32 +251,32 @@ class Request extends MongoModel
             $action = $this->Action->getCurrent();
         }
     }
-
-
+    
+    
     protected function _findKeyword($state, $query, $results = array())
     {
         if ($state == 'before') {
             $keywords = explode(', ', $query['keywords']);
             foreach($keywords as $keyword) {
-                  $conditions[] = array('Request.keyword' => new MongoRegex('/(,\s|^)'.$keyword.'($|\s|,)/i'));
+                $conditions[] = array('Request.keyword' => new MongoRegex('/(,\s|^)'.$keyword.'($|\s|,)/i'));
             }
             if (count($conditions)>1)
                 $query['conditions'] = array('$or'=>$conditions);
             else
-                $query['conditions'] = $conditions[0];
+            $query['conditions'] = $conditions[0];
             return $query;
         }
         if ($results) {
             $keywords = explode(', ', $query['keywords']);
             foreach($keywords as $keyword) {
-                  if (preg_match('/(,\s|^)'.$keyword.'($|\s|,)/i', $results[0]['Request']['keyword']))
-                      return $keyword;
+                if (preg_match('/(,\s|^)'.$keyword.'($|\s|,)/i', $results[0]['Request']['keyword']))
+                    return $keyword;
             } 
         } 
         return null;
     }
-
-
+    
+    
     public function getKeywords()
     {
         $requests = $this->find('all');
@@ -290,19 +290,19 @@ class Request extends MongoModel
         }
         return $keywords;
     }
-
-
+    
+    
     protected function _findKeyphrase($state, $query, $results = array())
     {
         if ($state == 'before') {
             $keywords = explode(', ', $query['keywords']);
             foreach($keywords as $keyword) {
-                  $conditions[] = array('Request.keyword' => new MongoRegex('/(,\s|^)'.$keyword.'($|,)/i'));
+                $conditions[] = array('Request.keyword' => new MongoRegex('/(,\s|^)'.$keyword.'($|,)/i'));
             }
             if (count($conditions)>1)
                 $conditions = array('$or'=>$conditions);
             else
-                $conditions = $conditions[0];
+            $conditions = $conditions[0];
             if (isset($query['excludeRequest']) and $query['excludeRequest'] != '') {
                 $exclude = array('Request._id' => array('$ne' => new MongoId($query['excludeRequest'])));
                 $conditions = array(
@@ -315,12 +315,12 @@ class Request extends MongoModel
         if ($results) {
             $keywords = explode(', ', $query['keywords']);
             foreach($keywords as $keyword) {
-                  if (preg_match('/(,\s|^)'.$keyword.'($|,)/i', $results[0]['Request']['keyword']))
-                      return $keyword;
+                if (preg_match('/(,\s|^)'.$keyword.'($|,)/i', $results[0]['Request']['keyword']))
+                    return $keyword;
             } 
         } 
         return null;
     }
-
-
+    
+    
 }

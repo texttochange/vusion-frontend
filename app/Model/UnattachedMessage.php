@@ -15,7 +15,7 @@ class UnattachedMessage extends MongoModel
     var $useTable    = 'unattached_messages';
     
     var $mongoNoSetOperator = true;
-
+    
     
     function getModelVersion()
     {
@@ -40,13 +40,13 @@ class UnattachedMessage extends MongoModel
         'send-to-match-operator',
         'send-to-match-conditions'
         );
-
+    
     var $phoneFields = array(
         'send-to-phone'
         );
     
     var $participantPhoneRegex = '/^\+[0-9]*$/';
-
+    
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -162,7 +162,7 @@ class UnattachedMessage extends MongoModel
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
-            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         
         if (isset($object['send-to-type']) && $object['send-to-type'] == 'match') {
             $toCheck = array_merge($toCheck, $this->matchFields);
@@ -171,7 +171,7 @@ class UnattachedMessage extends MongoModel
         if (isset($object['send-to-type']) && $object['send-to-type'] == 'phone') {
             $toCheck = array_merge($toCheck, $this->phoneFields);
         }
-
+        
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)){
                 unset($object[$field]);
@@ -193,7 +193,7 @@ class UnattachedMessage extends MongoModel
         parent::beforeValidate();
         
         /*if (!isset($this->data['UnattachedMessage']['created-by'])) {
-                $this->data['UnattachedMessage']['created-by'] = null;
+        $this->data['UnattachedMessage']['created-by'] = null;
         }*/
         
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
@@ -259,8 +259,8 @@ class UnattachedMessage extends MongoModel
         }
         return true;        
     }
-
-
+    
+    
     public function phoneList($check)
     {
         if (!is_array($check['send-to-phone'])) {
@@ -272,9 +272,9 @@ class UnattachedMessage extends MongoModel
             }
         }
         return true;
-
+        
     }
-
+    
     
     public function notForbiddenApostrophe($check)
     {
@@ -310,8 +310,8 @@ class UnattachedMessage extends MongoModel
         }
         return true;
     }
-
-
+    
+    
     
     public function getNameIdForFilter()
     {

@@ -5,28 +5,28 @@ App::uses('MongodbSource', 'Mongodb.MongodbSource');
 
 class UnmatchableReplyTestCase extends CakeTestCase
 {
-
+    
     
     public function setUp()
     {
         parent::setUp();
-
+        
         $option         = array('database'=>'test');
         $this->UnmatchableReply = new UnmatchableReply($option);
-
+        
         $this->UnmatchableReply->setDataSource('mongo_test');
         $this->UnmatchableReply->deleteAll(true, false);
     }
-
-
+    
+    
     public function tearDown()
     {
         $this->UnmatchableReply->deleteAll(true, false);
         unset($this->UnmatchableReply);
         parent::tearDown();
     }
-
-
+    
+    
     public function testFromFilterToQueryConditions_fromPhone()
     {
         $filter = array(
@@ -42,7 +42,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('participant-phone' => new MongoRegex('/^\\+255/'))
             );
-
+        
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
@@ -56,7 +56,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('participant-phone' => '+255')
             );
-
+        
         
         $filter = array(
             'filter_operator' => 'all',
@@ -74,10 +74,10 @@ class UnmatchableReplyTestCase extends CakeTestCase
                 array('participant-phone' => new MongoRegex('/^\\+256/'))
                 ))
             );
-
+        
     }
-
-
+    
+    
     public function testFromFilterToQueryConditions_toPhone()
     {
         $filter = array(
@@ -93,7 +93,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('to' => new MongoRegex('/^\\+255/'))
             );
-
+        
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
@@ -108,7 +108,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             array('to' => '+255')
             );
     }
-
+    
     public function testFromFilterToQueryConditions_country()
     {
         $filter = array(
@@ -126,7 +126,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             array('participant-phone' => new MongoRegex('/^(\\+)?256/'))
             );
     }
-
+    
     public function testFromFilterToQueryConditions_shortcode()
     {
         $filter = array(
@@ -145,7 +145,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
                 array('to' => '8181')))
             );
     }
-
+    
     public function testFromFilterToQueryConditions_date()
     {
         $filter = array(
@@ -161,7 +161,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('timestamp' => array('$gt' => '2012-01-21T00:00:00'))
             );
-
+        
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
@@ -176,8 +176,8 @@ class UnmatchableReplyTestCase extends CakeTestCase
             array('timestamp' => array('$lt' => '2012-01-21T00:00:00'))
             );
     }
-
-
+    
+    
     public function testFromFilterToQueryConditions_messageContent()
     {
         $filter = array(
@@ -193,7 +193,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('message-content' => 'content')
             );
-
+        
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
@@ -207,7 +207,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             $this->UnmatchableReply->fromFilterToQueryConditions($filter),
             array('message-content' => new MongoRegex('/content/i'))
             );
-
+        
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
@@ -222,6 +222,6 @@ class UnmatchableReplyTestCase extends CakeTestCase
             array('message-content' => new MongoRegex('/^keyword($| )/i'))
             );
     }
-
-
+    
+    
 }

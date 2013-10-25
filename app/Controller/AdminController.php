@@ -4,13 +4,13 @@ App::uses('AppController', 'Controller');
 
 class AdminController extends AppController
 {
-
-
+    
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
-   
+    
     
     public function constructClasses()
     {
@@ -22,6 +22,6 @@ class AdminController extends AppController
     {
         
     }
-
+    
     
 }

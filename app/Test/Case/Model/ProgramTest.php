@@ -6,25 +6,25 @@ App::uses('ProgramSetting', 'Model');
 
 class ProgramTestCase extends CakeTestCase
 {
-
+    
     public $fixtures = array('app.program', 'app.user', 'app.programsUser');
-
-
+    
+    
     public function setUp()
     {
         parent::setUp();
-
+        
         $this->Program = ClassRegistry::init('Program');
     }
-
-
+    
+    
     public function tearDown()
     {
         unset($this->Program);
-
+        
         parent::tearDown();
     }
-
+    
     
     public function testFind()
     {
@@ -66,8 +66,8 @@ class ProgramTestCase extends CakeTestCase
         
         $this->assertEquals($expected, $result);
     }    
-
-
+    
+    
     public function testFindAuthorized()
     {
         $result   = $this->Program->find(
@@ -97,7 +97,7 @@ class ProgramTestCase extends CakeTestCase
             );
         $this->assertEquals(3, $result);
     }
-
+    
     public function testSaveProgram_ok()
     {
         $program['Program'] = array(
@@ -113,8 +113,8 @@ class ProgramTestCase extends CakeTestCase
         $savedProgram = $this->Program->save($program);
         $this->assertEqual($this->Program->validationErrors, array());
     }
-
-
+    
+    
     public function testSaveProgram_fail_url_database_format()
     {
         $program = array(
@@ -131,34 +131,34 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEqual(
             $this->Program->validationErrors['url'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
-
+        
         $program['url'] = 'm 7h';
-
+        
         $this->Program->create();
         $this->assertFalse($this->Program->save($program));
         $this->assertEqual(
             $this->Program->validationErrors['url'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
-
+        
         $program['url'] = 'm7h';
         $program['database'] = 'M7h';
-
+        
         $this->Program->create();
         $this->assertFalse($this->Program->save($program));
         $this->assertEqual(
             $this->Program->validationErrors['database'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
-
+        
         $program['database'] = 'm7 h';
-
+        
         $this->Program->create();
         $this->assertFalse($this->Program->save($program));
         $this->assertEqual(
             $this->Program->validationErrors['database'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
     }
-
-
+    
+    
     public function testSaveProgram_fail_url_database_static()
     {
         $program = array(
@@ -179,8 +179,8 @@ class ProgramTestCase extends CakeTestCase
             $this->Program->validationErrors['database'][0], 
             'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.');
     }
-
-
+    
+    
     public function testDeleteProgram()
     {
         $this->Program->id = 1;
@@ -239,13 +239,13 @@ class ProgramTestCase extends CakeTestCase
         $this->ProgramSettingTester = new ProgramSetting($programTester['Program']['database']);
         $this->ProgramSettingTester->saveProgramSetting('timezone', 'Africa/Kampala');
         $this->ProgramSettingTester->saveProgramSetting('shortcode', '256-8181');
-
+        
         //Test simple condition        
         $conditions = array('shortcode' => '8282');
         $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
         $this->assertEquals($result[0]['Program']['name'], 'M4h');
         $this->assertEquals(1, count($result));        
-
+        
         //Test Or condtions
         $conditions = array(
             '$or' => array(
@@ -255,7 +255,7 @@ class ProgramTestCase extends CakeTestCase
             );
         $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
         $this->assertEquals(1, count($result));
-
+        
         //Test And conditions
         $conditions = array(
             '$and' => array(
@@ -271,6 +271,6 @@ class ProgramTestCase extends CakeTestCase
         $this->ProgramSettingM4H->deleteAll(true, false);
         $this->ProgramSettingTester->deleteAll(true, false);
     }
-
-
+    
+    
 }

@@ -167,7 +167,7 @@ class Participant extends MongoModel
                         $valid = forward_static_call_array(array("VusionValidation", $func), array($element[$field], $args));
                     }
                     if (!is_bool($valid) || $valid == false) {
-                        ## To revert when creating a better form edit
+                        // To revert when creating a better form edit
                         //$validationErrors[$field][] = $rule['message'];
                         $validationErrors[] = $rule['message'];
                         break;
@@ -175,7 +175,7 @@ class Participant extends MongoModel
                 }
             }
             if ($validationErrors != array()) {
-                ## To switch when creating a better form edit
+                // To switch when creating a better form edit
                 //$this->validationErrors['profile'][$count] = $validationErrors;
                 $this->validationErrors['profile'] = $validationErrors;
                 break;
@@ -259,7 +259,7 @@ class Participant extends MongoModel
         }
         
         $this->_setDefault('tags', array());
-        #filter out empty tags
+        //filter out empty tags
         if (isset($this->data['Participant']['tags']) && is_array($this->data['Participant']['tags'])) {
             $this->data['Participant']['tags'] = array_filter($this->data['Participant']['tags']);
         }
@@ -279,13 +279,13 @@ class Participant extends MongoModel
             if ($programNow==null)
                 return false;
             $lastOptinDate = (isset($this->data['Participant']['last-optin-date'])) ? $this->data['Participant']['last-optin-date'] : $programNow->format("Y-m-d\TH:i:s"); 
-            $this->data['Participant']['last-optin-date'] = $lastOptinDate;
+            $this->data['Participant']['last-optin-date']  = $lastOptinDate;
             $this->data['Participant']['last-optout-date'] = null;
-            $sessionId = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
-            $this->data['Participant']['session-id'] = $sessionId;
-            $tags = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
-            $this->data['Participant']['tags'] = $tags;
-            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
+            $sessionId                                     = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
+            $this->data['Participant']['session-id']       = $sessionId;
+            $tags                                          = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
+            $this->data['Participant']['tags']             = $tags;
+            $autoEnrollDialogues                           = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
             if ($autoEnrollDialogues == null)
                 $this->data['Participant']['enrolled'] = array();
             foreach ($autoEnrollDialogues as $autoEnroll) {
@@ -370,7 +370,7 @@ class Participant extends MongoModel
             "tags");
         
         $distinctLabels = $this->getDistinctLabels($conditions);
-        foreach($distinctLabels as $distinctLabel) {
+        foreach ($distinctLabels as $distinctLabel) {
             $label = explode(':', $distinctLabel);
             if (!in_array($label[0], $headers))
                 $headers[] = $label[0];
@@ -383,22 +383,18 @@ class Participant extends MongoModel
     {
         return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
             // 32 bits for "time_low"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-            
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),            
             // 16 bits for "time_mid"
-            mt_rand( 0, 0xffff ),
-            
+            mt_rand(0, 0xffff),            
             // 16 bits for "time_hi_and_version",
             // four most significant bits holds version number 4
-            mt_rand( 0, 0x0fff ) | 0x4000,
-            
+            mt_rand(0, 0x0fff) | 0x4000,            
             // 16 bits, 8 bits for "clk_seq_hi_res",
             // 8 bits for "clk_seq_low",
             // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand( 0, 0x3fff ) | 0x8000,
-            
+            mt_rand(0, 0x3fff) | 0x8000,            
             // 48 bits for "node"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
             );
     }
     
@@ -427,8 +423,8 @@ class Participant extends MongoModel
         if(!isset($this->data['Participant']['tags']))
             $this->data['Participant']['tags'] = array();
         else if (isset($this->data['Participant']['tags']) and !is_array($this->data['Participant']['tags'])) {
-            $tags = trim(stripcslashes($this->data['Participant']['tags']));
-            $tags = array_filter(explode(",", $tags));
+            $tags      = trim(stripcslashes($this->data['Participant']['tags']));
+            $tags      = array_filter(explode(",", $tags));
             $cleanTags = array();
             foreach ($tags as $tag) {
                 $cleanTags[] = trim($tag);
@@ -442,17 +438,17 @@ class Participant extends MongoModel
     protected function _editProfile()
     {
         if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {                   
-            $profiles = trim(stripcslashes($this->data['Participant']['profile']));                    
-            $profiles = array_filter(explode(",", $profiles));                    
+            $profiles    = trim(stripcslashes($this->data['Participant']['profile']));                    
+            $profiles    = array_filter(explode(",", $profiles));                    
             $profileList = array();
             foreach ($profiles as $profile) {                           
-                $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
-                list($label,$value) = explode(":", $profile);
-                $newProfile = array();
+                $profile             = (strpos($profile, ':') !== false) ? $profile : $profile.":";
+                list($label,$value)  = explode(":", $profile);
+                $newProfile          = array();
                 $newProfile['label'] = trim($label);
                 $newProfile['value'] = trim($value);
-                $newProfile['raw'] = null;
-                $profileList[] = $newProfile;                            
+                $newProfile['raw']   = null;
+                $profileList[]       = $newProfile;                            
             }
             $this->data['Participant']['profile'] = $profileList;
         }    
@@ -464,14 +460,15 @@ class Participant extends MongoModel
     {
         $participantUpdateData = $this->data;
         
-        $originalParticipantData = $this->read(); // $this->read() deletes already processed info and
+        $originalParticipantData  = $this->read(); 
+        // $this->read() deletes already processed info and
         // and they must all be re-initialized.
         
         // ******** re-initialize already processed information *********/////
         $this->data['Participant'] = $participantUpdateData['Participant'];
         // ******************************************************************////
         
-        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        $programNow                = $this->ProgramSetting->getProgramTimeNow();
         
         if (!isset($participantUpdateData['Participant']['enrolled']) or 
             !is_array($participantUpdateData['Participant']['enrolled'])) {
@@ -549,11 +546,11 @@ class Participant extends MongoModel
         
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         
-        $check['session-id'] = $this->gen_uuid();
-        $check['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+        $check['session-id']       = $this->gen_uuid();
+        $check['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
         $check['last-optout-date'] = null;
-        $check['tags'] = array();
-        $check['profile'] = array();
+        $check['tags']             = array();
+        $check['profile']          = array();
         
         return $check;
     }
@@ -616,12 +613,12 @@ class Participant extends MongoModel
                 return $report;
             }
             
-            $savedParticipant = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
-            $this->id = $savedParticipant['Participant']['_id']."";
-            $tags = $participant['tags'];
-            $labels = (isset($participant['profile']) ? $participant['profile'] : array());
-            $participant = $savedParticipant['Participant'];
-            $participant['tags'] = $tags;
+            $savedParticipant       = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
+            $this->id               = $savedParticipant['Participant']['_id']."";
+            $tags                   = $participant['tags'];
+            $labels                 = (isset($participant['profile']) ? $participant['profile'] : array());
+            $participant            = $savedParticipant['Participant'];
+            $participant['tags']    = $tags;
             $participant['profile'] = $labels;
         } 
         $savedParticipant = $this->save($participant);
@@ -650,13 +647,13 @@ class Participant extends MongoModel
     
     public function importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
     {
-        $count       = 0;
-        $entry       = array();
-        $hasHeaders  = false;
-        $hasTags     = false;  
-        $headers     = array();
-        $labels      = array();
-        $report      = array();
+        $count        = 0;
+        $entry        = array();
+        $hasHeaders   = false;
+        $hasTags      = false;  
+        $headers      = array();
+        $labels       = array();
+        $report       = array();
         $uniqueNumber = array();
         
         if (($handle = fopen($fileFullPath,"r")) === false) {
@@ -689,20 +686,20 @@ class Participant extends MongoModel
                         'tags' => array('index' => 1));
                 }
             }
-            #skip empty rows
+            //skip empty rows
             if (!isset($entry[0])) {
                 continue;
             }
             $participant          = array();
-            #Get Phone
+            //Get Phone
             $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);
-            #Get Tags
+            //Get Tags
             $participant['tags']  = array();
             if (isset($headers['tags']) && isset($entry[$headers['tags']['index']])) {
                 $participant['tags'] = explode(",", $entry[$headers['tags']['index']]);
             }
             $participant['tags'] = array_merge($tags, $participant['tags']);
-            #Get Labels
+            //Get Labels
             foreach ($labels as $label) {
                 $value = $entry[$label['index']];
                 if ($value == '') {
@@ -713,10 +710,10 @@ class Participant extends MongoModel
                     'value' => (string) $value,
                     'raw' => null);
             }
-            #Save if not a duplicate
+            //Save if not a duplicate
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
+                $report[]                            = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
             }
             $count++; 
         }
@@ -731,7 +728,7 @@ class Participant extends MongoModel
             function ($k) {
                 return (!in_array($k, array('phone', 'tags')));
             }
-        );
+            );
         return array_intersect_key($input, array_flip($tmp));
     }    
     
@@ -740,11 +737,11 @@ class Participant extends MongoModel
     {
         require_once 'excel_reader2.php';
         
-        $hasHeaders    = false;
-        $headers       = array();
-        $labels        = array();
-        $uniqueNumber  = array();
-        $data = new Spreadsheet_Excel_Reader($fileFullPath);
+        $hasHeaders   = false;
+        $headers      = array();
+        $labels       = array();
+        $uniqueNumber = array();
+        $data         = new Spreadsheet_Excel_Reader($fileFullPath);
         
         if (strcasecmp('phone', $data->val(1,'A')) == 0) {
             $hasHeaders = true;
@@ -768,16 +765,16 @@ class Participant extends MongoModel
             if ($data->val($i,'A')==null) {
                 continue;
             }
-            $participant          = array();
-            #Get Phone
+            $participant = array();
+            //Get Phone
             $participant['phone'] = $this->clearPhone($data->val($i,'A'));
-            #Get tags
-            $participant['tags']  = array();
+            //Get tags
+            $participant['tags'] = array();
             if (isset($headers['tags'])) {
                 $participant['tags'] = explode(",", $data->val($i, $headers['tags']['index']));
             }
             $participant['tags'] = array_merge($tags, $participant['tags']);
-            #Get Labels
+            //Get Labels
             foreach ($labels as $label) {
                 if ($data->val($i, $label['index']) == null) 
                     continue;
@@ -795,7 +792,7 @@ class Participant extends MongoModel
     }
     
     
-    #Filter variables and functions
+    //Filter variables and functions
     public $filterFields = array(
         'phone' => array(
             'label' => 'phone',
@@ -872,9 +869,9 @@ class Participant extends MongoModel
                 }
             }
             if ($subsetOperator != array()) {
-                $subsetFilterField = $filterField;
+                $subsetFilterField              = $filterField;
                 $subsetFilterField['operators'] = $subsetOperator;
-                $subsetFilterFields[$field] = $subsetFilterField;
+                $subsetFilterFields[$field]     = $subsetFilterField;
             }
         }
         return $subsetFilterFields;

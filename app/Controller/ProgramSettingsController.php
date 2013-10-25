@@ -8,17 +8,17 @@ App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramSettingsController extends AppController
 {
-
+    
     var $helpers = array('Js' => array('Jquery'));
     public $components = array('Keyword');
-
+    
     
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
-
-
+    
+    
     public function constructClasses()
     {
         parent::constructClasses();
@@ -34,16 +34,16 @@ class ProgramSettingsController extends AppController
         $this->Template     = new Template($optionVisionDb);
         $this->_instanciateVumiRabbitMQ();
     }
-
-
+    
+    
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-
-
+    
+    
     public function index()
     {
-    	$programUrl = $this->params['program'];
+        $programUrl = $this->params['program'];
         $isEditor = $this->Acl->check(
             array(
                 'User' => array('id' => $this->Session->read('Auth.User.id')),
@@ -51,16 +51,16 @@ class ProgramSettingsController extends AppController
             'controllers/ProgramSettings/edit');
         
         if ($isEditor) {
-            $this->redirect(array('program'=>$programUrl, 'action'=>'edit'));	
+            $this->redirect(array('program'=>$programUrl, 'action'=>'edit'));    
         } else {
-            $this->redirect(array('program'=>$programUrl, 'action'=>'view'));	
+            $this->redirect(array('program'=>$programUrl, 'action'=>'view'));    
         }
     }
-
-
+    
+    
     public function view()
     {
-    	
+        
         $programSettings = $this->ProgramSetting->getProgramSettings();
         if (isset($programSettings['default-template-open-question'])) {
             $template = $this->Template->read(null, $programSettings['default-template-open-question']);
@@ -76,14 +76,14 @@ class ProgramSettingsController extends AppController
         }
         $this->set(compact('programSettings'));
     }
-
-
+    
+    
     public function edit()
-    {    	
+    {        
         $programUrl = $this->params['program'];
-
+        
         if ($this->request->is('post') || $this->request->is('put')) {
-                    
+            
             $keywordValidation = $this->Keyword->validateProgramKeywords(
                 $this->Session->read($programUrl.'_db'), 
                 $this->request->data['ProgramSetting']['shortcode']);
@@ -112,7 +112,7 @@ class ProgramSettingsController extends AppController
                 }
             }
         }
-
+        
         ## Set all the form options
         $shortcodes = $this->ShortCode->find('all');
         $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
@@ -123,7 +123,7 @@ class ProgramSettingsController extends AppController
             'closedQuestionTemplateOptions',
             'unmatchingAnswerTemplateOptions',
             'shortcodes'));
-
+        
         ## in case it's not an edit, the setting need to be retrieved from the database
         if (!isset($this->request->data['ProgramSetting'])) {
             $settings = $this->ProgramSetting->getProgramSettings();
@@ -145,12 +145,12 @@ class ProgramSettingsController extends AppController
             }
         }
     }
-
-
+    
+    
     protected function _notifyUpdateProgramSettings($workerName)
     {
         return $this->VumiRabbitMQ->sendMessageToReloadProgramSettings($workerName);
     }
-
-
+    
+    
 }

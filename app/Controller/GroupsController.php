@@ -1,19 +1,19 @@
 <?php
 App::uses('AppController', 'Controller');
 /**
- * Groups Controller
- *
- * @property Group $Group
- */
+* Groups Controller
+*
+* @property Group $Group
+*/
 class GroupsController extends AppController
 { 
-
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
         //$this->Auth->allowedActions = array('*');
     }
-
+    
     
     /**
     * index method
@@ -26,7 +26,7 @@ class GroupsController extends AppController
         $this->set('groups', $this->paginate());
     }
     
-
+    
     /**
     * view method
     *
@@ -41,8 +41,8 @@ class GroupsController extends AppController
         }
         $this->set('group', $this->Group->read(null, $id));
     }
-
-
+    
+    
     /**
     * add method
     *
@@ -56,18 +56,18 @@ class GroupsController extends AppController
                 $this->Session->setFlash(__('The group has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The group could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         }
     }
-
-
+    
+    
     /**
     * edit method
     *
@@ -85,20 +85,20 @@ class GroupsController extends AppController
                 $this->Session->setFlash(__('The group has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The group could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         } else {
             $this->request->data = $this->Group->read(null, $id);
         }
     }
-
-
+    
+    
     /**
     * delete method
     *
@@ -118,12 +118,12 @@ class GroupsController extends AppController
             $this->Session->setFlash(__('Group deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Group was not deleted.'));
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
 }

@@ -16,8 +16,8 @@ class UsersController extends AppController
         $this->Auth->allow('login', 'logout');
         //$this->Auth->allow('*');
     }
-
-
+    
+    
     /**
     * index method
     *
@@ -44,15 +44,15 @@ class UsersController extends AppController
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));
     }
-
-
+    
+    
     protected function _getFilterFieldOptions()
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->User->filterFields);
     }
-
-
+    
+    
     protected function _getFilterParameterOptions()
     {
         $groups = $this->User->Group->find('list');
@@ -61,27 +61,27 @@ class UsersController extends AppController
             'operator' => $this->LocalizeUtils->localizeValueInArray($this->User->filterOperatorOptions),
             'group' => $groups           
             );
-       
+        
     }
     
     
     protected function _getConditions()
     {
-       $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-
+        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
+        
         if (!isset($filter['filter_param'])) 
             return null;
-
+        
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->User->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }     
-
+        
         $this->set('urlParams', http_build_query($filter));
-
+        
         return $this->User->fromFilterToQueryConditions($filter);
     }
-
-
+    
+    
     /**
     * view method
     *
@@ -96,8 +96,8 @@ class UsersController extends AppController
         }
         $this->set('user', $this->User->read(null, $id));
     }
-
-
+    
+    
     /**
     * add method
     *
@@ -111,21 +111,21 @@ class UsersController extends AppController
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
         $this->set(compact('groups', 'programs'));
     }
-
-
+    
+    
     /**
     * edit method
     *
@@ -151,7 +151,7 @@ class UsersController extends AppController
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 if ($this->Acl->check(array(
                     'User' => array(
                         'id' => $this->Session->read('Auth.User.id')
@@ -163,9 +163,9 @@ class UsersController extends AppController
                     }
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
@@ -174,8 +174,8 @@ class UsersController extends AppController
         $programs = $this->User->Program->find('list');
         $this->set(compact('groups', 'programs'));
     }
-
-
+    
+    
     /**
     * delete method
     *
@@ -195,17 +195,17 @@ class UsersController extends AppController
             $this->Session->setFlash(__('User deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('User was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
     public function login()
     {
         if ($this->request->is('post')) {
@@ -223,17 +223,17 @@ class UsersController extends AppController
                     $this->Session->setFlash(__('Invalid username or password, try again.'));
                 }
                 return $this->redirect(array('controller' => 'users', 'action' => 'login'));
-             }
+            }
         }
     }
-
-
+    
+    
     public function logout()
     {
         $this->Session->setFlash(__('Good Bye'),
             'default',
             array('class'=>'message success')
-        );
+            );
         $this->redirect($this->Auth->logout());
     }
     
@@ -260,33 +260,33 @@ class UsersController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if (Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             } else if ($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
                 $this->Session->setFlash(__('new passwords do not match. Please try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
                     $this->Session->setFlash(__('Password changed successfully.'),
                         'default',
                         array('class'=>'message success')
-                    );
+                        );
                     $this->redirect(array('action' => 'view', $id));
                 } else {
                     $this->Session->setFlash(__('Password saving failed.'), 
                         'default',
                         array('class' => "message failure")
                         );
-                }	
+                }    
             }
         }
     }
-
-
+    
+    
     public function initDB()
     {
         echo "Acl Start</br>";
@@ -365,7 +365,7 @@ class UsersController extends AppController
         
         //allow partner to 
         $group = $Group->find('first', array('conditions' => array('name' => 'partner')));
-                if ($group == null) {
+        if ($group == null) {
             echo "Acl ERROR: cannot find the partner</br>";
         } else {
             $Group->id = $group['Group']['id']."</br";
@@ -396,13 +396,13 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
-
+        
         //allow partner messager to
         $group = $Group->find('first', array('conditions' => array('name' => 'partner manager')));
         if ($group == null) {
             echo "Acl ERROR: cannot find the group partner manager</br>";
         } else {
-    
+            
             $Group->id = $group['Group']['id'];
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
@@ -421,10 +421,10 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
-                
+        
         echo 'AllDone';
         exit;
     }
     
-
+    
 }
