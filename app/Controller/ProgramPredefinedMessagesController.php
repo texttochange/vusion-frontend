@@ -40,23 +40,23 @@ class ProgramPredefinedMessagesController extends AppController
             $this->PredefinedMessage->create();
             if ($this->PredefinedMessage->save($this->request->data)) {
                 $this->Session->setFlash(
-                	__('The predefined message has been saved.'),
+                    __('The predefined message has been saved.'),
                     'default',
                     array('class'=>'message success')
-                    );
+                );
                 $this->redirect(
-                	array(
-                	    'program' => $programUrl, 
-                	    'controller' => 'programPredefinedMessages',
+                    array(
+                        'program' => $programUrl, 
+                        'controller' => 'programPredefinedMessages',
                         'action' => 'index'
-                		)
-                	);
+                        )
+                );
             } else {
                 $this->Session->setFlash(
-                	__('The predefined message could not be saved.'), 
+                    __('The predefined message could not be saved.'), 
                     'default',
                     array('class' => "message failure")
-                    );
+                );
             }
         }
     }
@@ -76,21 +76,23 @@ class ProgramPredefinedMessagesController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->PredefinedMessage->save($this->request->data)) {
                 $this->Session->setFlash(
-                	__('The predefined message has been saved.'),
+                    __('The predefined message has been saved.'),
                     'default',
                     array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl, 
-                    'controller' => 'programPredefinedMessages',
-                    'action' => 'index'
-                    ));
+                );
+                $this->redirect(
+                    array(
+                        'program' => $programUrl, 
+                        'controller' => 'programPredefinedMessages',
+                        'action' => 'index'
+                        )
+                );
             } else {
                 $this->Session->setFlash(
-                	__('The predefined message could not be saved. Please, try again.'), 
+                    __('The predefined message could not be saved. Please, try again.'), 
                     'default',
                     array('class' => "message failure")
-                    );
+                );
             }
         } else {
             $this->request->data = $this->PredefinedMessage->read(null, $id);
@@ -118,20 +120,20 @@ class ProgramPredefinedMessagesController extends AppController
                 __('Predefined Message deleted'),
                 'default',
                 array('class'=>'message success')
-                );
+            );
             $this->redirect(
                 array(
                     'program' => $programUrl,
                     'controller' => 'programPredefinedMessages',
                     'action' => 'index'
                     )
-                );
+            );
         }
         $this->Session->setFlash(
-        	__('Predefined Message was not deleted.'), 
+            __('Predefined Message was not deleted.'), 
             'default',
             array('class' => "message failure")
-            );
+        );
     }
     
     
