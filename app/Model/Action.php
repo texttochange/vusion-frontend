@@ -5,7 +5,7 @@ App::uses('VusionConst', 'Lib');
 
 class Action extends VirtualModel
 {
-    var $name = 'action';
+    var $name    = 'action';
     var $version = '2'; 
     
     var $fields = array(
