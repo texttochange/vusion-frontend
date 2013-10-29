@@ -26,9 +26,9 @@ class Request extends MongoModel
             'responses'
             );
     }
-    
-    
-    ##Construtor
+
+
+    // Construtor
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
@@ -37,7 +37,7 @@ class Request extends MongoModel
     }
     
     
-    ## Validate
+    // Validate
     public $validate = array(
         'keyword' => array(
             'notempty' => array(
@@ -101,14 +101,15 @@ class Request extends MongoModel
     
     public function keywordFormat($check) 
     {
-        $keywordRegex = '/^[a-zA-Z0-9\s]+(,(\s)?[a-zA-Z0-9\s]+)*$/';
+        $keywordRegex = '/^[\p{L}\p{Mn}\p{N}\s]+(,(\s)?[\p{L}\p{Mn}\p{N}\s]+)*$/u';
         if (preg_match($keywordRegex, $check['keyword'])) 
             return true;
         return false;
     }
     
     
-    public function validateArray($check) {
+    public function validateArray($check)
+    {
         if (!is_array(reset($check))) {
             return false;
         }
@@ -133,7 +134,7 @@ class Request extends MongoModel
                     }
                     
                     if (method_exists($this, $func)) {
-                        $valid = call_user_func_array(array($this, $func), array($response, $args));
+                        $valid           = call_user_func_array(array($this, $func), array($response, $args));
                         $rule['message'] = $valid;
                     } else {
                         $valid = forward_static_call_array(array("VusionValidation", $func), array($response[$field], $args));
@@ -158,7 +159,7 @@ class Request extends MongoModel
     public function validateAction($check)
     {
         $count = 0;
-        foreach($check['actions'] as $action) {
+        foreach ($check['actions'] as $action) {
             $this->Action->set($action);
             if (!$this->Action->validates()) {
                 if (!isset($this->validationErrors['actions'][$count])) {
@@ -179,7 +180,7 @@ class Request extends MongoModel
     {
         preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $check['content'], $matches, PREG_SET_ORDER);
         $allowed = array("domain", "key1", "key2", "key3", "otherkey");
-        foreach($matches as $match) {
+        foreach ($matches as $match) {
             $match = array_intersect_key($match, array_flip($allowed));
             foreach ($match as $key=>$value) {
                 if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
@@ -230,22 +231,24 @@ class Request extends MongoModel
     protected function _beforeValidateRequests()
     {
         $this->data['Request']['responses'] = array_map(
-            function($element) {
+            function ($element) {
                 $element['content'] = trim($element['content']); 
             return $element; }, 
-            $this->data['Request']['responses']);
+            $this->data['Request']['responses']
+        );
         $this->data['Request']['responses'] = array_filter(
             $this->data['Request']['responses'], 
-            function($element) {
+            function ($element) {
                 return ($element['content'] != '');
-            });
+            }
+        );
         $this->data['Request']['responses'] = array_values($this->data['Request']['responses']);
     }
     
     
     protected function _beforeValidateActions()
     {
-        foreach($this->data['Request']['actions'] as &$action) {
+        foreach ($this->data['Request']['actions'] as &$action) {
             $this->Action->set($action);
             $this->Action->beforeValidate();
             $action = $this->Action->getCurrent();
@@ -257,7 +260,7 @@ class Request extends MongoModel
     {
         if ($state == 'before') {
             $keywords = explode(', ', $query['keywords']);
-            foreach($keywords as $keyword) {
+            foreach ($keywords as $keyword) {
                 $conditions[] = array('Request.keyword' => new MongoRegex('/(,\s|^)'.$keyword.'($|\s|,)/i'));
             }
             if (count($conditions)>1)
@@ -268,7 +271,7 @@ class Request extends MongoModel
         }
         if ($results) {
             $keywords = explode(', ', $query['keywords']);
-            foreach($keywords as $keyword) {
+            foreach ($keywords as $keyword) {
                 if (preg_match('/(,\s|^)'.$keyword.'($|\s|,)/i', $results[0]['Request']['keyword']))
                     return $keyword;
             } 
@@ -281,9 +284,9 @@ class Request extends MongoModel
     {
         $requests = $this->find('all');
         $keywords = array();
-        foreach($requests as $request) {
+        foreach ($requests as $request) {
             $keyphrases = explode(', ', $request['Request']['keyword']);
-            foreach($keyphrases as $keyphrase) {
+            foreach ($keyphrases as $keyphrase) {
                 $words = explode(' ', $keyphrase);
                 array_push($keywords, $words[0]);
             }
@@ -296,7 +299,7 @@ class Request extends MongoModel
     {
         if ($state == 'before') {
             $keywords = explode(', ', $query['keywords']);
-            foreach($keywords as $keyword) {
+            foreach ($keywords as $keyword) {
                 $conditions[] = array('Request.keyword' => new MongoRegex('/(,\s|^)'.$keyword.'($|,)/i'));
             }
             if (count($conditions)>1)
@@ -304,7 +307,7 @@ class Request extends MongoModel
             else
             $conditions = $conditions[0];
             if (isset($query['excludeRequest']) and $query['excludeRequest'] != '') {
-                $exclude = array('Request._id' => array('$ne' => new MongoId($query['excludeRequest'])));
+                $exclude    = array('Request._id' => array('$ne' => new MongoId($query['excludeRequest'])));
                 $conditions = array(
                     '$and' =>  array($conditions, $exclude)
                     );
@@ -314,7 +317,7 @@ class Request extends MongoModel
         }
         if ($results) {
             $keywords = explode(', ', $query['keywords']);
-            foreach($keywords as $keyword) {
+            foreach ($keywords as $keyword) {
                 if (preg_match('/(,\s|^)'.$keyword.'($|,)/i', $results[0]['Request']['keyword']))
                     return $keyword;
             } 

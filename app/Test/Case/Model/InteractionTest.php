@@ -77,7 +77,7 @@ class InteractionTestCase extends CakeTestCase
     public function testValidate_keyword_ok()
     {
         $interaction = $this->Maker->getInteractionOpenQuestion();
-        $interaction['keyword'] = "test, Name, 123, to4";        
+        $interaction['keyword'] = "test, Name, 123, to4, frère";        
 
         $interaction = $this->Interaction->beforeValidate($interaction);
         $this->assertTrue(isset($interaction));    
