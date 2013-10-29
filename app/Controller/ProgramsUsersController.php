@@ -3,13 +3,13 @@
 App::uses('AppController', 'Controller');
 
 /**
- * ProgramsUsers Controller
- *
- * @property ProgramsUser $ProgramsUser
- */
+* ProgramsUsers Controller
+*
+* @property ProgramsUser $ProgramsUser
+*/
 class ProgramsUsersController extends AppController
 {
-
+    
     /**
     * index method
     *
@@ -20,7 +20,7 @@ class ProgramsUsersController extends AppController
         $this->ProgramsUser->recursive = 0;
         $this->set('programsUsers', $this->paginate());
     }
-
+    
     
     /**
     * view method
@@ -36,8 +36,8 @@ class ProgramsUsersController extends AppController
         }
         $this->set('programsUser', $this->ProgramsUser->read(null, $id));
     }
-
-
+    
+    
     /**
     * add method
     *
@@ -51,20 +51,20 @@ class ProgramsUsersController extends AppController
                 $this->Session->setFlash(__('The programs user has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The programs user could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         }
         $this->set('programs', $this->ProgramsUser->Program->find('list'));
         $this->set('users', $this->ProgramsUser->User->find('list'));
     }
-
-
+    
+    
     /**
     * edit method
     *
@@ -82,13 +82,13 @@ class ProgramsUsersController extends AppController
                 $this->Session->setFlash(__('The programs user has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The programs user could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         } else {
             $this->request->data = $this->ProgramsUser->read(null, $id);
@@ -96,8 +96,8 @@ class ProgramsUsersController extends AppController
         $this->set('programs', $this->ProgramsUser->Program->find('list'));
         $this->set('users', $this->ProgramsUser->User->find('list'));
     }
-
-
+    
+    
     /**
     * delete method
     *
@@ -117,15 +117,15 @@ class ProgramsUsersController extends AppController
             $this->Session->setFlash(__('Programs user deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Programs user was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
 }

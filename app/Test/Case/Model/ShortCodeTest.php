@@ -9,26 +9,26 @@ class ShortCodeTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-
+        
         $option          = array('database'=>'test');
         $this->ShortCode = new ShortCode($option);
-
+        
         $this->ShortCode->setDataSource('mongo_test');
         $this->ShortCode->deleteAll(true, false);
     }
-
-
+    
+    
     public function tearDown()
     {
         $this->ShortCode->deleteAll(true, false);
         unset($this->ShortCode);
         parent::tearDown();
     }
-
+    
     public function testSave()
     {
         $emptyShortCode = array();
-
+        
         $wrongShortCode = array(
             'shortcode' => '8282 ',
             'international-prefix' => ' 256',
@@ -38,7 +38,7 @@ class ShortCodeTestCase extends CakeTestCase
             'support-customized-id' => '1',
             'max-character-per-sms' => '160',
             );
-
+        
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($emptyShortCode);
         $this->assertEqual($emptyShortCode, array()); ##Todo how come it's an array
@@ -49,7 +49,7 @@ class ShortCodeTestCase extends CakeTestCase
         $this->assertEqual('8282',$savedShortCode['ShortCode']['shortcode']);
         $this->assertEqual(0, $savedShortCode['ShortCode']['supported-internationally']);
         $this->assertEqual(1, $savedShortCode['ShortCode']['support-customized-id']);
-
+        
         ## Cannot save the same couple coutry/shortcode if not supported internationally
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($wrongShortCode);
@@ -68,7 +68,7 @@ class ShortCodeTestCase extends CakeTestCase
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($supportedInternationally);
         $this->assertFalse($savedShortCode);
-
+        
         # Cannot save an internatinal shortcode while another international with same code is register
         $supportedInternationally['shortcode'] = '+311234546';
         $this->ShortCode->create();
@@ -78,7 +78,7 @@ class ShortCodeTestCase extends CakeTestCase
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($supportedInternationally);
         $this->assertFalse($savedShortCode);
-
+        
         # Cannot save an national shortcode in countries that share the same international prefix
         $usShortCode = array(
             'country' => 'United States',
@@ -93,29 +93,29 @@ class ShortCodeTestCase extends CakeTestCase
             'international-prefix' => '1345',
             'max-character-per-sms' => '160',
             );
-
+        
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($usShortCode);
         $this->assertTrue(isset($savedShortCode['ShortCode']));
         $this->ShortCode->create();
         $this->assertFalse($this->ShortCode->save($caymanShortCode));
     }
-
+    
     public function testSave_fail()
     {
-
+        
         $shortCode = array(
             'country' => 'Cayman Islands',
             'shortcode' => '8282',
             'international-prefix' => '256',
             'max-character-per-sms' => '145',
             );
-
+        
         $this->ShortCode->create();
         $this->assertFalse($this->ShortCode->save($shortCode));
         $this->assertEqual(
             $this->ShortCode->validationErrors['max-character-per-sms'][0],
             'The valid value are only 70, 140 and 160.');
     }
-
+    
 }

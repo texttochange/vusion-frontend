@@ -9,7 +9,7 @@ class PredefinedMessageTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-
+        
         $options                 = array('database' => 'testdbprogram');
         $this->PredefinedMessage = new PredefinedMessage($options);
         
@@ -82,5 +82,5 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->assertEquals('This name already exists. Please choose another.',
             $this->PredefinedMessage->validationErrors['name'][0]);
     }
-
+    
 }

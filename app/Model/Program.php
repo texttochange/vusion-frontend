@@ -5,7 +5,7 @@ App::uses('History', 'Model');
 
 class Program extends AppModel
 {
-
+    
     public $displayField     = 'name';
     var $hasAndBelongsToMany = 'User';
     
@@ -55,15 +55,15 @@ class Program extends AppModel
                 'required' => true,
                 'message' => 'Another program is currently using this database, please choose another one.'
                 ),
-           'lowAlphaNumeric'=> array(
-               'rule' => array('custom','/^[a-z0-9]{3,}$/'),
+            'lowAlphaNumeric'=> array(
+                'rule' => array('custom','/^[a-z0-9]{3,}$/'),
                 'message' => 'Minimum of 3 characters, can only be composed of lowercase letters and digits.'
                 ),
-           'notInList' => array(
-               'rule' => array('notInList', array('test', 'vusion')),
-               'message' => 'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.'
-               )
-           )
+            'notInList' => array(
+                'rule' => array('notInList', array('test', 'vusion')),
+                'message' => 'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.'
+                )
+            )
         );
     
     #Filter variables and functions
@@ -90,7 +90,7 @@ class Program extends AppModel
                     'label' => 'equal to',
                     'parameter-type' => 'text')))
         );
-
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
@@ -98,25 +98,25 @@ class Program extends AppModel
     
     
     public function notInList($check, $list) {
-
+        
         $value = array_values($check);
         if (in_array(strtolower($value[0]), $list)) {
             return false;
         }
         return true;
     }
-
-
+    
+    
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException("Field is missing.");
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]])) {
             throw new FilterException("Field '".$filterParam[1]."' is not supported.");
         }
-
+        
         if (!isset($filterParam[2])) {
             throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
         }
@@ -124,7 +124,7 @@ class Program extends AppModel
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
             throw new FilterException("Operator type missing '".$filterParam[2]."'.");
         }
@@ -202,7 +202,7 @@ class Program extends AppModel
             } elseif (is_string($query['fields'])  && !preg_match('/count/i', $query['fields'])) {
                 $query['fields'] = $db->calculate($this, 'count', array(
                     $db->expression($query['fields']), 'count'
-                ));
+                    ));
             }
             $query['order'] = false;
             
@@ -225,30 +225,30 @@ class Program extends AppModel
     protected function limitedAccessConditions($query)
     {
         if (isset($query['specific_program_access']) and $query['specific_program_access']) {
-                $query['joins'] = array(
-                    array(
-                        'table' => 'programs_users',
-                        'alias' => 'ProgramUser',
-                        'type' => 'LEFT',
-                        'conditions' => array(
-                                'Program.id = ProgramUser.program_id'
-                            )
+            $query['joins'] = array(
+                array(
+                    'table' => 'programs_users',
+                    'alias' => 'ProgramUser',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'Program.id = ProgramUser.program_id'
                         )
-                    );
-                if (empty($query['conditions']))
-                    # make conditions an array
-                    $query['conditions'] = array();
-                    # append user_id to conditions array
-                    $query['conditions'] = array_merge(
-                            $query['conditions'],array(
-                        'ProgramUser.user_id' => $query['user_id']
-                        ));
-                if (!empty($query['program_url'])) {
-                    $query['conditions'] = array_merge(
-                        $query['conditions'],
-                        array('Program.url' => $query['program_url'])
+                    )
+                );
+            if (empty($query['conditions']))
+                # make conditions an array
+            $query['conditions'] = array();
+            # append user_id to conditions array
+            $query['conditions'] = array_merge(
+                $query['conditions'],array(
+                    'ProgramUser.user_id' => $query['user_id']
+                    ));
+            if (!empty($query['program_url'])) {
+                $query['conditions'] = array_merge(
+                    $query['conditions'],
+                    array('Program.url' => $query['program_url'])
                     ); 
-                }
+            }
         } else {
             if (!empty($query['program_url'])) {
                 $query['conditions'] = array('Program.url' => $query['program_url']);
@@ -260,24 +260,24 @@ class Program extends AppModel
     
     public function deleteProgram()
     {
-       $program = $this->read();
-       if (!$this->delete()) {
-           return false;
-       }
-       $mongoDbSource = ConnectionManager::getDataSource('mongo');
-       $config = $mongoDbSource->config;
-       $host = "mongodb://";
-       $hostname = $config['host'] . ':' . $config['port'];
-       
-       if(!empty($config['login'])){
-           $host .= $config['login'] .':'. $config['password'] . '@' . $hostname . '/'. $config['database'];
-       } else {
-           $host .= $hostname;
-       }
-       $con = new Mongo($host);
-       $db = $con->selectDB($program['Program']['database']);
-       $db->drop();
-       return true;
+        $program = $this->read();
+        if (!$this->delete()) {
+            return false;
+        }
+        $mongoDbSource = ConnectionManager::getDataSource('mongo');
+        $config = $mongoDbSource->config;
+        $host = "mongodb://";
+        $hostname = $config['host'] . ':' . $config['port'];
+        
+        if(!empty($config['login'])){
+            $host .= $config['login'] .':'. $config['password'] . '@' . $hostname . '/'. $config['database'];
+        } else {
+            $host .= $hostname;
+        }
+        $con = new Mongo($host);
+        $db = $con->selectDB($program['Program']['database']);
+        $db->drop();
+        return true;
     }
     
     
@@ -297,7 +297,7 @@ class Program extends AppModel
                     foreach ($conditions['$and'] as $key => $value) {
                         if (!is_array($value))
                             return;
-
+                        
                         foreach ($value as $key2 => $value2) {
                             if($key2 == 'country') {
                                 if (strtolower($value2) == strtolower($code['country'])) {
@@ -309,7 +309,7 @@ class Program extends AppModel
                                     $shortcodeMatch = true;
                                 }
                             }
-
+                            
                             if ($shortcodeMatch == true && $countryMatch == true) {
                                 array_push($result, $program);
                             }
@@ -323,14 +323,14 @@ class Program extends AppModel
                     foreach ($conditions['$and'] as $key => $value) {
                         if (isset($value['country']))
                             if (strtolower($value['country']) == strtolower($code['country']))
-                                array_push($result, $program);
+                            array_push($result, $program);
                     }
                 }
                 elseif ($conditionHas['shortcode'] == 1) {
                     foreach ($conditions['$and'] as $key => $value) {
                         if (isset($value['shortcode']))
                             if ($value['shortcode'] == $code['shortcode'])
-                                array_push($result, $program);
+                            array_push($result, $program);
                     }
                 } else {
                     # Do Nothing
@@ -383,5 +383,5 @@ class Program extends AppModel
         return $conditionHas;
     }
     
-   
+    
 }

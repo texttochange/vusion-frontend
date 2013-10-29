@@ -1,22 +1,22 @@
 <?php
 App::uses('AppModel', 'Model');
 /**
- * Group Model
- *
- */
+* Group Model
+*
+*/
 class Group extends AppModel
 {
-/**
- * Display field
- *
- * @var string
- */
+    /**
+    * Display field
+    *
+    * @var string
+    */
     public $displayField = 'name';
-/**
- * Validation rules
- *
- * @var array
- */
+    /**
+    * Validation rules
+    *
+    * @var array
+    */
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -26,13 +26,13 @@ class Group extends AppModel
                 //'required' => false,
                 //'last' => false, // Stop validation after this rule
                 //'on' => 'create', // Limit validation to 'create' or 'update' operations
+                ),
             ),
-        ),
-    );
+        );
     
     public $actsAs = array('Acl' => array('type' => 'requester'));
     
-
+    
     public function parentNode()
     {
         return null;
