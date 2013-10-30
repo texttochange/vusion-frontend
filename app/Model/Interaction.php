@@ -237,6 +237,9 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'type-question', 'open-question'),
                 'message' => 'A feedbacks field is required.',
                 ),
+            'validValues' => array(
+                'rule' => 'validateFeedbacks',
+                'message' => 'noMessage')
             ),
         ### Unmatching Answers Subtype
         'max-unmatching-answer-number' => array(
@@ -425,7 +428,7 @@ class Interaction extends VirtualModel
                     }
                 }                   
                 if (!preg_match($allowedDomain, $match['domain'])) {
-                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable' or 'time'.", $match['domain']);
+                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
