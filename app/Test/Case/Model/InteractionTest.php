@@ -143,7 +143,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as customized content, 'participants' can only be either 'participant', 'contentVariable' or 'time'."
+            "To be used as customized content, 'participants' can only be either 'participant', 'contentVariable', 'context' or 'time'."
             );
         
         ## test feedback action
