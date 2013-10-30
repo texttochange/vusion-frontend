@@ -9,23 +9,23 @@ class Interaction extends VirtualModel
 {
     var $name    = 'interaction';
     var $version = '3'; 
-
+    
     var $payload = array();
-
+    
     var $fields = array(
         'interaction-id',
         'type-schedule',
         'type-interaction',
         'activated',
         'prioritized');
-
+    
     
     public function __construct()
     {     
         parent::__construct();
         $this->Action = new Action();
     }
-
+    
     
     public $validate = array(
         'interaction-id' => array(
@@ -138,8 +138,8 @@ class Interaction extends VirtualModel
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
-            'validContentVariable' => array(
-                'rule' => 'validContentVariable',
+            'validCustomizeContent' => array(
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX),
                 'message' => 'noMessage'
                 ),
             ),
@@ -205,8 +205,8 @@ class Interaction extends VirtualModel
         'label-for-participant-profiling'=> array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldOrKeyValue', array(
-                                                                'type-interaction'=>'question-answer-keyword',
-                                                                'type-question' => 'closed-question')),
+                    'type-interaction'=>'question-answer-keyword',
+                    'type-question' => 'closed-question')),
                 'message' => 'A label-for-participant-profiling is required.',
                 ),
             ),
@@ -237,6 +237,9 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'type-question', 'open-question'),
                 'message' => 'A feedbacks field is required.',
                 ),
+            'validValues' => array(
+                'rule' => 'validateFeedbacks',
+                'message' => 'noMessage')
             ),
         // Unmatching Answers Subtype
         'max-unmatching-answer-number' => array(
@@ -307,8 +310,8 @@ class Interaction extends VirtualModel
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
-            'validContentVariable' => array(
-                'rule' => 'validContentVariable',
+            'validCustomizeContent' => array(
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX),
                 'message' => 'noMessage'
                 ),
             ),
@@ -335,6 +338,7 @@ class Interaction extends VirtualModel
             )
         );
     
+    
     public $validateReminderAction = array(
         'type-action' => array( 
             'validateActions' => array(
@@ -343,6 +347,7 @@ class Interaction extends VirtualModel
                 ),
             )
         );
+    
     
     public $validateAnswer = array(
         'choice' => array(
@@ -364,7 +369,7 @@ class Interaction extends VirtualModel
                 ),
             )
         );
-
+    
     
     public $validateAnswerKeyword = array(
         'keyword' => array(
@@ -390,8 +395,8 @@ class Interaction extends VirtualModel
                 ),
             )
         );
-
-
+    
+    
     public $validateFeedback = array(
         'content' => array(
             'notempty' => array(
@@ -402,18 +407,18 @@ class Interaction extends VirtualModel
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
-            'validContentVariable' => array(
-                'rule' => 'validContentVariable',
+            'validCustomizeContent' => array(
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX),
                 'message' => 'noMessage'
                 ),
             )
         );
     
     
-    public function validContentVariable($field, $data)
+    public function validCustomizeContent($field, $data, $allowedDomain)
     {
         if (isset($data[$field])) {
-            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "keys3", "otherkey");
             foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
@@ -421,17 +426,17 @@ class Interaction extends VirtualModel
                     if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
                         return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
-                }
-                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
-                    return __("To be used as customized content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                }                   
+                if (!preg_match($allowedDomain, $match['domain'])) {
+                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
-                        return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
                     }
                 } else if ($match['domain'] == 'contentVariable') {
                     if (isset($match['otherkey'])) {
-                        return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
                     }
                 } 
             }
@@ -444,19 +449,19 @@ class Interaction extends VirtualModel
     {
         return $this->validList($field, $data, $this->validateAnswer); 
     }
-
-
+    
+    
     public function validateAnswerKeywords($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswerKeyword);      
     }
-
-
+    
+    
     public function validateFeedbacks($field, $data)
     {
         return $this->validList($field, $data, $this->validateFeedback);
     }
-
+    
     
     public function validateActions($field, $data)
     {
@@ -476,8 +481,8 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -485,14 +490,14 @@ class Interaction extends VirtualModel
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
-
+        
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
-
+        
         //Exit the function in case of announcement
         if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
             return true;
- 
+        
         if ($this->data['type-interaction'] == 'question-answer') {
             $this->_setDefault('type-question', null);
             $this->_setDefault('set-use-template', null);
@@ -512,21 +517,21 @@ class Interaction extends VirtualModel
                 $this->_setDefault('feedbacks', array());
             }
         }
-      
+        
         if ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
             $this->_beforeValidateAnswerKeywords();
         }
-
+        
         if ($this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
-
+        
         return true;
     }
-
+    
     
     protected function _beforeValidateActions($actions)
     {
@@ -536,7 +541,7 @@ class Interaction extends VirtualModel
             $action = $this->Action->getCurrent();
         }
     }
-
+    
     
     protected function _beforeValidateAnswerKeywords() 
     {
@@ -548,7 +553,7 @@ class Interaction extends VirtualModel
             $this->_beforeValidateActions(&$answer['answer-actions']);
         }
     }
-
+    
     
     protected function _beforeValidateAnswers() 
     {
@@ -561,5 +566,5 @@ class Interaction extends VirtualModel
         }
     }
     
-
+    
 }

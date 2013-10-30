@@ -75,7 +75,8 @@ class Action extends VirtualModel
                         'reset', 
                         'feedback',
                         'proportional-tagging',
-                        'message-forwarding')),
+                        'url-forwarding',
+                        'sms-forwarding')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -89,7 +90,8 @@ class Action extends VirtualModel
                         'reset' => array(),
                         'feedback' => array('content'),
                         'proportional-tagging' => array('proportional-tags'),
-                        'message-forwarding' => array('forward-url'))),
+                        'url-forwarding' => array('forward-url'),
+                        'sms-forwarding' => array('forward-to', 'forward-content'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -149,7 +151,7 @@ class Action extends VirtualModel
             ),
         'forward-url' => array(            
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldValue', 'type-action', 'message-forwarding'),
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'url-forwarding'),
                 'message' => 'The forwarding field require an url field.',
                 ),
             'validUrlFormat' => array(
@@ -164,6 +166,30 @@ class Action extends VirtualModel
                         '[TO]',
                         '[PROGRAM]')),
                 'message' => 'noMessage',
+                ),
+            ),
+        'forward-to' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The Receiver Tag field require atag.',
+                ),
+            'validTag' => array(
+                'rule' => array('regex', VusionConst::TAG_REGEX),
+                'message' => VusionConst::TAG_FAIL_MESSAGE
+                ),
+            ),
+        'forward-content' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The content field require an SMS Forward action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
                 ),
             )
         );
@@ -380,7 +406,7 @@ class Action extends VirtualModel
     public function validContentVariable($field, $data)
     {
         if (isset($data[$field])) {
-            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
             foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
@@ -389,16 +415,16 @@ class Action extends VirtualModel
                         return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }
-                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
-                    return __("To be used as customized content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                if (!preg_match(VusionConst::CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX , $match['domain'])) {
+                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
-                        return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
                     }
                 } else if ($match['domain'] == 'contentVariable') {
                     if (isset($match['otherkey'])) {
-                        return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
                     }
                 } 
             }
