@@ -10,7 +10,7 @@ class UnattachedMessageTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-
+        
         $options                 = array('database' => 'testdbprogram');
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting    = new ProgramSetting($options);
@@ -35,8 +35,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
     }
-
-
+    
+    
     public function testSave_ok_allParticipants()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -53,13 +53,13 @@ class UnattachedMessageTestCase extends CakeTestCase
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
-
+        
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $this->assertEquals('4', $savedUnattachedMessage['UnattachedMessage']['model-version']);
         $this->assertEquals('unattached-message', $savedUnattachedMessage['UnattachedMessage']['object-type']);
     }
-
-
+    
+    
     public function testSave_ok_matchParticipants()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -108,8 +108,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Message must be created by a user.',
             $this->UnattachedMessage->validationErrors['created-by'][0]);
     }
-
-
+    
+    
     public function testSave_fail_matchParticipants_noSendToOperator()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -150,8 +150,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Select conditions.',
             $this->UnattachedMessage->validationErrors['send-to-match-conditions'][0]);   
     }
-
-
+    
+    
     public function testSave_fail_matchParticipants_noSendToType()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -171,8 +171,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->assertFalse($this->UnattachedMessage->save($unattachedMessage));
         $this->assertEquals(0, $this->UnattachedMessage->find('count'));
     }
-
-
+    
+    
     public function testSave_fail_forbiddenapostrophe()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -192,8 +192,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'The apostrophe used in this message is not valid.',
             $this->UnattachedMessage->validationErrors['content'][0]);
     }
-
-
+    
+    
     public function testSave_ok_update_matchToPhone()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -213,7 +213,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
         $this->assertEquals('match', $savedUnattachedMessage['UnattachedMessage']['send-to-type']);
-
+        
         $unattachedMessage['send-to-type'] = "phone";
         $unattachedMessage['send-to-phone'] = array("+256777");
         
@@ -228,8 +228,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->assertTrue(!isset($updateUnattachedMessage['UnattachedMessage']['send-to-match-operator']));
         $this->assertTrue(!isset($updateUnattachedMessage['UnattachedMessage']['send-to-match-conditions']));
     }
-
-
+    
+    
     public function testSave_ok_tagAndLabel()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -252,15 +252,15 @@ class UnattachedMessageTestCase extends CakeTestCase
             );
         $this->UnattachedMessage->create("unattached-message");
         $this->UnattachedMessage->save($unattachedMessage);
-
+        
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
     }
-        
-
+    
+    
     public function testSave_fail_fixedTime_isPast()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+        
         $otherUnattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -280,11 +280,11 @@ class UnattachedMessageTestCase extends CakeTestCase
             $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
     
-
+    
     public function testSave_fail_noScheduleType()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+        
         $otherUnattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -303,12 +303,12 @@ class UnattachedMessageTestCase extends CakeTestCase
             "",
             $this->UnattachedMessage->data['UnattachedMessage']['fixed-time']);
     }
-
-
+    
+    
     public function testSave_fail_noFixedTime()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+        
         $otherUnattachedMessage = array(
             'name' => 'hello',
             'send-to-type' => 'all',
@@ -325,12 +325,12 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Please enter a fixed time for this message.',
             $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
-
-
+    
+    
     public function testSave_ok_scheduleImmediatly()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+        
         $otherUnattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -344,8 +344,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
         $this->assertEquals('immediately', $savedUnattachedMessage['UnattachedMessage']['type-schedule']);
     }
-
-
+    
+    
     public function testSave_fail_specialCharacters()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -369,12 +369,12 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Incorrect tag or label.',
             $this->UnattachedMessage->validationErrors['send-to-match-conditions'][0]);
     }
-
+    
     
     public function testGetNameIdForFilter()
     {
     	$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+    	
     	$output = $this->UnattachedMessage->getNameIdForFilter();        
         $this->assertEquals(
         	null,
@@ -400,25 +400,25 @@ class UnattachedMessageTestCase extends CakeTestCase
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage2 = $this->UnattachedMessage->save($unattachedMessage);
-      
+        
         $output = $this->UnattachedMessage->getNameIdForFilter();        
         $this->assertEquals(
         	array($savedUnattachedMessage1['UnattachedMessage']['_id'] => 'hello',
         		$savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),
-        	     $output);
+        	$output);
     }
-
-
+    
+    
     public function testIsNotPast()
     {    
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-         
+        
         $now = new DateTime('now', timezone_open('Africa/Kampala'));   
         $check = array('fixed-time'=> $now->modify('-30 minutes')->format("Y-m-d\TH:i:s"));
         $this->assertFalse($this->UnattachedMessage->isNotPast($check));
     }
-
-
+    
+    
     public function testSave_ok_dynamicContent()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -449,8 +449,8 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->save($unattachedMessage02);
         $this->assertEquals(2,$this->UnattachedMessage->find('count'));
     }
-
-
+    
+    
     public function testSave_fail_dynamicContent()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -483,12 +483,12 @@ class UnattachedMessageTestCase extends CakeTestCase
             "To be used in message, contentVariable only accepts maximum three keys.",
             $this->UnattachedMessage->validationErrors['content'][0]);
     }
-
-
+    
+    
     public function testSave_ok_customizedContent_contentVariable()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+        
         $otherUnattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -501,5 +501,5 @@ class UnattachedMessageTestCase extends CakeTestCase
         
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
     }
-
+    
 }

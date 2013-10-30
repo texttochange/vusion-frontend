@@ -62,30 +62,30 @@ Class TemplatesControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read')
-            ),
+                ),
             'models' => array(
                 'Group' => array()
                 )
             ));
         
         $templates->Acl
-            ->expects($this->any())
-            ->method('check')
-            ->will($this->returnValue('true'));
-            
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
         $templates->Session
-            ->expects($this->any())
-            ->method('read')
-            ->will($this->onConsecutiveCalls('1','1','1'));
-            
+        ->expects($this->any())
+        ->method('read')
+        ->will($this->onConsecutiveCalls('1','1','1'));
+        
         return $templates;
     }
     
     
-/**
-* Test Methods
-*
-*/
+    /**
+    * Test Methods
+    *
+    */
     public function testIndex()
     {
         $templates = $this->mockProgramAccess();
@@ -98,7 +98,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
             ));
         
         $this->testAction("/templates/index");
-
+        
         $this->assertEquals(1, count($this->vars['templates']));
     }
     
@@ -116,7 +116,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $this->testAction("/templates/add", array(
             'method' => 'post',
             'data' => $templates
-        ));
+            ));
         $this->assertEquals(1, $this->Templates->Template->find('count'));
     }
     

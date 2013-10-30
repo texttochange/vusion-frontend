@@ -2,7 +2,7 @@
 
 class VusionConst
 {
-    const KEYWORD_REGEX = '/^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$/';
+    const KEYWORD_REGEX = '/^[\p{L}\p{Mn}\p{N}]+(,(\s)?[\p{L}\p{Mn}\p{N}]+)*$/u';
     const KEYWORD_FAIL_MESSAGE = 'The keyword/alias is(are) not valid.';
 
     const TAG_REGEX = '/^[a-z0-9A-Z\s]+$/';

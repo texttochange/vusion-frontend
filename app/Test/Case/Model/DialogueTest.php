@@ -165,6 +165,15 @@ class DialogueTestCase extends CakeTestCase
             "The keyword/alias is(are) not valid.",
             $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
     }
+    
+    public function testValidate_keyword_ok()
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['interactions'][0]['keyword'] = 'frère, brother';
+
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->assertTrue(isset($savedDialogue));
+    }
 
     public function testFindAllKeywordInDialogues()
     {
@@ -329,7 +338,6 @@ class DialogueTestCase extends CakeTestCase
             'prioritized' => ''
             );
         
-        //$dialog3 = $this->Dialogue->saveDialogue($dialogue3);
         $this->assertEqual($dialogue3['Dialogue']['interactions'][0]['prioritized'], null);
         $this->assertEqual($dialogue3['Dialogue']['interactions'][1]['prioritized'], 'prioritized');
     }

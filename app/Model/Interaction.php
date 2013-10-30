@@ -7,7 +7,7 @@ App::uses('VusionConst', 'Lib');
 
 class Interaction extends VirtualModel
 {
-    var $name = 'interaction';
+    var $name    = 'interaction';
     var $version = '3'; 
     
     var $payload = array();
@@ -38,7 +38,7 @@ class Interaction extends VirtualModel
                 'message' => 'Interaction Id field cannot be empty.'    
                 )
             ),
-        # Type Schedule
+        // Type Schedule
         'type-schedule' => array(
             'required' => array(
                 'rule' => 'required',
@@ -64,7 +64,7 @@ class Interaction extends VirtualModel
                 'message' => 'Type schedule required field are not present.'
                 )
             ),
-        ## Type Schedule subtype
+        // Type Schedule subtype
         'date-time' => array(
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule', 'fixed-time'),
@@ -99,7 +99,7 @@ class Interaction extends VirtualModel
                 'message' => 'Schedule Condition required a offset-condition-interaction-id.',
                 )
             ),
-        # Type Interaction
+        // Type Interaction
         'type-interaction'  => array(
             'required' => array(
                 'rule' => 'required',
@@ -124,7 +124,7 @@ class Interaction extends VirtualModel
                     )
                 )
             ),
-        ## Type Interaction Subtype
+        // Type Interaction Subtype
         'content' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldOrValue', 'type-interaction', 'announcement', 'question-answer', 'question-answer-keyword'),
@@ -201,7 +201,7 @@ class Interaction extends VirtualModel
                 'message' => 'One of the Answer Keyword is not valide.'
                 )
             ),
-        ### Type Interaction Subtype - Type Question Subtype
+        // Type Interaction Subtype - Type Question Subtype
         'label-for-participant-profiling'=> array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldOrKeyValue', array(
@@ -241,7 +241,7 @@ class Interaction extends VirtualModel
                 'rule' => 'validateFeedbacks',
                 'message' => 'noMessage')
             ),
-        ### Unmatching Answers Subtype
+        // Unmatching Answers Subtype
         'max-unmatching-answer-number' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-max-unmatching-answers', 'max-unmatching-answers'),
@@ -254,7 +254,7 @@ class Interaction extends VirtualModel
                 'message' => 'A max-unmatching-answer-actions field is required.',
                 ),
             ),
-        ### Reminder Subtype
+        // Reminder Subtype
         'type-schedule-reminder' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
@@ -281,7 +281,7 @@ class Interaction extends VirtualModel
                 'message' => null
                 ),
             ),
-        ### Reminder Schedule Subtype
+        // Reminder Schedule Subtype
         'reminder-days' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule-reminder', 'reminder-offset-days'),
@@ -300,7 +300,7 @@ class Interaction extends VirtualModel
                 'message' => 'A reminder-minutes field is required.',
                 ),
             ),
-        #type-unmatching-feedback
+        // type-unmatching-feedback
         'unmatching-feedback-content' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-unmatching-feedback', 'interaction-unmatching-feedback'),
@@ -315,7 +315,7 @@ class Interaction extends VirtualModel
                 'message' => 'noMessage'
                 ),
             ),
-        # Other Interaction Fields
+        // Other Interaction Fields
         'activated'  => array(
             'required' => array(
                 'rule' => 'required',
@@ -420,7 +420,7 @@ class Interaction extends VirtualModel
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "keys3", "otherkey");
-            foreach($matches as $match) {
+            foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
                     if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
@@ -443,7 +443,7 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-    
+
     
     public function validateAnswers($field, $data)
     {
@@ -466,9 +466,9 @@ class Interaction extends VirtualModel
     public function validateActions($field, $data)
     {
         if (isset($data[$field])) {
-            $count = 0;
+            $count            = 0;
             $validationErrors = array();
-            foreach($data[$field] as $action) {
+            foreach ($data[$field] as $action) {
                 $this->Action->set($action);
                 if (!$this->Action->validates()) {
                     $validationErrors[$count] = $this->Action->validationErrors;
@@ -535,7 +535,7 @@ class Interaction extends VirtualModel
     
     protected function _beforeValidateActions($actions)
     {
-        foreach($actions as &$action) {
+        foreach ($actions as &$action) {
             $this->Action->set($action);
             $this->Action->beforeValidate();
             $action = $this->Action->getCurrent();

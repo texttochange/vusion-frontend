@@ -1,4 +1,4 @@
-    <?php
+<?php
 App::uses('AppController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
@@ -8,20 +8,20 @@ App::uses('UnattachedMessage','Model');
 
 class ProgramHistoryController extends AppController
 {
-
+    
     public $uses    = array('History');
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time'
         );
-
+    
     
     function constructClasses()
     {
         parent::constructClasses();
     }
-
+    
     
     public function beforeFilter()
     {
@@ -34,8 +34,8 @@ class ProgramHistoryController extends AppController
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting    = new ProgramSetting($options);
     }
-
-
+    
+    
     public function index()
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
@@ -47,10 +47,10 @@ class ProgramHistoryController extends AppController
         } else {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-
+        
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-
+        
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
             $statuses = $this->History->find(
                 'all', 
@@ -67,19 +67,19 @@ class ProgramHistoryController extends AppController
             $this->set(compact('statuses'));
         }
     }
-
-
+    
+    
     protected function _getFilterFieldOptions()
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->History->filterFields);
     }
-
-
+    
+    
     protected function _getFilterParameterOptions()
     {
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-
+        
         return array(
             'operator' => $this->LocalizeUtils->localizeValueInArray($this->History->filterOperatorOptions),
             'dialogue' => $dialoguesInteractionsContent,
@@ -87,7 +87,7 @@ class ProgramHistoryController extends AppController
             'message-status' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageStatusOptions),
             'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()            
             );
-       
+        
     }
     
     
@@ -97,18 +97,18 @@ class ProgramHistoryController extends AppController
         $fileName = $this->params['url']['file'];
         
         $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
-            
+        
         if (!file_exists($fileFullPath)) {
             throw new NotFoundException();
         }
-
+        
         $this->response->header("X-Sendfile: $fileFullPath");
         $this->response->header("Content-type: application/octet-stream");
         $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
         $this->response->send();
     }
-
-
+    
+    
     public function export()
     {
         $programUrl = $this->params['program'];
@@ -185,23 +185,23 @@ class ProgramHistoryController extends AppController
         }
     }
     
-
+    
     protected function _getConditions($defaultConditions)
     {
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-      
+        
         if (!isset($filter['filter_param'])) {
             return $defaultConditions;
         }
-
+        
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->History->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }     
-
+        
         $this->set('urlParams', http_build_query($filter));
         
         $conditions = $this->History->fromFilterToQueryConditions($filter);
-
+        
         if ($conditions == array()) {
             $conditions = $defaultConditions;
         } else {
@@ -209,31 +209,31 @@ class ProgramHistoryController extends AppController
                 $defaultConditions,
                 $conditions));
         }
-    
+        
         return $conditions;        
     }
-
+    
     
     public function delete()
     {
         
         $programUrl = $this->params['program'];
-     
+        
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
-
+        
         $conditions = $this->_getConditions($defaultConditions);
         $result = $this->History->deleteAll(
             $conditions, 
             false);
-
+        
         $this->Session->setFlash(
-                __('Histories have been deleted.'),
-                'default',
-                array('class'=>'message success')
-                );
+            __('Histories have been deleted.'),
+            'default',
+            array('class'=>'message success')
+            );
         
         if (isset($this->viewVars['urlParams'])) {
             $this->redirect(array(
@@ -242,12 +242,12 @@ class ProgramHistoryController extends AppController
                 'action' => 'index',
                 '?' => $this->viewVars['urlParams']));
         } else {
-               $this->redirect(array(
+            $this->redirect(array(
                 'program' => $programUrl,
                 'controller' => 'programHistory',
                 'action' => 'index'));
         }                   
     }
     
-
+    
 }

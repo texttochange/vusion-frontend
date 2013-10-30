@@ -5,7 +5,7 @@ App::uses('VusionConst', 'Lib');
 
 class Action extends VirtualModel
 {
-    var $name = 'action';
+    var $name    = 'action';
     var $version = '2'; 
     
     var $fields = array(
@@ -97,7 +97,11 @@ class Action extends VirtualModel
             ),
         'enroll' => array(
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldOrValue', 'type-action', 'enrolling', 'delayed-enrolling'),
+                'rule' => array(
+                    'requiredConditionalFieldOrValue',
+                    'type-action',
+                    'enrolling',
+                    'delayed-enrolling'),
                 'message' => 'The enroll field require an enrolling or delayed-enrolling action.',
                 ),
             ),
@@ -352,7 +356,7 @@ class Action extends VirtualModel
         }
         $count = 0;
         $validationError = array();
-        foreach($data[$field] as $subcondition) {
+        foreach ($data[$field] as $subcondition) {
             $result = $this->_runValidateRules($subcondition, $this->validateSubcondition);
             if (is_bool($result) && $result) {
                 $result = $this->validSubconditionValue($subcondition);
@@ -388,7 +392,9 @@ class Action extends VirtualModel
                 'subcondition-operator' => array( 
                     __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
         }
-        if (!preg_match($operators[$subcondition['subcondition-operator']]['regex'], $subcondition['subcondition-parameter'])) {
+        $subconditionOperator  =  $subcondition['subcondition-operator'];
+        $subconditionParameter = $subcondition['subcondition-parameter'];
+        if (!preg_match($operators[$subconditionOperator]['regex'], $subconditionParameter)) {
             return array(
                 'subcondition-parameter' => array(
                     $operators[$subcondition['subcondition-operator']]['message']));
@@ -402,7 +408,7 @@ class Action extends VirtualModel
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
-            foreach($matches as $match) {
+            foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
                     if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
@@ -441,5 +447,6 @@ class Action extends VirtualModel
         }
         return true;
     }
+    
     
 }
