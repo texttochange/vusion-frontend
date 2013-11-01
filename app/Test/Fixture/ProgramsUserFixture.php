@@ -4,12 +4,17 @@
  * ProgramsUserFixture
  *
  */
-class ProgramsUserFixture extends CakeTestFixture {
-
+class ProgramsUserFixture extends CakeTestFixture
+{
     //public $import = array('records' => true);
 
     public $fields = array(
-        'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
+        'id' => array(
+            'type' => 'integer', 
+            'null' => false, 
+            'default' => NULL, 
+            'length' => 11, 
+            'key' => 'primary'),
         'program_id' => array('type' => 'string', 'null' => false, 'length' => 36),
         'user_id' => array('type' => 'integer', 'null' => false),
         'indexes' => array(),

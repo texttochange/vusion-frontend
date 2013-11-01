@@ -12,17 +12,17 @@ App::uses('PredefinedMessage', 'Model');
 
 class ProgramUnattachedMessagesController extends AppController
 {
-
+    
     var $helpers = array('Js' => array('Jquery'), 'Time');
     var $uses = array('UnattachedMessage', 'User');
-
-
+    
+    
     public function constructClasses()
     {
         parent::constructClasses();
     }
-
- 
+    
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -39,25 +39,25 @@ class ProgramUnattachedMessagesController extends AppController
         $this->DialogueHelper    = new DialogueHelper();
         $this->_instanciateVumiRabbitMQ();
     }
-
-
+    
+    
     protected function _instanciateVumiRabbitMQ()
     {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-
+    
     
     protected function _notifyUpdateBackendWorkerUnattachedMessage($workerName, $unattach_id)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'unattach', $unattach_id);
     }
-
+    
     
     protected function _notifyUpdateBackendWorkerParticipant($workerName, $participantPhone)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
-
+    
     
     public function index()
     {
@@ -87,7 +87,7 @@ class ProgramUnattachedMessagesController extends AppController
             }
             $unattachedMessage['UnattachedMessage'] = array_merge(
                 $status, $unattachedMessage['UnattachedMessage']);
-
+            
             if (in_array($unattachedMessage['UnattachedMessage']['model-version'], array('1','2','3'))) {
                 $unattachedMessage['UnattachedMessage']['created-by'] = __("unknown");
             } else {
@@ -99,7 +99,7 @@ class ProgramUnattachedMessagesController extends AppController
         }
         $this->set('unattachedMessages', $unattachedMessages);
     }
-
+    
     
     public function add()
     {
@@ -108,7 +108,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         }
-
+        
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);
@@ -116,10 +116,10 @@ class ProgramUnattachedMessagesController extends AppController
         
         $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
         $this->set(compact('selectors', 'predefinedMessageOptions'));
-   
+        
     }
-
-
+    
+    
     protected function saveUnattachedMessage()
     {
         $programUrl = $this->params['program'];
@@ -150,9 +150,9 @@ class ProgramUnattachedMessagesController extends AppController
             }
         }
         if ($this->UnattachedMessage->id == null) {
-           $this->UnattachedMessage->create();
-           $user = $this->Auth->user();
-           $this->request->data['UnattachedMessage']['created-by'] = $user['id'];
+            $this->UnattachedMessage->create();
+            $user = $this->Auth->user();
+            $this->request->data['UnattachedMessage']['created-by'] = $user['id'];
         }
         $savedUnattached = $this->UnattachedMessage->save($this->request->data);
         if ($savedUnattached) {
@@ -192,12 +192,12 @@ class ProgramUnattachedMessagesController extends AppController
         }
         return $savedUnattached;
     }
-
-
+    
+    
     protected function importParticipants()
     {    
         $programUrl = $this->params['program'];
-
+        
         if ($this->request->data['UnattachedMessage']['file']['error'] != 0) {
             if ($this->request->data['UnattachedMessage']['file']['error'] == 4) {
                 $this->importErrors = __('Please select a file.');
@@ -227,8 +227,8 @@ class ProgramUnattachedMessagesController extends AppController
         unlink($filePath . DS . $fileName);
         return $report;
     }
-
-
+    
+    
     public function edit()
     {
         $unattachedMessage = $this->params['unattchedMessage'];
@@ -236,11 +236,11 @@ class ProgramUnattachedMessagesController extends AppController
         $programUrl        = $this->params['program'];
         
         $this->UnattachedMessage->id = $id;
-
+        
         if (!$this->UnattachedMessage->exists()) {
             throw new NotFoundException(__('Invalid Message.'));
         }
-
+        
         $this->UnattachedMessage->read();
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
@@ -256,12 +256,12 @@ class ProgramUnattachedMessagesController extends AppController
             $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
             if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
                 $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
-                'default',
-                array('class' => "message warning")
-                );
+                    'default',
+                    array('class' => "message warning")
+                    );
             }
         }
-
+        
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
         if (count($selectorValues) > 0) {
             $selectors = array_combine($selectorValues, $selectorValues);
@@ -269,7 +269,7 @@ class ProgramUnattachedMessagesController extends AppController
         
         $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
         $this->set(compact('selectors', 'predefinedMessageOptions'));
-
+        
         return $unattachedMessage;
     }
     
@@ -320,10 +320,10 @@ class ProgramUnattachedMessagesController extends AppController
                 );
         }
         $this->Session->setFlash(__('Message was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
     }
-
+    
     
 }

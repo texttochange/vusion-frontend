@@ -17,13 +17,13 @@ class ProgramLogsController extends AppController
     {
         parent::constructClasses();
     }
-
-
+    
+    
     function beforeFilter() 
     {
         parent::beforeFilter();        
     }
-        
+    
     
     public function index()
     {
@@ -32,7 +32,7 @@ class ProgramLogsController extends AppController
         $programLogs = $this->LogManager->getLogs($databaseName, 200);
         $this->set(compact('programLogs'));
     } 
-        
+    
     
     public function getBackendNotifications()
     {

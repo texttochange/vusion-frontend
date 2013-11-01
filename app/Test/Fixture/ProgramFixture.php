@@ -1,16 +1,20 @@
 <?php
 
 /**
- * ProgramFixture
- *
- */
+* ProgramFixture
+*
+*/
 class ProgramFixture extends CakeTestFixture
 {
     
     public $useDbConfig = 'test';
-
-    public $fields = array(
-        'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
+    
+    public $fields = array('id' => array(
+            'type' => 'string', 
+            'null' => false, 
+            'default' => NULL, 
+            'length' => 36, 
+            'key' => 'primary'),
         'name' => array('type' => 'string', 'null' => true, 'length' => 50),
         'url' => array('type' => 'string', 'null' => true, 'length' => 20),
         'database' => array('type' => 'string', 'null' => true, 'length' => 20),
@@ -18,8 +22,8 @@ class ProgramFixture extends CakeTestFixture
         'modified' => array('type' => 'datetime', 'null' => true),
         'indexes' => array(),
         'tableParameters' => array()
-    );
-
+        );
+    
     public $records = array(
         array(
             'id' => 1,
@@ -28,7 +32,7 @@ class ProgramFixture extends CakeTestFixture
             'database' => 'testdbprogram',
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
-        ),
+            ),
         array(
             'id' => 2,
             'name' => 'm6h',
@@ -36,7 +40,7 @@ class ProgramFixture extends CakeTestFixture
             'database' => 'm6h',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
-        ),
+            ),
         array(
             'id' => 3,
             'name' => 'trial',
@@ -44,7 +48,7 @@ class ProgramFixture extends CakeTestFixture
             'database' => 'trial',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
-        ),
-    );
-
+            ),
+        );
+    
 }

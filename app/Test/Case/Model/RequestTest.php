@@ -70,13 +70,13 @@ class RequestTestCase extends CakeTestCase
         $this->Request->save($request);
 
         $request['Request'] = array(
-            'keyword' => 'k'
+            'keyword' => 'k2, frère'
             );
         $this->Request->create();
         $this->Request->save($request);
         
         $this->assertEqual(
-            array('key', 'keyword', 'otherkeyword', 'k'),
+            array('key', 'keyword', 'otherkeyword', 'k2', 'frère'),
             $this->Request->getKeywords());
     }
 
@@ -143,7 +143,7 @@ class RequestTestCase extends CakeTestCase
     public function testSave_validateKeyword_ok()
     {
         $request['Request'] = array(
-            'keyword' => 'key request, keyword, otherkeyword request'
+            'keyword' => 'key request, keyword, otherkeyword request, für'
             );
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
@@ -295,5 +295,5 @@ class RequestTestCase extends CakeTestCase
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
 
-
+    
 }

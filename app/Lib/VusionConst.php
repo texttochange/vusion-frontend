@@ -2,7 +2,7 @@
 
 class VusionConst
 {
-    const KEYWORD_REGEX = '/^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$/';
+    const KEYWORD_REGEX = '/^[\p{L}\p{Mn}\p{N}]+(,(\s)?[\p{L}\p{Mn}\p{N}]+)*$/u';
     const KEYWORD_FAIL_MESSAGE = 'The keyword/alias is(are) not valid.';
 
     const TAG_REGEX = '/^[a-z0-9A-Z\s]+$/';
@@ -42,9 +42,10 @@ class VusionConst
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
 
     # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
-    const CONTENT_VARIABLE_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
-    const CONTENT_VARIABLE_DOMAIN_REGEX = '/^(participant|contentVariable)$/';
+    const CUSTOMIZE_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
+    const CUSTOMIZE_CONTENT_DOMAIN_REGEX = '/^(participant|contentVariable|time)$/';
+    const CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX = '/^(participant|contentVariable|context|time)$/';
     
-    const CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL = 'To be used in message, participant only accepts one key.';
-    const CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used in message, contentVariable only accepts maximum three keys.';
+    const CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL = 'To be used in message, participant only accepts one key.';
+    const CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used in message, contentVariable only accepts maximum three keys.';
 }

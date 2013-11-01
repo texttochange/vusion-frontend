@@ -8,12 +8,12 @@ class ShortCodesController extends AppController
 {
     var $helpers    = array('Js' => array('Jquery'));
     var $components = array('PhoneNumber'); 
-
-
+    
+    
     public function constructClasses()
     {
         parent::constructClasses();
-
+        
         if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
@@ -26,13 +26,13 @@ class ShortCodesController extends AppController
         $this->ShortCode = new ShortCode($options);
         $this->Template = new Template($options);
     }
-
-
+    
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
-
+    
     
     public function index()
     {
@@ -49,16 +49,16 @@ class ShortCodesController extends AppController
                 $this->Session->setFlash(__('The shortcode has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array(
                     'controller' => 'shortCodes',
                     'action' => 'index'
                     ));
             } else {
                 $this->Session->setFlash(__('The shortcode could not be saved.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         }
         $this->setOptions();
@@ -80,15 +80,15 @@ class ShortCodesController extends AppController
                 $this->Session->setFlash(__('The shortcode has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('controller' => 'shortCodes',
                     'action' => 'index'
                     ));
             } else {
                 $this->Session->setFlash(__('The shortcode could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         } else {
             $this->request->data = $this->ShortCode->read(null, $id);
@@ -99,7 +99,7 @@ class ShortCodesController extends AppController
     
     protected function setOptions()
     {
-    	$countries = $this->PhoneNumber->getCountries();
+        $countries = $this->PhoneNumber->getCountries();
         $prefixesByCountriesOptions = $this->PhoneNumber->getPrefixesByCountries();
         $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
         $maxCharacterPerSmsOptions = array_combine(
@@ -124,18 +124,18 @@ class ShortCodesController extends AppController
             $this->Session->setFlash(__('ShortCode deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
         }
         $this->Session->setFlash(__('ShortCode was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
         $this->redirect(array('controller' => 'shortCodes',
-                'action' => 'index'
-                ));
+            'action' => 'index'
+            ));
         
     }
     
