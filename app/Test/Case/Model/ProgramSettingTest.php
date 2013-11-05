@@ -15,8 +15,8 @@ class ProgramSettingTestCase extends CakeTestCase
         'port' => 27017,
         'prefix' => '',
         'persistent' => true,
-    );
-
+        );
+    
     
     public function setUp()
     {
@@ -34,7 +34,7 @@ class ProgramSettingTestCase extends CakeTestCase
         
         $options              = array('database' => 'test');
         $this->ProgramSetting = new ProgramSetting($options);
-    
+        
         $this->ProgramSetting->setDataSource('mongo_test');
         
         $this->mongodb =& ConnectionManager::getDataSource($this->ProgramSetting->useDbConfig);
@@ -51,42 +51,42 @@ class ProgramSettingTestCase extends CakeTestCase
         
         parent::tearDown();
     }
-
-
+    
+    
     public function dropData()
     {        
         $this->ProgramSetting->deleteAll(true,false);
     }
-
-  
+    
+    
     public function testGetProgramSetting_notInDatabase()
     {         
         $result = $this->ProgramSetting->find(
-        	'getProgramSetting', 
-        	array(
-        	    'key'=>'shortcode', 
-        	    'value' => '8282'
-        	    )
+            'getProgramSetting', 
+            array(
+                'key'=>'shortcode', 
+                'value' => '8282'
+                )
             );
         
         $this->assertNull($result);    
     }
     
-
+    
     public function testGetProgramSetting_searchNullInDatabase()
     {         
         $result = $this->ProgramSetting->find(
             'getProgramSetting',
             array(
-        	    'key'=>'shortcode', 
-        	    'value' => null
-        	    )
+                'key'=>'shortcode', 
+                'value' => null
+                )
             );
         
         $this->assertNull($result);    
     }
-
-
+    
+    
     public function testSaveProgramSetting()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -95,10 +95,10 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8181');
         $this->assertEqual(1, count($this->ProgramSetting->find('count')));
         $this->assertEqual('8181', $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode')));        
-
+        
     }
     
-
+    
     public function testGetProgramSettings()
     {
         $this->assertEqual(0, count($this->ProgramSetting->getProgramSettings()));
@@ -112,28 +112,28 @@ class ProgramSettingTestCase extends CakeTestCase
             ); 
     }
     
-
+    
     public function testGetProgramTimeNow()
     {
         $this->assertNull($this->ProgramSetting->getProgramTimeNow());        
-
+        
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $this->assertNotNull($this->ProgramSetting->getProgramTimeNow());
-       
+        
     }
     
-
+    
     public function testIsNotPast()
     {
         
         $now = new DateTime('now');
         date_timezone_set($now, timezone_open('Africa/Kampala'));        
         $past = $now->modify('-1 hours');        
-
+        
         $this->assertEqual(
             "The program settings are incomplete. Please specificy the Timezone.", 
             $this->ProgramSetting->isNotPast($past));        
-
+        
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         
         $this->assertFalse($this->ProgramSetting->isNotPast($past));
@@ -148,11 +148,11 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('timezone', 'value2');
         
         $settings = $this->ProgramSetting->find('all');
-
+        
         $this->assertEqual($this->ProgramSetting->getModelVersion(), $settings[0]['ProgramSetting']['model-version']);
     }
     
-
+    
     public function testBeforeValidate_requestAndFeedbackPrioritized()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
@@ -160,12 +160,12 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('request-and-feedback-prioritized', '1');
         
         $settings = $this->ProgramSetting->find('all');
-
+        
         $this->assertEqual('request-and-feedback-prioritized', $settings[2]['ProgramSetting']['key']);
         $this->assertEqual('prioritized', $settings[2]['ProgramSetting']['value']);
     }
-
-
+    
+    
     public function testSaveSettings_ok()
     {
         $settings = array(
@@ -182,19 +182,19 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual('2013-12-02T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-from-date')));
         $this->assertEqual('2013-12-03T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-to-date')));
     }
-
-
+    
+    
     public function testSaveSettings_ok_nolimit()
     {
         $settings = array(
             'shortcode' => '256-8181',
             'credit-type' => 'none',
             );
-
+        
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
         $this->assertEqual('none', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-type')));
     }
-
+    
     public function testSaveSettings_failMissingField()
     {
         $settings = array(
@@ -203,15 +203,15 @@ class ProgramSettingTestCase extends CakeTestCase
             'credit-number' => '2000',
             'credit-from-date' => '02/12/2013',
             );
-
+        
         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
         $this->assertEqual(0, $this->ProgramSetting->find('count'));
         $this->assertEqual(
             $this->ProgramSetting->validationErrors['credit-type'][0],
             'The credit-type field with value outgoing-only require the field credit-to-date.');
     }
-
-
+    
+    
     public function testSaveSettings_failNullField()
     {
         $settings = array(
@@ -221,14 +221,14 @@ class ProgramSettingTestCase extends CakeTestCase
             'credit-from-date' => '02/12/2013',
             'credit-to-date' => null,
             );
-
+        
         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
         $this->assertEqual(0, $this->ProgramSetting->find('count'));
         $this->assertEqual(
             $this->ProgramSetting->validationErrors['credit-to-date'][0],
             'The format of the date has to be 15/02/2013.');
     }
-
+    
     public function testSaveSettings_failDateNonValid()
     {
         $settings = array(
@@ -248,8 +248,8 @@ class ProgramSettingTestCase extends CakeTestCase
             $this->ProgramSetting->validationErrors['credit-to-date'][0],
             'This to date has to be after the from date.');
     }
-
-
+    
+    
     public function testSaveSettings_smsForwardingAllow_ok() 
     {
         $settings = array(
@@ -259,8 +259,8 @@ class ProgramSettingTestCase extends CakeTestCase
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
     }
-
-
+    
+    
     public function testSaveSettings_smsForwardingAllow_fail() 
     {
         $settings = array(
@@ -273,6 +273,6 @@ class ProgramSettingTestCase extends CakeTestCase
             'The sms forwarding value is not valid.',
             $this->ProgramSetting->validationErrors['sms-forwarding-allowed'][0]);
     }
- 
+    
 }
 

@@ -5,10 +5,10 @@ App::uses('ProgramLogsController', 'Controller');
 
 class TestProgramLogsController extends ProgramLogsController
 {
-
+    
     public $autoRender = false;
-
-
+    
+    
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
@@ -20,7 +20,7 @@ class TestProgramLogsController extends ProgramLogsController
 
 class ProgramLogsControllerTestCase extends ControllerTestCase
 {
-     
+    
     var $programData = array(
         0 => array( 
             'Program' => array(
@@ -29,9 +29,9 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
                 'timezone' => 'utc',
                 'database' => 'testdbprogram'
                 )
-        ));
+            ));
     
-        
+    
     public function setUp()
     {
         parent::setUp();
@@ -41,7 +41,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         $this->dropData();
     }
     
-   // we only mock the data to be used so we dont need a dropData() function;    
+    // we only mock the data to be used so we dont need a dropData() function;    
     
     public function tearDown()
     {
@@ -68,22 +68,22 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
             );
         
         $logs->Acl
-            ->expects($this->any())
-            ->method('check')
-            ->will($this->returnValue('true'));
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
         
         $logs->Program
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($this->programData));
-            
+        ->expects($this->once())
+        ->method('find')
+        ->will($this->returnValue($this->programData));
+        
         $logs->Session
-            ->expects($this->any())
-            ->method('read')
-            ->will(
-                $this->returnValue($this->programData[0]['Program']['database'])
-                );
-     
+        ->expects($this->any())
+        ->method('read')
+        ->will(
+            $this->returnValue($this->programData[0]['Program']['database'])
+            );
+        
         return $logs;
     }
     
@@ -98,9 +98,9 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         
         $logs = $this->mock_program_access();
         $logs->LogManager
-            ->expects($this->exactly(2)) #one for the notification window and once for the full page
-            ->method('getLogs')
-            ->will($this->returnValue($programLogs));
+        ->expects($this->exactly(2)) //one for the notification window and once for the full page
+        ->method('getLogs')
+        ->will($this->returnValue($programLogs));
         
         $this->testAction("testurl/programLogs/index");        
     }
@@ -118,11 +118,11 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         
         $logs = $this->mock_program_access();
         $logs->LogManager
-            ->expects($this->once())
-            ->method('getLogs')
-            ->with('testdbprogram', 5)
-            ->will($this->returnValue($programLogs));           
-                
+        ->expects($this->once())
+        ->method('getLogs')
+        ->with('testdbprogram', 5)
+        ->will($this->returnValue($programLogs));           
+        
         $this->testAction("testurl/programLogs/getBackendNotifications.json");
         $this->assertEquals(5, count($this->vars['programLogs']));
     }

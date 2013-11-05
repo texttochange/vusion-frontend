@@ -33,7 +33,7 @@ class ContentVariable extends MongoModel
                 ),
             'validateKeysCount' => array(
                 'rule' => 'validateKeysCount',
-                'message' => 'A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example "key1.key2".'
+                'message' => 'A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example \"key1.key2\".'
                 ),            
             'isUnique' => array(
                 'rule' => 'isUnique',
@@ -57,9 +57,9 @@ class ContentVariable extends MongoModel
     public function validateKeysCount($check) 
     {
         if (count($check['keys']) < 1) {
-            return __('The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".');
+            return __('The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example \"key1.key2\".');
         } else if (count($check['keys']) > 3) {
-            return __('The content variable "%s" has %s keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example "key1.key2".', implode('.', $this->getListKeys($check['keys'])), count($check['keys']));
+            return __('The content variable "%s" has %s keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example \"key1.key2\".', implode('.', $this->getListKeys($check['keys'])), count($check['keys']));
         }
         return true;
     }

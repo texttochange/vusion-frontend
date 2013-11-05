@@ -5,9 +5,9 @@ App::uses('VusionConst', 'Lib');
 
 class Action extends VirtualModel
 {
-    var $name = 'action';
+    var $name    = 'action';
     var $version = '2'; 
-
+    
     var $fields = array(
         'set-condition',
         'type-action');
@@ -75,7 +75,8 @@ class Action extends VirtualModel
                         'reset', 
                         'feedback',
                         'proportional-tagging',
-                        'message-forwarding')),
+                        'url-forwarding',
+                        'sms-forwarding')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -89,25 +90,30 @@ class Action extends VirtualModel
                         'reset' => array(),
                         'feedback' => array('content'),
                         'proportional-tagging' => array('proportional-tags'),
-                        'message-forwarding' => array('forward-url'))),
+                        'url-forwarding' => array('forward-url'),
+                        'sms-forwarding' => array('forward-to', 'forward-content'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
         'enroll' => array(
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldOrValue', 'type-action', 'enrolling', 'delayed-enrolling'),
+                'rule' => array(
+                    'requiredConditionalFieldOrValue',
+                    'type-action',
+                    'enrolling',
+                    'delayed-enrolling'),
                 'message' => 'The enroll field require an enrolling or delayed-enrolling action.',
                 ),
             ),
         'offset-days' => array(
-           'requiredConditional' => array (
+            'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'delayed-enrolling'),
                 'message' => 'The enroll field require an enrolling or delayed-enrolling action.',
                 ),
-           'validSubfield' => array(
+            'validSubfield' => array(
                 'rule' => 'validOffsetDays',
                 'message' => 'noMessage'
-               ),
+                ),
             ),
         'tag' => array(
             'requiredConditional' => array (
@@ -145,7 +151,7 @@ class Action extends VirtualModel
             ),
         'forward-url' => array(            
             'requiredConditional' => array (
-                'rule' => array('requiredConditionalFieldValue', 'type-action', 'message-forwarding'),
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'url-forwarding'),
                 'message' => 'The forwarding field require an url field.',
                 ),
             'validUrlFormat' => array(
@@ -161,9 +167,33 @@ class Action extends VirtualModel
                         '[PROGRAM]')),
                 'message' => 'noMessage',
                 ),
+            ),
+        'forward-to' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The Receiver Tag field require atag.',
+                ),
+            'validTag' => array(
+                'rule' => array('regex', VusionConst::TAG_REGEX),
+                'message' => VusionConst::TAG_FAIL_MESSAGE
+                ),
+            ),
+        'forward-content' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The content field require an SMS Forward action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
             )
         );
-
+    
     
     public $validateOffsetDays = array(
         'days' => array(
@@ -187,8 +217,8 @@ class Action extends VirtualModel
                 )
             )
         );
-
-
+    
+    
     public $validateSubcondition = array(
         'subcondition-field' => array(
             'required' => array(
@@ -209,7 +239,7 @@ class Action extends VirtualModel
                 ),
             ),
         );
-
+    
     
     public $validateSubconditionValues = array(
         'labelled' => array(
@@ -233,8 +263,8 @@ class Action extends VirtualModel
                 ),
             )
         );
-
-
+    
+    
     
     public $validateProportionalTag = array(
         'tag' => array(
@@ -259,15 +289,15 @@ class Action extends VirtualModel
             ),
         );
     
-
+    
     public function trimArray($Input)
     {
         if (!is_array($Input))
             return trim(stripcslashes($Input));
- 
+        
         return array_map(array($this,'TrimArray'), $Input);
     }
-
+    
     
     public function beforeValidate()
     {
@@ -279,18 +309,18 @@ class Action extends VirtualModel
         $this->_setDefault('type-action', null);
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {
-             $this->_setDefault('condition-operator', null);
-             $this->_setDefault('subconditions', array());
-             foreach ($this->data['subconditions'] as &$subconditions) {
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
-                 $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
-             }
+            $this->_setDefault('condition-operator', null);
+            $this->_setDefault('subconditions', array());
+            foreach ($this->data['subconditions'] as &$subconditions) {
+                $this->_setDefaultSubfield($subconditions, 'subcondition-field', null);
+                $this->_setDefaultSubfield($subconditions, 'subcondition-operator', null); 
+                $this->_setDefaultSubfield($subconditions, 'subcondition-parameter', null); 
+            }
         }
         return true;
     }
-
-
+    
+    
     public function validOffsetDays($field, $data)
     {
         if (!isset($data[$field])) {
@@ -302,8 +332,8 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validDays($field, $data)
     {
         if (!isset($data[$field])) {
@@ -317,8 +347,8 @@ class Action extends VirtualModel
         }
         return false;
     }
-
-
+    
+    
     public function validSubconditions($field, $data)
     {
         if (!isset($data[$field])) {
@@ -326,7 +356,7 @@ class Action extends VirtualModel
         }
         $count = 0;
         $validationError = array();
-        foreach($data[$field] as $subcondition) {
+        foreach ($data[$field] as $subcondition) {
             $result = $this->_runValidateRules($subcondition, $this->validateSubcondition);
             if (is_bool($result) && $result) {
                 $result = $this->validSubconditionValue($subcondition);
@@ -341,14 +371,14 @@ class Action extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validProportionalTags($field, $data)
     {
         return $this->validList($field, $data, $this->validateProportionalTag);
     }
-
-
+    
+    
     public function validSubconditionValue($subcondition)
     {
         if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
@@ -362,7 +392,9 @@ class Action extends VirtualModel
                 'subcondition-operator' => array( 
                     __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
         }
-        if (!preg_match($operators[$subcondition['subcondition-operator']]['regex'], $subcondition['subcondition-parameter'])) {
+        $subconditionOperator  =  $subcondition['subcondition-operator'];
+        $subconditionParameter = $subcondition['subcondition-parameter'];
+        if (!preg_match($operators[$subconditionOperator]['regex'], $subconditionParameter)) {
             return array(
                 'subcondition-parameter' => array(
                     $operators[$subcondition['subcondition-operator']]['message']));
@@ -374,33 +406,33 @@ class Action extends VirtualModel
     public function validContentVariable($field, $data)
     {
         if (isset($data[$field])) {
-            preg_match_all(VusionConst::CONTENT_VARIABLE_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
-            foreach($matches as $match) {
+            foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
                     if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
                         return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
                     }
                 }
-                if (!preg_match(VusionConst::CONTENT_VARIABLE_DOMAIN_REGEX, $match['domain'])) {
-                    return __("To be used as customized content, '%s' can only be either 'participant' or 'contentVariable'.", $match['domain']);
+                if (!preg_match(VusionConst::CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX , $match['domain'])) {
+                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {
-                        return VusionConst::CONTENT_VARIABLE_DOMAIN_PARTICIPANT_FAIL;
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
                     }
                 } else if ($match['domain'] == 'contentVariable') {
                     if (isset($match['otherkey'])) {
-                        return VusionConst::CONTENT_VARIABLE_DOMAIN_CONTENTVARIABLE_FAIL;
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
                     }
                 } 
             }
         }
         return true;
     }
-
-
+    
+    
     public function validUrlReplacement($field, $data, $urlReplacement) 
     {
         if (!isset($data[$field])) {
@@ -415,5 +447,6 @@ class Action extends VirtualModel
         }
         return true;
     }
-
+    
+    
 }

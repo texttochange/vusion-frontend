@@ -64,7 +64,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            "To be used as customized content, 'shoe' can only be either 'participant', 'contentVariable', 'context' or 'time'.",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 
@@ -243,7 +243,7 @@ class ActionTestCase extends CakeTestCase
 
     public function testValidateAction_ok_forwarding() {
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -251,28 +251,28 @@ class ActionTestCase extends CakeTestCase
         $this->assertTrue($this->Action->validates());
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[FROM]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
 
          $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/index.php?login=login&message=[MESSAGE]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
 
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/index.php?login=login&password=password&message=[MESSAGE]&other=other');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -282,7 +282,7 @@ class ActionTestCase extends CakeTestCase
     
     public function testValidateAction_fail_forwarding_format() {
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'partner.com/receive_mo.php');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -292,7 +292,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]?origin=[TO]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -302,7 +302,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -315,7 +315,7 @@ class ActionTestCase extends CakeTestCase
 
     public function testValidateAction_fail_forwarding_replace() {        
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[Message]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -325,7 +325,7 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-url'][0]);
         
         $action = array(
-            'type-action' => 'message-forwarding',
+            'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[content]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
@@ -334,6 +334,53 @@ class ActionTestCase extends CakeTestCase
             'The replacement [content] is not allowed.',
             $this->Action->validationErrors['forward-url'][0]);
     }
+    
+    
+    public function testValidateAction_ok_sms_forwarding_dynamic_content() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'my tag',
+            'forward-content' => 'Hello [participant.name]([participant.phone]) from 
+                                  [participant.address] says [context.message] at [time.H]:[time.M]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
 
     
+    public function testValidateAction_fail_sms_forwarding_wrong_customized_content() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'my tag',
+            'forward-content' => 'Hello [participant.name]([participant.phone]) from 
+                                  [participant.address] says [context.message] at [times.H]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            'To be used as customized content, \'times\' can only be either \'participant\', \'contentVariable\', \'context\' or \'time\'.',
+            $this->Action->validationErrors['forward-content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['forward-content']));
+    }
+    
+    
+    public function testValidateAction_fail_sms_forwarding_wrong_fieldmissing() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'my tag',
+            'forward-content' => 'Hello [participant%.name]([participant.phone]) from 
+                                  [participant.address] says [context.message] at [time.H]');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            'To be used as customized content, \'participant%\' can only be composed of letter(s), digit(s) and/or space(s).',
+            $this->Action->validationErrors['forward-content'][0]);
+        $this->assertEqual(
+            1, 
+            count($this->Action->validationErrors['forward-content']));
+    }
+        
 } 

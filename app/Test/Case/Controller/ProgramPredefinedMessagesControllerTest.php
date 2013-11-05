@@ -3,16 +3,16 @@ App::uses('ProgramPredefinedMessagesController', 'Controller');
 
 class TestProgramPredefinedMessagesController extends ProgramPredefinedMessagesController
 {
-
+    
     public $autoRender = false;
-
-
+    
+    
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-
-
+    
+    
 }
 
 
@@ -22,33 +22,33 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
     * Data
     *
     */
-
+    
     var $programData = array(
         0 => array( 
             'Program' => array(
-            'name' => 'Test Name',
-            'url' => 'testurl',
-            'timezone' => 'utc',
-            'database' => 'testdbprogram'
-        )
-     ));
-
-
+                'name' => 'Test Name',
+                'url' => 'testurl',
+                'timezone' => 'utc',
+                'database' => 'testdbprogram'
+                )
+            ));
+    
+    
     public function setUp()
     {
         parent::setUp();
         $this->ProgramPredefinedMessages = new ProgramPredefinedMessagesController();
         $this->dropData();
     }
-
-
+    
+    
     protected function dropData()
     {
         $this->instanciatePredefinedMessageModel();
         $this->PredefinedMessage->deleteAll(true, false);
     }
-
-
+    
+    
     protected function instanciatePredefinedMessageModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
@@ -56,14 +56,14 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         $this->PredefinedMessage = new PredefinedMessage($options);
     }
     
-
+    
     public function tearDown()
     {
         $this->dropData();
         unset($this->PredefinedMessage);
         parent::tearDown();
     }
-
+    
     
     public function mock_program_access()
     {
@@ -75,48 +75,48 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
                     'Auth' => array()
                     ),
                 'models' => array(
-                   'Program' => array('find', 'count'),
-                   'Group' => array()
-                   )
+                    'Program' => array('find', 'count'),
+                    'Group' => array()
+                    )
                 )
             );
-
+        
         $predefinedMessages->Acl
-            ->expects($this->any())
-            ->method('check')
-            ->will($this->returnValue('true'));
-            
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
         $predefinedMessages->Program
-            ->expects($this->any())
-            ->method('find')
-            ->will($this->returnValue($this->programData));
-
+        ->expects($this->any())
+        ->method('find')
+        ->will($this->returnValue($this->programData));
+        
         $predefinedMessages->Session
-            ->expects($this->any())
-            ->method('read')
-            ->will(
-                $this->returnValue($this->programData[0]['Program']['database'])
-                );
- 
+        ->expects($this->any())
+        ->method('read')
+        ->will(
+            $this->returnValue($this->programData[0]['Program']['database'])
+            );
+        
         return $predefinedMessages;
-
+        
     }
     
-/**
- * Test methods
- *
- */    
+    /**
+    * Test methods
+    *
+    */    
     
     public function testIndex()
     {
         $predefinedMessages = $this->mock_program_access();  
-
+        
         $predefinedMessage =  array(
             'PredefinedMessage' => array(
                 'name' => 'my message',
                 'content' => 'welcome!!!!'
-             )
-        );
+                )
+            );
         $this->PredefinedMessage->create();
         $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
         
@@ -128,13 +128,13 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
     public function testAdd()
     {
         $predefinedMessages = $this->mock_program_access();  
-
+        
         $predefinedMessage =  array(
             'PredefinedMessage' => array(
                 'name' => 'my message',
                 'content' => 'Hello!!!!'
-             )
-        );
+                )
+            );
         $this->testAction(
             "/testurl/programPredefinedMessages/add", 
             array(
@@ -149,13 +149,13 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
     public function testEdit()
     {
         $predefinedMessages = $this->mock_program_access();  
-
+        
         $predefinedMessage =  array(
             'PredefinedMessage' => array(
                 'name' => 'my message',
                 'content' => 'welcome!!!!'
-             )
-        );
+                )
+            );
         $this->PredefinedMessage->create();
         $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
         
@@ -174,22 +174,22 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         $this->PredefinedMessage->id = $savedMessage['PredefinedMessage']['_id']."";
         $predefinedMessage = $this->PredefinedMessage->read(); 
         $this->assertEquals(
-           'Hello world',
+            'Hello world',
             $predefinedMessage['PredefinedMessage']['content']
-        );
+            );
     }
     
     
     public function testDelete()
     {
         $predefinedMessages = $this->mock_program_access();  
-
+        
         $predefinedMessage =  array(
             'PredefinedMessage' => array(
                 'name' => 'my message',
                 'content' => 'welcome!!!!'
-             )
-        );
+                )
+            );
         $this->PredefinedMessage->create();
         $savedMessage = $this->PredefinedMessage->save($predefinedMessage);
         

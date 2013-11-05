@@ -7,18 +7,18 @@ App::uses('ValidationHelper', 'Lib');
 
 class ProgramSetting extends MongoModel
 {
-
-
+    
+    
     var $specific    = true;
     var $name        = 'ProgramSetting';
     var $useDbConfig = 'mongo';
-
-
+    
+    
     function getModelVersion()
     {
         return "2";
     }
-
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -27,7 +27,7 @@ class ProgramSetting extends MongoModel
             'value'
             );
     }
-
+    
     
     var $settings = array(
         'shortcode',
@@ -47,7 +47,7 @@ class ProgramSetting extends MongoModel
         'credit-to-date',
         'sms-forwarding-allowed',
         );
-
+    
     public $validateSettings = array(
         'credit-type' => array(
             'required' => array(
@@ -107,16 +107,16 @@ class ProgramSetting extends MongoModel
                 )
             )
         );
-
-
+    
+    
     public $findMethods =  array(
         'programSetting' => true,
         'count' => true,
         'hasProgramSetting' => true,
         'getProgramSetting' => true,
         );
-
-
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
@@ -124,30 +124,30 @@ class ProgramSetting extends MongoModel
         $this->DialogueHelper = new DialogueHelper();
         $this->ValidationHelper = new ValidationHelper();
     }
-
-
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
-
+        
         if (!in_array($this->data['ProgramSetting']['key'], $this->settings)) {
             return false;
         }
-
+        
         if ($this->data['ProgramSetting']['value'] == '') {
             $this->data['ProgramSetting']['value'] = null;
         }   
-
+        
         if ($this->data['ProgramSetting']['key'] == 'unmatching-answer-remove-reminder') {
             $this->data['ProgramSetting']['value'] = intval($this->data['ProgramSetting']['value']);
         }
         if ($this->data['ProgramSetting']['key'] == 'request-and-feedback-prioritized'
-                and $this->data['ProgramSetting']['value'] == '1') {
-            $this->data['ProgramSetting']['value'] = 'prioritized';
-        }
-
+            and $this->data['ProgramSetting']['value'] == '1') {
+        $this->data['ProgramSetting']['value'] = 'prioritized';
+            }
+            
     }
-
+    
     
     protected function _findProgramSetting($state, $query, $results = array())
     {
@@ -157,7 +157,7 @@ class ProgramSetting extends MongoModel
         }
         return $results;
     }
-
+    
     
     protected function _findHasProgramSetting($state, $query, $results = array())
     {
@@ -169,7 +169,7 @@ class ProgramSetting extends MongoModel
         return $results;
     }
     
-
+    
     protected function _findGetProgramSetting($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -178,10 +178,10 @@ class ProgramSetting extends MongoModel
         }
         if (isset($results[0]))
             return $results[0]['ProgramSetting']['value'];
-    	else
-            return null;
+        else
+        return null;
     }
-
+    
     
     public function saveProgramSetting($key, $value) 
     {
@@ -198,8 +198,8 @@ class ProgramSetting extends MongoModel
                 )
             );
     }
-
-
+    
+    
     public function saveProgramSettings($settings)
     {
         $settings = $this->_runBeforeValidate($settings);
@@ -213,8 +213,8 @@ class ProgramSetting extends MongoModel
         }
         return true;
     }
-
-
+    
+    
     public function getProgramSettings()
     {
         $rawSettings = $this->find('all');
@@ -224,8 +224,8 @@ class ProgramSetting extends MongoModel
         }
         return $settings;
     }
-
-
+    
+    
     public function isNotPast($time)
     {      
         $programNow = $this->getProgramTimeNow();
@@ -235,8 +235,8 @@ class ProgramSetting extends MongoModel
             return false;
         return true;
     }
-
-
+    
+    
     public function getProgramTimeNow()
     {
         $now = new DateTime('now');
@@ -247,8 +247,8 @@ class ProgramSetting extends MongoModel
         date_timezone_set($now, timezone_open($programTimezone));        
         return $now;       
     }
-
-
+    
+    
     public function hasRequired()
     {
         $shortCode = $this->find('getProgramSetting', array('key'=>'shortcode'));
@@ -258,8 +258,8 @@ class ProgramSetting extends MongoModel
         }
         return false;
     }
-
-
+    
+    
     ## function required because the Setting model has a bad design: key/value
     ## This key/value design to be replace in the future but in the mean time
     ## one need a validation function to be run before.
@@ -267,14 +267,14 @@ class ProgramSetting extends MongoModel
     {
         return $this->ValidationHelper->runValidationRules($data, $validationRules);
     }
-
-
+    
+    
     protected function _runBeforeValidate($settings) 
     {
         if (!isset($settings['credit-type']) || $settings['credit-type'] == null) {
             $settings['credit-type'] = 'none';
         }
-
+        
         if (isset($settings['credit-from-date'])) {
             $settings['credit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-from-date']);
         }
@@ -288,6 +288,6 @@ class ProgramSetting extends MongoModel
         }
         return $settings;
     }
-
-
+    
+    
 }

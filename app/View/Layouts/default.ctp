@@ -39,6 +39,7 @@
 		echo $this->Html->script('superfish-1.7.4/supersubs.js');
 		## general
 		echo $this->Html->script('datejs/date.js');
+		echo $this->Html->script('xregexp-2.0.0/xregexp-all.js');
 		echo $this->Html->script('moment.js');
 		//echo $this->Html->script('chosen.jquery.min.js');
 		echo $this->Html->script('chosen-1.0.jquery.min.js');
