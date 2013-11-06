@@ -6,3 +6,9 @@ echo $this->Form->input('User.email', array('class'=>'ttc-login-input'));
 echo $this->Form->input('User.password', array('class'=>'ttc-login-input'));
 echo $this->Form->end(__('Login',true));
 ?>
+<div class="forget-password">
+    <?php 
+        echo $this->Html->link(__('forgot your password'),
+            array('action' => 'resetPassword'));
+    ?>
+</div>

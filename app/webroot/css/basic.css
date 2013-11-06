@@ -1361,3 +1361,14 @@ display: inline;
 	padding-left: 341px; 
 	top: 22px
 }
+
+.forget-password {
+	float: right;
+	margin-top: -44px;
+	padding-right: 35px;
+}
+
+.forget-password a {
+	font-weight: normal;
+	font-size: 12px;
+}

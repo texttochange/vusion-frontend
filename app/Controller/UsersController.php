@@ -3,6 +3,7 @@
 App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
+App::import('Vendor', 'captcha/Captcha');
 
 class UsersController extends AppController
 {
@@ -13,8 +14,9 @@ class UsersController extends AppController
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout');
+        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha');
         //$this->Auth->allow('*');
+        $this->Captcha = new Captcha();
     }
     
     
@@ -286,6 +288,46 @@ class UsersController extends AppController
         }
     }
     
+    /*public function resetPassword(email=null)
+    {      
+        $this->User->email = $email;
+        if (!$this->User->exists()) {
+            throw new NotFoundException(__());
+        }
+        
+    }*/
+    
+    public function captcha()
+    {
+        $this->Captcha->show_captcha();
+    }
+    public function resetPassword($email = null)
+    {
+        
+		//$captcha = new captcha();
+		//$captcha->show_captcha();
+		/*
+		if ($this->request->is('post')) {
+		//$this->User->email = $email;
+		//print_r($this->User->find('all'));
+		//print_r($this->User->find('all'));
+		$account=$this->User->findByEmail($email);
+		if (!isset($account['User']['email'])) {
+		$this->Session->setFlash(__('We Don\'t have such and email on record.'));
+		//$this->redirect('/');		    
+		}
+		}*/
+	}
+	
+	
+	
+ 
+    
+    
+    
+    
+    
+    
     
     public function initDB()
     {
@@ -325,6 +367,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
+            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -360,6 +403,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
+            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -394,6 +438,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
+            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -419,6 +464,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
+            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

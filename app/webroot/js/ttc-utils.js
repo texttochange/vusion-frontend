@@ -624,3 +624,25 @@ function getParameterByName(url, name){
     results = regex.exec(url);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, ""));
 }
+
+function captchaReload(){
+	$('#captchaReload').click(function () {
+			var $captcha = $('#imageCaptcha');
+			$captcha.attr('src', $captcha.attr('src')+'?'+Math.random());
+			return false;
+	});
+}
+/*
+function checkEmailOnResetPassword(){
+	var emailVal = $('#emailresetpassword').val();
+	$.ajax({
+            url: url,
+            type: "POST",
+            async: false,
+            data: {'email': emailVal},
+            inputName: $(keywordInput).attr('name'),
+            success: validateKeywordReply,
+            timeout: 1000,
+            error: vusionAjaxError,
+    });
+}*/
