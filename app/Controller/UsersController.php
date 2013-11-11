@@ -7,7 +7,7 @@ App::import('Vendor', 'captcha/Captcha');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils');
+    var $components = array('LocalizeUtils', 'Ticket', 'RequestHandler');
     var $uses = array('User');
     
     public function beforeFilter()
@@ -288,14 +288,6 @@ class UsersController extends AppController
         }
     }
     
-    /*public function resetPassword(email=null)
-    {      
-        $this->User->email = $email;
-        if (!$this->User->exists()) {
-            throw new NotFoundException(__());
-        }
-        
-    }*/
     
     public function captcha()
     {
@@ -303,7 +295,9 @@ class UsersController extends AppController
     }
     public function resetPassword($email = null)
     {
-        
+        $token = md5 (date('mdy').rand(4000000, 4999999));
+        $message = $this->Ticket->createMessage($token);
+        $this->Ticket->userEmail('markphi119@gmail.com', 'maxmass', 'my boy');
 		//$captcha = new captcha();
 		//$captcha->show_captcha();
 		/*
