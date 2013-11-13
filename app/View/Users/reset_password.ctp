@@ -14,7 +14,7 @@
     echo '<p> <a href="#" id="captchaReload"> can\'t read? Reload</a></p>';
     $this->Js->get('#captchaReload')->event('click', 'captchaReload();');
     echo '<p>Enter security code shown above:</p>';
-    echo $this->Form->input('User.captcha', array('autocomplete'=>'off', 'label'=>false));
+    echo $this->Form->input('User.captcha', array('autocomplete'=>'off', 'label'=>false, 'id'=>'captchaField', 'name'=>'captchaField'));
     echo $this->Form->submit(__('Reset Password', true));
     echo $this->Form->end();
 ?>

@@ -3,17 +3,20 @@ App::uses('Component', 'Controller');
 App::uses('User', 'Model');
 App::uses('CakeEmail', 'Network/Email');
 
+
 class TicketComponent extends Component
 {
+    var $components = array('Email');
     var $sitename   = 'http://vusion.texttochange.org'; 
     //var $linkdomain = 'vusion.texttochange.org';
     var $linkdomain = '192.168.0.160:81';
-    var $components = array('Email');
+   
     
     
     public function initialize(Controller $controller)
     {
         parent::startup($controller);
+        CakeEmail::transport();
         $this->Controller = $controller;
         
         
@@ -52,13 +55,15 @@ class TicketComponent extends Component
 	}
  
 	
-	public function userEmail($email, $userName, $message)
+	public function userEmail($userEmail, $userName, $message)
 	{  
-	    $this->Email = new CakeEmail();
-	    $this->Email->from(array('mssembajjwe@texttochange.com' => 'vusion'));
-	    $this->Email->to($email);
-	    $this->Email->subject('Message from '.$this->sitename.' for '.$userName);
-	    $this->Email->send($message);
+	    $email = new CakeEmail();
+	    $email->config('default');
+	    $email->from(array('mssembajjwe@texttochange.com' => 'vusion.com'));
+	    $email->to($userEmail);
+	    $email->subject('Message from '.$this->sitename.' for '.$userName);
+	    
+	    $email->send($message);
 	    
 	    /*
 	    $to = $email;

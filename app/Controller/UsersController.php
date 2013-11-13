@@ -149,6 +149,7 @@ class UsersController extends AppController
         } 
         
         if ($this->request->is('post') || $this->request->is('put')) {
+            print_r($this->Session);
             if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
@@ -297,9 +298,22 @@ class UsersController extends AppController
     {
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $message = $this->Ticket->createMessage($token);
-        $this->Ticket->userEmail('markphi119@gmail.com', 'maxmass', 'my boy');
-		//$captcha = new captcha();
-		//$captcha->show_captcha();
+        //$this->Ticket->userEmail('markphi119@gmail.com', 'maxmass', 'Hello');
+		
+		if ($this->request->is('post') || $this->request->is('put')) {
+		   // print_r($this->request->data['captchaField']);
+		    print_r('..................................................');
+		    //$this->Session->write('captcha', $_SESSION['captcha']);
+		    print_r($this->Session->check('captcha'));
+		    if($this->request->data['captchaField'] == $this->Session->read('captcha')) {
+		        $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
+		            'default',
+		            array('class' => "message failure")
+		            );
+		        $this->Session->destroy('captcha');
+		    }
+		}
+		
 		/*
 		if ($this->request->is('post')) {
 		//$this->User->email = $email;

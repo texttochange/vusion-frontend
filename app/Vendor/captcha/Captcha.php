@@ -10,7 +10,8 @@ class Captcha {
 		$imgpath  = '../Vendor/captcha/images/'.$imgname;
 		$captchatext = md5(time());
 		$captchatext = substr($captchatext, 0, 5);
-		$_SESSION['captcha']=$captchatext;
+		$_SESSION['captcha'] = $captchatext;
+		//$this->Session->write('captcha', $_SESSION['captcha']);
 		if (file_exists($imgpath) ){
 			$im = imagecreatefromjpeg($imgpath); 
 			$grey = imagecolorallocate($im, 128, 128, 128);
