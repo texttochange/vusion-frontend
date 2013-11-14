@@ -9,7 +9,7 @@
         'text', array(
             'label' => 'Email',
             'id' => 'emailresetpassword',
-            'name' => 'email'));
+            'name' => 'emailEnter'));
     echo $this->Html->image($this->Html->url(array('controller'=>'users', 'action'=>'captcha'), true), array('id'=>'imageCaptcha'));
     echo '<p> <a href="#" id="captchaReload"> can\'t read? Reload</a></p>';
     $this->Js->get('#captchaReload')->event('click', 'captchaReload();');

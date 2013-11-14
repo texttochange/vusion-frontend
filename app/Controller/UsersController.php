@@ -302,32 +302,39 @@ class UsersController extends AppController
     }
     
     
-    public function resetPassword($email = null)
+    public function resetPassword()
     {
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $message = $this->Ticket->createMessage($token);
-        //$this->Ticket->userEmail('markphi119@gmail.com', 'maxmass', 'Hello');
+        // print_r($message);
+        // $this->Ticket->sendEmail('markphi119@gmail.com', 'maxmass', 'Hello');
 		
-		if ($this->request->is('post') || $this->request->is('put')) {
-		    if($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
-		        $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
-		            'default',
-		            array('class' => "message failure")
-		            );
+        if ($this->request->is('post') || $this->request->is('put')) {
+		    $email   = $this->request->data['emailEnter'];
+		    if(!$email) {
+		        $this->Session->setFlash(__('Please Enter Email address'));
+		    } else {
+		        $account = $this->User->find('all', array(
+		            'conditions' => array('email' => $email)
+		            ));
+		        if (!$account) {
+		            $this->Session->setFlash(__('We Don\'t have '.$email.' email on record.'));
+		        } else {
+		            if($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
+		                $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
+		                    'default',
+		                    array('class' => "message failure")
+		                    );
+		            }
+		            $this->Session->setFlash(__('An Email has been sent to your email account.'),
+		                'default',
+		                array('class'=>'message success')
+		                );
+		        }
+		        
 		    }
+		    
 		}
-		
-		/*
-		if ($this->request->is('post')) {
-		//$this->User->email = $email;
-		//print_r($this->User->find('all'));
-		//print_r($this->User->find('all'));
-		$account=$this->User->findByEmail($email);
-		if (!isset($account['User']['email'])) {
-		$this->Session->setFlash(__('We Don\'t have such and email on record.'));
-		//$this->redirect('/');		    
-		}
-		}*/
 	}
 	
 	
