@@ -3,11 +3,10 @@
 App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
-App::import('Vendor', 'captcha/Captcha');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils', 'Ticket', 'RequestHandler');
+    var $components = array('LocalizeUtils', 'Ticket', 'RequestHandler', 'Captcha');
     var $uses = array('User');
     
     public function beforeFilter()
@@ -16,7 +15,6 @@ class UsersController extends AppController
         //For initial creation of the admin users uncomment the line below
         $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha');
         //$this->Auth->allow('*');
-        $this->Captcha = new Captcha();
     }
     
     
@@ -149,7 +147,6 @@ class UsersController extends AppController
         } 
         
         if ($this->request->is('post') || $this->request->is('put')) {
-            print_r($this->Session);
             if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
@@ -292,8 +289,19 @@ class UsersController extends AppController
     
     public function captcha()
     {
-        $this->Captcha->show_captcha();
+        $this->autoRender = false;
+        $this->layout='ajax';
+        if(!isset($this->Captcha))        { 
+            $this->Captcha = $this->Components->load('Captcha', array(
+                'width' => 150,
+                'height' => 50,
+                'theme' => 'default', 
+                )); 
+        }
+        $this->Captcha->create();
     }
+    
+    
     public function resetPassword($email = null)
     {
         $token = md5 (date('mdy').rand(4000000, 4999999));
@@ -301,16 +309,11 @@ class UsersController extends AppController
         //$this->Ticket->userEmail('markphi119@gmail.com', 'maxmass', 'Hello');
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
-		   // print_r($this->request->data['captchaField']);
-		    print_r('..................................................');
-		    //$this->Session->write('captcha', $_SESSION['captcha']);
-		    print_r($this->Session->check('captcha'));
-		    if($this->request->data['captchaField'] == $this->Session->read('captcha')) {
+		    if($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
 		        $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
 		            'default',
 		            array('class' => "message failure")
 		            );
-		        $this->Session->destroy('captcha');
 		    }
 		}
 		
