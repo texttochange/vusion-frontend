@@ -431,18 +431,30 @@ class ContentVariableTable extends MongoModel
         if (isset($option['skipKeysValues'])) {
             return true;
         }
-        $contentVariables = $this->getAllKeysValue($this->data['ContentVariableTable']['columns']);
-        //A a quick implementation we remove all ContentVariable keys/value of this table before saving them again
-        $this->ContentVariable->deleteAll(array('table' => $this->id), false);
+        $contentVariables = $this->getAllKeysValue($this->data['ContentVariableTable']['columns']); 
+        $currentContentVariables = array();
         foreach ($contentVariables as $contentVariable) {
+            $this->ContentVariable->create();
+            $previousContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => $contentVariable['keys'])));
+            if (isset($previousContentVariable[0]['ContentVariable'])) {
+                #it's an update
+                $this->ContentVariable->id = $previousContentVariable[0]['ContentVariable']['_id'].'';
+                ## Update don't return the id
+                $currentContentVariable[] = $previousContentVariable[0]['ContentVariable']['_id'];
+            } 
             $contentVariable['keys'] = $this->ContentVariable->setListKeys($contentVariable['keys']);
             $contentVariable['table'] = $this->id;
-            $this->ContentVariable->create();
             $saved = $this->ContentVariable->save($contentVariable, false);
+            ## save return the id
+            if (isset($saved['ContentVariable']['_id'])) {
+                    $currentContentVariable[] = $saved['ContentVariable']['_id'].'';
+            }
         }
+        #remove not current ones
+        $this->ContentVariable->deleteAll(
+            array('table' => $this->id, 'id' => array('$nin' => $currentContentVariable)), false);
         return true;
     }
-
 
     function deleteTableAndValues($id) 
     {
