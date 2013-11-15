@@ -58,7 +58,7 @@ class TicketComponent extends Component
 	public function sendEmail($userEmail, $userName, $message)
 	{  
 	    $email = new CakeEmail();
-	    $email->config('default');
+	    $email->config('smtp2');
 	    $email->from(array('mssembajjwe@texttochange.com' => 'vusion.com'));
 	    $email->to($userEmail);
 	    $email->subject('Message from '.$this->sitename.' for '.$userName);
