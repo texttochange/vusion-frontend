@@ -6,14 +6,14 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils', 'Ticket', 'RequestHandler', 'Captcha');
+    var $components = array('LocalizeUtils', 'Ticket', 'Captcha');
     var $uses = array('User');
     
     public function beforeFilter()
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha');
+        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha', 'useTicket');
         //$this->Auth->allow('*');
     }
     
@@ -306,8 +306,10 @@ class UsersController extends AppController
     {
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $message = $this->Ticket->createMessage($token);
-        // print_r($message);
-        // $this->Ticket->sendEmail('markphi119@gmail.com', 'maxmass', 'Hello');
+        //print_r($token);
+         print_r($message);
+         
+        //$this->Ticket->sendEmail('markphi119@gmail.com', 'maxmass', 'Hello');
 		
         if ($this->request->is('post') || $this->request->is('put')) {
 		    $email   = $this->request->data['emailEnter'];
@@ -337,16 +339,29 @@ class UsersController extends AppController
 		}
 	}
 	
-	
-	
+	/*
+	public function useTicket($hash){
+	    print_r($hash);
+		
+		$results=$this->Ticketmaster->checkTicket($hash);
  
-    
-    
-    
-    
-    
-    
-    
+		if($results){
+			//now pull up mine IF still present
+			$passTicket=$this->User->findByEmail($results['Ticket']['data']);
+ 
+			$this->Ticketmaster->voidTicket($hash);
+			$this->Session->write('tokenreset',$passTicket['User']['id']);
+			$this->Session->setFlash('Enter your new password below');
+			//$this->redirect('/users/newpassword/'.$passTicket['User']['id']);
+		}else{
+			$this->Session->setFlash('Your ticket is lost or expired.');
+			//$this->redirect('/');
+		}
+ 
+	}
+	*/
+	
+	
     public function initDB()
     {
         echo "Acl Start</br>";

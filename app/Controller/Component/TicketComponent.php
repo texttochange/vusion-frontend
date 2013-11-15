@@ -47,7 +47,7 @@ class TicketComponent extends Component
 		$ms .='<body>Your email has been used in a password reset request at '.$this->sitename.'<br/>';
 		$ms .='If you did not initiate this request, then ignore this message.<br/>';
 		$ms .='  Click the link below into your browser to reset your password.<br/>';
-		$ms .='<a href="http://'.$this->linkdomain.'/users/useticket/'.$token.'">Reset Password</a>';
+		$ms .='<a href="http://'.$this->linkdomain.'/users/useTicket/'.$token.'">Reset Password</a>';
 		$ms .='</body></html>';
 		$ms  = wordwrap($ms,70);
 		return $ms;
@@ -55,7 +55,7 @@ class TicketComponent extends Component
 	}
  
 	
-	public function userEmail($userEmail, $userName, $message)
+	public function sendEmail($userEmail, $userName, $message)
 	{  
 	    $email = new CakeEmail();
 	    $email->config('default');
