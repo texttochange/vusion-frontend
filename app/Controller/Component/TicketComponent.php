@@ -33,14 +33,8 @@ class TicketComponent extends Component
             $this->redisTicketPrefix = 'vusion:passwordreset';
         }
     }
-    
-    
-    
-    protected function _getTicketKey($userId, $hash)
-    {
-        return $this->redisTicketPrefix.':'.$userId.':'.$hash;
-    }
-    
+
+
 	public function createMessage($token)
 	{ 
 		$ms='<html><head><title>Password Reset Request</title></head>';
@@ -58,46 +52,33 @@ class TicketComponent extends Component
 	public function sendEmail($userEmail, $userName, $message)
 	{  
 	    $email = new CakeEmail();
-	    $email->config('smtp2');
-	    $email->from(array('mssembajjwe@texttochange.com' => 'vusion.com'));
+	    $email->config('default');
+	    $email->from(array('admin@vusion.texttochange.org' => 'vusion.com'));
 	    $email->to($userEmail);
 	    $email->subject('Message from '.$this->sitename.' for '.$userName);
-	    
 	    $email->send($message);
-	    
-	    /*
-	    $to = $email;
-	    $subject = 'Message from '.$this->sitename.' for '.$userName;
-	    
-	    
-	    $headers  = 'MIME-Version: 1.0' . "\r\n";
-	    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-	    $headers .= "From: ".$this->sitename." <noreply@".$this->linkdomain.">\n";
-	    //$headers .= "Cc: mssembajjwe@texttochange.com"."\r\n";
-	    $headers .= 'X-Sender: <noreply@'.$this->linkdomain.'>\n';
-	    $headers .= 'X-Mailer: PHP\n';
-	    //mail('markphi119@gmail.com', 'My subject', 'hi kkl');
-	    //mail($to, $subject, $message, $headers); 
-	    if(mail($to, $subject, $message, $headers)) {
-	    echo "mail sent";
-	    } else {
-	    echo "mail not sent";
-	    }
-	    */
 	}
 	
+	
+	protected function _getTicketKey($hash)
+    {
+        return $this->redisTicketPrefix.':'.$hash;
+    }
+    
+    
 	public function checkTicket($hash)
 	{
-		$this->purgeTickets();
-		$ret=false;
-		$tick=$this->controller->Ticket->findByHash($hash);
- 
-		if(empty($tick)){
-			//no more ticket			
-		}else{
-			$ret=$tick;
-		}
-		return $ret;
+		$result=false;
+		$ticketKey = $this->_getTicketKey($hash);
+		$ticket = $this->redis->get($ticketKey);
+		
+		if (empty($ticket)) {
+		    $result = $hash;   
+		    $this->redis->setex($ticketKey, 1000, $hash);
+		} 
+		
+		return $result;
 	}
+	
 }
 ?>
