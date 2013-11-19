@@ -371,6 +371,7 @@ class UsersController extends AppController
 	        } else {
 	            $user['User']['password'] = $this->request->data['newPassword'];
 	            if ($this->User->save($user)) {
+	                $this->Session->delete('user_id');
 	                $this->Session->setFlash(__('Password changed successfully.'),
 	                    'default',
 	                    array('class'=>'message success')
