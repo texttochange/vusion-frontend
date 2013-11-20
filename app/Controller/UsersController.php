@@ -328,11 +328,12 @@ class UsersController extends AppController
 		            $token = md5 (date('mdy').rand(4000000, 4999999));
 		            $message = $this->Ticket->createMessage($token);
 		            print_r($message);
-		            //$this->Ticket->sendEmail('markphi119@gmail.com', 'maxmass', $message);
+		            //$this->Ticket->sendEmail($email, $userName, $message);
 		            $this->Session->setFlash(__('An Email has been sent to your email account.'),
 		                'default',
 		                array('class'=>'message success')
 		                );
+		            $this->redirect('/');
 		        }
 		        
 		    }

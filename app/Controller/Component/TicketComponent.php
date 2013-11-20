@@ -36,16 +36,16 @@ class TicketComponent extends Component
 
 
 	public function createMessage($token)
-	{ 
-		$ms='<html><head><title>Password Reset Request</title></head>';
-		$ms .='<body>Your email has been used in a password reset request at '.$this->sitename.'<br/>';
-		$ms .='If you did not initiate this request, then ignore this message.<br/>';
-		$ms .='  Click the link below into your browser to reset your password.<br/>';
-		$ms .='<a href="http://'.$this->linkdomain.'/users/useTicket/'.$token.'">Reset Password</a>';
-		$ms .='</body></html>';
+	{   
+		$ms  = '<html><head><title>Password Reset Request</title></head>';
+		$ms .= '<body>Your email has been used in a password reset request at '.$this->sitename.'<br/>';
+		$ms .= 'If you did not initiate this request, then ignore this message.<br/>';
+		$ms .= '  Click the link below into your browser to reset your password.<br/>';
+		$ms .= '<a href="http://'.$this->linkdomain.'/users/useTicket/'.$token.'">Reset Password</a>';
+		$ms .= '</body></html>';
 		$ms  = wordwrap($ms,70);
+		
 		return $ms;
- 
 	}
  
 	
@@ -74,7 +74,7 @@ class TicketComponent extends Component
 		
 		if (empty($ticket)) {
 		    $result = $hash;   
-		    $this->redis->setex($ticketKey, 1000, $hash);
+		    $this->redis->setex($ticketKey, 1, $hash);
 		} 
 		
 		return $result;
