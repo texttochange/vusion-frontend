@@ -322,6 +322,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
             $this->Acl->allow($Group, 'controllers/Templates');
+            $this->Acl->allow($Group, 'controllers/CreditViewer');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');

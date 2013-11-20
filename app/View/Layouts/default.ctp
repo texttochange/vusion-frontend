@@ -101,7 +101,9 @@
 							array('class' => 'ttc-link-header'));
 			}
 			echo $this->AclLink->generateButton(
-			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header')); 
+			    __('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
+			echo $this->AclLink->generateButton(
+			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header'));
 			?>
 			</div> 
 		 </div>    
