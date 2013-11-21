@@ -326,6 +326,7 @@ class UsersController extends AppController
 		            $this->Session->write('user_id',$userId);
 		            
 		            $token = md5 (date('mdy').rand(4000000, 4999999));
+		            $this->Ticket->saveToken($token);
 		            $message = $this->Ticket->createMessage($token);
 		            print_r($message);
 		            //$this->Ticket->sendEmail($email, $userName, $message);
@@ -333,7 +334,7 @@ class UsersController extends AppController
 		                'default',
 		                array('class'=>'message success')
 		                );
-		            $this->redirect('/');
+		            //$this->redirect('/');
 		        }
 		        
 		    }

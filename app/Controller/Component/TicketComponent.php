@@ -66,15 +66,21 @@ class TicketComponent extends Component
     }
     
     
+    public function saveToken($token)
+    {
+        $ticketKey = $this->_getTicketKey($token);
+        $this->redis->setex($ticketKey, 10, $token);
+    }
+    
+    
 	public function checkTicket($hash)
 	{
-		$result=false;
+		$result = null;
 		$ticketKey = $this->_getTicketKey($hash);
 		$ticket = $this->redis->get($ticketKey);
 		
-		if (empty($ticket)) {
-		    $result = $hash;   
-		    $this->redis->setex($ticketKey, 1, $hash);
+		if (!empty($ticket)) {
+		    $result = $hash;
 		} 
 		
 		return $result;
