@@ -320,7 +320,7 @@ class UsersController extends AppController
 		                    'default',
 		                    array('class' => "message failure")
 		                    );
-		            }
+		            } else {
 		            $userName = $account[0]['User']['username'];
 		            $userId = $account[0]['User']['id'];
 		            $this->Session->write('user_id',$userId);
@@ -335,6 +335,7 @@ class UsersController extends AppController
 		                array('class'=>'message success')
 		                );
 		            //$this->redirect('/');
+		            }
 		        }
 		        
 		    }
@@ -389,9 +390,7 @@ class UsersController extends AppController
 	    }
 	    
 	}
-	
-	
-	
+		
 	
     public function initDB()
     {
