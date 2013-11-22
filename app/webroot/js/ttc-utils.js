@@ -627,8 +627,9 @@ function getParameterByName(url, name){
 
 function captchaReload(){
 	$('#captchaReload').click(function () {
-			var $captcha = $('#imageCaptcha');
-			$captcha.attr('src', $captcha.attr('src')+'?'+Math.random());
+			var captcha = $('#imageCaptcha');
+			var source = window.captchaSource;
+			captcha.attr('src', source+'?'+Math.random());
 			return false;
 	});
 }

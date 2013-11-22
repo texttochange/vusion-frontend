@@ -14,6 +14,10 @@
     echo $this->Html->image($this->Html->url(
         array('controller'=>'users', 'action'=>'captcha'), true),
         array('id'=>'imageCaptcha')).' <a href="#" id="captchaReload" class>  can\'t read, get another word</a>';
+    $this->Js->get('document')->event('ready', '
+        var captchaSource = $("#imageCaptcha").attr("src");
+        window.captchaSource = captchaSource;
+        ');
     $this->Js->get('#captchaReload')->event('click', 'captchaReload();');
     echo '</div>';
     echo $this->Form->input('User.captcha', array('autocomplete'=>'off', 'label'=>'Enter security code shown above:', 'id'=>'captchaField', 'name'=>'captchaField'));
