@@ -3,10 +3,10 @@ App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
-App::uses('TicketComponent', 'Controller/Component');
+App::uses('ResetPasswordTicketComponent', 'Controller/Component');
 App::uses('ScriptMaker', 'Lib');
 
-class TestTicketComponentController extends Controller
+class TestResetPasswordTicketComponentController extends Controller
 {
     var $components = array('Ticket');
 
@@ -21,22 +21,22 @@ class TestTicketComponentController extends Controller
 }
 
 
-class TicketComponentTest extends CakeTestCase
+class ResetPasswordTicketComponentTest extends CakeTestCase
 {
-    public $TicketComponent = null;
+    public $ResetPasswordTicketComponent = null;
     public $Controller = null;
     
     public function setup()
     {
         parent::setUp();
         $Collection = new ComponentCollection();
-        $this->TicketComponent = new TicketComponent($Collection);
+        $this->ResetPasswordTicketComponent = new ResetPasswordTicketComponent($Collection);
         $CakeRequest = new CakeRequest();
         $CakeResponse = new CakeResponse();
         
-        $this->Controller = new TestTicketComponentController($CakeRequest, $CakeResponse);
+        $this->Controller = new TestResetPasswordTicketComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
-        $this->TicketComponent->initialize($this->Controller);
+        $this->ResetPasswordTicketComponent->initialize($this->Controller);
         $this->redis = $this->Controller->redis;
         
     }
@@ -48,7 +48,7 @@ class TicketComponentTest extends CakeTestCase
         foreach ($keys as $key){
             $this->redis->delete($key);
         }
-        unset($this->TicketComponent);
+        unset($this->ResetPasswordTicketComponent);
         parent::tearDown();
     }
     
@@ -60,7 +60,7 @@ class TicketComponentTest extends CakeTestCase
         $key = $this->redisTicketPrefix.':'.$token;
         
         $this->redis->set($key, $token);
-        $ticketTest = $this->TicketComponent->checkTicket($token);
+        $ticketTest = $this->ResetPasswordTicketComponent->checkTicket($token);
         $this->assertEqual(
             $token,
             $ticketTest

@@ -4,12 +4,12 @@ App::uses('User', 'Model');
 App::uses('CakeEmail', 'Network/Email');
 
 
-class TicketComponent extends Component
+class ResetPasswordTicketComponent extends Component
 {
     var $components = array('Email');
     var $sitename   = 'http://vusion.texttochange.org'; 
-    var $linkdomain = 'vusion.texttochange.org';
-    //var $linkdomain = '192.168.0.160:81';
+    //var $linkdomain = 'vusion.texttochange.org';
+    var $linkdomain = '192.168.0.160:81';
    
     
     

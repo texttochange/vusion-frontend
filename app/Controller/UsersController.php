@@ -6,7 +6,7 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils', 'Ticket', 'Captcha');
+    var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
     var $uses = array('User');
     
     public function beforeFilter()
@@ -326,10 +326,10 @@ class UsersController extends AppController
 		            $this->Session->write('user_id',$userId);
 		            
 		            $token = md5 (date('mdy').rand(4000000, 4999999));
-		            $this->Ticket->saveToken($token);
-		            $message = $this->Ticket->createMessage($token);
+		            $this->ResetPasswordTicket->saveToken($token);
+		            $message = $this->ResetPasswordTicket->createMessage($token);
 		           
-		            $this->Ticket->sendEmail($email, $userName, $message);
+		            $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
 		            $this->Session->setFlash(__('An Email has been sent to your email account.'),
 		                'default',
 		                array('class'=>'message success')
@@ -346,7 +346,7 @@ class UsersController extends AppController
 	
 	public function useTicket($hash)
 	{
-		$results=$this->Ticket->checkTicket($hash);
+		$results=$this->ResetPasswordTicket->checkTicket($hash);
 		$userId = $this->Session->read('user_id');
 		if(isset($results)){
 			$this->Session->setFlash('Enter your new password below');
