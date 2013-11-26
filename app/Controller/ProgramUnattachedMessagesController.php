@@ -61,6 +61,13 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function index()
     {
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('fixed-time' => 'desc');
+        } else {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+        $this->paginate = array('order'=>$order);
+        
         $unattachedMessages = $this->paginate();
         foreach($unattachedMessages as &$unattachedMessage)
         {  
