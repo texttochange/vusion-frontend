@@ -8,9 +8,7 @@ class ResetPasswordTicketComponent extends Component
 {
     var $components = array('Email');
     var $sitename   = 'http://vusion.texttochange.org'; 
-    //var $linkdomain = 'vusion.texttochange.org';
-    var $linkdomain = '192.168.0.160:81';
-   
+    var $linkdomain = 'vusion.texttochange.org';
     
     
     public function initialize(Controller $controller)
@@ -37,12 +35,13 @@ class ResetPasswordTicketComponent extends Component
 
 	public function createMessage($token)
 	{   
-		$ms  = '<html><head><title>Password Reset Request</title></head>';
-		$ms .= '<body>Your email has been used in a password reset request at '.$this->sitename.'<br/>';
+		$ms  = '<html>Hello, <br/><br/>';
+		$ms .= '<body><head><b>Password Reset Request</b></head><br/>';
+		$ms .= 'Your email has been used in a password reset request at '.$this->sitename.'<br/>';
 		$ms .= 'If you did not initiate this request, then ignore this message.<br/>';
 		$ms .= '  Click the link below into your browser to reset your password.<br/>';
-		$ms .= '<a href="http://'.$this->linkdomain.'/users/useTicket/'.$token.'">Reset Password</a>';
-		$ms .= '</body></html>';
+		$ms .= 'http://'.$this->linkdomain.'/users/useTicket/'.$token.'<br/><br/>';
+		$ms .= 'Thanks</body></html>';
 		$ms  = wordwrap($ms,70);
 		
 		return $ms;
@@ -53,7 +52,7 @@ class ResetPasswordTicketComponent extends Component
 	{  
 	    $email = new CakeEmail();
 	    $email->config('default');
-	    $email->from(array('admin@vusion.texttochange.org' => 'vusion.com'));
+	    $email->from(array('admin@vusion.texttochange.org' => 'Vusion'));
 	    $email->to($userEmail);
 	    $email->subject('Message from '.$this->sitename.' for '.$userName);
 	    $email->send($message);
