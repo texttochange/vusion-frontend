@@ -13,7 +13,7 @@
     echo '<div class="input text">';
     echo $this->Html->image($this->Html->url(
         array('controller'=>'users', 'action'=>'captcha'), true),
-        array('id'=>'imageCaptcha')).' <a href="#" id="captchaReload" class>  can\'t read, get another word</a>';
+        array('id'=>'imageCaptcha')).' <a href="#" id="captchaReload" class="captcha-reload">  can\'t read, get another word</a>';
     $this->Js->get('document')->event('ready', '
         var captchaSource = $("#imageCaptcha").attr("src");
         window.captchaSource = captchaSource;

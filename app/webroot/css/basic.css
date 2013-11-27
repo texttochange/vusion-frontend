@@ -1372,3 +1372,7 @@ display: inline;
 	font-weight: normal;
 	font-size: 12px;
 }
+
+.captcha-reload {
+	font-weight: normal;
+}
