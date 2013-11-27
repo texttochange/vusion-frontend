@@ -36,12 +36,13 @@ class ResetPasswordTicketComponent extends Component
 	public function createMessage($token)
 	{   
 		$ms  = '<html>Hello, <br/><br/>';
-		$ms .= '<body><head><b>Password Reset Request</b></head><br/>';
-		$ms .= 'Your email has been used in a password reset request at '.$this->sitename.'<br/>';
+		$ms .= '<body>';
+		$ms .= 'Your email has been used in a password reset request at '.$this->sitename.'<br/><br/>';
 		$ms .= 'If you did not initiate this request, then ignore this message.<br/>';
-		$ms .= '  Click the link below into your browser to reset your password.<br/>';
+		$ms .= '&nbsp;Otherwise click the link below in order to set up anew password. <i>(Link expire after 24hrs, can only be used once)</i><br/>';
 		$ms .= 'http://'.$this->linkdomain.'/users/useTicket/'.$token.'<br/><br/>';
-		$ms .= 'Thanks</body></html>';
+		$ms .= 'Thanks<br/>';
+		$ms .= '<b><i>(Please don\'t reply to this email)</i><b/></body></html>';
 		$ms  = wordwrap($ms,70);
 		
 		return $ms;
@@ -54,7 +55,7 @@ class ResetPasswordTicketComponent extends Component
 	    $email->config('default');
 	    $email->from(array('admin@vusion.texttochange.org' => 'Vusion'));
 	    $email->to($userEmail);
-	    $email->subject('Message from '.$this->sitename.' for '.$userName);
+	    $email->subject('Vusion Password Reset Request');
 	    $email->send($message);
 	}
 	
