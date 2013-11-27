@@ -131,7 +131,7 @@ class ProgramsController extends AppController
         if (isset($conditions['$or']) and !isset($nameCondition['OR']))
             $programsList =  $allPrograms;
         else
-        $programsList =  $programs;
+            $programsList =  $programs;
         
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
@@ -162,8 +162,8 @@ class ProgramsController extends AppController
         
         if (count($filteredPrograms)>0
             or (isset($conditions) && $nameCondition == array())
-        or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
-        $programsList = $filteredPrograms;
+            or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
+            $programsList = $filteredPrograms;
         }
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
