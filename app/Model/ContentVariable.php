@@ -169,6 +169,7 @@ class ContentVariable extends MongoModel
         'first' => true,
         'all' => true,
         'fromKeys' => true,
+        'fromKeysValue' => true
         );
 
 
@@ -186,6 +187,19 @@ class ContentVariable extends MongoModel
             return $query;
         } 
         return $results;
+    }
+
+
+    public function _findFromKeysValue($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            return $this->_findFromKeys($state, $query);
+        }
+        if (isset($results[0])) {
+            return $results[0]['ContentVariable']['value'];
+        } else {
+            return null;
+        }
     }
 
 
