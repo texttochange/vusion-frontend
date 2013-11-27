@@ -8,8 +8,7 @@ class ResetPasswordTicketComponent extends Component
 {
     var $components = array('Email');
     var $sitename   = 'http://vusion.texttochange.org'; 
-    //var $linkdomain = 'vusion.texttochange.org';
-    var $linkdomain = '192.168.0.160:81';
+    var $linkdomain = 'vusion.texttochange.org';
     
     
     public function initialize(Controller $controller)
@@ -39,8 +38,8 @@ class ResetPasswordTicketComponent extends Component
 		$ms  = '<html>Hello, <br/><br/>';
 		$ms .= '<body>';
 		$ms .= 'Your email has been used in a password reset request at '.$this->sitename.'<br/><br/>';
-		$ms .= 'If you did not initiate this request, then ignore this message.<br/>';
-		$ms .= '&nbsp;Otherwise click the link below in order to set up anew password. <i>(Link expire after 24hrs, can only be used once)</i><br/>';
+		$ms .= 'If you did not initiate this request, then ignore this message.';
+		$ms .= '&nbsp;Otherwise click the link below in order to set up anew password. <br/><i>(Link expire after 24hrs, can only be used once)</i><br/>';
 		$ms .= 'http://'.$this->linkdomain.'/users/useTicket/'.$token.'<br/><br/>';
 		$ms .= 'Thanks<br/>';
 		$ms .= '<b><i>(Please don\'t reply to this email)</i><b/></body></html>';

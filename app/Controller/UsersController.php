@@ -13,7 +13,7 @@ class UsersController extends AppController
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha', 'useTicket', 'newpassword');
+        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha', 'useTicket');
         //$this->Auth->allow('*');
     }
     
