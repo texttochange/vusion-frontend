@@ -349,8 +349,10 @@ class UsersController extends AppController
 		$results=$this->ResetPasswordTicket->checkTicket($hash);
 		$userId = $this->Session->read('user_id');
 		if(isset($results)){
-			$this->Session->setFlash('Enter your new password below');
-			$this->redirect('/users/newpassword/'.$userId);
+			$this->Session->setFlash(__('Enter your new password below'),
+			    'default',
+			    array('class'=>'message success'));
+			$this->render('/Users/newpassword');
 		}else{
 			$this->Session->setFlash('Your ticket is lost or expired.');
 			$this->redirect('/');
@@ -359,7 +361,7 @@ class UsersController extends AppController
 	}
 	
 	
-	public function newpassword($id = null)
+	public function newpassword()
 	{ 
 	    $userId     = $this->Session->read('user_id');
 	    $user   = $this->User->read(null, $userId);

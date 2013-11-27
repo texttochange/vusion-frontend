@@ -8,7 +8,8 @@ class ResetPasswordTicketComponent extends Component
 {
     var $components = array('Email');
     var $sitename   = 'http://vusion.texttochange.org'; 
-    var $linkdomain = 'vusion.texttochange.org';
+    //var $linkdomain = 'vusion.texttochange.org';
+    var $linkdomain = '192.168.0.160:81';
     
     
     public function initialize(Controller $controller)
