@@ -346,7 +346,7 @@ class UsersController extends AppController
 	
 	public function useTicket($hash)
 	{
-		$results=$this->ResetPasswordTicket->checkTicket($hash);
+		$results = $this->ResetPasswordTicket->checkTicket($hash);
 		if (isset($results)) {
 			$this->Session->setFlash(__('Enter your new password below'),
 			    'default',

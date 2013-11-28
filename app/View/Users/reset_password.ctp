@@ -1,6 +1,6 @@
 <?php
     echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
-    echo $this->Html->tag('h2', __('Reset Password'));
+    echo $this->Html->tag('h2', __('Request Password Reset'));
     echo $this->Form->create(
         'User', array('url'=> array(
             'controller' => 'users',
