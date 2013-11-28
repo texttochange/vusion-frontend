@@ -13,7 +13,7 @@ class UsersController extends AppController
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha', 'useTicket');
+        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha', 'useTicket', 'newPassword');
         //$this->Auth->allow('*');
     }
     
@@ -347,7 +347,6 @@ class UsersController extends AppController
 	public function useTicket($hash)
 	{
 		$results=$this->ResetPasswordTicket->checkTicket($hash);
-		$userId = $this->Session->read('user_id');
 		if(isset($results)){
 			$this->Session->setFlash(__('Enter your new password below'),
 			    'default',
@@ -361,33 +360,38 @@ class UsersController extends AppController
 	}
 	
 	
-	public function newpassword()
+	public function newPassword()
 	{ 
-	    $userId     = $this->Session->read('user_id');
+	    $userId = $this->Session->read('user_id');
 	    $user   = $this->User->read(null, $userId);
-	    $this->set(compact('userId'));
 	    
-	    if ($this->request->is('post')) {
-	        if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
-	            $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
-	                'default',
-	                array('class' => "message failure")
-	                );
-	        } else {
-	            $user['User']['password'] = $this->request->data['newPassword'];
-	            if ($this->User->save($user)) {
-	                $this->Session->delete('user_id');
-	                $this->Session->setFlash(__('Password changed successfully.'),
-	                    'default',
-	                    array('class'=>'message success')
-	                    );
-	                $this->redirect('/');
-	            } else {
-	                $this->Session->setFlash(__('Password saving failed.'), 
+	    if(!$userId) {
+	        $this->redirect('/');
+	    } else {
+	        if ($this->request->is('post')) {
+	            if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
+	                $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
 	                    'default',
 	                    array('class' => "message failure")
 	                    );
-	            }    
+	                $this->render('/Users/newpassword');
+	            } else {
+	                $user['User']['password'] = $this->request->data['newPassword'];
+	                if ($this->User->save($user)) {
+	                    $this->Session->delete('user_id');
+	                    $this->Session->setFlash(__('Password changed successfully.'),
+	                        'default',
+	                        array('class'=>'message success')
+	                        );
+	                    $this->redirect('/');
+	                } else {
+	                    $this->Session->setFlash(__('Password saving failed.'), 
+	                        'default',
+	                        array('class' => "message failure")
+	                        );
+	                    $this->render('/Users/newpassword');
+	                }    
+	            }
 	        }
 	    }
 	    
