@@ -352,11 +352,10 @@ class UsersController extends AppController
 			    'default',
 			    array('class'=>'message success'));
 			$this->render('/Users/new_password');
-		} else {
-			$this->Session->setFlash('Your ticket is lost or expired.');
-			$this->redirect('/');
+			return;
 		}
-		
+		$this->Session->setFlash('Your ticket is lost or expired.');
+		$this->redirect('/');
 	}
 	
 	
@@ -368,33 +367,34 @@ class UsersController extends AppController
 	    if (!$userId) {
 	        $this->redirect('/');
 	    } 
-	    if ($this->request->is('post')) {
-	        if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
-	            $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
-	                'default',
-	                array('class' => "message failure")
-	                );
-	            $this->render('/Users/new_password');
-	        } else {
-	            $user['User']['password'] = $this->request->data['newPassword'];
-	            if ($this->User->save($user)) {
-	                $this->Session->delete('user_id');
-	                $this->Session->setFlash(__('Password changed successfully.'),
-	                    'default',
-	                    array('class'=>'message success')
-	                    );
-	                $this->redirect('/');
-	            } else {
-	                $this->Session->setFlash(__('Password saving failed.'), 
-	                    'default',
-	                    array('class' => "message failure")
-	                    );
-	                $this->render('/Users/new_password');
-	            }    
-	        }
+	    
+	    if (!$this->request->is('post')) {
+	        return;
 	    }
 	    
+	    if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
+	        $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
+	            'default',
+	            array('class' => "message failure")
+	            );
+	        $this->render('/Users/new_password');
+	        return;
+	    }
 	    
+	    $user['User']['password'] = $this->request->data['newPassword'];
+	    if ($this->User->save($user)) {
+	        $this->Session->delete('user_id');
+	        $this->Session->setFlash(__('Password changed successfully.'),
+	            'default',
+	            array('class'=>'message success')
+	            );
+	        $this->redirect('/');
+	    }	    
+	    $this->Session->setFlash(__('Password saving failed.'), 
+	        'default',
+	        array('class' => "message failure")
+	        );
+	    $this->render('/Users/new_password');	      
 	}
 	
 	
