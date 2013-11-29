@@ -17,6 +17,7 @@ $config = array(
             90 => 3600,    #90sec cache 1h
             150 => 10800,  #150sec cache 3h
             151 => 32400  #above 150sec cache 9h
-            )
+            ),
+        'domain' => 'vusion.texttochange.org'
         )
-    );      
+    );   
