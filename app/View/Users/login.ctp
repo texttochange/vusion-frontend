@@ -9,6 +9,6 @@ echo $this->Form->end(__('Login',true));
 <div class="forget-password">
     <?php 
         echo $this->Html->link(__('forgot your password'),
-            array('action' => 'resetPassword'));
+            array('action' => 'requestPasswordReset'));
     ?>
 </div>

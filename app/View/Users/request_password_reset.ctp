@@ -4,7 +4,7 @@
     echo $this->Form->create(
         'User', array('url'=> array(
             'controller' => 'users',
-            'action' =>'resetPassword')));
+            'action' =>'requestPasswordReset')));
     echo $this->Form->input(
         'text', array(
             'label' => 'Email',

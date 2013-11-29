@@ -13,7 +13,7 @@ class UsersController extends AppController
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'resetPassword', 'captcha', 'useTicket', 'newPassword');
+        $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
         //$this->Auth->allow('*');
     }
     
@@ -302,59 +302,61 @@ class UsersController extends AppController
     }
     
     
-    public function resetPassword()
+    public function requestPasswordReset()
     {
-        if ($this->request->is('post')) {
-		    $email   = $this->request->data['emailEnter'];
-		    if (!$email) {
-		        $this->Session->setFlash(__('Please Enter Email address'));
-		    } else {
-		        $account = $this->User->find('all', array(
-		            'conditions' => array('email' => $email)
-		            ));
-		        if (!$account) {
-		            $this->Session->setFlash(__('Invalid Email : '.$email));
-		        } else {
-		            if($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
-		                $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
-		                    'default',
-		                    array('class' => "message failure")
-		                    );
-		            } else {
-		                $userName = $account[0]['User']['username'];
-		                $userId = $account[0]['User']['id'];
-		                $this->Session->write('user_id',$userId);
-		                
-		                $token = md5 (date('mdy').rand(4000000, 4999999));
-		                $this->ResetPasswordTicket->saveToken($token);
-		                $message = $this->ResetPasswordTicket->createMessage($token);
-		                
-		                $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
-		                $this->Session->setFlash(__('An Email has been sent to your email account.'),
-		                    'default',
-		                    array('class'=>'message success')
-		                    );
-		                $this->redirect('/');
-		            }
-		        }
-		        
-		    }
-		    
-		}
-	}
+        if (!$this->request->is('post')) {
+            return;
+        }
+        
+        $email   = $this->request->data['emailEnter'];
+        if (!$email) {
+            $this->Session->setFlash(__('Please Enter Email address'));
+            return;
+        }
+        
+        $account = $this->User->find('all', array(
+            'conditions' => array('email' => $email)
+            ));
+        if (!$account) {
+            $this->Session->setFlash(__('Invalid Email : '.$email));
+            return;
+        }
+        
+        if($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
+            $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
+                'default',
+                array('class' => "message failure")
+                );
+            return;
+        }        
+        $userName = $account[0]['User']['username'];
+        $userId = $account[0]['User']['id'];
+        $this->Session->write('user_id',$userId);
+        
+        $token = md5 (date('mdy').rand(4000000, 4999999));
+        $this->ResetPasswordTicket->saveToken($token);
+        $message = $this->ResetPasswordTicket->createMessage($token);
+        
+        $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
+        $this->Session->setFlash(__('An Email has been sent to your email account.'),
+            'default',
+            array('class'=>'message success')
+            );
+        $this->redirect('/');
+    }
+    
 	
-	
-	public function useTicket($hash)
+	public function useTicket($ticketHash)
 	{
-		$results = $this->ResetPasswordTicket->checkTicket($hash);
+		$results = $this->ResetPasswordTicket->checkTicket($ticketHash);
 		if (isset($results)) {
 			$this->Session->setFlash(__('Enter your new password below'),
 			    'default',
 			    array('class'=>'message success'));
-			$this->render('/Users/new_password');
+			$this->render('new_password');
 			return;
 		}
-		$this->Session->setFlash('Your ticket is lost or expired.');
+		$this->Session->setFlash(__('Your ticket is lost or expired.'));
 		$this->redirect('/');
 	}
 	
@@ -377,7 +379,7 @@ class UsersController extends AppController
 	            'default',
 	            array('class' => "message failure")
 	            );
-	        $this->render('/Users/new_password');
+	        $this->render('new_password');
 	        return;
 	    }
 	    
@@ -394,7 +396,7 @@ class UsersController extends AppController
 	        'default',
 	        array('class' => "message failure")
 	        );
-	    $this->render('/Users/new_password');	      
+	    $this->render('new_password');	      
 	}
 	
 	
@@ -436,7 +438,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
-            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
+            $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -472,7 +474,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
-            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
+            $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -507,7 +509,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
-            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
+            $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -533,7 +535,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
-            $this->Acl->allow($Group, 'controllers/Users/resetPassword');
+            $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
