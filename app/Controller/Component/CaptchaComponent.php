@@ -3,26 +3,26 @@ App::uses('Component', 'Controller');
 
 class CaptchaComponent extends Component
 {
-    var $themes = array(
-        'default'=>array(
-            'bgcolor'=>array(200,200, 200),
-            'txtcolor'=>array(10, 30, 80),
-            'noisecolor'=>array(60, 90, 120)
-        )
-    );
+    var $themes   = array(
+        'default' => array(
+            'bgcolor'    => array(200,200, 200),
+            'txtcolor'   => array(10, 30, 80),
+            'noisecolor' => array(60, 90, 120)
+            )
+        );
     var $settings = array(
-        'font' => '../webroot/files/fonts/BIRTH_OF_A_HERO.ttf', 
-        'width' => 120,
-        'height' => 40,
-        'characters' => 6,
-        'theme'=>'default',
-        'font_adjustment'=>0.70
-    );
+        'font'            => '../webroot/files/fonts/BIRTH_OF_A_HERO.ttf', 
+        'width'           => 120,
+        'height'          => 40,
+        'characters'      => 6,
+        'theme'           => 'default',
+        'font_adjustment' => 0.70
+        );
     
     
     public function __construct(ComponentCollection $collection, $settings = array())
     {
-        $settings = array_merge($this->settings, (array)$settings);
+        $settings         = array_merge($this->settings, (array)$settings);
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
     }
@@ -32,8 +32,8 @@ class CaptchaComponent extends Component
     {
         /* list all possible characters ; similar looking characters and vowels have been removed */
         $possible = '23456789bcdfghjkmnpqrstvwxyz';//ABCDFGHJKMNPRSTVWXYZ
-        $code = '';
-        $i = 0;
+        $code     = '';
+        $i        = 0;
         while ($i < $characters) {
             $code .= substr($possible, mt_rand(0, strlen($possible)-1), 1);
             $i++;
@@ -44,25 +44,25 @@ class CaptchaComponent extends Component
     
     public function create($settings = array())
     {
-        $width = $this->settings['width'];
-        $height = $this->settings['height'];
+        $width      = $this->settings['width'];
+        $height     = $this->settings['height'];
         $characters = $this->settings['characters'];
         $this->prepare_themes();       
         $theme = $this->settings['theme'];
-        $code = $this->generateCode($characters);
+        $code  = $this->generateCode($characters);
         /* font size will be 75% of the image height */
         $font_size = $height * $this->settings['font_adjustment'];
-        $image = @imagecreate($width, $height) or die('Cannot initialize new GD image stream');
+        $image     = @imagecreate($width, $height) or die('Cannot initialize new GD image stream');
         /* set the colours */
         $background_color = imagecolorallocate($image, $this->themes[$theme]['bgcolor'][0], $this->themes[$theme]['bgcolor'][1], $this->themes[$theme]['bgcolor'][2]);
-        $text_color = imagecolorallocate($image, $this->themes[$theme]['txtcolor'][0], $this->themes[$theme]['txtcolor'][1], $this->themes[$theme]['txtcolor'][2]);
-        $noise_color = imagecolorallocate($image, $this->themes[$theme]['noisecolor'][0], $this->themes[$theme]['noisecolor'][1], $this->themes[$theme]['noisecolor'][2]);
+        $text_color       = imagecolorallocate($image, $this->themes[$theme]['txtcolor'][0], $this->themes[$theme]['txtcolor'][1], $this->themes[$theme]['txtcolor'][2]);
+        $noise_color      = imagecolorallocate($image, $this->themes[$theme]['noisecolor'][0], $this->themes[$theme]['noisecolor'][1], $this->themes[$theme]['noisecolor'][2]);
         /* generate random dots in background */
-        for( $i=0; $i<($width*$height)/3; $i++ ) {
+        for ( $i=0; $i<($width*$height)/3; $i++ ) {
             imagefilledellipse($image, mt_rand(0,$width), mt_rand(0,$height), 1, 1, $noise_color);
         }
         /* generate random lines in background */
-        for( $i=0; $i<($width*$height)/150; $i++ ) {
+        for ( $i=0; $i<($width*$height)/150; $i++ ) {
             imageline($image, mt_rand(0,$width), mt_rand(0,$height), mt_rand(0,$width), mt_rand(0,$height), $noise_color);
         }
         /* create textbox and add text */
@@ -88,13 +88,18 @@ class CaptchaComponent extends Component
     
     public function prepare_themes()
     {
-        if($this->settings['theme']=='random')    {
+        if ($this->settings['theme']=='random') {
             $this->themes['random'] = array(
-                'bgcolor'=>array($bg_r=rand(0,255), $bg_g=rand(0,255), $bg_b=rand(0,255)),
-                'txtcolor'=>array(rand(0,255), rand(0,255), rand(0,255)),
-                'noisecolor'=>array(rand(0,255), rand(0,255), rand(0,255))
-            );
-            $ch_r = rand(40, 50);$ch_g = rand(40, 50);$ch_b = rand(40, 50);
+                'bgcolor'    => array(
+                    $bg_r = rand(0,255),
+                    $bg_g = rand(0,255),
+                    $bg_b = rand(0,255)),
+                'txtcolor'   => array(rand(0,255), rand(0,255), rand(0,255)),
+                'noisecolor' => array(rand(0,255), rand(0,255), rand(0,255))
+                );
+            $ch_r  = rand(40, 50);
+            $ch_g  = rand(40, 50);
+            $ch_b  = rand(40, 50);
             $txt_r = $bg_r+$ch_r >= 255 ? 255 : $bg_r+$ch_r;
             $txt_g = $bg_g+$ch_g >= 255 ? 255 : $bg_g+$ch_g;
             $txt_b = $bg_b+$ch_b >= 255 ? 255 : $bg_b+$ch_b;

@@ -290,13 +290,15 @@ class UsersController extends AppController
     public function captcha()
     {
         $this->autoRender = false;
-        $this->layout='ajax';
+        $this->layout     = 'ajax';
         if (!isset($this->Captcha)) { 
-            $this->Captcha = $this->Components->load('Captcha', array(
-                'width' => 150,
-                'height' => 50,
-                'theme' => 'default', 
-                )); 
+            $this->Captcha = $this->Components->load(
+                'Captcha', array(
+                    'width' => 150,
+                    'height' => 50,
+                    'theme' => 'default', 
+                    )
+                ); 
         }
         $this->Captcha->create();
     }
@@ -314,16 +316,18 @@ class UsersController extends AppController
             return;
         }
         
-        $account = $this->User->find('all', array(
-            'conditions' => array('email' => $email)
-            ));
+        $account = $this->User->find(
+            'all', array('conditions' => array('email' => $email)
+                )
+            );
         if (!$account) {
             $this->Session->setFlash(__('Invalid Email : '.$email));
             return;
         }
         
-        if($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
-            $this->Session->setFlash(__('Please enter correct captcha code and try again.'),
+        if ($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
+            $this->Session->setFlash(
+                __('Please enter correct captcha code and try again.'),
                 'default',
                 array('class' => "message failure")
                 );
@@ -338,68 +342,73 @@ class UsersController extends AppController
         $message = $this->ResetPasswordTicket->createMessage($token);
         
         $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
-        $this->Session->setFlash(__('An Email has been sent to your email account.'),
+        $this->Session->setFlash(
+            __('An Email has been sent to your email account.'),
             'default',
             array('class'=>'message success')
             );
         $this->redirect('/');
     }
     
-	
-	public function useTicket($ticketHash)
-	{
-		$results = $this->ResetPasswordTicket->checkTicket($ticketHash);
-		if (isset($results)) {
-			$this->Session->setFlash(__('Enter your new password below'),
-			    'default',
-			    array('class'=>'message success'));
-			$this->render('new_password');
-			return;
-		}
-		$this->Session->setFlash(__('Your ticket is lost or expired.'));
-		$this->redirect('/');
-	}
-	
-	
-	public function newPassword()
-	{ 
-	    $userId = $this->Session->read('user_id');
-	    $user   = $this->User->read(null, $userId);
-	    
-	    if (!$userId) {
-	        $this->redirect('/');
-	    } 
-	    
-	    if (!$this->request->is('post')) {
-	        return;
-	    }
-	    
-	    if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
-	        $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
-	            'default',
-	            array('class' => "message failure")
-	            );
-	        $this->render('new_password');
-	        return;
-	    }
-	    
-	    $user['User']['password'] = $this->request->data['newPassword'];
-	    if ($this->User->save($user)) {
-	        $this->Session->delete('user_id');
-	        $this->Session->setFlash(__('Password changed successfully.'),
-	            'default',
-	            array('class'=>'message success')
-	            );
-	        $this->redirect('/');
-	    }	    
-	    $this->Session->setFlash(__('Password saving failed.'), 
-	        'default',
-	        array('class' => "message failure")
-	        );
-	    $this->render('new_password');	      
-	}
-	
-	
+    
+    public function useTicket($ticketHash)
+    {
+        $results = $this->ResetPasswordTicket->checkTicket($ticketHash);
+        if (isset($results)) {
+            $this->Session->setFlash(
+                __('Enter your new password below'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->render('new_password');
+            return;
+        }
+        $this->Session->setFlash(__('Your ticket is lost or expired.'));
+        $this->redirect('/');
+    }
+    
+    
+    public function newPassword()
+    { 
+        $userId = $this->Session->read('user_id');
+        $user   = $this->User->read(null, $userId);
+        
+        if (!$userId) {
+            $this->redirect('/');
+        } 
+        
+        if (!$this->request->is('post')) {
+            return;
+        }
+        
+        if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
+            $this->Session->setFlash(
+                __('New passwords doesn\'t match. Please try again.'), 
+                'default',
+                array('class' => "message failure")
+                );
+            $this->render('new_password');
+            return;
+        }
+        
+        $user['User']['password'] = $this->request->data['newPassword'];
+        if ($this->User->save($user)) {
+            $this->Session->delete('user_id');
+            $this->Session->setFlash(
+                __('Password changed successfully.'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->redirect('/');
+        }        
+        $this->Session->setFlash(__('Password saving failed.'), 
+            'default',
+            array('class' => "message failure")
+            );
+        $this->render('new_password');          
+    }
+    
+    
     public function initDB()
     {
         echo "Acl Start</br>";
