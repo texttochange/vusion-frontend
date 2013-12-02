@@ -86,18 +86,18 @@ class AppController extends Controller
                 'database' => $data[0]['Program']['database']);
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
             
+            $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
+            $programDetails['settings'] = $programSettingModel->getProgramSettings();
+            $this->set(compact('programDetails')); 
+
             //In case of a Json request, no need to set up the variables
             if ($this->params['ext']=='json' or $this->params['ext']=='csv')
                 return;
-            
-            $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
-            $programDetails['settings'] = $programSettingModel->getProgramSettings();
-            
+
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
             $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);      
-            
             $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
-            $this->set(compact('programDetails', 'currentProgramData', 'programLogsUpdates', 'creditStatus')); 
+            $this->set(compact('currentProgramData', 'programLogsUpdates', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));

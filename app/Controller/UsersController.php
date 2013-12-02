@@ -238,9 +238,9 @@ class UsersController extends AppController
     }
     
     
-    private $hash = 'DYhG93b001JfIxfs2guVoUubWwvniR2G0FgaC9mi';
     public function changePassword($id = null)
     {
+        $hash = Configure::read('Security.salt');
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
@@ -258,7 +258,7 @@ class UsersController extends AppController
         $this->set(compact('userId'));
         
         if ($this->request->is('post') || $this->request->is('put')) {
-            if (Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
+            if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'), 
                     'default',
                     array('class' => "message failure")
