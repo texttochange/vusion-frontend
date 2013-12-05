@@ -400,12 +400,13 @@ class UsersController extends AppController
                 array('class'=>'message success')
                 );
             $this->redirect('/');
-        }        
-        $this->Session->setFlash(__('Password saving failed.'), 
-            'default',
-            array('class' => "message failure")
-            );
-        $this->render('new_password');          
+        } else {        
+            $this->Session->setFlash(__('Password saving failed.'), 
+                'default',
+                array('class' => "message failure")
+                );
+            $this->render('new_password');          
+        }
     }
     
     
