@@ -27,8 +27,8 @@ class CaptchaComponent extends Component
     
     public function create($settings = array())
     {
-        $settings     = configure:: read('vusion.captchaSettings');
-        $themes  = configure::read('vusion.captchaThemes');
+        $settings   = Configure::read('vusion.captcha.settings');
+        $themes     = Configure::read('vusion.captcha.themes');
         $width      = $settings['width'];
         $height     = $settings['height'];
         $characters = $settings['characters'];
@@ -73,8 +73,8 @@ class CaptchaComponent extends Component
     
     public function prepare_themes()
     {
-        $settings = configure:: read('vusion.captchaSettings');
-        $themes  = configure::read('vusion.captchaThemes');
+        $settings = Configure::read('vusion.captcha.settings');
+        $themes   = Configure::read('vusion.captcha.themes');
         if ($settings['theme']=='random') {
             $themes['random'] = array(
                 'bgcolor'    => array(
