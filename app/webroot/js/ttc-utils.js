@@ -625,12 +625,4 @@ function getParameterByName(url, name){
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, ""));
 }
 
-function captchaReload(){
-	$('#captchaReload').click(function () {
-			var captcha = $('#imageCaptcha');
-			var source = window.captchaSource;
-			captcha.attr('src', source+'?'+Math.random());
-			return false;
-	});
-}
 

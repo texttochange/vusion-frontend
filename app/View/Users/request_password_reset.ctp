@@ -18,7 +18,14 @@
         var captchaSource = $("#imageCaptcha").attr("src");
         window.captchaSource = captchaSource;
         ');
-    $this->Js->get('#captchaReload')->event('click', 'captchaReload();');
+    $this->Js->get('#captchaReload')->event(
+        'click',
+        '$("#captchaReload").click(function () {
+        var captcha = $("#imageCaptcha");
+        var source = window.captchaSource;
+        captcha.attr("src", source+"?"+Math.random());
+        return false;
+        });');
     echo '</div>';
     echo $this->Form->input('User.captcha', array('autocomplete'=>'off', 'label'=>'Enter security code shown above:', 'id'=>'captchaField', 'name'=>'captchaField'));
     echo $this->Form->submit(__('Send', true));
