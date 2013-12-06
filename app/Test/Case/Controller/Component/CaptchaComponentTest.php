@@ -65,7 +65,7 @@ class CaptchaComponentTest extends CakeTestCase
         
         $characters = 9;
         $testCode = $this->CaptchaComponent->generateCode($characters);
-        $this->assertFalse((strlen($testCode)) == 10);
+        $this->assertEquals(9, strlen($testCode));
     }
     
     
