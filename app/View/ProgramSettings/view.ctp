@@ -59,9 +59,9 @@
         <?php echo $this->Html->tag('dt',__('Set SMS lmit'));?>
         <dd><b><?php
             echo ($programSettings['credit-type'] != 'none') ? $programSettings['credit-type'].
-            ' ('.$programSettings['credit-number'].') '.
-            date('d-m-Y', strtotime($programSettings['credit-from-date'])).'/'.
-            date('d-m-Y', strtotime($programSettings['credit-to-date'])) : 'None';
+            ' maximum '.$programSettings['credit-number'].' from '.
+            date('d-m-Y', strtotime($programSettings['credit-from-date'])).' to '.
+            date('d-m-y', strtotime($programSettings['credit-to-date'])) : 'None';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Allow SMS Forwarding'));?>
