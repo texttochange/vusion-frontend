@@ -73,6 +73,10 @@ class CreditViewerController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $conditions = $this->_getConditions();
+        //print_r($conditions);
+        //echo "date condition:";
+        $conditionNonDate = $this->_fromFilterToNonDateConditions($this->_getFilter());
+        $nonDateConditions = (isset($conditionNonDate)) ? $conditionNonDate : array();
         
         $nameCondition = $this->ProgramPaginator->getNameSqlCondition($conditions);
         
@@ -84,40 +88,54 @@ class CreditViewerController extends AppController
             );
         
         $allPrograms = $this->Program->find('all');
-        
+
         if (isset($conditions['$or']) and !isset($nameCondition['OR']))
             $programsList =  $allPrograms;
         else
             $programsList =  $programs;
             
         $filteredPrograms = array();
-        
+        //print_r($this->params['url']);
         foreach ($programsList as &$program) {
             $progDetails = $this->ProgramPaginator->getProgramDetails($program);
             $program = array_merge($program, $progDetails['program']);
-            $program['Program']['total-credits'] = $this->CreditManager->getCount($program['Program']['database']);
-            
+            if ($this->params['url'] == array()) {
+                $program['Program']['total-credits'] = $this->CreditManager->getCount($program['Program']['database']);
+            } else {
+                $program['Program']['total-credits'] = $this->_getCreditsFromProgramHistory($program['Program']['database'], $conditions);
+            }
             $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
                 $progDetails['program'],
-                $conditions,
+                $nonDateConditions,
                 $progDetails['shortcode']);
             if (count($filterPrograms)>0) {
                 foreach ($filterPrograms as $fProgram) {
+                    $fProgram['Program']['total-credits'] = $this->_getCreditsFromProgramHistory($fProgram['Program']['database'], $conditions);
                     $filteredPrograms[] = $fProgram;
                 }
             }
+            
         }
-        
+        /*if (count($filteredPrograms)>0)
+            echo "filtered programs more than 0<br />";
+        if (isset($conditions) && $nameCondition == array() && $nonDateConditions != array())
+            echo "conditions set, nameCondition empty and NonDateCondition not empty<br />";
+        if (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)
+            echo "conditions[and]set, nameCondition not empty, and filteredPrograms equal to 0<br />";
+        if (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) > 0)
+            echo "conditions[and]set, nameCondition not empty, and filteredPrograms greater than 0<br />";
+        */
         if (count($filteredPrograms)>0
-            or (isset($conditions) && $nameCondition == array())
-            or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
+            or (isset($conditions) && $nameCondition == array() && $nonDateConditions != array())
+            or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) > 0)) {
+        //echo "here";
             $programsList = $filteredPrograms;
         }
         
         if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
-            foreach($programs as &$program) {
+            foreach($programs as &$program) { echo "there";
                 $details = $this->ProgramPaginator->getProgramDetails($program);
-                $program = array_merge($program, $details['program']);            
+                $program = array_merge($program, $details['program']);
             }
             foreach ($programsList as $listedProgram) {
                 if (!in_array($listedProgram, $programs))
@@ -126,9 +144,66 @@ class CreditViewerController extends AppController
         } else {
             $programs = $programsList;
         }
-        
+        //print_r($programs);
         $programs = $this->ProgramPaginator->paginate($programs);
         $this->set(compact('programs', $programs));
+    }
+    
+    
+    protected function _getCreditsFromProgramHistory($dbName, $conditions)
+    {
+        $this->History = new History(array('database' => $dbName));
+        
+        $defaultConditions = array(
+            '$and' => array(
+                array('object-type'=> array(
+                    '$in'=> array('dialogue-history','request-history','unattach-history','unmatching-history')
+                    )),
+                array('message-status' => array(
+                    '$nin' => array('missing-data','failed','no-credit','no-credit-timeframe')
+                    ))
+                )
+            );
+        $dateConditions = $this->_getDateCondition($conditions);
+        //print_r($dateConditions);
+        if (!empty($dateConditions))
+            array_push($defaultConditions['$and'], $dateConditions);
+
+        $messages = $this->History->find(
+            'all',
+            array('conditions' => $defaultConditions)
+            );
+
+        $totalCredits = 0;
+        foreach ($messages as $message) {
+            $totalCredits += $message['History']['message-credits'];
+        }
+        
+        return (int)$totalCredits;
+    }
+    
+    
+    protected function _getDateCondition($conditions)
+    {
+        if (empty($conditions))
+            return array();
+        
+        $result = array();
+        foreach ($conditions as $key => $value) {
+            if (is_array($value)) {
+                if (in_array('timestamp', array_keys($value), true)) {
+                    array_push($result, $value);
+                } else {
+                    $result = array_merge($result, $this->_getDateCondition($value));
+                }
+            }
+        }
+        if (count($result) > 0 && !isset($result['$and'])) {
+            $newResult['$and'] = $result;
+            $result = $newResult;
+        }
+
+        return $result;
     }
     
     
@@ -157,20 +232,26 @@ class CreditViewerController extends AppController
             );
     }
     
-    
-    protected function _getConditions($conditions = null)
+    protected function _getFilter()
     {
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
 
-        if (!isset($filter['filter_param'])) 
+        if (!isset($filter['filter_param']))
             return null;
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
-        }     
+        }
         
         $this->set('urlParams', http_build_query($filter));
+        
+        return $filter;
+    }
+    
+    
+    protected function _getConditions()
+    {
+        $filter = $this->_getFilter();
         
         return $this->_fromFilterToQueryConditions($filter);
     }
@@ -178,7 +259,53 @@ class CreditViewerController extends AppController
     
     protected function _fromFilterToQueryConditions($filter)
     {
+        if (!isset($filter))
+            return array();
+        
         $conditions = array();
+        
+        foreach ($filter['filter_param'] as $filterParam) {
+            
+            $condition = null;
+            
+            $this->validateFilter($filterParam);
+            
+            if ($filterParam[1] == 'date') {
+                if ($filterParam[2] == 'from') { 
+                    $condition['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                } elseif ($filterParam[2] == 'to') {
+                    $condition['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                }
+            } else {
+                $condition = $this->_fromFilterToNonDateConditions($filter);
+            }
+            
+            if ($filter['filter_operator'] == "all") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$and'])) {
+                    $conditions = array('$and' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$and'], $condition);
+                }
+            }  elseif ($filter['filter_operator'] == "any") {
+                if (count($conditions) == 0) {
+                    $conditions = $condition;
+                } elseif (!isset($conditions['$or'])) {
+                    $conditions = array('$or' => array($conditions, $condition));
+                } else {
+                    array_push($conditions['$or'], $condition);
+                }
+            }
+        }
+        return $conditions;
+    }
+    
+    
+    protected function _fromFilterToNonDateConditions($filter)
+    {
+        if (!isset($filter))
+            return array();
         
         foreach($filter['filter_param'] as $filterParam) {
             
@@ -200,33 +327,9 @@ class CreditViewerController extends AppController
                 } elseif ($filterParam[2] == 'start-with') {
                     $condition['name LIKE'] = $filterParam[3]."%"; 
                 }            
-            } elseif ($filterParam[1] == 'date') {
-                if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
-                } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
-                }
-            } 
-            
-            if ($filter['filter_operator'] == "all") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$and'])) {
-                    $conditions = array('$and' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$and'], $condition);
-                }
-            }  elseif ($filter['filter_operator'] == "any") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$or'])) {
-                    $conditions = array('$or' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$or'], $condition);
-                }
             }
         }
-        return $conditions;
+        return $condition;
     }
     
     

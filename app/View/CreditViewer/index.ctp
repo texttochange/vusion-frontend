@@ -97,10 +97,10 @@
                 </td>
 		        <td class="details">
 		            <?php 
-		                if (!empty($program['Program']['total-credits'])) {
+		                if (isset($program['Program']['total-credits'])) {
 		                    echo h($program['Program']['total-credits']);
 		                } else {
-		                echo __('<i>Unlimited</i>');
+		                    echo __('<i>Unlimited</i>');
 		                }
 		            ?>
 		        </td>
