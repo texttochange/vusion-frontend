@@ -71,7 +71,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'Keyword' => array('validateProgramKeywords') 
+                'Keyword' => array('AreKeywordsUsedByOtherPrograms') 
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -115,7 +115,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         
         $programSettingsController->Keyword
         ->expects($this->once())
-        ->method('validateProgramKeywords')
+        ->method('AreKeywordsUsedByOtherPrograms')
         ->will($this->returnValue(array('status' =>'ok')));
         
         $programSettings = array(
@@ -142,7 +142,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         
         $programSettingsController->Keyword
         ->expects($this->once())
-        ->method('validateProgramKeywords')
+        ->method('AreKeywordsUsedByOtherPrograms')
         ->will($this->returnValue(array('status' =>'fail',
             'message' => 'keyword already used')));
         

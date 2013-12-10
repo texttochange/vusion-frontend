@@ -79,7 +79,7 @@ class KewyordComponentTest extends CakeTestCase
     }
 
 
-    public function testValidateProgramKeywords_failed_dialogueKeywordUsedInOtherProgramDialogue() 
+    public function testAreKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramDialogue() 
     {
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         
@@ -96,12 +96,12 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->validateProgramKeywords('testdbprogram', '256-8181');
+        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
         $this->assertEqual($valid['status'], 'fail');    
     }
 
 
-    public function testValidateProgramKeywords_failed_dialogueKeywordUsedInOtherProgramRequest() 
+    public function testAreKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramRequest() 
     {
         $dialogue = $this->Maker->getOneDialogue('Keyword');
         
@@ -119,12 +119,12 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->validateProgramKeywords('testdbprogram', '256-8181');
+        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
         $this->assertEqual($valid['status'], 'fail');    
     }
 
 
-    public function testValidateProgramKeywords_failed_requestKeywordUsedInOtherProgramRequest() 
+    public function testAreKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramRequest() 
     {
         $this->Request->create();
         $this->Request->save($this->Maker->getOneRequest());
@@ -140,12 +140,12 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->validateProgramKeywords('testdbprogram', '256-8181');
+        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
         $this->assertEqual($valid['status'], 'fail');    
     }
 
 
-    public function testValidateProgramKeywords_failed_requestKeywordUsedInOtherProgramDialogue() 
+    public function testAreKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramDialogue() 
     {
         $this->Request->create();
         $this->Request->save($this->Maker->getOneRequest());
@@ -162,7 +162,7 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->validateProgramKeywords('testdbprogram', '256-8181');
+        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
         $this->assertEqual($valid['status'], 'fail');    
     }
 

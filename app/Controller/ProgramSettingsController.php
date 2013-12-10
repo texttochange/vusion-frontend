@@ -84,7 +84,7 @@ class ProgramSettingsController extends AppController
         
         if ($this->request->is('post') || $this->request->is('put')) {
             
-            $keywordValidation = $this->Keyword->validateProgramKeywords(
+            $keywordValidation = $this->Keyword->AreKeywordsUsedByOtherPrograms(
                 $this->Session->read($programUrl.'_db'), 
                 $this->request->data['ProgramSetting']['shortcode']);
             if ($keywordValidation['status'] == 'fail') {

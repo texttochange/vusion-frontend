@@ -16,7 +16,7 @@ class KeywordComponent extends Component {
         $this->Program = new Program();
     }
 
-    public function validateProgramKeywords($programDb, $shortCode) 
+    public function AreKeywordsUsedByOtherPrograms($programDb, $shortCode) 
     {   
         $options              = array('database' => ($programDb));
         $this->Dialogue       = new Dialogue($options);
