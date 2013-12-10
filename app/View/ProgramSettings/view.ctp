@@ -59,7 +59,7 @@
         <?php echo $this->Html->tag('dt',__('Set SMS lmit'));?>
         <dd><b><?php
             if (!isset($programSettings['credit-type'])) {
-                echo 'Not Set';
+                echo 'None';
             } else if ($programSettings['credit-type'] == 'none') {
                 echo 'None';
             } else {
