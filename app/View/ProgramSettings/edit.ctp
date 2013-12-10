@@ -181,13 +181,9 @@
              $this->Js->get('document')->event(
                  'ready',
                  '$("[name*=\'credit-from-date\']").datepicker({
-                         timeFormat: "hh:mm",
-                         timeOnly: false,
                          dateFormat:"dd/mm/yy"
                  });
                  $("[name*=\'credit-to-date\']").datepicker({
-                         timeFormat: "hh:mm",
-                         timeOnly: false,
                          dateFormat:"dd/mm/yy"
                  });'
                  );
