@@ -59,9 +59,9 @@
         <?php echo $this->Html->tag('dt',__('Set SMS lmit'));?>
         <dd><b><?php
             if (!isset($programSettings['credit-type'])) {
-                echo 'None';
+                echo __('None');
             } else if ($programSettings['credit-type'] == 'none') {
-                echo 'None';
+                echo __('None');
             } else {
                 echo $programSettings['credit-type'].
                 ' maximum '.$programSettings['credit-number'].' from '.
