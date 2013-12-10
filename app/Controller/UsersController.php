@@ -346,7 +346,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramHistory');
             $this->Acl->allow($Group, 'controllers/ProgramSettings');
             $this->Acl->allow($Group, 'controllers/ProgramSettings/view');
-            $this->Acl->allow($Group, 'controllers/ProgramSettings/edit');
+            $this->Acl->deny($Group, 'controllers/ProgramSettings/edit');            
             //$this->Acl->allow($Group, 'controllers/ProgramSettings/index');
             //$this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
