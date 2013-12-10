@@ -38,12 +38,12 @@
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Prioritize request responses and feedback messages.'));?>
         <dd><b><?php
-             echo (isset($programSettings['request-and-feedback-prioritized'])) ? 'Yes' : '&nbsp;';
+             echo (isset($programSettings['request-and-feedback-prioritized'])) ? __('Yes') : '&nbsp;';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Unmacthing answer remove reminders.'));?>
         <dd><b><?php
-            echo (isset($programSettings['unmatching-answer-remove-reminder'])) ? 'Yes' : 'No';
+            echo (isset($programSettings['unmatching-answer-remove-reminder'])) ? __('Yes') : 'No';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Double matching answer feedback'));?>
@@ -63,16 +63,16 @@
             } else if ($programSettings['credit-type'] == 'none') {
                 echo __('None');
             } else {
-                echo $programSettings['credit-type'].
+                echo __($programSettings['credit-type'].
                 ' maximum '.$programSettings['credit-number'].' from '.
                 $this->Time->format('d/m/Y', $programSettings['credit-from-date']).' to '.
-                $this->Time->format('d/m/Y', $programSettings['credit-to-date']);                
+                $this->Time->format('d/m/Y', $programSettings['credit-to-date']));                
             }            
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Allow SMS Forwarding'));?>
         <dd><b><?php
-            echo (isset($programSettings['sms-forwarding-allowed'])) ? 'Yes' : '&nbsp;';
+            echo (isset($programSettings['sms-forwarding-allowed'])) ? __('Yes') : '&nbsp;';
             ?>
         </b></dd> 
     <dl>        
