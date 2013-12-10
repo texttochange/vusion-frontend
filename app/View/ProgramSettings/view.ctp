@@ -58,13 +58,15 @@
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Set SMS lmit'));?>
         <dd><b><?php
-            if ($programSettings['credit-type'] != 'none' || !isset($programSettings['credit-type'])) {
+            if (!isset($programSettings['credit-type'])) {
+                echo 'None';
+            } else if ($programSettings['credit-type'] == 'none') {
+                echo 'None';
+            } else {
                 echo $programSettings['credit-type'].
                 ' maximum '.$programSettings['credit-number'].' from '.
                 $this->Time->format('d/m/Y', $programSettings['credit-from-date']).' to '.
-                $this->Time->format('d/m/Y', $programSettings['credit-to-date']);
-            } else {
-                echo 'None';
+                $this->Time->format('d/m/Y', $programSettings['credit-to-date']);                
             }            
             ?>
         </b></dd>
