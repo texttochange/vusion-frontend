@@ -173,7 +173,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testAdd()
+    public function testSave()
     {
         
         $this->mockProgramAccess();
@@ -191,7 +191,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testAdd_fail()
+    public function testSave_fail()
     {
         $dialogue = $this->Maker->getOneDialogue();
         unset($dialogue['Dialogue']['interactions'][0]['type-schedule']);
@@ -208,6 +208,43 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->assertEqual(
             'Type Schedule field cannot be empty.', 
             $this->vars['result']['message']['Dialogue']['interactions'][0]['type-schedule'][0]);        
+    }
+
+
+    public function testSave_fail_usedInOtherProgramDialogue()
+    {    
+        $this->mockProgramAccess();
+        
+        $this->instanciateModels();
+        $this->instanciateExternalModels('testdbprogram2');
+        
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        
+        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
+        $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);      
+        $this->externalModels['programSetting']->create();
+        $this->externalModels['programSetting']->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282'));
+        
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'8282')); 
+        
+        $this->testAction(
+            '/testurl/programDialogue/save', array(
+                'method' => 'post',
+                'data' => $dialogue));
+        
+        $this->assertEquals(
+            'fail',
+            $this->vars['result']['status']);
+        $this->assertEquals(
+            "'usedKeyword' already used by a dialogue of program 'Test Name 2'.",
+            $this->vars['result']['message']);        
     }
     
     
