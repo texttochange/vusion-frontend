@@ -60,8 +60,8 @@
         <dd><b><?php
             echo ($programSettings['credit-type'] != 'none') ? $programSettings['credit-type'].
             ' maximum '.$programSettings['credit-number'].' from '.
-            date('d-m-y', strtotime($programSettings['credit-from-date'])).' to '.
-            date('d-m-y', strtotime($programSettings['credit-to-date'])) : 'None';
+            date('d-m-Y', strtotime($programSettings['credit-from-date'])).' to '.
+            date('d-m-Y', strtotime($programSettings['credit-to-date'])) : 'None';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Allow SMS Forwarding'));?>
