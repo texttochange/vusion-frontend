@@ -9,7 +9,7 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramSettingsController extends AppController
 {
     
-    var $helpers = array('Js' => array('Jquery'));
+    var $helpers = array('Js' => array('Jquery'), 'Time');
     public $components = array('Keyword');
     
     
