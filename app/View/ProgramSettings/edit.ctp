@@ -180,8 +180,12 @@
                 }");
              $this->Js->get('document')->event(
                  'ready',
-                 '$("[name*=\'credit-from-date\']").datepicker();
-                 $("[name*=\'credit-to-date\']").datepicker();'
+                 '$("[name*=\'credit-from-date\']").datepicker({
+                         dateFormat:"dd/mm/yy"
+                 });
+                 $("[name*=\'credit-to-date\']").datepicker({
+                         dateFormat:"dd/mm/yy"
+                 });'
                  );
             echo '</div>';
         ?>
