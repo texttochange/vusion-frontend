@@ -39,23 +39,45 @@ class CaptchaComponent extends Component
         $font_size = $height * $settings['font_adjustment'];
         $image     = @imagecreate($width, $height) or die('Cannot initialize new GD image stream');
         /* set the colours */
-        $background_color = imagecolorallocate($image, $themes[$theme]['bgcolor'][0], $themes[$theme]['bgcolor'][1], $themes[$theme]['bgcolor'][2]);
-        $text_color       = imagecolorallocate($image, $themes[$theme]['txtcolor'][0], $themes[$theme]['txtcolor'][1], $themes[$theme]['txtcolor'][2]);
-        $noise_color      = imagecolorallocate($image, $themes[$theme]['noisecolor'][0], $themes[$theme]['noisecolor'][1], $themes[$theme]['noisecolor'][2]);
+        $background_color = imagecolorallocate(
+            $image,
+            $themes[$theme]['bgcolor'][0],
+            $themes[$theme]['bgcolor'][1],
+            $themes[$theme]['bgcolor'][2]
+        );
+        $text_color       = imagecolorallocate(
+            $image,
+            $themes[$theme]['txtcolor'][0],
+            $themes[$theme]['txtcolor'][1],
+            $themes[$theme]['txtcolor'][2]
+        );
+        $noise_color      = imagecolorallocate(
+            $image,
+            $themes[$theme]['noisecolor'][0],
+            $themes[$theme]['noisecolor'][1],
+            $themes[$theme]['noisecolor'][2]
+        );
         /* generate random dots in background */
         for ( $i=0; $i<($width*$height)/3; $i++ ) {
             imagefilledellipse($image, mt_rand(0,$width), mt_rand(0,$height), 1, 1, $noise_color);
         }
         /* generate random lines in background */
         for ( $i=0; $i<($width*$height)/150; $i++ ) {
-            imageline($image, mt_rand(0,$width), mt_rand(0,$height), mt_rand(0,$width), mt_rand(0,$height), $noise_color);
+            imageline(
+                $image,
+                mt_rand(0,$width),
+                mt_rand(0,$height),
+                mt_rand(0,$width),
+                mt_rand(0,$height),
+                $noise_color
+            );
         }
         /* create textbox and add text */
-        $font = WWW_ROOT . 'files/fonts/' . $settings['font'];
+        $font    = WWW_ROOT . 'files/fonts/' . $settings['font'];
         $textbox = imagettfbbox($font_size, 0, $font, $code) or die('Error in imagettfbbox function');
-        $x = ($width - $textbox[4])/2;
-        $y = ($height - $textbox[5])/2;
-        $y -= 5;
+        $x       = ($width - $textbox[4])/2;
+        $y       = ($height - $textbox[5])/2;
+        $y      -= 5;
         imagettftext($image, $font_size, 0, $x, $y, $text_color, $font , $code) or die('Error in imagettftext function');
         $this->Controller->Session->write('security_code',$code);
         if (ob_get_length() > 0 ) {    //Test necessary during unit testing
@@ -93,12 +115,12 @@ class CaptchaComponent extends Component
                 'txtcolor'   => array(rand(0,255), rand(0,255), rand(0,255)),
                 'noisecolor' => array(rand(0,255), rand(0,255), rand(0,255))
                 );
-            $ch_r  = rand(40, 50);
-            $ch_g  = rand(40, 50);
-            $ch_b  = rand(40, 50);
-            $txt_r = $bg_r+$ch_r >= 255 ? 255 : $bg_r+$ch_r;
-            $txt_g = $bg_g+$ch_g >= 255 ? 255 : $bg_g+$ch_g;
-            $txt_b = $bg_b+$ch_b >= 255 ? 255 : $bg_b+$ch_b;
+            $ch_r                         = rand(40, 50);
+            $ch_g                         = rand(40, 50);
+            $ch_b                         = rand(40, 50);
+            $txt_r                        = $bg_r+$ch_r >= 255 ? 255 : $bg_r+$ch_r;
+            $txt_g                        = $bg_g+$ch_g >= 255 ? 255 : $bg_g+$ch_g;
+            $txt_b                        = $bg_b+$ch_b >= 255 ? 255 : $bg_b+$ch_b;
             $themes['random']['txtcolor'] = array($txt_r, $txt_g, $txt_b);
         }
     }
