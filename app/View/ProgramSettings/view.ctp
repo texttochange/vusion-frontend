@@ -38,12 +38,12 @@
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Prioritize request responses and feedback messages.'));?>
         <dd><b><?php
-             echo (isset($programSettings['request-and-feedback-prioritized'])) ? 'Yes' : '&nbsp;';
+             echo (isset($programSettings['request-and-feedback-prioritized'])) ? __('Yes') : '&nbsp;';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Unmacthing answer remove reminders.'));?>
         <dd><b><?php
-            echo (isset($programSettings['unmatching-answer-remove-reminder'])) ? 'Yes' : 'No';
+            echo (isset($programSettings['unmatching-answer-remove-reminder'])) ? __('Yes') : 'No';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Double matching answer feedback'));?>
@@ -58,15 +58,22 @@
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Set SMS lmit'));?>
         <dd><b><?php
-            echo ($programSettings['credit-type'] != 'none') ? $programSettings['credit-type'].
-            ' maximum '.$programSettings['credit-number'].' from '.
-            $this->Time->format('d/m/Y', $programSettings['credit-from-date']).' to '.
-            $this->Time->format('d/m/Y', $programSettings['credit-to-date']) : 'None';
+            if (!isset($programSettings['credit-type'])) {
+                echo __('None');
+            } else if ($programSettings['credit-type'] == 'none') {
+                echo __('None');
+            } else {
+                echo __("%s maximum %s from %s to %s", 
+                    $programSettings['credit-type'],
+                    $programSettings['credit-number'], 
+                    $this->Time->format('d/m/Y', $programSettings['credit-from-date']),
+                    $this->Time->format('d/m/Y', $programSettings['credit-to-date']));                
+            }            
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Allow SMS Forwarding'));?>
         <dd><b><?php
-            echo (isset($programSettings['sms-forwarding-allowed'])) ? 'Yes' : '&nbsp;';
+            echo (isset($programSettings['sms-forwarding-allowed'])) ? __('Yes') : '&nbsp;';
             ?>
         </b></dd> 
     <dl>        
