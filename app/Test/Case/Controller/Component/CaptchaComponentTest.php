@@ -38,7 +38,7 @@ class CaptchaComponentTest extends CakeTestCase
         parent::tearDown();
     }
     
-    
+    /*
     public function testSecurity_Code_InSession()
     {
         $captchaTest = $this->getMock('Session',
@@ -67,6 +67,20 @@ class CaptchaComponentTest extends CakeTestCase
         $testCode = $this->CaptchaComponent->generateCode($characters);
         $this->assertEquals(9, strlen($testCode));
     }
+    */
     
+    public function testSecurity_Code_Write_InSession()
+    {
+        $captchaTest = $this->getMock('Session',
+            array('write'));
+        
+        $captchaTest
+            ->expects($this->once())
+            ->method('write')
+            ;
+        $this->CaptchaComponent->Controller->Session = $captchaTest;
+        $this->CaptchaComponent->create();
+    }    
     
+      
 }
