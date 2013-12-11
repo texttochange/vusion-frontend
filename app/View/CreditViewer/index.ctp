@@ -9,6 +9,7 @@
         $this->Js->get('[name=add-filter]')->event(
             'click',
             '$("#advanced_filter_form").show();
+            createFilter(false, "all", '.$this->Js->object($defaultDateConditions).');
             createFilter();
             addStackFilter();');
 		?> 
