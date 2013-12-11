@@ -63,7 +63,9 @@
             } else if ($programSettings['credit-type'] == 'none') {
                 echo __('None');
             } else {
-                echo __("%s maximum %s from %s to %s", $programSettings['credit-type'], $programSettings['credit-number'], 
+                echo __("%s maximum %s from %s to %s", 
+                    $programSettings['credit-type'],
+                    $programSettings['credit-number'], 
                     $this->Time->format('d/m/Y', $programSettings['credit-from-date']),
                     $this->Time->format('d/m/Y', $programSettings['credit-to-date']));                
             }            
