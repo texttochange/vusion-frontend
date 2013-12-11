@@ -43,7 +43,7 @@
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Unmacthing answer remove reminders.'));?>
         <dd><b><?php
-            echo (isset($programSettings['unmatching-answer-remove-reminder'])) ? __('Yes') : 'No';
+            echo (isset($programSettings['unmatching-answer-remove-reminder'])) ? __('Yes') : '&nbsp';
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Double matching answer feedback'));?>
@@ -59,7 +59,7 @@
         <?php echo $this->Html->tag('dt',__('Set SMS lmit'));?>
         <dd><b><?php
             if (!isset($programSettings['credit-type'])) {
-                echo __('None');
+                echo '&nbsp';
             } else if ($programSettings['credit-type'] == 'none') {
                 echo __('None');
             } else {
