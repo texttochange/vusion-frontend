@@ -96,7 +96,7 @@ class CaptchaComponent extends Component
     }
     
     
-    public function getVerCode()
+    public function getCodeVariable()
     {
         return $this->Controller->Session->read('security_code');
     }

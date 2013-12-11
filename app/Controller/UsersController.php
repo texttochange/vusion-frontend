@@ -325,7 +325,7 @@ class UsersController extends AppController
             return;
         }
         
-        if ($this->request->data['captchaField'] != $this->Captcha->getVerCode()) {
+        if ($this->request->data['captchaField'] != $this->Captcha->getCodeVariable()) {
             $this->Session->setFlash(
                 __('Please enter correct captcha code and try again.'),
                 'default',

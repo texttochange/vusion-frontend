@@ -47,7 +47,7 @@ class CaptchaComponentTest extends CakeTestCase
     }
     
     
-    public function testSecurity_Code_InSession()
+    public function testGetCodeVariable_ok_securityCodeReadInSession()
     {
         $captchaTest = $this->getMock('Session',
             array('read'));
@@ -59,13 +59,13 @@ class CaptchaComponentTest extends CakeTestCase
             ->will($this->returnValue('fgd256'));
             
         $this->CaptchaComponent->Controller->Session = $captchaTest;
-        $code = $this->CaptchaComponent->getVerCode();
+        $code = $this->CaptchaComponent->getCodeVariable();
         
         $this->assertEqual('fgd256', $code);
     }
     
    
-    public function testGeneratedCode_Length()
+    public function testGeneratedCode_ok_codeLength()
     {
         $characters = 6;
         $testCode = $this->CaptchaComponent->generateCode($characters);
@@ -77,7 +77,7 @@ class CaptchaComponentTest extends CakeTestCase
     }
     
     
-    public function testCreate_ok()
+    public function testCreate_ok_securityCodeWriteInSession()
     {
         $captchaTest = $this->getMock('Session',
             array('write'));
