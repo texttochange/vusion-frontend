@@ -11,6 +11,14 @@ class TestCaptchaComponentController extends Controller
     
 }
 
+/* overwrite the outputImage function to avoid poluting unittest output*/
+class CaptchaConponentWithoutOutput extends CaptchaComponent 
+{
+    protected function _outputImage($image)
+    {
+    }
+}
+
 
 class CaptchaComponentTest extends CakeTestCase
 {
@@ -21,7 +29,7 @@ class CaptchaComponentTest extends CakeTestCase
     {
         parent::setUp();
         $Collection = new ComponentCollection();
-        $this->CaptchaComponent = new CaptchaComponent($Collection);
+        $this->CaptchaComponent = new CaptchaConponentWithoutOutput($Collection);
         $CakeRequest = new CakeRequest();
         $CakeResponse = new CakeResponse();
         
@@ -69,16 +77,35 @@ class CaptchaComponentTest extends CakeTestCase
     }
     */
     
-    public function testSecurity_Code_Write_InSession()
+    public function testCreate_ok()
     {
         $captchaTest = $this->getMock('Session',
             array('write'));
         
         $captchaTest
             ->expects($this->once())
-            ->method('write')
-            ;
+            ->method('write');
+
         $this->CaptchaComponent->Controller->Session = $captchaTest;
+        $captchaConfig = array(
+            'settings' => array(
+                'font'            => 'BIRTH_OF_A_HERO.ttf', 
+                'width'           => 120,
+                'height'          => 40,
+                'characters'      => 6,
+                'theme'           => 'default',
+                'font_adjustment' => 0.70
+                ),
+            'themes'  => array(
+                'default' => array(
+                    'bgcolor'    => array(200,200, 200),
+                    'txtcolor'   => array(10, 30, 80),
+                    'noisecolor' => array(60, 90, 120)
+                    )
+                )
+            );
+        Configure::write('vusion.captcha', $captchaConfig);
+
         $this->CaptchaComponent->create();
     }    
     

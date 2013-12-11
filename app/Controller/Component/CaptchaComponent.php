@@ -51,13 +51,22 @@ class CaptchaComponent extends Component
             imageline($image, mt_rand(0,$width), mt_rand(0,$height), mt_rand(0,$width), mt_rand(0,$height), $noise_color);
         }
         /* create textbox and add text */
-        $textbox = imagettfbbox($font_size, 0, $settings['font'], $code) or die('Error in imagettfbbox function');
+        $font = WWW_ROOT . 'files/fonts/' . $settings['font'];
+        $textbox = imagettfbbox($font_size, 0, $font, $code) or die('Error in imagettfbbox function');
         $x = ($width - $textbox[4])/2;
         $y = ($height - $textbox[5])/2;
         $y -= 5;
-        imagettftext($image, $font_size, 0, $x, $y, $text_color, $settings['font'] , $code) or die('Error in imagettftext function');
+        imagettftext($image, $font_size, 0, $x, $y, $text_color, $font , $code) or die('Error in imagettftext function');
         $this->Controller->Session->write('security_code',$code);
-        @ob_end_clean(); //clean buffers, as a fix for 'headers already sent errors..'
+        if (ob_get_length() > 0 ) {    //Test necessary during unit testing
+            @ob_end_clean(); //clean buffers, as a fix for 'headers already sent errors..'
+        }
+        $this->_outputImage($image);
+    }
+
+    /* to avoid the image to be displayed in the unittest output*/
+    protected function _outputImage($image)
+    {
         /* output captcha image to browser */
         header('Content-Type: image/jpeg');
         imagejpeg($image);
