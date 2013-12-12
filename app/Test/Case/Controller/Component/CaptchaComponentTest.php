@@ -68,11 +68,11 @@ class CaptchaComponentTest extends CakeTestCase
     public function testGeneratedCode_ok_codeLength()
     {
         $characters = 6;
-        $testCode = $this->CaptchaComponent->generateCode($characters);
+        $testCode = $this->CaptchaComponent->generateCaptchaCode($characters);
         $this->assertEquals(6, strlen($testCode));
         
         $characters = 9;
-        $testCode = $this->CaptchaComponent->generateCode($characters);
+        $testCode = $this->CaptchaComponent->generateCaptchaCode($characters);
         $this->assertEquals(9, strlen($testCode));
     }
     

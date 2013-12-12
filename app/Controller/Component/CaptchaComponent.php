@@ -11,7 +11,7 @@ class CaptchaComponent extends Component
     }
     
     
-    public function generateCode($characters)
+    public function generateCaptchaCode($characters)
     {
         /* list all possible characters ; similar looking characters and vowels have been removed */
         $possible = '23456789bcdfghjkmnpqrstvwxyz';//ABCDFGHJKMNPRSTVWXYZ
@@ -22,10 +22,10 @@ class CaptchaComponent extends Component
             $i++;
         }
         return $captchaCode;
-    }
+    }   
     
     
-    public function create($settings = array())
+    public function create()
     {
         $settings   = Configure::read('vusion.captcha.settings');
         $themes     = Configure::read('vusion.captcha.themes');
@@ -34,7 +34,7 @@ class CaptchaComponent extends Component
         $characters = $settings['characters'];
         $this->prepare_themes();       
         $theme = $settings['theme'];
-        $captchaCode  = $this->generateCode($characters);
+        $captchaCode  = $this->generateCaptchaCode($characters);
         /* font size will be 75% of the image height */
         $font_size = $height * $settings['font_adjustment'];
         $image     = @imagecreate($width, $height) or die('Cannot initialize new GD image stream');
@@ -79,7 +79,7 @@ class CaptchaComponent extends Component
         $y       = ($height - $textbox[5])/2;
         $y      -= 5;
         imagettftext($image, $font_size, 0, $x, $y, $text_color, $font , $captchaCode) or die('Error in imagettftext function');
-        $this->Controller->Session->write('captchaCode',$captchaCode);
+        $this->setCaptchaCode($captchaCode);
         if (ob_get_length() > 0 ) {    //Test necessary during unit testing
             @ob_end_clean(); //clean buffers, as a fix for 'headers already sent errors..'
         }
@@ -93,6 +93,11 @@ class CaptchaComponent extends Component
         header('Content-Type: image/jpeg');
         imagejpeg($image);
         imagedestroy($image);
+    }
+    
+    public function setCaptchaCode($captchaCode)
+    {          
+        return $this->Controller->Session->write('captchaCode', $captchaCode);
     }
     
     
