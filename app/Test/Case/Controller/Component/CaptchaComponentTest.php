@@ -55,13 +55,13 @@ class CaptchaComponentTest extends CakeTestCase
         $captchaTest
             ->expects($this->once())
             ->method('read')
-            ->with('security_code')
+            ->with('captchaCode')
             ->will($this->returnValue('fgd256'));
             
         $this->CaptchaComponent->Controller->Session = $captchaTest;
-        $code = $this->CaptchaComponent->getCodeVariable();
+        $captchaCode = $this->CaptchaComponent->getCaptchaCode();
         
-        $this->assertEqual('fgd256', $code);
+        $this->assertEqual('fgd256', $captchaCode);
     }
     
    
@@ -85,7 +85,7 @@ class CaptchaComponentTest extends CakeTestCase
         $captchaTest
             ->expects($this->once())
             ->method('write')
-            ->with('security_code');
+            ->with('captchaCode');
 
         $this->CaptchaComponent->Controller->Session = $captchaTest;
         $captchaConfig = array(
