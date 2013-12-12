@@ -238,9 +238,9 @@ class UsersController extends AppController
     }
     
     
-    private $hash = 'DYhG93b001JfIxfs2guVoUubWwvniR2G0FgaC9mi';
     public function changePassword($id = null)
     {
+        $hash = Configure::read('Security.salt');
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
@@ -258,8 +258,9 @@ class UsersController extends AppController
         $this->set(compact('userId'));
         
         if ($this->request->is('post') || $this->request->is('put')) {
-            if (Security::hash($this->hash.$this->request->data['oldPassword']) != $user['User']['password']) {
-                $this->Session->setFlash(__('Old password is incorrect. Please try again.'), 
+
+            if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
+                $this->Session->setFlash(__('old password is incorrect. Please try again.'),
                     'default',
                     array('class' => "message failure")
                     );
@@ -470,7 +471,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramHistory');
             $this->Acl->allow($Group, 'controllers/ProgramSettings');
             $this->Acl->allow($Group, 'controllers/ProgramSettings/view');
-            $this->Acl->allow($Group, 'controllers/ProgramSettings/edit');
+            $this->Acl->deny($Group, 'controllers/ProgramSettings/edit');            
             //$this->Acl->allow($Group, 'controllers/ProgramSettings/index');
             //$this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        

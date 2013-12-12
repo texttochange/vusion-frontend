@@ -728,6 +728,10 @@ class ContentVariableTableTestCase extends CakeTestCase
                 array(
                     'header' => 'Chicken price',
                     'values' => array('300 Ksh', '400 Ksh')
+                    ),  
+                array(
+                    'header' => 'piece',
+                    'values' => array('1', '1')
                     )
                 )
             );
@@ -735,7 +739,10 @@ class ContentVariableTableTestCase extends CakeTestCase
         $savedTable = $this->ContentVariableTable->save($contentVariableTable);
 
         $savedTable['ContentVariableTable']['name'] = 'another table';
+        $savedTable['ContentVariableTable']['columns'][0]['header'] = 'county';
+        $savedTable['ContentVariableTable']['columns'][1]['header'] = 'price';
         $savedTable['ContentVariableTable']['columns'][1]['values'][1] = '200 Ksh';
+        $savedTable['ContentVariableTable']['columns'][2]['values'][0] = '0.5';
         $this->ContentVariableTable->create();
         $this->ContentVariableTable->id = $savedTable['ContentVariableTable']['_id']; 
         $updateResult = $this->ContentVariableTable->save($savedTable);
@@ -743,17 +750,30 @@ class ContentVariableTableTestCase extends CakeTestCase
         
         $savedTable = $this->ContentVariableTable->find('first');
         $this->assertEquals(
-            array('300 Ksh', '200 Ksh'),
-            $savedTable['ContentVariableTable']['columns'][1]['values']    
-            );
-        $this->assertEquals(
             'another table',
-            $savedTable['ContentVariableTable']['name']    
-            );
+            $savedTable['ContentVariableTable']['name']);
+        $this->assertEquals(
+            'county',
+            $savedTable['ContentVariableTable']['columns'][0]['header']);
+        $this->assertEquals(
+            array('300 Ksh', '200 Ksh'),
+            $savedTable['ContentVariableTable']['columns'][1]['values']);
 
         $this->assertEquals(
-            2,
+            4,
             $this->ContentVariable->find('count'));
+        $this->assertEquals(
+            '200 Ksh',
+            $this->ContentVariable->find('fromKeysValue', array('conditions' => array('keys' => array('nairobi', 'price')))));
+        $this->assertEquals(
+            '300 Ksh',
+            $this->ContentVariable->find('fromKeysValue', array('conditions' => array('keys' => array('mombasa', 'price')))));
+        $this->assertEquals(
+            '1',
+            $this->ContentVariable->find('fromKeysValue', array('conditions' => array('keys' => array('nairobi', 'piece')))));
+        $this->assertEquals(
+            '0.5',
+            $this->ContentVariable->find('fromKeysValue', array('conditions' => array('keys' => array('mombasa', 'piece')))));
     }
 
 

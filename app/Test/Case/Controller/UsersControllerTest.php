@@ -103,11 +103,10 @@ class UsersControllerTestCase extends ControllerTestCase
     }
     
     
-    private $hash = 'DYhG93b001JfIxfs2guVoUubWwvniR2G0FgaC9mi';
-    
-    
     public function testChangePassword()
     {
+        $hash = Configure::read('Security.salt');
+        
         $users = $this->generate('Users', array(
             'components' => array(
                 'Acl' => array('check'),
@@ -136,7 +135,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $user = array(
             'User'=> array(
                 'id' => 1,
-                'password' => Security::hash($this->hash.'gerald')
+                'password' => Security::hash($hash.'gerald')
                 )
             );
         
