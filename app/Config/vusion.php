@@ -17,6 +17,25 @@ $config = array(
             90 => 3600,    #90sec cache 1h
             150 => 10800,  #150sec cache 3h
             151 => 32400  #above 150sec cache 9h
+            ),
+        'domain' => 'vusion.texttochange.org',
+        'captcha' => array(
+            'settings' => array(
+                'font'            => 'BIRTH_OF_A_HERO.ttf', 
+                'width'           => 120,
+                'height'          => 40,
+                'characters'      => 6,
+                'theme'           => 'default',
+                'font_adjustment' => 0.70
+                ),
+            'themes'  => array(
+                'default' => array(
+                    'bgcolor'    => array(200,200, 200),
+                    'txtcolor'   => array(10, 30, 80),
+                    'noisecolor' => array(60, 90, 120)
+                    )
+                )
             )
+        
         )
-    );      
+    );   
