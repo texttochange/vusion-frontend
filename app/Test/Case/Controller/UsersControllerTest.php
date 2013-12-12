@@ -267,6 +267,7 @@ class UsersControllerTestCase extends ControllerTestCase
     
     public function testNewPassWord_Reset_Successfully()
     {
+        $hash = Configure::read('Security.salt');
         $users = $this->generate('Users', array(
             'components' => array(
                 'Acl' => array('check'),
@@ -285,7 +286,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $user = array(
             'User'=> array(
                 'id' => 1,
-                'password' => Security::hash($this->hash.'maxmass')
+                'password' => Security::hash($hash.'maxmass')
                 )
             );
          
