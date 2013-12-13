@@ -29,12 +29,21 @@ class CaptchaComponent extends Component
     {
         $settings   = Configure::read('vusion.captcha.settings');
         $themes     = Configure::read('vusion.captcha.themes');
+        $captchaCode = $this->generateCaptchaCode($settings['characters']);
+        $this->_outputImage($settings, $themes, $captchaCode);
+        $this->setCaptchaCode($captchaCode);
+    }
+    
+    
+    /* to avoid the image to be displayed in the unittest output*/
+    protected function _outputImage($settings, $themes, $captchaCode)
+    {
         $width      = $settings['width'];
         $height     = $settings['height'];
         $characters = $settings['characters'];
-        $this->prepare_themes();       
+        $this->_prepare_themes($settings, $themes);       
         $theme       = $settings['theme'];
-        $captchaCode = $this->generateCaptchaCode($characters);
+        $captchaCode = $this->generateCaptchaCode($settings['characters']);
         /* font size will be 75% of the image height */
         $fontSize = $height * $settings['font_adjustment'];
         $image    = @imagecreate($width, $height) or die('Cannot initialize new GD image stream');
@@ -79,17 +88,8 @@ class CaptchaComponent extends Component
         $y       = ($height - $textbox[5])/2;
         $y      -= 5;
         imagettftext($image, $fontSize, 0, $x, $y, $textColor, $font , $captchaCode) or die('Error in imagettftext function');
-        $this->setCaptchaCode($captchaCode);
-        if (ob_get_length() > 0 ) {    //Test necessary during unit testing
-            @ob_end_clean(); //clean buffers, as a fix for 'headers already sent errors..'
-        }
-        $this->_outputImage($image);
-    }
-    
-    
-    /* to avoid the image to be displayed in the unittest output*/
-    protected function _outputImage($image)
-    {
+        @ob_end_clean(); //clean buffers, as a fix for 'headers already sent errors..'
+
         /* output captcha image to browser */
         header('Content-Type: image/jpeg');
         imagejpeg($image);
@@ -109,10 +109,8 @@ class CaptchaComponent extends Component
     }
     
     
-    public function prepare_themes()
+    public function _prepare_themes($settings, $themes)
     {
-        $settings = Configure::read('vusion.captcha.settings');
-        $themes   = Configure::read('vusion.captcha.themes');
         if ($settings['theme']=='random') {
             $themes['random'] = array(
                 'bgcolor'    => array(

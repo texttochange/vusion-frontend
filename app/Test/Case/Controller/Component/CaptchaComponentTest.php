@@ -14,7 +14,7 @@ class TestCaptchaComponentController extends Controller
 /* overwrite the outputImage function to avoid poluting unittest output*/
 class CaptchaConponentWithoutOutput extends CaptchaComponent 
 {
-    protected function _outputImage($image)
+    protected function _outputImage($settings, $themes, $captchaCode)
     {
     }
 }
