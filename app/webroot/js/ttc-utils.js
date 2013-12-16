@@ -624,3 +624,5 @@ function getParameterByName(url, name){
     results = regex.exec(url);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, ""));
 }
+
+

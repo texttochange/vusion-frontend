@@ -62,7 +62,7 @@ class ProgramUnattachedMessagesController extends AppController
     public function index()
     {
         if (!isset($this->params['named']['sort'])) {
-            $order = array('fixed-time' => 'desc');
+            $order = array('created' => 'desc');
         } else {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
