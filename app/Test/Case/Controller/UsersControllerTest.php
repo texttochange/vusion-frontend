@@ -153,9 +153,7 @@ class UsersControllerTestCase extends ControllerTestCase
                 'password' => 'jared'
                 )
             ))
-        ->will($this->returnValue('true'));
-        
-        
+        ->will($this->returnValue('true'));       
         
         $this->testAction("/users/changePassword/".$user['User']['id'],array(
             'method' => 'post',
@@ -225,6 +223,106 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->testAction("/users/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
         $this->assertEqual(count($this->vars['users']), 2);
         
+    }
+    
+    
+    public function testRequestPasswordReset_fail_invalidEmail()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('setFlash')
+                ),
+            'models' => array(
+                'User' => array('find')
+                )
+            ));
+        
+        $users->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+         
+        $user = array(
+            'User'=> array(
+                'id' => 1,
+                'email' => 'vusion@ttc.com'
+                )
+            );         
+        
+        $users->Session
+            ->expects($this->once())
+            ->method('setFlash')
+            ->with('Invalid Email : vusion@ttc2.com');            
+        
+        $this->testAction('/users/requestPasswordReset', array(  
+            'method' => 'post',
+            'data' => array(
+                'emailEnter' => 'vusion@ttc2.com',
+                'captchaField' => '452fGH'
+                )
+            ));
+    }
+    
+    
+    public function testNewPassWord_Reset_Successfully()
+    {
+        $hash = Configure::read('Security.salt');
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read', 'setFlash')
+                ),
+            'models' => array(
+                'User' => array('read', 'save')
+                )
+            ));
+        
+        $users->Acl
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
+        
+        $user = array(
+            'User'=> array(
+                'id' => 1,
+                'password' => Security::hash($hash.'maxmass')
+                )
+            );
+         
+        $users->Session
+            ->expects($this->any())
+            ->method('read')
+            ->will($this->returnValue('User'));       
+        
+        $users->User
+            ->expects($this->once())
+            ->method('read')
+            ->will($this->returnValue($user));
+        
+        $users->User
+            ->expects($this->once())
+            ->method('save')
+            ->with(array(
+            'User' =>array(
+                'id' => 1,
+                'password' => 'mark'
+                )
+            ))
+            ->will($this->returnValue('true')); 
+            
+        $users->Session
+            ->expects($this->once())
+            ->method('setFlash')
+            ->with('Password changed successfully.');
+            
+        $this->testAction('/users/newPassword',array(
+            'method' => 'post',
+            'data' => array(                
+                'newPassword' => 'mark',
+                'confirmPassword' => 'mark'
+                )
+            ));
     }
     
     
