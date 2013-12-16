@@ -30,8 +30,8 @@ class CaptchaComponent extends Component
         $settings   = Configure::read('vusion.captcha.settings');
         $themes     = Configure::read('vusion.captcha.themes');
         $captchaCode = $this->generateCaptchaCode($settings['characters']);
-        $this->_outputImage($settings, $themes, $captchaCode);
         $this->setCaptchaCode($captchaCode);
+        $this->_outputImage($settings, $themes, $captchaCode);        
     }
     
     
@@ -43,7 +43,6 @@ class CaptchaComponent extends Component
         $characters = $settings['characters'];
         $this->_prepare_themes($settings, $themes);       
         $theme       = $settings['theme'];
-        $captchaCode = $this->generateCaptchaCode($settings['characters']);
         /* font size will be 75% of the image height */
         $fontSize = $height * $settings['font_adjustment'];
         $image    = @imagecreate($width, $height) or die('Cannot initialize new GD image stream');
@@ -93,7 +92,7 @@ class CaptchaComponent extends Component
         /* output captcha image to browser */
         header('Content-Type: image/jpeg');
         imagejpeg($image);
-        imagedestroy($image);
+        imagedestroy($image); //stop the flow of instructions
     }
     
     
