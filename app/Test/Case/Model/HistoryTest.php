@@ -367,6 +367,20 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryConditions($filter),
             array('dialogue-id' => '1')
             );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'dialogue-source', 
+                    2 => 'not-is', 
+                    3 => '1'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('dialogue-id' => array('$ne' => '1'))
+            );
     }
     
     public function testFromFilterToQueryConditions_interactionSource()
@@ -383,6 +397,20 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
             array('interaction-id' => '1')
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'interaction-source', 
+                    2 => 'not-is', 
+                    3 => '1'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('interaction-id' => array('$ne' => '1'))
             );
     }
     
