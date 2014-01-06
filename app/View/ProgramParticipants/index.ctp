@@ -82,12 +82,12 @@
 	<table class="participants" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >
-	            <th class="phone"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="enrolled"><?php echo $this->Paginator->sort('enrolled', __('Enrolled'), array('url'=> array('program' => $programDetails['url']))); ?></th> 
-	            <th class="tags"><?php echo $this->Paginator->sort('tags', __('Tags'), array('url'=> array('program' => $programDetails['url']))); ?></th>
-	            <th class="profile"><?php echo $this->Paginator->sort('profile',__('Labels'), array('url'=> array('program' => $programDetails['url']))); ?></th>
+	            <th class="phone"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
+	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
+	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
+	            <th class="enrolled"><?php echo $this->Paginator->sort('enrolled', __('Enrolled'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th> 
+	            <th class="tags"><?php echo $this->Paginator->sort('tags', __('Tags'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
+	            <th class="profile"><?php echo $this->Paginator->sort('profile',__('Labels'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
 	            <th class="action" class="actions"><?php echo __('Actions');?></th>
 	        </tr>
 	      </thead>	      
