@@ -260,12 +260,16 @@ class History extends MongoModel
             'label' => 'dialogue source',
             'operators' => array(
                 'is' => array(
+                    'parameter-type' => 'dialogue'),
+                'not-is' => array(
                     'parameter-type' => 'dialogue')
                 )),
         'interaction-source' => array(
             'label' => 'interaction source',
             'operators' => array(
                 'is' => array(
+                    'parameter-type' => 'interaction'),
+                'not-is' => array(
                     'parameter-type' => 'interaction')
                 )),
         'answer' => array(
@@ -385,10 +389,14 @@ class History extends MongoModel
             } elseif ($filterParam[1] == 'dialogue-source') {
                 if ($filterParam[2] == 'is') {
                     $condition['dialogue-id'] = $filterParam[3];    
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
                 if ($filterParam[2] == 'is') {
-                    $condition['interaction-id'] = $filterParam[3];    
+                    $condition['interaction-id'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['interaction-id'] = array('$ne' => $filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {
