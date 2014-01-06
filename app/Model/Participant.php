@@ -574,7 +574,7 @@ class Participant extends MongoModel
             }
             foreach ($tags as $tag) {
                 if (!$this->validateTag($tag)) {
-                    array_push($this->importErrors, __($this->importErrorMessages['tag-error'], $tag)); 
+                    array_push($this->importErrors, $this->importErrorMessages['tag-error'], $tag); 
                     return false;
                 }
             }
@@ -585,7 +585,7 @@ class Participant extends MongoModel
         
         $ext = end(explode('.', $fileFullPath));
         if (!($ext == 'csv') and !($ext == 'xls')) {
-            array_push($this->importErrors, __($this->importErrorMessages['file-format-error'], $ext)); 
+            array_push($this->importErrors, $this->importErrorMessages['file-format-error'], $ext); 
             return false;
         }
         
@@ -757,7 +757,7 @@ class Participant extends MongoModel
             $labels = $this->array_filter_out_not_label($headers);
         } else {
             if ($data->val(1, 'B')!=null) {
-                array_push($this->importErrors, __($this->importErrorMessages['label-error']));
+                array_push($this->importErrors, $this->importErrorMessages['label-error']);
                 return false;
             }
         }

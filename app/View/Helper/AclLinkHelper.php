@@ -59,7 +59,7 @@ class AclLinkHelper extends AppHelper
                     $url['id'] = $id;
                 };
                 return $this->Html->link(
-                    __($label),
+                    $label,
                     $url,
                     $options
                     );
