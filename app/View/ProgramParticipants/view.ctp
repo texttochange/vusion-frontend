@@ -135,8 +135,8 @@
 			<?php } ?>
 			<td><?php
 			    $objectType = str_replace("-schedule", "", $schedule['Schedule']['object-type']);
-			    echo __(str_replace("dialogue", "message", $objectType)); ?></td>
-			<td><?php echo __($schedule['Schedule']['content']); ?></td>
+			    echo str_replace("dialogue", "message", $objectType); ?></td>
+			<td><?php echo $schedule['Schedule']['content']; ?></td>
 			</tr>
 			<?php endforeach; ?>
 			</table>

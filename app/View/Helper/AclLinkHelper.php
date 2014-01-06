@@ -32,7 +32,7 @@ class AclLinkHelper extends AppHelper
     {
         $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
-            return $this->Html->link(__($title),
+            return $this->Html->link($title,
                 array(
                     'program'=>$url,
                     'controller'=>$controller,
@@ -41,7 +41,7 @@ class AclLinkHelper extends AppHelper
                     )
                 );
         } else {
-            return $this->Html->tag('span',__($title), array('class'=>'ttc-disabled-link'));
+            return $this->Html->tag('span', $title, array('class'=>'ttc-disabled-link'));
         }
     }
 
