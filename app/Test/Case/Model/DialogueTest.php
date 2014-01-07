@@ -155,7 +155,7 @@ class DialogueTestCase extends CakeTestCase
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
-    public function testValidate_keyword_fail()
+    public function testValidate_keyword_fail_regex()
     {
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, keyword 1, other';
@@ -163,6 +163,18 @@ class DialogueTestCase extends CakeTestCase
         $this->assertFalse($this->Dialogue->saveDialogue($dialogue));
         $this->assertEqual(
             "The keyword/alias is(are) not valid.",
+            $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
+    }
+
+    public function testValidate_keyword_fail_usedKeyword()
+    {
+        $usedKeywords = array('other' => array('programName' => 'other program', 'type' => 'request'));
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, other';
+
+        $this->assertFalse($this->Dialogue->saveDialogue($dialogue, $usedKeywords));
+        $this->assertEqual(
+            "'other' already used by a request of program 'other program'.",
             $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
     }
     

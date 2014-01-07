@@ -163,7 +163,7 @@ class InteractionTestCase extends CakeTestCase
     }
     
     
-    public function testValidate_openQuestion_keyword_fail()
+    public function testValidate_openQuestion_keyword_failRegularExp()
     {
         $interaction = $this->Maker->getInteractionOpenQuestion();
         $interaction['keyword'] = "test, keyword 1, other";        
@@ -177,7 +177,7 @@ class InteractionTestCase extends CakeTestCase
     }
     
     
-    public function testValidate_multiKeywordQuestion_keyword_fail()
+    public function testValidate_multiKeywordQuestion_keyword_failRegularExp()
     {
         $interaction = $this->Maker->getInteractionMultiKeywordQuestion();
         $interaction['answer-keywords'][0]['keyword'] = "test, keyword 1, other";        
@@ -187,8 +187,45 @@ class InteractionTestCase extends CakeTestCase
         $this->assertFalse($this->Interaction->validates());
         $this->assertEqual(
             $this->Interaction->validationErrors['answer-keywords'][0]['keyword'][0],        
-            "The keyword/alias is(are) not valid.");
+            "The keyword/alias is(are) not valid.");        
+    }
+
+
+    public function testValidate_openQuestion_keyword_fail_alreadyUsed()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['keyword'] = "test, keyword1, other";        
+        $alreadyUsedKeywords = array(
+            'other' => array(
+                'programName' => 'otherprogram',
+                'type' => 'dialogue'));
         
+        $this->Interaction->setUsedKeywords($alreadyUsedKeywords);
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        $this->assertEqual(
+            $this->Interaction->validationErrors['keyword'][0],        
+            "'other' already used by a dialogue of program 'otherprogram'.");
+    }
+    
+    
+    public function testValidate_multiKeywordQuestion_keyword_fail_alreadyUsed()
+    {
+        $interaction = $this->Maker->getInteractionMultiKeywordQuestion();
+        $interaction['answer-keywords'][0]['keyword'] = "test, other";        
+        $alreadyUsedKeywords = array(
+            'other' => array(
+                'programName' => 'otherprogram',
+                'type' => 'dialogue'));
+
+        $this->Interaction->setUsedKeywords($alreadyUsedKeywords);
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        $this->assertEqual(
+            $this->Interaction->validationErrors['answer-keywords'][0]['keyword'][0],        
+            "'other' already used by a dialogue of program 'otherprogram'.");
     }
     
     

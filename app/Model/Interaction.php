@@ -151,6 +151,10 @@ class Interaction extends VirtualModel
             'validValue' => array(
                 'rule' => array('regex', VusionConst::KEYWORD_REGEX),
                 'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null,
                 )
             ),
         'set-use-template'=> array( 
@@ -348,13 +352,19 @@ class Interaction extends VirtualModel
             )
         );
     
-    
+    //TODO: need clever validation over:
+    // 1) on numbering of choice
+    // 2) notUsedKeyword when ticking allow no space
     public $validateAnswer = array(
         'choice' => array(
             'notempty' => array(
                 'rule' => 'notempty',
                 'message' => 'Actived field cannot be empty.'
-                )
+                ),
+            'validValue' => array(
+                'rule' => array('regex', VusionConst::CHOICE_REGEX),
+                'message' => VusionConst::CHOICE_FAIL_MESSAGE
+                ),
             ),
         'feedbacks' => array(
             'validFeedback' => array(
@@ -380,6 +390,10 @@ class Interaction extends VirtualModel
             'validValue' => array(
                 'rule' => array('regex', VusionConst::KEYWORD_REGEX),
                 'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null,
                 )
             ),
         'feedbacks' => array(
@@ -482,6 +496,27 @@ class Interaction extends VirtualModel
         return true;
     }
     
+
+    public function setUsedKeywords($usedKeywords = array())
+    {
+        $this->usedKeywords = $usedKeywords;
+    }
+
+    public function notUsedKeyword($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $keywords = explode(',', $data[$field]);
+        array_walk($keywords, create_function('&$val', '$val = trim($val);'));
+        foreach($keywords as $keyword) {
+            if (isset($this->usedKeywords[$keyword])) {
+                return __("'%s' already used by a %s of program '%s'.",  $keyword, $this->usedKeywords[$keyword]['type'],  $this->usedKeywords[$keyword]['programName']);
+            }
+        }
+        return true;
+    }
+
     
     public function beforeValidate()
     {

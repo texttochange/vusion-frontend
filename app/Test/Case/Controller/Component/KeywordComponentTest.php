@@ -46,7 +46,6 @@ class KewyordComponentTest extends CakeTestCase
         unset($this->Controller);
     }
 
-
     protected function instanciateModels()
     {
         $options = array('database' => 'testdbprogram');
@@ -56,14 +55,12 @@ class KewyordComponentTest extends CakeTestCase
         $this->Request        = new Request($options);
     }
 
-
     protected function instanciateExternalModels($databaseName)
     {
         $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
         $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
         $this->externalModels['request'] = new Request(array('database' => $databaseName));
     }
-
 
     protected function dropData()
     {
@@ -78,16 +75,15 @@ class KewyordComponentTest extends CakeTestCase
         
     }
 
-
-    public function testAreKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramDialogue() 
+    public function testAreProgramKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramDialogue() 
     {
+        $expected = array('usedKeyword' => array('programName' => 'm6h', 'type' => 'dialogue'));
+
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
         $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-
         $this->externalModels['programSetting']->create();
         $this->externalModels['programSetting']->save(
             array(
@@ -96,21 +92,19 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
-        $this->assertEqual($valid['status'], 'fail');    
+        $valid = $this->KeywordComponent->areProgramKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
+        $this->assertEqual($valid, $expected);    
     }
 
-
-    public function testAreKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramRequest() 
+    public function testAreProgramKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramRequest() 
     {
-        $dialogue = $this->Maker->getOneDialogue('Keyword');
-        
+        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+
+        $dialogue = $this->Maker->getOneDialogue('KEYWORD');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
         $this->externalModels['request']->create();
         $this->externalModels['request']->save($this->Maker->getOneRequest());
-
         $this->externalModels['programSetting']->create();
         $this->externalModels['programSetting']->save(
             array(
@@ -119,13 +113,14 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
-        $this->assertEqual($valid['status'], 'fail');    
+        $valid = $this->KeywordComponent->areProgramKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
+        $this->assertEqual($valid, $expected);    
     }
 
-
-    public function testAreKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramRequest() 
+    public function testAreProgramKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramRequest() 
     {
+        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+
         $this->Request->create();
         $this->Request->save($this->Maker->getOneRequest());
         
@@ -140,13 +135,14 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
-        $this->assertEqual($valid['status'], 'fail');    
+        $valid = $this->KeywordComponent->areProgramKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
+        $this->assertEqual($valid, $expected);    
     }
 
-
-    public function testAreKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramDialogue() 
+    public function testAreProgramKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramDialogue() 
     {
+        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'dialogue'));
+
         $this->Request->create();
         $this->Request->save($this->Maker->getOneRequest());
         
@@ -162,9 +158,67 @@ class KewyordComponentTest extends CakeTestCase
                 )
             );
         
-        $valid = $this->KeywordComponent->AreKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
-        $this->assertEqual($valid['status'], 'fail');    
+        $valid = $this->KeywordComponent->areProgramKeywordsUsedByOtherPrograms('testdbprogram', '256-8181');
+        $this->assertEqual($valid, $expected);    
     }
 
+    public function testAreKeywordsUsedByOtherPrograms_failed_keywordUsedInOtherProgramRequest() 
+    {
+        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+        
+        $this->externalModels['request']->create();
+        $this->externalModels['request']->save($this->Maker->getOneRequest());
+
+        $this->externalModels['programSetting']->create();
+        $this->externalModels['programSetting']->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'256-8181'
+                )
+            );
+        
+        $valid = $this->KeywordComponent->areKeywordsUsedByOtherPrograms('testdbprogram', '256-8181', array('KEYWORD'));
+        $this->assertEqual($valid, $expected);    
+    }
+
+    public function testAreKeywordsUsedByOtherPrograms_failed_keywordUsedInOtherProgramDialogue() 
+    {
+        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'dialogue'));
+
+        $dialogue = $this->Maker->getOneDialogue('Keyword');        
+        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
+        $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
+
+        $this->externalModels['programSetting']->create();
+        $this->externalModels['programSetting']->save(
+            array(
+                'key'=>'shortcode',
+                'value'=>'256-8181'
+                )
+            );
+        
+        $valid = $this->KeywordComponent->areKeywordsUsedByOtherPrograms('testdbprogram', '256-8181', array('KEYWORD'));
+        $this->assertEqual($valid, $expected);    
+    }
+
+    public function testValidationToMessage_request()
+    {
+        $validation = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+        $expected = "'KEYWORD' already used by a request of program 'm6h'.";
+        
+        $this->assertEqual(
+            $expected,
+            $this->KeywordComponent->validationToMessage($validation));
+    }
+
+    public function testValidationToMessage_dialogue()
+    {
+        $validation = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'dialogue'));
+        $expected = "'KEYWORD' already used by a dialogue of program 'm6h'.";
+        
+        $this->assertEqual(
+            $expected,
+            $this->KeywordComponent->validationToMessage($validation));
+    }
 
 }

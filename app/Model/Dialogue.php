@@ -10,8 +10,9 @@ App::uses('Interaction', 'Model');
 class Dialogue extends MongoModel
 {
 
-    var $specific = true;
-    var $name     = 'Dialogue';
+    var $specific     = true;
+    var $name         = 'Dialogue';
+    var $usedKeywords = array();
     
     function getModelVersion()
     {
@@ -80,6 +81,7 @@ class Dialogue extends MongoModel
     public function validateInteractions($check) 
     {
         $index = 0;
+        $this->Interaction->setUsedKeywords($this->usedKeywords);
         foreach ($check['interactions'] as $interaction) {
             $this->Interaction->set($interaction);
             if (!$this->Interaction->validates()) {
@@ -292,8 +294,10 @@ class Dialogue extends MongoModel
     }
 
 
-    public function saveDialogue($dialogue)
+    public function saveDialogue($dialogue, $usedKeywords = array())
     {
+        $this->usedKeywords = $usedKeywords;
+ 
         $dialogue = $this->DialogueHelper->objectToArray($dialogue);
 
          if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
