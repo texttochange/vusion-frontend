@@ -73,16 +73,26 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	            echo '<em><b>' .  __("no credit") . '<br/>' . __("none sent") . '</b></em>';
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
-    	            echo "(";
-    	            echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-delivered'] . '</span>';
-    	            echo "/";
-    	            echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
-    	            echo "/";
-    	            echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-failed'] . '</span>';
-    	            echo "&nbsp -";
-    	            echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-ack'] . '</span>';
-    	            echo "/";
-    	            echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-nack'] . '</span>';
+    	            echo "(";    	            
+    	            if ($isAllowedAccessToDialogues) {
+    	                echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-delivered'] + 1 . '</span>';
+    	                echo "/";
+    	                echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
+    	                echo "/";
+    	                echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-failed'] . '</span>';
+    	                echo "&nbsp -";
+    	                echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-ack'] . '</span>';
+    	                echo "/";
+    	                echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-nack'] . '</span>';
+    	            } else {
+    	                echo '<span style="color:#3B8230">' . 
+    	                $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'] . '</span>';
+    	                echo "/";
+    	                echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
+    	                echo "/";
+    	                echo '<span style="color:#C43C35">' . 
+    	                $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack']. '</span>';    	                 	                
+    	            }   	            
     	            echo ")";
     	        }
     	        ?>
