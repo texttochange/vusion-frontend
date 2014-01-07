@@ -112,8 +112,6 @@ class Participant extends MongoModel
     
     public $importErrorMessages = array(
         'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
-        'tag-error' => 'Error a tag is not valide: %s.',
-        'file-format-error' => 'The file format %s is not supported.',
         'csv-file-error' => 'The csv file cannot be open.');
     
     
@@ -574,7 +572,7 @@ class Participant extends MongoModel
             }
             foreach ($tags as $tag) {
                 if (!$this->validateTag($tag)) {
-                    array_push($this->importErrors, $this->importErrorMessages['tag-error'], $tag); 
+                    array_push($this->importErrors, __('Error a tag is not valide: %s.', $tag)); 
                     return false;
                 }
             }
@@ -585,7 +583,7 @@ class Participant extends MongoModel
         
         $ext = end(explode('.', $fileFullPath));
         if (!($ext == 'csv') and !($ext == 'xls')) {
-            array_push($this->importErrors, $this->importErrorMessages['file-format-error'], $ext); 
+            array_push($this->importErrors, __('The file format %s is not supported.', $ext)); 
             return false;
         }
         
