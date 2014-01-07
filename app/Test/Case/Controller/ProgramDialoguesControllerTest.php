@@ -24,7 +24,7 @@ class TestProgramDialoguesController extends ProgramDialoguesController
 
 class ProgramDialoguesControllerTestCase extends ControllerTestCase
 {
-    
+
     var $programData = array(
         0 => array( 
             'Program' => array(
@@ -89,6 +89,23 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Participant    = new Participant($options);
     }
     
+    protected function setupProgramSettings($shortcode, $timezone)
+    {
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key' => 'shortcode',
+                'value' => $shortcode
+                )
+            );
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key' => 'timezone',
+                'value' => $timezone
+                )
+            );
+    }
     
     protected function instanciateExternalModels($databaseName)
     {
@@ -117,11 +134,13 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
                     'Auth' => array(),
-                    'RequestHandler' => array()
+                    'RequestHandler' => array(),
+                    'Keyword' => array('areKeywordsUsedByOtherPrograms')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
-                    'Group' => array()
+                    'Group' => array(),
+                    'User' => array()
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
@@ -175,9 +194,11 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function testSave()
     {
-        
         $this->mockProgramAccess();
         
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
+
         $dialogue = $this->Maker->getOneDialogue();
         $this->testAction(
             "/testurl/programDialogues/save", 
@@ -191,12 +212,22 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testSave_fail()
+    public function testSave_fail_modelValidation()
     {
-        $dialogue = $this->Maker->getOneDialogue();
+        $dialogues = $this->mockProgramAccess();
+        
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('keyword'))
+        ->will($this->returnValue(array()));
+
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
+
+        $dialogue = $this->Maker->getOneDialogue('keyword');
         unset($dialogue['Dialogue']['interactions'][0]['type-schedule']);
         
-        $this->mockProgramAccess();
         $this->testAction(
             "/testurl/programDialogues/save", 
             array(
@@ -211,29 +242,20 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testSave_fail_usedInOtherProgramDialogue()
+    public function testSave_fail_keywordUsedInOtherProgramDialogue()
     {    
-        $this->mockProgramAccess();
-        
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->will($this->returnValue(array('usedKeyword' => array('programName' => 'other program', 'type' => 'dialogue'))));
+
         $this->instanciateModels();
-        $this->instanciateExternalModels('testdbprogram2');
-        
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
+
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
-        $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);      
-        $this->externalModels['programSetting']->create();
-        $this->externalModels['programSetting']->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'));
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282')); 
-        
+
         $this->testAction(
             '/testurl/programDialogue/save', array(
                 'method' => 'post',
@@ -243,11 +265,30 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             'fail',
             $this->vars['result']['status']);
         $this->assertEquals(
-            "'usedKeyword' already used by a dialogue of program 'Test Name 2'.",
-            $this->vars['result']['message']);        
+            "'usedKeyword' already used by a dialogue of program 'other program'.",
+            $this->vars['result']['message']['Dialogue']['interactions'][0]['keyword'][0]);        
     }
     
-    
+    public function testSave_missingProgramSettings()
+    {
+        $dialogues = $this->mockProgramAccess();
+                
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        
+        $this->testAction(
+            '/testurl/programDialogue/save', array(
+                'method' => 'post',
+                'data' => $dialogue));
+        $this->assertEquals(
+            'fail',
+            $this->vars['result']['status']);
+        $this->assertEquals(
+            'Please set the program settings then try again.',
+            $this->vars['result']['message']);        
+    }
+
+
+  
     public function testActivate_missingProgramSettings()
     {
         $dialogues = $this->mockProgramAccess();
@@ -269,25 +310,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         ->with('Dialogue unknown reload the page and try again.');        
         
         $this->instanciateModels();
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'timezone',
-                'value'=>'Africa/Kampala'
-                )
-            );
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
         
         $this->testAction('/testurl/scripts/activate/wrongId'); 
     }
     
-    
+
     public function testActivate_ok()
     {
         $dialogues = $this->mockProgramAccess();
@@ -305,26 +333,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         ->with('Dialogue activated.');  
         
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
         
         $testDialogue = $this->Maker->getOneDialogue();
         $testDialogue['Dialogue']['auto-enrollment'] = 'all';
-        $savedDialogue = $this->Dialogue->saveDialogue($testDialogue);
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'timezone',
-                'value'=>'Africa/Kampala'
-                )
-            );
-        
+        $savedDialogue = $this->Dialogue->saveDialogue($testDialogue);        
+
         $participant = array(
             'phone' => '+8',
             );
@@ -338,38 +352,21 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
             $savedDialogue['Dialogue']['dialogue-id']
             );
-        
     }
     
     
     public function testValidateKeyword_fail_usedInOtherProgramDialogue()
     {    
-        $this->mockProgramAccess();
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->will($this->returnValue(array('usedKeyword' => array('programName' => 'other program', 'type' => 'dialogue'))));
         
         $this->instanciateModels();
-        $this->instanciateExternalModels('testdbprogram2');
-        
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
-        $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->externalModels['programSetting']->create();
-        $this->externalModels['programSetting']->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            ); 
-        
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
         $this->testAction(
             '/testurl/scripts/validateKeyword', array(
                 'method' => 'post',
@@ -380,81 +377,50 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedKeyword' already used by a dialogue of program 'Test Name 2'.", $this->vars['result']['message']);
+        $this->assertEquals("'usedKeyword' already used by a dialogue of program 'other program'.", $this->vars['result']['message']);
         
     }
     
     
     public function testValidateKeyword_fail_usedInOtherProgramRequest()
     {    
-        $this->mockProgramAccess();
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->will($this->returnValue(array('usedKeyword' => array('programName' => 'other program', 'type' => 'request'))));
         
         $this->instanciateModels();
-        $this->instanciateExternalModels('testdbprogram2');
-        
-        $this->externalModels['request']->create();
-        $this->externalModels['request']->save($this->Maker->getOneRequest());
-        
-        $this->externalModels['programSetting']->create();
-        $this->externalModels['programSetting']->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            ); 
-        
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
+
         $this->testAction(
             '/testurl/scripts/validateKeyword', array(
                 'method' => 'post',
                 'data' => array(
-                    'keyword' => 'KEYWORD',
+                    'keyword' => 'usedKeyword',
                     'dialogue-id' => '')
                 )
             );
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'KEYWORD' already used by a request of program 'Test Name 2'.", $this->vars['result']['message']);
+        $this->assertEquals("'usedKeyword' already used by a request of program 'other program'.", $this->vars['result']['message']);
         
     }
     
     
     public function testValidateKeyword_ok_usedInOtherProgram_withDifferentShortcode()
     {
-        $this->mockProgramAccess();
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->will($this->returnValue(array()));
         
-        $this->instanciateModels(); 
-        $this->instanciateExternalModels('testdbprogram2');
-        
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
-        $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->externalModels['programSetting']->create();
-        $this->externalModels['programSetting']->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8181'
-                )
-            );
-        
-        
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
         $this->testAction(
             '/testurl/programDialogues/validateKeyword', array(
                 'method' => 'post',
@@ -467,7 +433,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->assertEquals('ok', $this->vars['result']['status']);
     }
     
-    
+
     public function testValidateKeyword_ok_usedSameProgram_sameDialogue()
     {
         $dialogues = $this->mockProgramAccess_withoutProgram();
@@ -481,21 +447,19 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     $this->otherProgramData[0])
                 )
             );
-        
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->will($this->returnValue(array()));
         
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
+                
         $this->testAction(
             '/testurl/programDialogues/validateKeyword', array(
                 'method' => 'post',
@@ -522,20 +486,13 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                     $this->otherProgramData[0])
                 )
             );
-        
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
+
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');        
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8181'
-                )
-            );
         
         $this->testAction(
             '/testurl/programDialogues/validateKeyword', array(
@@ -566,16 +523,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
         
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
         $this->Request->create();
         $this->Request->save($this->Maker->getOneRequest());
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8181'
-                )
-            );
         
         $this->testAction(
             '/testurl/programDialogues/validateKeyword', array(
@@ -593,21 +544,19 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function testValidateKeyword_ok_notUsed()
     {
-        $this->mockProgramAccess();
-        
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usingAnOtherKeyword'))
+        ->will($this->returnValue(array()));        
+
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8181'
-                )
-            );
         
         $this->testAction(
             '/testurl/scripts/validateKeyword', array(
@@ -634,27 +583,23 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 array(
                     $this->otherProgramData[0])
                 ));
-        $this->instanciateExternalModels('testdbprogram2');
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->will($this->returnValue(array()));
+  
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
         
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
-        $this->instanciateModels();
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
         $newDialogue = $this->Maker->getOneDialogue('anotherKeyword');
         $newDialogue['Dialogue']['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
         $newDialogue['Dialogue']['name'] = "my newer dialogue";
         $savedDialogue = $this->Dialogue->saveDialogue($newDialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8181'
-                )
-            );
         
         $this->testAction(
             '/testurl/scripts/validateKeyword', array(
@@ -677,27 +622,13 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         ->with('testurl')
         ->will($this->returnValue(true));
         
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($saveDialogue['Dialogue']['dialogue-id']);
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'timezone',
-                'value'=>'Africa/Kampala'
-                )
-            );
-        
+                
         $this->testAction(
             '/testurl/programDialogue/testSendAllMessages/',
             array(
@@ -715,7 +646,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         
     }
     
-    
+   
     public function testDeleteDialogue()
     {        
         $dialogueController = $this->mockProgramAccess();
@@ -724,16 +655,16 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         ->method('_notifyUpdateRegisteredKeywords')
         ->with('testurl')
         ->will($this->returnValue(true));
-        
-        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
-        
+
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         
         $this->testAction('/testurl/programDialogues/delete/'.$savedDialogue['Dialogue']['dialogue-id']);
         
         $this->assertEqual(0, $this->Dialogue->find('count'));
     }
-    
+
     
 }

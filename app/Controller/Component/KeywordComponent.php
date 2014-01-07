@@ -35,6 +35,7 @@ class KeywordComponent extends Component
 
     public function areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords)
     {
+        $usedKeywords = array();
         foreach($keywords as $keywordToValidate) {            
             $programs = $this->Program->find(
                 'all', 
@@ -50,29 +51,27 @@ class KeywordComponent extends Component
                         'database' => $program['Program']['database']));
                     $foundKeyword = $dialogueModel->useKeyword($keywordToValidate);
                     if ($foundKeyword) {
-                        return array(
-                            $foundKeyword => array(
-                                    'programName' => $program['Program']['name'],
-                                    'type' => 'dialogue'));
+                        $usedKeywords[$foundKeyword] = array(
+                            'programName' => $program['Program']['name'],
+                            'type' => 'dialogue');
                     }
                     $requestModel = new Request(array('database' => $program['Program']['database']));
                     $foundKeyword = $requestModel->find('keyword', array('keywords' => $keywordToValidate));
                     if ($foundKeyword) {
-                        return array(
-                            $foundKeyword => array(
-                                    'programName' => $program['Program']['name'],
-                                    'type' => 'request'));
+                        $usedKeywords[$foundKeyword] = array(
+                            'programName' => $program['Program']['name'],
+                            'type' => 'request');
                     }
                 }
             }
         }
-        return true;
+        return $usedKeywords;
     }
 
     //For now only display the first validation error
     public function validationToMessage($validations)
     {
-        if ($validations === true) {
+        if ($validations === array()) {
             return null;
         }
         foreach($validations as $keyword => $errors) {
