@@ -272,6 +272,14 @@ class History extends MongoModel
                 'not-is' => array(
                     'parameter-type' => 'interaction')
                 )),
+        'request-source' => array(
+            'label' => 'request source',
+            'operators' => array(
+                'is' => array(
+                    'parameter-type' => 'request'),
+                'not-is' => array(
+                    'parameter-type' => 'request')
+                )),
         'answer' => array(
             'label' => 'answer',
             'operators' => array(
@@ -397,6 +405,12 @@ class History extends MongoModel
                     $condition['interaction-id'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'not-is') {
                     $condition['interaction-id'] = array('$ne' => $filterParam[3]);
+                }
+            } elseif ($filterParam[1] == 'request-source') {
+                if ($filterParam[2] == 'is') {
+                    $condition['request-id'] = new MongoId($filterParam[3]);
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {

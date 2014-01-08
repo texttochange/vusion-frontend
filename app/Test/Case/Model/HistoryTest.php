@@ -413,6 +413,38 @@ class HistoryTestCase extends CakeTestCase
             array('interaction-id' => array('$ne' => '1'))
             );
     }
+
+
+    public function testFromFilterToQueryConditions_requestSource()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'request-source', 
+                    2 => 'is', 
+                    3 => '52cd91759fa4da0051000004'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('request-id' => new MongoId('52cd91759fa4da0051000004'))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'request-source', 
+                    2 => 'not-is', 
+                    3 => '52cd91759fa4da0051000004'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('request-id' => array('$ne' => new MongoId('52cd91759fa4da0051000004')))
+            );
+    }
     
     
     public function testFromFilterToQueryConditions_answer()
