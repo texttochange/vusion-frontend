@@ -67,22 +67,12 @@ class ProgramUnattachedMessagesController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         $this->paginate = array('order'=>$order);
-        
-        if ($this->Session->read('Auth.User.id') != null) {
-            $isAllowedAccessToDialogues = $this->Acl->check(array(
-                'User' => array(
-                    'id' => $this->Session->read('Auth.User.id')
-                    ),
-                ), 'controllers/ProgramDialogues');
-        }
-        
         $unattachedMessages = $this->paginate();
+        
         foreach($unattachedMessages as &$unattachedMessage)
         {  
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
-            $status = array();
-            
-            
+            $status = array();          
             
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
                 $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
@@ -115,7 +105,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $unattachedMessage['UnattachedMessage']['created-by'] = ($user ? $user['User']['username']: __("unknown"));
             }
         }
-        $this->set(compact('unattachedMessages', 'isAllowedAccessToDialogues'));
+        $this->set(compact('unattachedMessages'));
     }
     
     
