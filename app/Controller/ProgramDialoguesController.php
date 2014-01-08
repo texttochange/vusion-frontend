@@ -60,7 +60,7 @@ class ProgramDialoguesController extends AppController
         $programDb  = $this->Session->read($this->params['program']."_db");
 
         if ($this->request->is('post')) {
-            if (!$this->_hasAllProgramSettings()) {
+            if (!$this->ProgramSetting->hasRequired()) {
                 $this->set('result', array(
                         'status'=>'fail', 
                         'message' => __('Please set the program settings then try again.')));
@@ -144,7 +144,7 @@ class ProgramDialoguesController extends AppController
         $programUrl = $this->params['program'];
         $dialogueId = $this->params['id'];
         
-        if (!$this->_hasAllProgramSettings()) {
+        if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
             
@@ -175,7 +175,7 @@ class ProgramDialoguesController extends AppController
         $keywordToValidate = $this->request->data['keyword'];
         $dialogueId        = $this->request->data['dialogue-id'];
         
-        if (!$this->_hasAllProgramSettings()) {
+        if (!$this->ProgramSetting->hasRequired()) {
             $this->set('result', array(
                 'status' => 'fail', 
                 'message' => __('Please set the program settings then try again.')));
@@ -255,17 +255,6 @@ class ProgramDialoguesController extends AppController
     protected function _notifyUpdateRegisteredKeywords($workerName)
     {
         return $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
-    }
-    
-    
-    protected function _hasAllProgramSettings()
-    {
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key'=>'shortcode'));
-        $timezone = $this->ProgramSetting->find('getProgramSetting', array('key'=>'timezone'));        
-        if ($shortCode and $timezone) {
-            return true;
-        }
-        return false;
     }
     
     
