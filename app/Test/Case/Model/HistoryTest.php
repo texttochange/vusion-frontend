@@ -381,6 +381,32 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryConditions($filter),
             array('dialogue-id' => array('$ne' => '1'))
             );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'dialogue-source', 
+                    2 => 'is-any'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('dialogue-id' => array('$exists' => true))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'dialogue-source', 
+                    2 => 'not-is-any'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('dialogue-id' => array('$exists' => false))
+            );
     }
     
     public function testFromFilterToQueryConditions_interactionSource()
@@ -411,6 +437,91 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
             array('interaction-id' => array('$ne' => '1'))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'interaction-source', 
+                    2 => 'is-any'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('interaction-id' => array('$exists' => true))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'interaction-source', 
+                    2 => 'not-is-any'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('interaction-id' => array('$exists' => false))
+            );
+    }
+
+
+    public function testFromFilterToQueryConditions_requestSource()
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'request-source', 
+                    2 => 'is', 
+                    3 => '52cd91759fa4da0051000004'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('request-id' => new MongoId('52cd91759fa4da0051000004'))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'request-source', 
+                    2 => 'not-is', 
+                    3 => '52cd91759fa4da0051000004'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('request-id' => array('$ne' => new MongoId('52cd91759fa4da0051000004')))
+            );
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'request-source', 
+                    2 => 'is-any'),
+                )
+            ); 
+        
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('request-id' => array('$exists' => true))
+            );
+        
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'request-source', 
+                    2 => 'not-is-any'),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array('request-id' => array('$exists' => false))
             );
     }
     

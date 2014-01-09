@@ -158,6 +158,8 @@ var localized_labels = {
     "in": "<?php echo __('in')?>",
     "not-in": "<?php echo __('not in')?>",
     "is": "<?php echo __('is')?>",
+    "is-any": "<?php echo __('is any')?>",
+    "not-is-any": "<?php echo __('not is any')?>",
     "not-is": "<?php echo __('not is')?>",
     "from": "<?php echo __('from')?>",
     "to": "<?php echo __('to')?>", 
