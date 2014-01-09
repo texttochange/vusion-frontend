@@ -110,11 +110,6 @@ class Participant extends MongoModel
         );
     
     
-    public $importErrorMessages = array(
-        'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
-        'csv-file-error' => 'The csv file cannot be open.');
-    
-    
     public function validateTags($check)
     {
         $index = 0;
@@ -655,7 +650,7 @@ class Participant extends MongoModel
         $uniqueNumber = array();
         
         if (($handle = fopen($fileFullPath,"r")) === false) {
-            array_push($this->importErrors, $this->importErrorMessages['csv-file-error']);
+            array_push($this->importErrors, __('The csv file cannot be open.'));
             return false;
         }
         
@@ -676,7 +671,7 @@ class Participant extends MongoModel
                     continue;
                 } else {
                     if (count($headers) > 1) {
-                        array_push($this->importErrors, $this->importErrorMessages['label-error']); 
+                        array_push($this->importErrors, __('The file cannot be imported. The first line should be label names, the first label must be "phone".')); 
                         return false;
                     }
                     $headers = array(
@@ -755,7 +750,7 @@ class Participant extends MongoModel
             $labels = $this->array_filter_out_not_label($headers);
         } else {
             if ($data->val(1, 'B')!=null) {
-                array_push($this->importErrors, $this->importErrorMessages['label-error']);
+                array_push($this->importErrors, __('The file cannot be imported. The first line should be label names, the first label must be "phone".'));
                 return false;
             }
         }
