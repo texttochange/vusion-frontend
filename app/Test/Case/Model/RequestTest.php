@@ -61,6 +61,7 @@ class RequestTestCase extends CakeTestCase
         
     }
 
+
     public function testGetKeywords()
     {
         $request['Request'] = array(
@@ -125,6 +126,26 @@ class RequestTestCase extends CakeTestCase
 
     }
     
+
+    public function testGetRequestFilterOptions()
+    {
+        $request['Request'] = array('keyword' => 'keyword1');
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+
+        $otherRequest['Request'] = array('keyword' => 'keyword2');
+        $this->Request->create();
+        $savedOtherRequest = $this->Request->save($otherRequest);
+
+        $expected = array(
+            $savedRequest['Request']['_id'].'' => 'keyword1',
+            $savedOtherRequest['Request']['_id'].'' => 'keyword2');
+   
+        $this->assertEqual(
+            $expected,
+            $this->Request->getRequestFilterOptions());
+    }
+
     
     public function testValidateKeyword_Fail_With_Invalid_Conditions()
     {
