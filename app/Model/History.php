@@ -262,15 +262,23 @@ class History extends MongoModel
                 'is' => array(
                     'parameter-type' => 'dialogue'),
                 'not-is' => array(
-                    'parameter-type' => 'dialogue')
-                )),
+                    'parameter-type' => 'dialogue'),
+                'is-any' => array(
+                    'parameter-type' => 'none'),
+                'not-is-any' => array(
+                    'parameter-type' => 'none'),
+                )), 
         'interaction-source' => array(
             'label' => 'interaction source',
             'operators' => array(
                 'is' => array(
                     'parameter-type' => 'interaction'),
                 'not-is' => array(
-                    'parameter-type' => 'interaction')
+                    'parameter-type' => 'interaction'),
+                'is-any' => array(
+                    'parameter-type' => 'none'),
+                'not-is-any' => array(
+                    'parameter-type' => 'none'),
                 )),
         'request-source' => array(
             'label' => 'request source',
@@ -278,7 +286,11 @@ class History extends MongoModel
                 'is' => array(
                     'parameter-type' => 'request'),
                 'not-is' => array(
-                    'parameter-type' => 'request')
+                    'parameter-type' => 'request'),
+                'is-any' => array(
+                    'parameter-type' => 'none'),
+                'not-is-any' => array(
+                    'parameter-type' => 'none'),
                 )),
         'answer' => array(
             'label' => 'answer',
@@ -399,18 +411,30 @@ class History extends MongoModel
                     $condition['dialogue-id'] = $filterParam[3];    
                 } elseif ($filterParam[2] == 'not-is') {
                     $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
+                } elseif ($filterParam[2] == 'is-any') {
+                    $condition['dialogue-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['dialogue-id'] = array('$exists' => false);
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
                 if ($filterParam[2] == 'is') {
                     $condition['interaction-id'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'not-is') {
                     $condition['interaction-id'] = array('$ne' => $filterParam[3]);
+                } elseif ($filterParam[2] == 'is-any') {
+                    $condition['interaction-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['interaction-id'] = array('$exists' => false);
                 }
             } elseif ($filterParam[1] == 'request-source') {
                 if ($filterParam[2] == 'is') {
                     $condition['request-id'] = new MongoId($filterParam[3]);
                 } elseif ($filterParam[2] == 'not-is') {
                     $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
+                } elseif ($filterParam[2] == 'is-any') {
+                    $condition['request-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['request-id'] = array('$exists' => false);
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {
