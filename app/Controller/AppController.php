@@ -100,10 +100,14 @@ class AppController extends Controller
                         'table' => 'groups',                    
                         'type' => 'INNER',
                         'conditions' => array(
-                            $this->Session->read('Auth.User.group_id') => 'groups.id'
+                            $this->Session->read('Auth.User.id') => 'groups.id'
                             )
                         )
-                    ),'fields' => array('groups.name')));
+                    ),
+                'conditions' => array(
+                    'groups.id' => $this->Session->read('Auth.User.group_id')
+                    ),
+                'fields' => array('groups.name')));
             $this->Session->write('accessLevelName', $accessLevelName);
             
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
@@ -113,8 +117,6 @@ class AppController extends Controller
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
-        
-        print_r($this->Session->read('accessLevelName'));
     }
     
     
