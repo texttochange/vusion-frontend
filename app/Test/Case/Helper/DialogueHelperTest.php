@@ -142,6 +142,47 @@ class DialogueHelperTestCase extends CakeTestCase
         $this->assertEqual(null, $DialogueHelper->convertDateFormat(null));
     }
 
-    
+
+    //TODO: Fail to work well with unicode character with accent
+    public function testIsUsedKeyword()
+    {
+        $usedKeywords = array(
+            'keyword1' => array('programName' => 'myprog1', 'type' => 'dialogue'),
+            'keyword2' => array('programName' => 'myprog2', 'type' => 'dialogue'),
+            'kéÉywórd2' => array('programName' => 'myprog2', 'type' => 'dialogue'));
+
+        $this->assertEqual(
+            array('keyword1' => array('programName' => 'myprog1', 'type' => 'dialogue')),
+            DialogueHelper::isUsedKeyword('keyword1', $usedKeywords));
+
+        $this->assertEqual(
+            array('keyword2' => array('programName' => 'myprog2', 'type' => 'dialogue')),
+            DialogueHelper::isUsedKeyword('keyWord2', $usedKeywords));
+        $this->assertEqual(
+            array('keyword2' => array('programName' => 'myprog2', 'type' => 'dialogue')),
+            DialogueHelper::isUsedKeyword('keYword2', $usedKeywords));
+
+        $this->assertEqual(
+            array('kéÉywórd2' => array('programName' => 'myprog2', 'type' => 'dialogue')),
+            DialogueHelper::isUsedKeyword('kéÉywórd2', $usedKeywords));
+    }
+
+
+    public function testCmpKeywords()
+    {
+        //NOT CASE SENSITIVE
+        $this->assertTrue(DialogueHelper::cmpKeywords('Keyword1', 'keyWord1'));
+        
+        //French
+        //NOT ACCENT SENSITIVE
+        //$this->assertTrue(DialogueHelper::cmpKeywords('àâäéèêëîïôùûü', 'aaaeeeiiouuu'));
+        //NOT LIGATURE SENSITIVE
+        //$this->assertTrue(DialogueHelper::cmpKeywords('æœ', 'aeoe'));        
+
+        //Spanish Accent
+        //NOT ACCENT SENSITIVE
+        //$this->assertTrue(DialogueHelper::cmpKeywords('áéíóúüñ', 'aeiouun'));
+        
+    }
     
 }

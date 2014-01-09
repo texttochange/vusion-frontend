@@ -3,12 +3,15 @@ App::uses('MongoModel', 'Model');
 App::uses('Action', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
+App::uses('DialogueHelper', 'Lib');
+
 
 class Request extends MongoModel
 {
     
-    var $specific = true;
-    var $name     = 'Request';
+    var $specific     = true;
+    var $name         = 'Request';
+    var $usedKeywords = array();
     
     
     function getModelVersion()
@@ -33,7 +36,7 @@ class Request extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $this->Action = new Action();
+        $this->Action         = new Action();
     }
     
     
@@ -44,9 +47,13 @@ class Request extends MongoModel
                 'rule' => 'notempty',
                 'message' => 'Please enter a keyword for this request.'
                 ),
-            'format' => array(
-                'rule' => array('keywordFormat'),
-                'message' => 'This keyword format is not valid.'
+            'validFormat' => array(
+                'rule' => VusionConst::KEYPHRASE_REGEX,
+                'message' => VusionConst::KEYPHRASE_FAIL_MESSAGE
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => 'noMessage'
                 )
             ),
         'set-no-request-matching-try-keyword-only' => array(
@@ -97,17 +104,20 @@ class Request extends MongoModel
                 ),
             )
         );
+
     
-    
-    public function keywordFormat($check) 
+    public function notUsedKeyword($check)
     {
-        $keywordRegex = '/^[\p{L}\p{Mn}\p{N}\s]+(,(\s)?[\p{L}\p{Mn}\p{N}\s]+)*$/u';
-        if (preg_match($keywordRegex, $check['keyword'])) 
-            return true;
-        return false;
+        $keywords = DialogueHelper::fromKeyphrasesToKeywords($check['keyword']);
+        foreach($keywords as $keyword) {
+            if (isset($this->usedKeywords[$keyword])) {
+                return __("'%s' already used by a %s of program '%s'.",  $keyword, $this->usedKeywords[$keyword]['type'],  $this->usedKeywords[$keyword]['programName']);
+            }
+        }
+        return true;
     }
     
-    
+
     public function validateArray($check)
     {
         if (!is_array(reset($check))) {
@@ -323,6 +333,13 @@ class Request extends MongoModel
             } 
         } 
         return null;
+    }
+
+
+    public function saveRequest($request, $usedKeywords = array())
+    {
+        $this->usedKeywords = $usedKeywords;
+        return $this->save($request);
     }
     
     

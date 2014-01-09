@@ -150,10 +150,10 @@ class ScriptMaker
     }
 
 
-    public function getOneRequest()
+    public function getOneRequest($keyphrase = 'KEYWORD request')
     {
         $request['Request'] = array(
-            'keyword' => 'KEYWORD request',
+            'keyword' => $keyphrase,
             'responses' => array(
                 array(
                     'content' => 'thanks message',

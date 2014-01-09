@@ -166,7 +166,7 @@ class RequestTestCase extends CakeTestCase
     }
 
 
-    public function testSave_validateKeyword_fail()
+    public function testSave_validateKeyword_fail_format()
     {
         $request['Request'] = array(
             'keyword' => 'key request, keyw?ord, otherkeyword request'
@@ -175,11 +175,26 @@ class RequestTestCase extends CakeTestCase
         $savedRequest = $this->Request->save($request);
         $this->assertFalse($savedRequest);
         $this->assertEquals(
-            'This keyword format is not valid.',
+            'This keyword/keyphrase is not valid.',
             $this->Request->validationErrors['keyword'][0]);
     }
 
-    
+
+    public function testSave_validateKeyword_fail_alreadyUsed()
+    {
+        $request['Request'] = array(
+            'keyword' => 'key request, keyword, ÉotherkeYword request, für');
+        $usedKeywords = array('Éotherkeyword' => array('programName' => 'otherprogram', 'type' => 'dialogue'));
+
+        $this->Request->create();
+        $savedRequest = $this->Request->saveRequest($request, $usedKeywords);
+        $this->assertFalse($savedRequest);
+        $this->assertEquals(
+            "'Éotherkeyword' already used by a dialogue of program 'otherprogram'.",
+            $this->Request->validationErrors['keyword'][0]);
+    }    
+
+
     public function testSave_validateContent_fail_apostrophe_not_allowed()
     {
         $request = array(
@@ -295,5 +310,5 @@ class RequestTestCase extends CakeTestCase
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
 
-    
+  
 }

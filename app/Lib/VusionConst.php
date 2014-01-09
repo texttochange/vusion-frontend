@@ -5,6 +5,9 @@ class VusionConst
     const KEYWORD_REGEX = '/^[\p{L}\p{Mn}\p{N}]+(,(\s)?[\p{L}\p{Mn}\p{N}]+)*$/u';
     const KEYWORD_FAIL_MESSAGE = 'The keyword/alias is(are) not valid.';
 
+    const KEYPHRASE_REGEX = '/^[\p{L}\p{Mn}\p{N}\s]+(,(\s)?[\p{L}\p{Mn}\p{N}\s]+)*$/u';
+    const KEYPHRASE_FAIL_MESSAGE = 'This keyword/keyphrase is not valid.';
+
     const CHOICE_REGEX = '/^[\p{L}\p{N}\s]+$/u';
     const CHOICE_FAIL_MESSAGE = 'The choice is(are) not valid.';
 

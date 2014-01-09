@@ -147,7 +147,6 @@ class ProgramDialoguesController extends AppController
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
-            
         } else {
             $savedDialogue = $this->Dialogue->makeActive($dialogueId);
             if ($savedDialogue) {

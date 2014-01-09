@@ -237,19 +237,57 @@ class DialogueHelper
         return array();
     }
 
+
     public function getRequestKeywordToValidate($value) 
     {
         $requests = explode(", ", $value);
         $keywords = "";
         foreach ($requests as &$request) {
             $request = explode(" ", $request);
-            //if (isset($request[1]))
-            //    unset($request[1]);
             $request = $request[0];
         }
         return implode(", ",$requests);
     }
+
+
+    public static function getRequestKeywords($request)
+    {
+         if (!isset($request['keyword'])) {
+             return array();
+         }
+         return fromKeyphrasesToKewywords($request['keyword']);
+    }
+
     
+    static public function fromKeyphrasesToKeywords($keyphrases) 
+    {
+        $keyphraseArray = explode(",", $keyphrases);
+        array_walk($keyphraseArray, create_function('&$val', '$val = trim($val);'));
+        $keywords = array();
+        foreach ($keyphraseArray as $keyphrase) {
+            $words = explode(" ", $keyphrase);
+            $keywords[] = strtolower($words[0]);
+        }
+        return $keywords;
+    }
+    
+    static public function cmpKeywords($keyword1, $keyword2)
+    {
+        return (0 == strcasecmp($keyword1, $keyword2));
+    }
+
+    //TODO might require to normalise the keywords
+    static public function isUsedKeyword($keyword, $usedKeywords)
+    {
+        $keyword = strtolower($keyword);
+        $usedKeyword = array_change_key_case($usedKeywords);
+        if (isset($usedKeywords[$keyword])) {
+            return array($keyword => $usedKeywords[$keyword]);
+        } else {
+            return false;
+        }
+    }
+
     
     public function compareDialogueByName($a, $b)
     {
@@ -265,3 +303,5 @@ class DialogueHelper
     
 
 }
+
+

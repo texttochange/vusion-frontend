@@ -82,7 +82,8 @@ class KewyordComponentTest extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
+        $otherDialogue = $this->Maker->getOneDialogue('usedkeyword');
+        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($otherDialogue);
         $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         $this->externalModels['programSetting']->create();
         $this->externalModels['programSetting']->save(
@@ -104,7 +105,7 @@ class KewyordComponentTest extends CakeTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         $this->externalModels['request']->create();
-        $this->externalModels['request']->save($this->Maker->getOneRequest());
+        $this->externalModels['request']->save($this->Maker->getOneRequest('keyword request'));
         $this->externalModels['programSetting']->create();
         $this->externalModels['programSetting']->save(
             array(
@@ -119,13 +120,13 @@ class KewyordComponentTest extends CakeTestCase
 
     public function testAreProgramKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramRequest() 
     {
-        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+        $expected = array('Keyword2' => array('programName' => 'm6h', 'type' => 'request'));
 
         $this->Request->create();
-        $this->Request->save($this->Maker->getOneRequest());
+        $this->Request->save($this->Maker->getOneRequest('keyword1, Keyword2 other'));
         
         $this->externalModels['request']->create();
-        $this->externalModels['request']->save($this->Maker->getOneRequest());
+        $this->externalModels['request']->save($this->Maker->getOneRequest('keyword2 stuff'));
 
         $this->externalModels['programSetting']->create();
         $this->externalModels['programSetting']->save(

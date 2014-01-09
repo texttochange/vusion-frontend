@@ -76,6 +76,21 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting = new ProgramSetting($options);
     }
     
+
+    protected function setupProgramSettings($shortcode, $timezone)
+    {
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key' => 'shortcode',
+                'value' => $shortcode));
+        $this->ProgramSetting->create();
+        $this->ProgramSetting->save(
+            array(
+                'key' => 'timezone',
+                'value' => $timezone));
+    }
+
     
     protected function instanciateExternalModels($databaseName)
     {
@@ -115,7 +130,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
                     'Auth' => array(),
-                    'RequestHandler' => array()
+                    'RequestHandler' => array(),
+                    'Keyword' => array('areKeywordsUsedByOtherPrograms')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -142,17 +158,9 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         
         return $requests;
     }
+
     
-    /*
-    public function testIndex()
-    {
-    $this->mockProgramAccess();
-    $this->testAction("testurl/programRequests/index");   
-    $this->assertEqual(array(), $this->vars['requests']);
-    }
-    */
-    
-    public function testAdd()
+    public function testAdd_ok()
     {
         $requests = $this->mockProgramAccess();
         $requests
@@ -167,13 +175,55 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             "testurl/programRequests/add",
             array(
                 'method' => 'post',
-                'data' => $request
-                )
-            );
+                'data' => $request));
+    }
+
+
+    public function testAdd_fail_noProgramSettings()
+    {
+        $requests = $this->mockProgramAccess();
+        
+        $request = $this->Maker->getOneRequest();
+        
+        $this->testAction(
+            "testurl/programRequests/add",
+            array(
+                'method' => 'post',
+                'data' => $request));
+
+         $this->assertEquals('fail', $this->vars['result']['status']);
     }
     
     
-    public function testEdit()
+    public function testEdit_ok()
+    {
+        $requests = $this->mockProgramAccess();
+        $requests
+        ->expects($this->once())
+        ->method('_notifyUpdateRegisteredKeywords')
+        ->with('testurl')
+        ->will($this->returnValue(true));
+        
+        $request = $this->Maker->getOneRequest();
+        
+        $this->instanciateModels();
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $savedRequest['Request']['keyword'] = 'OTHERKEYWORD';
+        
+        $this->testAction(
+            "testurl/programRequests/edit/" . $savedRequest['Request']['_id'],
+            array(
+                'method' => 'POST',
+                'data' => $savedRequest
+                )
+            );
+        
+        $this->assertEquals('OTHERKEYWORD', $requests->data['Request']['keyword']);
+    }
+
+
+    public function testEdit_fail_()
     {
         $requests = $this->mockProgramAccess();
         $requests
@@ -248,22 +298,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     
     public function testValidateKeyword_fail_sameProgram_dialogueUse()
     {
-        
-        $dialogue = $this->Maker->getOneDialogue();
-        
+        $this->mockProgramAccess();
+
         $this->instanciateModels();
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
+
+        $dialogue = $this->Maker->getOneDialogue();        
         $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive($saveDialogue['Dialogue']['_id']);
-        $this->mockProgramAccess();
         
         $this->testAction(
             "testurl/programRequests/validateKeyword",
@@ -276,26 +318,17 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testValidateKeyword_sameProgram_requestUse()
+    public function testValidateKeyword_fail_sameProgramDifferentRequest()
     {
-        $request = $this->Maker->getOneRequest();
-        
+        $requestes = $this->mockProgramAccess();
+
         $this->instanciateModels();
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
-        $request['Request']['keyword'] = 'otherkeyword request';
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
+
+        $request = $this->Maker->getOneRequest('otherkeyword request');
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
-        
-        $this->mockProgramAccess();
-        
+                
         $this->testAction(
             "testurl/programRequests/validateKeyword",
             array(
@@ -308,7 +341,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             "'otherkeyword request' already used in the same program by a request.", 
             $this->vars['result']['message']
             );
-        
+    }
+
+    public function testValidateKeyword_ok_sameProgramSameRequest()
+    {
         $requests = $this->mockProgramAccess_withoutProgram();
         $requests->Program
         ->expects($this->any())
@@ -316,11 +352,20 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->will(
             $this->onConsecutiveCalls(
                 $this->programData, 
-                array(
-                    $this->otherProgramData[0])
-                )
-            );
-        
+                array($this->otherProgramData[0])));
+        $requests->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('otherkeyword'))
+        ->will($this->returnValue(array()));
+
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');     
+
+        $request = $this->Maker->getOneRequest('otherkeyword request');
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+     
         $this->testAction(
             "testurl/programRequests/validateKeyword",
             array(
@@ -332,26 +377,22 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             );
         
         $this->assertEquals('ok', $this->vars['result']['status']);
-        
-        
     }
     
     
     public function testValidateKeyword_ok()
     {
-        
+        $requests = $this->mockProgramAccess();
+
+        $requests->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('otherkeyword'))
+        ->will($this->returnValue(array()));
+
         $this->instanciateModels();
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
-        
-        $this->mockProgramAccess();
-        
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
+                
         $this->testAction(
             "testurl/programRequests/validateKeyword",
             array(
@@ -362,22 +403,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->assertEquals('ok', $this->vars['result']['status']);
         
     }
-    
-    public function testValidateKeyword_fail_otherProgram_dialogueUse_requestUse()
+
+   
+    public function testValidateKeyword_fail_otherProgramUseDialogue()
     {
-        
-        $request = $this->Maker->getOneRequest();
-        $dialogue = $this->Maker->getOneDialogue();
-        
-        $this->instanciateModels();
-        
-        $this->ProgramSetting->create();
-        $this->ProgramSetting->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
         
         $requests = $this->mockProgramAccess_withoutProgram();
         $requests->Program
@@ -386,23 +415,16 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->will(
             $this->onConsecutiveCalls(
                 $this->programData, 
-                array(
-                    $this->otherProgramData[0])
-                )
-            );
+                array($this->otherProgramData[0])));
+         $requests->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('otherkeyword'))
+        ->will($this->returnValue(array(
+            'otherkeyword' => array('programName' => 'other program', 'type' => 'request'))));
         
-        $this->instanciateExternalModels("testdbprogram2");
-        $dialogue['Dialogue']['interactions'][0]['keyword'] = "otherkeyword";
-        $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
-        $this->externalModels['dialogue']->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
-        
-        $this->externalModels['programSetting']->create();
-        $this->externalModels['programSetting']->save(
-            array(
-                'key'=>'shortcode',
-                'value'=>'8282'
-                )
-            );
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
         
         $this->testAction(
             "testurl/programRequests/validateKeyword",
@@ -411,12 +433,13 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'data' => array ('keyword'=>'otherkeyword')
                 )
             );
-        $this->assertEquals('fail', $this->vars['result']['status']);   
-        
-        $request['Request']['keyword'] = 'key join';
-        $this->externalModels['request']->create();
-        $this->externalModels['request']->save($request);
-        
+        $this->assertEquals(
+            'fail', 
+            $this->vars['result']['status']);
+    }
+
+    public function testValidationKeyword_fail_otherProgramUserRequest()
+    {        
         $requests = $this->mockProgramAccess_withoutProgram();
         $requests->Program
         ->expects($this->any())
@@ -424,20 +447,27 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->will(
             $this->onConsecutiveCalls(
                 $this->programData, 
-                array(
-                    $this->otherProgramData[0])
-                )
-            );
+                array($this->otherProgramData[0])));
+        $requests->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('otherkeyword'))
+        ->will($this->returnValue(array(
+            'otherkeyword' => array('programName' => 'other program', 'type' => 'dialogue'))));
+    
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
         $this->testAction(
             "testurl/programRequests/validateKeyword",
             array(
                 'method' => 'post',
-                'data' => array ('keyword'=>'key')
+                'data' => array ('keyword'=>'otherkeyword')
                 )
             );
         $this->assertEquals('fail', $this->vars['result']['status']);
         
     }
-    
-    
+
+  
 }
