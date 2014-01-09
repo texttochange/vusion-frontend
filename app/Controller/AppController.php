@@ -9,7 +9,7 @@ App::uses('PredefinedMessage', 'Model');
 class AppController extends Controller
 {
     
-    var $uses = array('Program', 'Group');
+    var $uses = array('Program', 'Group', 'User');
     
     var $components = array(
         'Session',
@@ -89,11 +89,23 @@ class AppController extends Controller
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             $this->set(compact('programDetails')); 
-
+            
             //In case of a Json request, no need to set up the variables
             if ($this->params['ext']=='json' or $this->params['ext']=='csv')
                 return;
-
+            
+            $accessLevelName =  $this->User->find('first', array(
+                'joins'=> array(
+                    array(
+                        'table' => 'groups',                    
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            $this->Session->read('Auth.User.group_id') => 'groups.id'
+                            )
+                        )
+                    ),'fields' => array('groups.name')));
+            $this->Session->write('accessLevelName', $accessLevelName);
+            
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
             $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);      
             $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
@@ -101,6 +113,8 @@ class AppController extends Controller
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
+        
+        print_r($this->Session->read('accessLevelName'));
     }
     
     

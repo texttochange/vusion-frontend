@@ -234,6 +234,7 @@ class UsersController extends AppController
             'default',
             array('class'=>'message success')
             );
+        $this->Session->destroy('accessLevelName');
         $this->redirect($this->Auth->logout());
     }
     

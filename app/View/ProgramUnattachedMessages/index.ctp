@@ -74,7 +74,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
     	            echo "(";
-    	            $isAccessLevel         = $this->Session->read('Auth.User.group_id');
+    	            $isAccessLevel         = $this->Session->read('accessLevelName');
                     $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
     	            $sumFailedAndNackCount   = $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack'];
                     if ($isAccessLevel == 5 ) {
