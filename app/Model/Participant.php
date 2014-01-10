@@ -567,7 +567,7 @@ class Participant extends MongoModel
             }
             foreach ($tags as $tag) {
                 if (!$this->validateTag($tag)) {
-                    array_push($this->importErrors, __('Error a tag is not valide: %s.', $tag)); 
+                    array_push($this->importErrors, __("Error a tag is not valide: %s.", $tag)); 
                     return false;
                 }
             }
@@ -578,7 +578,7 @@ class Participant extends MongoModel
         
         $ext = end(explode('.', $fileFullPath));
         if (!($ext == 'csv') and !($ext == 'xls')) {
-            array_push($this->importErrors, __('The file format %s is not supported.', $ext)); 
+            array_push($this->importErrors, __("The file format %s is not supported.", $ext)); 
             return false;
         }
         
@@ -650,7 +650,7 @@ class Participant extends MongoModel
         $uniqueNumber = array();
         
         if (($handle = fopen($fileFullPath,"r")) === false) {
-            array_push($this->importErrors, __('The csv file cannot be open.'));
+            array_push($this->importErrors, __("The csv file cannot be open."));
             return false;
         }
         
@@ -671,7 +671,7 @@ class Participant extends MongoModel
                     continue;
                 } else {
                     if (count($headers) > 1) {
-                        array_push($this->importErrors, __('The file cannot be imported. The first line should be label names, the first label must be "phone".')); 
+                        array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'.")); 
                         return false;
                     }
                     $headers = array(
@@ -750,7 +750,7 @@ class Participant extends MongoModel
             $labels = $this->array_filter_out_not_label($headers);
         } else {
             if ($data->val(1, 'B')!=null) {
-                array_push($this->importErrors, __('The file cannot be imported. The first line should be label names, the first label must be "phone".'));
+                array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'."));
                 return false;
             }
         }
