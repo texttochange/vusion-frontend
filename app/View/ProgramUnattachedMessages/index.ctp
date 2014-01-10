@@ -74,10 +74,10 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
     	            echo "(";
-    	            $isAccessGroup           = $this->Session->read('accessLevelName.groups.name');
-                    $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
+    	            $userGroupName           = $this->Session->read('groupName.Group.name');
+    	            $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
     	            $sumFailedAndNackCount   = $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack'];
-                    if ($isAccessGroup == 'partner messager' ) {
+                    if ($userGroupName == 'partner messager' ) {
     	                echo '<span style="color:#3B8230">' . $sumDeliveredAndAckCount . '</span>';
     	                echo "/";
     	                echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
