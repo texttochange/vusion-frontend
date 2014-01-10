@@ -170,6 +170,8 @@
 <!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
  <copy file="${vusiondir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Config/vusion.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Config/email.php" todir="/tmp/vusion" overwrite="true"/>
  <copy file="${vusiondir}/app/Test/data/restore_data.sh" todir="/tmp/vusion" overwrite="true"/>
  <mkdir dir="/tmp/vusion/backend"/> 
  <copy todir="/tmp/vusion/backend" overwrite="true">
@@ -202,6 +204,8 @@
  </exec>
 <!-- restor config files -->
  <copy file="/tmp/vusion/database.php" todir="${vusiondir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/vusion.php" todir="${vusiondir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/email.php" todir="${vusiondir}/app/Config" overwrite="true"/>
  <copy file="/tmp/vusion/restore_data.sh" todir="${vusiondir}/app/Test/data" overwrite="true"/>
  <copy todir="${vusiondir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
