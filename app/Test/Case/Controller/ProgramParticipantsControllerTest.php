@@ -268,7 +268,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants->Session
         ->expects($this->once())
         ->method('setFlash')
-        ->with('The file cannot be imported. The first line should be label names, the first label must be "phone".');
+        ->with('The file cannot be imported. The first line should be label names, the first label must be phone.');
         
         $this->testAction(
             "/testUrl/participantsController/import", 
