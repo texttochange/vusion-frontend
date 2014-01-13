@@ -286,7 +286,6 @@ class ProgramParticipantsController extends AppController
     
     protected function _getConditions()
     {
-        // print_r($this->params);
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
         
         if (!isset($filter['filter_param'])) 
