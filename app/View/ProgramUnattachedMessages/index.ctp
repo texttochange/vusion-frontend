@@ -74,7 +74,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
     	            echo "(";
-    	            $userGroupName           = $this->Session->read('groupName.Group.name');
+    	            $userGroupName           = $this->Session->read('groupName');
     	            $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
     	            $sumFailedAndNackCount   = $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack'];
                     if ($userGroupName == 'partner messager' ) {

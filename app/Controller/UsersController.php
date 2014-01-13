@@ -211,8 +211,9 @@ class UsersController extends AppController
     {
         if ($this->request->is('post')) {
             if ($this->Auth->login()) {
-                $group = $this->Group->findById($this->Session->read('Auth.User.group_id'));
-                $this->Session->write('groupName', $group);                
+                $group     = $this->Group->findById($this->Session->read('Auth.User.group_id'));
+                $groupName = $group['Group']['name'];
+                $this->Session->write('groupName', $groupName);                
                 $this->Session->setFlash(__('Login successful.'),
                     'default',
                     array('class'=>'message success')
