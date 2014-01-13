@@ -6,6 +6,9 @@ class BigNumberHelper extends AppHelper
     
     public function replaceBigNumbers($count, $maxCharacters=5) 
     {   
+        if (!is_numeric($count)) {
+            return $count;
+        }
         $postfix = "";
         if ($count < 1000) {
             $countFormat= number_format($count / 1);

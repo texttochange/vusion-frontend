@@ -537,6 +537,22 @@ function loadFilterParameterOptions(parameter, url) {
     });
 }
 
+function loadPaginationCount(url) {
+    //Dirty: passing of the rule require rencoding the & in the url parameters 
+    url = url.replace(/&amp;/g, "&");
+    $.ajax({
+        url: url,
+        success: function(data){
+            if (data['status'] == 'ok') {
+                $('.ttc-page-count').attr('title', data['paginationCount']);
+                $('#paging-count').text(data['paginationCount']);
+            }
+        },
+        timeout: 0,
+        error: vusionAjaxError
+    });
+}
+
 function loadProgramStats(){
     var  programs = window.app.programs;
     if(programs != null){

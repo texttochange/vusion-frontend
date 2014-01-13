@@ -159,12 +159,28 @@ class History extends MongoModel
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
-            return $this->find('count', array('conditions' => $conditions));
+            $maxPaginationCount = 20;
+
+            $command = array(
+                'count' => $this->useTable,
+                'query' => $conditions,
+                'limit' => $maxPaginationCount);
+            
+            $result = $this->query($command);
+            if ($result['ok']) {
+                if ($result['n'] == $maxPaginationCount) {
+                    return __('many');
+                } else {
+                    return $result['n']; 
+                }
+            }
+            //TODO: what to return if result['ok'] is not true??
+            
+            //return $this->find('count', array('conditions' => $conditions, 'limit' => 10));
         } catch (MongoCursorTimeoutException $e) {
             return $this->find('count');
         }
     }
-    
     
     public function _findScriptFilter($state, $query, $results = array())
     {
