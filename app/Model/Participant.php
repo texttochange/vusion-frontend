@@ -671,7 +671,7 @@ class Participant extends MongoModel
                     continue;
                 } else {
                     if (count($headers) > 1) {
-                        array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be phone.")); 
+                        array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'.")); 
                         return false;
                     }
                     $headers = array(
