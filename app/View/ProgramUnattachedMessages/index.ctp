@@ -77,7 +77,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	            $userGroupName           = $this->Session->read('groupName');
     	            $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
     	            $sumFailedAndNackCount   = $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack'];
-                    if ($userGroupName == 'partner messager' ) {
+                    if ($userGroupName == 'partner messager' || $userGroupName == 'partner') {
     	                echo '<span style="color:#3B8230">' . $sumDeliveredAndAckCount . '</span>';
     	                echo "/";
     	                echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
