@@ -14,10 +14,11 @@ App::uses('FilterException', 'Lib');
 class ProgramParticipantsController extends AppController
 {
     
-    public $uses = array('Participant', 'History');
+    var $uses       = array('Participant', 'History');
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
-        'Js' => array('Jquery')
+        'Js' => array('Jquery'),
+        'Paginator' => array('className' => 'BigPaginator')
         );
     
     
