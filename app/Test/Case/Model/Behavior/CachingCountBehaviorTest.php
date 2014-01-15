@@ -8,9 +8,8 @@ class CachingCountBehaviorTest extends CakeTestCase
     public function setUp()
     {
         $this->settings = array(
-            'redis' => array(
-                'host' => '127.0.0.1', 'port' => '6379'), 
-            'redisPrefix' => 'vusion:programs',
+            'redis' => array('host' => '127.0.0.1', 'port' => '6379'), 
+            'redisPrefix' => array('base' => 'vusion', 'programs' => 'programs'),
             'cacheExpire' => array(
                 1 => 30,          #1sec cache 30sec
                 5 => 240          #5sec cache  4min
@@ -40,10 +39,10 @@ class CachingCountBehaviorTest extends CakeTestCase
         $testModel->Behaviors->load('CachingCount', $this->settings);
         $result = $testModel->count();
         $this->assertEqual($result, 0);
-        $this->assertTrue($this->redis->exists('vusion:programs:testdbprogram:cachedcounts:b:1;'));
+        $this->assertTrue($this->redis->exists('vusion:programs:testdbprogram:cachedcounts:History:b:1;'));
         $this->assertEqual(
             30000,
-            $this->redis->ttl('vusion:programs:testdbprogram:cachedcounts:b:1;'));
+            $this->redis->ttl('vusion:programs:testdbprogram:cachedcounts:History:b:1;'));
     }
 
 
@@ -53,7 +52,7 @@ class CachingCountBehaviorTest extends CakeTestCase
         $testModel->Behaviors->load('CachingCount', $this->settings);
         $result = $testModel->count(true, 10);
         $this->assertEqual($result, 0);
-        $this->assertFalse($this->redis->exists('vusion:programs:testdbprogram:cachedcounts:b:1;'));
+        $this->assertFalse($this->redis->exists('vusion:programs:testdbprogram:cachedcounts:History:b:1;'));
     }
 
 

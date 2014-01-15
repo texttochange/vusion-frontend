@@ -254,7 +254,7 @@ class ProgramHistoryController extends AppController
     }
     
 
-    public function getPaginationCount()
+    public function paginationCount()
     {
         if ($this->params['ext'] !== 'json') {
             return; 
@@ -264,9 +264,7 @@ class ProgramHistoryController extends AppController
             $this->_getConditions($defaultConditions),
             null,
             -1);
-        $results = array('status' => 'ok', 'paginationCount' => $paginationCount);
-        $this->set(compact('results'));
-        $this->render('ajax_results');
+        $this->set('paginationCount',$paginationCount);
     }
 
 

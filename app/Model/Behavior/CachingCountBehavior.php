@@ -8,7 +8,7 @@ class CachingCountBehavior extends ModelBehavior {
         if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = array(
 			    'redis' => array('host' => '127.0.0.1', 'port' => '6379'), 
-			    'redisPrefix' => 'vusion:programs',
+			    'redisPrefix' => array('base' => 'vusion', 'programs' => 'programs'),
 			    'cacheExpire' => array(
 			        1 => 1,           #1sec cache 30sec
 			        5 => 240          #5sec cache  4min
@@ -25,7 +25,7 @@ class CachingCountBehavior extends ModelBehavior {
     protected function _getCachedCountKey($model, $conditions)
     {
         $str = serialize($conditions);
-        return $this->settings[$model->alias]['redisPrefix']. ':' . $model->databaseName . ':cachedcounts:' . $str;
+        return $this->settings[$model->alias]['redisPrefix']['base'] . ':' . $this->settings[$model->alias]['redisPrefix']['programs'] .':'. $model->databaseName . ':cachedcounts:' . $model->alias . ':' . $str;
     }
 
 
@@ -45,8 +45,7 @@ class CachingCountBehavior extends ModelBehavior {
         $cachedCountKey = $this->_getCachedCountKey($model, $conditions);
         $cachedCount = $this->redis->get($cachedCountKey);
         if ($cachedCount) {
-            echo "Hit the count cache $cachedCount<br/>";
-            return $cachedCount;
+            return  (int) $cachedCount;
         } 
         $command = array(
             'count' => $model->useTable,

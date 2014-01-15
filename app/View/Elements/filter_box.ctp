@@ -5,12 +5,12 @@
     	$count = $this->Paginator->counter('{:count}');
     	if ($count === 'many') {
     	    $countTitle = __('Loading...');
-    	    $count = __('many');
+    	    $count = '<img src="/img/ajax-loader.gif">';
     	    $urlParameters = $this->params['url'];
             //$urlParameters['parameter'] = $parameter;
             $ajaxUrl = $this->Html->url(array(
                 'program' => $programDetails['url'], 
-                'action' => 'getPaginationCount',
+                'action' => 'paginationCount',
                 'ext' => 'json',
                 '?' => $urlParameters));
             $this->Js->get('document')->event(

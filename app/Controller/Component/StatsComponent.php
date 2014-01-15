@@ -35,8 +35,11 @@ class StatsComponent extends Component
     
     public function getProgramStat($model, $conditions=array())
     {
-        try {            
-            return $model->find('count', $conditions);
+        try {
+            if (isset($conditions['conditions'])) {
+                $conditions = $conditions['conditions'];
+            }
+            return $model->count($conditions);
         } catch (Exception $e) { 
             return 'N/A';
         }

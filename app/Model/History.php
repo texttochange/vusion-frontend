@@ -109,14 +109,10 @@ class History extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $redisConfig = Configure::read('vusion.redis');
         $this->Behaviors->load('CachingCount', array(
-            'redis' => $redisConfig,
-            'redisPrefix' => 'vusion:programs',
-            'cacheExpire' => array(
-                1 => 1,
-                5 => 60,
-                10 => 400)));
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheExpire' => Configure::read('vusion.cacheCountExpire')));
 
         $this->DialogueHelper = new DialogueHelper();
     }
@@ -168,7 +164,11 @@ class History extends MongoModel
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
-            $maxPaginationCount = 40;
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
             
             $result = $this->count($conditions, $maxPaginationCount);
             if ($result == $maxPaginationCount) {
@@ -177,7 +177,7 @@ class History extends MongoModel
                 return $result; 
             }            
         } catch (MongoCursorTimeoutException $e) {
-            return $this->find('count');
+            return 'many';
         }
     }
     

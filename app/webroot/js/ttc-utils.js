@@ -545,7 +545,7 @@ function loadPaginationCount(url) {
         success: function(data){
             if (data['status'] == 'ok') {
                 $('.ttc-page-count').attr('title', data['paginationCount']);
-                $('#paging-count').text(data['paginationCount']);
+                $('#paging-count').text(data['roundedCount']);
             }
         },
         timeout: 0,

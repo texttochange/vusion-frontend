@@ -64,7 +64,12 @@ class Schedule extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $options                 = array('database'=>$id['database']);
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheExpire' => Configure::read('vusion.cacheCountExpire')));
+
+        $options                 = array('database' => $id['database']);
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->DialogueHelper    = new DialogueHelper();
     }
@@ -80,6 +85,27 @@ class Schedule extends MongoModel
         return $results;
     }
     
+
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+
     
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
