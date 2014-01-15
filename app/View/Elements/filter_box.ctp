@@ -22,7 +22,7 @@
     	}
     	echo "<span class='ttc-page-count' title ='$countTitle'>";
         echo $this->Paginator->counter('<span id="paging-start">{:start}</span> - <span id="paging-end">{:end}</span> of ');
-        echo "<span id='paging-count'>".$this->BigNumber->replaceBigNumbers($count, 4)."</span>";       
+        echo "<span id='paging-count'>".$this->BigNumber->replaceBigNumbers($count, 3)."</span>";       
         echo "</span>";
         echo $this->Paginator->prev(
             '<', 
