@@ -25,6 +25,7 @@ class BigNumberHelper extends AppHelper
         if ($maxCharacters > 0 && strlen($countFormat) > $maxCharacters) {
             $toRemove = $maxCharacters - strlen($countFormat);
             $countFormat = substr($countFormat, 0, $toRemove);
+            $countFormat = rtrim($countFormat, '.');
         } 
         return $countFormat . $postfix;   
     }   
