@@ -8,7 +8,7 @@ App::uses('VusionConst', 'Lib');
 class History extends MongoModel
 {
     
-    var $specific = true;    
+    var $specific = true;
     
     //var $name = 'ParticipantStat';
     var $useDbConfig = 'mongo';    
@@ -109,6 +109,15 @@ class History extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
+        $redisConfig = Configure::read('vusion.redis');
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => $redisConfig,
+            'redisPrefix' => 'vusion:programs',
+            'cacheExpire' => array(
+                1 => 1,
+                5 => 60,
+                10 => 400)));
+
         $this->DialogueHelper = new DialogueHelper();
     }
     
@@ -159,24 +168,14 @@ class History extends MongoModel
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
-            $maxPaginationCount = 20;
-
-            $command = array(
-                'count' => $this->useTable,
-                'query' => $conditions,
-                'limit' => $maxPaginationCount);
+            $maxPaginationCount = 40;
             
-            $result = $this->query($command);
-            if ($result['ok']) {
-                if ($result['n'] == $maxPaginationCount) {
-                    return __('many');
-                } else {
-                    return $result['n']; 
-                }
-            }
-            //TODO: what to return if result['ok'] is not true??
-            
-            //return $this->find('count', array('conditions' => $conditions, 'limit' => 10));
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
         } catch (MongoCursorTimeoutException $e) {
             return $this->find('count');
         }

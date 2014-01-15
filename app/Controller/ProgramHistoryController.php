@@ -260,9 +260,10 @@ class ProgramHistoryController extends AppController
             return; 
         }
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-        $paginationCount = $this->History->find(
-            'count', 
-            array('conditions' => $this->_getConditions($defaultConditions)));
+        $paginationCount = $this->History->count(
+            $this->_getConditions($defaultConditions),
+            null,
+            -1);
         $results = array('status' => 'ok', 'paginationCount' => $paginationCount);
         $this->set(compact('results'));
         $this->render('ajax_results');
