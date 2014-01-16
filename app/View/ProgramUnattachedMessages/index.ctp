@@ -71,8 +71,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
                 } else {
                     echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ;
                 }
-                ?>"
-             >
+                ?>">
     	        <?php 
     	        if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     	            echo '<em><b>' .  __("%s scheduled", $unattachedMessage['UnattachedMessage']['count-schedule']) . '</b></em>';
