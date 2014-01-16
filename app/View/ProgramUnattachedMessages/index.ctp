@@ -21,12 +21,19 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="unattached-messages" cellpadding="0" cellspacing="0">
+	<?php $userGroupName = $this->Session->read('groupName');?>
 	<thead>
 	    <tr>
 	        <th class="name"><?php echo $this->Paginator->sort('name', null, array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="send-to"><?php echo $this->Paginator->sort('to', __("Send To"), array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="content"><?php echo $this->Paginator->sort('content', null, array('url'=> array('program' => $programDetails['url'])));?></th>
-	        <th class="delivery" title="<?php echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ?>">
+	        <th class="delivery" title="<?php
+	        if (in_array($userGroupName, array('partner manager', 'partner'))) {
+	            echo __('AllSent(Delivered/Pending/Failed)'); 
+	        } else {
+	            echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ;
+	        }
+	        ?>">
 	        <?php echo $this->Paginator->sort( ''  ,_('Delivery'), array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="date-time"><?php echo $this->Paginator->sort('fixed-time', __('Time'), array('url'=> array('program' => $programDetails['url'])));?></th>
 	        <th class="creator"><?php echo $this->Paginator->sort('created-by', __('Creator'), array('url'=> array('program' => $programDetails['url'])));?></th>
@@ -73,8 +80,7 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	            echo '<em><b>' .  __("no credit") . '<br/>' . __("none sent") . '</b></em>';
     	        } else {
     	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
-    	            echo "(";
-    	            $userGroupName           = $this->Session->read('groupName');
+    	            echo "(";    	           
     	            $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
     	            $sumFailedAndNackCount   = $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack'];
                     if (in_array($userGroupName, array('partner manager', 'partner'))) {
