@@ -64,45 +64,45 @@ echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetai
     	            }
     	        }
     	        ?>&nbsp;</td>
-    	    <td class="content"><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>		
-    	    <td class="delivery" title="<?php
-                if (in_array($userGroupName, array('partner manager', 'partner'))) {
-                    echo __('AllSent(Delivered/Pending/Failed)'); 
-                } else {
-                    echo __('AllSent(Delivered/Pending/Failed - Ack/Nack)') ;
-                }
-                ?>">
-    	        <?php 
+    	    <td class="content"><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>
+    	        <?php    	        
     	        if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
-    	            echo '<em><b>' .  __("%s scheduled", $unattachedMessage['UnattachedMessage']['count-schedule']) . '</b></em>';
+    	            echo '<td class="delivery"><em><b>' .  __("%s scheduled", $unattachedMessage['UnattachedMessage']['count-schedule']) . '</b></em></td>';
     	        } else if (isset($unattachedMessage['UnattachedMessage']['count-no-credit'])) {
-    	            echo '<em><b>' .  __("no credit") . '<br/>' . __("none sent") . '</b></em>';
+    	            echo '<td class="delivery"><em><b>' .  __("no credit") . '<br/>' . __("none sent") . '</b></em></td>';
     	        } else {
-    	            echo $unattachedMessage['UnattachedMessage']['count-sent'];
-    	            echo "(";    	           
     	            $sumDeliveredAndAckCount = $unattachedMessage['UnattachedMessage']['count-delivered'] + $unattachedMessage['UnattachedMessage']['count-ack'];	            
     	            $sumFailedAndNackCount   = $unattachedMessage['UnattachedMessage']['count-failed'] + $unattachedMessage['UnattachedMessage']['count-nack'];
-                    if (in_array($userGroupName, array('partner manager', 'partner'))) {
+    	            
+    	            if (in_array($userGroupName, array('partner manager', 'partner'))) {
+    	                echo '<td class="delivery" title="' . __('AllSent(Delivered/Pending/Failed)') .'">';
+    	                echo $unattachedMessage['UnattachedMessage']['count-sent'];
+    	                echo '('; 
     	                echo '<span style="color:#3B8230">' . $sumDeliveredAndAckCount . '</span>';
-    	                echo "/";
+    	                echo '/';
     	                echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
-    	                echo "/";
+    	                echo '/';
     	                echo '<span style="color:#C43C35">' . $sumFailedAndNackCount . '</span>';
-    	            } else {    	                
+    	                echo ')';
+    	                echo '</td>';
+    	            } else {
+    	                echo '<td class="delivery" title="' . __('AllSent(Delivered/Pending/Failed - Ack/Nack)') .'">';
+    	                echo $unattachedMessage['UnattachedMessage']['count-sent'];
+    	                echo '(';
     	                echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-delivered'] . '</span>';
-    	                echo "/";
+    	                echo '/';
     	                echo '<span style="color:#FF8C0F">' . $unattachedMessage['UnattachedMessage']['count-pending'] . '</span>';
-    	                echo "/";
+    	                echo '/';
     	                echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-failed'] . '</span>';
-    	                echo "&nbsp -";
+    	                echo '&nbsp -';
     	                echo '<span style="color:#3B8230">' . $unattachedMessage['UnattachedMessage']['count-ack'] . '</span>';
-    	                echo "/";
+    	                echo '/';
     	                echo '<span style="color:#C43C35">' . $unattachedMessage['UnattachedMessage']['count-nack'] . '</span>';
-    	            }   	            
-    	            echo ")";
+    	                echo ')';
+    	                echo '</td>';
+    	            }
     	        }
     	        ?>
-    	    </td>
     	    <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $unattachedMessage['UnattachedMessage']['fixed-time']); ?>&nbsp;</td>
     	    <td id="direction-css"><?php echo $unattachedMessage['UnattachedMessage']['created-by']; ?>&nbsp;</th>
     	    <td class="action actions">
