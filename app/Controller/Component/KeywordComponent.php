@@ -68,6 +68,41 @@ class KeywordComponent extends Component
         return $usedKeywords;
     }
 
+/*
+    public function getKeywordsUsedSameShortcode($programDB, $shortCode)
+    {
+        $keywords = array();
+        $programs = $this->Program->find(
+            'all', 
+            array('conditions'=> 
+                array('Program.database !=' => $programDb)
+                )
+            );
+        foreach ($programs as $program) {
+            $programSettingModel = new ProgramSetting(array(
+                'database' => $program['Program']['database']));
+            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
+                $dialogueModel = new Dialogue(array(
+                    'database' => $program['Program']['database']));
+                $foundKeyword = $dialogueModel->getKeywords();
+                if ($foundKeyword) {
+                    $usedKeywords[$foundKeyword] = array(
+                        'programName' => $program['Program']['name'],
+                        'type' => 'dialogue');
+                }
+                $requestModel = new Request(array('database' => $program['Program']['database']));
+                $foundKeyword = $requestModel->find('keyword', array('keywords' => $keywordToValidate));
+                if ($foundKeyword) {
+                    $usedKeywords[$foundKeyword] = array(
+                        'programName' => $program['Program']['name'],
+                        'type' => 'request');
+                }
+            }
+        }
+        return $keywords;
+    }
+*/
+
     //For now only display the first validation error
     public function validationToMessage($validations)
     {

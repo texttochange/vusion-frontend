@@ -77,7 +77,7 @@ class KewyordComponentTest extends CakeTestCase
 
     public function testAreProgramKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramDialogue() 
     {
-        $expected = array('usedKeyword' => array('programName' => 'm6h', 'type' => 'dialogue'));
+        $expected = array('usedkeyword' => array('programName' => 'm6h', 'type' => 'dialogue'));
 
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
@@ -99,7 +99,7 @@ class KewyordComponentTest extends CakeTestCase
 
     public function testAreProgramKeywordsUsedByOtherPrograms_failed_dialogueKeywordUsedInOtherProgramRequest() 
     {
-        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+        $expected = array('keyword' => array('programName' => 'm6h', 'type' => 'request'));
 
         $dialogue = $this->Maker->getOneDialogue('KEYWORD');
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
@@ -142,7 +142,7 @@ class KewyordComponentTest extends CakeTestCase
 
     public function testAreProgramKeywordsUsedByOtherPrograms_failed_requestKeywordUsedInOtherProgramDialogue() 
     {
-        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'dialogue'));
+        $expected = array('keyword' => array('programName' => 'm6h', 'type' => 'dialogue'));
 
         $this->Request->create();
         $this->Request->save($this->Maker->getOneRequest());
@@ -165,7 +165,7 @@ class KewyordComponentTest extends CakeTestCase
 
     public function testAreKeywordsUsedByOtherPrograms_failed_keywordUsedInOtherProgramRequest() 
     {
-        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'request'));
+        $expected = array('keyword' => array('programName' => 'm6h', 'type' => 'request'));
         
         $this->externalModels['request']->create();
         $this->externalModels['request']->save($this->Maker->getOneRequest());
@@ -184,7 +184,7 @@ class KewyordComponentTest extends CakeTestCase
 
     public function testAreKeywordsUsedByOtherPrograms_failed_keywordUsedInOtherProgramDialogue() 
     {
-        $expected = array('KEYWORD' => array('programName' => 'm6h', 'type' => 'dialogue'));
+        $expected = array('keyword' => array('programName' => 'm6h', 'type' => 'dialogue'));
 
         $dialogue = $this->Maker->getOneDialogue('Keyword');        
         $savedDialogue = $this->externalModels['dialogue']->saveDialogue($dialogue);
