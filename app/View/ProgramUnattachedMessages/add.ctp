@@ -38,7 +38,7 @@
     ## Form starts
     echo $this->Form->create('UnattachedMessage', array('type' => 'file'));
     ## Name
-    echo $this->Form->input('name', array('id' => 'name'));
+    echo $this->Form->input('name', array('id' => 'name', 'label' => __('Name')));
     ## SentTo 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
@@ -125,7 +125,7 @@
             );
         $this->Js->get('#predefined-message')->event('change','addPredefinedContent();');
     }
-    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5));
+    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5, 'label' => 'Content'));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";

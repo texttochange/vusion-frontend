@@ -29,8 +29,8 @@
 		    <?php foreach ($templates as $template): ?>
 		    <tr>
 		        <td class="prefix"><?php echo h($template['Template']['name']); ?>&nbsp;</td>
-		        <td class="prefix"><?php echo __($template['Template']['type-template']) ?></td>
-		        <td class="details"><?php echo __($template['Template']['template']) ?></td>
+		        <td class="prefix"><?php echo $template['Template']['type-template'] ?></td>
+		        <td class="details"><?php echo $template['Template']['template'] ?></td>
 		        <td class="actions action">
 		            <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $template['Template']['_id'])); ?>
 		            <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $template['Template']['_id']), null, __('Are you sure you want to delete "%s"?', $template['Template']['name'])); ?>

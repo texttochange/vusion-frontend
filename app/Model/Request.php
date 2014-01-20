@@ -294,6 +294,15 @@ class Request extends MongoModel
         return $keywords;
     }
     
+    public function getRequestFilterOptions()
+    {
+        $requests = $this->find('all');
+        $requestFilterOptions = array();
+        foreach($requests as $request) {
+            $requestFilterOptions[$request['Request']['_id'].''] = $request['Request']['keyword'];
+        }
+        return $requestFilterOptions;
+    }
     
     protected function _findKeyphrase($state, $query, $results = array())
     {
