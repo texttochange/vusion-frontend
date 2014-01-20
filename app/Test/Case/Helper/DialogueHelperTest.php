@@ -168,21 +168,39 @@ class DialogueHelperTestCase extends CakeTestCase
     }
 
 
-    public function testCmpKeywords()
+    public function testCleanKeyword()
     {
         //NOT CASE SENSITIVE
-        $this->assertTrue(DialogueHelper::cmpKeywords('Keyword1', 'keyWord1'));
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('KeywOrd1'), 
+            'keyword1');
         
         //French
-        //NOT ACCENT SENSITIVE
-        //$this->assertTrue(DialogueHelper::cmpKeywords('àâäéèêëîïôùûü', 'aaaeeeiiouuu'));
+        //NOT ACCENT SENSITIVE 
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('áàâä éèêë íîï óô úùûü'), 
+            'aaaa eeee iii oo uuuu');
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('ÁÀÂÄ ÉÈÊË ÍÎÏ ÓÔ ÚÙÛÜ'), 
+            'aaaa eeee iii oo uuuu');
         //NOT LIGATURE SENSITIVE
-        //$this->assertTrue(DialogueHelper::cmpKeywords('æœ', 'aeoe'));        
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('æÆœŒ'), 
+            'aeaeoeoe');        
+        //Other
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('çÇ'),
+            'cc');
+
 
         //Spanish Accent
         //NOT ACCENT SENSITIVE
-        //$this->assertTrue(DialogueHelper::cmpKeywords('áéíóúüñ', 'aeiouun'));
-        
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('áéíóúüñ'),
+            'aeiouun');
+        $this->assertEqual(
+            DialogueHelper::cleanKeyword('ÁÉÍÓÚÜÑ'),
+            'aeiouun');
     }
     
 }

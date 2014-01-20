@@ -276,6 +276,22 @@ class DialogueHelper
         return (0 == strcasecmp($keyword1, $keyword2));
     }
 
+    // THIS FUNCTION SHOULDN'T BE CHANGE WITHOUT BACKEND EQUIVALENT FUNCTION
+    // The function is located in utils/keyword.py
+    static public function cleanKeyword($string) {
+        $string = preg_replace( '@\x{00c6}@u', "AE", $string);    // Æ => AE
+        $string = preg_replace( '@\x{00e6}@u', "ae", $string);    // æ => ae
+        $string = preg_replace( '@\x{0152}@u', "OE", $string);    // Œ => OE
+        $string = preg_replace( '@\x{0153}@u', "oe", $string);    // œ => oe
+
+        $a = 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåçèéêëìíîïðñòóôõöøùúûüýýþÿŔŕ '; 
+        $b = 'aaaaaaceeeeiiiidnoooooouuuuybsaaaaaaceeeeiiiidnoooooouuuuyybyRr '; 
+        $string = utf8_decode($string);
+        $string = strtr($string, utf8_decode($a), $b); 
+        $string = strtolower($string); 
+        return utf8_encode($string); 
+    }
+
     //TODO might require to normalise the keywords
     static public function isUsedKeyword($keyword, $usedKeywords)
     {
