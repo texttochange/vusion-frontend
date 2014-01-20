@@ -4,9 +4,9 @@
 	<fieldset>
 		
 	<?php
-		echo $this->Form->input('name');		
+		echo $this->Form->input('name', array('label' => __('Name')));		
 		echo $this->Form->input('url');
-		echo $this->Form->input('database');
+		echo $this->Form->input('database', array('label' => __('Database')));
 		echo "<div>";
 		echo $this->Html->tag('label',__('Import Dialogues and Request From'));
 		echo "<br/>";
