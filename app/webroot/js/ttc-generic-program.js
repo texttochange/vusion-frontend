@@ -748,7 +748,7 @@ function duplicateChoiceValidation(value, element, param) {
 
 
 function formatChoiceValidation(value, element, param) {    
-    var choiceRegex = XRegExp('^[\\p{l}\\p{N}\\s]*$');
+    var choiceRegex = XRegExp('^[\\p{L}\\p{N}\\s]*$');
     if (choiceRegex.test(value)) { 
         return true;
     }
