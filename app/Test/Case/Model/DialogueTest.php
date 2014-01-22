@@ -187,32 +187,40 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue(isset($savedDialogue));
     }
 
+
     public function testFindAllKeywordInDialogues()
     {
 
-        $dialogueOne = $this->Maker->getOneDialogue();
-        $dialogueOne['Dialogue']['interactions'][0]['keyword'] = 'FEEL, Name';
+        $dialogueOne = $this->Maker->getOneDialogue('FEEL, Name');
 
-        $dialogueTwo = $this->Maker->getOneDialogue();
-        $dialogueTwo['Dialogue']['interactions'][0]['keyword'] = 'FEL';
+        $dialogueTwo = $this->Maker->getOneDialogue('FEL');
+        $dialogueTwo['Dialogue']['name'] = 'other name';
       
-        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
-        $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);
+        $savedDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
+        $this->Dialogue->makeDraftActive($savedDialogueOne['Dialogue']['dialogue-id']);
 
-        $saveDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
-        $this->Dialogue->makeDraftActive($saveDialogueTwo['Dialogue']['dialogue-id']);    
+        $savedDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
+        $this->Dialogue->makeDraftActive($savedDialogueTwo['Dialogue']['dialogue-id']);    
 
-        $result = $this->Dialogue->useKeyword('FEEL');
-        $this->assertEquals(1, count($result));
+        $this->assertEquals(
+            array('feel', 'fel'), 
+            $this->Dialogue->useKeyword('FEEL, Fel'));
 
-        $result = $this->Dialogue->useKeyword('NAME');
-        $this->assertEquals(1, count($result));      
+        $this->assertEquals(
+            array('fel'), 
+            $this->Dialogue->useKeyword('FEEL, Fel', $savedDialogueOne['Dialogue']['dialogue-id']));
+        
+        $this->assertEquals(
+            array('name'),
+            $this->Dialogue->useKeyword('NAME'));      
 
-        $result = $this->Dialogue->useKeyword('FEL');
-        $this->assertEquals(0, count($result));     
+        $this->assertEquals(
+            array('fel'), 
+            $this->Dialogue->useKeyword('FEL'));     
 
-        $result = $this->Dialogue->useKeyword('BT');
-        $this->assertEquals(0, count($result));      
+        $this->assertEquals(
+            false,
+            $this->Dialogue->useKeyword('BT'));      
     }
 
 
@@ -400,7 +408,8 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertEquals($this->Dialogue->validationErrors['name'][0], 'This Dialogue Name already exists. Please choose another.');
     	
     }
-    
+
+
     public function testUniqueDialogueName_dialogueIdDifferent_pass()
     {
     	$dialogue = $this->Maker->getOneDialogue();
@@ -414,7 +423,8 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertEqual(2,$this->Dialogue->find('count'));
     	$this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
     }
-    
+
+
     public function testisValidDialogueName()
     {
     	$dialogue = $this->Maker->getOneDialogue();
@@ -429,5 +439,6 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertEqual(1,$output);
 		$this->assertTrue($output);    	
     }
+
 
 }

@@ -63,9 +63,23 @@ class ScriptMaker
                     )
                 )
             );
-
         return $dialogue;
     }
+
+
+    public function getOneDialogueMultikeyword()
+    {
+        $dialogue['Dialogue'] = array(
+            'name' => 'my dialogue',
+            'auto-enrollment' => 'none',
+            'dialogue-id' => null,
+            'interactions'=> array(
+                $this->getInteractionMultiKeywordQuestion()
+                )
+            );
+        return $dialogue;        
+    }
+
 
     public function getInteractionOpenQuestion()
     {

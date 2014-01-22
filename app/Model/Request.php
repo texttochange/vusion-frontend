@@ -108,6 +108,10 @@ class Request extends MongoModel
     
     public function notUsedKeyword($check)
     {
+        $foundKeyphrases = $this->useKeyphrase($check['keyword'], $this->id);
+        if ($foundKeyphrases != null) {
+            return __("'%s' already used in the same program by a request.", implode($foundKeyphrases, "','"));
+        }
         $keywords = DialogueHelper::fromKeyphrasesToKeywords($check['keyword']);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
@@ -218,8 +222,8 @@ class Request extends MongoModel
         'count' => true,
         'first' => true,
         'all' => true,
-        'keyword' => true,
-        'keyphrase' => true,
+        //'keyword' => true,
+        //'keyphrase' => true,
         );
     
     
@@ -265,7 +269,7 @@ class Request extends MongoModel
         }
     }
     
-    
+    /*
     protected function _findKeyword($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -287,7 +291,7 @@ class Request extends MongoModel
             } 
         } 
         return null;
-    }
+    }*/
     
     
     public function getKeywords()
@@ -295,14 +299,51 @@ class Request extends MongoModel
         $requests = $this->find('all');
         $keywords = array();
         foreach ($requests as $request) {
-            $keyphrases = explode(', ', $request['Request']['keyword']);
-            foreach ($keyphrases as $keyphrase) {
-                $words = explode(' ', $keyphrase);
-                array_push($keywords, $words[0]);
+            $requestKeywords = DialogueHelper::fromKeyphrasesToKeywords($request['Request']['keyword']);
+            $keywords = array_merge($keywords, $requestKeywords);
+        }
+        return array_unique($keywords);
+    }
+
+    
+    public function useKeyword($keywords, $excludeRequest=null)
+    {
+        $params = array();
+        if ($excludeRequest != null) {
+            $params = array('conditions' => array('_id' => array('$ne' => new MongoId($excludeRequest))));   
+        }
+        $keywords = DialogueHelper::cleanKeywords($keywords);
+        $usedKeywords = array();
+        foreach ($this->find('all', $params) as $request) {
+            $requestKeywords = DialogueHelper::fromKeyphrasesToKeywords($request['Request']['keyword']);
+            $usedKeywords = array_merge($usedKeywords, array_intersect($keywords, $requestKeywords));
+        }
+        if ($usedKeywords === array()) {
+            return false;
+        }
+        return array_unique($usedKeywords);
+    }
+
+
+    public function useKeyphrase($keyphrases, $excludeRequest=null)
+    {
+        if ($excludeRequest != null) {
+            $requests = $this->find(
+                'all', array('conditions' => array('_id' => array('$ne' => new MongoId($excludeRequest)))));   
+        } else {
+            $requests = $this->find('all');
+        }
+        $keyphrases = DialogueHelper::cleanKeyphrases($keyphrases);
+        foreach ($requests as $request) {
+            $requestKeyphrases = DialogueHelper::cleanKeyphrases($request['Request']['keyword']);
+            $intersect = array_intersect($keyphrases, $requestKeyphrases);
+            if ($intersect != null) {
+                return array_values($intersect);
             }
         }
-        return $keywords;
+        return null;
     }
+
     
     public function getRequestFilterOptions()
     {
@@ -314,6 +355,7 @@ class Request extends MongoModel
         return $requestFilterOptions;
     }
     
+/*
     protected function _findKeyphrase($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -343,7 +385,7 @@ class Request extends MongoModel
         } 
         return null;
     }
-
+*/
 
     public function saveRequest($request, $usedKeywords = array())
     {

@@ -319,15 +319,21 @@ class Dialogue extends MongoModel
     }
 
 
-    public function useKeyword($keyword)
+    public function useKeyword($keywords, $excludeDialogue=null)
     {
-        foreach ($this->getActiveDialogues() as $activeDialogue) {
-            $foundKeyword = $this->DialogueHelper->hasKeyword($activeDialogue, $keyword);
-            if ($foundKeyword) {
-                return $foundKeyword;
-            }
+        $params = array();
+        if ($excludeDialogue!=null) {
+            $params = array('dialogue-id' => array('$ne' => $excludeDialogue));
         }
-        return array();
+        $keywords = DialogueHelper::cleanKeywords($keywords);
+        $usedKeywords = array();
+        foreach ($this->getActiveDialogues($params) as $activeDialogue) {
+            $usedKeywords = array_merge($usedKeywords, $this->DialogueHelper->hasKeywords($activeDialogue, $keywords));
+        }
+        if ($usedKeywords === array()) {
+            return false;
+        }
+        return array_unique($usedKeywords);
     }
 
 

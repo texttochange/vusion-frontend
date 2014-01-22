@@ -3,7 +3,7 @@
 class DialogueHelper
 {
 
-    public function validateDate($date)
+    static public function validateDate($date)
     {
         if (preg_match('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $date, $parts) == true) {
             $time = gmmktime($parts[4], $parts[5], $parts[6], $parts[2], $parts[3], $parts[1]);
@@ -18,7 +18,7 @@ class DialogueHelper
     }
 
     //TODO to remove when client side javascrit is managing the format
-    public function validateDateFromForm($date)
+    static public function validateDateFromForm($date)
     {
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/', $date, $parts) == true) {
             return true;
@@ -27,7 +27,7 @@ class DialogueHelper
         }
     }
 
-    public function isValideDateFromSearch($date)
+    static public function isValideDateFromSearch($date)
     {
         if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $date, $parts) == true) {
             return true;
@@ -37,12 +37,12 @@ class DialogueHelper
     }
 
 
-    public function convertDateFormat($date)
+    static public function convertDateFormat($date)
     { 
-        if (!$this->validateDate($date)) {
-            if ($this->isValideDateFromSearch($date)) {
+        if (!DialogueHelper::validateDate($date)) {
+            if (DialogueHelper::isValideDateFromSearch($date)) {
                 return DateTime::createFromFormat('d/m/Y', $date)->format('Y-m-d\T00:00:00');
-            } elseif ($this->validateDateFromForm($date)) {
+            } elseif (DialogueHelper::validateDateFromForm($date)) {
                 return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
             }
             return null;
@@ -58,15 +58,15 @@ class DialogueHelper
         }
 
         foreach ($currentLayer as $key => &$value) {
-            if (!is_int($key) && ($key == 'date-time') && !$this->validateDate($value)) {
-                if ($this->validateDateFromForm($value)) {
-                    $value = $this->convertDateFormat($value);
+            if (!is_int($key) && ($key == 'date-time') && !DialogueHelper::validateDate($value)) {
+                if (DialogueHelper::validateDateFromForm($value)) {
+                    $value = DialogueHelper::convertDateFormat($value);
                 } else {
                     return false;
                 }
             }
             elseif (is_array($value)) {
-                if (!$this->recurseScriptDateConverter($value)) {
+                if (!DialogueHelper::recurseScriptDateConverter($value)) {
                    return false;
                 }
             }
@@ -75,14 +75,14 @@ class DialogueHelper
     }
     
     
-    public function objectToArray($data)
+    static public function objectToArray($data)
     {
         if (is_array($data) || is_object($data))
         {
             $result = array();
             foreach ($data as $key => $value)
             {
-                $result[$key] = $this->objectToArray($value);
+                $result[$key] = DialogueHelper::objectToArray($value);
             }
             return $result;
         }
@@ -90,22 +90,22 @@ class DialogueHelper
     }
     
     
-    public function clearAndExplode($stringValue)
+    static public function clearAndExplode($stringValue)
     {
         $stringValue = str_replace(" ", "", $stringValue);
         return explode(",", $stringValue);
     }
 
 
-    public function hasKeyword(&$currentLayer, $keyword)
+    static public function hasKeywords(&$currentLayer, $toValidateKeywords)
     {
         if (!is_array($currentLayer)) {
             return false;
         }
-        
+        $hasKeywords = array();
         foreach ($currentLayer as $key => $value) {
             if (!is_int($key) && ($key == 'keyword')) {
-                $currentKeywords = $this->clearAndExplode($value);
+                $currentKeywords = DialogueHelper::clearAndExplode($value);
                 $noSpacedCurrentKeywords = array();
                 if (isset($currentLayer['answer-accept-no-space']) 
                         && $currentLayer['answer-accept-no-space'] != null 
@@ -117,25 +117,16 @@ class DialogueHelper
                     }
                 }
                 $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
-                $toValidKeywords = $this->clearAndExplode($keyword);
-                foreach ($currentKeywords as $currentKeyword) {
-                    foreach ($toValidKeywords as $toValidKeyword) {
-                        if (strtolower($currentKeyword) == strtolower($toValidKeyword)) {
-                            return $toValidKeyword;   
-                        }
-                    }
-                }
-            }
-            else if (is_array($value)) {
-                $searchResult = $this->hasKeyword($value, $keyword);
-                if ($searchResult)
-                    return $searchResult;
+                $currentKeywords = DialogueHelper::cleanKeywords($currentKeywords);
+                $hasKeywords = array_merge($hasKeywords, array_intersect($toValidateKeywords, $currentKeywords));
+            } else if (is_array($value)) {
+                $hasKeywords = array_merge($hasKeywords, DialogueHelper::hasKeywords($value, $toValidateKeywords));
             }
         }
-        return false;
+        return $hasKeywords;
     }
 
-    public function getKeywords(&$currentLayer)
+    static public function getKeywords(&$currentLayer)
     {
         $keywords = array();
         if (!is_array($currentLayer)) {
@@ -144,7 +135,7 @@ class DialogueHelper
         
         foreach ($currentLayer as $key => $value) {
             if (!is_int($key) && ($key == 'keyword')) {
-                $currentKeywords = $this->clearAndExplode($value);
+                $currentKeywords = DialogueHelper::clearAndExplode($value);
                 $noSpacedCurrentKeywords = array();
                 if (isset($currentLayer['answer-accept-no-space']) 
                         && $currentLayer['answer-accept-no-space'] != null 
@@ -156,17 +147,18 @@ class DialogueHelper
                     }
                 }
                 $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
+                $currentKeywords = array_map('DialogueHelper::cleanKeyword', $currentKeywords);
                 $keywords = array_merge($keywords, $currentKeywords);
             }
             else if (is_array($value)) {
-                $keywords = array_merge($keywords, $this->getKeywords($value));
+                $keywords = array_merge($keywords, DialogueHelper::getKeywords($value));
             }
         }
         return $keywords;
     }
     
 
-    public function hasNoMatchingAnswers(&$currentLayer, $status)
+    static public function hasNoMatchingAnswers(&$currentLayer, $status)
     {
         if (!is_array($currentLayer)) {
             return false;
@@ -175,19 +167,19 @@ class DialogueHelper
         foreach ($currentLayer as $key => &$value) {
             if (!is_int($key) && ($key == 'answers')) {
                 foreach($value as $answer => $choice) {
-            $response    = $currentLayer['keyword']." ".$choice['choice'];
-            $responseTwo = $currentLayer['keyword']." ".($answer+1);
-            if ($this->_recurseStatus($status, $response, $responseTwo)) {
-                if($answer==(count($value)-1))
+                    $response    = $currentLayer['keyword']." ".$choice['choice'];
+                    $responseTwo = $currentLayer['keyword']." ".($answer+1);
+                    if (DialogueHelper::_recurseStatus($status, $response, $responseTwo)) {
+                        if($answer==(count($value)-1))
                             return true;
                         else
-                            continue;
+                        continue;
                     }
                     return false;
-            }
+                }
             }
             else if (is_array($value)) {
-                $result = $this->hasNoMatchingAnswers($value, $status);
+                $result = DialogueHelper::hasNoMatchingAnswers($value, $status);
                 return $result;
             }
         }
@@ -195,7 +187,7 @@ class DialogueHelper
     }
     
     
-    protected function _recurseStatus(&$newCurrentLayer, $response, $responseTwo)
+    static protected function _recurseStatus(&$newCurrentLayer, $response, $responseTwo)
     {
         if (!is_array($newCurrentLayer)) {
             return false;
@@ -216,8 +208,9 @@ class DialogueHelper
         }
         return false;
     }
+
     
-    public function getInteraction($currentLayer, $interaction_id)
+    static public function getInteraction($currentLayer, $interaction_id)
     {
         
         if (!is_array($currentLayer)) {
@@ -229,7 +222,7 @@ class DialogueHelper
                 return $currentLayer;
             }
             else if (is_array($value)) {
-                $result = $this->getInteraction($value, $interaction_id);
+                $result = DialogueHelper::getInteraction($value, $interaction_id);
                 if ($result)
                     return $result;
             }
@@ -237,7 +230,7 @@ class DialogueHelper
         return array();
     }
 
-
+    /*
     public function getRequestKeywordToValidate($value) 
     {
         $requests = explode(", ", $value);
@@ -248,32 +241,48 @@ class DialogueHelper
         }
         return implode(", ",$requests);
     }
-
-
+    */
+    /*
     public static function getRequestKeywords($request)
     {
          if (!isset($request['keyword'])) {
              return array();
          }
          return fromKeyphrasesToKewywords($request['keyword']);
+    }*/
+
+    static public function cleanKeywords($keywords)
+    {
+        if (is_string($keywords)) {
+            return DialogueHelper::fromKeyphrasesToKeywords($keywords);
+        }
+        $cleanKeywords = array();
+        foreach ($keywords as $keyword) {
+            $cleanKeywords = array_merge($cleanKeywords, DialogueHelper::fromKeyphrasesToKeywords($keyword));
+        }
+        return array_values(array_unique($cleanKeywords));
     }
 
     
     static public function fromKeyphrasesToKeywords($keyphrases) 
     {
         $keyphraseArray = explode(",", $keyphrases);
-        array_walk($keyphraseArray, create_function('&$val', '$val = trim($val);'));
-        $keywords = array();
-        foreach ($keyphraseArray as $keyphrase) {
-            $words = explode(" ", $keyphrase);
-            $keywords[] = strtolower($words[0]);
-        }
-        return $keywords;
+        array_walk($keyphraseArray, create_function('&$val', '$val = trim($val); $val = explode(" ", $val); $val = DialogueHelper::cleanKeyword($val[0]);'));
+        return $keyphraseArray;
+    }
+
+
+    static public function cleanKeyphrases($keyphrases)
+    {
+        $keyphraseArray = explode(",", $keyphrases);
+        array_walk($keyphraseArray, create_function('&$val', '$val = trim($val); $val = DialogueHelper::cleanKeyword($val);'));
+        return $keyphraseArray;
     }
     
-    static public function cmpKeywords($keyword1, $keyword2)
+
+    static public function keywordCmp($keyword1, $keyword2)
     {
-        return (0 == strcasecmp($keyword1, $keyword2));
+        return (DialogueHelper::cleanKeyword($keyword1) == DialogueHelper::cleanKeyword($keyword2));
     }
 
     // THIS FUNCTION SHOULDN'T BE CHANGE WITHOUT BACKEND EQUIVALENT FUNCTION
@@ -288,12 +297,12 @@ class DialogueHelper
         $b = 'aaaaaaceeeeiiiidnoooooouuuuybsaaaaaaceeeeiiiidnoooooouuuuyybyRr '; 
         $string = utf8_decode($string);
         $string = strtr($string, utf8_decode($a), $b); 
-        $string = strtolower($string); 
+        $string = strtolower($string);
         return utf8_encode($string); 
     }
 
     //TODO might require to normalise the keywords
-    static public function isUsedKeyword($keyword, $usedKeywords)
+/*    static public function isUsedKeyword($keyword, $usedKeywords)
     {
         $keyword = strtolower($keyword);
         $usedKeyword = array_change_key_case($usedKeywords);
@@ -302,7 +311,7 @@ class DialogueHelper
         } else {
             return false;
         }
-    }
+    }*/
 
     
     public function compareDialogueByName($a, $b)
