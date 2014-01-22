@@ -28,7 +28,7 @@ class History extends MongoModel
     
     function getModelVersion()
     {
-        return '2';
+        return '3';
     }
     
     
@@ -42,7 +42,8 @@ class History extends MongoModel
         
         $MESSAGE_FIELDS = array(
             'message-content',
-            'message-direction');
+            'message-direction',
+            'message-credits');
         
         $SPECIFIC_DIRECTION_FIELDS = array(
             'outgoing' => array('message-id', 'message-status'),

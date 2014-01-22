@@ -1,12 +1,14 @@
 <?php
 App::uses('AppController', 'Controller');
-App::uses('Program', 'Model');
+//App::uses('Program', 'Model');
 App::uses('DialogueHelper', 'Lib');
 
 class CreditViewerController extends AppController
 {
     var $helpers = array('Js' => array('Jquery'), 'Time', 'PhoneNumber');
     var $components = array('ProgramPaginator', 'CreditManager', 'RequestHandler', 'LocalizeUtils', 'PhoneNumber');
+    
+    var $uses = array('Program', 'Group');
     
     var $filterOperatorOptions = array('all' => 'all', 'any' => 'any');
     var $filterFields = array(
@@ -62,7 +64,6 @@ class CreditViewerController extends AppController
                 );
         }
         $this->ShortCode        = new ShortCode($options);
-        $this->Program          = new Program();
         $this->DialogueHelper   = new DialogueHelper();
     }
     
@@ -132,6 +133,11 @@ class CreditViewerController extends AppController
             foreach($programs as &$program) {
                 $details = $this->ProgramPaginator->getProgramDetails($program);
                 $program = array_merge($program, $details['program']);
+                if ($this->params['url'] == array()) {
+                    $program['Program']['total-credits'] = $this->CreditManager->getCount($program['Program']['database']);
+                } else {
+                    $program['Program']['total-credits'] = $this->_getCreditsFromProgramHistory($program['Program']['database'], $conditions);
+                }
             }
             foreach ($programsList as $listedProgram) {
                 if (!in_array($listedProgram, $programs))
