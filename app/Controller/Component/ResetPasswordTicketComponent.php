@@ -69,7 +69,7 @@ class ResetPasswordTicketComponent extends Component
     public function saveToken($token)
     {
         $ticketKey = $this->_getTicketKey($token);
-        $this->redis->setex($ticketKey, 100, $token);
+        $this->redis->setex($ticketKey, 86400, $token);
     }
     
     

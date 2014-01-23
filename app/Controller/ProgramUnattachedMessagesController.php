@@ -67,12 +67,13 @@ class ProgramUnattachedMessagesController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         $this->paginate = array('order'=>$order);
-        
         $unattachedMessages = $this->paginate();
+        
         foreach($unattachedMessages as &$unattachedMessage)
         {  
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
-            $status = array();
+            $status = array();          
+            
             if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
                 $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
                 $status['count-schedule'] = $countSchedule;                
@@ -104,7 +105,7 @@ class ProgramUnattachedMessagesController extends AppController
                 $unattachedMessage['UnattachedMessage']['created-by'] = ($user ? $user['User']['username']: __("unknown"));
             }
         }
-        $this->set('unattachedMessages', $unattachedMessages);
+        $this->set(compact('unattachedMessages'));
     }
     
     

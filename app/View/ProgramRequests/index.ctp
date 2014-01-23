@@ -45,7 +45,7 @@
 		            <?php 
 		            if (isset($request['Request']['actions']))
 		            foreach ($request['Request']['actions'] as $action) {
-		                $info = __($action['type-action']);
+		                $info = $action['type-action'];
 		                if ($action['type-action']=='enrolling')
 		                    foreach ($currentProgramData['dialogues'] as $dialogue) {
 		                        if ($dialogue['dialogue-id'] == $action['enroll']) {

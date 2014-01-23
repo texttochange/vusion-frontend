@@ -4,12 +4,13 @@ App::uses('History','Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('UnattachedMessage','Model');
+App::uses('Request', 'Model');
 
 
 class ProgramHistoryController extends AppController
 {
     
-    public $uses    = array('History');
+    var $uses       = array('History');
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery'),
@@ -33,6 +34,7 @@ class ProgramHistoryController extends AppController
         $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting    = new ProgramSetting($options);
+        $this->Request           = new Request($options);
     }
     
     
@@ -84,6 +86,7 @@ class ProgramHistoryController extends AppController
         return array(
             'operator' => $this->LocalizeUtils->localizeValueInArray($this->History->filterOperatorOptions),
             'dialogue' => $dialoguesInteractionsContent,
+            'request' => $this->Request->getRequestFilterOptions(),
             'message-direction' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageDirectionOptions),
             'message-status' => $this->LocalizeUtils->localizeValueInArray($this->History->filterMessageStatusOptions),
             'unattach-message' => $this->UnattachedMessage->getNameIdForFilter()            
