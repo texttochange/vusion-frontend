@@ -116,6 +116,7 @@
         if (isset($programDetails['name'])) {
             echo "<div class='program-left-column'>";			   
             echo $this->element('navigation_menu');
+            echo $this->element('program_statistics');
             echo $this->element('backend_notifications');
             echo "</div>";
             echo "<div class='program-body'>";
