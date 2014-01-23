@@ -2,7 +2,6 @@
 
 App::uses('CreditViewerController', 'Controller');
 App::uses('History', 'Model');
-//App::uses('ProgramSetting', 'Model');
 
 
 class TestCreditViewerController extends CreditViewerController
@@ -58,48 +57,11 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     }
     
     
-    /*protected function instanciateModels() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);    
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->History           = new History($options);
-    }*/
-    
-    /*protected function instanciateHistoryModels() 
-    {
-        $this->HistoryTest  = new History(array('database' => 'testdbprogram'));
-        $this->HistoryM6H   = new History(array('database' => 'm6h'));
-        $this->HistoryTrial = new History(array('database' => 'trial'));
-    }*/
-    
-    // we only mock the data to be used so we dont need a dropData() function;    
-    
     public function tearDown()
     {
         unset($this->Viewer);
         
         parent::tearDown();
-    }
-    
-    
-    public function mock_program_access()
-    {
-        $viewers = $this->generate(
-            'CreditViewer', array(
-                'components' => array(
-                    'Acl' => array('check'),
-                    'Session' => array('read'),
-                    'CreditManager'
-                    ),
-                )
-            );
-        
-        $viewers->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-                
-        return $viewers;
     }
     
     
@@ -130,13 +92,16 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->ShortCode->save($shortcode3);
     }
     
-/*    
+    
     public function testIndex()
     {
         $this->testAction("/creditViewer/index");
-        $this->assertEquals(3, count($this->vars['programs']));        
+        $this->assertEquals(3, count($this->vars['programs']));
+        $this->assertTrue(array_key_exists('total-credits', $this->vars['programs'][0]['Program']));
+        $this->assertTrue(array_key_exists('total-credits', $this->vars['programs'][1]['Program']));
+        $this->assertTrue(array_key_exists('total-credits', $this->vars['programs'][2]['Program']));        
     }
-*/
+
     
     public function testIndex_filters()
     {
@@ -187,14 +152,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
             'message-credits' => '1'
             ));
         
-        //$this->mock_program_access();
-        
-        $this->testAction("/creditViewer/index");
-        $this->assertEquals(3, count($this->vars['programs']));
-        $this->assertTrue(array_key_exists('total-credits', $this->vars['programs'][0]['Program']));
-        $this->assertTrue(array_key_exists('total-credits', $this->vars['programs'][1]['Program']));
-        $this->assertTrue(array_key_exists('total-credits', $this->vars['programs'][2]['Program']));
-        
         // filter by program name only
         $this->testAction('/creditViewer/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t');
         $this->assertEquals(2, count($this->vars['programs']));
@@ -202,53 +159,44 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['programs'][1]['Program']['total-credits']));
         
         // filter by shortcode only (8282)
-        $this->mock_program_access();
         $this->testAction('/creditViewer/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=shortcode&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=8282');
         $this->assertEquals(1, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         
         // filter by country only (Uganda)
-        $this->mockProgramAccess();
         $this->testAction('/creditViewer/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=country&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=uganda');
         $this->assertEquals(2, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         $this->assertEquals(1, count($this->vars['programs'][1]['Program']['total-credits']));
         
-        // filter by program name AND shortcode (t, 8181) //8282
-        $this->mockProgramAccess();
+        // filter by program name AND shortcode (t, 8282)
         $this->testAction('/creditViewer/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=8282');
         $this->assertEquals(1, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         
         // filter by program name AND country (m6h, kenya) //uganda
-        $this->mockProgramAccess();
         $this->testAction('/creditViewer/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=uganda');
         $this->assertEquals(1, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         
         // filter by program name AND country AND shortcode (t, uganda, 8282)
-        $this->mockProgramAccess();
         $this->testAction('/creditViewer/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=8282');
         $this->assertEquals(1, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         
         // filter by program name OR shortcode (t, 21222)
-        $this->mockProgramAccess();
         $this->testAction('/creditViewer/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=shortcode&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=21222');
-        //print_r($this->vars['programs']);
         $this->assertEquals(2, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         $this->assertEquals(1, count($this->vars['programs'][1]['Program']['total-credits']));
         
         // filter by program name OR country (trial, kenya)
-        $this->mockProgramAccess();
         $this->testAction('/creditViewer/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=equal-to&filter_param%5B1%5D%5B3%5D=m6h&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=kenya');
         $this->assertEquals(2, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
         $this->assertEquals(1, count($this->vars['programs'][1]['Program']['total-credits']));
         
-        // filter by program name OR country OR shortcode (t, uganda, 21222)
-        $this->mockProgramAccess();        
+        // filter by program name OR country OR shortcode (t, uganda, 21222)        
         $this->testAction('/creditViewer/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=name&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=t&filter_param%5B2%5D%5B1%5D=country&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=Uganda&filter_param%5B3%5D%5B1%5D=shortcode&filter_param%5B3%5D%5B2%5D=is&filter_param%5B3%5D%5B3%5D=21222');
         $this->assertEquals(3, count($this->vars['programs']));
         $this->assertEquals(1, count($this->vars['programs'][0]['Program']['total-credits']));
