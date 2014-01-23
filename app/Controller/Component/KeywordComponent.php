@@ -33,75 +33,56 @@ class KeywordComponent extends Component
     }
 
 
+    public function areUsedKeywords($programDb, $shortcode, $keywords)
+    {
+       $usedKeywords = array();
+       //Get the Request keyword or the Dialogue
+       $dialogueModel = new Dialogue(array('database' => $programDb));
+       $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($dialogueModel, $keywords));
+       $requestModel = new Request(array('database' => $programDb));
+       $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($requestModel, $keywords));
+       $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms($programDb, $shortcode, $keywords);
+       return array_merge($usedKeywords, $otherProgramFoundKeywords);
+    }
+
+
+    protected function _getUsedKeywords($model, $keywords, $programName='') {
+        $usedKeywords = array();
+        $foundKeywords = $model->useKeyword($keywords);
+        if (!$foundKeywords) {
+            return $usedKeywords;
+        }
+        foreach ($foundKeywords as $foundKeyword => $details) {
+            $usedKeywords[$foundKeyword] = array_merge(
+                $details, 
+                array(
+                    'program-db' => $model->databaseName,
+                    'program-name' => $programName,
+                    'by-type'=> $model->alias));
+        }
+        return $usedKeywords;
+    }
+
+    // Refactor to loop program then loop on keywords
     public function areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords)
     {
         $usedKeywords = array();
-        foreach($keywords as $keywordToValidate) {            
-            $programs = $this->Program->find(
-                'all', 
-                array('conditions'=> 
-                    array('Program.database !=' => $programDb)
-                    )
-                );
-            foreach ($programs as $program) {
-                $programSettingModel = new ProgramSetting(array(
-                    'database' => $program['Program']['database']));
-                if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
-                    $dialogueModel = new Dialogue(array(
-                        'database' => $program['Program']['database']));
-                    $foundKeyword = $dialogueModel->useKeyword($keywordToValidate);
-                    if ($foundKeyword) {
-                        $usedKeywords[$foundKeyword] = array(
-                            'programName' => $program['Program']['name'],
-                            'type' => 'dialogue');
-                    }
-                    $requestModel = new Request(array('database' => $program['Program']['database']));
-                    $foundKeyword = $requestModel->find('keyword', array('keywords' => $keywordToValidate));
-                    if ($foundKeyword) {
-                        $usedKeywords[$foundKeyword] = array(
-                            'programName' => $program['Program']['name'],
-                            'type' => 'request');
-                    }
-                }
+        $programs = $this->Program->find(
+            'all', array('conditions' => array('Program.database !=' => $programDb)));
+        foreach ($programs as $program) {
+            $programSettingModel = new ProgramSetting(array('database' => $program['Program']['database']));
+            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
+                $dialogueModel = new Dialogue(array('database' => $program['Program']['database']));
+                $foundDialogueKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, $program['Program']['name']);
+                $usedKeywords = array_merge($usedKeywords, $foundDialogueKeywords);
+                $requestModel = new Request(array('database' => $program['Program']['database']));
+                $foundRequestKeywords = $this->_getUsedKeywords($requestModel, $keywords, $program['Program']['name']);
+                $usedKeywords = array_merge($usedKeywords, $foundRequestKeywords);
             }
         }
         return $usedKeywords;
     }
 
-/*
-    public function getKeywordsUsedSameShortcode($programDB, $shortCode)
-    {
-        $keywords = array();
-        $programs = $this->Program->find(
-            'all', 
-            array('conditions'=> 
-                array('Program.database !=' => $programDb)
-                )
-            );
-        foreach ($programs as $program) {
-            $programSettingModel = new ProgramSetting(array(
-                'database' => $program['Program']['database']));
-            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
-                $dialogueModel = new Dialogue(array(
-                    'database' => $program['Program']['database']));
-                $foundKeyword = $dialogueModel->getKeywords();
-                if ($foundKeyword) {
-                    $usedKeywords[$foundKeyword] = array(
-                        'programName' => $program['Program']['name'],
-                        'type' => 'dialogue');
-                }
-                $requestModel = new Request(array('database' => $program['Program']['database']));
-                $foundKeyword = $requestModel->find('keyword', array('keywords' => $keywordToValidate));
-                if ($foundKeyword) {
-                    $usedKeywords[$foundKeyword] = array(
-                        'programName' => $program['Program']['name'],
-                        'type' => 'request');
-                }
-            }
-        }
-        return $keywords;
-    }
-*/
 
     //For now only display the first validation error
     public function validationToMessage($validations)
@@ -110,7 +91,7 @@ class KeywordComponent extends Component
             return null;
         }
         foreach($validations as $keyword => $errors) {
-            return __("'%s' already used by a %s of program '%s'.", $keyword, $errors['type'], $errors['programName']);
+            return __("'%s' already used by a %s of program '%s'.", $keyword, $errors['by-type'], $errors['program-name']);
         }
     }
 

@@ -308,8 +308,8 @@ class Dialogue extends MongoModel
         $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
         $this->create();
         if ($draft) { 
-            $this->id                    = $draft[0]['Dialogue']['_id'];
-            $dialogue['Dialogue']['_id'] = $draft[0]['Dialogue']['_id'];
+            $this->id                          = $draft[0]['Dialogue']['_id'];
+            $dialogue['Dialogue']['_id']       = $draft[0]['Dialogue']['_id'];
             $dialogue['Dialogue']['activated'] = 0;
         } else { 
             unset($dialogue['Dialogue']['_id']);
@@ -328,12 +328,19 @@ class Dialogue extends MongoModel
         $keywords = DialogueHelper::cleanKeywords($keywords);
         $usedKeywords = array();
         foreach ($this->getActiveDialogues($params) as $activeDialogue) {
-            $usedKeywords = array_merge($usedKeywords, $this->DialogueHelper->hasKeywords($activeDialogue, $keywords));
+            $foundKeywords = $this->DialogueHelper->hasKeywords($activeDialogue, $keywords);
+            $foundKeywords = array_flip($foundKeywords);
+            foreach ($foundKeywords as $key => $value) {
+                $foundKeywords[$key] = array(
+                    'dialogue-id' => $activeDialogue['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $activeDialogue['Dialogue']['name']);
+            }
+            $usedKeywords = array_merge($usedKeywords, $foundKeywords);
         }
         if ($usedKeywords === array()) {
             return false;
         }
-        return array_unique($usedKeywords);
+        return $usedKeywords;
     }
 
 

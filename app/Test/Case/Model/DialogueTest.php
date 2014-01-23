@@ -35,7 +35,7 @@ class DialogueTestCase extends CakeTestCase
         parent::tearDown();
     }
 
-
+/*
     public function testSaveDialogue()
     {
         $dialogue = $this->Maker->getOneDialogue();
@@ -186,7 +186,7 @@ class DialogueTestCase extends CakeTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->assertTrue(isset($savedDialogue));
     }
-
+*/
 
     public function testFindAllKeywordInDialogues()
     {
@@ -203,20 +203,26 @@ class DialogueTestCase extends CakeTestCase
         $this->Dialogue->makeDraftActive($savedDialogueTwo['Dialogue']['dialogue-id']);    
 
         $this->assertEquals(
-            array('feel', 'fel'), 
+            array(
+                'feel' => array(
+                    'dialogue-id' => $savedDialogueOne['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueOne['Dialogue']['name']), 
+                'fel' => array(
+                    'dialogue-id' => $savedDialogueTwo['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueTwo['Dialogue']['name'])), 
             $this->Dialogue->useKeyword('FEEL, Fel'));
 
         $this->assertEquals(
-            array('fel'), 
+            array('fel' => array(
+                    'dialogue-id' => $savedDialogueTwo['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueTwo['Dialogue']['name'])), 
             $this->Dialogue->useKeyword('FEEL, Fel', $savedDialogueOne['Dialogue']['dialogue-id']));
         
         $this->assertEquals(
-            array('name'),
-            $this->Dialogue->useKeyword('NAME'));      
-
-        $this->assertEquals(
-            array('fel'), 
-            $this->Dialogue->useKeyword('FEL'));     
+            array('name' => array(
+                    'dialogue-id' => $savedDialogueOne['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueOne['Dialogue']['name'])),
+            $this->Dialogue->useKeyword('NAME'));
 
         $this->assertEquals(
             false,

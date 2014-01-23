@@ -36,10 +36,13 @@ class RequestTestCase extends CakeTestCase
     {
         $request = $this->Maker->getOneRequest('key request, keyword, otherkeyword request');
         $this->Request->create();
-        $this->Request->save($request);
+        $savedRequest = $this->Request->save($request);
 
         $this->assertEqual(
-            array('keyword'), 
+            array(
+                'keyword' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])), 
             $this->Request->useKeyword('keyword'));
 
         $this->assertEqual(
@@ -47,11 +50,19 @@ class RequestTestCase extends CakeTestCase
             $this->Request->useKeyword('keywo'));
 
         $this->assertEqual(
-            array('keyword', 'key'), 
+            array(
+                'keyword' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword']), 
+                'key' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])), 
             $this->Request->useKeyword('keywor, keyword, key'));
         
         $this->assertEqual(
-            array('key'), 
+            array('key' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])), 
             $this->Request->useKeyword('kÉy'));
         
         $this->assertEqual(
@@ -64,10 +75,13 @@ class RequestTestCase extends CakeTestCase
     {
         $request = $this->Maker->getOneRequest('key');
         $this->Request->create();
-        $this->Request->save($request);
+        $savedRequest = $this->Request->save($request);
 
         $this->assertEqual(
-            array('key'),
+            array(
+                'key' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),
             $this->Request->useKeyword('key'));
     }
 

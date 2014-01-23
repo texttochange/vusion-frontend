@@ -315,13 +315,20 @@ class Request extends MongoModel
         $keywords = DialogueHelper::cleanKeywords($keywords);
         $usedKeywords = array();
         foreach ($this->find('all', $params) as $request) {
-            $requestKeywords = DialogueHelper::fromKeyphrasesToKeywords($request['Request']['keyword']);
-            $usedKeywords = array_merge($usedKeywords, array_intersect($keywords, $requestKeywords));
+            $foundKeywords = array_intersect(
+                $keywords, DialogueHelper::fromKeyphrasesToKeywords($request['Request']['keyword']));
+            $foundKeywords = array_flip($foundKeywords);
+            foreach ($foundKeywords as $key => $value) {
+                $foundKeywords[$key] = array(
+                    'request-id' => $request['Request']['_id']."",
+                    'request-name' => $request['Request']['keyword']);
+            }
+            $usedKeywords = array_merge($usedKeywords, $foundKeywords);
         }
         if ($usedKeywords === array()) {
             return false;
         }
-        return array_unique($usedKeywords);
+        return $usedKeywords;
     }
 
 
