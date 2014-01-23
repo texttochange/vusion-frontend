@@ -376,6 +376,14 @@ class CreditViewerController extends AppController
         if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
             throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
         }
+        
+        // for date filters
+        if (isset($filterParam[1])and $filterParam[1] == 'date') {
+            if ((isset($filterParam[2])and $filterParam[2] == 'from') and empty($filterParam[3]))
+                throw new FilterException("'Date From' value is missing.");
+            if ((isset($filterParam[2])and $filterParam[2] == 'to') and empty($filterParam[3]))
+                throw new FilterException("'Date To' value is missing.");
+        }
     }
     
     
