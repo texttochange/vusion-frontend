@@ -656,19 +656,19 @@ function generateHtmlProgramStatsInside(programStats) {
         
     var myTemplate ='<div>'+
                         '<span id="participant-icon" class="stat" '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="img/participant-icon.png" height="13px" width="14px"> '+
+                        '<img src="/img/participant-icon.png" height="13px" width="14px"> '+
                         ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+
                         '</span>'+
                     '</div>'+
                     '<div>'+
                         '<span class="stat" '+ ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Total(total current month) message(s)"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="img/ok-icon-32.png" height="13px" width="14px"> '+
+                        '<img src="/img/ok-icon-32.png" height="13px" width="14px"> '+
                         'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
                         '</span>'+
                     '</div>'+
                     '<div>'+
                         '<span class="stat" '+ ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Total(current month) received"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="img/ok-icon-32.png" height="13px" width="14px"> '+
+                        '<img src="/img/ok-icon-32.png" height="13px" width="14px"> '+
                         'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
                         '</span>'+
                     '</div>'+
