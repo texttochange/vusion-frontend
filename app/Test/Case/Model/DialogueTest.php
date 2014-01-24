@@ -35,7 +35,7 @@ class DialogueTestCase extends CakeTestCase
         parent::tearDown();
     }
 
-/*
+
     public function testSaveDialogue()
     {
         $dialogue = $this->Maker->getOneDialogue();
@@ -152,6 +152,7 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['date-time'] = '2013-10-20 20:20:00';
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
+        print_r($saveResult);
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
@@ -168,13 +169,16 @@ class DialogueTestCase extends CakeTestCase
 
     public function testValidate_keyword_fail_usedKeyword()
     {
-        $usedKeywords = array('other' => array('programName' => 'other program', 'type' => 'request'));
+        $usedKeywords = array(
+            'other' => array(
+                'program-name' => 'other program',
+                'by-type' => 'Request'));
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, other';
 
         $this->assertFalse($this->Dialogue->saveDialogue($dialogue, $usedKeywords));
         $this->assertEqual(
-            "'other' already used by a request of program 'other program'.",
+            "'other' already used by a Request of program 'other program'.",
             $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
     }
     
@@ -186,7 +190,7 @@ class DialogueTestCase extends CakeTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->assertTrue(isset($savedDialogue));
     }
-*/
+
 
     public function testFindAllKeywordInDialogues()
     {
@@ -446,5 +450,60 @@ class DialogueTestCase extends CakeTestCase
 		$this->assertTrue($output);    	
     }
 
+
+    public function testHasDialogueKeyword()
+    {
+        $dialogue = $this->Maker->getOneDialogue('kÉyword');
+        $this->assertEquals(
+            array('keyword'),
+            Dialogue::hasDialogueKeywords($dialogue, array('keyword')));
+        
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->assertEquals(
+            array('feel', 'keyword'),
+            Dialogue::hasDialogueKeywords($dialogue, array('feel', 'keyword')));
+        
+        $dialogue = $this->Maker->getOneDialogueWithKeyword('keyword');
+        $this->assertEquals(
+            array('keyword'),
+            Dialogue::hasDialogueKeywords($dialogue, array('keyword')));
+    }
+
+
+    public function testHasDialogueKeywork_answerAcceptNoSpace()
+    {
+        $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fÉl');
+        $this->assertEquals(
+            array('felgood'),
+            Dialogue::hasDialogueKeywords($dialogue, array('felgood')));
+        $this->assertEquals(
+            array('fel'),
+            Dialogue::hasDialogueKeywords($dialogue, array('fel')));
+        $this->assertEquals(
+            array('felbad'),
+            Dialogue::hasDialogueKeywords($dialogue, array('felbad')));
+        $this->assertEquals(
+            array(),
+            Dialogue::hasDialogueKeywords($dialogue, array('felok')));
+    }
+
+
+    public function testGetKeyworks()
+    {
+        $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fÉl');
+        $this->assertEquals(
+            array('feel', 'fel', 'felgood','felbad'), 
+            Dialogue::getDialogueKeywords($dialogue));
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        $this->assertEquals(
+            array('usedkeyword'), 
+            Dialogue::getDialogueKeywords($dialogue));
+        
+        $dialogue = $this->Maker->getOneDialogueMultikeyword();
+        $this->assertEqual(
+            array('female', 'male'),
+            Dialogue::getDialogueKeywords($dialogue));
+    }
 
 }

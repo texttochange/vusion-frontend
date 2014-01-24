@@ -1,4 +1,6 @@
 <?php
+App::uses('Interaction', 'Model');
+
 
 class DialogueHelper
 {
@@ -45,7 +47,6 @@ class DialogueHelper
             } elseif (DialogueHelper::validateDateFromForm($date)) {
                 return DateTime::createFromFormat('d/m/Y H:i', $date)->format('Y-m-d\TH:i:s');
             }
-            return null;
         } 
         return $date;
     }
@@ -90,13 +91,13 @@ class DialogueHelper
     }
     
     
-    static public function clearAndExplode($stringValue)
+    /*static public function clearAndExplode($stringValue)
     {
         $stringValue = str_replace(" ", "", $stringValue);
         return explode(",", $stringValue);
-    }
+    }*/
 
-
+/*
     static public function hasKeywords(&$currentLayer, $toValidateKeywords)
     {
         if (!is_array($currentLayer)) {
@@ -105,21 +106,11 @@ class DialogueHelper
         $hasKeywords = array();
         foreach ($currentLayer as $key => $value) {
             if (!is_int($key) && ($key == 'keyword')) {
-                $currentKeywords = DialogueHelper::clearAndExplode($value);
-                $noSpacedCurrentKeywords = array();
-                if (isset($currentLayer['answer-accept-no-space']) 
-                        && $currentLayer['answer-accept-no-space'] != null 
-                        && $currentLayer['answers']) {
-                    foreach($currentLayer['answers'] as $answer) {
-                        foreach($currentKeywords as $currentKeyword) {
-                            $noSpacedCurrentKeywords[] = $currentKeyword.$answer['choice'];
-                        }
-                    }
-                }
+                $currentKeywords = DialogueHelper::cleanKeywords($value);
+                $noSpacedCurrentKeywords = Interaction::getInteractionNoSpaceKeywords($currentKeywords, $currentLayer);
                 $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
-                $currentKeywords = DialogueHelper::cleanKeywords($currentKeywords);
                 $hasKeywords = array_merge($hasKeywords, array_intersect($toValidateKeywords, $currentKeywords));
-            } else if (is_array($value)) {
+            } elseif (is_array($value)) {
                 $hasKeywords = array_merge($hasKeywords, DialogueHelper::hasKeywords($value, $toValidateKeywords));
             }
         }
@@ -135,29 +126,18 @@ class DialogueHelper
         
         foreach ($currentLayer as $key => $value) {
             if (!is_int($key) && ($key == 'keyword')) {
-                $currentKeywords = DialogueHelper::clearAndExplode($value);
-                $noSpacedCurrentKeywords = array();
-                if (isset($currentLayer['answer-accept-no-space']) 
-                        && $currentLayer['answer-accept-no-space'] != null 
-                        && $currentLayer['answers']) {
-                    foreach($currentLayer['answers'] as $answer) {
-                        foreach($currentKeywords as $currentKeyword) {
-                            $noSpacedCurrentKeywords[] = $currentKeyword.$answer['choice'];
-                        }
-                    }
-                }
+                $currentKeywords = DialogueHelper::cleanKeywords($value);
+                $noSpacedCurrentKeywords = Interaction::getInteractionNoSpaceKeywords($currentKeywords, $currentLayer);
                 $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
-                $currentKeywords = array_map('DialogueHelper::cleanKeyword', $currentKeywords);
                 $keywords = array_merge($keywords, $currentKeywords);
-            }
-            else if (is_array($value)) {
+            } elseif (is_array($value)) {
                 $keywords = array_merge($keywords, DialogueHelper::getKeywords($value));
             }
         }
         return $keywords;
     }
-    
-
+*/    
+/*
     static public function hasNoMatchingAnswers(&$currentLayer, $status)
     {
         if (!is_array($currentLayer)) {
@@ -185,7 +165,7 @@ class DialogueHelper
         }
         return false;
     }
-    
+*/    
     
     static protected function _recurseStatus(&$newCurrentLayer, $response, $responseTwo)
     {
@@ -209,7 +189,7 @@ class DialogueHelper
         return false;
     }
 
-    
+    /*
     static public function getInteraction($currentLayer, $interaction_id)
     {
         
@@ -228,27 +208,6 @@ class DialogueHelper
             }
         }
         return array();
-    }
-
-    /*
-    public function getRequestKeywordToValidate($value) 
-    {
-        $requests = explode(", ", $value);
-        $keywords = "";
-        foreach ($requests as &$request) {
-            $request = explode(" ", $request);
-            $request = $request[0];
-        }
-        return implode(", ",$requests);
-    }
-    */
-    /*
-    public static function getRequestKeywords($request)
-    {
-         if (!isset($request['keyword'])) {
-             return array();
-         }
-         return fromKeyphrasesToKewywords($request['keyword']);
     }*/
 
     static public function cleanKeywords($keywords)

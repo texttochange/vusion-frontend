@@ -5,12 +5,15 @@ App::uses('ScriptMaker', 'Lib');
 
 class InteractionTestCase extends CakeTestCase
 {
+
+
     public function setUp()
     {
         parent::setUp();
         $this->Interaction = new Interaction();
         $this->Maker       = new ScriptMaker();
     }
+
     
     public function tearDown()
     {
@@ -193,12 +196,16 @@ class InteractionTestCase extends CakeTestCase
 
     public function testValidate_openQuestion_keyword_fail_alreadyUsed()
     {
-        $interaction = $this->Maker->getInteractionOpenQuestion();
-        $interaction['keyword'] = "test, keyword1, other";        
+        $interaction = $this->Maker->getInteractionClosedQuestion();
+        $interaction['set-answer-accept-no-space'] = "answer-accept-no-space";
+        $interaction['keyword'] = "k1, k2";        
         $alreadyUsedKeywords = array(
-            'other' => array(
-                'programName' => 'otherprogram',
-                'type' => 'dialogue'));
+            'k2bad' => array(
+                'program-db' => 'otherdb',
+                'program-name' => 'otherprogram',
+                'by-type' => 'Dialogue',
+                'dialogue-id' => '01',
+                'dialogue-name' => 'my dialogue'));
         
         $this->Interaction->setUsedKeywords($alreadyUsedKeywords);
         $this->Interaction->set($interaction);
@@ -206,8 +213,31 @@ class InteractionTestCase extends CakeTestCase
         $this->assertFalse($this->Interaction->validates());
         $this->assertEqual(
             $this->Interaction->validationErrors['keyword'][0],        
-            "'other' already used by a dialogue of program 'otherprogram'.");
+            "'k2bad' already used by a Dialogue of program 'otherprogram'.");
     }
+
+
+    public function testValidate_questionanwer_keyword_nospace_fail_alreadyUsed()
+    {
+        $interaction = $this->Maker->getInteractionMultiKeywordQuestion();
+        $interaction['answer-keywords'][0]['keyword'] = "test, other";        
+        $alreadyUsedKeywords = array(
+            'other' => array(
+                'program-db' => 'otherdb',
+                'program-name' => 'otherprogram',
+                'by-type' => 'Dialogue',
+                'dialogue-id' => '01',
+                'dialogue-name' => 'my dialogue'));
+
+        $this->Interaction->setUsedKeywords($alreadyUsedKeywords);
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        $this->assertEqual(
+            $this->Interaction->validationErrors['answer-keywords'][0]['keyword'][0],        
+            "'other' already used by a Dialogue of program 'otherprogram'.");
+    }
+    
     
     
     public function testValidate_multiKeywordQuestion_keyword_fail_alreadyUsed()
@@ -216,8 +246,11 @@ class InteractionTestCase extends CakeTestCase
         $interaction['answer-keywords'][0]['keyword'] = "test, other";        
         $alreadyUsedKeywords = array(
             'other' => array(
-                'programName' => 'otherprogram',
-                'type' => 'dialogue'));
+                'program-db' => 'otherdb',
+                'program-name' => 'otherprogram',
+                'by-type' => 'Dialogue',
+                'dialogue-id' => '01',
+                'dialogue-name' => 'my dialogue'));
 
         $this->Interaction->setUsedKeywords($alreadyUsedKeywords);
         $this->Interaction->set($interaction);
@@ -225,9 +258,9 @@ class InteractionTestCase extends CakeTestCase
         $this->assertFalse($this->Interaction->validates());
         $this->assertEqual(
             $this->Interaction->validationErrors['answer-keywords'][0]['keyword'][0],        
-            "'other' already used by a dialogue of program 'otherprogram'.");
+            "'other' already used by a Dialogue of program 'otherprogram'.");
     }
-    
+
     
     public function testValidate_fail()
     {
@@ -249,8 +282,36 @@ class InteractionTestCase extends CakeTestCase
             'Type Interaction value is not valid.'
             );
     }
+
+
+    public function testValidate_date_fail_format()
+    {
+        $interaction = $this->Maker->getInteractionClosedQuestion();
+        $interaction['date-time'] = '2013-10-20 20:20:00';
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        
+        $this->assertFalse($this->Interaction->validates());
+        $this->assertEqual(
+            $this->Interaction->validationErrors['date-time'][0], 
+            'The date time is not in an ISO format.');
+    }
+
+
+    public function testValidate_date_fail_empty()
+    {
+        $interaction = $this->Maker->getInteractionClosedQuestion();
+        $interaction['date-time'] = null;
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        
+        $this->assertFalse($this->Interaction->validates());
+        $this->assertEqual(
+            $this->Interaction->validationErrors['date-time'][0], 
+            'The date time has to be set.');
+    }
     
-    
+   
     public function testValidate_fail_requiredConditionalFieldValue()
     {
         $interaction = array(
@@ -270,5 +331,31 @@ class InteractionTestCase extends CakeTestCase
             'The type-schedule field with value fixed-time require the field date-time.'
             );
     }
-    
+
+
+    public function testGetInteractionKeywords()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $this->assertEqual(
+            array('name'),
+            Interaction::getInteractionKeywords($interaction));
+
+        $interaction = $this->Maker->getInteractionClosedQuestion();
+        $this->assertEqual(
+            array('feel'),
+            Interaction::getInteractionKeywords($interaction));
+
+        $interaction['set-answer-accept-no-space'] = 'answer-accept-no-space';
+        $this->assertEqual(
+            array('feel', 'feelfine', 'feelbad'),
+            Interaction::getInteractionKeywords($interaction));
+
+        
+        $interaction = $this->Maker->getInteractionMultiKeywordQuestion();
+        $this->assertEqual(
+            array('female', 'male'),
+            Interaction::getInteractionKeywords($interaction));
+    }
+
+  
 }

@@ -113,7 +113,6 @@ class Dialogue extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $this->DialogueHelper = new DialogueHelper();
         $this->Schedule = new Schedule($id, $table, $ds);
         $this->Interaction = new Interaction();
     }
@@ -135,8 +134,8 @@ class Dialogue extends MongoModel
         parent::beforeValidate();
         
         ## Need to convert all dates
-        $this->data['Dialogue'] = $this->DialogueHelper->objectToArray($this->data['Dialogue']);
-        $this->DialogueHelper->recurseScriptDateConverter($this->data['Dialogue']);
+        $this->data['Dialogue'] = DialogueHelper::objectToArray($this->data['Dialogue']);
+        DialogueHelper::recurseScriptDateConverter($this->data['Dialogue']);
         
         ## Set default value if key not present
         $this->_setDefault('activated', 0);
@@ -298,7 +297,7 @@ class Dialogue extends MongoModel
     {
         $this->usedKeywords = $usedKeywords;
  
-        $dialogue = $this->DialogueHelper->objectToArray($dialogue);
+        $dialogue = DialogueHelper::objectToArray($dialogue);
 
          if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
             $this->create();
@@ -319,6 +318,42 @@ class Dialogue extends MongoModel
     }
 
 
+    static public function hasDialogueKeywords($dialogue, $keywords)
+    {
+        if (isset($dialogue['Dialogue'])) {
+            $dialogue = $dialogue['Dialogue'];
+        }
+
+        if (!isset($dialogue['interactions'])) {
+            return array();
+        }
+      
+        $foundKeywords = array();
+        foreach ($dialogue['interactions'] as $interaction) {
+            $foundKeywords = array_merge($foundKeywords, Interaction::hasInteractionKeywords($interaction, $keywords));
+        }
+        return $foundKeywords;
+    }
+
+
+    static public function getDialogueKeywords($dialogue)
+    {
+        if (isset($dialogue['Dialogue'])) {
+            $dialogue = $dialogue['Dialogue'];
+        }
+
+        if (!isset($dialogue['interactions'])) {
+            return array();
+        }
+      
+        $foundKeywords = array();
+        foreach ($dialogue['interactions'] as $interaction) {
+            $foundKeywords = array_merge($foundKeywords, Interaction::getInteractionKeywords($interaction));
+        }
+        return $foundKeywords;
+    }
+
+
     public function useKeyword($keywords, $excludeDialogue=null)
     {
         $params = array();
@@ -328,7 +363,7 @@ class Dialogue extends MongoModel
         $keywords = DialogueHelper::cleanKeywords($keywords);
         $usedKeywords = array();
         foreach ($this->getActiveDialogues($params) as $activeDialogue) {
-            $foundKeywords = $this->DialogueHelper->hasKeywords($activeDialogue, $keywords);
+            $foundKeywords = Dialogue::hasDialogueKeywords($activeDialogue, $keywords);
             $foundKeywords = array_flip($foundKeywords);
             foreach ($foundKeywords as $key => $value) {
                 $foundKeywords[$key] = array(
@@ -348,7 +383,7 @@ class Dialogue extends MongoModel
     {
         $keywords = array();
         foreach ($this->getActiveDialogues() as $activeDialogue) {
-            $keywords = array_merge($keywords, $this->DialogueHelper->getKeywords($activeDialogue));
+            $keywords = array_merge($keywords, Dialogue::getDialogueKeywords($activeDialogue));
         }
         return $keywords;
     }
@@ -357,7 +392,7 @@ class Dialogue extends MongoModel
     public function getActiveDialogueUseKeyword($keyword)
     {
         foreach ($this->getActiveDialogues() as $activeDialogue) {
-            $foundKeyword = $this->DialogueHelper->hasKeyword($activeDialogue, $keyword);
+            $foundKeyword = Dialogue::hasDialogueKeywords($activeDialogue, $keyword);
             if ($foundKeyword) {
                 return $activeDialogue;
             }

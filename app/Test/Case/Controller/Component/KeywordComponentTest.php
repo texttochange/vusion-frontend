@@ -169,6 +169,7 @@ class KewyordComponentTest extends CakeTestCase
         $this->assertEqual($valid, $expected);    
     }
 
+
     public function testAreUsedKeywords() 
     {
         $this->Request->create();

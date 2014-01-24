@@ -38,7 +38,7 @@ class ScriptMaker
     public function getOneDialogueAnwerNoSpaceSupported($keyword="keyword")
     {
         $dialogue = $this->getOneDialogueWithKeyword($keyword);
-        $dialogue['Dialogue']['interactions'][1]['answer-accept-no-space'] =  'answer-accept-no-space';
+        $dialogue['Dialogue']['interactions'][1]['set-answer-accept-no-space'] =  'answer-accept-no-space';
         return $dialogue;
 
     }
@@ -112,6 +112,7 @@ class ScriptMaker
 			"type-interaction"=> "question-answer",
 			"content"=> "How are you?",
 			"keyword" => "Feel",
+			"set-answer-accept-no-space" => null,
 			"type-question" => "closed-question",
 			"label-for-participant-profiling" => "feel",
 			"answers" => array(

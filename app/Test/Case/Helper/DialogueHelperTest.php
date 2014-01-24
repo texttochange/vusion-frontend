@@ -13,7 +13,8 @@ class DialogueHelperTestCase extends CakeTestCase
         $this->Maker = new ScriptMaker();
     }
   
-   
+/*   
+    #Deprecated
     public function testHasKeyword()
     {
         $dialogue = $this->Maker->getOneDialogue('kÉyword');
@@ -32,7 +33,7 @@ class DialogueHelperTestCase extends CakeTestCase
             DialogueHelper::hasKeywords($dialogue, array('keyword')));
     }
 
-
+    #Deprecated
     public function testHasKeywork_answerAcceptNoSpace()
     {
         $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fÉl');
@@ -50,7 +51,7 @@ class DialogueHelperTestCase extends CakeTestCase
             DialogueHelper::hasKeywords($dialogue, array('felok')));
     }
 
-
+    #Deprecated
     public function testGetKeyworks()
     {
         $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fÉl');
@@ -69,7 +70,7 @@ class DialogueHelperTestCase extends CakeTestCase
             DialogueHelper::getKeywords($dialogue));
     }
 
-    
+    #Deprecated
     public function testHasNoMatchingAnswers()
     {
         $dialogue = array('keyword'=>'keyword',
@@ -93,7 +94,7 @@ class DialogueHelperTestCase extends CakeTestCase
         $this->assertFalse(DialogueHelper::hasNoMatchingAnswers($dialogue, $status));
     }
 
-
+    #Deprecated
     public function testGetInteraction()
     {
         $dialogue = $this->Maker->getOneDialogueWithKeyword('keyword');
@@ -109,6 +110,7 @@ class DialogueHelperTestCase extends CakeTestCase
             array(),	
             DialogueHelper::getInteraction($dialogue, "other"));
     }
+*/
 
     public function testGetRequestKeywordToValidate()
     {
@@ -134,7 +136,9 @@ class DialogueHelperTestCase extends CakeTestCase
 
 
     //TODO: Fail to work well with unicode character with accent
- /*   public function testIsUsedKeyword()
+ /* 
+    #Deprecated  
+    public function testIsUsedKeyword()
     {
         $usedKeywords = array(
             'keyword1' => array('programName' => 'myprog1', 'type' => 'dialogue'),
