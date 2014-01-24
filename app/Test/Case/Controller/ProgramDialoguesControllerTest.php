@@ -183,7 +183,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         return $dialogues;
     }
     
-    
+
     public function testIndex()
     {
         $this->mockProgramAccess();
@@ -248,8 +248,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usedKeyword'))
-        ->will($this->returnValue(array('usedKeyword' => array('programName' => 'other program', 'type' => 'dialogue'))));
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
+        ->will($this->returnValue(array(
+            'usedkeyword' => array(
+                'program-db' => 'm6h',
+                'program-name' => 'other program', 
+                'by-type' => 'dialogue'))));
 
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
@@ -265,7 +269,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             'fail',
             $this->vars['result']['status']);
         $this->assertEquals(
-            "'usedKeyword' already used by a dialogue of program 'other program'.",
+            "'usedkeyword' already used by a dialogue of program 'other program'.",
             $this->vars['result']['message']['Dialogue']['interactions'][0]['keyword'][0]);        
     }
     
@@ -361,8 +365,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usedKeyword'))
-        ->will($this->returnValue(array('usedKeyword' => array('programName' => 'other program', 'type' => 'dialogue'))));
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
+        ->will($this->returnValue(array(
+            'usedkeyword' => array(
+                'program-db' => 'm6h',
+                'program-name' => 'other program', 
+                'by-type' => 'Dialogue'))));
         
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
@@ -377,7 +385,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedKeyword' already used by a dialogue of program 'other program'.", $this->vars['result']['message']);
+        $this->assertEquals("'usedkeyword' already used by a Dialogue of program 'other program'.", $this->vars['result']['message']);
         
     }
     
@@ -388,8 +396,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usedKeyword'))
-        ->will($this->returnValue(array('usedKeyword' => array('programName' => 'other program', 'type' => 'request'))));
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
+        ->will($this->returnValue(array(
+            'usedkeyword' => array(
+                'program-db' => 'm6h',
+                'program-name' => 'other program',
+                'by-type' => 'Request'))));
         
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
@@ -404,7 +416,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedKeyword' already used by a request of program 'other program'.", $this->vars['result']['message']);
+        $this->assertEquals("'usedkeyword' already used by a Request of program 'other program'.", $this->vars['result']['message']);
         
     }
     
@@ -415,7 +427,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
         ->will($this->returnValue(array()));
         
         $this->instanciateModels();
@@ -436,21 +448,11 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
     public function testValidateKeyword_ok_usedSameProgram_sameDialogue()
     {
-        $dialogues = $this->mockProgramAccess_withoutProgram();
-        $dialogues->Program
-        ->expects($this->any())
-        ->method('find')
-        ->will(
-            $this->onConsecutiveCalls(
-                $this->programData, 
-                array(
-                    $this->otherProgramData[0])
-                )
-            );
+        $dialogues = $this->mockProgramAccess();
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
         ->will($this->returnValue(array()));
         
         $this->instanciateModels();
@@ -465,27 +467,20 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
-                    'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'])
-                )
-            );
-        
+                    'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'])));
+ 
         $this->assertEquals('ok', $this->vars['result']['status']);
     }
-    
+  
     
     public function testValidateKeyword_fail_usedSameProgram_differentDialogue()
     {
-        $dialogues = $this->mockProgramAccess_withoutProgram();
-        $dialogues->Program
-        ->expects($this->any())
-        ->method('find')
-        ->will(
-            $this->onConsecutiveCalls(
-                $this->programData, 
-                array(
-                    $this->otherProgramData[0])
-                )
-            );
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
+        ->will($this->returnValue(array()));
 
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
@@ -499,28 +494,21 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
-                    'dialogue-id'=>''),
-                )
-            );
+                    'dialogue-id'=> '')));
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedKeyword' already used in dialogue 'my dialogue' of the same program.", $this->vars['result']['message']);
+        $this->assertEquals("'usedkeyword' already used in Dialogue 'my dialogue' of the same program.", $this->vars['result']['message']);
     }
     
-    
+  
     public function testValidateKeyword_fail_usedSameProgram_request()
     {
-        $dialogues = $this->mockProgramAccess_withoutProgram();
-        $dialogues->Program
-        ->expects($this->any())
-        ->method('find')
-        ->will(
-            $this->onConsecutiveCalls(
-                $this->programData, 
-                array(
-                    $this->otherProgramData[0])
-                )
-            );
+        $dialogues = $this->mockProgramAccess(); 
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('keyword'))
+        ->will($this->returnValue(array()));
         
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
@@ -533,12 +521,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'KEYWORD',
-                    'dialogue-id'=>''),
-                )
-            );
+                    'dialogue-id'=>'')));
         
         $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'KEYWORD' already used by a request of the same program.", $this->vars['result']['message']);
+        $this->assertEquals("'keyword' already used in Request 'KEYWORD request' of the same program.", $this->vars['result']['message']);
     }
     
     
@@ -548,7 +534,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usingAnOtherKeyword'))
+        ->with('testdbprogram', '256-8282', array('usinganotherkeyword'))
         ->will($this->returnValue(array()));        
 
         $this->instanciateModels();
@@ -586,7 +572,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
-        ->with('testdbprogram', '256-8282', array('usedKeyword'))
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
         ->will($this->returnValue(array()));
   
         $this->instanciateModels();

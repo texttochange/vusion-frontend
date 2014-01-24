@@ -265,7 +265,7 @@ class KewyordComponentTest extends CakeTestCase
     }
 
 
-    public function testValidationToMessage_request()
+    public function testFoundKeywordsToMessage_request()
     {
         $validation = array(
             'keyword' => array(
@@ -276,11 +276,11 @@ class KewyordComponentTest extends CakeTestCase
         
         $this->assertEqual(
             $expected,
-            $this->KeywordComponent->validationToMessage($validation));
+            $this->KeywordComponent->foundKeywordsToMessage('otherdb', $validation));
     }
 
 
-    public function testValidationToMessage_dialogue()
+    public function testFoundKeywordsToMessage_dialogue()
     {
         $validation = array(
             'keyword' => array(
@@ -291,7 +291,7 @@ class KewyordComponentTest extends CakeTestCase
         
         $this->assertEqual(
             $expected,
-            $this->KeywordComponent->validationToMessage($validation));
+            $this->KeywordComponent->foundKeywordsToMessage('otherdb', $validation));
     }
 
 

@@ -33,22 +33,29 @@ class KeywordComponent extends Component
     }
 
 
-    public function areUsedKeywords($programDb, $shortcode, $keywords)
+    public function areUsedKeywords($programDb, $shortcode, $keywords, $excludeType=null, $excludeId=null)
     {
        $usedKeywords = array();
-       //Get the Request keyword or the Dialogue
        $dialogueModel = new Dialogue(array('database' => $programDb));
-       $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($dialogueModel, $keywords));
+       if ($excludeType == 'Dialogue') {
+           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($dialogueModel, $keywords, '', $excludeId));
+       } else {
+           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($dialogueModel, $keywords));
+       }
        $requestModel = new Request(array('database' => $programDb));
-       $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($requestModel, $keywords));
-       $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms($programDb, $shortcode, $keywords);
+       if ($excludeType == 'Request') {
+           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($requestModel, $keywords, '', $excludeId));
+       } else {
+           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($requestModel, $keywords));
+       }
+       $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms($programDb, $shortcode, $keywords);       
        return array_merge($usedKeywords, $otherProgramFoundKeywords);
     }
 
 
-    protected function _getUsedKeywords($model, $keywords, $programName='') {
+    protected function _getUsedKeywords($model, $keywords, $programName='', $exclude=null) {
         $usedKeywords = array();
-        $foundKeywords = $model->useKeyword($keywords);
+        $foundKeywords = $model->useKeyword($keywords, $exclude);
         if (!$foundKeywords) {
             return $usedKeywords;
         }
@@ -63,7 +70,7 @@ class KeywordComponent extends Component
         return $usedKeywords;
     }
 
-    // Refactor to loop program then loop on keywords
+
     public function areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords)
     {
         $usedKeywords = array();
@@ -83,16 +90,26 @@ class KeywordComponent extends Component
         return $usedKeywords;
     }
 
+    
 
     //For now only display the first validation error
-    public function validationToMessage($validations)
+    public function foundKeywordsToMessage($programDb, $foundKeywords)
     {
-        if ($validations === array()) {
+        if ($foundKeywords === array()) {
             return null;
         }
-        foreach($validations as $keyword => $errors) {
-            return __("'%s' already used by a %s of program '%s'.", $keyword, $errors['by-type'], $errors['program-name']);
+        $keyword = key($foundKeywords);
+        if ($foundKeywords[$keyword]['program-db'] == $programDb) {
+            if (isset($foundKeywords[$keyword]['dialogue-name'])) {
+                $message = __("'%s' already used in Dialogue '%s' of the same program.", $keyword, $foundKeywords[$keyword]['dialogue-name']);    
+            } elseif (isset($foundKeywords[$keyword]['request-name'])) {
+                $message = __("'%s' already used in Request '%s' of the same program.", $keyword, $foundKeywords[$keyword]['request-name']);
+            }
+        } else {
+            $message = __("'%s' already used by a %s of program '%s'.", $keyword, $foundKeywords[$keyword]['by-type'], $foundKeywords[$keyword]['program-name']);
         }
+        return $message;
     }
+
 
 }

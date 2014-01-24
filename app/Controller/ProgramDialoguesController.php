@@ -28,7 +28,6 @@ class ProgramDialoguesController extends AppController
         
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Dialogue       = new Dialogue($options);
-        $this->DialogueHelper = new DialogueHelper();
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Participant    = new Participant($options);
         $this->Request        = new Request($options);
@@ -67,7 +66,7 @@ class ProgramDialoguesController extends AppController
                 return;
             }
             $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-            $keywords = $this->DialogueHelper->getKeywords($this->request->data);
+            $keywords = Dialogue::getDialogueKeywords($this->request->data);
             $usedByOtherProgramResults = $this->Keyword->areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords);
             if ($this->Dialogue->saveDialogue($this->request->data, $usedByOtherProgramResults)) {
                 $this->set(
@@ -75,18 +74,14 @@ class ProgramDialoguesController extends AppController
                     array(
                         'status'=>'ok',
                         'dialogue-obj-id' => $this->Dialogue->id,
-                        'message' => __('Dialogue saved as draft.')
-                        )
-                    );
+                        'message' => __('Dialogue saved as draft.')));
             } else {
                 $errors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
                 $this->set(
                     'result', 
                     array(
                         'status'=>'fail',
-                        'message' => array('Dialogue' => $errors),
-                        )
-                    );
+                        'message' => array('Dialogue' => $errors)));
             }
         }
     }
@@ -169,10 +164,10 @@ class ProgramDialoguesController extends AppController
     
     public function validateKeyword()
     {   
-        $programUrl        = $this->params['program'];
-        $programDb         = $this->Session->read($programUrl."_db");
-        $keywordToValidate = $this->request->data['keyword'];
-        $dialogueId        = $this->request->data['dialogue-id'];
+        $programUrl   = $this->params['program'];
+        $programDb    = $this->Session->read($programUrl."_db");
+        $usedKeywords = DialogueHelper::cleanKeywords($this->request->data['keyword']);
+        $dialogueId   = $this->request->data['dialogue-id'];
         
         if (!$this->ProgramSetting->hasRequired()) {
             $this->set('result', array(
@@ -180,35 +175,15 @@ class ProgramDialoguesController extends AppController
                 'message' => __('Please set the program settings then try again.')));
             return;
         }
-
-        /**Is the keyword used by another dialogue of the same program*/
-        $dialogueUsingKeyword = $this->Dialogue->getActiveDialogueUseKeyword($keywordToValidate);
-        if ($dialogueUsingKeyword && $dialogueUsingKeyword['Dialogue']['dialogue-id'] != $dialogueId) {
-            $this->set('result', array(
-                    'status' => 'fail', 
-                    'message' => __("'%s' already used in dialogue '%s' of the same program.", $keywordToValidate, $dialogueUsingKeyword['Dialogue']['name'])));
-            return;
-        }
-            
-        /**Is the keyword used by request in the same program*/
-        $foundKeyword = $this->Request->find('keyword', array('keywords'=> $keywordToValidate));
-        if ($foundKeyword) {
-            $this->set('result', array(
-                    'status' => 'fail', 
-                    'message' => __("'%s' already used by a request of the same program.", $foundKeyword)));
-            return;
-        }
-        
+       
         /**Is the keyword used by another program*/
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-        $usedByOtherProgramResult = $this->Keyword->areKeywordsUsedByOtherPrograms(
-            $programDb,
-            $shortCode,
-            array($keywordToValidate)); 
-        if ($usedByOtherProgramResult != array()) {
+        $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Dialogue', $dialogueId);
+        if ($foundKeywords) {
+            $message = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
             $this->set('result', array(
                 'status' => 'fail', 
-                'message' => $this->Keyword->validationToMessage($usedByOtherProgramResult)));
+                'message' => $message));
             return;
         }
  
