@@ -89,83 +89,7 @@ class DialogueHelper
         }
         return $data;
     }
-    
-    
-    /*static public function clearAndExplode($stringValue)
-    {
-        $stringValue = str_replace(" ", "", $stringValue);
-        return explode(",", $stringValue);
-    }*/
 
-/*
-    static public function hasKeywords(&$currentLayer, $toValidateKeywords)
-    {
-        if (!is_array($currentLayer)) {
-            return false;
-        }
-        $hasKeywords = array();
-        foreach ($currentLayer as $key => $value) {
-            if (!is_int($key) && ($key == 'keyword')) {
-                $currentKeywords = DialogueHelper::cleanKeywords($value);
-                $noSpacedCurrentKeywords = Interaction::getInteractionNoSpaceKeywords($currentKeywords, $currentLayer);
-                $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
-                $hasKeywords = array_merge($hasKeywords, array_intersect($toValidateKeywords, $currentKeywords));
-            } elseif (is_array($value)) {
-                $hasKeywords = array_merge($hasKeywords, DialogueHelper::hasKeywords($value, $toValidateKeywords));
-            }
-        }
-        return $hasKeywords;
-    }
-
-    static public function getKeywords(&$currentLayer)
-    {
-        $keywords = array();
-        if (!is_array($currentLayer)) {
-            return $keywords;
-        }
-        
-        foreach ($currentLayer as $key => $value) {
-            if (!is_int($key) && ($key == 'keyword')) {
-                $currentKeywords = DialogueHelper::cleanKeywords($value);
-                $noSpacedCurrentKeywords = Interaction::getInteractionNoSpaceKeywords($currentKeywords, $currentLayer);
-                $currentKeywords = array_merge($currentKeywords, $noSpacedCurrentKeywords);
-                $keywords = array_merge($keywords, $currentKeywords);
-            } elseif (is_array($value)) {
-                $keywords = array_merge($keywords, DialogueHelper::getKeywords($value));
-            }
-        }
-        return $keywords;
-    }
-*/    
-/*
-    static public function hasNoMatchingAnswers(&$currentLayer, $status)
-    {
-        if (!is_array($currentLayer)) {
-            return false;
-        }
-        
-        foreach ($currentLayer as $key => &$value) {
-            if (!is_int($key) && ($key == 'answers')) {
-                foreach($value as $answer => $choice) {
-                    $response    = $currentLayer['keyword']." ".$choice['choice'];
-                    $responseTwo = $currentLayer['keyword']." ".($answer+1);
-                    if (DialogueHelper::_recurseStatus($status, $response, $responseTwo)) {
-                        if($answer==(count($value)-1))
-                            return true;
-                        else
-                        continue;
-                    }
-                    return false;
-                }
-            }
-            else if (is_array($value)) {
-                $result = DialogueHelper::hasNoMatchingAnswers($value, $status);
-                return $result;
-            }
-        }
-        return false;
-    }
-*/    
     
     static protected function _recurseStatus(&$newCurrentLayer, $response, $responseTwo)
     {
@@ -189,26 +113,6 @@ class DialogueHelper
         return false;
     }
 
-    /*
-    static public function getInteraction($currentLayer, $interaction_id)
-    {
-        
-        if (!is_array($currentLayer)) {
-            return false;
-        }
-        
-        foreach ($currentLayer as $key => $value) {
-            if ($key == 'interaction-id' && $value == $interaction_id) {
-                return $currentLayer;
-            }
-            else if (is_array($value)) {
-                $result = DialogueHelper::getInteraction($value, $interaction_id);
-                if ($result)
-                    return $result;
-            }
-        }
-        return array();
-    }*/
 
     static public function cleanKeywords($keywords)
     {
@@ -259,18 +163,6 @@ class DialogueHelper
         $string = strtolower($string);
         return utf8_encode($string); 
     }
-
-    //TODO might require to normalise the keywords
-/*    static public function isUsedKeyword($keyword, $usedKeywords)
-    {
-        $keyword = strtolower($keyword);
-        $usedKeyword = array_change_key_case($usedKeywords);
-        if (isset($usedKeywords[$keyword])) {
-            return array($keyword => $usedKeywords[$keyword]);
-        } else {
-            return false;
-        }
-    }*/
 
     
     public function compareDialogueByName($a, $b)
