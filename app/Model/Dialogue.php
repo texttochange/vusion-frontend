@@ -389,28 +389,18 @@ class Dialogue extends MongoModel
     }
 
 
-    public function getActiveDialogueUseKeyword($keyword)
-    {
-        foreach ($this->getActiveDialogues() as $activeDialogue) {
-            $foundKeyword = Dialogue::hasDialogueKeywords($activeDialogue, $keyword);
-            if ($foundKeyword) {
-                return $activeDialogue;
-            }
-        }
-        return array();
-    }
-
-
     public function deleteDialogue($dialogueId)
     {
         $this->Schedule->deleteAll(array('Schedule.dialogue-id'=>$dialogueId), false);
         return $this->deleteAll(array('Dialogue.dialogue-id'=>$dialogueId), false);
     }
+
     
     public function uniqueDialogueName($check)
     {   $dialogueId = $this->data['Dialogue']['dialogue-id'];
         return $this->isValidDialogueName($check['name'], $dialogueId);	    	
     }
+
 
     public function isValidDialogueName($name, $dialogueId = null)
     {
@@ -424,6 +414,7 @@ class Dialogue extends MongoModel
         $result = $this->find('count', array('conditions' => $conditions));
         return $result == 0;        
     }
+
 
 }
 
