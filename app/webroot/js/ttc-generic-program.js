@@ -681,9 +681,10 @@ function duplicateKeywordValidation(value, element, param) {
             url: url,
             type: "POST",
             async: false,
-            data: { 'keyword': keywords.join(", "), 
+            data: { 
+                'keyword': keywords.join(", "), 
                 'dialogue-id': $("[name$=dialogue-id]").val(),
-            'object-id': $("[name$='_id']").val()},
+                'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
             success: validateKeywordReply,
             timeout: 1000,
