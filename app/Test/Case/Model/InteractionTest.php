@@ -10,7 +10,7 @@ class InteractionTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Interaction = new Interaction();
+        $this->Interaction = new Interaction('testdbprogram');
         $this->Maker       = new ScriptMaker();
     }
 

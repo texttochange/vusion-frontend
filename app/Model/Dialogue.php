@@ -114,7 +114,7 @@ class Dialogue extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $this->Schedule = new Schedule($id, $table, $ds);
-        $this->Interaction = new Interaction();
+        $this->Interaction = new Interaction($id['database']);
     }
 
 

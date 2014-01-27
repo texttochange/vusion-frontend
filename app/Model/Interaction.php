@@ -8,9 +8,10 @@ App::uses('DialogueHelper', 'Lib');
 
 class Interaction extends VirtualModel
 {
-    var $name    = 'interaction';
-    var $version = '3'; 
-    
+    var $name       = 'interaction';
+    var $version    = '3'; 
+    var $databaName = null;    
+
     var $payload = array();
     
     var $fields = array(
@@ -21,10 +22,12 @@ class Interaction extends VirtualModel
         'prioritized');
     
     
-    public function __construct()
+    //DatabaseName required for Keyword Validation
+    public function __construct($databaseName)
     {     
         parent::__construct();
         $this->Action = new Action();
+        $this->databaseName = $databaseName;
     }
     
     
@@ -515,6 +518,7 @@ class Interaction extends VirtualModel
         $this->usedKeywords = $usedKeywords;
     }
 
+
     public function notUsedKeyword($field, $data)
     {
         if (!isset($data[$field])) {
@@ -523,7 +527,7 @@ class Interaction extends VirtualModel
         $keywords = DialogueHelper::cleanKeywords($data[$field]);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
-                return __("'%s' already used by a %s of program '%s'.",  $keyword, $this->usedKeywords[$keyword]['by-type'],  $this->usedKeywords[$keyword]['program-name']);
+                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
             }
         }
         return true;
@@ -539,7 +543,7 @@ class Interaction extends VirtualModel
         $noSpaceKeywords = Interaction::getInteractionNoSpaceKeywords($data, $keywords);
         foreach ($noSpaceKeywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
-                return __("'%s' already used by a %s of program '%s'.",  $keyword, $this->usedKeywords[$keyword]['by-type'],  $this->usedKeywords[$keyword]['program-name']);
+                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
             }
         }
         return true;

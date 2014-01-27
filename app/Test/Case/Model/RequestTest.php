@@ -14,7 +14,7 @@ class RequestTestCase extends CakeTestCase
 
         $connections = ConnectionManager::enumConnectionObjects();
 
-        $option        = array('database'=>'test');
+        $option        = array('database' => 'testdbprogram');
         $this->Request = new Request($option);
 
         $this->Request->setDataSource('mongo_test');
@@ -128,32 +128,48 @@ class RequestTestCase extends CakeTestCase
         $this->Request->save($otherRequest);
 
         $this->assertEqual(
-            array('keyword'),
+            array(
+                'otherkeyword request' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),
+            $this->Request->useKeyphrase('otherkeyword request'));
+
+        $this->assertEqual(
+            array(
+                'keyword' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),
             $this->Request->useKeyphrase('keyword'));
 
         $this->assertEqual(
-            null,
+            false,
             $this->Request->useKeyphrase('keywo'));
 
         $this->assertEqual(
-            array('keyword'),  
-            $this->Request->useKeyphrase('keywor, keyword'));
+            array(
+                'otherkeyword request' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),  
+            $this->Request->useKeyphrase('keywor, otherkeyword request'));
         
         $this->assertEqual(
-            null, 
+            false, 
             $this->Request->useKeyphrase('kEy'));
         
         $this->assertEqual(
-            array('key request'), 
+            array(
+                'key request' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),   
             $this->Request->useKeyphrase('kEy request'));
         
         $this->assertEqual(
-            null,
+            false,
             $this->Request->useKeyphrase('request'));
         
         ## Exclude request parameter
         $this->assertEqual(
-            null,
+            false,
             $this->Request->useKeyphrase('kEy request', $savedRequest['Request']['_id']));
     }
 
@@ -222,13 +238,17 @@ class RequestTestCase extends CakeTestCase
     public function testSave_validateKeyword_fail_alreadyUsedOtherProgram()
     {
         $request = $this->Maker->getOneRequest('key request, keyword, ÉotherkeYword request, für');
-        $usedKeywords = array('eotherkeyword' => array('programName' => 'otherprogram', 'type' => 'dialogue'));
+        $usedKeywords = array(
+            'eotherkeyword' => array(
+                'program-db' => 'otherprogram', 
+                'program-name' => 'Other Program', 
+                'by-type' => 'Dialogue'));
 
         $this->Request->create();
         $savedRequest = $this->Request->saveRequest($request, $usedKeywords);
         $this->assertFalse($savedRequest);
         $this->assertEquals(
-            "'eotherkeyword' already used by a dialogue of program 'otherprogram'.",
+            "'eotherkeyword' already used by a Dialogue of program 'Other Program'.",
             $this->Request->validationErrors['keyword'][0]);
     }
 
@@ -237,15 +257,18 @@ class RequestTestCase extends CakeTestCase
     {
         $request = $this->Maker->getOneRequest('key request, keyword, ÉotherkeYword request, für');
         $this->Request->create();
-        $this->Request->saveRequest($request);
-
-        $request = $this->Maker->getOneRequest('eotherkeYword request');
-        $this->Request->create();
-        $savedRequest = $this->Request->saveRequest($request);
+        $savedRequest = $this->Request->saveRequest(
+            $request, 
+            array(
+                'eotherkeyword request' => array(
+                    'program-db' => 'testdbprogram', 
+                    'program-name' => '', 
+                    'by-type' => 'Request',
+                    'request-name' => 'Another keyword')));
 
         $this->assertFalse($savedRequest);
         $this->assertEquals(
-            "'eotherkeyword request' already used in the same program by a request.",
+            "'eotherkeyword request' already used in Request 'Another keyword' of the same program.",
             $this->Request->validationErrors['keyword'][0]);
     }    
 

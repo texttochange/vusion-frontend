@@ -166,7 +166,7 @@ class ProgramDialoguesController extends AppController
     {   
         $programUrl   = $this->params['program'];
         $programDb    = $this->Session->read($programUrl."_db");
-        $usedKeywords = DialogueHelper::cleanKeywords($this->request->data['keyword']);
+        $usedKeywords = $this->request->data['keyword'];
         $dialogueId   = $this->request->data['dialogue-id'];
         
         if (!$this->ProgramSetting->hasRequired()) {

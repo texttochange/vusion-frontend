@@ -171,6 +171,7 @@ class DialogueTestCase extends CakeTestCase
     {
         $usedKeywords = array(
             'other' => array(
+                'program-db' => 'otherprogram',
                 'program-name' => 'other program',
                 'by-type' => 'Request'));
         $dialogue = $this->Maker->getOneDialogue();
@@ -192,7 +193,7 @@ class DialogueTestCase extends CakeTestCase
     }
 
 
-    public function testFindAllKeywordInDialogues()
+    public function testUseKeyword()
     {
 
         $dialogueOne = $this->Maker->getOneDialogue('FEEL, Name');

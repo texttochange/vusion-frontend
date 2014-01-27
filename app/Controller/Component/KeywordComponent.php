@@ -33,21 +33,29 @@ class KeywordComponent extends Component
     }
 
 
+    //TODO Clarify $keyword Parameter
+    //TODO remove any cleaning from the Dialogue / Request 
+    //TODO provide a 2 step process to get cleanKeywords done only once
     public function areUsedKeywords($programDb, $shortcode, $keywords, $excludeType=null, $excludeId=null)
     {
+       $keyphrases = DialogueHelper::cleanKeyphrases($keywords);
+       $keywords = DialogueHelper::cleanKeywords($keywords);
        $usedKeywords = array();
        $dialogueModel = new Dialogue(array('database' => $programDb));
        if ($excludeType == 'Dialogue') {
-           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($dialogueModel, $keywords, '', $excludeId));
+           $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, '', $excludeId);
        } else {
-           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($dialogueModel, $keywords));
+           $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords);
        }
+       $usedKeywords = array_merge($usedKeywords, $foundKeywords);
        $requestModel = new Request(array('database' => $programDb));
        if ($excludeType == 'Request') {
-           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($requestModel, $keywords, '', $excludeId));
+           // In case we compare request, we need to consider the keyphrase and not only the keyword
+           $foundKeywords = $this->_getUsedKeyphrases($requestModel, $keyphrases, '', $excludeId);
        } else {
-           $usedKeywords = array_merge($usedKeywords, $this->_getUsedKeywords($requestModel, $keywords));
+           $foundKeywords = $this->_getUsedKeywords($requestModel, $keywords);
        }
+       $usedKeywords = array_merge($usedKeywords, $foundKeywords);
        $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms($programDb, $shortcode, $keywords);       
        return array_merge($usedKeywords, $otherProgramFoundKeywords);
     }
@@ -71,6 +79,24 @@ class KeywordComponent extends Component
     }
 
 
+    protected function _getUsedKeyphrases($model, $keyphrases, $programName='', $exclude=null) {
+        $usedKeyphrases = array();
+        $foundKeyphrases = $model->useKeyphrase($keyphrases, $exclude);
+        if (!$foundKeyphrases) {
+            return $usedKeyphrases;
+        }
+        foreach ($foundKeyphrases as $foundKeyphrase => $details) {
+            $usedKeyphrases[$foundKeyphrase] = array_merge(
+                $details, 
+                array(
+                    'program-db' => $model->databaseName,
+                    'program-name' => $programName,
+                    'by-type'=> $model->alias));
+        }
+        return $usedKeyphrases;
+    }
+
+
     public function areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords)
     {
         $usedKeywords = array();
@@ -91,7 +117,6 @@ class KeywordComponent extends Component
     }
 
     
-
     //For now only display the first validation error
     public function foundKeywordsToMessage($programDb, $foundKeywords)
     {
@@ -99,16 +124,7 @@ class KeywordComponent extends Component
             return null;
         }
         $keyword = key($foundKeywords);
-        if ($foundKeywords[$keyword]['program-db'] == $programDb) {
-            if (isset($foundKeywords[$keyword]['dialogue-name'])) {
-                $message = __("'%s' already used in Dialogue '%s' of the same program.", $keyword, $foundKeywords[$keyword]['dialogue-name']);    
-            } elseif (isset($foundKeywords[$keyword]['request-name'])) {
-                $message = __("'%s' already used in Request '%s' of the same program.", $keyword, $foundKeywords[$keyword]['request-name']);
-            }
-        } else {
-            $message = __("'%s' already used by a %s of program '%s'.", $keyword, $foundKeywords[$keyword]['by-type'], $foundKeywords[$keyword]['program-name']);
-        }
-        return $message;
+        return DialogueHelper::foundKeywordsToMessage($programDb, $keyword, $foundKeywords[$keyword]);
     }
 
 

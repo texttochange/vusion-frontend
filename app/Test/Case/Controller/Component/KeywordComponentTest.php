@@ -224,6 +224,25 @@ class KewyordComponentTest extends CakeTestCase
     }
 
 
+    public function testAreUsedKeywords_withRequestKeyphrases() 
+    {
+        $this->Request->create();
+        $savedRequest = $this->Request->save($this->Maker->getOneRequest('keyword1 stuff, Keyword1 other'));
+        
+        $expected = array(
+            'keyword1 stuff' => array(
+                'program-name' => '',
+                'program-db' => 'testdbprogram',
+                'by-type' => 'Request',                 
+                'request-id' => $savedRequest['Request']['_id']."",
+                'request-name' => $savedRequest['Request']['keyword']));
+
+        $valid = $this->KeywordComponent->areUsedKeywords(
+            'testdbprogram', '256-8181', array('keyword1 shawdow', 'keyword1 stuff'), 'Request');
+        $this->assertEqual($valid, $expected);    
+    }
+
+
     public function testAreKeywordsUsedByOtherPrograms_keywordUsedInOtherProgramRequest() 
     {   
         $this->externalModels['request']->create();

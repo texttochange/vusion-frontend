@@ -34,7 +34,6 @@ class ProgramRequestsController extends AppController
         $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->Request        = new Request($options);
         $this->Dialogue       = new Dialogue($options);
-        $this->DialogueHelper = new DialogueHelper();
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Participant    = new Participant($options);
         $this->_instanciateVumiRabbitMQ();
@@ -60,27 +59,32 @@ class ProgramRequestsController extends AppController
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($programUrl."_db");
         
-        if ($this->request->is('post')) {
-            $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-            $keywords = DialogueHelper::getRequestKeywords($this->request->data);
-            $usedByOtherProgramResults = $this->Keyword->areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords);
-            $this->Request->create();
-            if ($this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
-                $this->_notifyUpdateRegisteredKeywords($programUrl);
-                $this->set(
-                    'result', array(
-                        'status' => 'ok',
-                        'request-id' => $this->Request->id,
-                        'message' => __('Request created, wait for redirection.'))
-                    );
-            } else {
-                $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
-                $this->set(
-                    'result', array(
-                        'status' => 'fail',
-                        'message' => array('Request' => $this->Request->validationErrors))
-                    );
-            }
+        if (!$this->request->is('post')) {
+            return;
+        }
+
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->set('result', array(
+                'status' => 'fail', 
+                'message' => __('Please set the program settings then try again.')));
+            return;
+        }         
+
+        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $keywords = Request::getRequestKeyphrases($this->request->data);
+        $usedByOtherProgramResults = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', '');
+        $this->Request->create();
+        if ($this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
+            $this->_notifyUpdateRegisteredKeywords($programUrl);
+            $this->set('result', array(
+                'status' => 'ok',
+                'request-id' => $this->Request->id,
+                'message' => __('Request created, wait for redirection.')));
+        } else {
+            $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
+            $this->set('result', array(
+                'status' => 'fail',
+                'message' => array('Request' => $this->Request->validationErrors)));
         }
     }
     
@@ -93,36 +97,40 @@ class ProgramRequestsController extends AppController
         $programDb  = $this->Session->read($programUrl."_db");
         $id         = $this->params['id'];
         
-        if ($this->request->is('post')) {
-            $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-            $keywords = DialogueHelper::getRequestKeywords($this->request->data);
-            $usedByOtherProgramResults = $this->Keyword->areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords);
-
-            $this->Request->create();
-            $this->Request->id = $id;
-            if ($this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
-                $this->_notifyUpdateRegisteredKeywords($programUrl);
-                $this->set(
-                    'result', array(
-                        'status' => 'ok',
-                        'request-id' => $this->Request->id,
-                        'message' => 'Request saved.')
-                    );
-            } else {
-                $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
-                $this->set(
-                    'result', array(
-                        'status' => 'fail',
-                        'message' => array('Request' => $this->Request->validationErrors)
-                        )
-                    );
-            }
-        } else {
+        if (!$this->request->is('post')) {
             $this->Request->id = $id;
             if (!$this->Request->exists()) {
                 throw new NotFoundException(__('Invalide Request') . $id);
             }
             $this->set('request', $this->Request->read(null, $id));
+            return;
+        }
+
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->set('result', array(
+                'status' => 'fail', 
+                'message' => __('Please set the program settings then try again.')));
+            return;
+        }
+
+        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $keywords = Request::getRequestKeyphrases($this->request->data);
+        $usedByOtherProgramResults = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', $id);
+        $this->Request->create();
+        $this->Request->id = $id;
+        if ($this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
+            $this->_notifyUpdateRegisteredKeywords($programUrl);
+            $this->set(
+                'result', array(
+                    'status' => 'ok',
+                    'request-id' => $this->Request->id,
+                    'message' => 'Request saved.'));
+        } else {
+            $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
+            $this->set(
+                'result', array(
+                    'status' => 'fail',
+                    'message' => array('Request' => $this->Request->validationErrors)));
         }
     }
     
@@ -166,51 +174,23 @@ class ProgramRequestsController extends AppController
     {
         $programUrl        = $this->params['program'];
         $programDb         = $this->Session->read($programUrl."_db");
-        $keywords          = $this->request->data['keyword'];
-        $keywordToValidate = $this->DialogueHelper->getRequestKeywordToValidate($keywords);
-        
+        $usedKeywords      = $this->request->data['keyword'];
+        $requestId         = $this->request->data['object-id'];
+
         if (!$this->ProgramSetting->hasRequired()) {
             $this->set('result', array(
                 'status' => 'fail', 
                 'message' => __('Please set the program settings then try again.')));
             return;
         }
-
-        /**Is the keyword used by another dialogue of the same program*/
-        $dialogueUsingKeyword = $this->Dialogue->getActiveDialogueUseKeyword($keywordToValidate);
-        if ($dialogueUsingKeyword) {
-            $this->set('result', array(
-                    'status'=>'fail', 
-                    'message'=> __("'%s' already used in same program in the '%s' dialogue.", $keywordToValidate, $dialogueUsingKeyword['Dialogue']['name'])));
-            return;
-        }
         
-        /**Is the keyword used by request in the same program*/
-        if (isset($this->request->data['object-id'])) {
-            $conditions = array(    
-                'keywords'=> $keywords,
-                'excludeRequest' => $this->request->data['object-id']);
-        } else {
-            $conditions = array('keywords'=> $keywords);
-        }
-        $foundKeyword = $this->Request->find('keyphrase', $conditions);
-        if ($foundKeyword) {
-            $this->set('result', array(
-                    'status'=>'fail', 
-                    'message'=> __("'%s' already used in the same program by a request.", $foundKeyword)));
-            return;
-        }
-        
-        /**Is the keyword used by another program*/
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-        $usedByOtherProgramResult = $this->Keyword->areKeywordsUsedByOtherPrograms(
-            $programDb,
-            $shortCode,
-            array($keywordToValidate)); 
-        if ($usedByOtherProgramResult != array()) {
+        $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Request', $requestId); 
+        if ($foundKeywords) {
+            $message = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
             $this->set('result', array(
                 'status' => 'fail', 
-                'message' => $this->Keyword->validationToMessage($usedByOtherProgramResult)));
+                'message' => $message));
             return;
         }
         

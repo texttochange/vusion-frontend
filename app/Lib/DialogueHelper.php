@@ -1,5 +1,4 @@
 <?php
-App::uses('Interaction', 'Model');
 
 
 class DialogueHelper
@@ -137,9 +136,11 @@ class DialogueHelper
 
     static public function cleanKeyphrases($keyphrases)
     {
-        $keyphraseArray = explode(",", $keyphrases);
-        array_walk($keyphraseArray, create_function('&$val', '$val = trim($val); $val = DialogueHelper::cleanKeyword($val);'));
-        return $keyphraseArray;
+        if (is_string($keyphrases)) {
+            $keyphrases = explode(",", $keyphrases);            
+        }
+        array_walk($keyphrases, create_function('&$val', '$val = trim($val); $val = DialogueHelper::cleanKeyword($val);'));
+        return $keyphrases;
     }
     
 
@@ -177,6 +178,20 @@ class DialogueHelper
             return strcasecmp($a['Draft']['name'],$b['Draft']['name']);
     }
     
+
+    static public function foundKeywordsToMessage($programDb, $keyword, $keywordDetails)
+    {
+        if ($keywordDetails['program-db'] == $programDb) {
+            if (isset($keywordDetails['dialogue-name'])) {
+                $message = __("'%s' already used in Dialogue '%s' of the same program.", $keyword, $keywordDetails['dialogue-name']);    
+            } elseif (isset($keywordDetails['request-name'])) {
+                $message = __("'%s' already used in Request '%s' of the same program.", $keyword, $keywordDetails['request-name']);
+            }
+        } else {
+            $message = __("'%s' already used by a %s of program '%s'.", $keyword, $keywordDetails['by-type'], $keywordDetails['program-name']);
+        }
+        return $message;
+    }
 
 }
 
