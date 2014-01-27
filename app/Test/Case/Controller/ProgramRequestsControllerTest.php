@@ -141,7 +141,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    '_notifyUpdateRegisteredKeywords',
+                    '_notifyReloadRequest',
                     )
                 )
             );
@@ -167,8 +167,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $requests = $this->mockProgramAccess();
         $requests
         ->expects($this->once())
-        ->method('_notifyUpdateRegisteredKeywords')
-        ->with('testurl')
+        ->method('_notifyReloadRequest')
+        ->with('testurl',  $this->matchesRegularExpression('/^.{24}$/'))
         ->will($this->returnValue(true));
         $requests->Keyword
         ->expects($this->once())
@@ -208,11 +208,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     public function testEdit_ok()
     {
         $requests = $this->mockProgramAccess();
-        $requests
-        ->expects($this->once())
-        ->method('_notifyUpdateRegisteredKeywords')
-        ->with('testurl')
-        ->will($this->returnValue(true));
         $requests->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')
@@ -228,6 +223,12 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $savedRequest = $this->Request->save($request);
         $savedRequest['Request']['keyword'] = 'OTHERKEYWORD';
         
+        $requests
+        ->expects($this->once())
+        ->method('_notifyReloadRequest')
+        ->with('testurl', $savedRequest['Request']['_id'])
+        ->will($this->returnValue(true));
+
         $this->testAction(
             "testurl/programRequests/edit/" . $savedRequest['Request']['_id'],
             array(
@@ -304,18 +305,21 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('setFlash')
         ->with('The request has been deleted.');
-        $requests
-        ->expects($this->once())
-        ->method('_notifyUpdateRegisteredKeywords')
-        ->with('testurl')
-        ->will($this->returnValue(true));
         
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
+
         $request = $this->Maker->getOneRequest();
-        
         $this->instanciateModels();
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
         
+        $requests
+        ->expects($this->once())
+        ->method('_notifyReloadRequest')
+        ->with('testurl',  $savedRequest['Request']['_id'])
+        ->will($this->returnValue(true));
+
         $this->testAction("testurl/programRequests/delete/" . $savedRequest['Request']['_id']);     
     }
    

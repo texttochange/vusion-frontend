@@ -64,6 +64,13 @@ class VumiRabbitMQ {
     }
 
 
+    public function sendMessageToReloadRequest($to, $object_id)
+    {
+        $msg = $this->workerMessageMaker->reloadRequest($object_id);
+        return $this->sendMessageTo($to.'.control', $msg);
+    }
+
+
     public function sendMessageToReloadProgramSettings($to)
     {
         $msg = $this->workerMessageMaker->reloadProgramSettings();

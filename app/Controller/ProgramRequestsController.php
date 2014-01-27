@@ -74,8 +74,8 @@ class ProgramRequestsController extends AppController
         $keywords = Request::getRequestKeyphrases($this->request->data);
         $usedByOtherProgramResults = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', '');
         $this->Request->create();
-        if ($this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
-            $this->_notifyUpdateRegisteredKeywords($programUrl);
+        if ($savedRequest = $this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
+            $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $this->set('result', array(
                 'status' => 'ok',
                 'request-id' => $this->Request->id,
@@ -118,8 +118,8 @@ class ProgramRequestsController extends AppController
         $usedByOtherProgramResults = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', $id);
         $this->Request->create();
         $this->Request->id = $id;
-        if ($this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
-            $this->_notifyUpdateRegisteredKeywords($programUrl);
+        if ($savedRequest = $this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
+            $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $this->set(
                 'result', array(
                     'status' => 'ok',
@@ -152,7 +152,7 @@ class ProgramRequestsController extends AppController
             throw new NotFoundException(__('Invalid request') . $id);
         }
         if ($this->Request->delete()) {
-            $this->_notifyUpdateRegisteredKeywords($programUrl);
+            $this->_notifyReloadRequest($programUrl, $id);
             $this->Session->setFlash(
                 __('The request has been deleted.'),
                 'default',
@@ -198,9 +198,9 @@ class ProgramRequestsController extends AppController
     }
     
     
-    protected function _notifyUpdateRegisteredKeywords($workerName)
+    protected function _notifyReloadRequest($workerName, $requestId)
     {
-        $this->VumiRabbitMQ->sendMessageToUpdateRegisteredKeywords($workerName);
+        $this->VumiRabbitMQ->sendMessageToReloadRequest($workerName, $requestId);
     }
     
     
