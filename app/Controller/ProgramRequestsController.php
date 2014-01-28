@@ -43,9 +43,8 @@ class ProgramRequestsController extends AppController
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-    
-    
-    
+
+
     public function index()
     {
         $this->set('requests', $this->paginate());
@@ -55,40 +54,9 @@ class ProgramRequestsController extends AppController
     public function add()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
-        
-        $programUrl = $this->params['program'];
-        $programDb  = $this->Session->read($programUrl."_db");
-        
-        if (!$this->request->is('post')) {
-            return;
-        }
-
-        if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => __('Please set the program settings then try again.')));
-            return;
-        }         
-
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-        $keywords = Request::getRequestKeyphrases($this->request->data);
-        $usedByOtherProgramResults = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', '');
-        $this->Request->create();
-        if ($savedRequest = $this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
-            $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
-            $this->set('result', array(
-                'status' => 'ok',
-                'request-id' => $this->Request->id,
-                'message' => __('Request created, wait for redirection.')));
-        } else {
-            $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
-            $this->set('result', array(
-                'status' => 'fail',
-                'message' => array('Request' => $this->Request->validationErrors)));
-        }
     }
     
-    
+
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
@@ -97,6 +65,22 @@ class ProgramRequestsController extends AppController
         $programDb  = $this->Session->read($programUrl."_db");
         $id         = $this->params['id'];
         
+        if ($this->request->is('get')) {
+            $this->Request->id = $id;
+            if (!$this->Request->exists()) {
+                throw new NotFoundException(__('Invalide Request') . $id);
+            }
+            $this->set('request', $this->Request->read(null, $id));
+        }
+    }
+
+
+    public function save()
+    {
+        $programUrl = $this->params['program'];
+        $programDb  = $this->Session->read($programUrl."_db");
+        $id         = $this->params['id'];
+    
         if (!$this->request->is('post')) {
             $this->Request->id = $id;
             if (!$this->Request->exists()) {
@@ -105,7 +89,8 @@ class ProgramRequestsController extends AppController
             $this->set('request', $this->Request->read(null, $id));
             return;
         }
-
+        
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->set('result', array(
                 'status' => 'fail', 
@@ -113,12 +98,12 @@ class ProgramRequestsController extends AppController
             return;
         }
 
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-        $keywords = Request::getRequestKeyphrases($this->request->data);
-        $usedByOtherProgramResults = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', $id);
-        $this->Request->create();
-        $this->Request->id = $id;
-        if ($savedRequest = $this->Request->saveRequest($this->request->data, $usedByOtherProgramResults)) {
+        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $request       = DialogueHelper::objectToArray($this->request->data);
+        $id            = Request::getRequestId($request);
+        $keywords      = Request::getRequestKeyphrases($request);
+        $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', $id);
+        if ($savedRequest = $this->Request->saveRequest($request,  $foundKeywords)) {
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $this->set(
                 'result', array(
@@ -202,7 +187,6 @@ class ProgramRequestsController extends AppController
     {
         $this->VumiRabbitMQ->sendMessageToReloadRequest($workerName, $requestId);
     }
-    
-    
-    
+
+
 }

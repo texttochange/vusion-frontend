@@ -20,7 +20,7 @@
 	<?php 
         echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form'));
         $this->Js->get("#dynamic-generic-program-form");
-        $this->Js->each('$(this).buildTtcForm("Request", '.$this->Js->object($request['Request']).', "javascript:saveRequestOnServer()")', true);
+        $this->Js->each('$(this).buildTtcForm("Request", '.$this->Js->object($request['Request']).', "javascript:saveFormOnServer()")', true);
         $dialogueOptions = array();
         foreach($currentProgramData['dialogues'] as $dialogue) {
             if ($dialogue['Active']) {

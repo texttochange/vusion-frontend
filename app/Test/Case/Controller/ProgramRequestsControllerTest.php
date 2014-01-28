@@ -162,7 +162,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testAdd_ok()
+    public function testSave_ok()
     {
         $requests = $this->mockProgramAccess();
         $requests
@@ -182,21 +182,21 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $request = $this->Maker->getOneRequest();
         
         $this->testAction(
-            "testurl/programRequests/add",
+            "testurl/programRequests/save",
             array(
                 'method' => 'post',
                 'data' => $request));
     }
 
 
-    public function testAdd_fail_noProgramSettings()
+    public function testSave_fail_noProgramSettings()
     {
         $requests = $this->mockProgramAccess();
         
         $request = $this->Maker->getOneRequest();
         
         $this->testAction(
-            "testurl/programRequests/add",
+            "testurl/programRequests/save",
             array(
                 'method' => 'post',
                 'data' => $request));
@@ -205,7 +205,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testEdit_ok()
+    public function testSave_edit_ok()
     {
         $requests = $this->mockProgramAccess();
         $requests->Keyword
@@ -230,7 +230,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->will($this->returnValue(true));
 
         $this->testAction(
-            "testurl/programRequests/edit/" . $savedRequest['Request']['_id'],
+            "testurl/programRequests/save",
             array(
                 'method' => 'POST',
                 'data' => $savedRequest
@@ -241,7 +241,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testEdit_fail_validationKeyword()
+    public function testSave_edit_fail_validationKeyword()
     {
         $requests = $this->mockProgramAccess();
         $requests->Keyword
@@ -267,14 +267,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $savedRequest['Request']['keyword'] = 'KEYWORD 1';
         
         $this->testAction(
-            "testurl/programRequests/edit/" . $savedRequest['Request']['_id'],
+            "testurl/programRequests/save",
             array(
                 'method' => 'POST',
                 'data' => $savedRequest));
         $this->assertEquals('fail', $this->vars['result']['status']);
     }
     
-   
+/*   
     public function testEdit_json()
     {
         $requests = $this->mockProgramAccess();
@@ -296,7 +296,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         
         $this->assertEquals('OTHERKEYWORD', $requests->data['Request']['keyword']);
     }
-    
+*/    
     
     public function testDelete()
     {

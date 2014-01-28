@@ -47,7 +47,7 @@
 function saveFormOnServer(){
     
     var formData = form2js('dynamic-generic-program-form', '.', true);
-    //alert();
+    
     var indata= JSON.stringify(formData, null, '\t');
     
     var saveUrl = location.href.indexOf("edit/")<0 ? "./save.json" : "../save.json";
@@ -64,18 +64,31 @@ function saveFormOnServer(){
                     reactivateSaveButtons();
                     return;
                 }
-                if (location.href.indexOf(response['dialogue-obj-id'])<0){
-                    $("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['wait_redirection']);
-                    setTimeout( function() { 
-                            if (location.href.indexOf("edit/")<0) 
-                                window.location.replace("edit/" + response['dialogue-obj-id']);
-                            else 
-                                window.location.replace(response['dialogue-obj-id']);
-                    }, 3000);
-                } else {
-                    $("#flashMessage").attr('class', 'message success').show().text(response['message']);
-                    $("#flashMessage").delay(3000).fadeOut(1000);
-                    reactivateSaveButtons();
+                if ('dialogue-obj-id' in response) {    //it's a dialogue
+                    if (location.href.indexOf(response['dialogue-obj-id'])<0){
+                        $("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['wait_redirection']);
+                        setTimeout( function() { 
+                                if (location.href.indexOf("edit/")<0) 
+                                    window.location.replace("edit/" + response['dialogue-obj-id']);
+                                else 
+                                    window.location.replace(response['dialogue-obj-id']);
+                        }, 3000);                       
+                    } else {
+                        $("#flashMessage").attr('class', 'message success').show().text(response['message']);
+                        $("#flashMessage").delay(3000).fadeOut(1000);
+                        reactivateSaveButtons();
+                    }
+                } else { 
+                    if (location.href.indexOf("add")>0 && location.href.indexOf(response['request-id'])<0){
+                        $("#flashMessage").show().attr('class', 'message success').text(response['message']);
+                        setTimeout( function() { 
+                                window.location.replace("edit/"+response['request-id']);
+                        }, 3000);
+                    } else {
+                        $("#flashMessage").attr('class', 'message success').show().text(response['message']);
+                        $("#flashMessage").delay(3000).fadeOut(1000)
+                        reactivateSaveButtons();
+                    }
                 }
             },
             timeout: 4000,
@@ -146,7 +159,7 @@ function hideValidationLabel(name) {
 function showErrorMessages(errorMessage){
     $("#flashMessage").attr('class', 'message error').show().text(errorMessage);
 }
-
+/*
 function saveRequestOnServer(){
     
     var formData = form2js('dynamic-generic-program-form', '.', true);
@@ -184,6 +197,7 @@ function saveRequestOnServer(){
             userAction: localized_actions['save_request'],
     });
 }
+*/
 
 function convertDateToIso(data) {   
     return data;

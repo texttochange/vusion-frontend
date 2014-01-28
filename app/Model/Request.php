@@ -324,6 +324,18 @@ class Request extends MongoModel
     }
 
 
+    static public function getRequestId($request)
+    {
+        if (isset($request['Request'])) {
+            $request = $request['Request'];
+        }
+        if (!isset($request['_id'])) {
+            return null;
+        }
+        return $request['_id']."";
+    }
+
+
     public function getKeywords()
     {
         $requests = $this->find('all');
@@ -399,6 +411,10 @@ class Request extends MongoModel
 
     public function saveRequest($request, $usedKeywords = array())
     {
+        $this->create();
+        if (isset($request['Request']['_id'])) {
+            $this->id = $request['Request']['_id'];
+        }
         $this->usedKeywords = $usedKeywords;
         return $this->save($request);
     }
