@@ -194,7 +194,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function testSave()
     {
-        $this->mockProgramAccess();
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('keyword'))
+        ->will($this->returnValue(array()));
         
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
@@ -214,8 +219,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function testSave_fail_modelValidation()
     {
-        $dialogues = $this->mockProgramAccess();
-        
+        $dialogues = $this->mockProgramAccess();       
         $dialogues->Keyword
         ->expects($this->once())
         ->method('areKeywordsUsedByOtherPrograms')

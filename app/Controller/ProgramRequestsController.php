@@ -79,18 +79,11 @@ class ProgramRequestsController extends AppController
     {
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($programUrl."_db");
-        $id         = $this->params['id'];
-    
+        
         if (!$this->request->is('post')) {
-            $this->Request->id = $id;
-            if (!$this->Request->exists()) {
-                throw new NotFoundException(__('Invalide Request') . $id);
-            }
-            $this->set('request', $this->Request->read(null, $id));
             return;
         }
-        
-        
+ 
         if (!$this->ProgramSetting->hasRequired()) {
             $this->set('result', array(
                 'status' => 'fail', 

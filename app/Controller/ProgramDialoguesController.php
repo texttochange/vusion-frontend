@@ -58,32 +58,38 @@ class ProgramDialoguesController extends AppController
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($this->params['program']."_db");
 
-        if ($this->request->is('post')) {
-            if (!$this->ProgramSetting->hasRequired()) {
-                $this->set('result', array(
-                        'status'=>'fail', 
-                        'message' => __('Please set the program settings then try again.')));
-                return;
-            }
-            $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
-            $keywords = Dialogue::getDialogueKeywords($this->request->data);
-            $usedByOtherProgramResults = $this->Keyword->areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords);
-            if ($this->Dialogue->saveDialogue($this->request->data, $usedByOtherProgramResults)) {
-                $this->set(
-                    'result', 
-                    array(
-                        'status'=>'ok',
-                        'dialogue-obj-id' => $this->Dialogue->id,
-                        'message' => __('Dialogue saved as draft.')));
-            } else {
-                $errors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
-                $this->set(
-                    'result', 
-                    array(
-                        'status'=>'fail',
-                        'message' => array('Dialogue' => $errors)));
-            }
+        if (!$this->request->is('post')) {
+            return;
         }
+
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->set('result', array(
+                'status'=>'fail', 
+                'message' => __('Please set the program settings then try again.')));
+            return;
+        }
+
+        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $dialogue      = DialogueHelper::objectToArray($this->request->data);
+        $id            = Dialogue::getDialogueId($dialogue);
+        $keywords      = Dialogue::getDialogueKeywords($dialogue);
+        $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
+        if ($this->Dialogue->saveDialogue($dialogue, $foundKeywords)) {
+            $this->set(
+                'result', 
+                array(
+                    'status'=>'ok',
+                    'dialogue-obj-id' => $this->Dialogue->id,
+                    'message' => __('Dialogue saved as draft.')));
+        } else {
+            $errors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
+            $this->set(
+                'result', 
+                array(
+                    'status'=>'fail',
+                    'message' => array('Dialogue' => $errors)));
+        }
+        
     }
     
     

@@ -297,9 +297,7 @@ class Dialogue extends MongoModel
     {
         $this->usedKeywords = $usedKeywords;
  
-        $dialogue = DialogueHelper::objectToArray($dialogue);
-
-         if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
+        if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
             $this->create();
             return $this->save($dialogue);
         }
@@ -351,6 +349,20 @@ class Dialogue extends MongoModel
             $foundKeywords = array_merge($foundKeywords, Interaction::getInteractionKeywords($interaction));
         }
         return $foundKeywords;
+    }
+
+
+    static public function getDialogueId($dialogue)
+    {
+        if (isset($dialogue['Dialogue'])) {
+            $dialogue = $dialogue['Dialogue'];
+        }
+
+        if (!isset($dialogue['dialogue-id'])) {
+            return null;
+        }
+        
+        return $dialogue['dialogue-id'];
     }
 
 
