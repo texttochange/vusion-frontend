@@ -19,7 +19,7 @@ if ($creditStatus['manager']['status'] != 'none') {
     $creditEndDate  = strtotime($programDetails['settings']['credit-to-date']);
     $timeLeft       = $creditEndDate - $programTimeNow;
     $daysToDeadLine = $timeLeft/(60*60*24);
-    if($daysToDeadLine < 20) {
+    if($daysToDeadLine < 7) {
         echo '<span style="font-weight: bold">'.$creditLeft.'/'. $totalCreditSet.' '.$daysToDeadLine.'</span> day(s) left';
         
     } else {
