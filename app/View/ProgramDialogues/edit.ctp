@@ -1,7 +1,7 @@
 <div class="index width-size">
     <ul class="ttc-actions">
 		<li>
-		<?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+		<?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button dynamic-form-save')); ?>
 		<span class="actions">
 		<?php
 		echo $this->Html->link( __('Cancel'), 
@@ -14,9 +14,7 @@
 		</span>
 		</li>
 		<?php 
-		$this->Js->get('#button-save')->event('click','
-		    $("#dynamic-generic-program-form").submit();
-		    ', true);
+		$this->Js->get('.dynamic-form-save')->event('click', 'formSubmit();', true);
 		?>
         <?php 
         if (isset($dialogue)) {
@@ -49,6 +47,9 @@
 	<div class="ttc-display-area display-height-size">
 	<?php 
 	echo $this->Html->tag('form', null, array('id'=> 'dynamic-generic-program-form')); 
+	echo "</form>";
+    echo "<br/>";
+	echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button dynamic-form-save'));
    ?>
    <?php
    $this->Js->get("#dynamic-generic-program-form");

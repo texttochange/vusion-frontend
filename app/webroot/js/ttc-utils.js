@@ -72,16 +72,21 @@ function saveAjaxError(jqXHR, textStatus, errorThrown){
     reactivateSaveButtons();
 }
 
-function disableSaveButtons(){
-    $('input[type="submit"]').attr("disabled", true);	
+function formSubmit() {
+    disableSaveButtons();
+    $("#dynamic-generic-program-form").submit()
 }
 
-function reactivateSaveButtons(){
-    $('input[type="submit"]').removeAttr("disabled");
+function disableSaveButtons() {
+    $("#dynamic-generic-program-form").attr("disabled", "disabled");	
+}
+
+function reactivateSaveButtons() {
+    $("#dynamic-generic-program-form").removeAttr("disabled");
 }
 
 function isFormSubmit(element) {
-    return $('input[type="submit"]').is(":disabled") == false;
+    return $("#dynamic-generic-program-form").attr("disabled") != "disabled";
 }
 
 function pullBackendNotifications(url) {

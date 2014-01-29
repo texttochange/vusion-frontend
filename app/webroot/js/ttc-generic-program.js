@@ -38,8 +38,6 @@
 
 function saveFormOnServer(){
 
-    disableSaveButtons();
-
     var formData = form2js('dynamic-generic-program-form', '.', true);
     
     var inData= JSON.stringify(formData, null, '\t');
@@ -1329,10 +1327,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     configToForm(type, myform, type, object);
     
-    myform["elements"].push({
+    /*myform["elements"].push({
             "type": "submit",
+            "class": "hidden",
             "value": localize_label("save")
-    })
+    })*/
     
     return myform;
 }
