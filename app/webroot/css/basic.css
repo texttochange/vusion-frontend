@@ -1158,7 +1158,6 @@ display: inline;
         .ttc-program-stats-inside {
                 padding: 2px;
                 font-size: 12px;
-                height: 10%;
                 overflow-y: auto;
                 min-width: 190px;
                 margin-bottom: 11px;
