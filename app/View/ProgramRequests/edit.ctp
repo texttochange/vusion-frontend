@@ -13,7 +13,13 @@
         ?>
         </span>
         </li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#dynamic-generic-program-form").submit()' , true);?>
+        <?php 
+        $this->Js->get('#button-save')->event('click', 
+            'disableSaveButtons();
+            $("#dynamic-generic-program-form").submit()' , true);
+        $this->Js->get('#dynamic-generic-program-form')->event('submit','
+		    disableSaveButtons();');
+        ?>
     </ul>
     <h3><?php echo __('Edit Request'); ?></h3>
     <div class="ttc-display-area display-height-size">

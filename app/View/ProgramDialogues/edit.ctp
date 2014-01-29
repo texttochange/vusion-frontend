@@ -13,11 +13,12 @@
 		?>
 		</span>
 		</li>
-		<?php $this->Js->get('#button-save')->event('click','
+		<?php 
+		$this->Js->get('#button-save')->event('click','
 		    disableSaveButtons();		    
 		    $("#dynamic-generic-program-form").submit();
-		    ', true);?>
-		<?php $this->Js->get('#dynamic-generic-program-form')->event('submit','
+		    ', true);
+		$this->Js->get('#dynamic-generic-program-form')->event('submit','
 		    disableSaveButtons();'); ?>
         <?php 
         if (isset($dialogue)) {
