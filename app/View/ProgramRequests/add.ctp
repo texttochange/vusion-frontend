@@ -16,10 +16,8 @@
         </li>
         <?php 
         $this->Js->get('#button-save')->event('click', '
-		    disableSaveButtons();
-		    $("#dynamic-generic-program-form").submit()' , true);
-		$this->Js->get('#dynamic-generic-program-form')->event('submit','
-		    disableSaveButtons();'); ?>
+		    $("#dynamic-generic-program-form").submit()' , true); 
+		    ?>
     </ul>
     <h3><?php echo __('Add Request'); ?></h3>
     <div class="ttc-display-area display-height-size">

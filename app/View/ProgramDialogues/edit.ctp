@@ -15,11 +15,9 @@
 		</li>
 		<?php 
 		$this->Js->get('#button-save')->event('click','
-		    disableSaveButtons();		    
 		    $("#dynamic-generic-program-form").submit();
 		    ', true);
-		$this->Js->get('#dynamic-generic-program-form')->event('submit','
-		    disableSaveButtons();'); ?>
+		?>
         <?php 
         if (isset($dialogue)) {
             if (!$dialogue['Dialogue']['activated']) {

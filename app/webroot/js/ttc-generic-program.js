@@ -37,7 +37,9 @@
 })(jQuery);
 
 function saveFormOnServer(){
-    
+
+    disableSaveButtons();
+
     var formData = form2js('dynamic-generic-program-form', '.', true);
     
     var inData= JSON.stringify(formData, null, '\t');
@@ -264,7 +266,9 @@ function activeForm(){
                     required:true,
                     doubleSpace:true,
                     keywordFormat:true,
-                    keywordUnique:true,
+                    keywordUnique: {
+                        depends: isFormSubmit
+                    },
                     messages:{
                         required: wrapErrorMessage(localized_errors.validation_required_error),
                         keywordFormat: wrapErrorMessage(localized_errors.validation_keywords_invalid_character_error),
@@ -298,7 +302,9 @@ function activeForm(){
     $("input[name*='name']:not(.activated)").each(function (elt) {
             $(this).rules("add",{
                     required:true,
-                    uniqueDialogueName: true,
+                    uniqueDialogueName: {
+                        depends: isFormSubmit
+                    },
                     messages:{
                         required: wrapErrorMessage(localized_errors.validation_required_error),
                         uniqueDialogueName: wrapErrorMessage(localized_errors.validation_unique_dialogue_name),
