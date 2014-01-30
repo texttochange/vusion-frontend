@@ -2,9 +2,11 @@
 App::uses('PaginatorHelper', 'View/Helper');
 
 
-class BigPaginatorHelper extends PaginatorHelper {
+class BigCountPaginatorHelper extends PaginatorHelper {
 
-	protected function _hasPage($model, $page) {
+
+	protected function _hasPage($model, $page) 
+	{
 	    $params = $this->params($model);
 	    if ($page == 'next' && $params['count'] === 'many') {
 	        return true;
@@ -17,7 +19,9 @@ class BigPaginatorHelper extends PaginatorHelper {
 		return false;
 	}
 
-	public function counter($options = array()) {
+
+	public function counter($options = array()) 
+	{
 	   if (is_string($options)) {
 			$options = array('format' => $options);
 		}
@@ -38,9 +42,7 @@ class BigPaginatorHelper extends PaginatorHelper {
 			$start = (($paging['page'] - 1) * $paging['limit']) + 1;
 		}
 		$end = $start + $paging['limit'] - 1;
-		if ($paging['count'] === 'many') {
-		   
-	    } elseif ($paging['count'] < $end) {
+		if ($paging['count'] != 'many' && $paging['count'] < $end) {
 			$end = $paging['count'];
 		}
 
