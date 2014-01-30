@@ -121,7 +121,6 @@ class ProgramSetting extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $this->DialogueHelper = new DialogueHelper();
         $this->ValidationHelper = new ValidationHelper();
     }
     
@@ -276,10 +275,10 @@ class ProgramSetting extends MongoModel
         }
         
         if (isset($settings['credit-from-date'])) {
-            $settings['credit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-from-date']);
+            $settings['credit-from-date'] = DialogueHelper::ConvertDateFormat($settings['credit-from-date']);
         }
         if (isset($settings['credit-to-date'])) {
-            $settings['credit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-to-date']);
+            $settings['credit-to-date'] = DialogueHelper::ConvertDateFormat($settings['credit-to-date']);
         }
         if (!isset($settings['sms-forwarding-allowed'])) {
             $settings['sms-forwarding-allowed'] = 'full';

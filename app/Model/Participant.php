@@ -44,7 +44,6 @@ class Participant extends MongoModel
         }
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
-        $this->DialogueHelper = new DialogueHelper();
     }
     
     
@@ -919,17 +918,17 @@ class Participant extends MongoModel
                 if ($filterParam[2] == 'now') {
                     $condition['session-id'] = array('$ne' => null);
                 } elseif ($filterParam[2] == 'date-from') {
-                    $condition['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'date-to') {
-                    $condition['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'optout') {
                 if ($filterParam[2] == 'now') { 
                     $condition['session-id'] = null;
                 } elseif ($filterParam[2] =='date-from') {
-                    $condition['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] =='date-to') {
-                    $condition['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'phone') {
                 if ($filterParam[2] == 'start-with-any') {
