@@ -37,12 +37,19 @@ class CachingCountBehaviorTest extends CakeTestCase
     {
         $testModel = new History(array('database' => $this->database));
         $testModel->Behaviors->load('CachingCount', $this->settings);
-        $result = $testModel->count();
+        $result = $testModel->count(array('participant-phone' => '+25677', 'message-direction' => 'incomming'));
         $this->assertEqual($result, 0);
-        $this->assertTrue($this->redis->exists('vusion:programs:testdbprogram:cachedcounts:History:b:1;'));
-        $this->assertEqual(
-            30000,
-            $this->redis->ttl('vusion:programs:testdbprogram:cachedcounts:History:b:1;'));
+        $keys = $this->redis->keys('vusion:programs:'. $this->database.':cachedcounts:*');
+        $this->assertEqual(count($keys), 1);        
+
+
+        $result = $testModel->count(array('message-direction' => 'incomming', 'participant-phone' => '+25677'));
+        $this->assertEqual($result, 0);
+        $keys = $this->redis->keys('vusion:programs:'. $this->database.':cachedcounts:*');
+        $this->assertEqual(count($keys), 1); // same condition so only one should be stored
+        foreach($keys as $key) {
+            $this->assertEqual(30000, $this->redis->ttl($key));
+        }
     }
 
 

@@ -24,7 +24,7 @@ class CachingCountBehavior extends ModelBehavior {
 
     protected function _getCachedCountKey($model, $conditions)
     {
-        $str = serialize($conditions);
+        $str = $this->_sortAndDiggest($conditions);
         return $this->settings[$model->alias]['redisPrefix']['base'] . ':' . $this->settings[$model->alias]['redisPrefix']['programs'] .':'. $model->databaseName . ':cachedcounts:' . $model->alias . ':' . $str;
     }
 
@@ -68,7 +68,27 @@ class CachingCountBehavior extends ModelBehavior {
                 $result);
         }
         return $result;
-        
+    }
+
+
+    protected function _recur_ksort(&$array) {
+        if (!is_array($array)) {
+            return;
+        }
+        foreach ($array as &$value) {
+            if (is_array($value)) { 
+                $this->_recur_ksort($value);
+            }
+        }
+        return ksort($array);
+    }
+
+
+    protected function _sortAndDiggest($conditions)
+    {
+        $conditions = $this->_recur_ksort($conditions);
+        $conditions = serialize($conditions);
+        return md5($conditions);
     }
 
 }
