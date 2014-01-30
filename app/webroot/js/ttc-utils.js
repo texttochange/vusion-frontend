@@ -22,18 +22,6 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'template');
     addFormHelp(baseUrl, 'keyword');
     addFormHelp(baseUrl, 'forward-url');
-/*    $.each($("[name*='content']").prev(":not(:has(img)):not(div):not(span)"),
-            function (key, elt){
-                    $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'content')});
-            });
-    $.each($("[name*='[template]']").prev(":not(:has(img)):not(div)"),
-            function (key, elt){ 
-                    $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'template')});
-            });
-    $.each($("[name*='\.keyword']").prev("label").not(":has(img)"),
-            function (key, elt){
-                    $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, 'keyword')});
-            });*/
 }
 
 
@@ -84,19 +72,22 @@ function saveAjaxError(jqXHR, textStatus, errorThrown){
     reactivateSaveButtons();
 }
 
-function disableSaveButtons(){
-    $("#button-save").unbind("click");
-    $('input[type="submit"]').attr("disabled", true);	
+function formSubmit() {
+    disableSaveButtons();
+    $("#dynamic-generic-program-form").submit()
 }
 
-function reactivateSaveButtons(){
-    $('input[type="submit"]').removeAttr("disabled");
-    $("#button-save").bind("click", function(){
-        disableSaveButtons();        
-        $("#dynamic-generic-program-form").submit();
-    });
+function disableSaveButtons() {
+    $("#dynamic-generic-program-form").attr("disabled", "disabled");	
 }
 
+function reactivateSaveButtons() {
+    $("#dynamic-generic-program-form").removeAttr("disabled");
+}
+
+function isFormSubmit(element) {
+    return $("#dynamic-generic-program-form").attr("disabled") != "disabled";
+}
 
 function pullBackendNotifications(url) {
     $.ajax({ 
