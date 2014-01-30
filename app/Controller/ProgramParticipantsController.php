@@ -18,8 +18,7 @@ class ProgramParticipantsController extends AppController
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Paginator' => array('className' => 'BigPaginator')
-        );
+        'Paginator' => array('className' => 'BigCountPaginator'));
     
     
     function constructClasses() 
@@ -755,12 +754,9 @@ class ProgramParticipantsController extends AppController
         if ($this->params['ext'] !== 'json') {
             return; 
         }
-        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-        $paginationCount = $this->Participant->count(
-            $this->_getConditions($defaultConditions),
-            null,
-            -1);
-        $this->set('paginationCount',$paginationCount);
+        $defaultConditions = array();
+        $paginationCount = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
+        $this->set('paginationCount', $paginationCount);
     }
     
     

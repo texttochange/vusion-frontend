@@ -15,7 +15,7 @@ class ProgramHistoryController extends AppController
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
-        'Paginator' => array('className' => 'BigPaginator')
+        'Paginator' => array('className' => 'BigCountPaginator')
         );
     
     
@@ -260,10 +260,7 @@ class ProgramHistoryController extends AppController
             return; 
         }
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-        $paginationCount = $this->History->count(
-            $this->_getConditions($defaultConditions),
-            null,
-            -1);
+        $paginationCount = $this->History->count( $this->_getConditions($defaultConditions), null, -1);
         $this->set('paginationCount',$paginationCount);
     }
 

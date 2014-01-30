@@ -73,7 +73,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function mock_program_access_withoutSession()
+    public function mockProgramAccess_withoutSession()
     {
         $participants = $this->generate(
             'ProgramParticipants', array(
@@ -109,9 +109,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function mock_program_access()
+    public function mockProgramAccess()
     {
-        $participants = $this->mock_program_access_withoutSession();
+        $participants = $this->mockProgramAccess_withoutSession();
         
         $participants->Session
         ->expects($this->any())
@@ -124,7 +124,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testAdd()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -148,7 +148,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testImport_csv_no_settings() 
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $this->testAction(
             "/testurl/participants/import", 
@@ -175,7 +175,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->any())
         ->method('_notifyUpdateBackendWorker')
@@ -207,7 +207,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testImport_csv_duplicate() 
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -259,7 +259,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->any())
         ->method('_notifyUpdateBackendWorker')
@@ -295,7 +295,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testImport_xls_duplicate() 
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -346,7 +346,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->any())
         ->method('_notifyUpdateBackendWorker')
@@ -378,7 +378,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testDeleteParticipant()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant = array(
             'phone' => '06'
@@ -416,7 +416,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testDeleteParticipant_withHistory()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant = array(
             'phone' => '06');
@@ -444,7 +444,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassDeleteFilteredParticipant()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant = array(
             'phone' => '+6');
@@ -490,7 +490,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassDeleteFilteredParticipant_failMissingFilterParameters()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant = array(
             'phone' => '+6');
@@ -512,7 +512,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassDeleteParticipant()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant = array(
             'phone' => '+6');
@@ -559,7 +559,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipant()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -609,7 +609,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantProfile()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -647,7 +647,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantProfile_specialCharacters_fail()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         
         $participant = array(
             'Participant' => array(
@@ -679,7 +679,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantProfile_only_label_fail()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         
         $participant = array(
             'Participant' => array(
@@ -707,7 +707,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
         $this->assertEqual($participantFromDb['Participant']['profile'], array());
         
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $this->testAction(
             "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
             array(
@@ -729,7 +729,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantTags()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -768,7 +768,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantTags_notAlphaNumeric_fail()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         
         $participant = array(
             'Participant' => array(
@@ -800,7 +800,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantEnrolls()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         
         $participant = array(
             'Participant' => array(
@@ -842,7 +842,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testEditParticipantEnrolls_deleteSchedule()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -912,7 +912,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testView_displayScheduled()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         
         $participant = array(
             'Participant' => array(
@@ -949,7 +949,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testIndex_filter_fail()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=%2B2");
         $this->assertEquals(0, count($this->vars['participants']));
     }
@@ -1025,39 +1025,39 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $this->Participant->save($savedParticipant);
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=%2B2");
         $this->assertEquals(4, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=%2B27");
         $this->assertEquals(1, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=now");
         $this->assertEquals(3, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=date-from&filter_param%5B1%5D%5B3%5D=02%2F12%2F2012");
         $this->assertEquals(1, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=date-to&filter_param%5B1%5D%5B3%5D=02%2F12%2F2012");
         $this->assertEquals(2, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optout&filter_param%5B1%5D%5B2%5D=now");
         $this->assertEquals(1, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=enrolled&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=1");
         $this->assertEquals(2, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=Geek");
         $this->assertEquals(2, count($this->vars['participants']));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
         $this->assertEquals(1, count($this->vars['participants']));
     }
@@ -1091,11 +1091,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             'profile' => array()
             ));
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/getFilterParameterOptions.json?parameter=tag&filter_operator=all&filter_param%5B1%5D%5B1%5D=tagged&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=Geek");
         $this->assertEquals($exprectedTags, $this->vars['results']);
         
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/getFilterParameterOptions.json?parameter=label&filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:male");
         $this->assertEquals($exprectedLabels, $this->vars['results']);
     }
@@ -1104,7 +1104,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testExport()
     {
         
-        $participants = $this->mock_program_access_withoutSession();
+        $participants = $this->mockProgramAccess_withoutSession();
         
         $participants->Session
         ->expects($this->any())
@@ -1154,7 +1154,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testReset()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -1215,7 +1215,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testReset_with_auto_enrollment()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -1259,7 +1259,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testOptout()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -1303,7 +1303,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testOptin()
     {
-        $participants = $this->mock_program_access();
+        $participants = $this->mockProgramAccess();
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
@@ -1344,7 +1344,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassTagFilteredParticipant_ok()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant_01 = array(
             'phone' => '+6', 
@@ -1378,7 +1378,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassUntagFilteredParticipant_ok()
     {
-        $this->mock_program_access();
+        $this->mockProgramAccess();
         
         $participant_01 = array(
             'phone' => '+6',
@@ -1412,6 +1412,14 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         		'phone' => '+7'));
         $Participant2 = $this->Participant->find('all', $condition2);
         $this->assertEqual(array('test2', 'hi', 'home'), $Participant2[0]['Participant']['tags']);
+    }
+
+
+    public function testPaginationCount()
+    {
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/programParticipants/paginationCount.json");
+        $this->assertEqual($this->vars['paginationCount'], 0);
     }
     
     
