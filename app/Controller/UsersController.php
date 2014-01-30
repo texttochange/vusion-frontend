@@ -2,12 +2,13 @@
 
 App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
+App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
 class UsersController extends AppController
 {
     var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
-    var $uses = array('User');
+    var $uses = array('User', 'Group');
     
     public function beforeFilter()
     {
@@ -210,6 +211,9 @@ class UsersController extends AppController
     {
         if ($this->request->is('post')) {
             if ($this->Auth->login()) {
+                $group     = $this->Group->findById($this->Session->read('Auth.User.group_id'));
+                $groupName = $group['Group']['name'];
+                $this->Session->write('groupName', $groupName);
                 $this->Session->setFlash(__('Login successful.'),
                     'default',
                     array('class'=>'message success')
@@ -234,6 +238,7 @@ class UsersController extends AppController
             'default',
             array('class'=>'message success')
             );
+        $this->Session->destroy();
         $this->redirect($this->Auth->logout());
     }
     

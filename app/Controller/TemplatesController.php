@@ -32,7 +32,7 @@ class TemplatesController extends AppController
         $templateTypes = $this->Template->typeTemplates;
         $this->typeTemplateOptions = array();
         foreach ($templateTypes as $key => $label) {
-            $this->typeTemplateOptions[$key] = __($label);
+            $this->typeTemplateOptions[$key] = $label;
         }
     }
     
