@@ -170,10 +170,10 @@ class StatsComponentTest extends CakeTestCase
     
     public function testGetStats_mongoTimeout_fewSeconds()
     {
-        $dummyHistory = $this->getMock('Model', array('find'));
+        $dummyHistory = $this->getMock('Model', array('count'));
         $dummyHistory
         	->expects($this->once())
-        	->method('find')
+        	->method('count')
         	->will($this->throwException(new Exception));
         	
         $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory);

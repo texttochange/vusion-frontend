@@ -36,9 +36,6 @@ class StatsComponent extends Component
     public function getProgramStat($model, $conditions=array())
     {
         try {
-            if (isset($conditions['conditions'])) {
-                $conditions = $conditions['conditions'];
-            }
             return $model->count($conditions);
         } catch (Exception $e) { 
             return 'N/A';
@@ -69,12 +66,7 @@ class StatsComponent extends Component
         $tempParticipant = new Participant(array('database' => $database));
         $programStats['active-participant-count'] = $this->getProgramStat(
             $tempParticipant,
-            array(
-                'conditions' => array('session-id' => array(
-                    '$ne' => null)
-                    )
-                )
-            );
+            array('session-id' => array('$ne' => null)));
         
         $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
@@ -82,13 +74,7 @@ class StatsComponent extends Component
         $programTimeToday = $programTimeNow->modify('+1 day');        
         $programStats['today-schedule-count'] = $this->getProgramStat(
             $tempSchedule, 
-            array(
-                'conditions' => array(
-                    'date-time' => array(
-                        '$lt' => $programTimeToday->format(DateTime::ISO8601))
-                    )
-                )
-            );
+            array('date-time' => array('$lt' => $programTimeToday->format(DateTime::ISO8601))));
         
         $programStats['schedule-count'] = $this->getProgramStat($tempSchedule);
         
@@ -98,35 +84,24 @@ class StatsComponent extends Component
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
         $programStats['all-received-messages-count'] = $this->getProgramStat(
             $tempHistory,
-            array(
-                'conditions' => array('message-direction' => 'incoming'))
-            );
+            array('message-direction' => 'incoming'));
         
         $programStats['current-month-received-messages-count'] = $this->getProgramStat(
             $tempHistory,
             array(
-                'conditions' => array(
-                    'timestamp' => array(
-                        '$gt' => $first_second,
-                        '$lt' => $last_second
-                        ),
-                    'message-direction' => 'incoming'
-                    )
-                )
-            );
+                'timestamp' => array(
+                    '$gt' => $first_second,
+                    '$lt' => $last_second),
+                'message-direction' => 'incoming'));
         
         $programStats['current-month-sent-messages-count'] = $this->getProgramStat(
             $tempHistory,
             array(
-                'conditions' => array(
-                    'timestamp' => array(
-                        '$gt' => $first_second,
-                        '$lt' => $last_second
-                        ),
-                    'message-direction' => 'outgoing'
-                    )
-                )
-            );
+                'timestamp' => array(
+                    '$gt' => $first_second,
+                    '$lt' => $last_second
+                    ),
+                'message-direction' => 'outgoing'));
         
         if($programStats['current-month-sent-messages-count'] === 'N/A' || $programStats['current-month-received-messages-count'] === 'N/A' ){
             $totalCurrentMonthMessagesCount = 'N/A';
@@ -137,21 +112,15 @@ class StatsComponent extends Component
         
         $programStats['all-sent-messages-count'] = $this->getProgramStat(
             $tempHistory,
-            array(
-                'conditions' => array('message-direction' => 'outgoing'))
-            );
+            array('message-direction' => 'outgoing'));
         
         $programStats['history-count'] = $this->getProgramStat(
             $tempHistory,
             array(
-                'conditions' =>array(
-                    '$or' => array(
-                        array('object-type' => array('$in' => $tempHistory->messageType)),
-                        array('object-type' => array('$exists' => false ))
-                        )
-                    )
-                )
-            );  
+                '$or' => array(
+                    array('object-type' => array('$in' => $tempHistory->messageType)),
+                    array('object-type' => array('$exists' => false ))
+                    )));  
         
         return $programStats;        
     }

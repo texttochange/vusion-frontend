@@ -55,7 +55,6 @@ class Schedule extends MongoModel
     
     public $findMethods = array(
         'soon' => true,
-        'count' => true,
         'summary' => true
         );
     
@@ -85,7 +84,7 @@ class Schedule extends MongoModel
         return $results;
     }
     
-
+/*
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
@@ -105,7 +104,7 @@ class Schedule extends MongoModel
             return 'many';
         }
     }
-
+*/
     
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
