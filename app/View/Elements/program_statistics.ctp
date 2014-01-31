@@ -9,7 +9,7 @@ echo '<span id="programstats" style="font-weight: bold">';
 echo '</span>';
 if ($creditStatus['manager']['status'] != 'none') {    
     echo '<span class="stat" title="Credit Remaining/Total">';
-    echo '<img src="/img/credit-icon-128.png" height="13px" width="14px"> ';
+    echo '<img src="/img/credit-icon-16.png" height="13px" width="14px"> ';
     $creditUsed     = $creditStatus['count'];
     $totalCreditSet = $programDetails['settings']['credit-number'];
     $creditLeft     = $totalCreditSet - $creditUsed;
