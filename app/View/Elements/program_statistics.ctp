@@ -6,6 +6,7 @@ $this->Js->get('document')->event(
     ');
 
 echo '<span id="programstats" style="font-weight: bold">';
+echo '<img src="/img/ajax-loader.gif">';
 echo '</span>';
 if ($creditStatus['manager']['status'] != 'none') {    
     echo '<span class="stat" title="Credit Remaining/Total">';
