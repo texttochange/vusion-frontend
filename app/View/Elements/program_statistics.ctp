@@ -1,8 +1,9 @@
 <div  class='ttc-program-stats-inside'>
 <?php
+$this->Js->set('programs', $programDetails['url']);
 $this->Js->get('document')->event(
     'ready',
-    'loadProgramStatsInsideProgram();             
+    'loadProgramStats();             
     ');
 
 echo '<span id="programstats" style="font-weight: bold">';

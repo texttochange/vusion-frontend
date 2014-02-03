@@ -539,7 +539,7 @@ function loadFilterParameterOptions(parameter, url) {
 
 function loadProgramStats(){
 	var  programs = window.app.programs;
-	if(programs != null){
+	if (programs instanceof Array) {
 		var program = {};
 		for(var i = 0; i< programs.length; i++){
 			program = programs[i];
@@ -559,26 +559,22 @@ function loadProgramStats(){
 					}
 			});
 		}
+	} else {
+		$.ajax({
+				type: "GET",
+				dataType: "json",
+				url: "/programs/getProgramStats.json",
+				data: {"programUrl": programs},
+				success: function(data){
+					$("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
+				},
+				timeout: 360000,  // 6 minutes
+				error: function(){
+					var url = this.url;
+					$("#programstats").empty().append(generateHtmlProgramStatsInside())
+				}
+		});
 	}
-}
-		
-function loadProgramStatsInsideProgram(){
-	var url = window.location.pathname.split('/', 2);
-	var programUrl = url[1];
-	$.ajax({
-			type: "GET",
-			dataType: "json",
-			url: "/programs/getProgramStats.json",
-			data: {"programUrl": programUrl},
-			success: function(data){
-				$("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
-			},
-			timeout: 360000,  // 6 minutes
-			error: function(){
-				var url = this.url;
-				$("#programstats").empty().append(generateHtmlProgramStatsInside())
-			}
-	});
 }
 
 
