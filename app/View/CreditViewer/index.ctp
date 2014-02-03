@@ -11,7 +11,7 @@
             '$("#advanced_filter_form").show();
             createFilter(false, "all", '.$this->Js->object($defaultDateConditions).');
             createFilter();
-            addStackFilter();');
+            ');
 		?> 
 		</li>
 	</ul>
