@@ -6,7 +6,7 @@ $this->Js->get('document')->event(
     'loadProgramStats();             
     ');
 
-echo '<span id="programstats" style="font-weight: bold">';
+echo '<span id="programstats">';
 echo '<img src="/img/ajax-loader.gif">';
 echo '</span>';
 if ($creditStatus['manager']['status'] != 'none') {    
@@ -22,11 +22,11 @@ if ($creditStatus['manager']['status'] != 'none') {
     $timeLeft       = $creditEndDate - $programTimeNow;
     $daysToDeadLine = $timeLeft/(60*60*24);
     if($daysToDeadLine < 7) {
-        echo '<span style="font-weight: bold">'.$creditLeft.'/'. $totalCreditSet.' '.$daysToDeadLine.'</span> day(s) left';
+        echo '<span >'.$creditLeft.'/'. $totalCreditSet.' '.$daysToDeadLine.'</span> day(s) left';
         
     } else {
         $creditEndDateSet = date('Y-m-d', $creditEndDate);
-        echo '<span style="font-weight: bold">'.$creditLeft.'/'. $totalCreditSet.'</span> Until <span style="font-weight: bold">'.$creditEndDateSet.'</span>';
+        echo '<span >'.$creditLeft.'/'. $totalCreditSet.' Until '.$creditEndDateSet.'</span>';
     }
     echo '</span>';
 }

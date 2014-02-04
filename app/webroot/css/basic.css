@@ -336,7 +336,7 @@
 }
 
 .ttc-notification {
-        border: 1px solid;
+        border: 2px solid #d3d3d3;
         float: left;
         padding: 2px 2px;
         min-width: 190px;
@@ -1161,7 +1161,7 @@ display: inline;
                 overflow-y: auto;
                 min-width: 190px;
                 margin-bottom: 11px;
-                border: 1px solid;
+                border: 2px solid #d3d3d3;
         }        
         .ttc-program-stats .stat {
                 font-weight: bold;
