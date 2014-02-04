@@ -651,34 +651,34 @@ function generateHtmlProgramStatsInside(programStats) {
     }
         
     var myTemplate ='<div>'+
-                        '<span id="participant-icon" class="stat" '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="/img/participant-icon-16.png" height="13px" width="14px"> '+
+                        '<span id="participant-icon" text-align="center" class="stat" '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +'>'+
+                        '<img src="/img/participant-icon-16.png" > '+
                         ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+
-                        '</span>'+
+                        '</span> participant(s)'+
                     '</div>'+
                     '<div>'+
                         '<span class="stat" '+ ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Message(s) Total(Current Month)"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="/img/message-icon-16.png" height="13px" width="14px"> '+
+                        '<img src="/img/message-icon-16.png" > '+
                         'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
-                        '</span>'+
+                        '</span> message(s)'+
                     '</div>'+
                     '<div>'+
                         '<span class="stat" '+ ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Received Total(Current Month)"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="/img/receivedmessage-icon-16.png" height="13px" width="14px"> '+
+                        '<img src="/img/receivedmessage-icon-16.png" > '+
                         'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
-                        '</span>'+
+                        '</span> received'+
                     '</div>'+
                     '<div>'+
                         '<span class="stat" '+ ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Sent Total(Current Month)"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="/img/sentmessage-icon-16.png" height="13px" width="14px"> '+
+                        '<img src="/img/sentmessage-icon-16.png" > '+
                         'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)'+
-                        '</span>'+
+                        '</span> sent'+
                     '</div>'+
                     '<div>'+
                         '<span class="stat" '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +'>'+
-                        '<img src="/img/schedule-icon-16.png" height="13px" width="14px"> '+
+                        '<img src="/img/schedule-icon-16.png" > '+
                         'SCHEDULE(TODAY_SCHEDULE)'+
-                        '</span>'+
+                        '</span> schedule'+
                     '</div>'
     
         myTemplate = myTemplate.replace('ACTIVE_PARTICIPANT', programStats['active-participant-count']);
