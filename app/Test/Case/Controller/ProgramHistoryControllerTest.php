@@ -383,5 +383,12 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
     }
     
-    
+
+    public function testPaginationCount()
+    {
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/programHistory/paginationCount.json");
+        $this->assertEqual($this->vars['paginationCount'], 0);
+    }
+
 }

@@ -113,6 +113,11 @@ class AppController extends Controller
         $redisHost = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
         $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
         $this->redis->connect($redisHost, $redisPort);
+
+        $redisPrefix = Configure::read('vusion.redisPrefix');
+        if (is_array($redisPrefix)) { 
+            $this->redisProgramPrefix = $redisPrefix['base'] . ':' . $redisPrefix['programs'];
+        }
     }
     
     
