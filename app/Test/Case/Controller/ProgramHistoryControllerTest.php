@@ -38,7 +38,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         
-        $this->Status = new TestProgramHistoryController();
+        $this->Histories = new TestProgramHistoryController();
         //ClassRegistry::config(array('ds' => 'test'));
         $options = array('database' => $this->programData[0]['Program']['database']);
         $this->ProgramSetting = new ProgramSetting($options);
@@ -54,14 +54,14 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     {
         //As this model is created on the fly, need to instantiate again
         $this->instanciateHistoryModel();
-        $this->Status->History->deleteAll(true, false);
+        $this->History->deleteAll(true, false);
     }
     
     
     protected function instanciateHistoryModel()
     {
-        $options               = array('database' => $this->programData[0]['Program']['database']);
-        $this->Status->History = new History($options);
+        $options       = array('database' => $this->programData[0]['Program']['database']);
+        $this->History = new History($options);
     }
     
     
@@ -70,7 +70,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->dropData();
         
-        unset($this->Status);
+        unset($this->Histories);
         
         parent::tearDown();
     }
@@ -123,16 +123,16 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     public function testPagination() 
     {
         $this->instanciateHistoryModel();
-        $this->Status->History->create('unattach-history');
-        $this->Status->History->save(array(
+        $this->History->create('unattach-history');
+        $this->History->save(array(
             'participant-phone' => '256712747841',
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
             'message-status' => 'delivered',
             ));
-        $this->Status->History->create('unattach-history');
-        $this->Status->History->save(array(
+        $this->History->create('unattach-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'Hello there!',
             'timestamp' => '2013-02-08T12:20:43.882854',
@@ -155,8 +155,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     public function testFilter()
     {
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '+356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
@@ -165,8 +165,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'outgoing',
             'message-status' => 'delivered'
             ));
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '+356774527842',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
@@ -175,8 +175,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'outgoing',
             'message-status' => 'delivered'
             ));
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '+356774527841',
             'message-content' => 'feel good',
             'timestamp' => '2013-02-08T12:20:43',
@@ -185,8 +185,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'incoming',
             'matching-answer' => 'good'
             ));
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '+356774527841',
             'message-content' => 'what is your name? send NAME <your name>',
             'timestamp' => '2013-02-09T12:20:43',
@@ -196,8 +196,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-status' => 'pending' 
             ));
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '+356774527841',
             'message-content' => 'name',
             'timestamp' => '2013-02-10T12:20:43',
@@ -239,8 +239,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     public function testMassDelete() {
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
@@ -249,8 +249,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'outgoing',
             'message-status' => 'delivered'
             ));
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527842',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
@@ -259,8 +259,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'outgoing',
             'message-status' => 'delivered'
             ));
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'feel good',
             'timestamp' => '2013-02-08T12:20:43',
@@ -269,8 +269,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'incoming',
             'matching-answer' => 'good'
             ));
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'what is your name? send NAME <your name>',
             'timestamp' => '2013-02-09T12:20:43',
@@ -280,8 +280,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-status' => 'pending' 
             ));
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'name',
             'timestamp' => '2013-02-10T12:20:43',
@@ -290,21 +290,21 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'incoming',
             'matching-answer' => null
             ));
-        $this->Status->History->create('oneway-marker-history');
-        $this->Status->History->save(array(
+        $this->History->create('oneway-marker-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             ));
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=outgoing");
-        $this->assertEquals(3, $this->Status->History->find('count'));
+        $this->assertEquals(3, $this->History->find('count'));
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=incoming");
-        $this->assertEquals(1, $this->Status->History->find('count'));
+        $this->assertEquals(1, $this->History->find('count'));
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'name',
             'timestamp' => '2013-02-10T12:20:43',
@@ -315,14 +315,14 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             ));
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete");
-        $this->assertEquals(1, $this->Status->History->find('count'));
+        $this->assertEquals(1, $this->History->find('count'));
         
     }
     
     public function testMassDelete_failMissingFilterOperator() {
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
@@ -341,7 +341,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         }
         $this->assertEquals(
             1,
-            $this->Status->History->find('count'));
+            $this->History->find('count'));
     }
     
     
@@ -364,8 +364,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             $this->programData[0]['Program']['name'] //only for export test
             ));
         
-        $this->Status->History->create('dialogue-history');
-        $this->Status->History->save(array(
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
             'participant-phone' => '356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
@@ -382,7 +382,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             TESTS . 'files/exported_history.csv',
             WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
     }
-    
+
 
     public function testPaginationCount()
     {

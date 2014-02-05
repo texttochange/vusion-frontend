@@ -55,8 +55,8 @@ class Schedule extends MongoModel
     
     public $findMethods = array(
         'soon' => true,
-        'summary' => true
-        );
+        'summary' => true,
+        'count' => true);
     
     
     public function __construct($id = false, $table = null, $ds = null)
@@ -73,6 +73,14 @@ class Schedule extends MongoModel
         $this->DialogueHelper    = new DialogueHelper();
     }
     
+
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
+    }
+
     
     protected function _findSoon($state, $query, $results = array())
     {
