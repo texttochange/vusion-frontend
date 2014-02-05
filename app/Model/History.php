@@ -159,8 +159,6 @@ class History extends MongoModel
     }    
     
     
-    // TODO: quick and dirty hot fix to avoid the timeout, indeed the conditions are making 
-    // the count very long. Would be better to have a temporary solution
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
