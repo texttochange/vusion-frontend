@@ -1,6 +1,7 @@
 <?php
 $config = array(  
     'vusion' => array(
+        'version' => 'develop',
         'rabbitmq' => array(
             'vhost' => '/develop',
             'username' => 'vumi',
