@@ -21,10 +21,16 @@ class CachingCountBehaviorTest extends CakeTestCase
 		$this->redis->connect(
 		    $this->settings['redis']['host'],
 		    $this->settings['redis']['port']);
+		$this->dropData();
     }
 
 
     public function tearDown()
+    {
+        $this->dropData();
+    }
+
+    protected function dropData() 
     {
         $keys = $this->redis->keys('vusion:programs:'. $this->database.':cachedcounts:*');
         foreach ($keys as $key) {
