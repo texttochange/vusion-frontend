@@ -14,7 +14,8 @@ class ProgramHistoryController extends AppController
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Time'
+        'Time',
+        'Paginator' => array('className' => 'BigCountPaginator')
         );
     
     
@@ -252,5 +253,16 @@ class ProgramHistoryController extends AppController
         }                   
     }
     
-    
+
+    public function paginationCount()
+    {
+        if ($this->params['ext'] !== 'json') {
+            return; 
+        }
+        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
+        $paginationCount = $this->History->count( $this->_getConditions($defaultConditions), null, -1);
+        $this->set('paginationCount',$paginationCount);
+    }
+
+
 }

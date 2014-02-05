@@ -7,9 +7,13 @@ App::uses('DialogueHelper', 'Lib');
 class UnmatchableReplyController extends AppController
 {
     
-    var $helpers = array('Js' => array('Jquery'), 'Time', 'PhoneNumber');
     var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
-    
+    var $helpers = array(
+        'Js' => array('Jquery'), 
+        'Time', 
+        'PhoneNumber',
+        'Paginator' => array('className' => 'BigCountPaginator'));
+  
     
     public function beforeFilter()
     {
@@ -90,5 +94,15 @@ class UnmatchableReplyController extends AppController
         return $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
     }
     
-    
+
+    public function paginationCount()
+    {
+        if ($this->params['ext'] !== 'json') {
+            return; 
+        }
+        $defaultConditions = array();
+        $paginationCount = $this->UnmatchableReply->count($this->_getConditions($defaultConditions), null, -1);
+        $this->set('paginationCount', $paginationCount);
+    }
+
 }
