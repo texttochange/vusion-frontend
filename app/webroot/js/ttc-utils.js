@@ -91,7 +91,7 @@ function saveAjaxError(jqXHR, textStatus, errorThrown){
 
 function disableSaveButtons(){
     $("#button-save").unbind("click");
-    $('input[type="submit"]').attr("disabled", true);	
+    $('input[type="submit"]').attr("disabled", true);
 }
 
 
@@ -112,7 +112,7 @@ function pullBackendNotifications(url) {
                 if (data['logs']) {
                     $("#notifications").empty();
                     for (var x = 0; x < data['logs'].length; x++) {
-                        data['logs'][x] = data['logs'][x].replace(data['logs'][x].substr(1,19),"<span style='font-weight:bold'>"+data['logs'][x].substr(1,19)+"</span>");	
+                        data['logs'][x] = data['logs'][x].replace(data['logs'][x].substr(1,19),"<span style='font-weight:bold'>"+data['logs'][x].substr(1,19)+"</span>");
                         $("#notifications").append(data['logs'][x]+"<br \>");
                     }
                 }
@@ -124,11 +124,11 @@ function pullBackendNotifications(url) {
 
 
 function pullSimulatorUpdate(url){
-	$.ajax({
-	        url: url,
-	        success: function(data){
-	            $('#connectionState').hide();
-	            if (data['message']) {
+    $.ajax({
+            url: url,
+            success: function(data){
+                $('#connectionState').hide();
+                if (data['message']) {
                     var message = $.parseJSON(data['message']);
                     $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
                 }
@@ -148,8 +148,8 @@ function logMessageSent(){
 
 
 function updateClock(){
-	var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
-	$("#local-date-time").text(newTime);	
+    var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
+    $("#local-date-time").text(newTime);    
 }
 
 
@@ -214,7 +214,7 @@ function createFilter(minimize, selectedStackOperator, stackRules){
                 $("[name='filter_param["+count+"][3]']").prepend(new Option(rule[3],rule[3]))
             } 
             $("[name='filter_param["+count+"][3]']").val(rule[3]);
-            count++;	   
+            count++;       
     });
     
     if (minimize) {
@@ -248,48 +248,48 @@ function removeFilter() {
 
 function addStackFilter(){
     
-	var count = $('.ttc-stack-filter').length + 1;
-	var stackFilter = document.createElement("div");
-	$(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#filter-stack');
-	
-	var addButton = document.createElement("img");
-	$(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
-	$(stackFilter).append(addButton);
-	
-	var deleteButton = document.createElement("img");
-	$(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/remove-icon-16.png').on('click', removeStackFilter);
-	$(stackFilter).append(deleteButton);
-	
-	// retrieve the contents of the array stored by javascript in window.app
-	var fieldOptions = window.app.filterFieldOptions;
-	// add dropdown for fields
-	var filterFieldDropDown = document.createElement("select");
-	$(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
-	$(filterFieldDropDown).append(new Option("", ""))
-	.on('click', function(event){supplyOperatorOptions(this);});
-	$.each(fieldOptions, function(value, details) {
-	        $(filterFieldDropDown).append(new Option(details['label'], value));
-	});
-	$(stackFilter).append(filterFieldDropDown);
-	
+    var count = $('.ttc-stack-filter').length + 1;
+    var stackFilter = document.createElement("div");
+    $(stackFilter).attr('class','ttc-stack-filter').attr('name','stack-filter['+count+']').appendTo('#filter-stack');
+    
+    var addButton = document.createElement("img");
+    $(addButton).attr('class','ttc-add-icon').attr('src', '/img/add-icon-16.png').on('click', addStackFilter);
+    $(stackFilter).append(addButton);
+    
+    var deleteButton = document.createElement("img");
+    $(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/remove-icon-16.png').on('click', removeStackFilter);
+    $(stackFilter).append(deleteButton);
+    
+    // retrieve the contents of the array stored by javascript in window.app
+    var fieldOptions = window.app.filterFieldOptions;
+    // add dropdown for fields
+    var filterFieldDropDown = document.createElement("select");
+    $(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
+    $(filterFieldDropDown).append(new Option("", ""))
+    .on('click', function(event){supplyOperatorOptions(this);});
+    $.each(fieldOptions, function(value, details) {
+            $(filterFieldDropDown).append(new Option(details['label'], value));
+    });
+    $(stackFilter).append(filterFieldDropDown);
+    
 }
 
 
 function removeStackFilter(){
-	$(this).parent().remove();
-	if($(".ttc-stack-filter").length == 0){
-	    $('#advanced_filter_form').hide();
-	    $('#quick_filter_form').show();
-	    if (window.search != "")
-	        window.location.replace("index")
-	}
+    $(this).parent().remove();
+    if($(".ttc-stack-filter").length == 0){
+        $('#advanced_filter_form').hide();
+        $('#quick_filter_form').show();
+        if (window.search != "")
+            window.location.replace("index")
+    }
 }
 
 
 function hasNoStackFilter(){
-	if($(".ttc-stack-filter").length == 0){
-		addStackFilter();
-	}
+    if($(".ttc-stack-filter").length == 0){
+        addStackFilter();
+    }
 }
 
 function supplyOperatorOptions(elt) {
@@ -302,13 +302,13 @@ function supplyOperatorOptions(elt) {
     var operatorDropDownName = $(elt).attr('name').replace(new RegExp("\\[1\\]$","gm"), "");
     
     var operatorDropDown = document.createElement("select");
-	$(operatorDropDown).attr('name', operatorDropDownName + '[2]');
-	$(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
-	$.each(operators, function(operator, details) {
-	        $(operatorDropDown).append(new Option(localize_label(operator), operator));
-	});
-	$(elt).after(operatorDropDown);
-	supplyParameterOptions(operatorDropDown);
+    $(operatorDropDown).attr('name', operatorDropDownName + '[2]');
+    $(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
+    $.each(operators, function(operator, details) {
+            $(operatorDropDown).append(new Option(localize_label(operator), operator));
+    });
+    $(elt).after(operatorDropDown);
+    supplyParameterOptions(operatorDropDown);
 }
 
 
@@ -326,35 +326,35 @@ function supplyParameterOptions(operatorElt) {
     case "none":
         break;
     case "date":
-	    $(operatorElt).after("<input name='"+name+"[3]'></input>");
-	    $("[name='"+name+"[3]']").datepicker({
-	            timeFormat: "hh:mm",
-	            timeOnly: false,
-	            dateFormat:"dd/mm/yy"
-	    });
+        $(operatorElt).after("<input name='"+name+"[3]'></input>");
+        $("[name='"+name+"[3]']").datepicker({
+                timeFormat: "hh:mm",
+                timeOnly: false,
+                dateFormat:"dd/mm/yy"
+        });
         break;
     case "text":
         $(operatorElt).after("<input name='"+name+"[3]'></input>");
-	    break;
-	case "dialogue":
-	    $(operatorElt).after("<select name='"+name+"[3]'></select>");
-	    var options = window.app.filterParameterOptions[operatorType];
+        break;
+    case "dialogue":
+        $(operatorElt).after("<select name='"+name+"[3]'></select>");
+        var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value['name'], key));      
         })
         break;
     case "interaction":
         $(operatorElt).after("<select name='"+name+"[3]'></select>");
-	    var options = window.app.filterParameterOptions['dialogue'];
+        var options = window.app.filterParameterOptions['dialogue'];
         $.each(options, function(dialogueId, details){
                 $.each(details['interactions'], function(interactionId, content) { 
                         $("[name='"+name+"[3]']").append(new Option(details['name']+" - "+content, interactionId));
                 });      
         })
         break;
-	default:
-	    $(operatorElt).after("<select name='"+name+"[3]' data='"+operatorType+"'></select>");
-	    var options = window.app.filterParameterOptions[operatorType];
+    default:
+        $(operatorElt).after("<select name='"+name+"[3]' data='"+operatorType+"'></select>");
+        var options = window.app.filterParameterOptions[operatorType];
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value, key));      
         })
@@ -432,100 +432,100 @@ function generateExportDialogue(obj) {
 
 
 function generateMassTagDialogue(obj){
-	var url = $(obj).attr("url") + window.location.search;
-	
-	var dialog = $('<div id="masstag-dialogue" style="display:none">'+
-		'<form name="formTag" action=\'javascript:submitMassTag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
-		'<input type="text" name="tag" id="masstag-tags">'+
-		'<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
-		'<input type="submit" value="Tag" id="clicky">'+
-		'</form>'+
-		'</div>').appendTo('body');
-		dialog.dialog({
-		        title: localized_actions['mass_tag'], 
-		        close:function(event, ui){
-		            dialog.remove(); 
-		        },
-		        model: true
-		});
+    var url = $(obj).attr("url") + window.location.search;
+    
+    var dialog = $('<div id="masstag-dialogue" style="display:none">'+
+        '<form name="formTag" action=\'javascript:submitMassTag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+        '<input type="text" name="tag" id="masstag-tags">'+
+        '<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
+        '<input type="submit" value="Tag" id="clicky">'+
+        '</form>'+
+        '</div>').appendTo('body');
+        dialog.dialog({
+                title: localized_actions['mass_tag'], 
+                close:function(event, ui){
+                    dialog.remove(); 
+                },
+                model: true
+        });
 }
 
 
-function submitMassTag(){	
-	var tag = $('[name*="tag"]').val();	
-	var url = $('#masstag-dialogue').find('form').attr('url');
-	if(url.indexOf('?') != -1){
-		window.location= url+"&tag="+tag;
-	}else{
-		window.location= url+"?tag="+tag;
-	}		
+function submitMassTag(){    
+    var tag = $('[name*="tag"]').val();    
+    var url = $('#masstag-dialogue').find('form').attr('url');
+    if(url.indexOf('?') != -1){
+        window.location= url+"&tag="+tag;
+    }else{
+        window.location= url+"?tag="+tag;
+    }        
 }
 
 
 function generateMassUntagDialogue(obj){
-	var url = $(obj).attr("url") + window.location.search;
-	
-	var dialog = $('<div id="massuntag-dialogue" style="display:none">'+
-		'<form name="formUntag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
-		'<input type="text" name="untag" id="masstag-tags">'+
-		'<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
-		'<input type="submit" value="Untag" id="clicky">'+
-		'</form>'+
-		'</div>').appendTo('body');
-		dialog.dialog({
-		        title: localized_actions['mass_untag'], 
-		        close:function(event, ui){
-		            dialog.remove(); 
-		        },
-		        model: true
-		});
+    var url = $(obj).attr("url") + window.location.search;
+    
+    var dialog = $('<div id="massuntag-dialogue" style="display:none">'+
+        '<form name="formUntag" action=\'javascript:submitMassUntag()\' url="'+url+'" method="get" onsubmit="return alphanumeric()">'+
+        '<input type="text" name="untag" id="masstag-tags">'+
+        '<div id="masstag-error-message" class="masstag-error" style="display:none"/>'+
+        '<input type="submit" value="Untag" id="clicky">'+
+        '</form>'+
+        '</div>').appendTo('body');
+        dialog.dialog({
+                title: localized_actions['mass_untag'], 
+                close:function(event, ui){
+                    dialog.remove(); 
+                },
+                model: true
+        });
 }
 
 
-function submitMassUntag(){	
-	var tag = $('[name*="untag"]').val();	
-	var url = $('#massuntag-dialogue').find('form').attr('url');
-	var untagConfirm = confirm("Do you want to delete this tag?");
-	if (untagConfirm == true)
-	{
-		if(url.indexOf('?') != -1){
-			window.location= url+"&tag="+tag;
-		}else{
-			window.location= url+"?tag="+tag;
-		}
-	}	
+function submitMassUntag(){    
+    var tag = $('[name*="untag"]').val();    
+    var url = $('#massuntag-dialogue').find('form').attr('url');
+    var untagConfirm = confirm("Do you want to delete this tag?");
+    if (untagConfirm == true)
+    {
+        if(url.indexOf('?') != -1){
+            window.location= url+"&tag="+tag;
+        }else{
+            window.location= url+"?tag="+tag;
+        }
+    }    
 }
 
 
 function alphanumeric() {
-	var tagRegex = new RegExp('^[a-zA-Z0-9]+((\\s)[a-zA-Z0-9]+)*$');	
-	var tag = $('#masstag-tags').val();
-	if(tag.match(tagRegex)){  				
-		return true;  
-	}  
-	else{
-		$('#masstag-error-message').text('Your MassTag has special caharacters.These are not allowed').show();
-		//localization of the error message
-		return false;  
-	}  
+    var tagRegex = new RegExp('^[a-zA-Z0-9]+((\\s)[a-zA-Z0-9]+)*$');    
+    var tag = $('#masstag-tags').val();
+    if(tag.match(tagRegex)){                  
+        return true;  
+    }  
+    else{
+        $('#masstag-error-message').text('Your MassTag has special caharacters.These are not allowed').show();
+        //localization of the error message
+        return false;  
+    }  
 }
 
 
 function addPredefinedContent() {
-	var predefinedMessages = window.app["predefinedMessageOptions"];
-	var messageId = $("#predefined-message option:selected").val();
-	$.each(predefinedMessages, function (i, predefinedMessage) {
-	        if (messageId == predefinedMessage.id) {
-	            if ($("#unattached-content").val() != "") {                    
-	                var test = confirm(localized_errors['warning_unattached_message']);
-	                if (test == false) {
-	                    $("#predefined-message option:eq(0)").prop("selected", true);
-	                    return;
-	                }
-	            }
-	            $("#unattached-content").val(predefinedMessage.content);
-	        }
-	});
+    var predefinedMessages = window.app["predefinedMessageOptions"];
+    var messageId = $("#predefined-message option:selected").val();
+    $.each(predefinedMessages, function (i, predefinedMessage) {
+            if (messageId == predefinedMessage.id) {
+                if ($("#unattached-content").val() != "") {                    
+                    var test = confirm(localized_errors['warning_unattached_message']);
+                    if (test == false) {
+                        $("#predefined-message option:eq(0)").prop("selected", true);
+                        return;
+                    }
+                }
+                $("#unattached-content").val(predefinedMessage.content);
+            }
+    });
 }
 
 
@@ -560,42 +560,42 @@ function loadFilterParameterOptions(parameter, url) {
 
 
 function loadProgramStats() {
-	var  programs = window.app.programs;
-	var program = {};
-	for(var i = 0; i< programs.length; i++){
-		program = programs[i];
-		var programUrl = program['Program']['url'];
-		$.ajax({
-				type: "GET",
-				dataType: "json",
-				url: "/programs/getProgramStats.json",
-				data: {"programUrl": programUrl},
-				success: function(data){
-					renderStats(data)
-				},
-				timeout: 360000,  // 6 minutes
-				error: function(){
-					var url = this.url;
-					renderStatsError(url)
-				}
-		});
-	}
+    var  programs = window.app.programs;
+    var program = {};
+    for(var i = 0; i< programs.length; i++){
+        program = programs[i];
+        var programUrl = program['Program']['url'];
+        $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/programs/getProgramStats.json",
+                data: {"programUrl": programUrl},
+                success: function(data){
+                    renderStats(data)
+                },
+                timeout: 360000,  // 6 minutes
+                error: function(){
+                    var url = this.url;
+                    renderStatsError(url)
+                }
+        });
+    }
 }
 
 
 function renderStats(data) {
-	if(window.app.isProgramSpecific) {
-		$("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
-	}
-	$("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
+    if(window.app.isProgramSpecific) {
+        $("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
+    }
+    $("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
 }
 
 
 function renderStatsError(url) {
-	if(window.app.isProgramSpecific) {
-		$("#programstats").empty().append(generateHtmlProgramStatsInside())
-	}
-	$("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
+    if(window.app.isProgramSpecific) {
+        $("#programstats").empty().append(generateHtmlProgramStatsInside())
+    }
+    $("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
 }
 
 
