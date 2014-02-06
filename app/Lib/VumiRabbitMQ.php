@@ -31,8 +31,12 @@ class VumiRabbitMQ {
     
     function __destruct()
     {
-        $this->ch->close();
-        $this->conn->close();
+        try {
+            $this->ch->close();
+            $this->conn->close();
+        } catch (Exception $e) {
+            CakeLog::write('error', 'PHP failing to close RabbitMQ connection');
+        }
     }
 
 
@@ -94,6 +98,7 @@ class VumiRabbitMQ {
 
     public function sendMessageTo($to, $msg)
     {
+        print_r($msg);
         require_once('php-amqplib/amqp.inc');   
     
         $QUEUE    = $to; //'telnet.inbound';
