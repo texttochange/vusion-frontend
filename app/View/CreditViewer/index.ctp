@@ -32,6 +32,13 @@
         <?php
             $this->Js->set('filterFieldOptions', $filterFieldOptions);
             foreach ($filterParameterOptions as $parameter => &$options) {
+                if (isset($parameter) and $parameter == 'shortcode') {
+                    //print_r($countryIndexedByPrefix);
+                    foreach ($options as $shortcode => $value) {
+                        $options[$shortcode] = $this->PhoneNumber->replaceCountryCodeOfShortcode($value, $countryIndexedByPrefix);
+                    }
+                    //print_r($options);
+                }
                 if (isset($options['_ajax'])) {
                     $urlParameters = $this->params['url'];
                     $urlParameters['parameter'] = $parameter;

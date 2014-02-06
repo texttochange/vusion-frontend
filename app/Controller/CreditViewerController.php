@@ -244,15 +244,14 @@ class CreditViewerController extends AppController
         $codes = $this->ShortCode->find('all');
         if (!empty($codes)) {
             foreach ($codes as $code) {
-                $shortcodes[] = $code['ShortCode']['shortcode'];
+                $shortcodes[$code['ShortCode']['shortcode']] = $code['ShortCode']['international-prefix']."-".$code['ShortCode']['shortcode'];
                 $countries[] = $code['ShortCode']['country'];
             }
         }
         sort($countries);
-        
         return array(
             'operator' => $this->filterOperatorOptions,
-            'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
+            'shortcode' => (count($shortcodes)>0? $shortcodes : array()),
             'country' => (count($countries)>0? array_combine($countries, $countries) : array())
             );
     }
