@@ -537,46 +537,42 @@ function loadFilterParameterOptions(parameter, url) {
     });
 }
 
-function loadProgramStats(){
+function loadProgramStats() {
 	var  programs = window.app.programs;
-	if (programs instanceof Array) {
-		var program = {};
-		for(var i = 0; i< programs.length; i++){
-			program = programs[i];
-			var programUrl = program['Program']['url'];
-			$.ajax({
-					type: "GET",
-					dataType: "json",
-					url: "/programs/getProgramStats.json",
-					data: {"programUrl": programUrl},
-					success: function(data){
-						$("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
-					},
-					timeout: 360000,  // 6 minutes
-					error: function(){
-						var url = this.url;
-						$("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
-					}
-			});
-		}
-	} else {
+	var program = {};
+	for(var i = 0; i< programs.length; i++){
+		program = programs[i];
+		var programUrl = program['Program']['url'];
 		$.ajax({
 				type: "GET",
 				dataType: "json",
 				url: "/programs/getProgramStats.json",
-				data: {"programUrl": programs},
+				data: {"programUrl": programUrl},
 				success: function(data){
-					$("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
+					renderStats(data)
 				},
 				timeout: 360000,  // 6 minutes
 				error: function(){
 					var url = this.url;
-					$("#programstats").empty().append(generateHtmlProgramStatsInside())
+					renderStatsError(url)
 				}
 		});
 	}
 }
 
+function renderStats(data) {
+	if(window.app.isProgramSpecific) {
+		$("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
+	}
+	$("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
+}
+
+function renderStatsError(url) {
+	if(window.app.isProgramSpecific) {
+		$("#programstats").empty().append(generateHtmlProgramStatsInside())
+	}
+	$("#"+getParameterByName(url, 'programUrl')+" .ttc-program-stats").empty().append(generateHtmlProgramStats())
+}
 
 function generateHtmlProgramStats(programStats) {
     if(programStats == null){
