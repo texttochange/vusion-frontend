@@ -28,6 +28,12 @@ class CachingCountBehavior extends ModelBehavior {
         return $this->settings[$model->alias]['redisPrefix']['base'] . ':' . $this->settings[$model->alias]['redisPrefix']['programs'] .':'. $model->databaseName . ':cachedcounts:' . $model->alias . ':' . $str;
     }
 
+ 
+    protected function _getCachedCountKeys($model)
+    {
+        return $this->settings[$model->alias]['redisPrefix']['base'] . ':' . $this->settings[$model->alias]['redisPrefix']['programs'] .':'. $model->databaseName . ':cachedcounts:' . $model->alias . ':*';      
+    }
+    
 
     protected function _getExpiringTime($model, $duration)
     {
@@ -70,8 +76,23 @@ class CachingCountBehavior extends ModelBehavior {
         return $result;
     }
 
+    public function flushCached($model) 
+    {
+        $keys = $this->redis->keys($this->_getCachedCountKeys($model));
+        foreach ($keys as $key) {
+            $this->redis->del($key);
+        }
+    }
 
-    protected function _recur_ksort(&$array) {
+    //In case one element in the collection is remove, all cached count are deleted.
+    public function afterDelete($model)
+    {
+        $this->flushCached($model);
+    }
+
+
+    protected function _recur_ksort(&$array) 
+    {
         if (!is_array($array)) {
             return;
         }

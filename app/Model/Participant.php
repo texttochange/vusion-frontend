@@ -32,6 +32,11 @@ class Participant extends MongoModel
             'profile',
             );
     }
+
+    public $findMethods = array(
+        'all' => true,
+        'first' => true,
+        'count' => true);
     
     
     public function __construct($id = false, $table = null, $ds = null)
@@ -52,7 +57,15 @@ class Participant extends MongoModel
         $this->Dialogue       = new Dialogue($options);
         $this->DialogueHelper = new DialogueHelper();
     }
+
     
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
+    }
+
     
     public $validate = array(
         'phone' => array(
