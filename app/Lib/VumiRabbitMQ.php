@@ -98,7 +98,6 @@ class VumiRabbitMQ {
 
     public function sendMessageTo($to, $msg)
     {
-        print_r($msg);
         require_once('php-amqplib/amqp.inc');   
     
         $QUEUE    = $to; //'telnet.inbound';
