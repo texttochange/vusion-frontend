@@ -33,9 +33,7 @@ class KeywordComponent extends Component
     }
 
 
-    //TODO Clarify $keyword Parameter
-    //TODO remove any cleaning from the Dialogue / Request 
-    //TODO provide a 2 step process to get cleanKeywords done only once
+    //TODO Clarify $keyword Parameter, it can be keyphrases or keywords
     public function areUsedKeywords($programDb, $shortcode, $keywords, $excludeType=null, $excludeId=null)
     {
        $keyphrases = DialogueHelper::cleanKeyphrases($keywords);
@@ -47,7 +45,7 @@ class KeywordComponent extends Component
        } else {
            $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords);
        }
-       $usedKeywords = array_merge($usedKeywords, $foundKeywords);
+       $usedKeywords = $usedKeywords + $foundKeywords;
        $requestModel = new Request(array('database' => $programDb));
        if ($excludeType == 'Request') {
            // In case we compare request, we need to consider the keyphrase and not only the keyword
@@ -55,9 +53,9 @@ class KeywordComponent extends Component
        } else {
            $foundKeywords = $this->_getUsedKeywords($requestModel, $keywords);
        }
-       $usedKeywords = array_merge($usedKeywords, $foundKeywords);
+       $usedKeywords = $usedKeywords + $foundKeywords;
        $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms($programDb, $shortcode, $keywords);       
-       return array_merge($usedKeywords, $otherProgramFoundKeywords);
+       return $usedKeywords + $otherProgramFoundKeywords;
     }
 
 
@@ -107,10 +105,10 @@ class KeywordComponent extends Component
             if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
                 $dialogueModel = new Dialogue(array('database' => $program['Program']['database']));
                 $foundDialogueKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, $program['Program']['name']);
-                $usedKeywords = array_merge($usedKeywords, $foundDialogueKeywords);
+                $usedKeywords = $usedKeywords + $foundDialogueKeywords;
                 $requestModel = new Request(array('database' => $program['Program']['database']));
                 $foundRequestKeywords = $this->_getUsedKeywords($requestModel, $keywords, $program['Program']['name']);
-                $usedKeywords = array_merge($usedKeywords, $foundRequestKeywords);
+                $usedKeywords = $usedKeywords + $foundRequestKeywords;
             }
         }
         return $usedKeywords;

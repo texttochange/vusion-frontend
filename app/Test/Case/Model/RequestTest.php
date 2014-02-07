@@ -117,6 +117,18 @@ class RequestTestCase extends CakeTestCase
     }
 
 
+    public function testGetRequestKeywords()
+    {
+        $request['Request'] = array(
+            'keyword' => '11'
+            );
+        
+        $this->assertEqual(
+            array('11'),
+            Request::getRequestKeywords($request));
+    }
+
+
     public function testUseKeyphrase()
     {
         $request = $this->Maker->getOneRequest('key request, keyword, otherkeyword request');
@@ -171,6 +183,33 @@ class RequestTestCase extends CakeTestCase
         $this->assertEqual(
             false,
             $this->Request->useKeyphrase('kEy request', $savedRequest['Request']['_id']));
+    }
+
+
+    public function testUseKeyphrase_numeric()
+    {
+        $request = $this->Maker->getOneRequest('11');
+        $this->Request->create();
+        $request = $this->Request->save($request);
+
+        ## Work with keyphrase numeric
+        $this->assertEqual(
+            array(
+                '11' => array(
+                    'request-id' => $request['Request']['_id']."",
+                    'request-name' => $request['Request']['keyword'])),
+            $this->Request->useKeyphrase('11'));
+    }
+
+
+    public function testGetRequestKeyphrases_numeric()
+    {
+        $request = $this->Maker->getOneRequest('11');
+
+        ## Work with keyphrase numeric
+        $this->assertEqual(
+            array('11'),
+            Request::getRequestKeyphrases($request, '11'));
     }
 
 

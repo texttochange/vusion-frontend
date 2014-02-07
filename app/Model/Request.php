@@ -360,11 +360,11 @@ class Request extends MongoModel
             $foundKeywords = Request::hasRequestKeywords($request, $keywords);
             $foundKeywords = array_flip($foundKeywords);
             foreach ($foundKeywords as $key => $value) {
-                $foundKeywords[$key] = array(
+                $foundKeywords[strval($key)] = array(
                     'request-id' => $request['Request']['_id']."",
                     'request-name' => $request['Request']['keyword']);
             }
-            $usedKeywords = array_merge($usedKeywords, $foundKeywords);
+            $usedKeywords = $usedKeywords + $foundKeywords;
         }
         if ($usedKeywords === array()) {
             return false;
@@ -385,11 +385,11 @@ class Request extends MongoModel
             $foundKeyphrases = Request::hasRequestKeyphrases($request, $keyphrases);
             $foundKeyphrases = array_flip($foundKeyphrases);
             foreach ($foundKeyphrases as $key => $value) {
-                $foundKeyphrases[$key] = array(
+                $foundKeyphrases[strval($key)] = array(
                     'request-id' => $request['Request']['_id']."",
                     'request-name' => $request['Request']['keyword']);
             }
-            $usedKeyphrases = array_merge($usedKeyphrases, $foundKeyphrases);
+            $usedKeyphrases = $usedKeyphrases + $foundKeyphrases;
         }
         if ($usedKeyphrases === array()) {
             return false;

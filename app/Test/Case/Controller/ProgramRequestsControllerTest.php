@@ -218,7 +218,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         $request = $this->Maker->getOneRequest('KEYWORD');
-        $this->instanciateModels();
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
         $savedRequest['Request']['keyword'] = 'OTHERKEYWORD';
@@ -255,13 +254,11 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
 
         #First request
         $request = $this->Maker->getOneRequest('KEYWORD 1');
-        $this->instanciateModels();
         $this->Request->create();
         $this->Request->save($request);
 
         #Second request
         $request = $this->Maker->getOneRequest('KEYWORD 2');
-        $this->instanciateModels();
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
         $savedRequest['Request']['keyword'] = 'KEYWORD 1';
@@ -273,30 +270,36 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'data' => $savedRequest));
         $this->assertEquals('fail', $this->vars['result']['status']);
     }
-    
-/*   
-    public function testEdit_json()
+   
+
+    public function testSave_fail_validationKeyword_numeric()
     {
         $requests = $this->mockProgramAccess();
-        
-        $request = $this->Maker->getOneRequest();
+        $requests->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('11'))
+        ->will($this->returnValue(array()));
         
         $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
+
+        #First request
+        $request = $this->Maker->getOneRequest('11');
         $this->Request->create();
-        $savedRequest = $this->Request->save($request);
-        $savedRequest['Request']['keyword'] = 'OTHERKEYWORD';
+        $this->Request->save($request);
+
+        #Second request
+        $request = $this->Maker->getOneRequest('11');
         
         $this->testAction(
-            "testurl/programRequests/edit.json",
+            "testurl/programRequests/save",
             array(
                 'method' => 'POST',
-                'data' => $savedRequest
-                )
-            );
-        
-        $this->assertEquals('OTHERKEYWORD', $requests->data['Request']['keyword']);
+                'data' => $request));
+        $this->assertEquals('fail', $this->vars['result']['status']);
     }
-*/    
+
     
     public function testDelete()
     {
@@ -310,7 +313,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         $request = $this->Maker->getOneRequest();
-        $this->instanciateModels();
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
         
@@ -349,7 +351,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testValidateKeyword_fail_sameProgramDifferentRequest()
+    public function testValidateKeyword_fail_sameProgram_differentRequest()
     {
         $requests = $this->mockProgramAccess();
         $requests->Keyword
@@ -378,7 +380,36 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     }
 
 
-    public function testValidateKeyword_ok_sameProgramSameRequest()
+    public function testValidateKeyword_fail_sameProgram_differentRequest_numeric()
+    {
+        $requests = $this->mockProgramAccess();
+        $requests->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('11'))
+        ->will($this->returnValue(array()));
+
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
+
+        $request = $this->Maker->getOneRequest('11');
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+                
+        $this->testAction(
+            "testurl/programRequests/validateKeyword",
+            array(
+                'method' => 'post',
+                'data' => array ('keyword'=>'11', 'object-id' =>'')));
+
+        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals(
+            "'11' already used in Request '11' of the same program.", 
+            $this->vars['result']['message']);
+    }
+
+
+    public function testValidateKeyword_ok_sameProgram_sameRequest()
     {
         $requests = $this->mockProgramAccess();
         $requests->Keyword
