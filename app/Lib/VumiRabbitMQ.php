@@ -31,8 +31,12 @@ class VumiRabbitMQ {
     
     function __destruct()
     {
-        $this->ch->close();
-        $this->conn->close();
+        try {
+            $this->ch->close();
+            $this->conn->close();
+        } catch (Exception $e) {
+            CakeLog::write('error', 'PHP failing to close RabbitMQ connection');
+        }
     }
 
 
