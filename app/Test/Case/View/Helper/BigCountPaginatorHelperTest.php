@@ -43,6 +43,26 @@ class BigCountPaginatorHelperTest extends CakeTestCase
         $this->assertTrue($this->Paginator->hasNext());
     }
 
+    
+    public function testCounter_totalCount_displayed() 
+    {
+        $this->Paginator->request->addParams(
+            array(
+                'paging' => array(
+                    'History' => array(
+                        'page' => 1,
+                        'current' => 0,
+                        'count' => 0,
+                        'nextPage' => true,
+                        'pageCount' => 0,
+                        'limit' => 10))));
+        $this->assertEqual(
+            "0 0 0",
+            $this->Paginator->counter("{:start} {:end} {:count}"));
+
+        $this->assertTrue($this->Paginator->hasNext());
+    }
+
 
     public function testCounter_totalCount_notCalculated() 
     {
