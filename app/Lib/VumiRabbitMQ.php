@@ -28,17 +28,6 @@ class VumiRabbitMQ {
         $this->workerMessageMaker = new WorkerMessageMaker();
     }
 
-    
-    function __destruct()
-    {
-        try {
-            unset($this->ch);
-            unset($this->conn);
-        } catch (Exception $e) {
-            CakeLog::write('error', 'PHP failing to close RabbitMQ connection');
-        }
-    }
-
 
     public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatcher", $send_loop_period="60")
     {
