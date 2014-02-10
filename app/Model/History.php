@@ -112,7 +112,7 @@ class History extends MongoModel
         $this->Behaviors->load('CachingCount', array(
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
-            'cacheExpire' => Configure::read('vusion.cacheCountExpire')));
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
 
         $this->DialogueHelper = new DialogueHelper();
     }

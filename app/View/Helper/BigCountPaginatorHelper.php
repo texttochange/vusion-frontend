@@ -41,8 +41,8 @@ class BigCountPaginatorHelper extends PaginatorHelper {
 		if ($paging['count'] === 'many' || $paging['count'] >= 1) {
 			$start = (($paging['page'] - 1) * $paging['limit']) + 1;
 		}
-		$end = $start + $paging['limit'] - 1;
-		if ($paging['count'] != 'many' && $paging['count'] < $end) {
+		$end = $start + $paging['limit'] - 1;	
+		if ($paging['count'] !== 'many' && $paging['count'] < $end) {
 			$end = $paging['count'];
 		}
 

@@ -66,7 +66,7 @@ class Schedule extends MongoModel
         $this->Behaviors->load('CachingCount', array(
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
-            'cacheExpire' => Configure::read('vusion.cacheCountExpire')));
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
 
         $options                 = array('database' => $id['database']);
         $this->UnattachedMessage = new UnattachedMessage($options);
