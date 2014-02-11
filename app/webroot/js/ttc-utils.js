@@ -229,7 +229,7 @@ function expandFilter() {
 function removeFilter() {
     $(this).parent().hide().children(':not(.submit)').remove();
     if (window.location.search != "")
-        window.location.replace("index")
+        window.location.replace(window.location.href.split("?")[0])
 }
 
 function addStackFilter(){
