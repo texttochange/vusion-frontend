@@ -548,10 +548,13 @@ function loadPaginationCount(url) {
                 $('#paging-count').text(data['roundedCount']);
             }
         },
-        timeout: 0,
-        error: vusionAjaxError
+        timeout: 45000,  //45 sec
+        error: function(jqXHR, textStatus, errorthrown) {
+            $('#paging-count').text(localized_labels['many']);
+        }
     });
 }
+
 
 function loadProgramStats(){
     var  programs = window.app.programs;
