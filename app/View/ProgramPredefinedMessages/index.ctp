@@ -31,7 +31,7 @@
 		    <?php foreach ($predefinedMessages as $predefinedMessage): ?>
 		    <tr>
 		        <td class="name"><?php echo h($predefinedMessage['PredefinedMessage']['name']); ?>&nbsp;</td>
-		        <td class="content"><?php echo __($predefinedMessage['PredefinedMessage']['content']) ?></td>
+		        <td class="content"><?php echo $predefinedMessage['PredefinedMessage']['content'] ?></td>
 		        <td class="actions action">
 		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'controller' => 'programPredefinedMessages', 'action' => 'edit', $predefinedMessage['PredefinedMessage']['_id'])); ?>
 		            <?php echo $this->Form->postLink(

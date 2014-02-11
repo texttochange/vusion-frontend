@@ -6,8 +6,9 @@ App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
 abstract class MongoModel extends Model
 {
     
-    var $specific = false;
-    
+    var $specific     = false;
+    var $databaseName = null;    
+
     var $mongoFields = array(
         '_id',
         'modified',
@@ -50,6 +51,7 @@ abstract class MongoModel extends Model
             
             // Set correct database name
             $config['database'] = $dbName;
+            $this->databaseName = $dbName;
             // Add new config to registry
             ConnectionManager::create($dbName, $config);
             // Point model to new config

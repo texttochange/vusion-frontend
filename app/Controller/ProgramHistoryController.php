@@ -14,7 +14,8 @@ class ProgramHistoryController extends AppController
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Time'
+        'Time',
+        'Paginator' => array('className' => 'BigCountPaginator')
         );
     
     
@@ -46,8 +47,10 @@ class ProgramHistoryController extends AppController
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
-        } else {
+        } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        } else {
+            $order = null;
         }
         
         // Only get messages and avoid other stuff like markers
@@ -126,7 +129,7 @@ class ProgramHistoryController extends AppController
         
         if (!isset($this->params['named']['sort'])) {
             $paginate['order'] = array('timestamp' => 'desc');
-        } else {
+        } else if (isset($this->params['named']['direction'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
@@ -252,5 +255,16 @@ class ProgramHistoryController extends AppController
         }                   
     }
     
-    
+
+    public function paginationCount()
+    {
+        if ($this->params['ext'] !== 'json') {
+            return; 
+        }
+        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
+        $paginationCount = $this->History->count( $this->_getConditions($defaultConditions), null, -1);
+        $this->set('paginationCount',$paginationCount);
+    }
+
+
 }

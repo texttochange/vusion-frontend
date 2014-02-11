@@ -89,11 +89,11 @@ class AppController extends Controller
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             $this->set(compact('programDetails')); 
-
+            
             //In case of a Json request, no need to set up the variables
             if ($this->params['ext']=='json' or $this->params['ext']=='csv')
                 return;
-
+            
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
             $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);      
             $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
@@ -113,6 +113,11 @@ class AppController extends Controller
         $redisHost = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
         $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
         $this->redis->connect($redisHost, $redisPort);
+
+        $redisPrefix = Configure::read('vusion.redisPrefix');
+        if (is_array($redisPrefix)) { 
+            $this->redisProgramPrefix = $redisPrefix['base'] . ':' . $redisPrefix['programs'];
+        }
     }
     
     

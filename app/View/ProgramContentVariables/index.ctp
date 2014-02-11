@@ -58,7 +58,7 @@
 		                echo h($keypair);
 		            ?>&nbsp;
 		        </td>
-		        <td class="details"><?php echo __($contentVariable['ContentVariable']['value']) ?></td>
+		        <td class="details"><?php echo $contentVariable['ContentVariable']['value'] ?></td>
 		        <td class="actions action">
 		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'controller' => 'programContentVariables', 'action' => 'edit', $contentVariable['ContentVariable']['_id'])); ?>
 		            <?php echo $this->Form->postLink(

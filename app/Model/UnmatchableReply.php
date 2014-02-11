@@ -2,10 +2,8 @@
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
-/**
-* UnmatchableReply Model
-*
-*/
+
+
 class UnmatchableReply extends MongoModel
 {
     
@@ -19,15 +17,7 @@ class UnmatchableReply extends MongoModel
     {
         return '1';
     }
-    
-    
-    public function __construct($id = false, $table = null, $ds = null)
-    {
-        parent::__construct($id, $table, $ds);
         
-        $this->dialogueHelper = new DialogueHelper();
-    }
-    
     
     function getRequiredFields($objectType=null)
     {
@@ -37,7 +27,41 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
+
     
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
+        $this->dialogueHelper = new DialogueHelper();
+    }
+
+
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+
     
     public $filterFields = array(
         'country' => array(

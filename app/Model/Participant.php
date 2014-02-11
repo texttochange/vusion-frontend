@@ -32,11 +32,22 @@ class Participant extends MongoModel
             'profile',
             );
     }
+
+    public $findMethods = array(
+        'all' => true,
+        'first' => true,
+        'count' => true);
     
     
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
+        
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
@@ -46,7 +57,15 @@ class Participant extends MongoModel
         $this->Dialogue       = new Dialogue($options);
         $this->DialogueHelper = new DialogueHelper();
     }
+
     
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
+    }
+
     
     public $validate = array(
         'phone' => array(
@@ -108,13 +127,6 @@ class Participant extends MongoModel
                 ),
             ),
         );
-    
-    
-    public $importErrorMessages = array(
-        'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
-        'tag-error' => 'Error a tag is not valide: %s.',
-        'file-format-error' => 'The file format %s is not supported.',
-        'csv-file-error' => 'The csv file cannot be open.');
     
     
     public function validateTags($check)
@@ -215,6 +227,26 @@ class Participant extends MongoModel
         }
     }
     
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+
     
     public function addMassTags($tag, $conditions)
     {   
@@ -574,7 +606,7 @@ class Participant extends MongoModel
             }
             foreach ($tags as $tag) {
                 if (!$this->validateTag($tag)) {
-                    array_push($this->importErrors, __($this->importErrorMessages['tag-error'], $tag)); 
+                    array_push($this->importErrors, __("Error a tag is not valide: %s.", $tag)); 
                     return false;
                 }
             }
@@ -585,7 +617,7 @@ class Participant extends MongoModel
         
         $ext = end(explode('.', $fileFullPath));
         if (!($ext == 'csv') and !($ext == 'xls')) {
-            array_push($this->importErrors, __($this->importErrorMessages['file-format-error'], $ext)); 
+            array_push($this->importErrors, __("The file format %s is not supported.", $ext)); 
             return false;
         }
         
@@ -657,7 +689,7 @@ class Participant extends MongoModel
         $uniqueNumber = array();
         
         if (($handle = fopen($fileFullPath,"r")) === false) {
-            array_push($this->importErrors, $this->importErrorMessages['csv-file-error']);
+            array_push($this->importErrors, __("The csv file cannot be open."));
             return false;
         }
         
@@ -678,7 +710,7 @@ class Participant extends MongoModel
                     continue;
                 } else {
                     if (count($headers) > 1) {
-                        array_push($this->importErrors, $this->importErrorMessages['label-error']); 
+                        array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'.")); 
                         return false;
                     }
                     $headers = array(
@@ -757,7 +789,7 @@ class Participant extends MongoModel
             $labels = $this->array_filter_out_not_label($headers);
         } else {
             if ($data->val(1, 'B')!=null) {
-                array_push($this->importErrors, __($this->importErrorMessages['label-error']));
+                array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'."));
                 return false;
             }
         }

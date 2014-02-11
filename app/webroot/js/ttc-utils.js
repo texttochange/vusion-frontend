@@ -229,7 +229,7 @@ function expandFilter() {
 function removeFilter() {
     $(this).parent().hide().children(':not(.submit)').remove();
     if (window.location.search != "")
-        window.location.replace("index")
+        window.location.replace(window.location.href.split("?")[0])
 }
 
 function addStackFilter(){
@@ -536,6 +536,25 @@ function loadFilterParameterOptions(parameter, url) {
         error: vusionAjaxError
     });
 }
+
+function loadPaginationCount(url) {
+    //Dirty: passing of the rule require rencoding the & in the url parameters 
+    url = url.replace(/&amp;/g, "&");
+    $.ajax({
+        url: url,
+        success: function(data){
+            if (data['status'] == 'ok') {
+                $('.ttc-page-count').attr('title', data['paginationCount']);
+                $('#paging-count').text(data['roundedCount']);
+            }
+        },
+        timeout: 45000,  //45 sec
+        error: function(jqXHR, textStatus, errorthrown) {
+            $('#paging-count').text(localized_labels['many']);
+        }
+    });
+}
+
 
 function loadProgramStats(){
     var  programs = window.app.programs;
