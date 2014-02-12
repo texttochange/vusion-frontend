@@ -25,12 +25,56 @@ You must change the permissions of the cache folder and it's subfolders to use w
 who is the apache user.
 
 	$ chown -R www-data app/tmp/cache
+	
+	
+Required Tools to Install
+-------------------------
+Apache2
+MongoDB
+mysql-server
+phpmyadmin
 
-Web Server Configuration
-------------------------
-You need to configure you webserver according to cakephp2.x requirements. 
-First the DocumentRoot pointing at the app/webroot folder. 
-Second make app/tmp file writable by the webserver.    
+Note:
+phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.
+
+
+
+PHP Modules
+-----------
+Modules need to be install and configure in PHP
+ 
+- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
+- Download a .tar.gz file
+- Open a terminal
+- tar zxvf mongodb-php-driver-1.2.9.tar.gz
+- cd mongodb-php-driver-1.2.9
+- phpize
+- ./configure
+- make all
+- sudo make install
+
+
+Development PHP Modules
+----------------------- 
+
+- Pear
+sudo apt-get install php-pear
+
+- PHPUnit
+sudo apt-get install phpunit
+
+Jenkins
+-------
+To run the different build task from build.xml, you need to install
+
+- Jdk6
+sudo apt-get install openjdk-6-jre;
+
+- Ant
+sudo apt-get install -u ant; or sudo apt-get install ant;
+
+
+    
 
 Databases
 ---------
@@ -75,40 +119,14 @@ while in the mysql console,navigate to to users table and create two users; "cak
 Run vusion.sql
         mysql -u root -p < app/Test/data/mySQL/vusion.sql
 
-PHP Modules
------------
-Modules need to be install and configure in PHP
  
-- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
-- Download a .tar.gz file
-- Open a terminal
-- tar zxvf mongodb-php-driver-1.2.9.tar.gz
-- cd mongodb-php-driver-1.2.9
-- phpize
-- ./configure
-- make all
-- sudo make install
+        
 
-
-Development PHP Modules
------------------------ 
-
-- Pear
-sudo apt-get install php-pear
-
-- PHPUnit
-sudo apt-get install phpunit
-
-Jenkins
--------
-To run the different build task from build.xml, you need to install
-
-- Jdk6
-sudo apt-get install openjdk-6-jre;
-
-- Ant
-sudo apt-get install -u ant; or sudo apt-get install ant;
-
+Web Server Configuration
+------------------------
+You need to configure you webserver according to cakephp2.x requirements. 
+First the DocumentRoot pointing at the app/webroot folder. 
+Second make app/tmp file writable by the webserver.        
 
 
 Apache configuration for mod_xsendfile(export)
