@@ -167,6 +167,7 @@ var localized_labels = {
     "has-keyword": "<?php echo __('has keyword')?>", 
     "has-keyword-any": "<?php echo __('has keyword any')?>", 
     "matching": "<?php echo __('matching')?>",
-    "not-matching": "<?php echo __('not matching')?>", 
+    "not-matching": "<?php echo __('not matching')?>",
+    "many": "<?php echo __('many')?>",
 };
 

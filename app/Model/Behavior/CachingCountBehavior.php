@@ -14,9 +14,15 @@ class CachingCountBehavior extends ModelBehavior {
 			        5 => 240          #5sec cache  4min
 			        ));
 		}
-		$this->settings[$model->alias]['redis'] = array_merge($this->settings[$model->alias]['redis'], $settings['redis']);
-		$this->settings[$model->alias]['redisPrefix'] = array_merge($this->settings[$model->alias]['redisPrefix'], $settings['redisPrefix']);
-		$this->settings[$model->alias]['cacheCountExpire'] = $settings['cacheCountExpire'];
+		if (isset($settings['redis'])) {
+		    $this->settings[$model->alias]['redis'] = array_merge($this->settings[$model->alias]['redis'], $settings['redis']);
+		}
+		if (isset($settings['redisPrefix'])) {
+		    $this->settings[$model->alias]['redisPrefix'] = array_merge($this->settings[$model->alias]['redisPrefix'], $settings['redisPrefix']);
+		}
+		if (isset($settings['cacheCountExpire'])) {
+		    $this->settings[$model->alias]['cacheCountExpire'] = $settings['cacheCountExpire'];
+		}
 
 		$this->redis = new Redis();
 		$this->redis->connect(
