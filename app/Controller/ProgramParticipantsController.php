@@ -59,7 +59,7 @@ class ProgramParticipantsController extends AppController
         
         $paginate = array('all');
         
-        if (isset($this->params['named']['sort'])) {
+        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
