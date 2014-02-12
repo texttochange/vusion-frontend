@@ -29,10 +29,10 @@ who is the apache user.
 	
 Required Tools to Install
 -------------------------
-Apache2
-MongoDB
-mysql-server
-phpmyadmin
+Apache2,
+MongoDB,
+mysql-server,
+phpmyadmin,
 
 Note:
 phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.
@@ -74,19 +74,15 @@ sudo apt-get install openjdk-6-jre;
 sudo apt-get install -u ant; or sudo apt-get install ant;
 
 
-
-Web Server Configuration
-------------------------
-You need to configure you webserver according to cakephp2.x requirements. 
-First the DocumentRoot pointing at the app/webroot folder. 
-Second make app/tmp file writable by the webserver.    
+    
 
 Databases
 ---------
 Vusion is using 2 database engines. 
 The first one is the Relational Database for authentication, Access Control List, User management. The default relational database is PostGres, but anyother can be used by modifying **app/config/database.php**. 
 The second one is the Document Database MongoDB  for the business data.
-(installation of MongoDB version2.x Server) http://www.mongodb.org/display/DOCS/Quickstart
+(installation of MongoDB version2.x Server) http://www.mongodb.org/display/DOCS/Quickstart.
+(installation of Mysql Server) $ sudo apt-get install mysql-server.
 
 Relational Database Configuration:
 You can create the relational database schema from file **app/Config/Schema/schema.php** with the cake console
@@ -123,8 +119,16 @@ while in the mysql console,navigate to to users table and create two users; "cak
 
 Run vusion.sql
         mysql -u root -p < app/Test/data/mySQL/vusion.sql
+        
+   
+        
 
-       
+ Web Server Configuration
+------------------------
+You need to configure you webserver according to cakephp2.x requirements. 
+First the DocumentRoot pointing at the app/webroot folder. 
+Second make app/tmp file writable by the webserver. 
+
 
 
 Apache configuration for mod_xsendfile(export)
