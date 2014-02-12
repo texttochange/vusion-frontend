@@ -559,7 +559,24 @@ function loadFilterParameterOptions(parameter, url) {
 }
 
 
-function loadProgramStats() {
+function loadPaginationCount(url) {
+    //Dirty: passing of the rule require rencoding the & in the url parameters 
+    url = url.replace(/&amp;/g, "&");
+    $.ajax({
+        url: url,
+        success: function(data){
+            if (data['status'] == 'ok') {
+                $('.ttc-page-count').attr('title', data['paginationCount']);
+                $('#paging-count').text(data['roundedCount']);
+            }
+        },
+        timeout: 0,
+        error: vusionAjaxError
+    });
+}
+
+
+function loadProgramStats(){
     var  programs = window.app.programs;
     var program = {};
     for(var i = 0; i< programs.length; i++){

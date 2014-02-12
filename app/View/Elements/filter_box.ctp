@@ -3,9 +3,26 @@
     <?php
     if (isset($this->Paginator)) {
     	$count = $this->Paginator->counter('{:count}');
-    	echo "<span class='ttc-page-count' title = $count>";
-        echo $this->Paginator->counter(array('format'=> __('{:start} - {:end} of ')));
-        echo $this->BigNumber->replaceBigNumbers($count, 5);       
+    	if ($count === 'many') {
+    	    $countTitle = __('Loading...');
+    	    $count = '<img src="/img/ajax-loader.gif">';
+    	    $urlParameters = $this->params['url'];
+            //$urlParameters['parameter'] = $parameter;
+            $ajaxUrl = $this->Html->url(array(
+                'program' => $programDetails['url'], 
+                'action' => 'paginationCount',
+                'ext' => 'json',
+                '?' => $urlParameters));
+            $this->Js->get('document')->event(
+                'ready',
+                'loadPaginationCount("' . $ajaxUrl . '");'
+            );
+    	} else {
+    	    $countTitle = $count;
+    	}
+    	echo "<span class='ttc-page-count' title ='$countTitle'>";
+        echo $this->Paginator->counter('<span id="paging-start">{:start}</span> - <span id="paging-end">{:end}</span> of ');
+        echo "<span id='paging-count'>".$this->BigNumber->replaceBigNumbers($count, 3)."</span>";       
         echo "</span>";
         echo $this->Paginator->prev(
             '<', 

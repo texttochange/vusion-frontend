@@ -954,9 +954,9 @@ display: inline;
 
 
 .ttc-paging {
-        float: right;
-        width: 184px;
-        text-align: right;
+    float: right;
+    width: 200px;
+    text-align: right;
 }
 
 .ttc-stack-filter input{
@@ -1279,7 +1279,6 @@ display: inline;
 	margin-bottom: 12px;	
 }
 
-<<<<<<< HEAD
 /** page title **/
 .ttc-page-title {
 }
