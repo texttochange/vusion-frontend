@@ -42,16 +42,26 @@ phpmyadmin to work may require you to configure the apache2.conf file by includi
 PHP Modules
 -----------
 Modules need to be install and configure in PHP
- 
-- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
-- Download a .tar.gz file
-- Open a terminal
-- tar zxvf mongodb-php-driver-1.2.9.tar.gz
-- cd mongodb-php-driver-1.2.9
-- phpize
-- ./configure
-- make all
-- sudo make install
+
+:MongoDB PHP:
+    - Download the .tar.gz file of MongoDB PHP Driver **v1.2.9** (https://github.com/mongodb/mongo-php-driver/tags)
+    - Open a terminal
+    ::
+
+        $ tar zxvf mongodb-php-driver-1.2.9.tar.gz
+        $ cd mongodb-php-driver-1.2.9
+        $ phpize
+        $ ./configure
+        $ make all
+        $ sudo make install
+
+:Redis PHP:
+    - Clone the Git repo git clone git://github.com/nicolasff/phpredis.git
+    - Open a terminal
+    ::
+        
+        $ phpize && ./configure && make && sudo make install
+
 
 
 Development PHP Modules
