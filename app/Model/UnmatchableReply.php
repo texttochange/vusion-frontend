@@ -17,7 +17,6 @@ class UnmatchableReply extends MongoModel
     {
         return '1';
     }
-        
     
     function getRequiredFields($objectType=null)
     {
@@ -176,9 +175,9 @@ class UnmatchableReply extends MongoModel
                 }
             } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'from-phone') {
                 if ($filterParam[2] == 'equal-to') {

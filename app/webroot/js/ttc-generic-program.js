@@ -32,30 +32,22 @@
                 activeForm();
                 //On load fold every element 
                 $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
-                /*$("[name='Dialogue.interactions']").sortable({axis: 'y', cancel: 'button'});
-                $("[name='Dialogue.interactions'] input").bind('click.sortable mousedown.sortable',function(ev){
-                ev.target.focus();
-                });
-                $("[name='Dialogue.interactions'] textarea").bind('click.sortable mousedown.sortable',function(ev){
-                ev.target.focus();
-                });
-                $("[name='Dialogue.interactions']").disableSelection();*/
             },
         });
 })(jQuery);
 
 function saveFormOnServer(){
-    
+
     var formData = form2js('dynamic-generic-program-form', '.', true);
-    //alert();
-    var indata= JSON.stringify(formData, null, '\t');
+    
+    var inData= JSON.stringify(formData, null, '\t');
     
     var saveUrl = location.href.indexOf("edit/")<0 ? "./save.json" : "../save.json";
     
     $.ajax({
             url: saveUrl,
             type:'POST',
-            data: indata, 
+            data: inData, 
             contentType: 'application/json; charset=utf-8',
             dataType: 'json', 
             success: function(response) {
@@ -64,18 +56,24 @@ function saveFormOnServer(){
                     reactivateSaveButtons();
                     return;
                 }
-                if (location.href.indexOf(response['dialogue-obj-id'])<0){
+                if ('dialogue-obj-id' in response) {
+                    objectId = response['dialogue-obj-id'];
+                } else {
+                    objectId = response['request-id'];
+                }
+                if (location.href.indexOf(objectId)>0) {  //it's an edit
+                    $("#flashMessage").attr('class', 'message success').show().text(response['message']);
+                    $("#flashMessage").delay(3000).fadeOut(1000)
+                    reactivateSaveButtons(); 
+                } else {                                   //it's a add
                     $("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['wait_redirection']);
                     setTimeout( function() { 
-                            if (location.href.indexOf("edit/")<0) 
-                                window.location.replace("edit/" + response['dialogue-obj-id']);
-                            else 
+                            if (location.href.match(/edit\/\w/g)) { 
                                 window.location.replace(response['dialogue-obj-id']);
+                            } else {
+                                window.location.replace("edit/"+objectId);
+                            }
                     }, 3000);
-                } else {
-                    $("#flashMessage").attr('class', 'message success').show().text(response['message']);
-                    $("#flashMessage").delay(3000).fadeOut(1000);
-                    reactivateSaveButtons();
                 }
             },
             timeout: 4000,
@@ -145,44 +143,6 @@ function hideValidationLabel(name) {
 
 function showErrorMessages(errorMessage){
     $("#flashMessage").attr('class', 'message error').show().text(errorMessage);
-}
-
-function saveRequestOnServer(){
-    
-    var formData = form2js('dynamic-generic-program-form', '.', true);
-    //alert();
-    var indata= JSON.stringify(formData, null, '\t');
-    
-    var saveUrl = location.href.indexOf("add")>0 ? "./add.json" : "../edit.json";
-    
-    $.ajax({
-            url: saveUrl,
-            type:'POST',
-            data: indata, 
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json', 
-            success: function(response) {
-                if (response['status'] == 'fail') {
-                    message = handleResponseValidationErrors(response['message']);
-                    //showErrorMessages(message);
-                    reactivateSaveButtons();
-                    return;
-                }
-                if (location.href.indexOf("add")>0 && location.href.indexOf(response['request-id'])<0){
-                    $("#flashMessage").show().attr('class', 'message success').text(response['message']);
-                    setTimeout( function() { 
-                            window.location.replace("edit/"+response['request-id']);
-                    }, 3000);
-                } else {
-                    $("#flashMessage").attr('class', 'message success').show().text(response['message']);
-                    $("#flashMessage").delay(3000).fadeOut(1000)
-                    reactivateSaveButtons();
-                }
-            },
-            timeout: 3000,
-            error: saveAjaxError,
-            userAction: localized_actions['save_request'],
-    });
 }
 
 function convertDateToIso(data) {   
@@ -304,7 +264,9 @@ function activeForm(){
                     required:true,
                     doubleSpace:true,
                     keywordFormat:true,
-                    keywordUnique:true,
+                    keywordUnique: {
+                        depends: isFormSubmit
+                    },
                     messages:{
                         required: wrapErrorMessage(localized_errors.validation_required_error),
                         keywordFormat: wrapErrorMessage(localized_errors.validation_keywords_invalid_character_error),
@@ -338,7 +300,9 @@ function activeForm(){
     $("input[name*='name']:not(.activated)").each(function (elt) {
             $(this).rules("add",{
                     required:true,
-                    uniqueDialogueName: true,
+                    uniqueDialogueName: {
+                        depends: isFormSubmit
+                    },
                     messages:{
                         required: wrapErrorMessage(localized_errors.validation_required_error),
                         uniqueDialogueName: wrapErrorMessage(localized_errors.validation_unique_dialogue_name),
@@ -681,9 +645,10 @@ function duplicateKeywordValidation(value, element, param) {
             url: url,
             type: "POST",
             async: false,
-            data: { 'keyword': keywords.join(", "), 
+            data: { 
+                'keyword': keywords.join(", "), 
                 'dialogue-id': $("[name$=dialogue-id]").val(),
-            'object-id': $("[name$='_id']").val()},
+                'object-id': $("[name$='_id']").val()},
             inputName: $(keywordInput).attr('name'),
             success: validateKeywordReply,
             timeout: 1000,
@@ -748,7 +713,7 @@ function duplicateChoiceValidation(value, element, param) {
 
 
 function formatChoiceValidation(value, element, param) {    
-    var choiceRegex = XRegExp('^[\\p{l}\\p{N}\\s]*$');
+    var choiceRegex = XRegExp('^[\\p{L}\\p{N}\\s]*$');
     if (choiceRegex.test(value)) { 
         return true;
     }
@@ -1362,10 +1327,11 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     
     configToForm(type, myform, type, object);
     
-    myform["elements"].push({
+    /*myform["elements"].push({
             "type": "submit",
+            "class": "hidden",
             "value": localize_label("save")
-    })
+    })*/
     
     return myform;
 }
