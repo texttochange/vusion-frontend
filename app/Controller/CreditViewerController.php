@@ -73,9 +73,12 @@ class CreditViewerController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
+        $datePast = new DateTime('-1 month');
+        $dateNow = new DateTime('now');
+        
         $defaultDateConditions = array(
-            1 => array(1=>'date', 2 => 'from', 3 => ''),
-            2 => array(1=>'date', 2 => 'to', 3 => '')
+            1 => array(1=>'date', 2 => 'from', 3 => $datePast->format('d/m/Y')),
+            2 => array(1=>'date', 2 => 'to', 3 => $dateNow->format('d/m/Y'))
         );
         $this->set('defaultDateConditions', $defaultDateConditions);
         
