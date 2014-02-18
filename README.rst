@@ -29,15 +29,14 @@ who is the apache user.
 	
 Required Tools to Install
 -------------------------
-::
+    ::
 
-Apache2 	$ sudo apt-get install apache2
-MongoDB 	$ sudo apt-get install mongoDB
-mysql-server 	$ sudo apt-get install mysql-server
-phpmyadmin	$ sudo apt-get install php
+	$ sudo apt-get install apache2
+	$ sudo apt-get install mongoDB
+	$ sudo apt-get install mysql-server
+	$ sudo apt-get install php
 
-Note:
-phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.
+**Note: phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.**
 
 
 
@@ -69,11 +68,8 @@ Modules need to be install and configure in PHP
 Development PHP Modules
 ----------------------- 
 
-- Pear
-sudo apt-get install php-pear
+- Pear and PHPUnit Installation
 
-- PHPUnit
-sudo apt-get install phpunit
 ::
  $ sudo pear channel-discover pear.phpunit.de
  $ sudo pear channel-discover components.ez.no
@@ -82,7 +78,7 @@ sudo apt-get install phpunit
  $ sudo pear update-channels
  $ sudo pear install --alldeps phpunit/PHPUnit
  
- - Note if PHPUnit fails, first upgrade pear with the command below
+ *- Note if PHPUnit fails, first upgrade pear with the command below*
  $ pear upgrade pear
  
  - try the PHPUnit again
@@ -178,3 +174,7 @@ Add this line **XSendFilePath <documentroot>/files/programs/** inside your apach
  	otherwise, add it in ** /etc/apache/sites-available/default **
 
 Don't forget to change permissions on the */files/programs/ * directory
+
+**Note: We also want apache www folder to have access to our project folder; we are going to have to create a symlink folder inside the apache www hence when project folder files are updated apache can have access to the updates. go to command -**
+::
+$ ln -s /actual project folder path/ /symlink folder path in the apache www/
