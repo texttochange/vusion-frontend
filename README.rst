@@ -29,6 +29,8 @@ who is the apache user.
 	
 Required Tools to Install
 -------------------------
+::
+
 Apache2 	$ sudo apt-get install apache2
 MongoDB 	$ sudo apt-get install mongoDB
 mysql-server 	$ sudo apt-get install mysql-server
@@ -72,7 +74,7 @@ sudo apt-get install php-pear
 
 - PHPUnit
 sudo apt-get install phpunit
-
+::
  $ sudo pear channel-discover pear.phpunit.de
  $ sudo pear channel-discover components.ez.no
  $ sudo pear channel-discover pear.symfony-project.com
