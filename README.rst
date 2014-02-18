@@ -14,7 +14,7 @@ Installation
 	$ git submodule update
 
 
-You need to add the following folders
+You need to add the following folders: persistent & model under dir app/tmp/cache
 ::
 
 	$ mkdir app/tmp/cache
@@ -29,10 +29,12 @@ who is the apache user.
 	
 Required Tools to Install
 -------------------------
-Apache2
-MongoDB
-mysql-server
-phpmyadmin
+::
+
+Apache2 	$ sudo apt-get install apache2
+MongoDB 	$ sudo apt-get install mongoDB
+mysql-server 	$ sudo apt-get install mysql-server
+phpmyadmin	$ sudo apt-get install php
 
 Note:
 phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.
@@ -72,7 +74,21 @@ sudo apt-get install php-pear
 
 - PHPUnit
 sudo apt-get install phpunit
-
+::
+ $ sudo pear channel-discover pear.phpunit.de
+ $ sudo pear channel-discover components.ez.no
+ $ sudo pear channel-discover pear.symfony-project.com
+ $ sudo pear channel-discover pear.symfony.com
+ $ sudo pear update-channels
+ $ sudo pear install --alldeps phpunit/PHPUnit
+ 
+ - Note if PHPUnit fails, first upgrade pear with the command below
+ $ pear upgrade pear
+ 
+ - try the PHPUnit again
+ $ sudo pear install --alldeps phpunit/PHPUnit
+ 
+ 
 Jenkins
 -------
 To run the different build task from build.xml, you need to install
