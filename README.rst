@@ -70,14 +70,16 @@ Development PHP Modules
 
 - Pear and PHPUnit Installation
     ::
-        $ sudo pear channel-discover pear.phpunit.de
+      
+    	$ sudo pear channel-discover pear.phpunit.de
         $ sudo pear channel-discover components.ez.no
         $ sudo pear channel-discover pear.symfony-project.com
         $ sudo pear channel-discover pear.symfony.com
         $ sudo pear update-channels
         $ sudo pear install --alldeps phpunit/PHPUnit
+        
  
- *- Note if PHPUnit fails, first upgrade pear with the command below*
+ **- Note if PHPUnit fails, first upgrade pear with the command below**
  $ pear upgrade pear
  
  - try the PHPUnit again
