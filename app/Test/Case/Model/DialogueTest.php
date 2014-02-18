@@ -152,10 +152,11 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['date-time'] = '2013-10-20 20:20:00';
         $saveResult = $this->Dialogue->saveDialogue($dialogue);
+        print_r($saveResult);
         $this->assertFalse(!empty($saveResult) && is_array($saveResult));    
     }
 
-    public function testValidate_keyword_fail()
+    public function testValidate_keyword_fail_regex()
     {
         $dialogue = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, keyword 1, other';
@@ -163,6 +164,22 @@ class DialogueTestCase extends CakeTestCase
         $this->assertFalse($this->Dialogue->saveDialogue($dialogue));
         $this->assertEqual(
             "The keyword/alias is(are) not valid.",
+            $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
+    }
+
+    public function testValidate_keyword_fail_usedKeyword()
+    {
+        $usedKeywords = array(
+            'other' => array(
+                'program-db' => 'otherprogram',
+                'program-name' => 'other program',
+                'by-type' => 'Request'));
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['interactions'][0]['keyword'] = 'test, other';
+
+        $this->assertFalse($this->Dialogue->saveDialogue($dialogue, $usedKeywords));
+        $this->assertEqual(
+            "'other' already used by a Request of program 'other program'.",
             $this->Dialogue->validationErrors['interactions'][0]['keyword'][0]);
     }
     
@@ -175,32 +192,46 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue(isset($savedDialogue));
     }
 
-    public function testFindAllKeywordInDialogues()
+
+    public function testUseKeyword()
     {
 
-        $dialogueOne = $this->Maker->getOneDialogue();
-        $dialogueOne['Dialogue']['interactions'][0]['keyword'] = 'FEEL, Name';
+        $dialogueOne = $this->Maker->getOneDialogue('FEEL, Name');
 
-        $dialogueTwo = $this->Maker->getOneDialogue();
-        $dialogueTwo['Dialogue']['interactions'][0]['keyword'] = 'FEL';
+        $dialogueTwo = $this->Maker->getOneDialogue('FEL');
+        $dialogueTwo['Dialogue']['name'] = 'other name';
       
-        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
-        $this->Dialogue->makeDraftActive($saveDialogueOne['Dialogue']['dialogue-id']);
+        $savedDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
+        $this->Dialogue->makeDraftActive($savedDialogueOne['Dialogue']['dialogue-id']);
 
-        $saveDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
-        $this->Dialogue->makeDraftActive($saveDialogueTwo['Dialogue']['dialogue-id']);    
+        $savedDialogueTwo = $this->Dialogue->saveDialogue($dialogueTwo);
+        $this->Dialogue->makeDraftActive($savedDialogueTwo['Dialogue']['dialogue-id']);    
 
-        $result = $this->Dialogue->useKeyword('FEEL');
-        $this->assertEquals(1, count($result));
+        $this->assertEquals(
+            array(
+                'feel' => array(
+                    'dialogue-id' => $savedDialogueOne['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueOne['Dialogue']['name']), 
+                'fel' => array(
+                    'dialogue-id' => $savedDialogueTwo['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueTwo['Dialogue']['name'])), 
+            $this->Dialogue->useKeyword('FEEL, Fel'));
 
-        $result = $this->Dialogue->useKeyword('NAME');
-        $this->assertEquals(1, count($result));      
+        $this->assertEquals(
+            array('fel' => array(
+                    'dialogue-id' => $savedDialogueTwo['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueTwo['Dialogue']['name'])), 
+            $this->Dialogue->useKeyword('FEEL, Fel', $savedDialogueOne['Dialogue']['dialogue-id']));
+        
+        $this->assertEquals(
+            array('name' => array(
+                    'dialogue-id' => $savedDialogueOne['Dialogue']['dialogue-id'],
+                    'dialogue-name' => $savedDialogueOne['Dialogue']['name'])),
+            $this->Dialogue->useKeyword('NAME'));
 
-        $result = $this->Dialogue->useKeyword('FEL');
-        $this->assertEquals(0, count($result));     
-
-        $result = $this->Dialogue->useKeyword('BT');
-        $this->assertEquals(0, count($result));      
+        $this->assertEquals(
+            false,
+            $this->Dialogue->useKeyword('BT'));      
     }
 
 
@@ -388,7 +419,8 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertEquals($this->Dialogue->validationErrors['name'][0], 'This Dialogue Name already exists. Please choose another.');
     	
     }
-    
+
+
     public function testUniqueDialogueName_dialogueIdDifferent_pass()
     {
     	$dialogue = $this->Maker->getOneDialogue();
@@ -402,7 +434,8 @@ class DialogueTestCase extends CakeTestCase
     	$this->assertEqual(2,$this->Dialogue->find('count'));
     	$this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
     }
-    
+
+
     public function testisValidDialogueName()
     {
     	$dialogue = $this->Maker->getOneDialogue();
@@ -416,6 +449,62 @@ class DialogueTestCase extends CakeTestCase
     	$output = $this->Dialogue->isValidDialogueName('tom','08');
     	$this->assertEqual(1,$output);
 		$this->assertTrue($output);    	
+    }
+
+
+    public function testHasDialogueKeyword()
+    {
+        $dialogue = $this->Maker->getOneDialogue('kÉyword');
+        $this->assertEquals(
+            array('keyword'),
+            Dialogue::hasDialogueKeywords($dialogue, array('keyword')));
+        
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->assertEquals(
+            array('feel', 'keyword'),
+            Dialogue::hasDialogueKeywords($dialogue, array('feel', 'keyword')));
+        
+        $dialogue = $this->Maker->getOneDialogueWithKeyword('keyword');
+        $this->assertEquals(
+            array('keyword'),
+            Dialogue::hasDialogueKeywords($dialogue, array('keyword')));
+    }
+
+
+    public function testHasDialogueKeywork_answerAcceptNoSpace()
+    {
+        $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fÉl');
+        $this->assertEquals(
+            array('felgood'),
+            Dialogue::hasDialogueKeywords($dialogue, array('felgood')));
+        $this->assertEquals(
+            array('fel'),
+            Dialogue::hasDialogueKeywords($dialogue, array('fel')));
+        $this->assertEquals(
+            array('felbad'),
+            Dialogue::hasDialogueKeywords($dialogue, array('felbad')));
+        $this->assertEquals(
+            array(),
+            Dialogue::hasDialogueKeywords($dialogue, array('felok')));
+    }
+
+
+    public function testGetKeyworks()
+    {
+        $dialogue = $this->Maker->getOneDialogueAnwerNoSpaceSupported('fÉl');
+        $this->assertEquals(
+            array('feel', 'fel', 'felgood','felbad'), 
+            Dialogue::getDialogueKeywords($dialogue));
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        $this->assertEquals(
+            array('usedkeyword'), 
+            Dialogue::getDialogueKeywords($dialogue));
+        
+        $dialogue = $this->Maker->getOneDialogueMultikeyword();
+        $this->assertEqual(
+            array('female', 'male'),
+            Dialogue::getDialogueKeywords($dialogue));
     }
 
 }

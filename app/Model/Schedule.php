@@ -70,7 +70,6 @@ class Schedule extends MongoModel
 
         $options                 = array('database' => $id['database']);
         $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->DialogueHelper    = new DialogueHelper();
     }
     
 
@@ -240,7 +239,7 @@ class Schedule extends MongoModel
     {
         foreach ($schedules as &$schedule) {            
             if (isset($schedule['interaction-id'])) {
-                $interaction = $this->DialogueHelper->getInteraction(
+                $interaction = DialogueHelper::getInteraction(
                     $activeInteractions,
                     $schedule['interaction-id']
                     );

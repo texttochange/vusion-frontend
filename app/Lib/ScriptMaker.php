@@ -38,7 +38,7 @@ class ScriptMaker
     public function getOneDialogueAnwerNoSpaceSupported($keyword="keyword")
     {
         $dialogue = $this->getOneDialogueWithKeyword($keyword);
-        $dialogue['Dialogue']['interactions'][1]['answer-accept-no-space'] =  'answer-accept-no-space';
+        $dialogue['Dialogue']['interactions'][1]['set-answer-accept-no-space'] =  'answer-accept-no-space';
         return $dialogue;
 
     }
@@ -63,9 +63,23 @@ class ScriptMaker
                     )
                 )
             );
-
         return $dialogue;
     }
+
+
+    public function getOneDialogueMultikeyword()
+    {
+        $dialogue['Dialogue'] = array(
+            'name' => 'my dialogue',
+            'auto-enrollment' => 'none',
+            'dialogue-id' => null,
+            'interactions'=> array(
+                $this->getInteractionMultiKeywordQuestion()
+                )
+            );
+        return $dialogue;        
+    }
+
 
     public function getInteractionOpenQuestion()
     {
@@ -98,6 +112,7 @@ class ScriptMaker
 			"type-interaction"=> "question-answer",
 			"content"=> "How are you?",
 			"keyword" => "Feel",
+			"set-answer-accept-no-space" => null,
 			"type-question" => "closed-question",
 			"label-for-participant-profiling" => "feel",
 			"answers" => array(
@@ -150,10 +165,10 @@ class ScriptMaker
     }
 
 
-    public function getOneRequest()
+    public function getOneRequest($keyphrase = 'KEYWORD request')
     {
         $request['Request'] = array(
-            'keyword' => 'KEYWORD request',
+            'keyword' => $keyphrase,
             'responses' => array(
                 array(
                     'content' => 'thanks message',

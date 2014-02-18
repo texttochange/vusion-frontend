@@ -69,9 +69,10 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     {
         $programSettings = $this->generate('ProgramSettings', array(
             'components' => array(
+                'Auth' => array(),
                 'Acl' => array('check'),
-                'Session' => array('read'),
-                'Keyword' => array('validateProgramKeywords') 
+                'Session' => array('read', 'setFlash'),
+                'Keyword' => array('areProgramKeywordsUsedByOtherPrograms', 'validationToMessage') 
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -104,7 +105,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         return $programSettings;
     }
     
-    public function testEdit() 
+    public function testEdit_ok() 
     {
         $programSettingsController = $this->mockProgramAccess();
         $programSettingsController
@@ -115,8 +116,8 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         
         $programSettingsController->Keyword
         ->expects($this->once())
-        ->method('validateProgramKeywords')
-        ->will($this->returnValue(array('status' =>'ok')));
+        ->method('areProgramKeywordsUsedByOtherPrograms')
+        ->will($this->returnValue(array()));
         
         $programSettings = array(
             'ProgramSetting' => array(
@@ -142,10 +143,21 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         
         $programSettingsController->Keyword
         ->expects($this->once())
-        ->method('validateProgramKeywords')
-        ->will($this->returnValue(array('status' =>'fail',
-            'message' => 'keyword already used')));
+        ->method('areProgramKeywordsUsedByOtherPrograms')
+        ->will($this->returnValue(
+            array('KEYWORD' => array('programName' => 'my Program', 'type' => 'request'))));
         
+        $programSettingsController->Keyword
+        ->expects($this->once())
+        ->method('validationToMessage')
+        ->with(array('KEYWORD' => array('programName' => 'my Program', 'type' => 'request')))
+        ->will($this->returnValue("KEYWORD is already used..."));
+
+        $programSettingsController->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with("KEYWORD is already used...");
+
         $programSettings = array(
             'ProgramSetting' => array(
                 'shortcode'=>'8282',
@@ -162,8 +174,8 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         
         $this->assertEquals($programSettings, $programSettingsController->data);
     }
-    
-    
+ 
+
 }
 
 

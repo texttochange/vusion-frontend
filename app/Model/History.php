@@ -108,13 +108,11 @@ class History extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
+
         $this->Behaviors->load('CachingCount', array(
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
-
-        $this->DialogueHelper = new DialogueHelper();
     }
 
 
@@ -399,9 +397,9 @@ class History extends MongoModel
                 }
             } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'participant-phone') {
                 if ($filterParam[2] == 'equal-to') {
