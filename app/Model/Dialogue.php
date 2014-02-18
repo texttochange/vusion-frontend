@@ -229,8 +229,11 @@ class Dialogue extends MongoModel
         $activeInteractions = array();
         $activeDialogues    = $this->getActiveDialogues();
         foreach ($activeDialogues as $activeDialogue) {
-            if (isset($activeDialogue['Dialogue']['interactions']))
-                $activeInteractions = array_merge($activeInteractions, $activeDialogue['Dialogue']['interactions']);
+            if (isset($activeDialogue['Dialogue']['interactions'])) {
+                foreach ($activeDialogue['Dialogue']['interactions'] as $interaction) {
+                    $activeInteractions[$interaction['interaction-id']] = $interaction;
+                }
+            }
         }
         return $activeInteractions;
     }
