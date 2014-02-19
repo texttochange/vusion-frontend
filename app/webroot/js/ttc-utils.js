@@ -585,7 +585,7 @@ function loadProgramStats(){
         $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "/programs/getProgramStats.json",
+                url: "/"+programUrl+"/programAjax/getStats.json",
                 data: {"programUrl": programUrl},
                 success: function(data){
                     renderStats(data)
