@@ -1,6 +1,8 @@
 <?php
 App::uses('AppController', 'Controller');
-
+App::uses('Participant', 'Model');
+App::uses('Schedule', 'Model');
+App::uses('History', 'Model');
 
 class ProgramAjaxController extends AppController
 {
@@ -14,20 +16,14 @@ class ProgramAjaxController extends AppController
     }
     
     
-    public function getProgramStatsCached()
+    public function getStats()
     { 
-        print_r($this->RequestHandler);
-        //print_r($this->params['program']);
-       // $t = $this->response->not_modified($this->Stats->getProgramStats($programUrl[0]['Program']['database']));
-       //print_r($t);
-         /*$programUrl = $this->params['url']['programUrl'];
-            if(count($programUrl) > 0){           
-                $programStats = $this->Stats->getProgramStats($programUrl[0]['Program']['database'], true);
-                $result = array('status' =>'ok', 'programUrl' => $programUrl[0]['Program']['url'], 'programStats' =>  programStats);
-            }else{
-                $result = array('status' =>'fail', 'programUrl' => $programParamsUrl, 'reason' => "This program url ". $programParamsUrl." doesn't exist", 'programStats' => null);
-            }
-            $this->set(compact('result'));
-        } */
+        $programUrl = $this->params['program'];
+        $programDatabase = $this->Session->read($programUrl."_db");        
+        
+        
+       $programStats = array('status' =>'ok', 'programUrl' => $programUrl, 'programStats' => $this->Stats->getProgramStats($programDatabase));
+        
+        $this->set(compact('programStats'));
     }
 }
