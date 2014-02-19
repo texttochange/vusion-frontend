@@ -239,10 +239,7 @@ class Schedule extends MongoModel
     {
         foreach ($schedules as &$schedule) {            
             if (isset($schedule['interaction-id'])) {
-                $interaction = DialogueHelper::getInteraction(
-                    $activeInteractions,
-                    $schedule['interaction-id']
-                    );
+                $interaction = $activeInteractions[$schedule['interaction-id']];
                 if (isset($interaction['content']))
                     $schedule['content'] = $interaction['content'];
             }
