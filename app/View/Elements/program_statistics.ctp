@@ -1,14 +1,22 @@
 <div  class='ttc-program-stats-inside'>
 <?php
+
+
 $this->Js->set('programs', array(array('Program' => $programDetails)));
 if (count($programStats['programStats']) <= 0) {   
     $this->Js->get('document')->event(
         'ready',
         'loadProgramStats();');
 } else {
+    foreach ($programStats['programStats'] as $key => $value) {
+        if(is_numeric($value)){
+            $result = $this->BigNumber->replaceBigNumbers($value, 3);
+            $programStats['programStats']['programStats'][$key] = $result;
+        };
+    }
     $this->Js->get('document')->event(
         'ready',
-        'renderStats('. $this->Js->object($programStats).')');
+        'renderStats('.$this->Js->object($programStats).')');
 }
 
 echo '<span id="programstats">';
