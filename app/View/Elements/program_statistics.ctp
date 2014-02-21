@@ -9,10 +9,8 @@ if (count($programStats['programStats']) <= 0) {
         'loadProgramStats();');
 } else {
     foreach ($programStats['programStats'] as $key => $value) {
-        if(is_numeric($value)){
             $result = $this->BigNumber->replaceBigNumbers($value, 3);
             $programStats['programStats']['programStats'][$key] = $result;
-        };
     }
     $this->Js->get('document')->event(
         'ready',
