@@ -1,7 +1,5 @@
 <div  class='ttc-program-stats-inside'>
 <?php
-
-
 $this->Js->set('programs', array(array('Program' => $programDetails)));
 if (count($programStats['programStats']) <= 0) {   
     $this->Js->get('document')->event(
