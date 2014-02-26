@@ -6,13 +6,8 @@ if (count($programStats['programStats']) <= 0) {
         'ready',
         'loadProgramStats();');
 } else {
-    $myHelper = $this->BigNumber;
-    function roundOffStats(&$value, $key, $myHelper)
-    {
-        $value= array('exact-count' => $value, 'round-count' => $myHelper->replaceBigNumbers($value, 3));
-    }
-    array_walk($programStats['programStats'], 'roundOffStats', $myHelper);
-    
+    $roundOffStats['programStats'] = $this->BigNumber->roundOffNumbers($programStats['programStats']);
+    $programStats                  = $roundOffStats;
     $this->Js->get('document')->event(
         'ready',
         'renderStats('.$this->Js->object($programStats).')');
