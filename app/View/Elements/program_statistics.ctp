@@ -17,7 +17,7 @@ echo '<img src="/img/ajax-loader.gif">';
 echo '</span>';
 if ($creditStatus['manager']['status'] != 'none') {    
     echo '<span class="stat">';
-    echo '<img height="15px" src="/img/credit-icon-16.png" title="Credit Remaining/Total"> ';
+    echo '<img height="15px" src="/img/credit-icon-16.png"> ';
     $creditUsed     = $creditStatus['count'];
     $totalCreditSet = $programDetails['settings']['credit-number'];
     $creditLeft     = $totalCreditSet - $creditUsed;
@@ -28,15 +28,13 @@ if ($creditStatus['manager']['status'] != 'none') {
     $timeLeft       = $creditEndDate - $programTimeNow;
     $daysToDeadLine = $timeLeft/(60*60*24);
     if ($daysToDeadLine < 7) {
-        echo '<span title='.$creditLeft.'/'.$totalCreditSet.'>'.
-        $this->BigNumber->replaceBigNumbers($creditLeft, 3).'/'. 
-        $this->BigNumber->replaceBigNumbers($totalCreditSet, 3).' '.
+        echo '<span title="Credit Remaining">'.
+        $this->BigNumber->replaceBigNumbers($creditLeft, 3).' '.
         $daysToDeadLine.'</span> day(s) left';
         
     } else {
-        $creditEndDateSet = date('Y-m-d', $creditEndDate);
-        echo '<span title='.$creditLeft.'/'.$totalCreditSet.'>'.$this->BigNumber->replaceBigNumbers($creditLeft, 3).'/'.
-        $this->BigNumber->replaceBigNumbers($totalCreditSet, 3).' Until '.
+        $creditEndDateSet = date('d/m/Y', $creditEndDate);
+        echo '<span title="Credit Remaining">'.$this->BigNumber->replaceBigNumbers($creditLeft, 3).' until '.
         $creditEndDateSet.'</span>';
     }
     echo '</span>';
