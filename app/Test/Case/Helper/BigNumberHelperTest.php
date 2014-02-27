@@ -77,11 +77,11 @@ class BigNumberHelperTest extends CakeTestCase
         
         $this->assertEqual(array(
             'John'=> array(
-                'exact-count' => 1500000,
-                'round-count' => '1.5M'),                
+                'exact' => 1500000,
+                'rounded' => '1.5M'),                
             'Tom' => array(
-                'exact-count' => 4500000,
-                'round-count' => '4.5M')),
+                'exact' => 4500000,
+                'rounded' => '4.5M')),
             $this->BigNumberRenderer->roundOffNumbers($bigNumbers));
     }
     
