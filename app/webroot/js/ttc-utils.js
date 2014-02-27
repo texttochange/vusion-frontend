@@ -720,7 +720,7 @@ function generateHtmlProgramStatsInside(programStats) {
     ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="'+programStats['schedule-count']['exact']+'('+programStats['today-schedule-count']['exact']+')"' : 'title="Stats Not Available"') +' >'+
     '<img src="/img/schedule-icon-16.png" '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +'> '+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'SCHEDULE(TODAY_SCHEDULE)' : 'N/A')+
-    '</span> schedule'+
+    '</span> scheduled'+
     '</div>'
     
     myTemplate = myTemplate.replace('ACTIVE_PARTICIPANT', programStats['active-participant-count']['rounded']);
