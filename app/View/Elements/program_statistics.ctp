@@ -36,7 +36,7 @@ if ($creditStatus['manager']['status'] != 'none') {
     } else {
         $creditEndDateSet = date('Y-m-d', $creditEndDate);
         echo '<span title='.$creditLeft.'/'.$totalCreditSet.'>'.$this->BigNumber->replaceBigNumbers($creditLeft, 3).'/'.
-        $this->BigNumber->replaceBigNumbers($totalCreditSet, 3).'Until'.
+        $this->BigNumber->replaceBigNumbers($totalCreditSet, 3).' Until '.
         $creditEndDateSet.'</span>';
     }
     echo '</span>';
