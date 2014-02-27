@@ -17,7 +17,7 @@ echo '<img src="/img/ajax-loader.gif">';
 echo '</span>';
 if ($creditStatus['manager']['status'] != 'none') {    
     echo '<span class="stat">';
-    echo '<img src="/img/credit-icon-16.png" title="Credit Remaining/Total"> ';
+    echo '<img height="15px" src="/img/credit-icon-16.png" title="Credit Remaining/Total"> ';
     $creditUsed     = $creditStatus['count'];
     $totalCreditSet = $programDetails['settings']['credit-number'];
     $creditLeft     = $totalCreditSet - $creditUsed;

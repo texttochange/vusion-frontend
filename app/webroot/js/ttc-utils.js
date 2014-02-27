@@ -690,7 +690,7 @@ function generateHtmlProgramStatsInside(programStats) {
     var myTemplate ='<div>'+
     '<span id="participant-icon" text-align="center" class="stat"'+ 
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="'+programStats['active-participant-count']['exact']+'/'+programStats['participant-count']['exact']+'"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/participant-icon-16.png" '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +'> '+
+    '<img height="15px" src="/img/participant-icon-16.png" '+ ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +'> '+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+
     '</span> participant(s)'+
     '</div>'+
@@ -718,7 +718,7 @@ function generateHtmlProgramStatsInside(programStats) {
     '<div>'+
     '<span class="stat"'+ 
     ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="'+programStats['schedule-count']['exact']+'('+programStats['today-schedule-count']['exact']+')"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/schedule-icon-16.png" '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +'> '+
+    '<img height="15px" src="/img/schedule-icon-16.png" '+ ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +'> '+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'SCHEDULE(TODAY_SCHEDULE)' : 'N/A')+
     '</span> scheduled'+
     '</div>'
