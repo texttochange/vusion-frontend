@@ -40,6 +40,6 @@ class BigNumberHelper extends AppHelper
     
     protected function roundOffNumber(&$value, $key)
     {
-        $value = array('exact-count' => $value, 'round-count' => $this->replaceBigNumbers($value, 3));
+        $value = array('exact' => $value, 'rounded' => $this->replaceBigNumbers($value, 3));
     }
 }

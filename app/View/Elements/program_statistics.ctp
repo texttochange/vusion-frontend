@@ -6,8 +6,7 @@ if (count($programStats['programStats']) <= 0) {
         'ready',
         'loadProgramStats();');
 } else {
-    $roundOffStats['programStats'] = $this->BigNumber->roundOffNumbers($programStats['programStats']);
-    $programStats                  = $roundOffStats;
+    $programStats['programStats'] = $this->BigNumber->roundOffNumbers($programStats['programStats']);
     $this->Js->get('document')->event(
         'ready',
         'renderStats('.$this->Js->object($programStats).')');
