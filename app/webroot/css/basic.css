@@ -1164,6 +1164,15 @@ display: inline;
                 border: 2px solid #d3d3d3;
         }
         
+        .ttc-program-stats-inside  .stat tr:nth-child(even) {
+                background: none;
+        }
+        
+        .ttc-program-stats-inside  .stat tr td{
+                border-bottom: none;
+                padding-bottom: 1px;
+        }
+        
         .ttc-program-stats .stat {
                 font-weight: bold;
         }

@@ -16,8 +16,9 @@ echo '<span id="programstats">';
 echo '<img src="/img/ajax-loader.gif">';
 echo '</span>';
 if ($creditStatus['manager']['status'] != 'none') {    
-    echo '<span class="stat">';
-    echo '<img height="15px" src="/img/credit-icon-16.png"> ';
+    echo '<span>';
+    echo '<table class="stat">';
+    echo '<td><img src="/img/credit-icon-16.png"></td><td>';
     $creditUsed     = $creditStatus['count'];
     $totalCreditSet = $programDetails['settings']['credit-number'];
     $creditLeft     = $totalCreditSet - $creditUsed;
@@ -37,7 +38,9 @@ if ($creditStatus['manager']['status'] != 'none') {
         echo '<span title="Credit Remaining">'.$this->BigNumber->replaceBigNumbers($creditLeft, 3).' until '.
         $creditEndDateSet.'</span>';
     }
+    echo '</td></table>';
     echo '</span>';
+    
 }
 ?>
 </div>
