@@ -60,7 +60,7 @@ class CachingCountBehaviorTest extends CakeTestCase
         $keys = $this->redis->keys('vusion:programs:'. $this->database.':cachedcounts:*');
         $this->assertEqual(count($keys), 1);
         foreach($keys as $key) {
-            $this->assertEqual(30000, $this->redis->ttl($key));
+            $this->assertEqual(30, $this->redis->ttl($key));
         }
     }
 
