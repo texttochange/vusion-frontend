@@ -1376,3 +1376,7 @@ display: inline;
 .captcha-reload {
 	font-weight: normal;
 }
+/* padding for counter and character */
+.counter{
+        padding-right:5px;       
+}
