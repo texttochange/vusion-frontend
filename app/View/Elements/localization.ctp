@@ -61,6 +61,7 @@ var localized_labels = {
     "interactions": "<?php echo __('Interactions')?>",
     "interaction": "<?php echo __('Interaction')?>",
     "keyword": "<?php echo __('Keyword')?>",
+    "Characters": "<?php echo __('Characters')?>",
     "choice": "<?php echo __('Choice')?>",
     "content": "<?php echo __('Content')?>",
     "date-time": "<?php echo __('Time')?>",
