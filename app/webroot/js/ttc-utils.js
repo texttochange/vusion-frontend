@@ -686,67 +686,31 @@ function generateHtmlProgramStatsInside(programStats) {
             'object-type' : 'program-stats',
         'model-version': '1'};
     }
-    /*
-    var myTemplate ='<div>'+
-    '<span class="stat"'+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/participant-icon-16.png" > '+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+
-    '</span> participant(s)'+
-    '</div>'+
-    '<div>'+
-    '<span class="stat"'+
-    ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Message(s) Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/message-icon-16.png" > '+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)' : 'N/A')+
-    '</span> message(s)'+
-    '</div>'+
-    '<div>'+
-    '<span class="stat"'+
-    ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Received Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/receivedmessage-icon-16.png" > '+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)' : 'N/A')+
-    '</span> received'+
-    '</div>'+
-    '<div>'+
-    '<span class="stat"'+
-    ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Sent Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/sentmessage-icon-16.png"> '+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)' : 'N/A')+
-    '</span> sent'+
-    '</div>'+
-    '<div>'+
-    '<span class="stat"'+
-    ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +' >'+
-    '<img src="/img/schedule-icon-16.png" > '+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'SCHEDULE(TODAY_SCHEDULE)' : 'N/A')+
-    '</span> scheduled'+
-    '</div>'
-    */
+    
     var myTemplate ='<table class="stat">'+
     '<tr '+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +' >'+
-    '<td><img height="15px" src="/img/participant-icon-16.png"></td><td>'+
+    '<td><img  src="/img/participant-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+
     ' participant(s)</td></tr>'+
     '<tr '+
     ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Message(s) Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<td><img src="/img/message-icon-16.png"> </td><td>'+
+    '<td><img src="/img/message-icon-14.png"> </td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)' : 'N/A')+
     ' message(s)</td></tr>'+
     '<tr  '+
     ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Received Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<td><img src="/img/receivedmessage-icon-16.png"></td><td>'+
+    '<td><img src="/img/receivedmessage-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)' : 'N/A')+
     ' received</td></tr>'+
     '<tr  '+
     ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Sent Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<td><img src="/img/sentmessage-icon-16.png"></td><td>'+
+    '<td><img src="/img/sentmessage-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)' : 'N/A')+
     ' sent</td></tr>'+
     '<tr  '+
     ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +' >'+
-    '<td><img height="15px" src="/img/schedule-icon-16.png"></td><td> '+
+    '<td><img  src="/img/schedule-icon-14.png"></td><td> '+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'SCHEDULE(TODAY_SCHEDULE)' : 'N/A')+
     ' scheduled</td></tr>'+
     '</table>'
