@@ -45,7 +45,8 @@ class AppController extends Controller
         'Cookie', 
         'PhoneNumber',
         'CreditManager',
-        'LogManager'
+        'LogManager',
+        'Stats'
         );
     
     var $helpers = array(
@@ -95,9 +96,10 @@ class AppController extends Controller
                 return;
             
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
-            $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);      
+            $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);
+            $programStats = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
             $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
-            $this->set(compact('currentProgramData', 'programLogsUpdates', 'creditStatus')); 
+            $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
@@ -113,7 +115,6 @@ class AppController extends Controller
         $redisHost = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
         $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
         $this->redis->connect($redisHost, $redisPort);
-
         $redisPrefix = Configure::read('vusion.redisPrefix');
         if (is_array($redisPrefix)) { 
             $this->redisProgramPrefix = $redisPrefix['base'] . ':' . $redisPrefix['programs'];
