@@ -47,8 +47,10 @@ class ProgramHistoryController extends AppController
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
-        } else {
+        } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        } else {
+            $order = null;
         }
         
         // Only get messages and avoid other stuff like markers
@@ -127,7 +129,7 @@ class ProgramHistoryController extends AppController
         
         if (!isset($this->params['named']['sort'])) {
             $paginate['order'] = array('timestamp' => 'desc');
-        } else {
+        } else if (isset($this->params['named']['direction'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
