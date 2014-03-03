@@ -671,9 +671,23 @@ class HistoryTestCase extends CakeTestCase
         $this->History->create('dialogue-history');
         $savedHistory2 = $this->History->save($history2);
 
+        ## History from the version 1, without the message-credits field
+        $history3 = array(
+            'object-type' => 'dialogue-history',
+            'model-version' => '1',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:07:34 ',
+            'message-content' => 'Thanks you',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
+            );
+        
+        $this->History->create('dialogue-history');
+        $savedHistory2 = $this->History->save($history3);
+
 		$result =  $this->History->getCreditsFromHistory();
 		
-		//print_r($result);
+		print_r($result);
 
 		$this->assertEqual('incoming', $result['retval'][0]['message-direction']);
 		$this->assertEqual(1, $result['retval'][0]['credits']);        
