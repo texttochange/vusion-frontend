@@ -505,4 +505,18 @@ class History extends MongoModel
     }
     
     
+    public function getCreditsFromHistory()
+    { echo "here..";
+        $query = array(
+				'key' => array('message-direction' => true ),
+				'initial' => array('credits' => 0),
+				'reduce' => 'function(obj, prev){ prev.credits += obj.message-credits;}',
+				'options' => array(),
+				);
+		$mongo = $this->getDataSource();
+		$result = $mongo->group($this, $query);
+        return $result;
+    }
+    
+    
 }

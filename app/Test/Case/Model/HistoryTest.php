@@ -37,7 +37,7 @@ class HistoryTestCase extends CakeTestCase
         $this->History->deleteAll(true, false);
     }
     
-    
+    /*
     public function testFindScriptFilter()
     {
         $participantsState = array(
@@ -642,7 +642,42 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->countUnattachedMessages('5','delivered');       
         $this->assertEquals(0, $output); 
     }            
+    */
     
+    public function testGetCreditsFromHistory()
+    {
+        $history1 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL Good',
+            'message-direction' => 'incoming',
+            'message-credits' => '1' 
+            );
+        
+        $this->History->create('dialogue-history');
+        $savedHistory = $this->History->save($history1);
+        
+        $history2 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:07:34 ',
+            'message-content' => 'Thanks you',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered',
+            'message-credits' => '3'
+            );
+        
+        $this->History->create('dialogue-history');
+        $savedHistory2 = $this->History->save($history2);
+
+		$result =  $this->History->getCreditsFromHistory();
+		
+		//print_r($result);
+
+		$this->assertEqual('incoming', $result['retval'][0]['message-direction']);
+		$this->assertEqual(1, $result['retval'][0]['credits']);        
+    }
     
     
 }
