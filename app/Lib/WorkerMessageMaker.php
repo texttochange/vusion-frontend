@@ -62,6 +62,15 @@ class WorkerMessageMaker
             );
     }
 
+
+    public function reloadRequest($request_id)
+    {
+        return array(
+            'action' => 'reload_request',
+            'object_id' => $request_id,
+            );
+    }
+
     
     public function testSendAllMessages($phone, $dialogue_object_id)
     {

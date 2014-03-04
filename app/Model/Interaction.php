@@ -4,12 +4,14 @@ App::uses('FieldValueIncorrect', 'Lib');
 App::uses('MissingField', 'Lib');
 App::uses('VirtualModel', 'Model');
 App::uses('VusionConst', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 
 class Interaction extends VirtualModel
 {
-    var $name    = 'interaction';
-    var $version = '3'; 
-    
+    var $name       = 'interaction';
+    var $version    = '3'; 
+    var $databaName = null;    
+
     var $payload = array();
     
     var $fields = array(
@@ -20,10 +22,12 @@ class Interaction extends VirtualModel
         'prioritized');
     
     
-    public function __construct()
+    //DatabaseName required for Keyword Validation
+    public function __construct($databaseName)
     {     
         parent::__construct();
         $this->Action = new Action();
+        $this->databaseName = $databaseName;
     }
     
     
@@ -69,6 +73,10 @@ class Interaction extends VirtualModel
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule', 'fixed-time'),
                 'message' => 'Fixed time required a date-time.',
+                ),
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The date time has to be set.'
                 ),
             'validFormat' => array(
                 'rule' => array('regex', VusionConst::DATE_TIME_REGEX),
@@ -151,7 +159,15 @@ class Interaction extends VirtualModel
             'validValue' => array(
                 'rule' => array('regex', VusionConst::KEYWORD_REGEX),
                 'message' => VusionConst::KEYWORD_FAIL_MESSAGE
-                )
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null,
+                ),
+            'notUsedKeywordNoSpace' => array(
+                'rule' => 'notUsedKeywordNoSpace',
+                'message' => null,
+                ),
             ),
         'set-use-template'=> array( 
             'requiredConditional' => array(
@@ -214,6 +230,10 @@ class Interaction extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-question', 'closed-question'),
                 'message' => 'A set-answer-accept-no-space field is required.',
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array('answer-accept-no-space', null)),
+                'message' => 'Unvalid choice.', 
                 ),
             ),
         'answers'=> array(
@@ -348,13 +368,19 @@ class Interaction extends VirtualModel
             )
         );
     
-    
+    //TODO: need clever validation over:
+    // 1) on numbering of choice
+    // 2) notUsedKeyword when ticking allow no space
     public $validateAnswer = array(
         'choice' => array(
             'notempty' => array(
                 'rule' => 'notempty',
                 'message' => 'Actived field cannot be empty.'
-                )
+                ),
+            'validValue' => array(
+                'rule' => array('regex', VusionConst::CHOICE_REGEX),
+                'message' => VusionConst::CHOICE_FAIL_MESSAGE
+                ),
             ),
         'feedbacks' => array(
             'validFeedback' => array(
@@ -380,6 +406,10 @@ class Interaction extends VirtualModel
             'validValue' => array(
                 'rule' => array('regex', VusionConst::KEYWORD_REGEX),
                 'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null,
                 )
             ),
         'feedbacks' => array(
@@ -482,6 +512,84 @@ class Interaction extends VirtualModel
         return true;
     }
     
+
+    public function setUsedKeywords($usedKeywords = array())
+    {
+        $this->usedKeywords = $usedKeywords;
+    }
+
+
+    public function notUsedKeyword($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $keywords = DialogueHelper::cleanKeywords($data[$field]);
+        foreach($keywords as $keyword) {
+            if (isset($this->usedKeywords[$keyword])) {
+                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+            }
+        }
+        return true;
+    }
+
+
+    public function notUsedKeywordNoSpace($field, $data)
+    {
+        if (!isset($data[$field]) || !isset($data['set-answer-accept-no-space'])) {
+            return true;
+        }
+        $keywords = DialogueHelper::cleanKeywords($data[$field]);
+        $noSpaceKeywords = Interaction::getInteractionNoSpaceKeywords($data, $keywords);
+        foreach ($noSpaceKeywords as $keyword) {
+            if (isset($this->usedKeywords[$keyword])) {
+                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+            }
+        }
+        return true;
+    }
+
+
+    static public function hasInteractionKeywords($interaction, $keywords)
+    {
+        $interactionKeywords = Interaction::getInteractionKeywords($interaction);
+        return array_intersect($keywords, $interactionKeywords);
+    }
+
+
+    static public function getInteractionKeywords($interaction)
+    {
+        if (isset($interaction['keyword'])) {
+            $keywords = DialogueHelper::cleanKeywords($interaction['keyword']);
+            $noSpacedCurrentKeywords = Interaction::getInteractionNoSpaceKeywords($interaction, $keywords);
+            return array_merge($keywords, $noSpacedCurrentKeywords); 
+        } elseif (isset($interaction['answer-keywords'])) {
+            $keywords = array();
+            foreach ($interaction['answer-keywords'] as $answer) {
+                if (isset($answer['keyword'])) {
+                    $foundKeywords = DialogueHelper::cleanKeywords($answer['keyword']);
+                    $keywords = array_merge($keywords, $foundKeywords);
+                }
+            }
+            return $keywords;
+        }
+        return array();
+    }
+
+
+    static public function getInteractionNoSpaceKeywords($interaction, $keywords)
+    {
+        $usedKeywords = array();
+        if (isset($interaction['set-answer-accept-no-space']) && $interaction['set-answer-accept-no-space'] != null && $interaction['answers']) {
+            foreach($interaction['answers'] as $answer) {
+                foreach($keywords as $keyword) {
+                    $usedKeywords[] = $keyword . DialogueHelper::cleanKeyword($answer['choice']);
+                }
+            }
+        }
+        return $usedKeywords;
+    }
+
     
     public function beforeValidate()
     {
@@ -494,6 +602,9 @@ class Interaction extends VirtualModel
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
         
+        if (isset($this->data['date-time'])) {
+            $this->data['date-time'] = DialogueHelper::convertDateFormat($this->data['date-time']);
+        }
         //Exit the function in case of announcement
         if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
             return true;

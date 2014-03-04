@@ -14,7 +14,7 @@ Installation
 	$ git submodule update
 
 
-You need to add the following folders
+You need to add the following folders: persistent & model under dir app/tmp/cache
 ::
 
 	$ mkdir app/tmp/cache
@@ -29,40 +29,63 @@ who is the apache user.
 	
 Required Tools to Install
 -------------------------
-Apache2
-MongoDB
-mysql-server
-phpmyadmin
+    ::
 
-Note:
-phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.
+	$ sudo apt-get install apache2
+	$ sudo apt-get install mongoDB
+	$ sudo apt-get install mysql-server
+	$ sudo apt-get install php
+
+**Note: phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.**
 
 
 
 PHP Modules
 -----------
 Modules need to be install and configure in PHP
- 
-- MongoDB PHP Driver v1.2.9 (https://github.com/mongodb/mongo-php-driver/tags) 
-- Download a .tar.gz file
-- Open a terminal
-- tar zxvf mongodb-php-driver-1.2.9.tar.gz
-- cd mongodb-php-driver-1.2.9
-- phpize
-- ./configure
-- make all
-- sudo make install
+
+:MongoDB PHP:
+    - Download the .tar.gz file of MongoDB PHP Driver **v1.2.9** (https://github.com/mongodb/mongo-php-driver/tags)
+    - Open a terminal
+    ::
+
+        $ tar zxvf mongodb-php-driver-1.2.9.tar.gz
+        $ cd mongodb-php-driver-1.2.9
+        $ phpize
+        $ ./configure
+        $ make all
+        $ sudo make install
+
+:Redis PHP:
+    - Clone the Git repo git clone git://github.com/nicolasff/phpredis.git
+    - Open a terminal
+    ::
+        
+        $ phpize && ./configure && make && sudo make install
+
 
 
 Development PHP Modules
 ----------------------- 
 
-- Pear
-sudo apt-get install php-pear
-
-- PHPUnit
-sudo apt-get install phpunit
-
+- Pear and PHPUnit Installation
+    ::
+      
+    	$ sudo pear channel-discover pear.phpunit.de
+        $ sudo pear channel-discover components.ez.no
+        $ sudo pear channel-discover pear.symfony-project.com
+        $ sudo pear channel-discover pear.symfony.com
+        $ sudo pear update-channels
+        $ sudo pear install --alldeps phpunit/PHPUnit
+        
+ 
+ **- Note if PHPUnit fails, first upgrade pear with the command below**
+ $ pear upgrade pear
+ 
+ - try the PHPUnit again
+ $ sudo pear install --alldeps phpunit/PHPUnit
+ 
+ 
 Jenkins
 -------
 To run the different build task from build.xml, you need to install
@@ -152,3 +175,7 @@ Add this line **XSendFilePath <documentroot>/files/programs/** inside your apach
  	otherwise, add it in ** /etc/apache/sites-available/default **
 
 Don't forget to change permissions on the */files/programs/ * directory
+
+**Note: We also want apache www folder to have access to our project folder; we are going to have to create a symlink folder inside the apache www hence when project folder files are updated apache can have access to the updates. go to command -**
+::
+$ ln -s /actual project folder path/ /symlink folder path in the apache www/

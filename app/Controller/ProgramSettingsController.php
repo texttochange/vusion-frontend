@@ -10,7 +10,7 @@ class ProgramSettingsController extends AppController
 {
     
     var $helpers = array('Js' => array('Jquery'), 'Time');
-    public $components = array('Keyword');
+    var $components = array('Keyword');
     
     
     public function beforeFilter()
@@ -84,15 +84,13 @@ class ProgramSettingsController extends AppController
         
         if ($this->request->is('post') || $this->request->is('put')) {
             
-            $keywordValidation = $this->Keyword->validateProgramKeywords(
+            $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
                 $this->Session->read($programUrl.'_db'), 
                 $this->request->data['ProgramSetting']['shortcode']);
-            if ($keywordValidation['status'] == 'fail') {
+            if ($keywordValidation !== array()) {
                 $this->Session->setFlash(
-                    __("Keyword already used on this shortcode: %s", $keywordValidation['message']),
-                    'default',
-                    array('class'=>'message failure')
-                    );
+                    $this->Keyword->validationToMessage($keywordValidation),
+                    'default', array('class'=>'message failure'));
             } else { 
                 if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'])) {
                     $this->_notifyUpdateProgramSettings($programUrl);
@@ -107,8 +105,7 @@ class ProgramSettingsController extends AppController
                 } else {
                     $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
                     $this->Session->setFlash(__("Save settings failed."),
-                        'default',
-                        array('class'=>'message failure'));
+                        'default', array('class'=>'message failure'));
                 }
             }
         }

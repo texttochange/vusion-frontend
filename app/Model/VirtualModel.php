@@ -198,6 +198,9 @@ abstract class VirtualModel
     
     public function notempty($field, $data)
     {
+        if (!array_key_exists($field, $data)) {
+            return true;
+        }
         if ($data[$field] == null) {
             return false;
         }
