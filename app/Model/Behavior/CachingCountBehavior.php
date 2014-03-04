@@ -79,7 +79,7 @@ class CachingCountBehavior extends ModelBehavior {
             $expiringTime = $this->_getExpiringTime($model, $duration);
             $this->redis->setex(
                 $cachedCountKey,
-                $expiringTime * 1000,
+                $expiringTime,
                 $result);
         }
         return $result;
