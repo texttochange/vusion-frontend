@@ -1376,7 +1376,7 @@ display: inline;
 .captcha-reload {
 	font-weight: normal;
 }
-/* padding for counter and character */
-.counter{
+/* padding for sms-message-counter */
+.sms-message-counter{
         padding-right:5px;       
 }
