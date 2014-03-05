@@ -79,7 +79,6 @@
 				');
 			?>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>
 
 <div class="ttc-recent-issues">
 	<h3><?php echo __('Recent Issues'); ?></h3>
