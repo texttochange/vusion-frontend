@@ -145,18 +145,15 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('areProgramKeywordsUsedByOtherPrograms')
         ->will($this->returnValue(
-            array('KEYWORD' => array('programName' => 'my Program', 'type' => 'request'))));
+            array('KEYWORD' => array(
+                'program-db' => 'm6h',
+                'program-name' => 'my Program', 
+                'by-type' => 'request'))));
         
-        $programSettingsController->Keyword
-        ->expects($this->once())
-        ->method('validationToMessage')
-        ->with(array('KEYWORD' => array('programName' => 'my Program', 'type' => 'request')))
-        ->will($this->returnValue("KEYWORD is already used..."));
-
         $programSettingsController->Session
         ->expects($this->once())
         ->method('setFlash')
-        ->with("KEYWORD is already used...");
+        ->with("Save settings failed.");
 
         $programSettings = array(
             'ProgramSetting' => array(

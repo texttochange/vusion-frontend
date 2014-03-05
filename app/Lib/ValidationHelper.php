@@ -58,7 +58,11 @@ class ValidationHelper
                     if (!isset($errorMessage)) {
                         $errorMessage = $rule['message'];
                     }
-                    array_push($validationErrors[$field], $errorMessage);
+                    if (!is_array($errorMessage)) {
+                        array_push($validationErrors[$field], $errorMessage);
+                    } else {
+                        $validationErrors[$field] = $validationErrors[$field] + $errorMessage;
+                    }
                 }
             }
         }
