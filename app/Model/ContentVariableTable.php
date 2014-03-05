@@ -175,7 +175,8 @@ class ContentVariableTable extends MongoModel
             $index++;
         }
         if ($valueValidationErrors != array()) {
-            return $valueValidationErrors;
+            ##Return in an array to trick the ValidationHelper
+            return array($valueValidationErrors);
         }
         return true;
     }

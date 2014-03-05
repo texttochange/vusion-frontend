@@ -49,6 +49,12 @@ class ProgramSetting extends MongoModel
         );
     
     public $validateSettings = array(
+        'shortcode' => array(
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null
+                )
+            ),
         'credit-type' => array(
             'required' => array(
                 'rule' => 'required',
@@ -121,7 +127,7 @@ class ProgramSetting extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $this->ValidationHelper = new ValidationHelper();
+        $this->ValidationHelper = new ValidationHelper($this);
     }
     
     
@@ -199,8 +205,9 @@ class ProgramSetting extends MongoModel
     }
     
     
-    public function saveProgramSettings($settings)
+    public function saveProgramSettings($settings, $usedKeywords = array())
     {
+        $this->usedKeywords = $usedKeywords;
         $settings = $this->_runBeforeValidate($settings);
         $validationErrors = $this->_runValidateRules($settings, $this->validateSettings);
         if (!is_bool($validationErrors) || !$validationErrors) {
@@ -234,7 +241,21 @@ class ProgramSetting extends MongoModel
             return false;
         return true;
     }
-    
+ 
+
+    public function notUsedKeyword($check, $data, $other)
+    {
+        if (isset($check['shortcode']) && $this->usedKeywords != array()){
+            $errors = array();
+            foreach ($this->usedKeywords as $keyword => $details) {
+                $errors[] = DialogueHelper::foundKeywordsToMessage(
+                    $this->databaseName, $keyword, $details);
+            }
+            return $errors;
+        }
+        return true;
+    }
+
     
     public function getProgramTimeNow()
     {
