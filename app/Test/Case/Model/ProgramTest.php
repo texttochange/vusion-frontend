@@ -101,7 +101,7 @@ class ProgramTestCase extends CakeTestCase
     public function testSaveProgram_ok()
     {
         $program['Program'] = array(
-            'id' => 3,
+            'id' => 9,
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',
@@ -192,7 +192,7 @@ class ProgramTestCase extends CakeTestCase
     public function testMatchProgramByShortcodeAndCountry()
     {
         $programM4H['Program'] = array(
-            'id' => 3,
+            'id' => 9,
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',

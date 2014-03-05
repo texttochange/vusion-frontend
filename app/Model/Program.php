@@ -64,7 +64,7 @@ class Program extends AppModel
                 'message' => 'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.'
                 ),
             'notEditable' => array(
-                'rule' => 'isNotEditable',
+                'rule' => array('isNotEditable'),
                 'message' => 'This field is read only.',
                 'on' => 'update'
                 )
@@ -103,6 +103,21 @@ class Program extends AppModel
         );
     
     
+    public function isNotEditable($check) 
+    {
+        $existingDatabase = $this->find(
+            'first', 
+            array('conditions'=> $check)
+            );
+        
+        if(!empty($existingDatabase)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
     public function notInList($check, $list) 
     {
         
@@ -111,15 +126,6 @@ class Program extends AppModel
             return false;
         }
         return true;
-    }
-    
-    
-    public function isNotEditable($check) 
-    {
-        $existingDatabase = $this->find('count', array(
-            'conditions'=> $check
-            ));
-        return  $existingDatabase > 0;
     }
     
     
