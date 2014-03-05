@@ -183,6 +183,23 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual('2013-12-03T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-to-date')));
     }
     
+
+    public function testSaveSettings_fail_keywordAlreadyUsed() 
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            );
+         $usedKeywords = array(
+            'eotherkeyword' => array(
+                'program-db' => 'otherprogram', 
+                'program-name' => 'Other Program', 
+                'by-type' => 'Dialogue'));
+         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings, $usedKeywords));
+         $this->assertEqual(
+             "'eotherkeyword' already used by a Dialogue of program 'Other Program'.",
+             $this->ProgramSetting->validationErrors['shortcode'][0]);
+    }
+
     
     public function testSaveSettings_ok_nolimit()
     {
@@ -273,6 +290,6 @@ class ProgramSettingTestCase extends CakeTestCase
             'The sms forwarding value is not valid.',
             $this->ProgramSetting->validationErrors['sms-forwarding-allowed'][0]);
     }
-    
+
 }
 
