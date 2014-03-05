@@ -11,11 +11,10 @@ if (count($programStats['programStats']) <= 0) {
         'ready',
         'renderStats('.$this->Js->object($programStats).')');
 }
-
 echo '<span id="programstats">';
 echo '<img src="/img/ajax-loader.gif">';
 echo '</span>';
-if ($creditStatus['manager']['status'] != 'none') {    
+if (isset($creditStatus['count'])) {    
     echo '<span>';
     echo '<table class="stat">';
     echo '<td><img src="/img/credit-icon-14.png"></td><td>';
