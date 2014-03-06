@@ -506,11 +506,17 @@ class History extends MongoModel
     
     
     public function getCreditsFromHistory()
-    { echo "here..";
+    {
         $query = array(
 				'key' => array('message-direction' => true ),
 				'initial' => array('credits' => 0),
-				'reduce' => "function(obj, prev){ prev.credits += obj['message-credits'];}",
+				'reduce' => "function(obj, prev){
+                    if (!obj['message-credits']) {
+                        prev.credits += 1;
+                    } else {
+                        prev.credits += obj['message-credits'];
+				    }
+                }",
 				'options' => array(),
 				);
 		$mongo = $this->getDataSource();

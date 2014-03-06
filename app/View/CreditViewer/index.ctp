@@ -12,6 +12,13 @@
             createFilter(false, "all", '.$this->Js->object($defaultDateConditions).');
             createFilter();
             ');
+        $showStatus = $showIncoming = $showOutgoing = 'none';
+        if (count($this->params['url']) > 0) {
+            $showIncoming = 'visible';
+            $showOutgoing = 'visible';
+        } else {
+            $showStatus = 'visible';
+        }
 		?> 
 		</li>
 	</ul>
@@ -84,7 +91,11 @@
 	        <tr>
 			    <th class="prefix"><?php echo $this->Paginator->sort('program');?></th>
 			    <th class="prefix"><?php echo $this->Paginator->sort('shortcode');?></th>
-			    <th class="details"><?php echo $this->Paginator->sort('total credits');?></th>
+            <?php
+                echo "<th class='prefix' style='display:".$showStatus."'>". $this->Paginator->sort('status') ."</th>";
+			    echo "<th class='details' style='display:".$showIncoming."'>". $this->Paginator->sort('incoming credits') ."</th>";
+			    echo "<th class='details' style='display:".$showOutgoing."'>". $this->Paginator->sort('outgoing credits') ."</th>";
+            ?>
 			</tr>
 		</thead>
 		<tbody>
@@ -101,15 +112,11 @@
 		                }
 		            ?>
                 </td>
-		        <td class="details">
-		            <?php 
-		                if (isset($program['Program']['total-credits'])) {
-		                    echo h($program['Program']['total-credits']);
-		                } else {
-		                    echo __('<i>Unlimited</i>');
-		                }
-		            ?>
-		        </td>
+                <?php
+                    echo "<td class='prefix' style='display:".$showStatus."'>". $program['Program']['credit-status'] ."</td>";
+                    echo "<td class='details' style='display:".$showIncoming."'>". $program['Program']['incoming credits'] ."</td>";
+                    echo "<td class='details' style='display:".$showOutgoing."'>". $program['Program']['outgoing credits'] ."</td>";
+                ?>
 		    </tr>
 		   <?php endforeach; ?>
 		 </tbody>
