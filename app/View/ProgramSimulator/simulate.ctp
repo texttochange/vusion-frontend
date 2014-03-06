@@ -37,4 +37,3 @@
 	    }
        ?>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

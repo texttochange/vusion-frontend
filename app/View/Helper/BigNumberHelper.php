@@ -28,5 +28,18 @@ class BigNumberHelper extends AppHelper
             $countFormat = rtrim($countFormat, '.');
         } 
         return $countFormat . $postfix;   
-    }   
+    }
+    
+    
+    public function roundOffNumbers($bigNumbers)
+    {
+        array_walk($bigNumbers, 'self::roundOffNumber');
+        return $bigNumbers;
+    }
+    
+    
+    protected function roundOffNumber(&$value, $key)
+    {
+        $value = array('exact' => $value, 'rounded' => $this->replaceBigNumbers($value, 3));
+    }
 }

@@ -130,21 +130,25 @@ class StatsComponent extends Component
         return $this->redisProgramPrefix.':'.$database.':stats';
     }
     
-    public function getProgramStats($database)
+    public function getProgramStats($database, $onlyCached=false)
     {
         $statsKey = $this->_getStatsKey($database);
         $stats = $this->redis->get($statsKey);
         
-        if($stats != null){
-            $programStats = (array)json_decode($stats);
-        }else{
-            $start = time();
-            $programStats = $this->_getProgramStats($database);
-            $end = time();
-            $duration = $end - $start;
-            $expiring = $this->_getTimeToCacheStatsExpire($duration);
-            $this->redis->setex($statsKey, $expiring, json_encode($programStats));
+        if ($stats != null) {
+            return (array)json_decode($stats);
         }
+        
+        if ($onlyCached) {   
+            return  null;
+        }
+        
+        $start = time();
+        $programStats = $this->_getProgramStats($database);
+        $end = time();
+        $duration = $end - $start;
+        $expiring = $this->_getTimeToCacheStatsExpire($duration);
+        $this->redis->setex($statsKey, $expiring, json_encode($programStats));
         return $programStats;
     }
 

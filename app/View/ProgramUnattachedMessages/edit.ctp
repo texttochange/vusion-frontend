@@ -202,4 +202,3 @@
     echo $this->Form->end(__('Save'));?>
 	</div>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

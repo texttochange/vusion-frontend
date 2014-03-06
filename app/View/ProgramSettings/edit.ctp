@@ -37,6 +37,7 @@
                 }
                 $shortcodeOptions[$prefixShortCode] = $countyShortCode;
                 $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
+                
             }
             echo "<br />";
             echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
@@ -204,4 +205,3 @@
   <?php echo $this->Form->end(__('Save'));?>
   </div>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

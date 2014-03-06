@@ -122,7 +122,7 @@ class StatsComponentTest extends CakeTestCase
             $programTestStats
             );
     }
-    
+        
     
     public function testGetStats_noStatsInRedis()
     {
@@ -176,7 +176,7 @@ class StatsComponentTest extends CakeTestCase
         	->method('count')
         	->will($this->throwException(new Exception));
         	
-        $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory);
+        $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory, $onlyCached=true);
         
         $this->assertEqual('N/A', $programTestStats);
     }
@@ -204,9 +204,16 @@ class StatsComponentTest extends CakeTestCase
         $this->assertEqual(
            120,
            $this->StatsComponent->_getTimeToCacheStatsExpire(4000));
-
-
     }
 
+    
+    public function testGetStats_noCachedStats()
+    {       
+        $programTestStats = $this->StatsComponent->getProgramStats('mydbprogram', true);
+        
+        $this->assertEqual(
+            null,
+            $programTestStats);
+    }
 
 }

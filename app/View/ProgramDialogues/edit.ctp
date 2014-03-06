@@ -87,4 +87,3 @@
 	$this->Js->set('dymanicOptions', $dynamicOptions);
 	?>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

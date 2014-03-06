@@ -114,8 +114,10 @@
 		<div id="content" class="height-size">
         <?php
         if (isset($programDetails['name'])) {
+            $this->Js->set('isProgramSpecific', true);
             echo "<div class='program-left-column'>";			   
             echo $this->element('navigation_menu');
+            echo $this->element('program_statistics');
             echo $this->element('backend_notifications');
             echo "</div>";
             echo "<div class='program-body'>";
