@@ -684,6 +684,36 @@ class HistoryTestCase extends CakeTestCase
         
         $this->History->create('dialogue-history');
         $savedHistory3 = $this->History->save($history3);
+        
+        //**** history that is not counted ****//
+        ## History with message-status failed
+        $history4 = array(
+            'object-type' => 'dialogue-history',
+            'model-version' => '1',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:08:44 ',
+            'message-content' => 'Hello you',
+            'message-direction' => 'outgoing',
+            'message-status' => 'failed'
+            );
+        
+        $this->History->create('dialogue-history');
+        $savedHistory4 = $this->History->save($history4);
+        
+        ## History with message-status no-credit
+        $history5 = array(
+            'object-type' => 'dialogue-history',
+            'model-version' => '3',
+            'participant-phone' => '788601462',
+            'timestamp' => '2012-03-06T11:08:54 ',
+            'message-content' => 'Hello you',
+            'message-direction' => 'outgoing',
+            'message-status' => 'no-credit',
+            'message-credits' => 2
+            );
+        
+        $this->History->create('dialogue-history');
+        $savedHistory5 = $this->History->save($history5);
 
 		$result =  $this->History->getCreditsFromHistory();
 

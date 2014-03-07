@@ -28,7 +28,7 @@ class History extends MongoModel
     
     function getModelVersion()
     {
-        return '3';
+        return '4';
     }
     
     
@@ -52,7 +52,14 @@ class History extends MongoModel
         $SPECIFIC_STATUS_FIELDS = array(
             'failed' => array('failure-reason'),
             'pending' => array(),
-            'delivered' => array());
+            'delivered' => array(),
+            'ack' => array(),
+            'nack' => array(),
+            'no-credit' => array(),
+            'no-credit-timeframe' => array(),
+            'missing-data' => array('missing-data'),
+            'received' => array(),
+            'forwarded' => array('forwards'));
         
         $OBJECT_WITH_DIALOGUE_REF = array(
             'dialogue-history',
@@ -517,7 +524,15 @@ class History extends MongoModel
                         prev.credits += obj['message-credits'];
 				    }
                 }",
-				'options' => array(),
+				'options' => array(
+				    'condition' => array(
+				        'message-status' => array(
+                            '$nin' => array(
+                                'missing-data','failed','no-credit','no-credit-timeframe'
+                                )
+                            )
+                        )
+                    ),
 				);
 		$mongo = $this->getDataSource();
 		$result = $mongo->group($this, $query);
