@@ -109,7 +109,10 @@ class KeywordComponent extends Component
                 $requestModel = new Request(array('database' => $program['Program']['database']));
                 $foundRequestKeywords = $this->_getUsedKeywords($requestModel, $keywords, $program['Program']['name']);
                 $usedKeywords = $usedKeywords + $foundRequestKeywords;
+                unset($dialogueModel);
+                unset($requestModel);
             }
+            unset($programSettingModel);
         }
         return $usedKeywords;
     }
