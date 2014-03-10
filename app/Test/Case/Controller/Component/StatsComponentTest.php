@@ -122,7 +122,7 @@ class StatsComponentTest extends CakeTestCase
             $programTestStats
             );
     }
-    
+        
     
     public function testGetStats_noStatsInRedis()
     {
@@ -170,13 +170,13 @@ class StatsComponentTest extends CakeTestCase
     
     public function testGetStats_mongoTimeout_fewSeconds()
     {
-        $dummyHistory = $this->getMock('Model', array('find'));
+        $dummyHistory = $this->getMock('Model', array('count'));
         $dummyHistory
         	->expects($this->once())
-        	->method('find')
+        	->method('count')
         	->will($this->throwException(new Exception));
         	
-        $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory);
+        $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory, $onlyCached=true);
         
         $this->assertEqual('N/A', $programTestStats);
     }
@@ -204,9 +204,16 @@ class StatsComponentTest extends CakeTestCase
         $this->assertEqual(
            120,
            $this->StatsComponent->_getTimeToCacheStatsExpire(4000));
-
-
     }
 
+    
+    public function testGetStats_noCachedStats()
+    {       
+        $programTestStats = $this->StatsComponent->getProgramStats('mydbprogram', true);
+        
+        $this->assertEqual(
+            null,
+            $programTestStats);
+    }
 
 }

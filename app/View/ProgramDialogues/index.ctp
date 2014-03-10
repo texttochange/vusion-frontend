@@ -7,7 +7,7 @@
 
         <?php
         $draftOnlySeparator = false;
-        uasort($dialogues, array('dialogueHelper', 'compareDialogueByName'));
+        uasort($dialogues, 'DialogueHelper::compareDialogueByName');
         foreach ($dialogues as $dialogue) {
             $dialogueName = "";
             $actions = "";

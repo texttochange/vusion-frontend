@@ -2,10 +2,8 @@
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
-/**
-* UnmatchableReply Model
-*
-*/
+
+
 class UnmatchableReply extends MongoModel
 {
     
@@ -20,15 +18,6 @@ class UnmatchableReply extends MongoModel
         return '1';
     }
     
-    
-    public function __construct($id = false, $table = null, $ds = null)
-    {
-        parent::__construct($id, $table, $ds);
-        
-        $this->dialogueHelper = new DialogueHelper();
-    }
-    
-    
     function getRequiredFields($objectType=null)
     {
         return array(
@@ -37,7 +26,41 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
+
     
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
+        $this->dialogueHelper = new DialogueHelper();
+    }
+
+
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+
     
     public $filterFields = array(
         'country' => array(
@@ -152,9 +175,9 @@ class UnmatchableReply extends MongoModel
                 }
             } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'from-phone') {
                 if ($filterParam[2] == 'equal-to') {

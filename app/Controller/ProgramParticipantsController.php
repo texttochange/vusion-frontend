@@ -14,11 +14,11 @@ App::uses('FilterException', 'Lib');
 class ProgramParticipantsController extends AppController
 {
     
-    public $uses = array('Participant', 'History');
+    var $uses       = array('Participant', 'History');
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
-        'Js' => array('Jquery')
-        );
+        'Js' => array('Jquery'),
+        'Paginator' => array('className' => 'BigCountPaginator'));
     
     
     function constructClasses() 
@@ -59,7 +59,7 @@ class ProgramParticipantsController extends AppController
         
         $paginate = array('all');
         
-        if (isset($this->params['named']['sort'])) {
+        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
@@ -286,7 +286,6 @@ class ProgramParticipantsController extends AppController
     
     protected function _getConditions()
     {
-        // print_r($this->params);
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
         
         if (!isset($filter['filter_param'])) 
@@ -747,6 +746,17 @@ class ProgramParticipantsController extends AppController
             unlink($filePath . DS . $fileName);
         }
         $this->set(compact('report'));
+    }
+
+
+    public function paginationCount()
+    {
+        if ($this->params['ext'] !== 'json') {
+            return; 
+        }
+        $defaultConditions = array();
+        $paginationCount = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
+        $this->set('paginationCount', $paginationCount);
     }
     
     

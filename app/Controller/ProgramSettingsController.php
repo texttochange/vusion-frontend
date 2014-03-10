@@ -10,7 +10,7 @@ class ProgramSettingsController extends AppController
 {
     
     var $helpers = array('Js' => array('Jquery'), 'Time');
-    public $components = array('Keyword');
+    var $components = array('Keyword');
     
     
     public function beforeFilter()
@@ -84,32 +84,24 @@ class ProgramSettingsController extends AppController
         
         if ($this->request->is('post') || $this->request->is('put')) {
             
-            $keywordValidation = $this->Keyword->validateProgramKeywords(
+            $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
                 $this->Session->read($programUrl.'_db'), 
                 $this->request->data['ProgramSetting']['shortcode']);
-            if ($keywordValidation['status'] == 'fail') {
-                $this->Session->setFlash(
-                    __("Keyword already used on this shortcode: %s", $keywordValidation['message']),
+            
+            if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'], $keywordValidation)) {
+                $this->_notifyUpdateProgramSettings($programUrl);
+                $this->Session->setFlash(__("Program Settings saved."),
                     'default',
-                    array('class'=>'message failure')
-                    );
-            } else { 
-                if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'])) {
-                    $this->_notifyUpdateProgramSettings($programUrl);
-                    $this->Session->setFlash(__("Program Settings saved."),
-                        'default',
-                        array('class'=>'message success'));
-                    $this->redirect(array(
-                        'program' => $programUrl,
-                        'controller' => 'programSettings',
-                        'action' => 'edit'));
-                    
-                } else {
-                    $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
-                    $this->Session->setFlash(__("Save settings failed."),
-                        'default',
-                        array('class'=>'message failure'));
-                }
+                    array('class'=>'message success'));
+                $this->redirect(array(
+                    'program' => $programUrl,
+                    'controller' => 'programSettings',
+                    'action' => 'edit'));
+                
+            } else {
+                $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
+                $this->Session->setFlash(__("Save settings failed."),
+                    'default', array('class'=>'message failure'));
             }
         }
         

@@ -49,6 +49,12 @@ class ProgramSetting extends MongoModel
         );
     
     public $validateSettings = array(
+        'shortcode' => array(
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null
+                )
+            ),
         'credit-type' => array(
             'required' => array(
                 'rule' => 'required',
@@ -121,8 +127,7 @@ class ProgramSetting extends MongoModel
     {
         parent::__construct($id, $table, $ds);
         
-        $this->DialogueHelper = new DialogueHelper();
-        $this->ValidationHelper = new ValidationHelper();
+        $this->ValidationHelper = new ValidationHelper($this);
     }
     
     
@@ -200,8 +205,9 @@ class ProgramSetting extends MongoModel
     }
     
     
-    public function saveProgramSettings($settings)
+    public function saveProgramSettings($settings, $usedKeywords = array())
     {
+        $this->usedKeywords = $usedKeywords;
         $settings = $this->_runBeforeValidate($settings);
         $validationErrors = $this->_runValidateRules($settings, $this->validateSettings);
         if (!is_bool($validationErrors) || !$validationErrors) {
@@ -235,7 +241,21 @@ class ProgramSetting extends MongoModel
             return false;
         return true;
     }
-    
+ 
+
+    public function notUsedKeyword($check, $data, $other)
+    {
+        if (isset($check['shortcode']) && $this->usedKeywords != array()){
+            $errors = array();
+            foreach ($this->usedKeywords as $keyword => $details) {
+                $errors[] = DialogueHelper::foundKeywordsToMessage(
+                    $this->databaseName, $keyword, $details);
+            }
+            return $errors;
+        }
+        return true;
+    }
+
     
     public function getProgramTimeNow()
     {
@@ -276,10 +296,10 @@ class ProgramSetting extends MongoModel
         }
         
         if (isset($settings['credit-from-date'])) {
-            $settings['credit-from-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-from-date']);
+            $settings['credit-from-date'] = DialogueHelper::ConvertDateFormat($settings['credit-from-date']);
         }
         if (isset($settings['credit-to-date'])) {
-            $settings['credit-to-date'] = $this->DialogueHelper->ConvertDateFormat($settings['credit-to-date']);
+            $settings['credit-to-date'] = DialogueHelper::ConvertDateFormat($settings['credit-to-date']);
         }
         if (!isset($settings['sms-forwarding-allowed'])) {
             $settings['sms-forwarding-allowed'] = 'full';

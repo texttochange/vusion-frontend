@@ -32,11 +32,22 @@ class Participant extends MongoModel
             'profile',
             );
     }
+
+    public $findMethods = array(
+        'all' => true,
+        'first' => true,
+        'count' => true);
     
     
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
+        
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
@@ -44,9 +55,16 @@ class Participant extends MongoModel
         }
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
-        $this->DialogueHelper = new DialogueHelper();
     }
+
     
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
+    }
+
     
     public $validate = array(
         'phone' => array(
@@ -208,6 +226,26 @@ class Participant extends MongoModel
         }
     }
     
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+
     
     public function addMassTags($tag, $conditions)
     {   
@@ -919,17 +957,17 @@ class Participant extends MongoModel
                 if ($filterParam[2] == 'now') {
                     $condition['session-id'] = array('$ne' => null);
                 } elseif ($filterParam[2] == 'date-from') {
-                    $condition['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'date-to') {
-                    $condition['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'optout') {
                 if ($filterParam[2] == 'now') { 
                     $condition['session-id'] = null;
                 } elseif ($filterParam[2] =='date-from') {
-                    $condition['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] =='date-to') {
-                    $condition['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'phone') {
                 if ($filterParam[2] == 'start-with-any') {

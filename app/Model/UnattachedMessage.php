@@ -153,7 +153,6 @@ class UnattachedMessage extends MongoModel
         
         $options              = array('database'=>$id['database']);
         $this->ProgramSetting = new ProgramSetting($options);
-        $this->DialogueHelper = new DialogueHelper();
     }
     
     
@@ -202,7 +201,7 @@ class UnattachedMessage extends MongoModel
                 $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");            
         } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
             //Convert fixed-time to vusion format
-            $this->data['UnattachedMessage']['fixed-time'] = $this->DialogueHelper->convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
+            $this->data['UnattachedMessage']['fixed-time'] = DialogueHelper::convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
         }       
         return true;           	
     }    
