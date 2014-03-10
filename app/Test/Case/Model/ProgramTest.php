@@ -273,4 +273,28 @@ class ProgramTestCase extends CakeTestCase
     }
     
     
+    public function testEditProgram_fail_database_name()
+    {
+        $program = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7h',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->Program->create();
+        $this->Program->save($program);
+        
+        $program2 = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7hp',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->assertFalse($this->Program->save($program2));
+    }
+    
 }
