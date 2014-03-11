@@ -2,6 +2,7 @@
 
 App::uses('MongoModel', 'Model');
 App::uses('VusionValidation', 'Lib');
+App::uses('VusionConst', 'Lib');
 
 class PredefinedMessage extends MongoModel
 {
@@ -41,8 +42,8 @@ class PredefinedMessage extends MongoModel
                 'message' => 'Please enter some content for this message.'
                 ),
             'validApostrophe' => array(
-                'rule' => array('notRegex', '/.*[’`’‘]/'),
-                'message' => 'The apostrophe used is not allowed.'
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             ),
         );
