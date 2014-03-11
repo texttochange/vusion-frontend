@@ -97,7 +97,7 @@ class ProgramPaginatorComponent extends Component
                 'shortcode' => (isset($code)) ? $code : array()
                 );
         }
-        
+        unset($tempProgramSetting);
         return $programDetails;
     }
     
