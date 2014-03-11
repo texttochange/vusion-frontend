@@ -33,7 +33,7 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->PredefinedMessage->deleteAll(true, false);
     }
     
- 
+
     public function testSave()
     {
         $predefinedMessage = array(
@@ -88,11 +88,12 @@ class PredefinedMessageTestCase extends CakeTestCase
     {
         $predefinedMessage = array(
             'name' => 'message one',
-            'content' => "'"
+            'content' => "’`’‘"
             );
         $this->PredefinedMessage->create();
         $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
-        
+        $this->assertEquals('The apostrophe used is not allowed.',
+            $this->PredefinedMessage->validationErrors['content'][0]);
     }
     
 }
