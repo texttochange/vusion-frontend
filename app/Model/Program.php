@@ -107,8 +107,7 @@ class Program extends AppModel
     {
         $existingDatabase = $this->find(
             'first', 
-            array('table' => 'programs',
-                'id = Program.id' ,
+            array('id = Program.id' ,
                 'conditions'=> array('database' => $check['database']))
             );
         

@@ -295,6 +295,10 @@ class ProgramTestCase extends CakeTestCase
             'modified' => '2012-01-24 15:29:24'
             );
         $this->assertFalse($this->Program->save($program2));
+        $this->assertEqual(
+            $this->Program->validationErrors['database'][0], 
+            'This field is read only.');
     }
+    
     
 }
