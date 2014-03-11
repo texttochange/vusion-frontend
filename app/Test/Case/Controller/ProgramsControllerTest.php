@@ -131,7 +131,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(3, count($this->vars['programs']));
     }
-    
+  
     
     public function testIndex_hasSpecificProgramAccess_True()
     {
@@ -164,7 +164,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
     }
-    
+
     
     public function testIndex_filter()
     {
@@ -233,7 +233,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
     }
     
-    
+
     public function testView() 
     {
         $this->mockProgramAccess();
@@ -375,6 +375,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
             WWW_ROOT . 'files/programs/test/');
         
     }
-    
+
     
 }

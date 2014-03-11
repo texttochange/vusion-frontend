@@ -1,23 +1,20 @@
 <?php
 App::uses('Component', 'Controller');
+App::uses('PaginatorComponent', 'Controller/Component');
 App::uses('ShortCode', 'Model');
+App::uses('Program', 'Model');
 
-class ProgramPaginatorComponent extends Component 
+class ProgramPaginatorComponent extends PaginatorComponent 
 {  
-    
-    var $settings = array(
-        'page' => 1,
-        'limit' => 20,
-        'maxLimit' => 100,
-        'paramType' => 'named'
-    );
-    
-    
+   
+ 
     public function __construct($collection, $settings = array())
     {
         $settings = array_merge($this->settings, (array)$settings);
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
+
+        $this->Program = ClassRegistry::init('Program');
 
         if (!Configure::read("mongo_db")) {
             $options = array(
@@ -31,23 +28,58 @@ class ProgramPaginatorComponent extends Component
         $this->ShortCode  = new ShortCode($options);
     }
     
-    public function paginate($paginateArray)
+    public function paginate()
     {
-        if (!is_array($paginateArray)) {
-            throw new MissingModelException($paginateArray);
+        $type = 'all';
+        $options = $this->Controller->paginate;
+
+        if (!isset($options['conditions'])) {
+			$options['conditions'] = array();
+		}
+
+		extract($options);
+
+		$extra = array_diff_key($options, compact(
+			'conditions', 'fields', 'order', 'limit', 'page', 'recursive'
+		));
+		if ($type !== 'all') {
+			$extra['type'] = $type;
+		}
+
+        $parameters = compact('conditions', 'fields', 'order', 'limit', 'page');
+        ##TODO to be consitent with pagniator need to refactor Program Model
+        $parameters += $extra;  
+        if (!isset($conditions['$or'])) {
+            $parameters['conditions'] = $this->getConditionProgramSql($conditions);
+        } else {
+            $parameters['conditions'] = array();
         }
+        $programs =  $this->Program->find($type, $parameters);
+       
         
+        $programs = $this->filterPrograms($programs, $conditions);
+
+        return $this->paginatePrograms($programs);
+    }
+
+
+    public function paginatePrograms($programs) 
+    { 
+        if (!is_array($programs)) {
+            throw new Exception($programs);
+        }
+
         $object = $this->Controller->uses[0];
         $options = array();
         $params = $this->Controller->request->params;
         $limit = (int)$this->settings['limit'];
         $page = $options['page'] = (isset($params['named']['page'])) ? (int)$params['named']['page'] : 1;
         $order = null;
-        $count =  count($paginateArray);
+        $count =  count($programs);
         $pageCount = intVal(ceil($count / $limit));
-        $page_offset = ($page - 1) * $limit;
+        $pageOffset = ($page - 1) * $limit;
         
-        $results = array_slice($paginateArray, $page_offset, $limit);
+        $results = array_slice($programs, $pageOffset, $limit);
 
         $paging = array(
             'page' => $page,
@@ -80,29 +112,53 @@ class ProgramPaginatorComponent extends Component
     }
 
 
-    public function getProgramDetails($programData)
+    public function filterPrograms($programs, $conditions) 
     {
-        $database           = $programData['Program']['database'];
-        $tempProgramSetting = new ProgramSetting(array('database' => $database));
-        $shortcode          = $tempProgramSetting->find('programSetting', array('key'=>'shortcode'));
+        return 
+        array_values(
+            array_filter(
+                array_map(array($this, "filterProgram"), $programs, array_fill(0, count($programs), $conditions))));
+    }
 
-        if (isset($shortcode[0]['ProgramSetting']['value'])) {
-            $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-            $programData['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];    
+
+    public function filterProgram($program, $conditions) 
+    {
+        $programDetails = $this->getProgramDetails($program);
+        if (!Program::matchProgramConditions($programDetails, $conditions)) {
+            return false;
+        }
+        return array('Program' => $programDetails['Program']);
+    } 
+
+    ##TODO move to another component that will be ProgramDetails
+    public function getProgramDetails($program)
+    {
+        $database           = $program['Program']['database'];
+        $tempProgramSetting = new ProgramSetting(array('database' => $database));
+        $shortcode          = $tempProgramSetting->getProgramSetting('shortcode');
+
+        if (isset($shortcode)) {
+            $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode));
+            $program['Program']['shortcode'] = $code['ShortCode']['shortcode'];
+            $program['Program']['country'] = $code['ShortCode']['country'];
         }
 
         if ($this->params['ext']!='json') {
             $programDetails = array(
-                'program' =>  $programData,
-                'shortcode' => (isset($code)) ? $code : array()
+                'Program' =>  $program['Program'],
+                'ShortCode' => (isset($code['ShortCode'])) ? $code['ShortCode'] : array(),
+                'settings' => $tempProgramSetting->getProgramSettings()
                 );
+        } else {
+            $programDetails = $program;
         }
-        
+        unset($tempProgramSetting);
         return $programDetails;
     }
     
     
-    public function getNameSqlCondition($conditions)
+    #TODO move to Program Model (contain SQL)
+    public function getConditionProgramSql($conditions)
     {
         if (empty($conditions))
             return array();
@@ -110,7 +166,7 @@ class ProgramPaginatorComponent extends Component
         $result = array();
         foreach ($conditions as $key => $value) {
             if (is_array($value)) {
-                $result = array_merge($result, $this->getNameSqlCondition($value));
+                $result = array_merge($result, $this->getConditionProgramSql($value));
             } else {
                 if ($key == 'name LIKE' or $key == 'name') {
                     array_push($result, $conditions);
