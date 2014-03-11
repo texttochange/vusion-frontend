@@ -262,7 +262,7 @@ class UsersController extends AppController
         $this->set(compact('userId'));
         
         if ($this->request->is('post') || $this->request->is('put')) {
-
+            
             if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'),
                     'default',
@@ -454,6 +454,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -466,7 +467,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->deny($Group, 'controllers/Programs');
             $this->Acl->allow($Group, 'controllers/Programs/index');
-            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -502,7 +503,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
-            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -538,7 +539,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
-            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
