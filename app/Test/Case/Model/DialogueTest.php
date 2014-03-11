@@ -115,7 +115,6 @@ class DialogueTestCase extends CakeTestCase
 
     }
 
-
     public function testMakeDialogueActive_deleteNonPresentInteractions()
     {
          $savedDialogue = $this->Dialogue->saveDialogue($this->Maker->getOneDialogue());
@@ -132,7 +131,7 @@ class DialogueTestCase extends CakeTestCase
          $this->assertEqual(0, $this->Schedule->find('count'));
          
     }
-
+    
 
     public function testValidate_date_ok()
     {
