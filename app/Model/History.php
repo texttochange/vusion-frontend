@@ -531,31 +531,54 @@ class History extends MongoModel
     }
     
     
-    public function getCreditsFromHistory()
+    public function getCreditsFromHistory($conditions=array())
     {
+
+        $defaultConditions = array(
+                array('object-type'=> array(
+                    '$in'=> $this->messageType,
+                    )),
+                array('message-status' => array(
+                    '$nin' => array(
+                        'missing-data','no-credit','no-credit-timeframe')
+                    )),				            
+                ); 
+        
+        if (!empty($conditions)) {
+            $conditions = array('$and' => 
+                array_merge($defaultConditions, $conditions));
+        } else {
+            $conditions = array('$and' => $defaultConditions);
+        }
+
+        $reduce = new MongoCode(
+            "function(obj, prev){ 
+                if (!obj['message-credits']) {
+		            prev.credits += 1;
+			    } else { 
+				    prev.credits += obj['message-credits'];
+			    }
+			}");
+
         $query = array(
 				'key' => array('message-direction' => true ),
 				'initial' => array('credits' => 0),
-				'reduce' => "function(obj, prev){
-                    if (!obj['message-credits']) {
-                        prev.credits += 1;
-                    } else {
-                        prev.credits += obj['message-credits'];
-				    }
-                }",
+				'reduce' => $reduce,
 				'options' => array(
-				    'condition' => array(
-				        'message-status' => array(
-                            '$nin' => array(
-                                'missing-data','failed','no-credit','no-credit-timeframe'
-                                )
-                            )
-                        )
-                    ),
+				    'condition' => $conditions
+				    )
 				);
 		$mongo = $this->getDataSource();
-		$result = $mongo->group($this, $query);
-        return $result;
+		$resultGroup = $mongo->group($this, $query);
+		$result = array(
+		    'incoming' => 0,
+		    'outgoing' => 0);
+		if (isset($resultGroup['retval'])) {
+		    foreach($resultGroup['retval'] as $messageCount) {
+		        $result[$messageCount['message-direction']] = $messageCount['credits']; 
+		    }
+		}
+		return $result;  
     }
     
     

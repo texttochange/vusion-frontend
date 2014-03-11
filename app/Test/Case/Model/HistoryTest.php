@@ -686,7 +686,8 @@ class HistoryTestCase extends CakeTestCase
         $savedHistory3 = $this->History->save($history3);
         
         //**** history that is not counted ****//
-        ## History with message-status failed
+        ## History with message-status failed 
+        ## failed message might still be accounted as they are still charged by the operator
         $history4 = array(
             'object-type' => 'dialogue-history',
             'model-version' => '1',
@@ -717,10 +718,17 @@ class HistoryTestCase extends CakeTestCase
 
 		$result =  $this->History->getCreditsFromHistory();
 
-		$this->assertEqual('incoming', $result['retval'][0]['message-direction']);
-		$this->assertEqual(1, $result['retval'][0]['credits']);
-        $this->assertEqual('outgoing', $result['retval'][1]['message-direction']);
-		$this->assertEqual(4, $result['retval'][1]['credits']);        
+		$this->assertEqual(1, $result['incoming']);
+		$this->assertEqual(5, $result['outgoing']);        
+    }
+
+
+    public function testGetCreditsFromHistory_notHistory()
+    {
+		$result =  $this->History->getCreditsFromHistory();
+
+		$this->assertEqual(0, $result['incoming']);
+		$this->assertEqual(0, $result['outgoing']);        
     }
     
     
