@@ -1,6 +1,7 @@
 <?php
 
 App::uses('MongoModel', 'Model');
+App::uses('VusionValidation', 'Lib');
 
 class PredefinedMessage extends MongoModel
 {
@@ -39,6 +40,10 @@ class PredefinedMessage extends MongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please enter some content for this message.'
                 ),
+            'validApostrophe' => array(
+                'rule' => array('notRegex', '/.*[’`’‘]/'),
+                'message' => 'The apostrophe used is not allowed.'
+                ),
             ),
         );
     
@@ -55,5 +60,11 @@ class PredefinedMessage extends MongoModel
             ));
         return $result < 1;
     }
+    
+    public function notRegex($check, $regex=null) 
+    {
+        return VusionValidation::customNot($check['content'], $regex);
+    }
+    
     
 }

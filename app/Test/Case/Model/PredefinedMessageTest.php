@@ -33,7 +33,7 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->PredefinedMessage->deleteAll(true, false);
     }
     
-    
+ 
     public function testSave()
     {
         $predefinedMessage = array(
@@ -81,6 +81,18 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->assertFalse($this->PredefinedMessage->save($predefinedMessage02));
         $this->assertEquals('This name already exists. Please choose another.',
             $this->PredefinedMessage->validationErrors['name'][0]);
+    }
+    
+    
+    public function testApostrope_fail_content()
+    {
+        $predefinedMessage = array(
+            'name' => 'message one',
+            'content' => "'"
+            );
+        $this->PredefinedMessage->create();
+        $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
+        
     }
     
 }
