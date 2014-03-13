@@ -101,15 +101,21 @@ class KeywordComponent extends Component
         $programs = $this->Program->find(
             'all', array('conditions' => array('Program.database !=' => $programDb)));
         foreach ($programs as $program) {
-            $programSettingModel = new ProgramSetting(array('database' => $program['Program']['database']));
-            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
-                $dialogueModel = new Dialogue(array('database' => $program['Program']['database']));
-                $foundDialogueKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, $program['Program']['name']);
-                $usedKeywords = $usedKeywords + $foundDialogueKeywords;
-                $requestModel = new Request(array('database' => $program['Program']['database']));
-                $foundRequestKeywords = $this->_getUsedKeywords($requestModel, $keywords, $program['Program']['name']);
-                $usedKeywords = $usedKeywords + $foundRequestKeywords;
-            }
+            $usedKeywords = $this->areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords);
+        }
+        return $usedKeywords;
+    }
+
+    public function areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords)
+    {
+        $programSettingModel = new ProgramSetting(array('database' => $program['Program']['database']));
+        if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
+            $dialogueModel = new Dialogue(array('database' => $program['Program']['database']));
+            $foundDialogueKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, $program['Program']['name']);
+            $usedKeywords = $usedKeywords + $foundDialogueKeywords;
+            $requestModel = new Request(array('database' => $program['Program']['database']));
+            $foundRequestKeywords = $this->_getUsedKeywords($requestModel, $keywords, $program['Program']['name']);
+            $usedKeywords = $usedKeywords + $foundRequestKeywords;
         }
         return $usedKeywords;
     }

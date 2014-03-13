@@ -43,4 +43,3 @@
 	    <?php  echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button dynamic-form-save')); ?>
 	</div>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

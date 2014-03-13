@@ -87,26 +87,21 @@ class ProgramSettingsController extends AppController
             $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
                 $this->Session->read($programUrl.'_db'), 
                 $this->request->data['ProgramSetting']['shortcode']);
-            if ($keywordValidation !== array()) {
-                $this->Session->setFlash(
-                    $this->Keyword->validationToMessage($keywordValidation),
+            
+            if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'], $keywordValidation)) {
+                $this->_notifyUpdateProgramSettings($programUrl);
+                $this->Session->setFlash(__("Program Settings saved."),
+                    'default',
+                    array('class'=>'message success'));
+                $this->redirect(array(
+                    'program' => $programUrl,
+                    'controller' => 'programSettings',
+                    'action' => 'edit'));
+                
+            } else {
+                $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
+                $this->Session->setFlash(__("Save settings failed."),
                     'default', array('class'=>'message failure'));
-            } else { 
-                if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'])) {
-                    $this->_notifyUpdateProgramSettings($programUrl);
-                    $this->Session->setFlash(__("Program Settings saved."),
-                        'default',
-                        array('class'=>'message success'));
-                    $this->redirect(array(
-                        'program' => $programUrl,
-                        'controller' => 'programSettings',
-                        'action' => 'edit'));
-                    
-                } else {
-                    $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
-                    $this->Session->setFlash(__("Save settings failed."),
-                        'default', array('class'=>'message failure'));
-                }
             }
         }
         
