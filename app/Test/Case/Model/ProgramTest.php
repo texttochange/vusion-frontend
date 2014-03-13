@@ -299,5 +299,40 @@ class ProgramTestCase extends CakeTestCase
         $this->assertFalse(
             Program::validProgramCondition($programDetailM4H, 'name LIKE', 't%'));
     }
+    
+
+    public function testValidateProgramCondition_missingShortcodeSettings()
+    {
+        $programDetails = array(
+            'Program' => array(
+                'id' => 3,
+                'name' => 'M4h',
+                'url' => 'm4h',
+                'database' => 'm4h',
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            );
+                        
+        $this->assertFalse(
+            Program::validProgramCondition($programDetails, 'shortcode', '8282'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetails, 'country', 'Uganda'));
+
+        $programDetails = array(
+            'Program' => array(
+                'id' => 3,
+                'name' => 'M4h',
+                'url' => 'm4h',
+                'database' => 'm4h',
+                'country' => 'uganda',
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            );
+
+        $this->assertTrue(
+            Program::validProgramCondition($programDetails, 'country', 'Uganda'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetails, 'country', 'kenya'));
+    }
  
 }

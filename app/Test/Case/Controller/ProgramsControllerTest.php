@@ -165,7 +165,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1, count($this->vars['programs']));
     }
 
-    
+
+    #TODO move some case to the ProgramPaginatorComponentTest
     public function testIndex_filter()
     {
         $this->_saveShortcodesInMongoDatabase();

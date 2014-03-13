@@ -10,7 +10,7 @@ class CreditViewerController extends AppController
     
     var $uses = array('Program', 'Group');
     
-    var $filterOperatorOptions = array('all' => 'all', 'any' => 'any');
+    var $filterOperatorOptions = array('all' => 'all');
     var $filterFields = array(
             'country' => array(
                 'label' => 'country',
@@ -73,6 +73,38 @@ class CreditViewerController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
+        $filters = $this->_getFilters();
+        print_r($filters);
+        $programFilters = $this->_filterFiltersOnFields($filters, array('name', 'country', 'shortcode'));
+
+        print_r($programFilters);
+
+        $conditions = $this->Program->fromFilterToQueryConditions($programFilters);
+
+        ## TODO move in the Program Paginator
+        $this->Program->recursive = -1; 
+        $user = $this->Auth->user();  
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
+            $paginate = array(
+                'type' => 'authorized', 
+                'specific_program_access' => 'true',
+                'user_id' => $user['id'],
+                'conditions' => $conditions,
+                'order' => array('created' => 'desc'));
+        } else {
+            $paginate = array(
+                'type' => 'all', 
+                'conditions' => $conditions,
+                'order' => array('created' => 'desc'));
+        }
+
+        $this->paginate = $paginate;
+
+        #TODO remove the ProgramPaginator reference $this->paginate()
+        $programs = $this->ProgramPaginator->paginate();
+        
+        #Move this to the model
+        /*
         $datePast = new DateTime('-1 month');
         $dateNow = new DateTime('now');
         
@@ -81,114 +113,68 @@ class CreditViewerController extends AppController
             2 => array(1=>'date', 2 => 'to', 3 => $dateNow->format('d/m/Y'))
         );
         $this->set('defaultDateConditions', $defaultDateConditions);
-        
-        $conditions = $this->_getConditions();
-        
-        $conditionsNonDate = $this->_getNonDateConditions($this->_getFilter());        
-        $nonDateConditions = (isset($conditionsNonDate)) ? $conditionsNonDate : array();
-        
-        $nameCondition = $this->ProgramPaginator->getNameSqlCondition($conditions);
-        
-        $programs    =  $this->Program->find('all', array(
-            'conditions' => $nameCondition,
-            'order' => array(
-                'Program.created' => 'desc'
-                ))
-            );
-        
-        $allPrograms = $this->Program->find('all');
-
-        if (isset($conditions['$or']) and !isset($nameCondition['OR']))
-            $programsList =  $allPrograms;
-        else
-            $programsList =  $programs;
-            
-        $filteredPrograms = array();
-
-        foreach ($programsList as &$program) {
-            $progDetails = $this->ProgramPaginator->getProgramDetails($program);
-            $program = array_merge($program, $progDetails['program']);
-            if ($this->params['url'] == array()) {
-                $program['Program']['total-credits'] = $this->CreditManager->getCount($program['Program']['database']);
-            } else {
-                $program['Program']['total-credits'] = $this->_getCreditsFromProgramHistory($program['Program']['database'], $conditions);
-            }
-            $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
-                $progDetails['program'],
-                $nonDateConditions,
-                $progDetails['shortcode']);
-            if (count($filterPrograms)>0) {
-                foreach ($filterPrograms as $fProgram) {
-                    $fProgram['Program']['total-credits'] = $this->_getCreditsFromProgramHistory($fProgram['Program']['database'], $conditions);
-                    $filteredPrograms[] = $fProgram;
-                }
-            }
-            
-        }
-        
-        if (count($filteredPrograms)>0
-            or (isset($conditions) && $nameCondition == array() && $nonDateConditions != array())
-            or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
-            $programsList = $filteredPrograms;
-        }
-        
-        if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
-            foreach($programs as &$program) {
-                $details = $this->ProgramPaginator->getProgramDetails($program);
-                $program = array_merge($program, $details['program']);
-                if ($this->params['url'] == array()) {
-                    $program['Program']['total-credits'] = $this->CreditManager->getCount($program['Program']['database']);
-                } else {
-                    $program['Program']['total-credits'] = $this->_getCreditsFromProgramHistory($program['Program']['database'], $conditions);
-                }
-            }
-            foreach ($programsList as $listedProgram) {
-                if (!in_array($listedProgram, $programs))
-                    array_push($programs, $listedProgram);
-            }
-        } else {
-            $programs = $programsList;
-        }
-
-        $programs = $this->ProgramPaginator->paginate($programs);
-        $this->set(compact('programs', $programs));
+        */
+        $historyFilters = $this->_filterFiltersOnFields($filters, array('date'));
+        $programs = $this->_getCredits($programs, $historyFilters);
+        //print_r($programs);
+        $this->set(compact('programs'));
     }
+
     
-    
-    protected function _getCreditsFromProgramHistory($dbName, $conditions)
+    protected function _getCredits($programs, $historyFilters)
     {
-        $this->History = new History(array('database' => $dbName));
-        
-        $defaultConditions = array(
-            '$and' => array(
-                array('object-type'=> array(
-                    '$in'=> array('dialogue-history','request-history','unattach-history','unmatching-history')
-                    )),
-                array('message-status' => array(
-                    '$nin' => array('missing-data','failed','no-credit','no-credit-timeframe')
-                    ))
-                )
-            );
-        $dateConditions = $this->_getDateCondition($conditions);
-
-        if (!empty($dateConditions))
-            array_push($defaultConditions['$and'], $dateConditions);
-
-        $messages = $this->History->find(
-            'all',
-            array('conditions' => $defaultConditions)
-            );
-
-        $totalCredits = 0;
-        foreach ($messages as $message) {
-            $totalCredits += $message['History']['message-credits'];
+        if ($programs == array()) {
+            return $programs;
         }
         
-        return (int)$totalCredits;
+        $conditions = History::fromFilterToQueryConditions($historyFilters);
+        print_r($conditions);
+        foreach($programs as &$program) {
+            $tmpHistory = new History(array('database' => $program['Program']['database']));
+            $program['Program']['credits'] = $tmpHistory->getCreditsFromHistory($conditions);
+            unset($tempHistory);
+        }
+
+        return $programs;
     }
     
+    protected function _filterFiltersOnFields($filters, $fields) 
+    {
+        if (!isset($filters)) {
+            return array();
+        }
+        $filters['filter_param'] = array_filter(
+            $filters['filter_param'], function ($var) use ($fields) {
+                return in_array($var[1], $fields);
+            });
+        return $filters;
+    }
+
+
+    protected function _fromFilterToProgramConditions($filters)
+    {
+        if (!isset($filter))
+            return array();
+        
+        //$nonDateConditions = array();
+        
+        foreach ($filter['filter_param'] as $filterParam) {
+            $condition = $this->_fromFilterToProgramConditions($filterParam);
+            if (isset($condition)) 
+                array_push($nonDateConditions, $condition);
+        }
+        
+        if (count($nonDateConditions) == 1) {
+            $nonDateConditions = $nonDateConditions[0];
+        } elseif (count($nonDateConditions) > 1) {
+            $result['$and'] = $nonDateConditions;
+            $nonDateConditions = $result;
+        }
+        return $nonDateConditions;
+    }
+
     
-    protected function _getDateCondition($conditions)
+    protected function _fromFilterToHistoryConditions($filters)
     {
         if (empty($conditions))
             return array();
@@ -209,29 +195,6 @@ class CreditViewerController extends AppController
         }
 
         return $result;
-    }
-    
-    
-    protected function _getNonDateConditions($filter)
-    {
-        if (!isset($filter))
-            return array();
-        
-        $nonDateConditions = array();
-        
-        foreach ($filter['filter_param'] as $filterParam) {
-            $condition = $this->_fromFilterToNonDateConditions($filterParam);
-            if (isset($condition)) 
-                array_push($nonDateConditions, $condition);
-        }
-        
-        if (count($nonDateConditions) == 1) {
-            $nonDateConditions = $nonDateConditions[0];
-        } elseif (count($nonDateConditions) > 1) {
-            $result['$and'] = $nonDateConditions;
-            $nonDateConditions = $result;
-        }
-        return $nonDateConditions;
     }
     
     
@@ -259,29 +222,24 @@ class CreditViewerController extends AppController
             );
     }
     
-    protected function _getFilter()
+    protected function _getFilters()
     {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
+        $filters = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
 
-        if (!isset($filter['filter_param']))
+        if (!isset($filters['filter_param']))
             return null;
         
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->filterOperatorOptions)) {
+        if (!isset($filters['filter_operator']) || !in_array($filters['filter_operator'], $this->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }
         
-        $this->set('urlParams', http_build_query($filter));
+        $this->set('urlParams', http_build_query($filters));
         
-        return $filter;
+        return $filters;
     }
     
     
-    protected function _getConditions()
-    {
-        $filter = $this->_getFilter();
-        
-        return $this->_fromFilterToQueryConditions($filter);
-    }
+
     
     
     protected function _fromFilterToQueryConditions($filter)

@@ -92,9 +92,8 @@
 			    <th class="prefix"><?php echo $this->Paginator->sort('program');?></th>
 			    <th class="prefix"><?php echo $this->Paginator->sort('shortcode');?></th>
             <?php
-                echo "<th class='prefix' style='display:".$showStatus."'>". $this->Paginator->sort('status') ."</th>";
-			    echo "<th class='details' style='display:".$showIncoming."'>". $this->Paginator->sort('incoming credits') ."</th>";
-			    echo "<th class='details' style='display:".$showOutgoing."'>". $this->Paginator->sort('outgoing credits') ."</th>";
+			    echo "<th class='details' style='display:".$showIncoming."'>". __('Incoming credits') ."</th>";
+			    echo "<th class='details' style='display:".$showOutgoing."'>". __('Outgoing credits') ."</th>";
             ?>
 			</tr>
 		</thead>
@@ -113,9 +112,8 @@
 		            ?>
                 </td>
                 <?php
-                    echo "<td class='prefix' style='display:".$showStatus."'>". $program['Program']['credit-status'] ."</td>";
-                    echo "<td class='details' style='display:".$showIncoming."'>". $program['Program']['incoming credits'] ."</td>";
-                    echo "<td class='details' style='display:".$showOutgoing."'>". $program['Program']['outgoing credits'] ."</td>";
+                    echo "<td class='details' style='display:".$showIncoming."'>". $program['Program']['credits']['incoming'] ."</td>";
+                    echo "<td class='details' style='display:".$showOutgoing."'>". $program['Program']['credits']['outgoing'] ."</td>";
                 ?>
 		    </tr>
 		   <?php endforeach; ?>

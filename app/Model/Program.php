@@ -281,11 +281,10 @@ class Program extends AppModel
     }
 
 
-    #TODO refactor to make it more readable
     public static function matchProgramConditions($programDetails, $conditions=array())
     {
-        $countryMatch = false;
-        $shortcodeMatch = false;
+        //$countryMatch = false;
+        //$shortcodeMatch = false;
         if ($conditions == array()) {
             return true;
         }
@@ -329,6 +328,9 @@ class Program extends AppModel
         case 'name LIKE':
             return Program::startsWith($programDetails['Program']['name'],rtrim($conditionValue, '%'));        
         default:
+            if (!isset($programDetails['Program'][$conditionKey])) {
+                return false;
+            }
             return strcasecmp($programDetails['Program'][$conditionKey], $conditionValue) == 0;
         }
     }

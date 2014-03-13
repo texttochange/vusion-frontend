@@ -1,6 +1,7 @@
 <?php
 /* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
+App::uses('DialogueHelper', 'Lib');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -37,7 +38,7 @@ class HistoryTestCase extends CakeTestCase
         $this->History->deleteAll(true, false);
     }
     
-    
+/*    
     public function testFindScriptFilter()
     {
         $participantsState = array(
@@ -685,7 +686,7 @@ class HistoryTestCase extends CakeTestCase
         $this->History->create('dialogue-history');
         $savedHistory3 = $this->History->save($history3);
         
-        //**** history that is not counted ****//
+        ## history that is not counted
         ## History with message-status failed 
         ## failed message might still be accounted as they are still charged by the operator
         $history4 = array(
@@ -730,6 +731,52 @@ class HistoryTestCase extends CakeTestCase
 		$this->assertEqual(0, $result['incoming']);
 		$this->assertEqual(0, $result['outgoing']);        
     }
-    
+*/    
+
+    public function testIsConditionTimeframeOneMonth()
+    {
+        ##date-from to now
+        $now = new DateTime("now");
+        $threeWeeksPast = new DateTime('-3 weeks');
+        $conditions = array(
+            "date-from" => DialogueHelper::fromPhpDateToVusionDate($threeWeeksPast));
+        $this->assertTrue(
+            $this->History->isConditionTimeframeOneMonth($conditions, $now));
+
+        $fiveWeeksPast = new DateTime('-5 weeks');        
+        $conditions = array(
+            "date-from" => DialogueHelper::fromPhpDateToVusionDate($fiveWeeksPast));
+        $this->assertFalse(
+            $this->History->isConditionTimeframeOneMonth($conditions, $now));
+
+        ##date-from to date-to
+        $conditions = array(
+            "date-from" => "2013-03-03T12:00:00",
+            "date-to" => "2013-04-02T12:00:00",);
+        $this->assertTrue(
+            $this->History->isConditionTimeframeOneMonth($conditions, $now));
+
+        ##feb has 28 days
+        $conditions = array(
+            "date-from" => "2013-02-01T00:00:00",
+            "date-to" => "2013-02-28T23:59:00",);
+        $this->assertTrue(
+            $this->History->isConditionTimeframeOneMonth($conditions, $now));
+
+        ##march has 31 days
+        $conditions = array(
+            "date-from" => "2013-03-01T00:00:00",
+            "date-to" => "2013-03-31T23:59:00",);
+        $this->assertTrue(
+            $this->History->isConditionTimeframeOneMonth($conditions, $now));
+
+        $conditions = array(
+            "date-from" => "2013-03-03T12:00:00",
+            "date-to" => "2013-04-04T12:00:00",);
+        $this->assertFalse(
+            $this->History->isConditionTimeframeOneMonth($conditions, $now));
+
+
+    }
     
 }

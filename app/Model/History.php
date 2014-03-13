@@ -233,7 +233,7 @@ class History extends MongoModel
     
     
     //Filter variables and functions
-    public $filterFields = array(
+    public static $filterFields = array(
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
@@ -331,18 +331,18 @@ class History extends MongoModel
         );
     
     
-    public $filterOperatorOptions = array(
+    public static $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
     
-    public $filterMessageDirectionOptions = array(
+    public static $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
         );
     
     
-    public $filterMessageStatusOptions = array(
+    public static $filterMessageStatusOptions = array(
         'failed'=>'failed',
         'delivered'=>'delivered',
         'pending'=>'pending',
@@ -357,13 +357,13 @@ class History extends MongoModel
         );
     
     
-    public function validateFilter($filterParam)
+    public static function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException(__("The filter's field is missing."));
         }
         
-        if (!isset($this->filterFields[$filterParam[1]])) {
+        if (!isset(History::$filterFields[$filterParam[1]])) {
             throw new FilterException(__("The filter's field '%s' is not supported.", $filterParam[1]));
         }
         
@@ -371,11 +371,11 @@ class History extends MongoModel
             throw new FilterException(__("The filter's operator is missing for field '%s'.", $filterParam[1]));
         }
         
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
+        if (!isset(History::$filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException(__("The filter's operator '%s' not supported for field '%s'.", $filterParam[2], $filterParam[1]));
         }
         
-        $operator = $this->filterFields[$filterParam[1]]['operators'][$filterParam[2]];
+        $operator = History::$filterFields[$filterParam[1]]['operators'][$filterParam[2]];
         
         if ($operator['parameter-type'] != 'none' && !isset($filterParam[3])) {
             throw new FilterException(__("The filter's parameter is missing for field '%s'.", $filterParam[1]));
@@ -389,13 +389,13 @@ class History extends MongoModel
     }
     
     
-    public function fromFilterToQueryConditions($filter, $conditions = array()) {
+    public static function fromFilterToQueryConditions($filter, $conditions = array()) {
         
         foreach ($filter['filter_param'] as $filterParam) {
             
             $condition = null;
             
-            $this->validateFilter($filterParam);
+            History::validateFilter($filterParam);
             
             if ($filterParam[1] == 'message-direction' or $filterParam[1] == 'message-status') {
                 if ($filterParam[2] == 'is') {
@@ -416,7 +416,7 @@ class History extends MongoModel
                     $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
                 } elseif ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                    $condition = History::_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
                 }
             } elseif ($filterParam[1] == 'message-content') {
                 if ($filterParam[2] == 'equal-to') {
@@ -427,7 +427,7 @@ class History extends MongoModel
                     $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
                 } elseif ($filterParam[2] == 'has-keyword-any') {
                     $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                    $condition = History::_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
                 }
             } elseif ($filterParam[1] == 'separate-message') {
                 if ($filterParam[2] == 'equal-to') {
@@ -579,6 +579,28 @@ class History extends MongoModel
 		    }
 		}
 		return $result;  
+    }
+
+
+    public static function isConditionTimeframeOneMonth($conditions, $now) 
+    {
+        if (!isset($conditions['date-from'])) {
+            return false;
+        } 
+        $dateFrom = DialogueHelper::fromVusionDateToPhpDate($conditions['date-from']);
+
+        if (!isset($conditions['date-to'])) {
+            $dateTo = $now;
+        } else {
+            $dateTo = DialogueHelper::fromVusionDateToPhpDate($conditions['date-to']);
+        }
+        print_r($dateFrom);
+        $diff = $dateFrom->diff($dateTo);
+
+        $month = $diff->format('%m');
+        print_r($month);
+        return ($month < 1);
+        
     }
     
     

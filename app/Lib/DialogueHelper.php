@@ -4,6 +4,16 @@
 class DialogueHelper
 {
 
+    static public function fromPhpDateToVusionDate($phpDate)
+    {
+        return $phpDate->format("Y-m-d\TH:i:s");
+    }
+
+    static public function fromVusionDateToPhpDate($vusionDate) 
+    {
+        return new DateTime($vusionDate);
+    }
+
     static public function validateDate($date)
     {
         if (preg_match('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $date, $parts) == true) {
