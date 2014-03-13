@@ -20,19 +20,15 @@ function getNewDateUsingTimezone(){
 function addContentFormHelp(baseUrl) {
     if (!baseUrl)
         baseUrl="../.."
-    addFormHelp(baseUrl, 'content');
-    addFormHelp(baseUrl, 'template');
-    addFormHelp(baseUrl, 'keyword');
-    addFormHelp(baseUrl, 'forward-url');
+    addFormHelp(baseUrl, 'content', $("[name*='content']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'template', $("[name*='[template]']").prev(":not(:has(img)):not(div)"));
+    addFormHelp(baseUrl, 'keyword', $("[name*='\.keyword']").prev("label").not(":has(img)"));
+    addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));
 }
 
 
-function addFormHelp(baseUrl, name) {
-    var arr = [$("[name*='content']").prev(":not(:has(img)):not(div):not(span)"),
-        $("[name*='[template]']").prev(":not(:has(img)):not(div)"), 
-        $("[name*='\.keyword']").prev("label").not(":has(img)"),
-    $("[name*='\.forward-url']").prev("label").not(":has(img)")];
-    $.each(arr,
+function addFormHelp(baseUrl, name, selector) {
+    $.each(selector,
         function (key, elt){
             $("<img class='ttc-help' src='/img/help-icon-16.png'/>").appendTo($(elt)).click(function(){requestHelp(this, baseUrl, name)});
         });
