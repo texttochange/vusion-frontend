@@ -1,6 +1,7 @@
 <?php
 App::uses('Request', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
+App::uses('ScriptMaker', 'Lib');
 
 
 class RequestTestCase extends CakeTestCase
@@ -13,11 +14,13 @@ class RequestTestCase extends CakeTestCase
 
         $connections = ConnectionManager::enumConnectionObjects();
 
-        $option        = array('database'=>'test');
+        $option        = array('database' => 'testdbprogram');
         $this->Request = new Request($option);
 
         $this->Request->setDataSource('mongo_test');
         $this->Request->deleteAll(true, false);
+
+        $this->Maker = new ScriptMaker();
     }
 
 
@@ -28,38 +31,72 @@ class RequestTestCase extends CakeTestCase
         parent::tearDown();
     }
 
-    
-    public function testFindKeyword()
+
+    public function testUseKeyword_multipleKeywords()
     {
-        $request['Request'] = array(
-            'keyword' => 'key request, keyword, otherkeyword request'
-            );
+        $request = $this->Maker->getOneRequest('key request, keyword, otherkeyword request');
         $this->Request->create();
-        $this->Request->save($request);
-        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keyword'));
-        $this->assertEqual('keyword', $matchingKeywordRequest);
+        $savedRequest = $this->Request->save($request);
 
-        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keywo'));
-        $this->assertEqual(null, $matchingKeywordRequest);
+        $this->assertEqual(
+            array(
+                'keyword' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])), 
+            $this->Request->useKeyword('keyword'));
 
-        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'keywor, keyword'));
-        $this->assertEqual('keyword', $matchingKeywordRequest);
-        
-        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'kEy'));
-        $this->assertEqual('kEy', $matchingKeywordRequest);
-        
-        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'request'));
-        $this->assertEqual(null, $matchingKeywordRequest);
+        $this->assertEqual(
+            null, 
+            $this->Request->useKeyword('keywo'));
 
-        $request['Request'] = array(
-            'keyword' => 'key'
-            );
-        $this->Request->create();
-        $this->Request->save($request);
-        $matchingKeywordRequest = $this->Request->find('keyword', array('keywords'=>'key'));
-        $this->assertEqual('key', $matchingKeywordRequest);
+        $this->assertEqual(
+            array(
+                'keyword' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword']), 
+                'key' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])), 
+            $this->Request->useKeyword('keywor, keyword, key'));
         
+        $this->assertEqual(
+            array('key' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])), 
+            $this->Request->useKeyword('kÉy'));
+        
+        $this->assertEqual(
+            null, 
+            $this->Request->useKeyword('request'));
     }
+
+
+    public function testUseKeyword()
+    {
+        $request = $this->Maker->getOneRequest('key');
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+
+        $this->assertEqual(
+            array(
+                'key' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),
+            $this->Request->useKeyword('key'));
+    }
+
+
+    public function testUseKeyword_excludeRequest()
+    {
+        $request = $this->Maker->getOneRequest('key');
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+
+        $this->assertEqual(
+            null,
+            $this->Request->useKeyword('key', $savedRequest['Request']['_id'].''));
+    }
+
 
     public function testGetKeywords()
     {
@@ -70,80 +107,137 @@ class RequestTestCase extends CakeTestCase
         $this->Request->save($request);
 
         $request['Request'] = array(
-            'keyword' => 'k'
-            );
+            'keyword' => 'k2, frère, key stuff');
         $this->Request->create();
         $this->Request->save($request);
         
         $this->assertEqual(
-            array('key', 'keyword', 'otherkeyword', 'k'),
+            array('key', 'keyword', 'otherkeyword', 'k2', 'frere'),
             $this->Request->getKeywords());
     }
 
 
-
-    public function testFindKeyphrase()
+    public function testGetRequestKeywords()
     {
         $request['Request'] = array(
-            'keyword' => 'key request, keyword, otherkeyword request'
+            'keyword' => '11'
             );
+        
+        $this->assertEqual(
+            array('11'),
+            Request::getRequestKeywords($request));
+    }
+
+
+    public function testUseKeyphrase()
+    {
+        $request = $this->Maker->getOneRequest('key request, keyword, otherkeyword request');
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
 
-        $otherRequest['Request'] = array(
-            'keyword' => 'something else'
-            );
+        $otherRequest = $this->Maker->getOneRequest('something else');
         $this->Request->create();
         $this->Request->save($otherRequest);
 
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'keyword'));
-        $this->assertEqual('keyword', $matchingKeywordRequest);
-
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'keywo'));
-        $this->assertEqual(null, $matchingKeywordRequest);
-
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'keywor, keyword'));
-        $this->assertEqual('keyword', $matchingKeywordRequest);
-        
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'kEy'));
-        $this->assertEqual(null, $matchingKeywordRequest);
-        
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'kEy request'));
-        $this->assertEqual('kEy request', $matchingKeywordRequest);
-
-        $matchingKeywordRequest = $this->Request->find(
-            'keyphrase', 
+        $this->assertEqual(
             array(
-                'keywords'=>'kEy request',
-                'excludeRequest' => $savedRequest['Request']['_id']
-                )
-            );
-        $this->assertEqual(null, $matchingKeywordRequest);
+                'otherkeyword request' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),
+            $this->Request->useKeyphrase('otherkeyword request'));
 
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'request'));
-        $this->assertEqual(null, $matchingKeywordRequest);
+        $this->assertEqual(
+            array(
+                'keyword' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),
+            $this->Request->useKeyphrase('keyword'));
 
+        $this->assertEqual(
+            false,
+            $this->Request->useKeyphrase('keywo'));
+
+        $this->assertEqual(
+            array(
+                'otherkeyword request' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),  
+            $this->Request->useKeyphrase('keywor, otherkeyword request'));
+        
+        $this->assertEqual(
+            false, 
+            $this->Request->useKeyphrase('kEy'));
+        
+        $this->assertEqual(
+            array(
+                'key request' => array(
+                    'request-id' => $savedRequest['Request']['_id']."",
+                    'request-name' => $savedRequest['Request']['keyword'])),   
+            $this->Request->useKeyphrase('kEy request'));
+        
+        $this->assertEqual(
+            false,
+            $this->Request->useKeyphrase('request'));
+        
+        ## Exclude request parameter
+        $this->assertEqual(
+            false,
+            $this->Request->useKeyphrase('kEy request', $savedRequest['Request']['_id']));
     }
-    
-    
-    public function testValidateKeyword_Fail_With_Invalid_Conditions()
+
+
+    public function testUseKeyphrase_numeric()
     {
-        $request['Request'] = array(
-            'keyword' => 'free'
-            );
+        $request = $this->Maker->getOneRequest('11');
+        $this->Request->create();
+        $request = $this->Request->save($request);
+
+        ## Work with keyphrase numeric
+        $this->assertEqual(
+            array(
+                '11' => array(
+                    'request-id' => $request['Request']['_id']."",
+                    'request-name' => $request['Request']['keyword'])),
+            $this->Request->useKeyphrase('11'));
+    }
+
+
+    public function testGetRequestKeyphrases_numeric()
+    {
+        $request = $this->Maker->getOneRequest('11');
+
+        ## Work with keyphrase numeric
+        $this->assertEqual(
+            array('11'),
+            Request::getRequestKeyphrases($request, '11'));
+    }
+
+
+    public function testGetRequestFilterOptions()
+    {
+        $request['Request'] = array('keyword' => 'keyword1');
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
-        
-        $matchingKeywordRequest = $this->Request->find('keyphrase', array('keywords'=>'free',
-            'excludeRequest'=>'')); // 'excludeRequest'=>'' is an invalid condition //
-        $this->assertEqual('free', $matchingKeywordRequest);
+
+        $otherRequest['Request'] = array('keyword' => 'keyword2');
+        $this->Request->create();
+        $savedOtherRequest = $this->Request->save($otherRequest);
+
+        $expected = array(
+            $savedRequest['Request']['_id'].'' => 'keyword1',
+            $savedOtherRequest['Request']['_id'].'' => 'keyword2');
+   
+        $this->assertEqual(
+            $expected,
+            $this->Request->getRequestFilterOptions());
     }
+
 
 
     public function testSave_validateKeyword_ok()
     {
         $request['Request'] = array(
-            'keyword' => 'key request, keyword, otherkeyword request'
+            'keyword' => 'key request, keyword, otherkeyword request, für'
             );
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
@@ -166,7 +260,7 @@ class RequestTestCase extends CakeTestCase
     }
 
 
-    public function testSave_validateKeyword_fail()
+    public function testSave_validateKeyword_fail_format()
     {
         $request['Request'] = array(
             'keyword' => 'key request, keyw?ord, otherkeyword request'
@@ -175,12 +269,64 @@ class RequestTestCase extends CakeTestCase
         $savedRequest = $this->Request->save($request);
         $this->assertFalse($savedRequest);
         $this->assertEquals(
-            'This keyword format is not valid.',
+            'This keyword/keyphrase is not valid.',
             $this->Request->validationErrors['keyword'][0]);
     }
 
-    
-    public function testSave_validateContent_fail()
+
+    public function testSave_validateKeyword_fail_alreadyUsedOtherProgram()
+    {
+        $request = $this->Maker->getOneRequest('key request, keyword, ÉotherkeYword request, für');
+        $usedKeywords = array(
+            'eotherkeyword' => array(
+                'program-db' => 'otherprogram', 
+                'program-name' => 'Other Program', 
+                'by-type' => 'Dialogue'));
+
+        $this->Request->create();
+        $savedRequest = $this->Request->saveRequest($request, $usedKeywords);
+        $this->assertFalse($savedRequest);
+        $this->assertEquals(
+            "'eotherkeyword' already used by a Dialogue of program 'Other Program'.",
+            $this->Request->validationErrors['keyword'][0]);
+    }
+
+
+    public function testSave_validateKeyword_fail_alreadyUsedSameProgram()
+    {
+        $request = $this->Maker->getOneRequest('key request, keyword, ÉotherkeYword request, für');
+        $this->Request->create();
+        $savedRequest = $this->Request->saveRequest(
+            $request, 
+            array(
+                'eotherkeyword request' => array(
+                    'program-db' => 'testdbprogram', 
+                    'program-name' => '', 
+                    'by-type' => 'Request',
+                    'request-name' => 'Another keyword')));
+
+        $this->assertFalse($savedRequest);
+        $this->assertEquals(
+            "'eotherkeyword request' already used in Request 'Another keyword' of the same program.",
+            $this->Request->validationErrors['keyword'][0]);
+    }    
+
+
+    public function testSave_validateKeyword_ok_edit()
+    {
+        $request = $this->Maker->getOneRequest('key request, keyword, ÉotherkeYword request, für');
+        $this->Request->create();
+        $savedRequest = $this->Request->saveRequest($request);
+
+        $savedRequest['Request']['keyword'] = 'eotherkeYword request';
+        $this->Request->create();
+        $this->Request->id = $savedRequest['Request']['_id'];
+        $savedRequest = $this->Request->saveRequest($request);
+        $this->assertTrue(isset($savedRequest['Request']));
+    }
+
+
+    public function testSave_validateContent_fail_apostrophe_not_allowed()
     {
         $request = array(
             'Request' => array(
@@ -195,6 +341,52 @@ class RequestTestCase extends CakeTestCase
             'The apostrophe used is not allowed.',
             $this->Request->validationErrors['responses'][0]['content'][0]);
     }
+    
+    public function testSave_validateContent_ok_customized_content()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'the box is [contentVariable.mombasa.chicken.price]'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertTrue(isset($savedRequest['Request']));
+    }
+
+    public function testSave_validateContent_fail_customized_content()
+    {
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword',
+                'responses' => array(
+                    array('content' => 'the box is [show.box]'))
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            "To be used as customized content, 'show' can only be either 'participant' or 'contentVariable'.",
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+        
+        $request['Request']['responses'][0]['content'] = "here is [participant.name.gender]";
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            "To be used in message, participant only accepts one key.",
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+        
+        $request['Request']['responses'][0]['content'] = "here is [contentVariable.pen.%#color]";
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+        $this->assertFalse($savedRequest);
+        $this->assertEqual(
+            "To be used as customized content, '%#color' can only be composed of letter(s), digit(s) and/or space(s).",
+            $this->Request->validationErrors['responses'][0]['content'][0]);
+    }
+    
 
     public function testSave_beforeValidate_removeEmptyReponses()
     {
@@ -249,5 +441,5 @@ class RequestTestCase extends CakeTestCase
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
 
-
+  
 }

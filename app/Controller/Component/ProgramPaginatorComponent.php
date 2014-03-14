@@ -5,8 +5,6 @@ App::uses('ShortCode', 'Model');
 class ProgramPaginatorComponent extends Component 
 {  
     
-    public $components = array('Stats'); 
-    
     var $settings = array(
         'page' => 1,
         'limit' => 20,
@@ -90,17 +88,16 @@ class ProgramPaginatorComponent extends Component
 
         if (isset($shortcode[0]['ProgramSetting']['value'])) {
             $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode[0]['ProgramSetting']['value']));
-            $programData['Program']['shortcode'] = ($code['ShortCode']['supported-internationally'] ? $code['ShortCode']['shortcode'] : $code['ShortCode']['country']."-".$code['ShortCode']['shortcode']);                
+            $programData['Program']['shortcode'] = $shortcode[0]['ProgramSetting']['value'];    
         }
 
         if ($this->params['ext']!='json') {
-            $programData['Program']['stats'] = $this->Stats->getProgramStats($database);
             $programDetails = array(
                 'program' =>  $programData,
                 'shortcode' => (isset($code)) ? $code : array()
                 );
         }
-
+        unset($tempProgramSetting);
         return $programDetails;
     }
     

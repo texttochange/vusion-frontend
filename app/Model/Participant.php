@@ -8,10 +8,9 @@ App::uses('VusionValidation', 'Lib');
 
 class Participant extends MongoModel
 {
-
+    
     var $specific = true;    
-
-    var $name        = 'Participant';
+    var $name     = 'Participant';
     
     var $importErrors = array();
     
@@ -19,7 +18,7 @@ class Participant extends MongoModel
     {
         return '3';
     }
-
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -34,10 +33,21 @@ class Participant extends MongoModel
             );
     }
 
-   
+    public $findMethods = array(
+        'all' => true,
+        'first' => true,
+        'count' => true);
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
+        
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
@@ -45,10 +55,17 @@ class Participant extends MongoModel
         }
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
-        $this->DialogueHelper = new DialogueHelper();
     }
 
+    
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
+    }
 
+    
     public $validate = array(
         'phone' => array(
             'notempty' => array(
@@ -84,7 +101,7 @@ class Participant extends MongoModel
                 ),
             )
         );
-
+    
     public $validateLabel = array(
         'label' => array(
             'validateValue' => array(
@@ -109,21 +126,14 @@ class Participant extends MongoModel
                 ),
             ),
         );
-
-
-    public $importErrorMessages = array(
-        'label-error' => 'The file cannot be imported. The first line should be label names, the first label must be "phone".',
-        'tag-error' => 'Error a tag is not valide: %s.',
-        'file-format-error' => 'The file format %s is not supported.',
-        'csv-file-error' => 'The csv file cannot be open.');
-
-
+    
+    
     public function validateTags($check)
     {
         $index = 0;
         foreach ($check['tags'] as $tag) {
             if (is_string($validationError = $this->validateTag($tag))) {
-               if (!isset($this->validationErrors['tags'])) {
+                if (!isset($this->validationErrors['tags'])) {
                     $this->validationErrors['tags'] = array();
                 }
                 $this->validationErrors['tags'][$index] = $validationError;
@@ -135,8 +145,8 @@ class Participant extends MongoModel
         }
         return true;
     }
-
-
+    
+    
     public function validateTag($check)
     {
         $regex = VusionConst::TAG_REGEX;
@@ -168,15 +178,15 @@ class Participant extends MongoModel
                         $valid = forward_static_call_array(array("VusionValidation", $func), array($element[$field], $args));
                     }
                     if (!is_bool($valid) || $valid == false) {
-                       ## To revert when creating a better form edit
-                       //$validationErrors[$field][] = $rule['message'];
-                       $validationErrors[] = $rule['message'];
-                       break;
+                        // To revert when creating a better form edit
+                        //$validationErrors[$field][] = $rule['message'];
+                        $validationErrors[] = $rule['message'];
+                        break;
                     }
                 }
             }
             if ($validationErrors != array()) {
-                ## To switch when creating a better form edit
+                // To switch when creating a better form edit
                 //$this->validationErrors['profile'][$count] = $validationErrors;
                 $this->validationErrors['profile'] = $validationErrors;
                 break;
@@ -188,8 +198,8 @@ class Participant extends MongoModel
         }
         return true;
     }
-
-        
+    
+    
     public function isReallyUnique($check)
     {
         if ($this->id) {
@@ -215,8 +225,28 @@ class Participant extends MongoModel
             return (string) $phone;
         }
     }
+    
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
 
-
+    
     public function addMassTags($tag, $conditions)
     {   
         $tag = trim($tag);       
@@ -232,8 +262,25 @@ class Participant extends MongoModel
         $this->updateAll($massTag, $conditions);        
         return true;
     }
-
-
+    
+    
+    public function deleteMassTags($tag, $conditions)
+    {   
+        $tag = trim($tag);  
+        $valid = $this->validateTag($tag);
+        if (!is_bool($valid) || $valid != true) {
+            return $valid;
+        }
+        $massUntag = array(
+            '$pull' => array(
+                'tags' => $tag              
+                )
+            );    
+        $this->updateAll($massUntag, $conditions);        
+        return true;
+    }
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -241,13 +288,13 @@ class Participant extends MongoModel
         if (isset($this->data['Participant']['phone']) and !empty($this->data['Participant']['phone'])) {
             $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
         }
-
+        
         $this->_setDefault('tags', array());
-        #filter out empty tags
+        //filter out empty tags
         if (isset($this->data['Participant']['tags']) && is_array($this->data['Participant']['tags'])) {
             $this->data['Participant']['tags'] = array_filter($this->data['Participant']['tags']);
         }
-
+        
         $this->_setDefault('profile', array());
         if (is_array($this->data['Participant']['profile'])) {
             foreach ($this->data['Participant']['profile'] as &$label) {
@@ -256,20 +303,20 @@ class Participant extends MongoModel
                 }
             }
         }
-
+        
         //The time should be provide by the controller
         if (!$this->data['Participant']['_id']) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             if ($programNow==null)
                 return false;
             $lastOptinDate = (isset($this->data['Participant']['last-optin-date'])) ? $this->data['Participant']['last-optin-date'] : $programNow->format("Y-m-d\TH:i:s"); 
-            $this->data['Participant']['last-optin-date'] = $lastOptinDate;
+            $this->data['Participant']['last-optin-date']  = $lastOptinDate;
             $this->data['Participant']['last-optout-date'] = null;
-            $sessionId = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
-            $this->data['Participant']['session-id'] = $sessionId;
-            $tags = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
-            $this->data['Participant']['tags'] = $tags;
-            $autoEnrollDialogues = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
+            $sessionId                                     = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
+            $this->data['Participant']['session-id']       = $sessionId;
+            $tags                                          = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
+            $this->data['Participant']['tags']             = $tags;
+            $autoEnrollDialogues                           = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
             if ($autoEnrollDialogues == null)
                 $this->data['Participant']['enrolled'] = array();
             foreach ($autoEnrollDialogues as $autoEnroll) {
@@ -283,33 +330,36 @@ class Participant extends MongoModel
             
             $this->_editProfile();
             
-            $this->_editEnrolls();            
+            $this->_editEnrolls();
         }
         return true;
     }
-
+    
     
     public function getDistinctTagsAndLabels()
     {
         $results = $this->getDistinctTags();
-
+        
         $distinctLabels = $this->getDistinctLabels();
-
+        
         return array_merge($results, $distinctLabels);
     }
-
     
-    public function getDistinctTags()                 
+    
+    public function getDistinctTags($conditions = null)  
     {
         $tagsQuery = array(
             'distinct'=>'participants',
             'key'=> 'tags');
+        if (isset($conditions)) {
+            $tagsQuery['query'] = $conditions;
+        }
         $distinctTags = $this->query($tagsQuery);
         return $distinctTags['values'];
     }
-
     
-    public function getDistinctLabels($conditions = null)
+    
+    public function getDistinctLabels($conditions = null, $timeout = 30000)
     {
         $results = array();
         $map = new MongoCode("function() { 
@@ -324,23 +374,23 @@ class Participant extends MongoModel
             'map'=> $map,
             'reduce' => $reduce,
             'query' => array(),
-            'out' => 'map_reduce_participantLabels');
+            'out' => 'inline');
         
         if (isset($conditions)) {
             $labelsQuery['query'] = $conditions;
         }
-
+        
         $mongo = $this->getDataSource();
-        $cursor = $mongo->mapReduce($labelsQuery);
+        $cursor = $mongo->mapReduce($labelsQuery, $timeout);
         if ($cursor == false){ 
             return $results;
         }
-        foreach($cursor as $distinctLabel) {
+        foreach ($cursor as $distinctLabel) {
             $results[] = $distinctLabel['_id'];
         }
         return $results;  
     }
-
+    
     
     public function getExportHeaders($conditions = null)
     {
@@ -349,37 +399,33 @@ class Participant extends MongoModel
             //"last-optin-date",
             //"last-optout-date",
             "tags");
-
+        
         $distinctLabels = $this->getDistinctLabels($conditions);
-        foreach($distinctLabels as $distinctLabel) {
+        foreach ($distinctLabels as $distinctLabel) {
             $label = explode(':', $distinctLabel);
             if (!in_array($label[0], $headers))
                 $headers[] = $label[0];
         }
         return $headers;
     }
-
-
+    
+    
     function gen_uuid() 
     {
         return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
             // 32 bits for "time_low"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-            
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),            
             // 16 bits for "time_mid"
-            mt_rand( 0, 0xffff ),
-            
+            mt_rand(0, 0xffff),            
             // 16 bits for "time_hi_and_version",
             // four most significant bits holds version number 4
-            mt_rand( 0, 0x0fff ) | 0x4000,
-            
+            mt_rand(0, 0x0fff) | 0x4000,            
             // 16 bits, 8 bits for "clk_seq_hi_res",
             // 8 bits for "clk_seq_low",
             // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand( 0, 0x3fff ) | 0x8000,
-            
+            mt_rand(0, 0x3fff) | 0x8000,            
             // 48 bits for "node"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
             );
     }
     
@@ -408,8 +454,8 @@ class Participant extends MongoModel
         if(!isset($this->data['Participant']['tags']))
             $this->data['Participant']['tags'] = array();
         else if (isset($this->data['Participant']['tags']) and !is_array($this->data['Participant']['tags'])) {
-            $tags = trim(stripcslashes($this->data['Participant']['tags']));
-            $tags = array_filter(explode(",", $tags));
+            $tags      = trim(stripcslashes($this->data['Participant']['tags']));
+            $tags      = array_filter(explode(",", $tags));
             $cleanTags = array();
             foreach ($tags as $tag) {
                 $cleanTags[] = trim($tag);
@@ -422,18 +468,18 @@ class Participant extends MongoModel
     
     protected function _editProfile()
     {
-        if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {   				
-            $profiles = trim(stripcslashes($this->data['Participant']['profile']));    				
-            $profiles = array_filter(explode(",", $profiles));    				
+        if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {                   
+            $profiles    = trim(stripcslashes($this->data['Participant']['profile']));                    
+            $profiles    = array_filter(explode(",", $profiles));                    
             $profileList = array();
-            foreach ($profiles as $profile) {   						
-                $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
-                list($label,$value) = explode(":", $profile);
-                $newProfile = array();
+            foreach ($profiles as $profile) {                           
+                $profile             = (strpos($profile, ':') !== false) ? $profile : $profile.":";
+                list($label,$value)  = explode(":", $profile);
+                $newProfile          = array();
                 $newProfile['label'] = trim($label);
                 $newProfile['value'] = trim($value);
-                $newProfile['raw'] = null;
-                $profileList[] = $newProfile;    						
+                $newProfile['raw']   = null;
+                $profileList[]       = $newProfile;                            
             }
             $this->data['Participant']['profile'] = $profileList;
         }    
@@ -445,61 +491,62 @@ class Participant extends MongoModel
     {
         $participantUpdateData = $this->data;
         
-        $originalParticipantData = $this->read(); // $this->read() deletes already processed info and
-                                                  // and they must all be re-initialized.
+        $originalParticipantData  = $this->read(); 
+        // $this->read() deletes already processed info and
+        // and they must all be re-initialized.
         
         // ******** re-initialize already processed information *********/////
         $this->data['Participant'] = $participantUpdateData['Participant'];
         // ******************************************************************////
         
-        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        $programNow                = $this->ProgramSetting->getProgramTimeNow();
         
-        if(!isset($participantUpdateData['Participant']['enrolled']) or 
+        if (!isset($participantUpdateData['Participant']['enrolled']) or 
             !is_array($participantUpdateData['Participant']['enrolled'])) {
-            $this->data['Participant']['enrolled'] = array();
-            return; 
-        }
-        
-        if (isset($participantUpdateData['Participant']['enrolled'])
-            and $participantUpdateData['Participant']['enrolled'] == array()) {
+        $this->data['Participant']['enrolled'] = array();
+        return; 
+            }
+            
+            if (isset($participantUpdateData['Participant']['enrolled'])
+                and $participantUpdateData['Participant']['enrolled'] == array()) {
             $this->data['Participant']['enrolled'] = array();
             return;
-        }
-        
-        $this->data['Participant']['enrolled'] = array();
-        foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
-            $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
-            $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
-
-            if ($originalParticipantData['Participant']['enrolled'] == array()) {
-                $this->data['Participant']['enrolled'][] = array(
+                }
+                
+                $this->data['Participant']['enrolled'] = array();
+                foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
+                    $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
+                    $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
+                    
+                    if ($originalParticipantData['Participant']['enrolled'] == array()) {
+                        $this->data['Participant']['enrolled'][] = array(
                             'dialogue-id' => $dialogueId,
                             'date-time' => $enrollTime
                             );
-                continue;
-            }
-            foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
-                if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
-                    continue;
-               
-                if ($dialogueId == $orignalEnroll['dialogue-id']) {
-                    $this->data['Participant']['enrolled'][] = $orignalEnroll;
-                } else {
-                    $dateTime = $programNow->format("Y-m-d\TH:i:s");                            
-                    if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
-                        $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
-                        if ($index) {
-                            $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
+                        continue;
+                    }
+                    foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
+                        if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
+                            continue;
+                        
+                        if ($dialogueId == $orignalEnroll['dialogue-id']) {
+                            $this->data['Participant']['enrolled'][] = $orignalEnroll;
+                        } else {
+                            $dateTime = $programNow->format("Y-m-d\TH:i:s");                            
+                            if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
+                                $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
+                                if ($index) {
+                                    $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
+                                }
+                            }
+                            $this->data['Participant']['enrolled'][] = array(
+                                'dialogue-id' => $dialogueId,
+                                'date-time' => $dateTime
+                                );
+                            break;
                         }
                     }
-                    $this->data['Participant']['enrolled'][] = array(
-                        'dialogue-id' => $dialogueId,
-                        'date-time' => $dateTime
-                        );
-                    break;
                 }
-            }
-        }
     }
     
     
@@ -527,26 +574,26 @@ class Participant extends MongoModel
     {
         $check['enrolled'] = null;
         $this->save($check);
-                
+        
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         
-        $check['session-id'] = $this->gen_uuid();
-        $check['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+        $check['session-id']       = $this->gen_uuid();
+        $check['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
         $check['last-optout-date'] = null;
-        $check['tags'] = array();
-        $check['profile'] = array();
+        $check['tags']             = array();
+        $check['profile']          = array();
         
         return $check;
     }
-
-
+    
+    
     public function tagsFromStringToArray($tags) 
     {
         $tags = trim(stripcslashes($tags));
         return explode(", ", $tags);
     }
-
-
+    
+    
     public function import($programUrl, $fileFullPath, $tags=null, $replaceTagsAndLabels=false)
     {
         $defaultTags = array('imported');
@@ -556,9 +603,9 @@ class Participant extends MongoModel
             if (empty($tags)) {
                 $tags = array();
             }
-            foreach($tags as $tag) {
+            foreach ($tags as $tag) {
                 if (!$this->validateTag($tag)) {
-                    array_push($this->importErrors, __($this->importErrorMessages['tag-error'], $tag)); 
+                    array_push($this->importErrors, __("Error a tag is not valide: %s.", $tag)); 
                     return false;
                 }
             }
@@ -569,18 +616,18 @@ class Participant extends MongoModel
         
         $ext = end(explode('.', $fileFullPath));
         if (!($ext == 'csv') and !($ext == 'xls')) {
-            array_push($this->importErrors, __($this->importErrorMessages['file-format-error'], $ext)); 
+            array_push($this->importErrors, __("The file format %s is not supported.", $ext)); 
             return false;
         }
-
+        
         if ($ext == 'csv') {
             return $this->importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
         } else if ($ext == 'xls') {
             return $this->importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
         }
-
+        
     }
-
+    
     
     public function saveParticipantWithReport($participant, $replaceTagsAndLabels, $fileLine=null)
     {
@@ -596,13 +643,13 @@ class Participant extends MongoModel
                     'line' => $fileLine);
                 return $report;
             }
-
-            $savedParticipant = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
-            $this->id = $savedParticipant['Participant']['_id']."";
-            $tags = $participant['tags'];
-            $labels = (isset($participant['profile']) ? $participant['profile'] : array());
-            $participant = $savedParticipant['Participant'];
-            $participant['tags'] = $tags;
+            
+            $savedParticipant       = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
+            $this->id               = $savedParticipant['Participant']['_id']."";
+            $tags                   = $participant['tags'];
+            $labels                 = (isset($participant['profile']) ? $participant['profile'] : array());
+            $participant            = $savedParticipant['Participant'];
+            $participant['tags']    = $tags;
             $participant['profile'] = $labels;
         } 
         $savedParticipant = $this->save($participant);
@@ -627,28 +674,28 @@ class Participant extends MongoModel
             'line' => $fileLine);
         return $report;
     }
-
-
+    
+    
     public function importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
     {
-        $count       = 0;
-        $entry       = array();
-        $hasHeaders  = false;
-        $hasTags     = false;  
-        $headers     = array();
-        $labels      = array();
-        $report      = array();
+        $count        = 0;
+        $entry        = array();
+        $hasHeaders   = false;
+        $hasTags      = false;  
+        $headers      = array();
+        $labels       = array();
+        $report       = array();
         $uniqueNumber = array();
-
+        
         if (($handle = fopen($fileFullPath,"r")) === false) {
-            array_push($this->importErrors, $this->importErrorMessages['csv-file-error']);
+            array_push($this->importErrors, __("The csv file cannot be open."));
             return false;
         }
-  
+        
         while (($entry = fgetcsv($handle, 1000, ",")) !== FALSE) {
             if ($count == 0) {
                 $index = 0;
-                foreach($entry as $header) {
+                foreach ($entry as $header) {
                     $header = trim($header);
                     $headers[strtolower($header)] = array(
                         'name' => $header,
@@ -662,7 +709,7 @@ class Participant extends MongoModel
                     continue;
                 } else {
                     if (count($headers) > 1) {
-                        array_push($this->importErrors, $this->importErrorMessages['label-error']); 
+                        array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'.")); 
                         return false;
                     }
                     $headers = array(
@@ -670,20 +717,20 @@ class Participant extends MongoModel
                         'tags' => array('index' => 1));
                 }
             }
-            #skip empty rows
+            //skip empty rows
             if (!isset($entry[0])) {
                 continue;
             }
             $participant          = array();
-            #Get Phone
+            //Get Phone
             $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);
-            #Get Tags
+            //Get Tags
             $participant['tags']  = array();
             if (isset($headers['tags']) && isset($entry[$headers['tags']['index']])) {
                 $participant['tags'] = explode(",", $entry[$headers['tags']['index']]);
             }
             $participant['tags'] = array_merge($tags, $participant['tags']);
-            #Get Labels
+            //Get Labels
             foreach ($labels as $label) {
                 $value = $entry[$label['index']];
                 if ($value == '') {
@@ -694,40 +741,43 @@ class Participant extends MongoModel
                     'value' => (string) $value,
                     'raw' => null);
             }
-            #Save if not a duplicate
+            //Save if not a duplicate
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
+                $report[]                            = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
             }
             $count++; 
         }
         return $report;
     }
-
+    
     
     private function array_filter_out_not_label($input) 
     {
-        $tmp = array_filter(array_keys($input), function($k) {
-            return (!in_array($k, array('phone', 'tags')));
-        });
+        $tmp = array_filter(
+            array_keys($input), 
+            function ($k) {
+                return (!in_array($k, array('phone', 'tags')));
+            }
+            );
         return array_intersect_key($input, array_flip($tmp));
     }    
-
-
+    
+    
     private function importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
     {
         require_once 'excel_reader2.php';
-
-        $hasHeaders    = false;
-        $headers       = array();
-        $labels        = array();
-        $uniqueNumber  = array();
-        $data = new Spreadsheet_Excel_Reader($fileFullPath);
-
+        
+        $hasHeaders   = false;
+        $headers      = array();
+        $labels       = array();
+        $uniqueNumber = array();
+        $data         = new Spreadsheet_Excel_Reader($fileFullPath);
+        
         if (strcasecmp('phone', $data->val(1,'A')) == 0) {
             $hasHeaders = true;
-            for ( $j = 2; $j <= $data->colcount($sheet_index=0); $j++) {
-                if ($data->val(1, $j) == null || $data->val(1, $j) == ''){
+            for ( $j = 2; $j <= $data->colcount($sheet_index = 0); $j++) {
+                if ($data->val(1, $j) == null || $data->val(1, $j) == '') {
                     break;
                 }
                 $header = trim($data->val(1, $j)); 
@@ -737,25 +787,25 @@ class Participant extends MongoModel
             }
             $labels = $this->array_filter_out_not_label($headers);
         } else {
-            if ($data->val(1, 'B')!=null){
-                array_push($this->importErrors, __($this->importErrorMessages['label-error']));
+            if ($data->val(1, 'B')!=null) {
+                array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'."));
                 return false;
             }
         }
         for ($i = ($hasHeaders) ? 2 : 1; $i <= $data->rowcount($sheet_index=0); $i++) {
-            if ($data->val($i,'A')==null){
+            if ($data->val($i,'A')==null) {
                 continue;
             }
-            $participant          = array();
-            #Get Phone
+            $participant = array();
+            //Get Phone
             $participant['phone'] = $this->clearPhone($data->val($i,'A'));
-            #Get tags
-            $participant['tags']  = array();
+            //Get tags
+            $participant['tags'] = array();
             if (isset($headers['tags'])) {
                 $participant['tags'] = explode(",", $data->val($i, $headers['tags']['index']));
             }
             $participant['tags'] = array_merge($tags, $participant['tags']);
-            #Get Labels
+            //Get Labels
             foreach ($labels as $label) {
                 if ($data->val($i, $label['index']) == null) 
                     continue;
@@ -771,86 +821,71 @@ class Participant extends MongoModel
         }
         return $report;
     }
-
-
-    #Filter variables and functions
+    
+    
+    //Filter variables and functions
     public $filterFields = array(
         'phone' => array(
             'label' => 'phone',
             'operators'=> array(
                 'start-with' => array(
-                    'label' => 'start with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
-                    'label' => 'equal to',
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'label' => 'start with any of',
                     'parameter-type' => 'text'))),
         'optin' => array(
             'label' => 'optin',
             'operators' => array(
                 'now' => array(
-                    'label' => 'now',
                     'parameter-type' => 'none'),
                 'date-from' => array(
-                    'label' => 'date from',
                     'parameter-type' => 'date'),
                 'date-to' => array(
-                    'label' => 'date to',
                     'parameter-type' => 'date'))),
         'optout' => array(
             'label' => 'optout',
             'operators' => array(
                 'now' =>array(
-                    'label' => 'now',
                     'parameter-type' => 'none'),
                 'date-from' => array(
-                    'label' => 'date from',
                     'parameter-type' => 'date'),
                 'date-to' => array(
-                    'label' => 'date to',
                     'parameter-type' => 'date'))),
         'enrolled' => array(
             'label' => 'enrolled',
             'operators' => array(
                 'in' => array(
-                    'label' => 'in',
                     'parameter-type' => 'dialogue'),
                 'not-in' =>  array(
-                    'label' => 'not in',
                     'parameter-type' => 'dialogue'))),
         'tagged' => array(
             'label' => 'tagged',
             'operators' => array(
                 'with' =>  array(
-                    'label' => 'with',
                     'parameter-type' => 'tag',
                     'conditional-action' => true),
                 'not-with' =>  array(
-                    'label' => 'not with',
                     'parameter-type' => 'tag',
                     'conditional-action' => true))),
         'labelled' => array(
             'label' => 'labelled',
             'operators' => array(
                 'with' =>  array(
-                    'label' => 'with',
                     'parameter-type' => 'label',
                     'conditional-action' => true),
                 'not-with' =>  array(
-                    'label' => 'not with',
                     'parameter-type' => 'label',
                     'conditional-action' => true)))
-    );
-
+        );
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
-
     
-
+    
+    
     public function getFilters($subset = null) 
     {
         if (!isset($subset)) {
@@ -865,25 +900,25 @@ class Participant extends MongoModel
                 }
             }
             if ($subsetOperator != array()) {
-                $subsetFilterField = $filterField;
+                $subsetFilterField              = $filterField;
                 $subsetFilterField['operators'] = $subsetOperator;
-                $subsetFilterFields[$field] = $subsetFilterField;
+                $subsetFilterFields[$field]     = $subsetFilterField;
             }
         }
         return $subsetFilterFields;
     }
-
-
-   public function validateFilter($filterParam)
+    
+    
+    public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException("Field is missing.");
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]])) {
             throw new FilterException("Field '".$filterParam[1]."' is not supported.");
         }
-
+        
         if (!isset($filterParam[2])) {
             throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
         }
@@ -891,7 +926,7 @@ class Participant extends MongoModel
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
             throw new FilterException("Operator type missing '".$filterParam[2]."'.");
         }
@@ -901,17 +936,17 @@ class Participant extends MongoModel
         }
     }
     
-
+    
     public function fromFilterToQueryConditions($filter) {
-
-        $conditions = array();
-
-        foreach($filter['filter_param'] as $filterParam) {
         
+        $conditions = array();
+        
+        foreach ($filter['filter_param'] as $filterParam) {
+            
             $condition = null;
-
+            
             $this->validateFilter($filterParam);
-       
+            
             if ($filterParam[1] == 'enrolled') {
                 if ($filterParam[2] == 'in') {
                     $condition['enrolled.dialogue-id'] = $filterParam[3];
@@ -922,17 +957,17 @@ class Participant extends MongoModel
                 if ($filterParam[2] == 'now') {
                     $condition['session-id'] = array('$ne' => null);
                 } elseif ($filterParam[2] == 'date-from') {
-                    $condition['last-optin-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'date-to') {
-                    $condition['last-optin-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optin-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'optout') {
                 if ($filterParam[2] == 'now') { 
                     $condition['session-id'] = null;
                 } elseif ($filterParam[2] =='date-from') {
-                    $condition['last-optout-date']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] =='date-to') {
-                    $condition['last-optout-date']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'phone') {
                 if ($filterParam[2] == 'start-with-any') {
@@ -988,7 +1023,7 @@ class Participant extends MongoModel
                 } else {
                     array_push($conditions['$and'], $condition);
                 }
-            }  elseif ($filter['filter_operator'] == "any") {
+            } elseif ($filter['filter_operator'] == "any") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$or'])) {
@@ -997,11 +1032,11 @@ class Participant extends MongoModel
                     array_push($conditions['$or'], $condition);
                 }
             }
-
+            
         }
         
         return $conditions;
     }
-
+    
     
 }

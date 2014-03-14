@@ -135,8 +135,8 @@
 			<?php } ?>
 			<td><?php
 			    $objectType = str_replace("-schedule", "", $schedule['Schedule']['object-type']);
-			    echo __(str_replace("dialogue", "message", $objectType)); ?></td>
-			<td><?php echo __($schedule['Schedule']['content']); ?></td>
+			    echo str_replace("dialogue", "message", $objectType); ?></td>
+			<td><?php echo $schedule['Schedule']['content']; ?></td>
 			</tr>
 			<?php endforeach; ?>
 			</table>
@@ -158,10 +158,10 @@
 			        $messageType = array('dialogue-history', 'request-history', 'unattach-history', 'unmatching-history');
 			        $markerType = array('datepassed-marker-history', 'oneway-marker-history', 'datepassed-action-marker-history');
 			        if (!isset($history['History']['object-type']) || in_array($history['History']['object-type'], $messageType)) { ?>
-			             <td><?php echo __(ucfirst($history['History']['message-direction'])); ?>&nbsp;</td>
+			             <td><?php echo ucfirst($history['History']['message-direction']    ); ?>&nbsp;</td>
 			             <td><?php 
 			             if (isset($history['History']['message-status'])) {
-			                     echo __($history['History']['message-status']);
+			                     echo $history['History']['message-status'];
 			                 } 
 			             ?>&nbsp;</td>
 	 		             <?php if (isset($history['History']['content'])) { ?>

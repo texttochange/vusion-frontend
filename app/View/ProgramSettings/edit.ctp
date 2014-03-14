@@ -24,12 +24,16 @@
     }
     echo $this->Form->create('ProgramSetting'); ?>
     <fieldset>
-        <div class='input text'>
-        <?php
+    <?php
+         $errorShortcode = "";
+        if ($this->Form->isFieldError('shortcode')){ 
+            $errorShortcode = "error";
+        }
+        echo "<div class='input text $errorShortcode'>";
             echo $this->Html->tag('label',__('Shortcode'));    
             foreach($shortcodes as $shortcode) {
                 if ($shortcode['ShortCode']['supported-internationally']==0) {
-                    $countyShortCode = trim($shortcode['ShortCode']['country'])." - ".$shortcode['ShortCode']['shortcode'];
+                    $countyShortCode = trim($shortcode['ShortCode']['country'])."-".$shortcode['ShortCode']['shortcode'];
                     $prefixShortCode = $shortcode['ShortCode']['international-prefix']."-".$shortcode['ShortCode']['shortcode'];
                 } else {
                     $countyShortCode = $shortcode['ShortCode']['shortcode'];
@@ -37,17 +41,18 @@
                 }
                 $shortcodeOptions[$prefixShortCode] = $countyShortCode;
                 $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
+                
             }
             echo "<br />";
             echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
             //pack the shortcodes info to be easy to read in JS
             $this->Js->set('shortcodes', $shortcodeCompact);
             $this->Js->get('#shortcode')->event('change','
-            			var countryShortcode = $("#shortcode option:selected").text();
-            			var countryname = countryShortcode.slice(0, countryShortcode.lastIndexOf("-")-1);
+            			var countryShortcode = $("#shortcode option:selected").val();
+            			var countryInternationalPrefix = countryShortcode.slice(0, countryShortcode.lastIndexOf("-"));
                         var prefixShortcode = $("#shortcode").val();	            			
             			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
-                            $("#international-prefix").val(getCountryCodes(countryname));
+                            $("#international-prefix").val(countryInternationalPrefix);
                         } else {
                             $("#international-prefix").val("all");
                         }
@@ -58,6 +63,9 @@
             			    $("#customized-id").val("");
             			}
             			');
+            if ($this->Form->isFieldError('shortcode')){ 
+                echo $this->Form->error('shortcode'); 
+            }
         ?>
         </div>
         <?php
@@ -103,10 +111,11 @@
 	    ?>
 	    </div>
 	    <?php
-	        if (isset($this->data["ProgramSettings"]["shortcode"]))
-	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSettings"]["shortcode"]]["support-customized-id"] ? false : true;
-	        else
+	        if (isset($this->data["ProgramSetting"]["shortcode"])) {
+	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]]["support-customized-id"] ? false : true;
+	        } else {
     	        $customizedIdDisabled = true;
+    	    }
             echo $this->Form->input('customized-id',
             		array('id' => 'customized-id',
             		      'label' => __('Customized Id'),
@@ -179,13 +188,27 @@
                 }");
              $this->Js->get('document')->event(
                  'ready',
-                 '$("[name*=\'credit-from-date\']").datepicker();
-                 $("[name*=\'credit-to-date\']").datepicker();'
+                 '$("[name*=\'credit-from-date\']").datepicker({
+                         dateFormat:"dd/mm/yy"
+                 });
+                 $("[name*=\'credit-to-date\']").datepicker({
+                         dateFormat:"dd/mm/yy"
+                 });'
                  );
-            echo '</div></div>';
+            echo '</div>';
         ?>
+        <div>
+        <?php
+            echo $this->Form->checkbox(
+                'sms-forwarding-allowed',
+                array(
+                    'value' => 'full',
+                    'hiddenField' => 'none'));
+            echo $this->Html->tag('label',__('Allow SMS Forwarding.'));
+        ?>
+        </div>
+        </div>
     </fieldset>
   <?php echo $this->Form->end(__('Save'));?>
   </div>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

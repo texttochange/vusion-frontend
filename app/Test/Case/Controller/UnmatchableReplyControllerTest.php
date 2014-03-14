@@ -11,8 +11,8 @@ class TestUnmatchableReplyController extends UnmatchableReplyController
     {
         $this->redirectUrl = $url;
     }
-
-
+    
+    
 }
 
 Class UnmatchableReplyControllerTestCase extends ControllerTestCase
@@ -94,5 +94,13 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         $this->assertEquals(2, count($this->vars['unmatchableReplies']));
     }
     
+
+    public function testPaginationCount()
+    {
+        $this->mockProgramAccess();
+        $this->testAction("/unmatchableReply/paginationCount.json");
+        $this->assertEqual($this->vars['paginationCount'], 0);
+    }
+
     
 }

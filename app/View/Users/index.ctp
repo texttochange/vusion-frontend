@@ -1,19 +1,22 @@
 <div class="users-index">
+    <ul class="ttc-actions">
+        <li><?php
+		echo $this->Html->tag(
+		    'span', 
+		    __('Filter'), 
+		    array('class' => 'ttc-button', 'name' => 'add-filter')); 
+		$this->Js->get('[name=add-filter]')->event(
+		    'click',
+		    '$("#advanced_filter_form").show();
+		    createFilter();
+		    addStackFilter();');
+		?></li>
+    </ul>
 	<h3><?php echo __('Users');?></h3>
-	<div class="ttc-data-control">
-	<div id="data-control-nav" class="ttc-paging paging">
-	<?php
-	echo "<span class='ttc-page-count'>";
-	echo $this->Paginator->counter(array(
-	    'format' => __('{:start} - {:end} of {:count}')
-	    ));
-	echo "</span>";
-	echo $this->Paginator->prev('<', array(), null, array('class' => 'prev disabled'));
-	//echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(' >', array(), null, array('class' => 'next disabled'));
+	<?php	
+    echo $this->element('filter_box', array(
+        'controller' => 'users'));
 	?>
-	</div>
-	</div>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
@@ -49,5 +52,4 @@
 		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
 	</ul>
 </div>
-</div>
-
+</div>	

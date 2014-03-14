@@ -13,31 +13,31 @@ App::uses('FilterException', 'Lib');
 
 class ProgramParticipantsController extends AppController
 {
-
-    public $uses = array('Participant', 'History');
+    
+    var $uses       = array('Participant', 'History');
     var $components = array('RequestHandler', 'LocalizeUtils');
     var $helpers    = array(
-        'Js' => array('Jquery')
-        );
-
-
+        'Js' => array('Jquery'),
+        'Paginator' => array('className' => 'BigCountPaginator'));
+    
+    
     function constructClasses() 
     {
         parent::constructClasses();
     }
-
+    
     
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-
-
+    
+    
     function beforeFilter() 
     {
         parent::beforeFilter();
         //$this->Auth->allow('*');
         $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-
+        
         $this->Participant       = new Participant($options);
         $this->History           = new History($options);
         $this->Schedule          = new Schedule($options);
@@ -50,16 +50,16 @@ class ProgramParticipantsController extends AppController
         
         $this->DialogueHelper = new DialogueHelper();
     }
-
+    
     
     public function index() 
-    {
+    {      
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-                
+        
         $paginate = array('all');
         
-        if (isset($this->params['named']['sort'])) {
+        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
@@ -72,114 +72,146 @@ class ProgramParticipantsController extends AppController
         $participants = $this->paginate();
         $this->set(compact('participants'));
     }
-
-
+    
+    
     protected function _getFilterFieldOptions()
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->Participant->filterFields);
     }
-
-
+    
+    
     protected function _getFilterParameterOptions()
-    {
-        $tagValues = $this->Participant->getDistinctTags();
-        $labelValues = $this->Participant->getDistinctLabels();
-        
+    {        
         return array(
             'operator' => $this->Participant->filterOperatorOptions,
             'dialogue' => $this->Dialogue->getDialoguesInteractionsContent(),
-            'tag' => (count($tagValues)>0? array_combine($tagValues, $tagValues) : array()),
-            'label' => (count($labelValues)>0? array_combine($labelValues, $labelValues) : array()));
+            'tag' => array('_ajax' => 'ready'),
+            'label' => array('_ajax' => 'ready'));
     }
-
-
+    
+    
+    public function getFilterParameterOptions()
+    {
+        if (!isset($this->request->query['parameter'])) {
+            throw new Exception(__("The required filter parameter option is missing."));
+        }
+        
+        $requestedParameterOption = $this->request->query['parameter'];
+        
+        switch ($requestedParameterOption) {
+        case "tag":
+            $results = $this->Participant->getDistinctTags();
+            break;
+        case "label":
+            ## Set a 5 minutes timeout on the mapreduce
+            $results = $this->Participant->getDistinctLabels(array(), 5 * 60 * 1000);  
+            break;
+        default:
+            throw new Exception(__("The requested parameter option %s is not supported.", $requestedParameterOption));
+        }        
+        $this->set(compact('results'));
+        $this->render('ajaxResults');
+    }
+    
+    
     public function download()
     {
         $programUrl = $this->params['program'];
         $fileName = $this->params['url']['file'];
         
         $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
-            
+        
         if (!file_exists($fileFullPath)) {
             throw new NotFoundException();
         }
-
+        
         $this->response->header("X-Sendfile: $fileFullPath");
         $this->response->header("Content-type: application/octet-stream");
         $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
         $this->response->send();
     }
-
+    
     
     public function massTag()
     {       
         $programUrl = $this->params['program'];
-        if ($this->request->is('get')){            
-            $conditions = $this->_getConditions();
-            
+        $conditions = $this->_getConditions();
+        
+        if ($this->request->is('get')){
             if(!$conditions){
                 $conditions = array();
-            }  
-            
-            if($this->Participant->addMassTags($this->params['url']['tag'], $conditions)){
-                
+            }
+            if($this->Participant->addMassTags($this->params['url']['tag'], $conditions)){                
                 $this->Session->setFlash(__('The MassTag has been added successfully.'),
                     'default',
                     array('class'=>'message success'));
-                if (isset($this->viewVars['urlParams'])) {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index',
-                        '?' => $this->viewVars['urlParams']));
-                    
-                } else {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index'));
-                }
-                
             } else{                
                 $this->Session->setFlash(__('The MassTag'.$tag.' could not be added successfully.'), 
-                        'default',
-                        array('class' => "message failure"));
-                if (isset($this->viewVars['urlParams'])) {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index',
-                        '?' => $this->viewVars['urlParams']));
-                    
-                } else {
-                    $this->redirect(array(  
-                        'program' => $programUrl,
-                        'controller' => 'programParticipants',
-                        'action' => 'index'));
-                }                
+                	'default',
+                	array('class' => 'message failure'));                            
             }           
-        } 
+        }
+        
+        $redirectUrl = array(  
+        	'program' => $programUrl,
+        	'controller' => 'programParticipants',
+        	'action' => 'index'); 
+        if (isset($this->viewVars['urlParams'])) {
+        	$redirectUrl['?'] = $this->viewVars['urlParams'];
+        }
+        $this->redirect($redirectUrl);
     }
-   
+    
+    
+    public function massUntag()
+    {   
+        $programUrl = $this->params['program'];
+        $conditions = $this->_getConditions();
+        
+        if ($this->request->is('get')){
+            if(!$conditions){
+                $conditions = array();
+            } 
+            if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
+                $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
+                    'default',
+                    array('class'=>'message success'));
+            } else{                
+                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
+                    'default',
+                    array('class' => 'message failure'));                                
+            }
+        } 
+        
+        $redirectUrl = array(  
+            'program' => $programUrl,
+            'controller' => 'programParticipants',
+            'action' => 'index'); 
+        if (isset($this->viewVars['urlParams'])) {
+            $redirectUrl['?'] = $this->viewVars['urlParams'];
+        }
+        $this->redirect($redirectUrl);
+    }
+    
     
     public function export() 
     {
         $programUrl = $this->params['program'];
-
+        
         $this->set('filterFieldOptions', $this->Participant->fieldFilters);
         $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
         $this->set('filterDialogueConditionsOptions', $dialoguesContent);
-     
+        
         $paginate = array(
-                    'all', 
-                    'limit' => 500,
-                    'maxLimit' => 500);
-
+            'all', 
+            'limit' => 500,
+            'maxLimit' => 500);
+        
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-
+        
         $conditions = $this->_getConditions();
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
@@ -195,7 +227,7 @@ class ProgramParticipantsController extends AppController
                 mkdir($filePath);
                 chmod($filePath, 0764);
             }
-
+            
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             $programName = $this->Session->read($programUrl.'_name');
             $fileName = $programName . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
@@ -207,7 +239,7 @@ class ProgramParticipantsController extends AppController
             $headers = $this->Participant->getExportHeaders($conditions);
             ##Second we write the headers
             fputcsv($handle, $headers,',' , '"' );
-
+            
             ##Third we extract the data and copy them in the file
             
             $participantCount = $this->Participant->find('count', array('conditions'=> $conditions));
@@ -220,7 +252,7 @@ class ProgramParticipantsController extends AppController
                     $line = array();
                     foreach($headers as $header) {
                         if (in_array($header, array('phone', 'last-optin-date', 'last-optout-date'))) {
-                                $line[] = $participant['Participant'][$header];
+                            $line[] = $participant['Participant'][$header];
                         } else if ($header == 'tags') {
                             $line[] = implode(', ', $participant['Participant'][$header]);         
                         } else {
@@ -237,12 +269,12 @@ class ProgramParticipantsController extends AppController
             $this->set('errorMessage', $e->getMessage()); 
         }
     }
-
-
+    
+    
     protected function _searchProfile($array, $labelKey)
     {
         $results = array();
-
+        
         foreach($array as $label) {
             if ($label['label'] == $labelKey)
                 return $label['value'];
@@ -250,42 +282,41 @@ class ProgramParticipantsController extends AppController
         
         return null;
     }
-
-
+    
+    
     protected function _getConditions()
     {
-       // print_r($this->params);
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-
+        
         if (!isset($filter['filter_param'])) 
             return null;
-
+        
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }     
-
+        
         $this->set('urlParams', http_build_query($filter));
-
+        
         return $this->Participant->fromFilterToQueryConditions($filter);
     }
-
-
+    
+    
     protected function _notifyUpdateBackendWorker($workerName, $participantPhone)
     {
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
-
-
+    
+    
     public function add() 
     {
         $programUrl = $this->params['program'];
- 
+        
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(
                     __('Please set the program settings then try again.'), 
                     'default', array('class' => "message failure")
-                );
+                    );
                 return;
             }
             $this->Participant->create();
@@ -321,7 +352,7 @@ class ProgramParticipantsController extends AppController
         }
         return $selectOptions;
     }
-
+    
     
     ##we should not be able to edit a phone number
     public function edit()   
@@ -334,7 +365,7 @@ class ProgramParticipantsController extends AppController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read();
-
+        
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Participant->save($this->request->data)) {
                 $this->Schedule->deleteAll(
@@ -345,13 +376,13 @@ class ProgramParticipantsController extends AppController
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('program' => $programUrl, 'action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The participant could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         } else {
             $this->request->data = $this->Participant->read(null, $id);
@@ -367,38 +398,38 @@ class ProgramParticipantsController extends AppController
         }
         $this->set(compact('oldEnrolls', 'selectOptions'));
     }
-
+    
     
     public function massDelete() {
         
         $programUrl = $this->params['program'];
-     
+        
         $params = array('fields' => array('phone'));
-
+        
         $conditions = $this->_getConditions();
         if ($conditions) {
             $params += array('conditions' => $conditions);
         } else {
             $conditions = true;
         }
-
+        
         $count = 0;
         $participants = $this->Participant->find('all', $params);
         foreach($participants as $participant) {
-             $this->Schedule->deleteAll(
+            $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
-             $count++;
+            $count++;
         };
         $result = $this->Participant->deleteAll(
             $conditions, 
             false);
- 
+        
         $this->Session->setFlash(
-                __('%s Participants have been deleted.', $count),
-                'default',
-                array('class'=>'message success')
-                );
+            __('%s Participants have been deleted.', $count),
+            'default',
+            array('class'=>'message success')
+            );
         
         if (isset($this->viewVars['urlParams'])) {
             $this->redirect(array(  
@@ -406,17 +437,17 @@ class ProgramParticipantsController extends AppController
                 'controller' => 'programParticipants',
                 'action' => 'index',
                 '?' => $this->viewVars['urlParams']));
-                
+            
         } else {
-               $this->redirect(array(  
+            $this->redirect(array(  
                 'program' => $programUrl,
                 'controller' => 'programParticipants',
                 'action' => 'index'));
         }
-
+        
     }
-
-
+    
+    
     public function delete() 
     {
         $programUrl = $this->params['program'];
@@ -426,7 +457,7 @@ class ProgramParticipantsController extends AppController
         if (isset($this->params['url']['include'])) {
             $include = $this->params['url']['include'];
         }
-
+        
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
@@ -448,7 +479,7 @@ class ProgramParticipantsController extends AppController
                 __('Participant and related schedule deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(
                 array('program' => $programUrl,
                     'action' => 'index',
@@ -458,9 +489,9 @@ class ProgramParticipantsController extends AppController
                 );
         }
         $this->Session->setFlash(__('Participant was not deleted'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
         $this->redirect(
             array(
                 'program' => $programUrl,
@@ -492,7 +523,7 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id = $this->params['id'];
-
+        
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
@@ -538,7 +569,7 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id = $this->params['id'];
-
+        
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
@@ -578,7 +609,7 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id = $this->params['id'];
-
+        
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
@@ -589,7 +620,7 @@ class ProgramParticipantsController extends AppController
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
             $programNow = $this->ProgramSetting->getProgramTimeNow();            
-
+            
             $resetParticipant = $this->Participant->reset($participant['Participant']);            
             $resetParticipant['enrolled'] = $this->_getAutoEnrollments($programNow);
             if ($this->Participant->save($resetParticipant)) {
@@ -611,12 +642,12 @@ class ProgramParticipantsController extends AppController
             }  
         }
     }
-
+    
     
     public function view() 
     {
         $id = $this->params['id'];
-
+        
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
@@ -624,28 +655,28 @@ class ProgramParticipantsController extends AppController
         $participant = $this->Participant->read(null, $id);
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         $histories   = $this->History->getParticipantHistory(
-                                    $participant['Participant']['phone'],
-                                    $dialoguesInteractionsContent);
-
+            $participant['Participant']['phone'],
+            $dialoguesInteractionsContent);
+        
         $schedules = $this->Schedule->getParticipantSchedules(
-                                    $participant['Participant']['phone'],
-                                    $dialoguesInteractionsContent);
-       
+            $participant['Participant']['phone'],
+            $dialoguesInteractionsContent);
+        
         $this->set(compact('participant','histories', 'schedules'));
     }
-
-
+    
+    
     public function import()
     {
         $programName = $this->Session->read($this->params['program'].'_name');
         $programUrl  = $this->params['program'];
-
+        
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(
                     __('Please set the program settings then try again.'), 
                     'default', array('class' => "message failure")
-                );
+                    );
                 return;
             }
             
@@ -664,7 +695,7 @@ class ProgramParticipantsController extends AppController
             if (isset($this->request->data['Import']['tags'])) {
                 $tags = $this->request->data['Import']['tags'];
             }
-
+            
             $replaceTagsAndLabels = false;
             if (isset($this->request->data['Import']['replace-tags-and-labels'])) {
                 $replaceTagsAndLabels = true;
@@ -710,12 +741,23 @@ class ProgramParticipantsController extends AppController
                     $this->Participant->importErrors[0], 
                     'default', array('class' => "message failure"));
             }
-
+            
             ##Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
         $this->set(compact('report'));
     }
 
+
+    public function paginationCount()
+    {
+        if ($this->params['ext'] !== 'json') {
+            return; 
+        }
+        $defaultConditions = array();
+        $paginationCount = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
+        $this->set('paginationCount', $paginationCount);
+    }
+    
     
 }

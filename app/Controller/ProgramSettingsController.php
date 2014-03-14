@@ -8,17 +8,17 @@ App::uses('VumiRabbitMQ', 'Lib');
 
 class ProgramSettingsController extends AppController
 {
-
-    var $helpers = array('Js' => array('Jquery'));
-    public $components = array('Keyword');
-
+    
+    var $helpers = array('Js' => array('Jquery'), 'Time');
+    var $components = array('Keyword');
+    
     
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
-
-
+    
+    
     public function constructClasses()
     {
         parent::constructClasses();
@@ -34,16 +34,16 @@ class ProgramSettingsController extends AppController
         $this->Template     = new Template($optionVisionDb);
         $this->_instanciateVumiRabbitMQ();
     }
-
-
+    
+    
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-
-
+    
+    
     public function index()
     {
-    	$programUrl = $this->params['program'];
+        $programUrl = $this->params['program'];
         $isEditor = $this->Acl->check(
             array(
                 'User' => array('id' => $this->Session->read('Auth.User.id')),
@@ -51,16 +51,16 @@ class ProgramSettingsController extends AppController
             'controllers/ProgramSettings/edit');
         
         if ($isEditor) {
-            $this->redirect(array('program'=>$programUrl, 'action'=>'edit'));	
+            $this->redirect(array('program'=>$programUrl, 'action'=>'edit'));    
         } else {
-            $this->redirect(array('program'=>$programUrl, 'action'=>'view'));	
+            $this->redirect(array('program'=>$programUrl, 'action'=>'view'));    
         }
     }
-
-
+    
+    
     public function view()
     {
-    	
+        
         $programSettings = $this->ProgramSetting->getProgramSettings();
         if (isset($programSettings['default-template-open-question'])) {
             $template = $this->Template->read(null, $programSettings['default-template-open-question']);
@@ -76,43 +76,35 @@ class ProgramSettingsController extends AppController
         }
         $this->set(compact('programSettings'));
     }
-
-
+    
+    
     public function edit()
-    {    	
+    {        
         $programUrl = $this->params['program'];
-
+        
         if ($this->request->is('post') || $this->request->is('put')) {
-                    
-            $keywordValidation = $this->Keyword->validateProgramKeywords(
+            
+            $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
                 $this->Session->read($programUrl.'_db'), 
                 $this->request->data['ProgramSetting']['shortcode']);
-            if ($keywordValidation['status'] == 'fail') {
-                $this->Session->setFlash(
-                    __("Keyword already used on this shortcode: %s", $keywordValidation['message']),
+            
+            if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'], $keywordValidation)) {
+                $this->_notifyUpdateProgramSettings($programUrl);
+                $this->Session->setFlash(__("Program Settings saved."),
                     'default',
-                    array('class'=>'message failure')
-                    );
-            } else { 
-                if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'])) {
-                    $this->_notifyUpdateProgramSettings($programUrl);
-                    $this->Session->setFlash(__("Program Settings saved."),
-                        'default',
-                        array('class'=>'message success'));
-                    $this->redirect(array(
-                        'program' => $programUrl,
-                        'controller' => 'programSettings',
-                        'action' => 'edit'));
-                    
-                } else {
-                    $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
-                    $this->Session->setFlash(__("Save settings failed."),
-                        'default',
-                        array('class'=>'message failure'));
-                }
+                    array('class'=>'message success'));
+                $this->redirect(array(
+                    'program' => $programUrl,
+                    'controller' => 'programSettings',
+                    'action' => 'edit'));
+                
+            } else {
+                $this->set('validationErrorsArray', $this->ProgramSetting->validationErrors);
+                $this->Session->setFlash(__("Save settings failed."),
+                    'default', array('class'=>'message failure'));
             }
         }
-
+        
         ## Set all the form options
         $shortcodes = $this->ShortCode->find('all');
         $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
@@ -123,7 +115,7 @@ class ProgramSettingsController extends AppController
             'closedQuestionTemplateOptions',
             'unmatchingAnswerTemplateOptions',
             'shortcodes'));
-
+        
         ## in case it's not an edit, the setting need to be retrieved from the database
         if (!isset($this->request->data['ProgramSetting'])) {
             $settings = $this->ProgramSetting->getProgramSettings();
@@ -145,12 +137,12 @@ class ProgramSettingsController extends AppController
             }
         }
     }
-
-
+    
+    
     protected function _notifyUpdateProgramSettings($workerName)
     {
         return $this->VumiRabbitMQ->sendMessageToReloadProgramSettings($workerName);
     }
-
-
+    
+    
 }

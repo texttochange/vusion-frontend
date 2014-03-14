@@ -12,16 +12,18 @@ class ParticipantWebTest extends PHPUnit_Extensions_SeleniumTestCase
 
   public function testParticipantAddDelete()
   {
+    $this->windowMaximize();
     $this->open("/users/login");
     $this->type("id=UserEmail", "marcus@texttochange.com");
     $this->type("id=UserPassword", "marcus");
     $this->click("css=input[type=\"submit\"]");
     $this->waitForPageToLoad("30000");
     $this->click("link=Programs Management");
-    $this->waitForPageToLoad("30000");
+    ## Issue with the program index that is very slow to load until we introduce AJAX
+    $this->waitForPageToLoad("60000");
     $this->click("css=div.ttc-program-box");
     $this->waitForPageToLoad("30000");
-    $this->click("link=Participants »");
+    $this->click("link=Participants");
     $this->waitForPageToLoad("30000");
     $this->click("link=Add");
     $this->waitForPageToLoad("30000");

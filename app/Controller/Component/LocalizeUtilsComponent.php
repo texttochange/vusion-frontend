@@ -14,8 +14,21 @@ class LocalizeUtilsComponent extends Component {
     protected function _localizedLabel(&$item, $key)
     {   
         if ($key == 'label') {
-            $item = __($item);
+            $item = $item;
         }
+    }
+    
+    public function localizeValueInArray($arrayToLocalize)
+    {
+    	array_walk_recursive(
+    		$arrayToLocalize,
+    		array($this, '_localizedValue'));
+    	return $arrayToLocalize;
+    }
+    
+    protected function _localizedValue(&$item)
+    {
+    	$item = $item;
     }
 
 }

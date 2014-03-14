@@ -2,13 +2,11 @@
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
-/**
- * UnmatchableReply Model
- *
- */
+
+
 class UnmatchableReply extends MongoModel
 {
-
+    
     var $specific    = true;
     var $name        = 'UnmatchableReply';
     var $useDbConfig = 'mongo';
@@ -19,16 +17,7 @@ class UnmatchableReply extends MongoModel
     {
         return '1';
     }
-   
     
-    public function __construct($id = false, $table = null, $ds = null)
-    {
-    	    parent::__construct($id, $table, $ds);
-    	    
-    	    $this->dialogueHelper = new DialogueHelper();
-    }
-
-
     function getRequiredFields($objectType=null)
     {
         return array(
@@ -37,7 +26,41 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
+
     
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
+        $this->dialogueHelper = new DialogueHelper();
+    }
+
+
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+
     
     public $filterFields = array(
         'country' => array(
@@ -55,7 +78,7 @@ class UnmatchableReply extends MongoModel
         'from-phone' => array(
             'label' => 'from number',
             'operators' => array(
-                 'start-with' => array(
+                'start-with' => array(
                     'label' => 'starts with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
@@ -94,24 +117,24 @@ class UnmatchableReply extends MongoModel
                 'has-keyword' => array(
                     'label' => 'has keyword',
                     'parameter-type' => 'text'))), 
-    );
-
+        );
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
-
+    
     
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException("Field is missing.");
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]])) {
             throw new FilterException("Field '".$filterParam[1]."' is not supported.");
         }
-
+        
         if (!isset($filterParam[2])) {
             throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
         }
@@ -119,7 +142,7 @@ class UnmatchableReply extends MongoModel
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
             throw new FilterException("Operator type missing '".$filterParam[2]."'.");
         }
@@ -128,21 +151,21 @@ class UnmatchableReply extends MongoModel
             throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
         }
     }
-
-
-    public function fromFilterToQueryConditions($filter) {
-
+    
+    
+    public function fromFilterToQueryConditions($filter, $countryPrefixes = array()) {
         $conditions = array();
-
-        foreach($filter['filter_param'] as $filterParam) {
         
+        foreach($filter['filter_param'] as $filterParam) {
+            
             $condition = null;
             
             $this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'country') {
+                $countryPrefix = $countryPrefixes[$filterParam[3]];
                 if ($filterParam[2] == 'is') {
-                    $condition['participant-phone'] = new MongoRegex("/^(\\+)?".$filterParam[3]."/");
+                    $condition['participant-phone'] = new MongoRegex("/^(\\+)?".$countryPrefix."/");
                 }
             } elseif ($filterParam[1] == 'shortcode') {
                 if ($filterParam[2] == 'is') {
@@ -152,9 +175,9 @@ class UnmatchableReply extends MongoModel
                 }
             } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->dialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'from-phone') {
                 if ($filterParam[2] == 'equal-to') {
@@ -186,7 +209,7 @@ class UnmatchableReply extends MongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['message-content'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'contain') {
-                     $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
                 } elseif ($filterParam[2] == 'has-keyword') {
                     $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
                 }
@@ -213,5 +236,5 @@ class UnmatchableReply extends MongoModel
         return $conditions;
     }
     
-
+    
 }

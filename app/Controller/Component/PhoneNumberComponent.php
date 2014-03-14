@@ -8,30 +8,40 @@ class PhoneNumberComponent extends Component {
     {
         parent::startup($controller);
     }
-
-    public function getCountriesByPrefixes() { 
-        $filePath = WWW_ROOT . "files"; 
-		$fileName = "countries and codes.csv";
-		$importedCountries = fopen($filePath . DS . $fileName,"r");
-		$countries=array();
-		$count = 0;
-		$options = array();
-		while(!feof($importedCountries)){
-		   $countries[] = fgets($importedCountries);
-		   if($count > 0 && $countries[$count]){
+        
+    
+    public function getCountriesByPrefixes()
+    { 
+    	$filePath = WWW_ROOT . "files"; 
+        $fileName = "countries and codes.csv";
+        $importedCountries = fopen($filePath . DS . $fileName,"r");
+        $countries=array();
+        $count = 0;
+        $options = array();
+        while(!feof($importedCountries)){
+           $countries[] = fgets($importedCountries);
+           if($count > 0 && $countries[$count]){
                $countries[$count] = str_replace("\n", "", $countries[$count]);
                $explodedLine = explode(",", $countries[$count]);
                $options[trim($explodedLine[1])] = trim($explodedLine[0]);
-    	   }
-		   $count++;		   
-		}
-		return $options;
-	}
+           }
+           $count++;           
+        }
+        return $options;
+    }
 
-	public function getCountries() {
-	    $countriesPrefixes = $this->getCountriesByPrefixes();
+    
+    public function getPrefixesByCountries() 
+    { 
+        return array_flip($this->getCountriesByPrefixes());
+    }
+    
+    
+    public function getCountries() 
+    {
+        $countriesPrefixes = $this->getCountriesByPrefixes();
         return array_combine(array_values($countriesPrefixes), array_values($countriesPrefixes));  
-	}
-
-
+    }
+    
+    
 }

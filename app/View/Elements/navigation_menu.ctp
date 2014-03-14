@@ -167,6 +167,23 @@
     </li>  
     <li>
         <?php
+        echo $this->AclLink->generateLink(__('Content Variables'),$programDetails['url'],'programContentVariables','index');
+        ?>
+        <ul>
+            <li>
+                <?php 
+                     echo $this->AclLink->generateLink(__('Keys/Value'), $programDetails['url'], 'programContentVariables', 'index');
+                ?>
+            </li>
+            <li>
+                <?php 
+                     echo $this->AclLink->generateLink(__('Tables'), $programDetails['url'], 'programContentVariables', 'indexTable');
+                ?>
+            </li>
+        </ul>
+    </li>  
+    <li>
+        <?php
         echo $this->AclLink->generateLink(__('Participants'),$programDetails['url'],'programParticipants','index');
         ?>
         <ul>

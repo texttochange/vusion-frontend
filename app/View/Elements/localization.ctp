@@ -37,6 +37,8 @@ var localized_messages = {
     generating_file: "<?php echo __('Generating export file...')?>",
     download_should_start: "<?php echo __('The export file has been generated. The download should start shortly.')?>",
     select_one: "<?php echo __('Select one...')?>",
+    table_saved: "<?php echo __('Table saved.')?>",
+    content_variable_table_value: "<?php echo __('This value is editable and can be used in message with: ')?>",
 };
 
 var localized_actions= {
@@ -48,7 +50,8 @@ var localized_actions= {
     filter_operator_suffix: "<?php echo __('of the following rules:')?>",
     filter_operator_any: "<?php echo __('any')?>",
     filter_operator_all: "<?php echo __('all')?>",
-    mass_tag:"<?php echo __('Tag all filtered Participants') ?>"
+    mass_tag:"<?php echo __('Tag participants') ?>",
+    mass_untag:"<?php echo __('Untag participants')?>"
 };
 
 var localized_labels = {
@@ -58,6 +61,7 @@ var localized_labels = {
     "interactions": "<?php echo __('Interactions')?>",
     "interaction": "<?php echo __('Interaction')?>",
     "keyword": "<?php echo __('Keyword')?>",
+    "characters": "<?php echo __('characters')?>",
     "choice": "<?php echo __('Choice')?>",
     "content": "<?php echo __('Content')?>",
     "date-time": "<?php echo __('Time')?>",
@@ -138,7 +142,33 @@ var localized_labels = {
     "proportional-tagging": "<?php echo __('Proportional Tagging')?>",
     "proportional-tags": "<?php echo __('Proportional Tags')?>",
     "proportional-tag": "<?php echo __('Proportional Tag')?>",
+    "url-forwarding": "<?php echo __('URL Forward')?>",
+    "forward-url": "<?php echo __('Forward URL')?>",
+    "sms-forwarding": "<?php echo __('SMS Forward')?>",
+    "forward-to": "<?php echo __('Receiver Tag')?>",
+    "forward-content": "<?php echo __('Content')?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
+    "is-not": "<?php echo __('is not')?>",
+    "start-with": "<?php echo __('start with')?>",
+    "equal-to": "<?php echo __('equal to')?>",
+    "start-with-any": "<?php echo __('start with any')?>",
+    "now": "<?php echo __('now')?>",
+    "date-from": "<?php echo __('date from')?>",
+    "date-to": "<?php echo __('date to')?>",
+    "in": "<?php echo __('in')?>",
+    "not-in": "<?php echo __('not in')?>",
+    "is": "<?php echo __('is')?>",
+    "is-any": "<?php echo __('is any')?>",
+    "not-is-any": "<?php echo __('not is any')?>",
+    "not-is": "<?php echo __('not is')?>",
+    "from": "<?php echo __('from')?>",
+    "to": "<?php echo __('to')?>", 
+    "contain": "<?php echo __('contain')?>",
+    "has-keyword": "<?php echo __('has keyword')?>", 
+    "has-keyword-any": "<?php echo __('has keyword any')?>", 
+    "matching": "<?php echo __('matching')?>",
+    "not-matching": "<?php echo __('not matching')?>",
+    "many": "<?php echo __('many')?>",
 };
 

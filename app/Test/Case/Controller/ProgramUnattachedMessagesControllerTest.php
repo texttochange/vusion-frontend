@@ -7,51 +7,51 @@ App::uses('Participant', 'Model');
 App::uses('PredefinedMessage', 'Model');
 
 /**
- * TestProgramUnattachedMessagesController *
- */
+* TestProgramUnattachedMessagesController *
+*/
 class TestProgramUnattachedMessagesController extends ProgramUnattachedMessagesController
 {
-
+    
     public $autoRender = false;
-
-
+    
+    
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-
+    
     
 }
 
 /**
- * ProgramUnattachedMessagesController Test Case
- *
- */
+* ProgramUnattachedMessagesController Test Case
+*
+*/
 class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
 {
     var $programData = array(
         0 => array( 
             'Program' => array(
-            'name' => 'Test Name',
-            'url' => 'testurl',
-            'timezone' => 'utc',
-            'database' => 'testdbprogram'
-        )
-     ));
-
+                'name' => 'Test Name',
+                'url' => 'testurl',
+                'timezone' => 'utc',
+                'database' => 'testdbprogram'
+                )
+            ));
+    
     
     public function setUp() 
     {
         Configure::write("mongo_db",$this->programData[0]['Program']['database']);
         Configure::write("testurl_db",$this->programData[0]['Program']['database']);
         parent::setUp();
-
+        
         $this->ProgramUnattachedMessages = new TestProgramUnattachedMessagesController();
         $this->instanciateModels();
         $this->dropData();
     }
-
-
+    
+    
     protected function instanciateModels() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);    
@@ -62,7 +62,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->Participant       = new Participant($options);
         $this->PredefinedMessage = new PredefinedMessage($options);
     }	
-  
+    
     
     protected function dropData()
     {
@@ -74,16 +74,16 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->PredefinedMessage->deleteAll(true, false);
     }
     
-
+    
     public function tearDown() 
     {
         $this->dropData();
-
+        
         unset($this->ProgramUnattachedMessages);
-
+        
         parent::tearDown();
     }
-
+    
     
     public function mock_program_access()
     {
@@ -95,10 +95,10 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                     'Auth' => array()
                     ),
                 'models' => array(
-                   'Program' => array('find', 'count'),
-                   'Group' => array(),
-                   'User' => array('find')
-                   ),
+                    'Program' => array('find', 'count'),
+                    'Group' => array(),
+                    'User' => array('find')
+                    ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_notifyUpdateBackendWorkerUnattachedMessage',
@@ -106,37 +106,34 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-
+        
         $unattachedMessages->Acl
-            ->expects($this->any())
-            ->method('check')
-            ->will($this->returnValue('true'));
-            
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
         $unattachedMessages->Program
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($this->programData));
-
+        ->expects($this->once())
+        ->method('find')
+        ->will($this->returnValue($this->programData));
+        
         $unattachedMessages->Session
-            ->expects($this->any())
-            ->method('read')
-            ->will($this->onConsecutiveCalls(
-                '4', 
-                '2',
-                $this->programData[0]['Program']['database'],
-                $this->programData[0]['Program']['name'],
-                'utc',
-                'testdbprogram'
-                ));
- 
+        ->expects($this->any())
+        ->method('read')
+        ->will(
+            $this->returnValue(
+                $this->programData[0]['Program']['database']
+                )
+            );
+        
         return $unattachedMessages;
-
+        
     }
     
-/**
- * Test methods
- *
- */ 
+    /**
+    * Test methods
+    *
+    */ 
     public function testIndex()
     {
         $userGerald = array(
@@ -153,10 +150,10 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $unattachedMessages = $this->mock_program_access();
         
         $unattachedMessages->User
-            ->expects($this->any())
-            ->method('find')
-            ->will($this->returnValue($userGerald));
-
+        ->expects($this->any())
+        ->method('find')
+        ->will($this->returnValue($userGerald));
+        
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $date = new DateTime('tomorrow');
@@ -164,20 +161,20 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $date->modify("+4 hour");
         $this->UnattachedMessage->create();
         $this->UnattachedMessage->save(array(
-                'name' => 'my message',
-                'send-to-type' => 'all',
-                'content' => 'Hello!!!!',
-                'type-schedule' => 'fixed-time',
-                'fixed-time' => $date->format('d/m/Y H:i'),
-                'created-by' => 1
+            'name' => 'my message',
+            'send-to-type' => 'all',
+            'content' => 'Hello!!!!',
+            'type-schedule' => 'fixed-time',
+            'fixed-time' => $date->format('d/m/Y H:i'),
+            'created-by' => 1
             ));
         
         $this->testAction("/testurl/programUnattachedMessages/index");
         
         $this->assertEquals(1, count($this->vars['unattachedMessages']));	
     }
-
-
+    
+    
     public function testAdd()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -186,18 +183,18 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $unattachedMessages = $this->mock_program_access();
         $unattachedMessages->Auth
-            ->staticExpects($this->once())
-            ->method('user')
-            ->will($this->returnValue(array(
-                'id' => '2',
-                'group_id' => '2')));
+        ->staticExpects($this->once())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '2',
+            'group_id' => '2')));
         
         $unattachedMessages
-            ->expects($this->once())
-            ->method('_notifyUpdateBackendWorkerUnattachedMessage')
-            ->with('testurl', $regexId)
-            ->will($this->returnValue(true));
-
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorkerUnattachedMessage')
+        ->with('testurl', $regexId)
+        ->will($this->returnValue(true));
+        
         $date = new DateTime('tomorrow');    
         $unattachedMessage = array(
             'UnattachedMessage' => array(
@@ -205,22 +202,22 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'send-to-type' => 'all',
                 'content' => 'Hello!!!!',
                 'type-schedule' => 'immediately'
-             )
-        );
+                )
+            );
         
         $this->testAction("/testurl/programUnattachedMessages/add", array(
             'method' => 'post',
             'data' => $unattachedMessage
             )
-        );
-
+            );
+        
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessageDB = $this->UnattachedMessage->find('all');
-
+        
         $this->assertTrue(in_array('created-by', array_keys($unattachedMessageDB[0]['UnattachedMessage'])));
         $this->assertEquals(2, $unattachedMessageDB[0]['UnattachedMessage']['created-by']);   
     }
-
+    
     
     public function testAdd_importParticipant()
     {
@@ -228,32 +225,32 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]+$/');
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
-       
+        
         $unattachedMessages = $this->mock_program_access();
         $unattachedMessages->Auth
-            ->staticExpects($this->once())
-            ->method('user')
-            ->will($this->returnValue(array(
-                'id' => '2',
-                'group_id' => '2')));
-            
+        ->staticExpects($this->once())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '2',
+            'group_id' => '2')));
+        
         $unattachedMessages
-            ->expects($this->once())
-            ->method('_notifyUpdateBackendWorkerUnattachedMessage')
-            ->with('testurl', $regexId)
-            ->will($this->returnValue(true));
-
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorkerUnattachedMessage')
+        ->with('testurl', $regexId)
+        ->will($this->returnValue(true));
+        
         $unattachedMessages
-            ->expects($this->exactly(2))
-            ->method('_notifyUpdateBackendWorkerParticipant')
-            ->with('testurl', $regexPhone)
-            ->will($this->returnValue(true));
-       
+        ->expects($this->exactly(2))
+        ->method('_notifyUpdateBackendWorkerParticipant')
+        ->with('testurl', $regexPhone)
+        ->will($this->returnValue(true));
+        
         $unattachedMessages->Session
-            ->expects($this->once())
-            ->method('setFlash')
-            ->with('The message has been saved. To be send to 2 participants, 2 have been imported and 0 failed to be imported.');
-
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('The message has been saved. To be send to 2 participants, 2 have been imported and 0 failed to be imported.');
+        
         $date = new DateTime('tomorrow');    
         $unattachedMessage = array(
             'UnattachedMessage' => array(
@@ -273,8 +270,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'method' => 'POST',
             'data' => $unattachedMessage
             )
-        );
-
+            );
+        
         $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessage = $this->UnattachedMessage->find('first');
@@ -283,15 +280,15 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             $unattachedMessage['UnattachedMessage']['send-to-phone']);
         $this->assertEquals(2, $this->Participant->find('count'));
     }
-
-
+    
+    
     public function testEdit()
     { 
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
-       
+        
         $unattachedMessages = $this->mock_program_access();
-                 
+        
         $date = new DateTime('tomorrow');  
         //in case it's midnight
         $date->modify("+3 hour");
@@ -303,40 +300,40 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'type-schedule' => 'fixed-time',
                 'fixed-time' => $date->format('d/m/Y H:i'),
                 'created-by' => 1
-             )
-        );
+                )
+            );
         $this->UnattachedMessage->create();
         $data = $this->UnattachedMessage->save($unattachedMessage);
         
         $unattachedMessages
-            ->expects($this->once())
-            ->method('_notifyUpdateBackendWorkerUnattachedMessage')
-            ->with('testurl', $this->UnattachedMessage->id)
-            ->will($this->returnValue(true));
-
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorkerUnattachedMessage')
+        ->with('testurl', $this->UnattachedMessage->id)
+        ->will($this->returnValue(true));
+        
         $this->testAction("/testurl/programUnattachedMessages/edit/".$data['UnattachedMessage']['_id'],
             array(
-            'method' => 'POST',
-            'data' => array(
-                'UnattachedMessage' => array(
-                    'name' => 'test',
-                    'send-to-type' => 'all',
-                    'content' => 'Bye!!!!',
-                    'type-schedule' => 'fixed-time',
-                    'fixed-time' => $date->format('d/m/Y H:i')
+                'method' => 'POST',
+                'data' => array(
+                    'UnattachedMessage' => array(
+                        'name' => 'test',
+                        'send-to-type' => 'all',
+                        'content' => 'Bye!!!!',
+                        'type-schedule' => 'fixed-time',
+                        'fixed-time' => $date->format('d/m/Y H:i')
+                        )
                     )
                 )
-            )
-        );
+            );
         $this->UnattachedMessage->id = $data['UnattachedMessage']['_id']."";
         $unattachedMessage = $this->UnattachedMessage->read(); 
         $this->assertEquals(
-           'Bye!!!!',
+            'Bye!!!!',
             $unattachedMessage['UnattachedMessage']['content']
-        );            
+            );            
     }
-
-
+    
+    
     public function testDelete()
     {
         $this->mock_program_access();
@@ -344,7 +341,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
         $date = new DateTime('tomorrow');
-         //in case it's midnight
+        //in case it's midnight
         $date->modify("+3 hour");
         $unattachedMessage = array(
             'UnattachedMessage' => array(
@@ -354,20 +351,20 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'type-schedule' => 'fixed-time',
                 'fixed-time' => $date->format('d/m/Y H:i'),
                 'created-by' => 1
-             )
-        );
+                )
+            );
         $this->UnattachedMessage->create();
         $data = $this->UnattachedMessage->save($unattachedMessage);
-  
+        
         $scheduleToBeDeleted= array(
             'Schedule' => array(
                 'unattach-id' => $data['UnattachedMessage']['_id'],
                 )
             );
-
+        
         $this->Schedule->create('unattach-schedule');
         $this->Schedule->save($scheduleToBeDeleted);
-      
+        
         $this->testAction("/testurl/programUnattachedMessages/delete/".$data['UnattachedMessage']['_id']);
         
         $this->assertEquals(
@@ -378,9 +375,9 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             0,
             $this->Schedule->find('count')
             );
-
+        
     }
-
+    
     
     public function testIndex_unattachedMessageStatus()
     {     
@@ -411,7 +408,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programUnattachedMessages/index");        
         $this->assertEquals(1, count($this->vars['unattachedMessages']));
     }
-
+    
     
     public function testIndex_scheduleUnattachedMessageStatus()
     {     
@@ -441,6 +438,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(1, count($this->vars['unattachedMessages'])); 
     }
-
-
+    
+    
 }

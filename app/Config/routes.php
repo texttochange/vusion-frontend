@@ -43,8 +43,10 @@
 	Router::mapResources('programRequests', array('prefix' => '/:program/'));
 	Router::mapResources('programParticipants', array('prefix'=> '/:program/'));
 	Router::mapResources('Programs');
+	Router::mapResources('ProgramsAjax', array('prefix'=> '/:program/'));
 	//Router::mapResources('users');
 	Router::parseExtensions('json', 'csv');
+
 	
 /**
 *  route for static controllers
@@ -116,6 +118,14 @@
 		);
 	
 	Router::connect(
+		'/shortCodes/index/*',
+		array(
+			'controller' => 'shortCodes',
+			'action' => 'index'
+			)
+		);
+
+	Router::connect(
 		'/shortCodes/:action/:id',
 		array(
 			'controller' => 'shortCodes',
@@ -171,6 +181,14 @@
 			)
 		);
 	
+	Router::connect(
+		'/templates/index/*',
+		array(
+			'controller' => 'templates',
+			'action' => 'index'
+			)
+		);
+
 	Router::connect(
 		'/templates/:action/:id',
 		array(

@@ -4,28 +4,32 @@ App::uses('FieldValueIncorrect', 'Lib');
 App::uses('MissingField', 'Lib');
 App::uses('VirtualModel', 'Model');
 App::uses('VusionConst', 'Lib');
+App::uses('DialogueHelper', 'Lib');
 
 class Interaction extends VirtualModel
 {
-    var $name = 'interaction';
-    var $version = '3'; 
+    var $name       = 'interaction';
+    var $version    = '3'; 
+    var $databaName = null;    
 
     var $payload = array();
-
+    
     var $fields = array(
         'interaction-id',
         'type-schedule',
         'type-interaction',
         'activated',
         'prioritized');
-
     
-    public function __construct()
+    
+    //DatabaseName required for Keyword Validation
+    public function __construct($databaseName)
     {     
         parent::__construct();
         $this->Action = new Action();
+        $this->databaseName = $databaseName;
     }
-
+    
     
     public $validate = array(
         'interaction-id' => array(
@@ -38,7 +42,7 @@ class Interaction extends VirtualModel
                 'message' => 'Interaction Id field cannot be empty.'    
                 )
             ),
-        # Type Schedule
+        // Type Schedule
         'type-schedule' => array(
             'required' => array(
                 'rule' => 'required',
@@ -64,11 +68,15 @@ class Interaction extends VirtualModel
                 'message' => 'Type schedule required field are not present.'
                 )
             ),
-        ## Type Schedule subtype
+        // Type Schedule subtype
         'date-time' => array(
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule', 'fixed-time'),
                 'message' => 'Fixed time required a date-time.',
+                ),
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The date time has to be set.'
                 ),
             'validFormat' => array(
                 'rule' => array('regex', VusionConst::DATE_TIME_REGEX),
@@ -99,7 +107,7 @@ class Interaction extends VirtualModel
                 'message' => 'Schedule Condition required a offset-condition-interaction-id.',
                 )
             ),
-        # Type Interaction
+        // Type Interaction
         'type-interaction'  => array(
             'required' => array(
                 'rule' => 'required',
@@ -124,7 +132,7 @@ class Interaction extends VirtualModel
                     )
                 )
             ),
-        ## Type Interaction Subtype
+        // Type Interaction Subtype
         'content' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldOrValue', 'type-interaction', 'announcement', 'question-answer', 'question-answer-keyword'),
@@ -137,7 +145,11 @@ class Interaction extends VirtualModel
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validCustomizeContent' => array(
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX),
+                'message' => 'noMessage'
+                ),
             ),
         'keyword'=> array(
             'requiredConditional' => array(
@@ -147,7 +159,15 @@ class Interaction extends VirtualModel
             'validValue' => array(
                 'rule' => array('regex', VusionConst::KEYWORD_REGEX),
                 'message' => VusionConst::KEYWORD_FAIL_MESSAGE
-                )
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null,
+                ),
+            'notUsedKeywordNoSpace' => array(
+                'rule' => 'notUsedKeywordNoSpace',
+                'message' => null,
+                ),
             ),
         'set-use-template'=> array( 
             'requiredConditional' => array(
@@ -174,7 +194,7 @@ class Interaction extends VirtualModel
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('no-unmatching-feedback', 'program-unmatching-feedback', 'interaction-unmatching-feedback')),
-                'message' => 'Type Question value is not valid.',
+                'message' => 'Type unmatching feedback is not valid.',
                 )
             ),
         'type-question'=> array(
@@ -184,7 +204,7 @@ class Interaction extends VirtualModel
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('closed-question', 'open-question')),
-                'message' => 'Type Question value is not valid.',
+                'message' => 'Please select a valid type of Question.',
                 )
             ),
         'answer-keywords' => array(
@@ -197,12 +217,12 @@ class Interaction extends VirtualModel
                 'message' => 'One of the Answer Keyword is not valide.'
                 )
             ),
-        ### Type Interaction Subtype - Type Question Subtype
+        // Type Interaction Subtype - Type Question Subtype
         'label-for-participant-profiling'=> array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldOrKeyValue', array(
-                                                                'type-interaction'=>'question-answer-keyword',
-                                                                'type-question' => 'closed-question')),
+                    'type-interaction'=>'question-answer-keyword',
+                    'type-question' => 'closed-question')),
                 'message' => 'A label-for-participant-profiling is required.',
                 ),
             ),
@@ -210,6 +230,10 @@ class Interaction extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-question', 'closed-question'),
                 'message' => 'A set-answer-accept-no-space field is required.',
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array('answer-accept-no-space', null)),
+                'message' => 'Unvalid choice.', 
                 ),
             ),
         'answers'=> array(
@@ -233,8 +257,11 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'type-question', 'open-question'),
                 'message' => 'A feedbacks field is required.',
                 ),
+            'validValues' => array(
+                'rule' => 'validateFeedbacks',
+                'message' => 'noMessage')
             ),
-        ### Unmatching Answers Subtype
+        // Unmatching Answers Subtype
         'max-unmatching-answer-number' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-max-unmatching-answers', 'max-unmatching-answers'),
@@ -247,7 +274,7 @@ class Interaction extends VirtualModel
                 'message' => 'A max-unmatching-answer-actions field is required.',
                 ),
             ),
-        ### Reminder Subtype
+        // Reminder Subtype
         'type-schedule-reminder' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
@@ -269,8 +296,12 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
                 'message' => 'A reminder-actions field is required.',
                 ),
+            'validValue' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
             ),
-        ### Reminder Schedule Subtype
+        // Reminder Schedule Subtype
         'reminder-days' => array(
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule-reminder', 'reminder-offset-days'),
@@ -289,7 +320,22 @@ class Interaction extends VirtualModel
                 'message' => 'A reminder-minutes field is required.',
                 ),
             ),
-        # Other Interaction Fields
+        // type-unmatching-feedback
+        'unmatching-feedback-content' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'type-unmatching-feedback', 'interaction-unmatching-feedback'),
+                'message' => 'Custom unmatching feedback must have content.',
+                ),
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validCustomizeContent' => array(
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX),
+                'message' => 'noMessage'
+                ),
+            ),
+        // Other Interaction Fields
         'activated'  => array(
             'required' => array(
                 'rule' => 'required',
@@ -312,12 +358,29 @@ class Interaction extends VirtualModel
             )
         );
     
+    
+    public $validateReminderAction = array(
+        'type-action' => array( 
+            'validateActions' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
+            )
+        );
+    
+    //TODO: need clever validation over:
+    // 1) on numbering of choice
+    // 2) notUsedKeyword when ticking allow no space
     public $validateAnswer = array(
         'choice' => array(
             'notempty' => array(
                 'rule' => 'notempty',
                 'message' => 'Actived field cannot be empty.'
-                )
+                ),
+            'validValue' => array(
+                'rule' => array('regex', VusionConst::CHOICE_REGEX),
+                'message' => VusionConst::CHOICE_FAIL_MESSAGE
+                ),
             ),
         'feedbacks' => array(
             'validFeedback' => array(
@@ -332,7 +395,7 @@ class Interaction extends VirtualModel
                 ),
             )
         );
-
+    
     
     public $validateAnswerKeyword = array(
         'keyword' => array(
@@ -343,6 +406,10 @@ class Interaction extends VirtualModel
             'validValue' => array(
                 'rule' => array('regex', VusionConst::KEYWORD_REGEX),
                 'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                ),
+            'notUsedKeyword' => array(
+                'rule' => 'notUsedKeyword',
+                'message' => null,
                 )
             ),
         'feedbacks' => array(
@@ -358,8 +425,8 @@ class Interaction extends VirtualModel
                 ),
             )
         );
-
-
+    
+    
     public $validateFeedback = array(
         'content' => array(
             'notempty' => array(
@@ -369,47 +436,161 @@ class Interaction extends VirtualModel
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
-                )
+                ),
+            'validCustomizeContent' => array(
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX),
+                'message' => 'noMessage'
+                ),
             )
         );
+    
+    
+    public function validCustomizeContent($field, $data, $allowedDomain)
+    {
+        if (isset($data[$field])) {
+            preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
+            $allowed = array("domain", "key1", "key2", "keys3", "otherkey");
+            foreach ($matches as $match) {
+                $match = array_intersect_key($match, array_flip($allowed));
+                foreach ($match as $key=>$value) {
+                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
+                        return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+                    }
+                }                   
+                if (!preg_match($allowedDomain, $match['domain'])) {
+                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
+                }
+                if ($match['domain'] == 'participant') {
+                    if (isset($match['key2'])) {
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
+                    }
+                } else if ($match['domain'] == 'contentVariable') {
+                    if (isset($match['otherkey'])) {
+                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
+                    }
+                } 
+            }
+        }
+        return true;
+    }
 
-
+    
     public function validateAnswers($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswer); 
     }
-
-
+    
+    
     public function validateAnswerKeywords($field, $data)
     {
         return $this->validList($field, $data, $this->validateAnswerKeyword);      
     }
-
-
+    
+    
     public function validateFeedbacks($field, $data)
     {
         return $this->validList($field, $data, $this->validateFeedback);
     }
-
+    
     
     public function validateActions($field, $data)
     {
-        $count = 0;
-        $validationErrors = array();
-        foreach($data[$field] as $action) {
-            $this->Action->set($action);
-            if (!$this->Action->validates()) {
-                $validationErrors[$count] = $this->Action->validationErrors;
+        if (isset($data[$field])) {
+            $count            = 0;
+            $validationErrors = array();
+            foreach ($data[$field] as $action) {
+                $this->Action->set($action);
+                if (!$this->Action->validates()) {
+                    $validationErrors[$count] = $this->Action->validationErrors;
+                }
+                $count++;
             }
-            $count++;
+            if ($validationErrors != array()) {
+                return $validationErrors;
+            }
         }
-        if ($validationErrors != array()) {
-            return $validationErrors;
+        return true;
+    }
+    
+
+    public function setUsedKeywords($usedKeywords = array())
+    {
+        $this->usedKeywords = $usedKeywords;
+    }
+
+
+    public function notUsedKeyword($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        $keywords = DialogueHelper::cleanKeywords($data[$field]);
+        foreach($keywords as $keyword) {
+            if (isset($this->usedKeywords[$keyword])) {
+                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+            }
         }
         return true;
     }
 
 
+    public function notUsedKeywordNoSpace($field, $data)
+    {
+        if (!isset($data[$field]) || !isset($data['set-answer-accept-no-space'])) {
+            return true;
+        }
+        $keywords = DialogueHelper::cleanKeywords($data[$field]);
+        $noSpaceKeywords = Interaction::getInteractionNoSpaceKeywords($data, $keywords);
+        foreach ($noSpaceKeywords as $keyword) {
+            if (isset($this->usedKeywords[$keyword])) {
+                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+            }
+        }
+        return true;
+    }
+
+
+    static public function hasInteractionKeywords($interaction, $keywords)
+    {
+        $interactionKeywords = Interaction::getInteractionKeywords($interaction);
+        return array_intersect($keywords, $interactionKeywords);
+    }
+
+
+    static public function getInteractionKeywords($interaction)
+    {
+        if (isset($interaction['keyword'])) {
+            $keywords = DialogueHelper::cleanKeywords($interaction['keyword']);
+            $noSpacedCurrentKeywords = Interaction::getInteractionNoSpaceKeywords($interaction, $keywords);
+            return array_merge($keywords, $noSpacedCurrentKeywords); 
+        } elseif (isset($interaction['answer-keywords'])) {
+            $keywords = array();
+            foreach ($interaction['answer-keywords'] as $answer) {
+                if (isset($answer['keyword'])) {
+                    $foundKeywords = DialogueHelper::cleanKeywords($answer['keyword']);
+                    $keywords = array_merge($keywords, $foundKeywords);
+                }
+            }
+            return $keywords;
+        }
+        return array();
+    }
+
+
+    static public function getInteractionNoSpaceKeywords($interaction, $keywords)
+    {
+        $usedKeywords = array();
+        if (isset($interaction['set-answer-accept-no-space']) && $interaction['set-answer-accept-no-space'] != null && $interaction['answers']) {
+            foreach($interaction['answers'] as $answer) {
+                foreach($keywords as $keyword) {
+                    $usedKeywords[] = $keyword . DialogueHelper::cleanKeyword($answer['choice']);
+                }
+            }
+        }
+        return $usedKeywords;
+    }
+
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
@@ -417,17 +598,21 @@ class Interaction extends VirtualModel
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
-
+        
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
-
+        
+        if (isset($this->data['date-time'])) {
+            $this->data['date-time'] = DialogueHelper::convertDateFormat($this->data['date-time']);
+        }
         //Exit the function in case of announcement
         if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
             return true;
- 
+        
         if ($this->data['type-interaction'] == 'question-answer') {
+            $this->_setDefault('type-question', null);
             $this->_setDefault('set-use-template', null);
-            $this->_setDefault('type-unmatching-feedback', 'none');                        
+            $this->_setDefault('type-unmatching-feedback', 'no-unmatching-feedback');                        
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('set-max-unmatching-answers', null);
             if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {
@@ -443,31 +628,31 @@ class Interaction extends VirtualModel
                 $this->_setDefault('feedbacks', array());
             }
         }
-      
+        
         if ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
             $this->_beforeValidateAnswerKeywords();
         }
-
+        
         if ($this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
-
+        
         return true;
     }
-
+    
     
     protected function _beforeValidateActions($actions)
     {
-        foreach($actions as &$action) {
+        foreach ($actions as &$action) {
             $this->Action->set($action);
             $this->Action->beforeValidate();
             $action = $this->Action->getCurrent();
         }
     }
-
+    
     
     protected function _beforeValidateAnswerKeywords() 
     {
@@ -479,7 +664,7 @@ class Interaction extends VirtualModel
             $this->_beforeValidateActions(&$answer['answer-actions']);
         }
     }
-
+    
     
     protected function _beforeValidateAnswers() 
     {
@@ -492,5 +677,5 @@ class Interaction extends VirtualModel
         }
     }
     
-
+    
 }

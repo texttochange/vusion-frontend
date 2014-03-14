@@ -7,58 +7,58 @@ App::uses('VusionConst', 'Lib');
 
 class History extends MongoModel
 {
-
-    var $specific = true;    
-
+    
+    var $specific = true;
+    
     //var $name = 'ParticipantStat';
     var $useDbConfig = 'mongo';    
     var $useTable    = 'history';
-
+    
     var $messageType = array(
         'dialogue-history',
         'request-history',
         'unattach-history',
         'unmatching-history');
-   
+    
     var $markerType = array(
         'datepassed-marker-history',
         'datepassed-action-marker-history',
         'oneway-marker-history');
-
+    
     
     function getModelVersion()
     {
         return '2';
     }
-
     
-    // TODO fail to express that a incoming message for dialogue id has 'matching-answer' field
+    
+    // TODO refactor validation to have a more cakelike model description
     function getRequiredFields($object)
     {
         $fields = array(
-             'timestamp',
-             'participant-phone',
-             'participant-session-id');   
-
+            'timestamp',
+            'participant-phone',
+            'participant-session-id');   
+        
         $MESSAGE_FIELDS = array(
             'message-content',
             'message-direction');
-
+        
         $SPECIFIC_DIRECTION_FIELDS = array(
             'outgoing' => array('message-id', 'message-status'),
             'incoming' => array('matching-answer'));
-
+        
         $SPECIFIC_STATUS_FIELDS = array(
             'failed' => array('failure-reason'),
             'pending' => array(),
             'delivered' => array());
-
+        
         $OBJECT_WITH_DIALOGUE_REF = array(
             'dialogue-history',
             'oneway-marker-history',
             'datepassed-marker-history',
             );
-
+        
         if (in_array($object['object-type'], $this->messageType)) {
             $fields = array_merge($fields, $MESSAGE_FIELDS);
             $fields = array_merge($fields, $SPECIFIC_DIRECTION_FIELDS[$object['message-direction']]);
@@ -66,7 +66,7 @@ class History extends MongoModel
                 $fields = array_merge($fields, $SPECIFIC_STATUS_FIELDS[$object['message-status']]);
             }            
         };
-
+        
         if (in_array($object['object-type'], $OBJECT_WITH_DIALOGUE_REF)) {
             $fields = array_merge($fields, array('dialogue-id', 'interaction-id'));
         } elseif ($object['object-type'] == 'unattach-history') {
@@ -76,26 +76,26 @@ class History extends MongoModel
         }
         return $fields;
     }
-
+    
     
     public function checkFields($object)
     {       
         $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object));
         foreach ($object as $field => $value) {
-            if (!in_array($field, $toCheck)){
+            if (!in_array($field, $toCheck)) {
                 unset($object[$field]);
             }
         }
-
+        
         foreach ($toCheck as $field) {
-            if (!isset($object[$field])){
+            if (!isset($object[$field])) {
                 $object[$field] = null;
             }
         };
-
+        
         return $object;
     }
-
+    
     
     public $findMethods = array(
         'participant' => true,
@@ -107,9 +107,20 @@ class History extends MongoModel
     
     public function __construct($id = false, $table = null, $ds = null)
     {
-    	    parent::__construct($id, $table, $ds);
-    	    
-    	    $this->DialogueHelper = new DialogueHelper();
+        parent::__construct($id, $table, $ds);
+
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+    }
+
+
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
     }
     
     
@@ -137,43 +148,62 @@ class History extends MongoModel
                     ));
             }
             $query['order'] = false;
-            
             return $query;
         } elseif ($state === 'after') {
             foreach (array(0, $this->alias) as $key) {
-               if (isset($results[0][$key]['count'])) {
-                        if (($count = count($results)) > 1) {
-                            return $count;
-                        } else {
-                            return intval($results[0][$key]['count']);
-                        }
+                if (isset($results[0][$key]['count'])) {
+                    if (($count = count($results)) > 1) {
+                        return $count;
+                    } else {
+                        return intval($results[0][$key]['count']);
                     }
                 }
+            }
             
             return false;
         }
     }    
-
-
+    
+    
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+    
     public function _findScriptFilter($state, $query, $results = array())
     {
         if ($state == 'before') {
             $query['conditions'] = array(
-            	    	    'message-direction' => 'incoming',
-            	    	    'matching-answer' => null
-            	    );
+                'message-direction' => 'incoming',
+                'matching-answer' => null
+                );
             return $query;
         }
-
+        
         return $results;
     }
     
-
+    
     public function getParticipantHistory($phone, $dialoguesInteractionsContent) {
-         $histories   = $this->find('participant', array('phone' => $phone));
-         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
+        $histories   = $this->find('participant', array('phone' => $phone));
+        return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
-
+    
     
     public function addDialogueContent($histories, $dialoguesInteractionsContent)
     {
@@ -189,73 +219,59 @@ class History extends MongoModel
                     $history['History']['details'] = 'unknown interaction';
                 }
             }
-         }
-         return $histories;
+        }
+        return $histories;
     }
-
     
-    #Filter variables and functions
+    
+    //Filter variables and functions
     public $filterFields = array(
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'message-direction'),
                 'not-is' => array(
-                    'label' => 'is not',
                     'parameter-type' => 'message-direction'))),
         'message-status' => array(
             'label' => 'message status',
             'operators' => array(
                 'is' => array(
-                    'label' => 'is',
                     'parameter-type' => 'message-status'),
                 'not-is' => array(
-                    'label' => 'is not',
                     'parameter-type' => 'message-status'))),
         'date' => array(
             'label' => 'date',
             'operators' => array(
                 'from' => array(
-                    'label' => 'since',
                     'parameter-type' => 'date'),
                 'to' => array(
-                    'label' => 'until',
                     'parameter-type' => 'date'))),
         'participant-phone' => array(
             'label' => 'participant phone',
             'operators' => array(
                 'start-with' => array(
-                    'label' => 'stats with',
                     'parameter-type' => 'text'),
                 'equal-to' => array(
-                    'label' => 'equal to',
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'label' => 'starts with any of',
                     'parameter-type' => 'text'))),
         'separate-message' => array(
             'label' => 'separate message',
             'operators' => array(
                 'equal-to' => array(
-                    'label' => 'name is',
                     'parameter-type' => 'unattach-message'),                
                 )),
         'message-content' => array(
             'label' => 'message content',
             'operators' => array(
                 'equal-to' => array(
-                    'label' => 'equals',
                     'parameter-type' => 'text'),
                 'contain' => array(
-                    'label' => 'contains',
                     'parameter-type' => 'text'),
                 'has-keyword' => array(
-                    'label' => 'has keyword',
                     'parameter-type' => 'text'),
                 'has-keyword-any' => array(
-                    'label' => 'has keyword any of',
                     'parameter-type' => 'text',
                     'parameter-validate' => VusionConst::KEYWORD_REGEX)
                 )),
@@ -263,60 +279,86 @@ class History extends MongoModel
             'label' => 'dialogue source',
             'operators' => array(
                 'is' => array(
-                    'label' => 'is',
-                    'parameter-type' => 'dialogue')
-                )),
+                    'parameter-type' => 'dialogue'),
+                'not-is' => array(
+                    'parameter-type' => 'dialogue'),
+                'is-any' => array(
+                    'parameter-type' => 'none'),
+                'not-is-any' => array(
+                    'parameter-type' => 'none'),
+                )), 
         'interaction-source' => array(
             'label' => 'interaction source',
             'operators' => array(
                 'is' => array(
-                    'label' => 'is',
-                    'parameter-type' => 'interaction')
+                    'parameter-type' => 'interaction'),
+                'not-is' => array(
+                    'parameter-type' => 'interaction'),
+                'is-any' => array(
+                    'parameter-type' => 'none'),
+                'not-is-any' => array(
+                    'parameter-type' => 'none'),
+                )),
+        'request-source' => array(
+            'label' => 'request source',
+            'operators' => array(
+                'is' => array(
+                    'parameter-type' => 'request'),
+                'not-is' => array(
+                    'parameter-type' => 'request'),
+                'is-any' => array(
+                    'parameter-type' => 'none'),
+                'not-is-any' => array(
+                    'parameter-type' => 'none'),
                 )),
         'answer' => array(
-            'label' => 'answers',
+            'label' => 'answer',
             'operators' => array(
                 'matching' => array(
-                    'label' => 'matching one question',
                     'parameter-type' => 'none'),
                 'not-matching' => array(
                     'label' => 'not matching any question',
                     'parameter-type' => 'none')
                 )), 
         );
-
+    
     
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
-
+    
     public $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
         );
-
+    
     
     public $filterMessageStatusOptions = array(
         'failed'=>'failed',
         'delivered'=>'delivered',
         'pending'=>'pending',
-        'ack' => 'ack'
+        'ack' => 'ack',
+        'forwarded' => 'forwarded',
+        'received' => 'received',
+        'no-credit' => 'no-credit',
+        'no-credit-timeframe' => 'no-credit-timeframe',
+        'missing-data' => 'missing-data',
+        'received' => 'received',
+        'forwarded' => 'forward'
         );
-
     
     
-
     public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException(__("The filter's field is missing."));
         }
-
+        
         if (!isset($this->filterFields[$filterParam[1]])) {
             throw new FilterException(__("The filter's field '%s' is not supported.", $filterParam[1]));
         }
-
+        
         if (!isset($filterParam[2])) {
             throw new FilterException(__("The filter's operator is missing for field '%s'.", $filterParam[1]));
         }
@@ -324,25 +366,25 @@ class History extends MongoModel
         if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException(__("The filter's operator '%s' not supported for field '%s'.", $filterParam[2], $filterParam[1]));
         }
-
+        
         $operator = $this->filterFields[$filterParam[1]]['operators'][$filterParam[2]];
-
+        
         if ($operator['parameter-type'] != 'none' && !isset($filterParam[3])) {
             throw new FilterException(__("The filter's parameter is missing for field '%s'.", $filterParam[1]));
         }
-
+        
         if (isset($operator['parameter-validate'])) {
             if (!preg_match($operator['parameter-validate'], $filterParam[3])) {
                 throw new FilterException(__("The filter's parameter value '%s' is not valid.", $filterParam[3]));
             }
         }
     }
-
-
+    
+    
     public function fromFilterToQueryConditions($filter, $conditions = array()) {
         
-        foreach($filter['filter_param'] as $filterParam) {
-        
+        foreach ($filter['filter_param'] as $filterParam) {
+            
             $condition = null;
             
             $this->validateFilter($filterParam);
@@ -355,9 +397,9 @@ class History extends MongoModel
                 }
             } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'participant-phone') {
                 if ($filterParam[2] == 'equal-to') {
@@ -372,36 +414,54 @@ class History extends MongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['message-content'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'contain') {
-                     $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
                 } elseif ($filterParam[2] == 'has-keyword') {
                     $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
                 } elseif ($filterParam[2] == 'has-keyword-any') {
-                    $keywords = explode(",", str_replace(" ", "", $filterParam[3]));
+                    $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
                     $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
                 }
-            }
-            
-            elseif ($filterParam[1] == 'separate-message') {
+            } elseif ($filterParam[1] == 'separate-message') {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['unattach-id'] = $filterParam[3];    
                 }
-            }
-            
-            elseif ($filterParam[1] == 'dialogue-source') {
+            } elseif ($filterParam[1] == 'dialogue-source') {
                 if ($filterParam[2] == 'is') {
                     $condition['dialogue-id'] = $filterParam[3];    
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
+                } elseif ($filterParam[2] == 'is-any') {
+                    $condition['dialogue-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['dialogue-id'] = array('$exists' => false);
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
                 if ($filterParam[2] == 'is') {
-                    $condition['interaction-id'] = $filterParam[3];    
+                    $condition['interaction-id'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['interaction-id'] = array('$ne' => $filterParam[3]);
+                } elseif ($filterParam[2] == 'is-any') {
+                    $condition['interaction-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['interaction-id'] = array('$exists' => false);
+                }
+            } elseif ($filterParam[1] == 'request-source') {
+                if ($filterParam[2] == 'is') {
+                    $condition['request-id'] = new MongoId($filterParam[3]);
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
+                } elseif ($filterParam[2] == 'is-any') {
+                    $condition['request-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['request-id'] = array('$exists' => false);
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {
-                    $condition['message-direction'] = 'incoming';
-                    $condition['matching-answer'] = array('$ne' => null);                    
+                    $condition['message-direction'] =   'incoming';
+                    $condition['matching-answer']   =   array('$ne' => null);                    
                 } elseif ($filterParam[2] == 'not-matching') {
                     $condition['message-direction'] = 'incoming';
-                    $condition['matching-answer'] = null;                    
+                    $condition['matching-answer']   = null;                    
                 }
             }
             
@@ -413,7 +473,7 @@ class History extends MongoModel
                 } else {
                     array_push($conditions['$and'], $condition);
                 }
-            }  elseif ($filter['filter_operator'] == "any") {
+            } elseif ($filter['filter_operator'] == "any") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$or'])) {
@@ -426,8 +486,8 @@ class History extends MongoModel
         
         return $conditions;
     } 
-
-
+    
+    
     protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null) 
     {
         $query = array();
@@ -435,7 +495,7 @@ class History extends MongoModel
             $or = array();
             foreach ($choices as $choice) {
                 $regex = new MongoRegex("/^".$prefix.$choice.$suffix);
-                $or[] = array($field => $regex);
+                $or[]  = array($field => $regex);
             }
             $query['$or'] = $or;
         } else {
@@ -443,13 +503,13 @@ class History extends MongoModel
         }
         return $query;
     }
-  
+    
     
     public function countUnattachedMessages($unattachId, $messageStatus = null)
     {
         $conditions = array(
-                'message-direction' => 'outgoing',
-                'unattach-id' => $unattachId);
+            'message-direction' => 'outgoing',
+            'unattach-id' => $unattachId);
         if ($messageStatus != null) {
             if (is_array($messageStatus)) {
                 $statusConditions = array('message-status' => array('$in' => $messageStatus));
@@ -461,5 +521,6 @@ class History extends MongoModel
         $historyCount = $this->find('count', array('conditions' => $conditions));
         return $historyCount;
     }
-
+    
+    
 }

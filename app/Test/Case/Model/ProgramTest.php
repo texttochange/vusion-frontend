@@ -6,25 +6,25 @@ App::uses('ProgramSetting', 'Model');
 
 class ProgramTestCase extends CakeTestCase
 {
-
+    
     public $fixtures = array('app.program', 'app.user', 'app.programsUser');
-
-
+    
+    
     public function setUp()
     {
         parent::setUp();
-
+        
         $this->Program = ClassRegistry::init('Program');
     }
-
-
+    
+    
     public function tearDown()
     {
         unset($this->Program);
-
+        
         parent::tearDown();
     }
-
+    
     
     public function testFind()
     {
@@ -66,8 +66,8 @@ class ProgramTestCase extends CakeTestCase
         
         $this->assertEquals($expected, $result);
     }    
-
-
+    
+    
     public function testFindAuthorized()
     {
         $result   = $this->Program->find(
@@ -97,11 +97,11 @@ class ProgramTestCase extends CakeTestCase
             );
         $this->assertEquals(3, $result);
     }
-
+    
     public function testSaveProgram_ok()
     {
         $program['Program'] = array(
-            'id' => 3,
+            'id' => 9,
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',
@@ -113,9 +113,9 @@ class ProgramTestCase extends CakeTestCase
         $savedProgram = $this->Program->save($program);
         $this->assertEqual($this->Program->validationErrors, array());
     }
-
-
-    public function testSaveProgram_fail()
+    
+    
+    public function testSaveProgram_fail_url_database_format()
     {
         $program = array(
             'id' => 5,
@@ -131,34 +131,56 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEqual(
             $this->Program->validationErrors['url'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
-
+        
         $program['url'] = 'm 7h';
-
+        
         $this->Program->create();
         $this->assertFalse($this->Program->save($program));
         $this->assertEqual(
             $this->Program->validationErrors['url'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
-
+        
         $program['url'] = 'm7h';
         $program['database'] = 'M7h';
-
+        
         $this->Program->create();
         $this->assertFalse($this->Program->save($program));
         $this->assertEqual(
             $this->Program->validationErrors['database'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
-
+        
         $program['database'] = 'm7 h';
-
+        
         $this->Program->create();
         $this->assertFalse($this->Program->save($program));
         $this->assertEqual(
             $this->Program->validationErrors['database'], 
             array('Minimum of 3 characters, can only be composed of lowercase letters and digits.'));
     }
-
-
+    
+    
+    public function testSaveProgram_fail_url_database_static()
+    {
+        $program = array(
+            'id' => 5,
+            'name' => 'something new',
+            'url' => 'img',
+            'database' => 'vusion',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        
+        $this->Program->create();
+        $this->assertFalse($this->Program->save($program));
+        $this->assertEqual(
+            $this->Program->validationErrors['url'][0], 
+            'This url is not allowed to avoid overwriting a static Vusion url, please choose a different one.');
+        $this->assertEqual(
+            $this->Program->validationErrors['database'][0], 
+            'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.');
+    }
+    
+    
     public function testDeleteProgram()
     {
         $this->Program->id = 1;
@@ -169,8 +191,8 @@ class ProgramTestCase extends CakeTestCase
     
     public function testMatchProgramByShortcodeAndCountry()
     {
-        $program['Program'] = array(
-            'id' => 3,
+        $programM4H['Program'] = array(
+            'id' => 9,
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',
@@ -179,9 +201,9 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->Program->create();
-        $savedProgram = $this->Program->save($program);
+        $savedProgramM4H = $this->Program->save($programM4H);
         
-        $program1['Program'] = array(
+        $programTester['Program'] = array(
             'id' => 4,
             'name' => 'tester',
             'url' => 'tester',
@@ -191,50 +213,92 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->Program->create();
-        $savedProgram1 = $this->Program->save($program1);
+        $savedProgramTester = $this->Program->save($programTester);
         
         $codes = array(
             array(
                 'shortcode' => '8181',
                 'international-prefix' => '256',
                 'country' => 'uganda',
-                'supported-internationally' => "0",
-                'support-customized-id' => "1"
+                'supported-internationally' => '0',
+                'support-customized-id' => '1'
                 ),
             array(
                 'shortcode' => '8282',
                 'international-prefix' => '256',
                 'country' => 'uganda',
-                'supported-internationally' => "0",
-                'support-customized-id' => "1"
+                'supported-internationally' => '0',
+                'support-customized-id' => '1'
                 )
             );
         
-        $this->ProgramSetting = new ProgramSetting($program['Program']['database']);
-        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSettingM4H = new ProgramSetting($programM4H['Program']['database']);
+        $this->ProgramSettingM4H->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSettingM4H->saveProgramSetting('shortcode', '256-8282');
         
-        $this->ProgramSetting = new ProgramSetting($program1['Program']['database']);
-        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        $this->ProgramSetting->saveProgramSetting('shortcode', '8181');
+        $this->ProgramSettingTester = new ProgramSetting($programTester['Program']['database']);
+        $this->ProgramSettingTester->saveProgramSetting('timezone', 'Africa/Kampala');
+        $this->ProgramSettingTester->saveProgramSetting('shortcode', '256-8181');
         
+        //Test simple condition        
         $conditions = array('shortcode' => '8282');
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgram, $conditions, $codes);
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
         $this->assertEquals($result[0]['Program']['name'], 'M4h');
+        $this->assertEquals(1, count($result));        
         
-        $conditions1 = array(
+        //Test Or condtions
+        $conditions = array(
+            '$or' => array(
+                array('shortcode' => '8234'),
+                array('shortcode' => '8181')
+                )
+            );
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
+        $this->assertEquals(1, count($result));
+        
+        //Test And conditions
+        $conditions = array(
             '$and' => array(
                 array('shortcode' => '8181'),
                 array('country' => 'uganda')
                 )
             );
-        
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgram1, $conditions1, $codes);
+        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramTester, $conditions, $codes);
         $this->assertEquals($result[0]['Program']['name'], 'tester');
         $this->assertEquals(1, count($result));
-        $this->ProgramSetting->deleteAll(true, false);
         
+        //Clear data in program settings
+        $this->ProgramSettingM4H->deleteAll(true, false);
+        $this->ProgramSettingTester->deleteAll(true, false);
     }
-
-
+    
+    
+    public function testEditProgram_fail_database_name()
+    {
+        $program = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7h',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->Program->create();
+        $this->Program->save($program);
+        
+        $program2 = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7hp',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->assertFalse($this->Program->save($program2));
+        $this->assertEqual(
+            $this->Program->validationErrors['database'][0], 
+            'This field is read only.');
+    }
+    
+    
 }

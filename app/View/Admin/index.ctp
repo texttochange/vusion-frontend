@@ -4,7 +4,7 @@
 	<p>Any suggestions are welcome.</p>	
 </div>
 <div class="admin-action">
-<div class="actions">
+<div class="actions break">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Users Management'), array('controller' => 'users')); ?></li>

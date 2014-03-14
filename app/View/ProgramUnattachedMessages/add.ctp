@@ -39,7 +39,7 @@
     ## Form starts
     echo $this->Form->create('UnattachedMessage', array('type' => 'file'));
     ## Name
-    echo $this->Form->input('name', array('id' => 'name'));
+    echo $this->Form->input('name', array('id' => 'name', 'label' => __('Name')));
     ## SentTo 
     if ($this->Form->isFieldError('send-to-type') || 
         $this->Form->isFieldError('send-to-match-operator') || 
@@ -126,7 +126,7 @@
             );
         $this->Js->get('#predefined-message')->event('change','addPredefinedContent();');
     }
-    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5));
+    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5, 'label' => 'Content'));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
@@ -157,24 +157,28 @@
     } 
     echo "</div>";
     $this->Js->get('document')->event('ready','
-        $("#fixed-time").datetimepicker();
+        $("#fixed-time").datetimepicker({
+            timeFormat: "hh:mm",
+            timeOnly: false,
+            dateFormat:"dd/mm/yy"
+        });
         addContentFormHelp();
         addCounter();
         $("#UnattachedMessageSend-to-match-conditions").chosen();');
     $this->Js->get("input[name*='send-to-type']")->event('change','
         switch ($(this).val()) {
         case "match":
-            $("select[name*=\"send-to-match-conditions\"]").attr("disabled",false).trigger("liszt:updated");
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled",false).trigger("chosen:updated");
             $("select[name*=\"send-to-match-operator\"]").attr("disabled",false);
             $("input[name*=\"file\"]").attr("disabled",true);
             break;
         case "all":
-            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("chosen:updated");
             $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
             $("input[name*=\"file\"]").attr("disabled",true);
             break;
         case "phone":
-            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("liszt:updated");
+            $("select[name*=\"send-to-match-conditions\"]").attr("disabled", true).val("").trigger("chosen:updated");
             $("select[name*=\"send-to-match-operator\"]").attr("disabled",true);
             $("input[name*=\"file\"]").attr("disabled", false);
         }');
@@ -188,4 +192,3 @@
     echo $this->Form->end(__('Save'));?>
 	</div>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

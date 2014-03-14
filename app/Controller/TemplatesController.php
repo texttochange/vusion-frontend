@@ -28,11 +28,11 @@ class TemplatesController extends AppController
                 );
         }
         $this->Template = new Template($options);
-
+        
         $templateTypes = $this->Template->typeTemplates;
         $this->typeTemplateOptions = array();
         foreach ($templateTypes as $key => $label) {
-            $this->typeTemplateOptions[$key] = __($label);
+            $this->typeTemplateOptions[$key] = $label;
         }
     }
     
@@ -53,19 +53,19 @@ class TemplatesController extends AppController
                 $this->Session->setFlash(__('The template has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array(
                     'controller' => 'templates',
                     'action' => 'index'
                     ));
             } else {
                 $this->Session->setFlash(__('The template could not be saved.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         }
-       
+        
     }
     
     
@@ -85,15 +85,15 @@ class TemplatesController extends AppController
                 $this->Session->setFlash(__('The template has been saved.'),
                     'default',
                     array('class'=>'message success')
-                );
+                    );
                 $this->redirect(array('controller' => 'templates',
                     'action' => 'index'
                     ));
             } else {
                 $this->Session->setFlash(__('The template could not be saved. Please, try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default',
+                    array('class' => "message failure")
+                    );
             }
         } else {
             $this->request->data = $this->Template->read(null, $id);
@@ -116,18 +116,18 @@ class TemplatesController extends AppController
             $this->Session->setFlash(__('Template deleted.'),
                 'default',
                 array('class'=>'message success')
-            );
+                );
             $this->redirect(array('controller' => 'templates',
                 'action' => 'index'
                 ));
         }
         $this->Session->setFlash(__('Template was not deleted.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            'default',
+            array('class' => "message failure")
+            );
         $this->redirect(array('controller' => 'templates',
-                'action' => 'index'
-                ));
+            'action' => 'index'
+            ));
     }
     
     

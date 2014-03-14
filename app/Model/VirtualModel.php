@@ -6,13 +6,13 @@ abstract class VirtualModel
     var $data = null;
     var $fields = array();
     var $validationErrors = array();
-
-
+    
+    
     public function __construct() 
     {
     }
-
-
+    
+    
     public function beforeValidate()
     {
         $this->data['model-version'] = $this->version;
@@ -20,21 +20,21 @@ abstract class VirtualModel
         $this->data = $this->_trim_array($this->data);
         return true;
     }
-
-
+    
+    
     protected function _setDefault($field, $default) {
         if (!isset($this->data[$field])) {
             $this->data[$field] = $default;
         } 
     }
-
+    
     protected function _setDefaultSubfield(&$data, $field, $default) {
         if (!isset($data[$field])) {
             $data[$field] = $default;
         }
     }
-
-
+    
+    
     public function _trim_array($document)
     {
         if (!is_array($document)) {
@@ -48,27 +48,27 @@ abstract class VirtualModel
         }
         return $document;
     }
-
-
+    
+    
     public function set($data) 
     {
         $this->data = $data;
         $this->validationErrors = array();        
     }
-
-
+    
+    
     public function getCurrent() 
     {
         return $this->data;        
     }
-
-
+    
+    
     public function create()
     {
         $this->validationErrors = array();
     }
-
-
+    
+    
     public function required($field, $data)
     {
         if (!array_key_exists($field, $data)) {
@@ -76,8 +76,8 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function valueRequireFields($field, $data, $requiredFieldsPerValue) 
     {   
         if (!array_key_exists($field, $data)) {
@@ -94,8 +94,8 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function requiredConditionalFieldValue($field, $data, $cField, $cValue) 
     {
         if (!array_key_exists($field, $data)) {
@@ -109,7 +109,7 @@ abstract class VirtualModel
         }
         return true;
     }
-
+    
     
     public function requiredConditionalFieldOrValue()
     {
@@ -129,8 +129,8 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function requiredConditionalFieldOrKeyValue()
     {
         $args = func_get_args();
@@ -150,8 +150,8 @@ abstract class VirtualModel
         }
         return false;
     }
-
-
+    
+    
     public function inList($field, $data, $list)
     {
         if (!array_key_exists($field, $data)) {
@@ -162,8 +162,8 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function notEmptyArray($field, $data) {
         if (!array_key_exists($field, $data)) {
             return true;
@@ -173,8 +173,8 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function regex($field, $data, $regex)
     {
         if (!isset($data[$field])) {
@@ -185,8 +185,8 @@ abstract class VirtualModel
         }
         return false;
     }
-
-
+    
+    
     public function notRegex($field, $data, $regex)
     {
         if (!isset($data[$field])) {
@@ -194,17 +194,20 @@ abstract class VirtualModel
         }
         return (!$this->regex($field, $data, $regex));
     }
-
-
+    
+    
     public function notempty($field, $data)
     {
+        if (!array_key_exists($field, $data)) {
+            return true;
+        }
         if ($data[$field] == null) {
             return false;
         }
         return true;
     }
-
-
+    
+    
     public function validList($field, $data, $elementRules)
     {
         if (!isset($data[$field])) {
@@ -224,15 +227,15 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function validates()
     {
         $data = $this->data;
         return $this->_validates($data, $this->validate);
     }
-
-
+    
+    
     protected function _validates($data, $validationRules)
     {
         $result = $this->_runValidateRules($data, $validationRules);
@@ -243,8 +246,8 @@ abstract class VirtualModel
         $this->validationErrors = $result;
         return false;
     }
-
-
+    
+    
     protected function _runValidateRules($data, $validationRules)    
     {
         $validationErrors = array();
@@ -288,6 +291,6 @@ abstract class VirtualModel
         }
         return true;
     }
-
-
+    
+    
 }

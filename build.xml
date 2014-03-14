@@ -11,7 +11,7 @@
  </condition>
 
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,caketest,webtest,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,caketest,webtest,phpcb"/>
 
  <target name="tools-parallel"
          description="Run tools in parallel">
@@ -170,6 +170,8 @@
 <!-- backup the config files -->
  <mkdir dir="/tmp/vusion"/>
  <copy file="${vusiondir}/app/Config/database.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Config/vusion.php" todir="/tmp/vusion" overwrite="true"/>
+ <copy file="${vusiondir}/app/Config/email.php" todir="/tmp/vusion" overwrite="true"/>
  <copy file="${vusiondir}/app/Test/data/restore_data.sh" todir="/tmp/vusion" overwrite="true"/>
  <mkdir dir="/tmp/vusion/backend"/> 
  <copy todir="/tmp/vusion/backend" overwrite="true">
@@ -202,6 +204,8 @@
  </exec>
 <!-- restor config files -->
  <copy file="/tmp/vusion/database.php" todir="${vusiondir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/vusion.php" todir="${vusiondir}/app/Config" overwrite="true"/>
+ <copy file="/tmp/vusion/email.php" todir="${vusiondir}/app/Config" overwrite="true"/>
  <copy file="/tmp/vusion/restore_data.sh" todir="${vusiondir}/app/Test/data" overwrite="true"/>
  <copy todir="${vusiondir}/backend/etc" overwrite="true">
      <fileset dir="/tmp/vusion/backend"/>
@@ -221,7 +225,7 @@
  </chmod>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,init-db'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,init-db,init-oldprogram'>
  <exec executable="phpunit" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="-c" />
@@ -264,12 +268,22 @@
 
 <target name="init-db" description="init the relational and mongo dbs">
   <!-- copy for restor a big dataset already present on the test server -->
+  <exec dir="${vusiondir}" executable="bash">
+     <arg value="./app/Test/data/restore_data.sh"/>
+  </exec>
+</target>
+
+<target name="-check-oldprogram-imported">
+    <available property="oldprogram.exists" file="${vusiondir}/app/Test/data/mongoDB/oldprogram/history.json"/>
+</target>
+<target name='init-oldprogram' depends="-check-oldprogram-imported" description='add oldProgram if not there' unless="oldprogram.exists">
   <mkdir dir="${vusiondir}/app/Test/data/mongoDB/oldprogram"/> 
   <copy todir="${vusiondir}/app/Test/data/mongoDB/oldprogram" failonerror="false">
      <fileset dir="/root/oldprogram"/>
   </copy>
   <exec dir="${vusiondir}" executable="bash">
-     <arg value="./app/Test/data/restore_data.sh"/>
+     <arg value="./app/Test/data/mongoDB/import_program_db.sh"/>
+     <arg value="oldprogram"/>
   </exec>
 </target>
 

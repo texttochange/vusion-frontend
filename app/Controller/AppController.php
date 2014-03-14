@@ -8,9 +8,9 @@ App::uses('PredefinedMessage', 'Model');
 
 class AppController extends Controller
 {
-
+    
     var $uses = array('Program', 'Group');
-
+    
     var $components = array(
         'Session',
         'Auth' => array(
@@ -45,8 +45,10 @@ class AppController extends Controller
         'Cookie', 
         'PhoneNumber',
         'CreditManager',
+        'LogManager',
+        'Stats'
         );
-
+    
     var $helpers = array(
         'PhoneNumber',
         'Html',
@@ -57,17 +59,15 @@ class AppController extends Controller
         'AclLink',
         'Text',
         'BigNumber',
-        'CreditManager');
-
+        'CreditManager'
+        );
+    
+    var $redis = null;
     var $redisProgramPrefix = "vusion:programs"; 
-
+    
     
     function beforeFilter()
     {    
-        //In case of a Json request, no need to set up the variables
-        if ($this->params['ext']=='json' or $this->params['ext']=='csv')
-            return;
-
         //Verify the access of user to this program
         if (!empty($this->params['program'])) {
             $this->Program->recursive = -1;
@@ -79,30 +79,33 @@ class AppController extends Controller
                 'program_url' => $this->params['program']
                 ));
             if (count($data)==0) {
-               throw new NotFoundException('Could not find this page.');
+                throw new NotFoundException('Could not find this page.');
             }
             $programDetails = array(
                 'name' => $data[0]['Program']['name'],
                 'url' => $data[0]['Program']['url'],
                 'database' => $data[0]['Program']['database']);
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
+            
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
+            $this->set(compact('programDetails')); 
             
-            $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);
+            //In case of a Json request, no need to set up the variables
+            if ($this->params['ext']=='json' or $this->params['ext']=='csv')
+                return;
             
-            $hasProgramLogs = $this->_hasProgramLogs($this->redis, $programDetails['database']);
-            if ($this->_hasProgramLogs($this->redis, $programDetails['database'])) {
-                $programLogsUpdates = $this->_processProgramLogs($this->redis, $programDetails['database']);
-            }
+            $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
+            $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);
+            $programStats = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
             $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
-            $this->set(compact('programDetails', 'currentProgramData', 'hasProgramLogs', 'programLogsUpdates', 'creditStatus')); 
+            $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
     }
-
-
+    
+    
     function constructClasses()
     {
         parent::constructClasses();
@@ -112,30 +115,10 @@ class AppController extends Controller
         $redisHost = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
         $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
         $this->redis->connect($redisHost, $redisPort);
-     }
-    
-     
-    protected function _hasProgramLogs($redis,$program)
-    {
-        if (count($redis->zRange($program.':logs', -5, -1, true)) > 0)
-            return true;
-        return false;
-    }
-    
-    
-    protected function _processProgramLogs($redis,$program)
-    {
-        if ($this->_hasProgramLogs($redis,$program)) {
-            $programLogs = array();
-        
-            $logs = $redis->zRange($program.':logs', -5, -1, true);
-            
-            foreach ($logs as $key => $value) {
-                $programLogs[] = $key;
-            }
-            return array_reverse($programLogs);
+        $redisPrefix = Configure::read('vusion.redisPrefix');
+        if (is_array($redisPrefix)) { 
+            $this->redisProgramPrefix = $redisPrefix['base'] . ':' . $redisPrefix['programs'];
         }
-        return array();    	    	    
     }
     
     
@@ -146,14 +129,14 @@ class AppController extends Controller
         if (isset($unattachedMessages))
             $programUnattachedMessages = $unattachedMessages;
         else
-            $programUnattachedMessages = null;
-            
+        $programUnattachedMessages = null;
+        
         $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));
         $predefinedMessages = $predefinedMessageModel->find('all');
         if (isset($predefinedMessages))
             $programPredefinedMessages = $predefinedMessages;
         else
-            $programPredefinedMessages = null;
+        $programPredefinedMessages = null;
         
         $dialogueModel = new Dialogue(array('database' => $databaseName));
         $dialogues = $dialogueModel->getActiveAndDraft();
@@ -169,6 +152,6 @@ class AppController extends Controller
         
         return $currentProgramData;
     }
-
-
+    
+    
 }

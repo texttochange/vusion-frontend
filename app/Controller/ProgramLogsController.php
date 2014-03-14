@@ -5,45 +5,40 @@ App::uses('AppController','Controller');
 class ProgramLogsController extends AppController
 {
 	
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler', 
+        'LogManager');
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Time'
-        );
+        'Time');
     
     
     function constructClasses()
     {
         parent::constructClasses();
-        
-        $this->redis = new Redis();
-        $this->redis->connect('127.0.0.1');
     }
     
     
-    public function _getRedisZRange($startValue,$endValue)
+    function beforeFilter() 
     {
-        $redisKey = $this->params['program'].':logs';
-        return $this->redis->zRange($redisKey, $startValue, $endValue, true);
+        parent::beforeFilter();        
     }
     
     
     public function index()
     {
-        $programLogs = $this->_getRedisZRange(-200,-1);
-        $programLogs = array_reverse($programLogs);
+        $programUrl = $this->params['program'];
+        $databaseName = $this->Session->read($programUrl."_db");
+        $programLogs = $this->LogManager->getLogs($databaseName, 200);
         $this->set(compact('programLogs'));
     } 
-        
+    
     
     public function getBackendNotifications()
     {
-        $programLogs = array();
-        
-        $logs = $this->_getRedisZRange(-5,-1);
-        foreach ($logs as $key => $value) {
-            $programLogs[] = $key;
-        }
+        $programUrl = $this->params['program'];
+        $databaseName = $this->Session->read($programUrl."_db");
+        $programLogs = $this->LogManager->getLogs($databaseName, 5);
         $this->set(compact('programLogs'));
     }
     

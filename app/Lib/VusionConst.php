@@ -2,8 +2,14 @@
 
 class VusionConst
 {
-    const KEYWORD_REGEX = '/^[a-zA-Z0-9]+(,(\s)?[a-zA-Z0-9]+)*$/';
+    const KEYWORD_REGEX = '/^[\p{L}\p{Mn}\p{N}]+(,(\s)?[\p{L}\p{Mn}\p{N}]+)*$/u';
     const KEYWORD_FAIL_MESSAGE = 'The keyword/alias is(are) not valid.';
+
+    const KEYPHRASE_REGEX = '/^[\p{L}\p{Mn}\p{N}\s]+(,(\s)?[\p{L}\p{Mn}\p{N}\s]+)*$/u';
+    const KEYPHRASE_FAIL_MESSAGE = 'This keyword/keyphrase is not valid.';
+
+    const CHOICE_REGEX = '/^[\p{L}\p{N}\s]+$/u';
+    const CHOICE_FAIL_MESSAGE = 'The choice is(are) not valid.';
 
     const TAG_REGEX = '/^[a-z0-9A-Z\s]+$/';
     const TAG_FAIL_MESSAGE = "Use only space, letters and numbers for tag, e.g 'group 1'.";
@@ -31,4 +37,21 @@ class VusionConst
 
     const ATTIME_REGEX = '/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
     const ATTIME_FAIL_MESSAGE = 'The at-time is not valid.';
+
+    const FORWARD_URL_REGEX = '/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))(&[-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))*)?)?$/';
+    const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
+    
+    const CONTENT_VARIABLE_KEY_REGEX = '/^[a-z0-9A-Z\s]+$/';
+    const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
+        
+    const CONTENT_VARIABLE_VALUE_REGEX = '/^[a-z0-9A-Z\s\.\,]*$/';
+    const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
+
+    # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
+    const CUSTOMIZE_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
+    const CUSTOMIZE_CONTENT_DOMAIN_REGEX = '/^(participant|contentVariable|time)$/';
+    const CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX = '/^(participant|contentVariable|context|time)$/';
+    
+    const CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL = 'To be used in message, participant only accepts one key.';
+    const CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used in message, contentVariable only accepts maximum three keys.';
 }

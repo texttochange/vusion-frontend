@@ -3,13 +3,13 @@ App::uses('MongoModel', 'Model');
 
 class ShortCode extends MongoModel
 {
-
+    
     var $specific    = true;
     var $name        = 'ShortCode';
     var $useDbConfig = 'mongo';
     var $useTable    = 'shortcodes';
-
-    var $localPrefixedShortCodePattern = '/^[0-9]+-[0-9]+/';
+    
+    var $localPrefixedShortCodePattern = '/^[ 0-9]+-[0-9]+/';
     var $internationalShortCodePattern = '/^\+[0-9]+/';
     var $maxCharacterPerSmsOptions = array(70, 140, 160);
     
@@ -18,7 +18,7 @@ class ShortCode extends MongoModel
     {
         return '2';
     }
-   
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -31,14 +31,14 @@ class ShortCode extends MongoModel
             'supported-internationally',
             'max-character-per-sms');
     }
-
+    
     var $findMethods = array(
         'prefixShortCode' => true,
         'count' => true,
         'all' => true,
         'first' => true,
         );
-
+    
     
     protected function _findPrefixShortCode($state, $query, $results = array())
     {
@@ -56,7 +56,7 @@ class ShortCode extends MongoModel
         }
         return $results[0];
     }
-
+    
     
     //Need to validate the couple shortcode country is unique
     public $validate = array(
@@ -103,7 +103,7 @@ class ShortCode extends MongoModel
                 ),
             )
         );
-
+    
     
     public function isShortCodeCountryUnique($check)
     {
@@ -114,12 +114,12 @@ class ShortCode extends MongoModel
                 'shortcode' => $this->data['ShortCode']['shortcode']);
         } else {
             if (!isset($this->data['ShortCode']['supported-internationally']) or $this->data['ShortCode']['supported-internationally']==0) { 
-               $conditions = array(
-                   'country' => $this->data['ShortCode']['country'], 
-                   'shortcode' => $this->data['ShortCode']['shortcode']);
+                $conditions = array(
+                    'country' => $this->data['ShortCode']['country'], 
+                    'shortcode' => $this->data['ShortCode']['shortcode']);
             } else {
                 $conditions = array(
-                   'shortcode' => $this->data['ShortCode']['shortcode']);       
+                    'shortcode' => $this->data['ShortCode']['shortcode']);       
             }
         }
         $result = $this->find('count', array(
@@ -127,7 +127,7 @@ class ShortCode extends MongoModel
             ));
         return $result < 1;            
     }
-
+    
     
     public function beforeValidate()
     {
@@ -143,17 +143,17 @@ class ShortCode extends MongoModel
         $this->_setDefault('max-character-per-sms', 160);
         return true;
     }
-
+    
     
     public function hasToIncludePrefix($check)
     {
         if (isset($this->data['ShortCode']['supported-internationally']) and $this->data['ShortCode']['supported-internationally']==1) {
-                $pattern = "/\+".$this->data['ShortCode']['international-prefix'].'/';
-                return preg_match($pattern, $this->data['ShortCode']['shortcode']);
+            $pattern = "/\+".$this->data['ShortCode']['international-prefix'].'/';
+            return preg_match($pattern, $this->data['ShortCode']['shortcode']);
         } 
         return true;
     }
-
+    
     
     public function notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix($check)
     {
@@ -167,16 +167,16 @@ class ShortCode extends MongoModel
             $prefix .= $digit;
             $regex .= '('.$prefix.')';
         }
-
+        
         $conditions = array(
             'shortcode' => $this->data['ShortCode']['shortcode'],
             'international-prefix' => new MongoRegex('/^['.$regex.']$/')
             );
-
-         $result = $this->find('count', array(
+        
+        $result = $this->find('count', array(
             'conditions' => $conditions
             ));
-
+        
         return $result < 1;   
     }
     
@@ -201,6 +201,6 @@ class ShortCode extends MongoModel
         }
         return $countries;
     }
-
+    
     
 }

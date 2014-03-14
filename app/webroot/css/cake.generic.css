@@ -271,7 +271,7 @@ dl {
 }
 dl dd:nth-child(4n+2),
 dl dt:nth-child(4n+1) {
-	/*	background: #f0f0f0;*/
+		background: #f0f0f0;
 }
 
 dt {
@@ -315,6 +315,8 @@ fieldset fieldset div {
 	clear: left;
 	/*	margin: 0 20px;*/
 }
+
+/* Cakephp generic css are messing up handsontable css*/
 form div {
 	clear: both;
 	margin-bottom: 1em;

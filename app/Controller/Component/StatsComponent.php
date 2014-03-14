@@ -12,7 +12,12 @@ class StatsComponent extends Component
     {
         parent::startup($controller);
         $this->Controller = $controller;
-        $this->cacheStatsExpire = 60;
+        $this->cacheStatsExpire = Configure::read('vusion.cacheStatsExpire');
+        if ($this->cacheStatsExpire == null) {
+            //A default value for all
+            $this->cacheStatsExpire = array(
+                '1000' => '120');
+        } 
         
         if(isset($this->Controller->redis)){
             $this->redis = $this->Controller->redis;
@@ -28,104 +33,100 @@ class StatsComponent extends Component
         }
     }
     
+    public function getProgramStat($model, $conditions=array())
+    {
+        try {
+            return $model->count($conditions);
+        } catch (Exception $e) { 
+            return 'N/A';
+        }
+    }
+    
     protected function _getProgramStats($database)
     {
-        $this->ProgramSetting = new ProgramSetting(array('database' => $database));
-        $programTimeNow = $this->ProgramSetting->getProgramTimeNow();
-        if(empty($programTimeNow))
-            return array(
-                'active-participant-count' => 0,
-                'participant-count' => 0,
-                'all-received-messages-count'=> 0,
-                'current-month-received-messages-count' => 0,
-                'all-sent-messages-count' => 0,
-                'current-month-sent-messages-count' => 0,
-                'total-current-month-messages-count' => 0,
-                'history-count' => 0,
-                'today-schedule-count' => 0,
-                'schedule-count' => 0,
-                'object-type' => 'program-stats',
-                'model-version'=> '1');
+        $programStats = array(
+            'active-participant-count' => 'N/A',
+            'participant-count' => 'N/A',
+            'all-received-messages-count'=> 'N/A',
+            'current-month-received-messages-count' => 'N/A',
+            'all-sent-messages-count' => 'N/A',
+            'current-month-sent-messages-count' => 'N/A',
+            'total-current-month-messages-count' => 'N/A',
+            'history-count' => 'N/A',
+            'today-schedule-count' => 'N/A',
+            'schedule-count' => 'N/A',
+            'object-type' => 'program-stats',
+            'model-version'=> '1');
         
-        $tempParticipant = new Participant(array('database' => $database));                
-        $activeParticipantCount = $tempParticipant->find(
-            'count', array(
-                'conditions' => array('session-id' => array(
-                    '$ne' => null)
-                    )
-                )
-            );
-        $participantCount = $tempParticipant->find('count'); 
+        $tempProgramSetting = new ProgramSetting(array('database' => $database));
+        $programTimeNow = $tempProgramSetting->getProgramTimeNow();            
+        if(empty($programTimeNow)){
+            return $programStats;
+        }
+        $tempParticipant = new Participant(array('database' => $database));
+        $programStats['active-participant-count'] = $this->getProgramStat(
+            $tempParticipant,
+            array('session-id' => array('$ne' => null)));
+        
+        $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
         $tempSchedule = new Schedule(array('database' => $database));
-        $programTimeToday = $programTimeNow->modify('+1 day');
-        $todayScheduleCount = $tempSchedule->find(
-            'count',array(
-                'conditions' => array(
-                    'date-time' => array(
-                        '$lt' => $programTimeToday->format(DateTime::ISO8601))
-                    )
-                ));
+        $programTimeToday = $programTimeNow->modify('+1 day');        
+        $programStats['today-schedule-count'] = $this->getProgramStat(
+            $tempSchedule, 
+            array('date-time' => array('$lt' => $programTimeToday->format(DateTime::ISO8601))));
         
-        $scheduleCount = $tempSchedule->find('count');
+        $programStats['schedule-count'] = $this->getProgramStat($tempSchedule);
+        
         $tempHistory     = new History(array('database' => $database));
         $programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");        
         $first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
+        $programStats['all-received-messages-count'] = $this->getProgramStat(
+            $tempHistory,
+            array('message-direction' => 'incoming'));
         
-        $allReceivedMessagesCount = $tempHistory->find(
-            'count',array(
-                'conditions' => array('message-direction' => 'incoming'))
-            );
+        $programStats['current-month-received-messages-count'] = $this->getProgramStat(
+            $tempHistory,
+            array(
+                'timestamp' => array(
+                    '$gt' => $first_second,
+                    '$lt' => $last_second),
+                'message-direction' => 'incoming'));
         
-        $currentMonthReceivedMessagesCount = $tempHistory->find(
-            'count',array(
-                'conditions' => array(
-                    'timestamp' => array(
-                        '$gt' => $first_second,
-                        '$lt' => $last_second
-                        ),
-                    'message-direction' => 'incoming'
-                    )
-                )
-            );
+        $programStats['current-month-sent-messages-count'] = $this->getProgramStat(
+            $tempHistory,
+            array(
+                'timestamp' => array(
+                    '$gt' => $first_second,
+                    '$lt' => $last_second
+                    ),
+                'message-direction' => 'outgoing'));
         
-        $currentMonthSentMessagesCount = $tempHistory->find(
-            'count',array(
-                'conditions' => array(
-                    'timestamp' => array(
-                        '$gt' => $first_second,
-                        '$lt' => $last_second
-                        ),
-                    'message-direction' => 'outgoing'
-                    )
-                )
-            );
+        if($programStats['current-month-sent-messages-count'] === 'N/A' || $programStats['current-month-received-messages-count'] === 'N/A' ){
+            $totalCurrentMonthMessagesCount = 'N/A';
+        } else {
+            $totalCurrentMonthMessagesCount =  $programStats['current-month-sent-messages-count'] + $programStats['current-month-received-messages-count'];
+        }
+        $programStats['total-current-month-messages-count'] = $totalCurrentMonthMessagesCount;
         
-        $totalCurrentMonthMessagesCount = $currentMonthSentMessagesCount + $currentMonthReceivedMessagesCount;
+        $programStats['all-sent-messages-count'] = $this->getProgramStat(
+            $tempHistory,
+            array('message-direction' => 'outgoing'));
         
-        $allSentMessagesCount = $tempHistory->find(
-            'count',array(
-                'conditions' => array('message-direction' => 'outgoing'))
-            );
-        $historyCount  = $tempHistory->find(
-            'count', array(
-                'conditions' => array('object-type' => array('$in' => $tempHistory->messageType))));
+        $programStats['history-count'] = $this->getProgramStat(
+            $tempHistory,
+            array(
+                '$or' => array(
+                    array('object-type' => array('$in' => $tempHistory->messageType)),
+                    array('object-type' => array('$exists' => false ))
+                    )));  
         
-        $programStats = array(
-            'active-participant-count' => $activeParticipantCount,
-            'participant-count' => $participantCount,
-            'all-received-messages-count'=> $allReceivedMessagesCount,
-            'current-month-received-messages-count' => $currentMonthReceivedMessagesCount,
-            'all-sent-messages-count' => $allSentMessagesCount,
-            'current-month-sent-messages-count' => $currentMonthSentMessagesCount,
-            'total-current-month-messages-count' => $totalCurrentMonthMessagesCount,
-            'history-count' => $historyCount,
-            'today-schedule-count' => $todayScheduleCount,
-            'schedule-count' => $scheduleCount,
-            'object-type' => 'program-stats',
-            'model-version'=> '1');
-        return $programStats;
+        unset($tempProgramSetting);
+        unset($tempParticipant);
+        unset($tempHistory);
+        unset($tempSchedule);
+        return $programStats;        
     }
     
     protected function _getStatsKey($database)
@@ -133,18 +134,39 @@ class StatsComponent extends Component
         return $this->redisProgramPrefix.':'.$database.':stats';
     }
     
-    public function getProgramStats($database)
+    public function getProgramStats($database, $onlyCached=false)
     {
         $statsKey = $this->_getStatsKey($database);
         $stats = $this->redis->get($statsKey);
         
-        if($stats != null){
-            $programStats = (array)json_decode($stats);
-        }else{
-            $programStats = $this->_getProgramStats($database);
-            $this->redis->setex($statsKey, $this->cacheStatsExpire, json_encode($programStats));
+        if ($stats != null) {
+            return (array)json_decode($stats);
         }
+        
+        if ($onlyCached) {   
+            return  null;
+        }
+        
+        $start = time();
+        $programStats = $this->_getProgramStats($database);
+        $end = time();
+        $duration = $end - $start;
+        $expiring = $this->_getTimeToCacheStatsExpire($duration);
+        $this->redis->setex($statsKey, $expiring, json_encode($programStats));
         return $programStats;
     }
+
+
+    public function _getTimeToCacheStatsExpire($duration) 
+    {
+        foreach ($this->cacheStatsExpire as $computationDuration => $cacheDuration) {
+            if ($duration <= $computationDuration) {
+                return $cacheDuration;
+            }
+        }
+        return end($this->cacheStatsExpire);
+    }
+
+
 }
 ?>

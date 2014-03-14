@@ -5,9 +5,12 @@
 		
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('name');		
+		echo $this->Form->input('name', array('label' => 'Name'));		
 		echo $this->Form->input('url');
-		echo $this->Form->input('database');
+		echo $this->Form->input('database',
+		    array('label' => 'Database',
+		        'readonly' => 'true',
+		        'style' => 'color:#AAAAAA'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>

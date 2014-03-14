@@ -55,20 +55,31 @@ class Schedule extends MongoModel
     
     public $findMethods = array(
         'soon' => true,
-        'count' => true,
-        'summary' => true
-        );
+        'summary' => true,
+        'count' => true);
     
     
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
         
-        $options                 = array('database'=>$id['database']);
+        $this->Behaviors->load('CachingCount', array(
+            'redis' => Configure::read('vusion.redis'),
+            'redisPrefix' => Configure::read('vusion.redisPrefix'),
+            'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+
+        $options                 = array('database' => $id['database']);
         $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->DialogueHelper    = new DialogueHelper();
     }
     
+
+    //Patch the missing callback for deleteAll in Behavior
+    public function deleteAll($conditions, $cascade = true, $callback = false)
+    {
+        parent::deleteAll($conditions, $cascade, $callback);
+        $this->flushCached();
+    }
+
     
     protected function _findSoon($state, $query, $results = array())
     {
@@ -80,6 +91,27 @@ class Schedule extends MongoModel
         return $results;
     }
     
+/*
+    public function paginateCount($conditions, $recursive, $extra)
+    {
+        try{
+            if (isset($extra['maxLimit'])) {
+                $maxPaginationCount = 40;
+            } else {
+                $maxPaginationCount = $extra['maxLimit'];
+            }
+            
+            $result = $this->count($conditions, $maxPaginationCount);
+            if ($result == $maxPaginationCount) {
+                return 'many';
+            } else {
+                return $result; 
+            }            
+        } catch (MongoCursorTimeoutException $e) {
+            return 'many';
+        }
+    }
+*/
     
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
@@ -207,10 +239,7 @@ class Schedule extends MongoModel
     {
         foreach ($schedules as &$schedule) {            
             if (isset($schedule['interaction-id'])) {
-                $interaction = $this->DialogueHelper->getInteraction(
-                    $activeInteractions,
-                    $schedule['interaction-id']
-                    );
+                $interaction = $activeInteractions[$schedule['interaction-id']];
                 if (isset($interaction['content']))
                     $schedule['content'] = $interaction['content'];
             }

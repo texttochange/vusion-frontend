@@ -46,6 +46,16 @@ class BigNumberHelperTest extends CakeTestCase
             '2.807M',
             $this->BigNumberRenderer->replaceBigNumbers($count));
     }
+
+
+    public function testConvertLimitMaxCharacter()
+    {
+        $count = 2806809;
+        
+        $this->assertEqual(
+            '2.8M',
+            $this->BigNumberRenderer->replaceBigNumbers($count, 3));
+    }
     
     
     public function testConvertBillionToAddB()
@@ -57,6 +67,23 @@ class BigNumberHelperTest extends CakeTestCase
             $this->BigNumberRenderer->replaceBigNumbers($count));
     }
     
+    
+    
+    public function testroundOffNumbers()
+    {
+        $bigNumbers = array(
+            'John'=> 1500000,
+            'Tom' => 4500000);
+        
+        $this->assertEqual(array(
+            'John'=> array(
+                'exact' => 1500000,
+                'rounded' => '1.5M'),                
+            'Tom' => array(
+                'exact' => 4500000,
+                'rounded' => '4.5M')),
+            $this->BigNumberRenderer->roundOffNumbers($bigNumbers));
+    }
     
 }
 ?>

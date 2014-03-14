@@ -5,32 +5,33 @@ App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
 
 abstract class MongoModel extends Model
 {
-
-    var $specific = false;
+    
+    var $specific     = false;
+    var $databaseName = null;    
 
     var $mongoFields = array(
         '_id',
         'modified',
         'created'
         );
-
+    
     var $vusionFields = array(
         'model-version',
         'object-type'
         );
-
-
+    
+    
     abstract function getModelVersion();
-
-
+    
+    
     abstract function getRequiredFields($objectType);
     
-
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
-
+        
         $this->defaultFields = array_merge($this->vusionFields, $this->mongoFields);
-
+        
         if ($this->specific) {
             // Get saved company/database name
             if (isset($id['database']) and $id['database']) {
@@ -40,16 +41,17 @@ abstract class MongoModel extends Model
             } else {
                 $dbName = 'mongo-test';
             }
-      
+            
             // Get common company-specific config (default settings in database.php)
             //$mongodb = new MongodbSource();
             
             //echo "Mongo Class is Construct ".$dbName;
             
             $config = ConnectionManager::getDataSource('mongo')->config;
-
+            
             // Set correct database name
             $config['database'] = $dbName;
+            $this->databaseName = $dbName;
             // Add new config to registry
             ConnectionManager::create($dbName, $config);
             // Point model to new config
@@ -57,31 +59,31 @@ abstract class MongoModel extends Model
         }
         parent::__construct($id, $table, $ds);
     }
-
-
+    
+    
     public function checkFields($object)
     {        
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
-            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
-       
+        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)) {
                 unset($object[$field]);
             }
         }
-
+        
         foreach ($toCheck as $field) {
             if (!isset($object[$field])) {
                 $object[$field] = null;
             }
         };
-
+        
         return $object;
     }
-
-
+    
+    
     public function create($objectType=null)
     {
         parent::create();
@@ -100,7 +102,7 @@ abstract class MongoModel extends Model
             $this->data[$this->alias]['object-type'] = $objectType;
         }
     }
-
+    
     
     public function beforeValidate()
     {
@@ -110,7 +112,7 @@ abstract class MongoModel extends Model
         return true;
     }
     
-
+    
     public function _trim_array($document)
     {
         if (!is_array($document)) {
@@ -125,7 +127,7 @@ abstract class MongoModel extends Model
         return $document;
     }
     
-
+    
     public function isVeryUnique($check)
     {
         $key = array_keys($check);
@@ -139,64 +141,69 @@ abstract class MongoModel extends Model
             );
         return $result < 1;
     }
-
-
+    
+    
     protected function _setDefault($field, $default) {
         if (!isset($this->data[$this->alias][$field])) {
             $this->data[$this->alias][$field] = $default;
         } 
     }
     
-
+    
     # Need to overwrite to avoid validation error message to be written
     public function invalidate($field, $value = true) {
         if ($value == 'noMessage') {
             return;
         }
-		if (!is_array($this->validationErrors)) {
-			$this->validationErrors = array();
-		}
-		$this->validationErrors[$field] []= $value;
-	}
-	
-
+        if (!is_array($this->validationErrors)) {
+            $this->validationErrors = array();
+        }
+        $this->validationErrors[$field] []= $value;
+    }
+    
+    function beforeSave($option = array())
+    {
+        $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
+        return true;
+    }
+    
     # Need to be overwrite to take into accound array field in mongo
     public function save($data = null, $validate = true, $fieldList = array()) {
         $defaults = array('validate' => true, 'fieldList' => array(), 'callbacks' => true);
         $_whitelist = $this->whitelist;
         $fields = array();
-
+        
         if (!is_array($validate)) {
             $options = array_merge($defaults, compact('validate', 'fieldList', 'callbacks'));
         } else {
             $options = array_merge($defaults, $validate);
         }
-
+        
         if (!empty($options['fieldList'])) {
             $this->whitelist = $options['fieldList'];
         } elseif ($options['fieldList'] === null) {
             $this->whitelist = array();
         }
         $this->set($data);
-
+        
         if (empty($this->data) && !$this->hasField(array('created', 'updated', 'modified'))) {
             return false;
         }
-
+        
         foreach (array('created', 'updated', 'modified') as $field) {
             $keyPresentAndEmpty = (
                 isset($this->data[$this->alias]) &&
                 array_key_exists($field, $this->data[$this->alias]) &&
                 $this->data[$this->alias][$field] === null
-            );
+                );
             if ($keyPresentAndEmpty) {
                 unset($this->data[$this->alias][$field]);
             }
         }
-
+        
         $exists = $this->exists();
         $dateFields = array('modified', 'updated');
-
+        
         if (!$exists) {
             $dateFields[] = 'created';
         }
@@ -207,9 +214,9 @@ abstract class MongoModel extends Model
             $this->whitelist = $_whitelist;
             return false;
         }
-
+        
         $db = $this->getDataSource();
-
+        
         foreach ($dateFields as $updateCol) {
             if ($this->hasField($updateCol) && !in_array($updateCol, $fields)) {
                 $default = array('formatter' => 'date');
@@ -225,22 +232,22 @@ abstract class MongoModel extends Model
                 $this->set($updateCol, $time);
             }
         }
-
+        
         if ($options['callbacks'] === true || $options['callbacks'] === 'before') {
             $result = $this->Behaviors->trigger('beforeSave', array(&$this, $options), array(
                 'break' => true, 'breakOn' => array(false, null)
-            ));
+                ));
             if (!$result || !$this->beforeSave($options)) {
                 $this->whitelist = $_whitelist;
                 return false;
             }
         }
-
+        
         if (empty($this->data[$this->alias][$this->primaryKey])) {
             unset($this->data[$this->alias][$this->primaryKey]);
         }
         $fields = $values = array();
-
+        
         foreach ($this->data as $n => $v) {
             if (isset($this->hasAndBelongsToMany[$n])) {
                 if (isset($v[$n])) {
@@ -254,7 +261,7 @@ abstract class MongoModel extends Model
                             unset($v[$field]);
                         }
                     }
-
+                    
                     foreach ($v as $x => $y) {
                         if ($this->hasField($x) && (empty($this->whitelist) || in_array($x, $this->whitelist))) {
                             list($fields[], $values[]) = array($x, $y);
@@ -264,23 +271,23 @@ abstract class MongoModel extends Model
             }
         }
         $count = count($fields);
-
+        
         if (!$exists && $count > 0) {
             $this->id = false;
         }
         $success = true;
         $created = false;
-
+        
         if ($count > 0) {
             $cache = $this->_prepareUpdateFields(array_combine($fields, $values));
-
+            
             if (!empty($this->id)) {
                 $success = (bool)$db->update($this, $fields, $values);
             } else {
                 $fInfo = $this->schema($this->primaryKey);
                 $isUUID = ($fInfo['length'] == 36 &&
                     ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')
-                );
+                    );
                 if (empty($this->data[$this->alias][$this->primaryKey]) && $isUUID) {
                     if (array_key_exists($this->primaryKey, $this->data[$this->alias])) {
                         $j = array_search($this->primaryKey, $fields);
@@ -295,16 +302,16 @@ abstract class MongoModel extends Model
                     $created = true;
                 }
             }
-
+            
             if ($success && !empty($this->belongsTo)) {
                 $this->updateCounterCache($cache, $created);
             }
         }
-
+        
         if (!empty($joined) && $success === true) {
             $this->_saveMulti($joined, $this->id, $db);
         }
-
+        
         if ($success && $count > 0) {
             if (!empty($this->data)) {
                 $success = $this->data;
@@ -328,6 +335,6 @@ abstract class MongoModel extends Model
         return $success;
     }
     
-
+    
 }
 ?> 

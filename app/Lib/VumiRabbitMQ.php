@@ -28,13 +28,6 @@ class VumiRabbitMQ {
         $this->workerMessageMaker = new WorkerMessageMaker();
     }
 
-    
-    function __destruct()
-    {
-        $this->ch->close();
-        $this->conn->close();
-    }
-
 
     public function sendMessageToCreateWorker($application_name, $database_name, $dispatcher_name="dispatcher", $send_loop_period="60")
     {
@@ -60,6 +53,13 @@ class VumiRabbitMQ {
     public function sendMessageToUpdateRegisteredKeywords($to)
     {
         $msg = $this->workerMessageMaker->updateRegisteredKeywords();
+        return $this->sendMessageTo($to.'.control', $msg);
+    }
+
+
+    public function sendMessageToReloadRequest($to, $object_id)
+    {
+        $msg = $this->workerMessageMaker->reloadRequest($object_id);
         return $this->sendMessageTo($to.'.control', $msg);
     }
 
