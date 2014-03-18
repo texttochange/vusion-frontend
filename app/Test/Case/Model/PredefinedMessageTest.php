@@ -105,8 +105,8 @@ class PredefinedMessageTestCase extends CakeTestCase
             );
         $this->PredefinedMessage->create();
         $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
-        $this->assertEquals(
-            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable' or 'time'.",
+       $this->assertEquals(
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
             $this->PredefinedMessage->validationErrors['content'][0]);
         
         $predefinedMessage['content'] = "Hello [participant.gender.name]";
@@ -119,7 +119,7 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
         $this->assertEquals(
             "To be used in message, contentVariable only accepts maximum three keys.",
-            $this->PredefinedMessage->validationErrors['content'][0]);
+            $this->PredefinedMessage->validationErrors['content'][0]); 
     }
     
 }
