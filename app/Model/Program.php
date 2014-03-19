@@ -62,9 +62,15 @@ class Program extends AppModel
             'notInList' => array(
                 'rule' => array('notInList', array('test', 'vusion')),
                 'message' => 'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.'
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             )
         );
+    
     
     #Filter variables and functions
     public $filterFields = array(
@@ -97,7 +103,24 @@ class Program extends AppModel
         );
     
     
-    public function notInList($check, $list) {
+    public function isNotEditable($check) 
+    {
+        $existingDatabase = $this->find(
+            'first', 
+            array('id = Program.id' ,
+                'conditions'=> array('database' => $check['database']))
+            );
+        
+        if($existingDatabase){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    public function notInList($check, $list) 
+    {
         
         $value = array_values($check);
         if (in_array(strtolower($value[0]), $list)) {
