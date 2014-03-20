@@ -46,7 +46,7 @@ class PredefinedMessage extends MongoModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validContentVariable' => array(
-                'rule' => array('validContent'),
+                'rule' => 'validContentVariable',
                 'message' => 'noMessage'
                 ),
             ),
@@ -73,7 +73,7 @@ class PredefinedMessage extends MongoModel
     }
     
     
-    public function validContent($check)
+    public function validContentVariable($check)
     {
         return VusionValidation::validContentVariable($check);
     }
