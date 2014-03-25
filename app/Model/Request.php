@@ -99,7 +99,7 @@ class Request extends MongoModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validContentVariable' => array(
-                'rule' => 'validContentVariableForResponse',
+                'rule' => 'validContentVariable',
                 'message' => 'noMessage'
                 ),
             )
@@ -194,7 +194,7 @@ class Request extends MongoModel
     }
     
     
-    public function validContentVariableForResponse($check)
+    public function validContentVariable($check)
     {
         return VusionValidation::validContentVariable($check);
     }
