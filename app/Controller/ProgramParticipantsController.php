@@ -296,15 +296,16 @@ class ProgramParticipantsController extends AppController
         }
         
         foreach ($filter['filter_param'] as $key => $filterParam) {
-            if (!isset($filterParam[3])) {
-                $filterParam[3]='';
-            }
-            if (!$filterParam[3]) {
-                $this->Session->setFlash(__('Part of the filter has been ignored due missing information'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
-                $filter['filter_param'][$key] = $filterParam;
+            if (isset($filterParam[3])) {
+                if (!$filterParam[3]) {
+                    $this->Session->setFlash(__('Part of the filter has been ignored due missing information'), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                    $filter['filter_param'][$key] = $filterParam;
+                }
+            } else {
+                return null;
             }
         }
         
