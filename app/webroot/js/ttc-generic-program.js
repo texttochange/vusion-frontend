@@ -511,14 +511,12 @@ function updateOffsetConditions(elt){
         var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
         bucket.splice(bucket.indexOf(interactionId), 1);
         if ($(elt).children("[value='"+interactionId+"']").length==0)
-        $(elt).append("<option class='ui-dform-option' value='"+
-            interactionId+"'>"+
-            $(currentQA[i]).find('[name$="content"]').val()+"</option>")
+            $(elt).append("<option class='ui-dform-option' value='"+
+                    interactionId+"'>"+
+                    $(currentQA[i]).find('[name$="content"]').val()+"</option>")
         else
              if ($(elt).children("[value='"+interactionId+"']").val() == currentInteractionId) //To hide current interaction question
                 $(elt).children("option[value='"+interactionId+"']").hide();   
-                
-            //$(elt).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
     } 
     //Removing deleted interactions
     for (var i=0; i<bucket.length; i++) {
