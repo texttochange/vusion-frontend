@@ -498,13 +498,14 @@ function generateFieldSummary(elt, parentName, field)
 
 //TODO need to generate a interaction id there.
 function updateOffsetConditions(elt){
-    var bucket = []; 
+    var bucket = [];
+    var currentInteractionId = $(elt).parent().parent().parent().children('[name$="interaction-id"]').val();
     var i =0;
     $(elt).children().each(function(){bucket[i]=$(this).val(); i++;});
     if (!(bucket instanceof Array)) {
         bucket = [bucket];
     }
-    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"],[name$="type-interaction"]:checked:[value="question-answer-keyword"]').parent().parent();
+    currentQA = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').parent().parent();
     //Adding present interaction if not already there
     for (var i=0; i<currentQA.length; i++) {
         var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
@@ -514,7 +515,10 @@ function updateOffsetConditions(elt){
             interactionId+"'>"+
             $(currentQA[i]).find('[name$="content"]').val()+"</option>")
         else
-            $(elt).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
+             if ($(elt).children("[value='"+interactionId+"']").val() == currentInteractionId) //To hide current interaction question
+                $(elt).children("option[value='"+interactionId+"']").hide();   
+                
+            //$(elt).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
     } 
     //Removing deleted interactions
     for (var i=0; i<bucket.length; i++) {
