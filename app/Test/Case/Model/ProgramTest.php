@@ -101,7 +101,7 @@ class ProgramTestCase extends CakeTestCase
     public function testSaveProgram_ok()
     {
         $program['Program'] = array(
-            'id' => 3,
+            'id' => 9,
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',
@@ -192,7 +192,7 @@ class ProgramTestCase extends CakeTestCase
     public function testMatchProgramByShortcodeAndCountry()
     {
         $programM4H['Program'] = array(
-            'id' => 3,
+            'id' => 9,
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',
@@ -270,6 +270,34 @@ class ProgramTestCase extends CakeTestCase
         //Clear data in program settings
         $this->ProgramSettingM4H->deleteAll(true, false);
         $this->ProgramSettingTester->deleteAll(true, false);
+    }
+    
+    
+    public function testEditProgram_fail_database_name()
+    {
+        $program = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7h',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->Program->create();
+        $this->Program->save($program);
+        
+        $program2 = array(
+            'id' => 5,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7hp',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->assertFalse($this->Program->save($program2));
+        $this->assertEqual(
+            $this->Program->validationErrors['database'][0], 
+            'This field is read only.');
     }
     
     
