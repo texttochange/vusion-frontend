@@ -187,13 +187,6 @@ class ParticipantTestCase extends CakeTestCase
         $savedParticipant = $this->Participant->save($participant);
         $this->assertEqual("+788601463", $savedParticipant['Participant']['phone']);
         
-        //Phone with letter O instead of 0 digit is NOT SAVED
-        $participant = array(
-            'phone' => 'OO7886O1464',
-            );
-        $this->Participant->create();
-        $this->assertFalse($this->Participant->save($participant));
-        
         //The double 00 are replace by a +
         $participant = array(
             'phone' => '00788601465',
@@ -1045,9 +1038,9 @@ class ParticipantTestCase extends CakeTestCase
         
         $this->assertEquals(6, count($participants));
         $this->assertEquals(6, count($report));
-    }
-    
-    
+    }   
+
+
     //TEST FILTERS
     public function testFromFilterToQueryConditions_phone() 
     {
@@ -1617,4 +1610,17 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual(array('geek', 'cool'), $participant['Participant']['tags']); 
         
     }
+
+    
+    public function testClearPhone()
+    {
+        $this->assertEqual("+254700866920", Participant::clearPhone(" +254700866920 "));
+        $this->assertEqual("+254700866920", Participant::clearPhone("254700866920"));
+        $this->assertEqual("+254700866920", Participant::clearPhone("254 700 866 920"));
+        $this->assertEqual("+254700866920", Participant::clearPhone("00254700866920"));
+        $this->assertEqual("+254700866920", Participant::clearPhone("+254700866920�"));
+        $this->assertEqual("+254700866920", Participant::clearPhone(" +2547OO866920 "));
+    }
+
+
 }
