@@ -514,10 +514,10 @@ function updateOffsetConditions(elt){
             $(elt).append("<option class='ui-dform-option' value='"+
                     interactionId+"'>"+
                     $(currentQA[i]).find('[name$="content"]').val()+"</option>")
-        else
-             if ($(elt).children("[value='"+interactionId+"']").val() == currentInteractionId) //To hide current interaction question
-                $(elt).children("option[value='"+interactionId+"']").hide();   
-    } 
+            else if ($(elt).children("[value='"+interactionId+"']").val() == currentInteractionId){ //To hide current interaction question
+                 $(elt).children("option[value='"+interactionId+"']").hide();   
+        } 
+    }
     //Removing deleted interactions
     for (var i=0; i<bucket.length; i++) {
         //Do not delete the default choice
