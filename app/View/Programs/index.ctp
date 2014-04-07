@@ -28,9 +28,10 @@
 	if (preg_grep('/^filter/', array_keys($this->params['url'])) && empty($programs))
 	    echo "No results found.";
 	$programStatsToCompute =array();
-	foreach ($programs as $program): ?>
-    
-        <div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="window.location.pathname='<?php echo '/'.$program['Program']['url']; ?>'">
+	foreach ($programs as $program): 
+     $url = $program['Program']['url'];?>
+        <div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="ctrlClickNewtab('<?php echo $program['Program']['url'];?>')">
+        
         <?php $programName = $this->Text->truncate($program['Program']['name'], 
             24, 
             array('ellipsis' => '...',

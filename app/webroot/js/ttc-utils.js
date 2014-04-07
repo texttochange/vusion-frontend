@@ -729,3 +729,13 @@ function getParameterByName(url, name){
 }
 
 
+function ctrlClickNewtab(url,e) {
+    var event = e || window.EventTarget;
+    if (event.ctrlKey) {
+        window.open("/"+url);
+    } else {
+        window.location.pathname = "/"+url;
+    }
+}
+
+
