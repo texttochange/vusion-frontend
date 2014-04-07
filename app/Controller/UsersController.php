@@ -482,8 +482,8 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
-            $this->Acl->allow($Group, 'controllers/ShortCodes');
-            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            //$this->Acl->allow($Group, 'controllers/ShortCodes');
+            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
@@ -526,6 +526,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -552,6 +553,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

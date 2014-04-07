@@ -3,11 +3,12 @@
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('User', 'Model');
 
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -18,6 +19,11 @@ class UnmatchableReplyController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
+        
+        $user = $this->Auth->user();
+        if (!$this->User->hasUnmatchableReplyAccess($user['id'])) {
+            $this->redirect(array('controller'=>'programs', 'action' => 'index'));
+        }
     }
     
     
@@ -36,6 +42,7 @@ class UnmatchableReplyController extends AppController
         }
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
+        $this->User             = new User();
     }
     
     
@@ -43,6 +50,8 @@ class UnmatchableReplyController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+        
+        $defaultConditions = $this->_getUserAccessCondition();
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
@@ -52,7 +61,7 @@ class UnmatchableReplyController extends AppController
         
         $this->paginate = array(
             'all',
-            'conditions' => $this->_getConditions(),
+            'conditions' => $this->_getConditions($defaultConditions),
             'order'=> $order,
             );
         $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
@@ -77,13 +86,13 @@ class UnmatchableReplyController extends AppController
     }
     
     
-    protected function _getConditions($conditions = null)
+    protected function _getConditions($defaultConditions)
     {
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
         $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
         
         if (!isset($filter['filter_param'])) 
-            return null;
+            return $defaultConditions;
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->UnmatchableReply->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
@@ -91,7 +100,17 @@ class UnmatchableReplyController extends AppController
         
         $this->set('urlParams', http_build_query($filter));
         
-        return $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
+        $conditions = $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
+        
+        if ($conditions == array()) {echo "here";
+            $conditions = $defaultConditions;
+        } else if ($conditions != array() && $defaultConditions != array()) {
+            $conditions = array('$and' => array(
+                $defaultConditions,
+                $conditions));
+        }
+        
+        return $conditions;
     }
     
 
@@ -103,6 +122,30 @@ class UnmatchableReplyController extends AppController
         $defaultConditions = array();
         $paginationCount = $this->UnmatchableReply->count($this->_getConditions($defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
+    }
+    
+    protected function _getUserAccessCondition()
+    {
+        $accessCondition = array();
+        
+        $user = $this->Auth->user();
+        if ($this->User->hasUnmatchableReplyAccess($user['id'])) {
+            $programs = $this->Program->find('authorized', array(
+                'specific_program_access' => 'true',
+                'user_id' => $user['id']));
+            $index = 0;
+            foreach ($programs as &$program) {
+                $program = $this->ProgramPaginator->getProgramDetails($program);
+                $shortcodes[$index] = $program['program']['Program']['shortcode'];
+                $codes[$index] = substr(strrchr($shortcodes[$index], "-"), 1);
+                $index++;
+            }
+            $accessCondition = array('$or' => array(
+                array('participant-phone' => array('$in' => $shortcodes)),
+                array('to' => array('$in' => $codes)),
+                ));
+        }
+        return $accessCondition;
     }
 
 }
