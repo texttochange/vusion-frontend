@@ -135,7 +135,7 @@ class Action extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validContentVariable' => array(
-                'rule' => 'validContentVariableInResponse',
+                'rule' => 'validContentVariableForResponse',
                 'message' => 'noMessage'
                 ),
             ),
@@ -188,7 +188,7 @@ class Action extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validContentVariable' => array(
-                'rule' => 'validContentVariableInResponse',
+                'rule' => 'validContentVariableForResponse',
                 'message' => 'noMessage'
                 ),
             )
@@ -403,7 +403,7 @@ class Action extends VirtualModel
     }
     
     
-    public function validContentVariableInResponse($field, $data)
+    public function validContentVariableForResponse($field, $data)
     {
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
