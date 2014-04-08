@@ -102,7 +102,7 @@ class UnmatchableReplyController extends AppController
         
         $conditions = $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
         
-        if ($conditions == array()) {echo "here";
+        if ($conditions == array()) {
             $conditions = $defaultConditions;
         } else if ($conditions != array() && $defaultConditions != array()) {
             $conditions = array('$and' => array(
