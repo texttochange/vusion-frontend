@@ -298,7 +298,7 @@ class ProgramParticipantsController extends AppController
         foreach ($filter['filter_param'] as $key => $filterParam) {
             if (isset($filterParam[3])) {
                 if (!$filterParam[3]) {
-                    $this->Session->setFlash(__('Part of the filter has been ignored due missing information'), 
+                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
                         'default',
                         array('class' => "message failure")
                         );
