@@ -509,12 +509,13 @@ function updateOffsetConditions(elt){
     //Adding present interaction if not already there
     for (var i=0; i<currentQA.length; i++) {
         var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
+        var elementInteractionId = $(elt).children("[value='"+interactionId+"']");
         bucket.splice(bucket.indexOf(interactionId), 1);
-        if ($(elt).children("[value='"+interactionId+"']").length==0)
+        if (elementInteractionId.length==0)
             $(elt).append("<option class='ui-dform-option' value='"+
                     interactionId+"'>"+
                     $(currentQA[i]).find('[name$="content"]').val()+"</option>")
-            else if ($(elt).children("[value='"+interactionId+"']").val() == currentInteractionId){ //To hide current interaction question
+            else if (elementInteractionId.val() == currentInteractionId){ //To hide current interaction question
                  $(elt).children("option[value='"+interactionId+"']").hide();   
         } 
     }
