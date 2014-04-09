@@ -12,7 +12,7 @@ class VusionValidation extends Validation {
     
     public static function validContentVariable($check)
     {
-        preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $check['double-matching-answer-feedback']['double-optin-error-feedback'], $matches, PREG_SET_ORDER);
+        preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $check, $matches, PREG_SET_ORDER);
         $allowed = array("domain", "key1", "key2", "key3", "otherkey");
         foreach ($matches as $match) {
             $match = array_intersect_key($match, array_flip($allowed));

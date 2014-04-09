@@ -156,13 +156,20 @@ class ProgramSetting extends MongoModel
     
     public function notRegex($check, $regex=null) 
     {
-        return VusionValidation::customNot($check['double-matching-answer-feedback']['double-optin-error-feedback'], $regex);
+        foreach ($check as $key=>$checkValue){
+            return VusionValidation::customNot($checkValue, $regex[0]);
+        }
+        
     }
     
     
-     public function validContentVariable($check)
+    public function validContentVariable($check)
     {
-        return VusionValidation::validContentVariable($check);
+       foreach ($check as $key=>$checkValue){
+          return VusionValidation::validContentVariable($checkValue); 
+           
+       }
+        
     }
     
     
@@ -276,8 +283,8 @@ class ProgramSetting extends MongoModel
             return false;
         return true;
     }
- 
-
+    
+    
     public function notUsedKeyword($check, $data, $other)
     {
         if (isset($check['shortcode']) && $this->usedKeywords != array()){
@@ -290,7 +297,7 @@ class ProgramSetting extends MongoModel
         }
         return true;
     }
-
+    
     
     public function getProgramTimeNow()
     {
