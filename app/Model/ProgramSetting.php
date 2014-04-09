@@ -3,6 +3,7 @@ App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
+App::uses('VusionValidation', 'Lib');
 
 
 class ProgramSetting extends MongoModel
@@ -110,7 +111,29 @@ class ProgramSetting extends MongoModel
                 'rule' => array('inList', array('none', 'full')),
                 'message' => 'The sms forwarding value is not valid.',
                 'required' => true,
+                ),
+            ),
+        'double-matching-answer-feedback' => array(
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
+            
+            ),
+        'double-optin-error-feedback' => array(
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
                 )
+            
             )
         );
     
@@ -128,6 +151,18 @@ class ProgramSetting extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $this->ValidationHelper = new ValidationHelper($this);
+    }
+    
+    
+    public function notRegex($check, $regex=null) 
+    {
+        return VusionValidation::customNot($check['double-matching-answer-feedback']['double-optin-error-feedback'], $regex);
+    }
+    
+    
+     public function validContentVariable($check)
+    {
+        return VusionValidation::validContentVariable($check);
     }
     
     
