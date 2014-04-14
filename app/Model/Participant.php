@@ -319,15 +319,7 @@ class Participant extends MongoModel
             $this->data['Participant']['session-id']       = $sessionId;
             $tags                                          = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
             $this->data['Participant']['tags']             = $tags;
-            $autoEnrollDialogues                           = $this->Dialogue->getActiveDialogues(array('auto-enrollment'=>'all'));
-            if ($autoEnrollDialogues == null)
-                $this->data['Participant']['enrolled'] = array();
-            foreach ($autoEnrollDialogues as $autoEnroll) {
-                $this->data['Participant']['enrolled'][] = array(
-                    'dialogue-id' => $autoEnroll['Dialogue']['dialogue-id'],
-                    'date-time' => $programNow->format("Y-m-d\TH:i:s")
-                    );
-            }
+            $this->data['Participant']['enrolled']         = array();
         } else {
             $this->_editTags();
             
@@ -430,25 +422,6 @@ class Participant extends MongoModel
             // 48 bits for "node"
             mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
             );
-    }
-    
-    
-    public function autoEnrollDialogue($dialogueId)
-    {
-        $programNow = $this->ProgramSetting->getProgramTimeNow();
-        $updateData = array(
-            '$push'=>array(
-                'enrolled'=>array(
-                    'dialogue-id'=>$dialogueId,
-                    'date-time'=>$programNow->format("Y-m-d\TH:i:s")
-                    )
-                )
-            );
-        $conditions = array(
-            'session-id' => array('$ne'=>null),
-            'enrolled.dialogue-id' => array('$ne'=>$dialogueId)
-            );
-        $this->updateAll($updateData, $conditions);        
     }
     
     
