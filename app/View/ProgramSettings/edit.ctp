@@ -24,8 +24,12 @@
     }
     echo $this->Form->create('ProgramSetting'); ?>
     <fieldset>
-        <div class='input text'>
-        <?php
+    <?php
+         $errorShortcode = "";
+        if ($this->Form->isFieldError('shortcode')){ 
+            $errorShortcode = "error";
+        }
+        echo "<div class='input text $errorShortcode'>";
             echo $this->Html->tag('label',__('Shortcode'));    
             foreach($shortcodes as $shortcode) {
                 if ($shortcode['ShortCode']['supported-internationally']==0) {
@@ -37,6 +41,7 @@
                 }
                 $shortcodeOptions[$prefixShortCode] = $countyShortCode;
                 $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
+                
             }
             echo "<br />";
             echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
@@ -58,6 +63,9 @@
             			    $("#customized-id").val("");
             			}
             			');
+            if ($this->Form->isFieldError('shortcode')){ 
+                echo $this->Form->error('shortcode'); 
+            }
         ?>
         </div>
         <?php
@@ -204,4 +212,3 @@
   <?php echo $this->Form->end(__('Save'));?>
   </div>
 </div>
-<?php echo $this->Js->writeBuffer(); ?>

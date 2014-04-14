@@ -214,10 +214,13 @@ class Participant extends MongoModel
     }
     
     
-    public function clearPhone($phone) 
+    public static function clearPhone($phone) 
     {
         if (isset($phone) and !empty($phone)) {
-            $phone = trim($phone);
+            $phone = trim($phone);           
+            $phone = preg_replace("/[^+\dO]/", "", $phone);
+            //Replace letter O by zero
+            $phone = preg_replace("/O/", "0", $phone);
             $phone = preg_replace("/^(00|0)/", "+", $phone);    
             if (!preg_match('/^\+[0-9]+/', $phone)) { 
                 $phone = "+" . $phone; 
