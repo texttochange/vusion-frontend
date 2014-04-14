@@ -729,8 +729,7 @@ function getParameterByName(url, name){
 }
 
 
-function ctrlClickNewtab(url,e) {
-    var event = e || window.EventTarget;
+function clickProgramBox(url,event) {
     if (event.ctrlKey) {
         window.open("/"+url);
     } else {

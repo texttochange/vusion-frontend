@@ -30,7 +30,7 @@
 	$programStatsToCompute =array();
 	foreach ($programs as $program): 
      $url = $program['Program']['url'];?>
-        <div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="ctrlClickNewtab('<?php echo $program['Program']['url'];?>', event)">
+        <div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="clickProgramBox('<?php echo $program['Program']['url'];?>', event)">
         
         <?php $programName = $this->Text->truncate($program['Program']['name'], 
             24, 
