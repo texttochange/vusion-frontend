@@ -729,3 +729,12 @@ function getParameterByName(url, name){
 }
 
 
+function clickProgramBox(url,event) {
+    if (event.ctrlKey) {
+        window.open("/"+url);
+    } else {
+        window.location.pathname = "/"+url;
+    }
+}
+
+
