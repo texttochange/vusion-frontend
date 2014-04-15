@@ -516,7 +516,7 @@ function updateOffsetConditions(elt){
                     interactionId+"'>"+
                     $(currentQA[i]).find('[name$="content"]').val()+"</option>")
             else if (elementInteractionId.val() == currentInteractionId){ //To hide current interaction question
-                 $(elt).children("option[value='"+interactionId+"']").hide();   
+                    elementInteractionId.hide();   
         } 
     }
     //Removing deleted interactions
