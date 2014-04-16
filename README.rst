@@ -51,6 +51,7 @@ Modules need to be install and configure in PHP
 
         $ tar zxvf mongodb-php-driver-1.2.9.tar.gz
         $ cd mongodb-php-driver-1.2.9
+        $ sudo apt-get install php5-dev
         $ phpize
         $ ./configure
         $ make all
