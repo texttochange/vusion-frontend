@@ -72,6 +72,7 @@ Development PHP Modules
 - Pear and PHPUnit Installation
     ::
       
+    	$ sudo apt-get install php-pear
     	$ sudo pear channel-discover pear.phpunit.de
         $ sudo pear channel-discover components.ez.no
         $ sudo pear channel-discover pear.symfony-project.com
