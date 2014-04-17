@@ -130,8 +130,8 @@ class UnmatchableReplyController extends AppController
         $accessCondition = array();
         
         $user = $this->Auth->user();
-        //here we don't need to test if it has unmachableReplyAccess but if it has a specific program access
-        if ($this->User->hasUnmatchableReplyAccess($user['id'])) {
+        
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
             $programs = $this->Program->find('authorized', array(
                 'specific_program_access' => 'true',
                 'user_id' => $user['id']));

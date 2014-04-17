@@ -108,6 +108,10 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
+                #checkbox is checked => we store it in the ACL
+                if (isset($this->request->data['User']['limited_unmatchableReply_access'])) {
+                     $this->Acl->allow($this->User, 'controllers/UnmatchableReply');
+                }
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -532,7 +536,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
-            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -559,7 +563,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
-            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

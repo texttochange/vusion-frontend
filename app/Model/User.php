@@ -75,16 +75,6 @@ class User extends AppModel
                 //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
             ),
-        'limited_unmatchableReply_access' => array(
-            'boolean' => array(
-                'rule' => array('boolean'),
-                //'message' => 'Your custom message here',
-                //'allowEmpty' => false,
-                //'required' => false,
-                //'last' => false, // Stop validation after this rule
-                //'on' => 'create', // Limit validation to 'create' or 'update' operations
-                ),
-            ),
         );
     
     //The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -255,13 +245,6 @@ class User extends AppModel
         }
         
         return $conditions;
-    }
-    
-    
-    public function hasUnmatchableReplyAccess($id)
-    {
-        $data = $this->findById($id);
-        return $data['User']['limited_unmatchableReply_access'];    
     }
     
     
