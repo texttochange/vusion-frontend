@@ -20,10 +20,11 @@ class UnmatchableReplyController extends AppController
     {
         parent::beforeFilter();
         
-        $user = $this->Auth->user();
+        //No need anymore done by the ACL at filter stage
+        /*$user = $this->Auth->user();
         if (!$this->User->hasUnmatchableReplyAccess($user['id'])) {
             $this->redirect(array('controller'=>'programs', 'action' => 'index'));
-        }
+        }*/
     }
     
     
@@ -129,6 +130,7 @@ class UnmatchableReplyController extends AppController
         $accessCondition = array();
         
         $user = $this->Auth->user();
+        //here we don't need to test if it has unmachableReplyAccess but if it has a specific program access
         if ($this->User->hasUnmatchableReplyAccess($user['id'])) {
             $programs = $this->Program->find('authorized', array(
                 'specific_program_access' => 'true',

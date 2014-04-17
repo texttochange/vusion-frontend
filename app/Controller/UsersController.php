@@ -148,6 +148,10 @@ class UsersController extends AppController
         
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->save($this->request->data)) {
+                #checkbox is checked => we store it in the ACL
+                if (isset($this->request->data['User']['limited_unmatchableReply_access'])) {
+                     $this->Acl->allow($this->User, 'controllers/UnmatchableReply');
+                }
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -169,6 +173,8 @@ class UsersController extends AppController
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
+            #As the information is stored in the ACL we need to retrieve it form the ACL component
+            $this->request->data['User']['limited_unmatchableReply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
@@ -445,7 +451,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
             $this->Acl->allow($Group, 'controllers/ShortCodes');
-            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
@@ -483,7 +489,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
             //$this->Acl->allow($Group, 'controllers/ShortCodes');
-            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
