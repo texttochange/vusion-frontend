@@ -156,20 +156,21 @@ class ProgramSetting extends MongoModel
     
     public function notRegex($check, $regex=null) 
     {
-        foreach ($check as $key=>$checkValue){
-            return VusionValidation::customNot($checkValue, $regex[0]);
-        }
-        
+        if (!is_array($check))
+            return VusionValidation::customNot($check, $regex[0]);
+        $keys = array_keys($check);
+        $key = $keys[0];
+        return VusionValidation::customNot($check[$key], $regex[0]);
     }
     
     
     public function validContentVariable($check)
     {
-       foreach ($check as $key=>$checkValue){
-          return VusionValidation::validContentVariable($checkValue); 
-           
-       }
-        
+        if (!is_array($check))
+            return VusionValidation::validContentVariable($check);
+        $keys = array_keys($check);
+        $key = $keys[0];
+        return VusionValidation::validContentVariable($check[$key]);
     }
     
     

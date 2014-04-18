@@ -150,6 +150,37 @@ class ProgramSettingTestCase extends CakeTestCase
         $settings = $this->ProgramSetting->find('all');
         
         $this->assertEqual($this->ProgramSetting->getModelVersion(), $settings[0]['ProgramSetting']['model-version']);
+    } 
+    
+    public function testApostrope_fail()
+    {
+        $settings = array(
+            'double-matching-answer-feedback' => "’`’‘",
+            'double-optin-error-feedback' => "’`’‘"
+            );
+        $this->ProgramSetting->create();
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        
+        $this->assertEquals('The apostrophe used is not allowed.',
+            $this->ProgramSetting->validationErrors['double-matching-answer-feedback'][0]);
+        $this->assertEquals('The apostrophe used is not allowed.',
+            $this->ProgramSetting->validationErrors['double-optin-error-feedback'][0]);
+    }
+    
+    public function testValidContentVariable_fail()
+    {
+        $settings = array(
+            'double-matching-answer-feedback' => 'There is a an [shoe.box] here.',
+            'double-optin-error-feedback' => 'There is a an [shoe.box] here.'
+            );
+        $this->ProgramSetting->create();
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+       $this->assertEquals(
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->ProgramSetting->validationErrors['double-matching-answer-feedback'][0]);
+        $this->assertEquals(
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->ProgramSetting->validationErrors['double-optin-error-feedback'][0]);
     }
     
     
@@ -174,6 +205,9 @@ class ProgramSettingTestCase extends CakeTestCase
             'credit-number' => '2000',
             'credit-from-date' => '02/12/2013',
             'credit-to-date' => '03/12/2013',
+            'double-optin-error-feedback' => '',
+            'double-matching-answer-feedback' => '',
+            
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -206,6 +240,8 @@ class ProgramSettingTestCase extends CakeTestCase
         $settings = array(
             'shortcode' => '256-8181',
             'credit-type' => 'none',
+            'double-matching-answer-feedback' => '',
+            'double-optin-error-feedback' => '',
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -271,7 +307,9 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-forwarding-allowed' => 'none'
+            'sms-forwarding-allowed' => 'none',
+            'double-optin-error-feedback' => '',
+            'double-matching-answer-feedback' => '',
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
