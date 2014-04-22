@@ -302,7 +302,6 @@ class ProgramParticipantsController extends AppController
                         'default',
                         array('class' => "message failure")
                         );
-                    $filter['filter_param'][$key] = $filterParam;
                 }
             } else {
                 return null;
