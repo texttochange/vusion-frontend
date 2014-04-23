@@ -180,4 +180,11 @@ Don't forget to change permissions on the */files/programs/ * directory
 
 **Note: We also want apache www folder to have access to our project folder; we are going to have to create a symlink folder inside the apache www hence when project folder files are updated apache can have access to the updates. go to command -**
 ::
-$ ln -s /actual project folder path/ /symlink folder path in the apache www/
+	$ ln -s /actual project folder path/ /symlink folder path in the apache www/
+
+In the /etc/apach2/port.conf file add this listen port 
+::
+
+	NameVirtualHost *:81
+	Listen 81
+
