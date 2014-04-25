@@ -78,7 +78,7 @@ Development PHP Modules
         $ sudo pear channel-discover pear.symfony-project.com
         $ sudo pear channel-discover pear.symfony.com
         $ sudo pear update-channels
-        $ sudo pear install --alldeps phpunit/PHPUnit
+        $ sudo pear install --alldeps phpunit/PHPUnit-3.7.27
         
  
  **- Note if PHPUnit fails, first upgrade pear with the command below**
