@@ -79,6 +79,11 @@ class ShortCode extends MongoModel
                 'rule' => 'notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix',
                 'message' => 'Same national shortcode number is used in a country with matching international prefix, the system cannot handle this.',
                 'required' => true
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             ),
         'country' => array(
@@ -152,6 +157,22 @@ class ShortCode extends MongoModel
             return preg_match($pattern, $this->data['ShortCode']['shortcode']);
         } 
         return true;
+    }
+    
+    
+    public function isNotEditable($check) 
+    {
+        $existingShortcode = $this->find(
+            'first', 
+            array('id = Program.id' ,
+                'conditions'=> array('shortcode' => $check['shortcode']))
+            );
+        print_r($existingShortcode);
+        if($existingShortcode){
+            return true;
+        } else {
+            return false;
+        }
     }
     
     

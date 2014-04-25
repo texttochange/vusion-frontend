@@ -6,21 +6,21 @@
 	<?php
 	echo $this->Html->tag('label',__('Country'));
 	echo "<br />";
-	echo $this->Form->select('country', $countries, array('id'=> 'country'));
-	$this->Js->set('prefixesByCountriesOptions', $prefixesByCountriesOptions);
-	$this->Js->get('#country')->event('change',
-		'var country = $("#country :selected").val();
-		var internationalPrefix = window.app.prefixesByCountriesOptions[country];
-		$("#international-prefix").val(internationalPrefix);
-	    ');
+	echo $this->Form->tag('country',
+	    array('id'=> 'country',
+	        'style' => 'color:#AAAAAA'));
 	?>
 	</div>
 	<?php
-	echo $this->Form->input('shortcode', array('label' => __('Shortcode')));
+	echo $this->Form->input('shortcode',
+	    array('label' => __('Shortcode'),
+	        'readonly' => 'true',
+	        'style' => 'color:#AAAAAA'));
 	echo $this->Form->input('international-prefix',
 	    array('id' => 'international-prefix',
 	        'label' => __('International Prefix'),
-	        'readonly' => true)
+	        'readonly' => true,
+	        'style' => 'color:#AAAAAA')
 	    );
 	?>
 	<div>
