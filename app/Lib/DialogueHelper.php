@@ -1,4 +1,5 @@
 <?php
+App::uses('VusionConst', 'Lib');
 
 
 class DialogueHelper
@@ -202,6 +203,33 @@ class DialogueHelper
         }
         return $message;
     }
+
+    //Prefixed code utility functions
+    public static function fromPrefixedCodeToCountry($prefixedCode, $countriesByPrefixes) {
+        $prefix = DialogueHelper::fromPrefixedCodeToPrefix($prefixedCode, $countriesByPrefixes);
+        return $countriesByPrefixes[$prefix];
+    }
+
+
+    public static function fromPrefixedCodeToPrefix($prefixedCode, $countriesByPrefixes) {
+        if (preg_match(VusionConst::PREFIXED_LOCAL_CODE_REGEX, $prefixedCode)) {
+            $exploded = explode('-', $prefixedCode);
+            $prefix = $exploded[0];
+        } elseif (preg_match(VusionConst::INTERNATIONAL_CODE_REGEX, $prefixedCode)) {           
+            for($i = 1; $i < strlen($prefixedCode); $i++) {
+                $potentialPrefix = substr($prefixedCode, 1, $i);
+                if (isset($countriesByPrefixes[$potentialPrefix])) {
+                    $prefix = $potentialPrefix;
+                    break;
+                }
+            }
+        }
+        if (!isset($prefix)) {
+            throw new VusionException(__("Cannot find valid country prefix from %s.", $prefixedCode));
+        }
+        return $prefix;
+    }
+
 
 }
 
