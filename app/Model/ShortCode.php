@@ -95,6 +95,11 @@ class ShortCode extends MongoModel
                 'rule' => 'isShortCodeCountryUnique',
                 'message' => 'There is already the same shortcode for this country.',
                 'required' => true
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             ),
         'max-character-per-sms' => array(
@@ -162,17 +167,25 @@ class ShortCode extends MongoModel
     
     public function isNotEditable($check) 
     {
-        $existingShortcode = $this->find(
-            'first', 
-            array('id = Program.id' ,
-                'conditions'=> array('shortcode' => $check['shortcode']))
-            );
-        print_r($existingShortcode);
-        if($existingShortcode){
-            return true;
-        } else {
-            return false;
+        if ($this->id) {
+            $existingShortcode = $this->find(
+                'first', 
+                array('conditions'=> array('_id' => $this->id))
+                );
         }
+        
+        $checkValues = array_values($check);
+        $checkValue = $checkValues[0];
+        if ($existingShortcode['ShortCode']['country'] == $checkValue) {
+            return true;
+        } 
+        
+        if ($existingShortcode['ShortCode']['shortcode'] == $checkValue) {
+            return true;
+        }
+        
+        return false;
+        
     }
     
     
