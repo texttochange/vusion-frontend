@@ -156,7 +156,7 @@ class ProgramSetting extends MongoModel
     
     public function notRegex($check, $regex=null) 
     {
-        if (!is_array($check)){
+        if (!is_array($check)) {
             return VusionValidation::customNot($check, $regex[0]);
         }
         $keys = array_keys($check);
@@ -167,7 +167,7 @@ class ProgramSetting extends MongoModel
     
     public function validContentVariable($check)
     {
-        if (!is_array($check)){
+        if (!is_array($check)) {
             return VusionValidation::validContentVariable($check);
         }
         $keys = array_keys($check);
