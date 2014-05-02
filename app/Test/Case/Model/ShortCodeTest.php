@@ -118,4 +118,49 @@ class ShortCodeTestCase extends CakeTestCase
             'The valid value are only 70, 140 and 160.');
     }
     
+    public function testEdit_Shortcode_fail()
+    {  
+        $shortCode = array(
+            'country' => 'Uganda',
+            'shortcode' => '8282',  
+            'international-prefix' => '256',
+            'max-character-per-sms' => '140',
+            );
+        
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($shortCode);
+        
+        $savedShortCode['ShortCode']['shortcode'] = '8285';
+        $this->ShortCode->create();
+        $editShortCode = $this->ShortCode->save($savedShortCode);
+        
+        $this->assertFalse($editShortCode);
+        $this->assertEqual(
+            $this->ShortCode->validationErrors['shortcode'][0],
+            'This field is read only.');
+    }
+    
+    
+    public function testEdit_Country_fail()
+    { 
+        $shortCode = array(
+            'country' => 'Uganda',
+            'shortcode' => '8282',  
+            'international-prefix' => '256',
+            'max-character-per-sms' => '140',
+            );
+        
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($shortCode);
+        
+        $savedShortCode['ShortCode']['country'] = 'Kenya';
+        $this->ShortCode->create();
+        $editCountry = $this->ShortCode->save($savedShortCode);
+        
+        $this->assertFalse($editCountry);
+        $this->assertEqual(
+            $this->ShortCode->validationErrors['country'][0],
+            'This field is read only.');
+    }
+    
 }
