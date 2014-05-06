@@ -134,6 +134,7 @@ class ShortCodeTestCase extends CakeTestCase
         
         $savedShortCode['ShortCode']['shortcode'] = '8285';
         $savedShortCode['ShortCode']['country']   = 'Kenya';
+        $savedShortCode['ShortCode']['international-prefix']   = '254';
         $this->ShortCode->create();
         $editShortCodeAndCountry = $this->ShortCode->save($savedShortCode);
         
@@ -143,6 +144,9 @@ class ShortCodeTestCase extends CakeTestCase
             'This field is read only.');
         $this->assertEqual(
             $this->ShortCode->validationErrors['country'][0],
+            'This field is read only.');
+        $this->assertEqual(
+            $this->ShortCode->validationErrors['international-prefix'][0],
             'This field is read only.');
     }
     

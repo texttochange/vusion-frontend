@@ -111,6 +111,13 @@ class ShortCode extends MongoModel
                 'rule' => array('inlist', array(70, 140, 160)),
                 'message' => 'The valid value are only 70, 140 and 160.'
                 ),
+            ),
+        'international-prefix' => array(
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
+                )
             )
         );
     
