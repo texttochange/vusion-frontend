@@ -220,6 +220,23 @@ class UsersController extends AppController
                 if ($this->Session->read('Auth.User.group_id') == 1) {
                     $this->redirect(array('controller' => 'admin'));
                 }
+                
+                $id = $this->Auth->user('id');
+                $allProgramsCount = $this->Program->find('count', array(
+                    'specific_program_access' => 'true',
+                    'user_id' => $id));
+                if ($this->Session->read('Auth.User.group_id') == 4) {
+                    if ($allProgramsCount == 1) {
+                        $program = $this->Program->find('authorized', array(
+                            'specific_program_access' => 'true',
+                            'user_id' => $id));
+                        $programUrl = $program[0]['Program']['url'];
+                        $this->redirect(array('program' => $programUrl,
+                            'controller' => 'programHome',
+                            'action' => 'index'));
+                    }
+                }
+                
                 $this->redirect($this->Auth->redirect());
             } else {
                 if($this->request->is('post')) {
