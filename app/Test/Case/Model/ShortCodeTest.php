@@ -25,6 +25,7 @@ class ShortCodeTestCase extends CakeTestCase
         parent::tearDown();
     }
     
+    
     public function testSave()
     {
         $emptyShortCode = array();
@@ -118,12 +119,13 @@ class ShortCodeTestCase extends CakeTestCase
             'The valid value are only 70, 140 and 160.');
     }
     
-    public function testEdit_Shortcode_fail()
-    {  
+    
+    public function testEdit_Shortcode_And_Country_fail()
+    { 
         $shortCode = array(
             'country' => 'Uganda',
             'shortcode' => '8282',  
-            'international-prefix' => '256',
+            'international-prefix' => '256',    
             'max-character-per-sms' => '140',
             );
         
@@ -131,33 +133,14 @@ class ShortCodeTestCase extends CakeTestCase
         $savedShortCode = $this->ShortCode->save($shortCode);
         
         $savedShortCode['ShortCode']['shortcode'] = '8285';
+        $savedShortCode['ShortCode']['country']   = 'Kenya';
         $this->ShortCode->create();
-        $editShortCode = $this->ShortCode->save($savedShortCode);
+        $editShortCodeAndCountry = $this->ShortCode->save($savedShortCode);
         
-        $this->assertFalse($editShortCode);
+        $this->assertFalse($editShortCodeAndCountry);
         $this->assertEqual(
             $this->ShortCode->validationErrors['shortcode'][0],
             'This field is read only.');
-    }
-    
-    
-    public function testEdit_Country_fail()
-    { 
-        $shortCode = array(
-            'country' => 'Uganda',
-            'shortcode' => '8282',  
-            'international-prefix' => '256',
-            'max-character-per-sms' => '140',
-            );
-        
-        $this->ShortCode->create();
-        $savedShortCode = $this->ShortCode->save($shortCode);
-        
-        $savedShortCode['ShortCode']['country'] = 'Kenya';
-        $this->ShortCode->create();
-        $editCountry = $this->ShortCode->save($savedShortCode);
-        
-        $this->assertFalse($editCountry);
         $this->assertEqual(
             $this->ShortCode->validationErrors['country'][0],
             'This field is read only.');
