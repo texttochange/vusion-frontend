@@ -222,15 +222,12 @@ class UsersController extends AppController
                 }
                 
                 $id = $this->Auth->user('id');
-                $allProgramsCount = $this->Program->find('count', array(
+                $allPrograms = $this->Program->find('authorized', array(
                     'specific_program_access' => 'true',
                     'user_id' => $id));
                 if ($this->Session->read('Auth.User.group_id') == 4) {
-                    if ($allProgramsCount == 1) {
-                        $program = $this->Program->find('authorized', array(
-                            'specific_program_access' => 'true',
-                            'user_id' => $id));
-                        $programUrl = $program[0]['Program']['url'];
+                    if (count($allPrograms) == 1) {
+                        $programUrl = $allPrograms[0]['Program']['url'];
                         $this->redirect(array('program' => $programUrl,
                             'controller' => 'programHome',
                             'action' => 'index'));
