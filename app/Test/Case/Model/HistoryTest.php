@@ -387,12 +387,14 @@ class HistoryTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'dialogue-source', 
-                    2 => 'is-any'),
+                    2 => 'is-any',
+                    3 => ''),
                 )
-            ); 
+            );
+        print_r($this->History->fromFilterToQueryConditions($filter));
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => array('$exists' => true))
+            null
             );
 
         $filter = array(
@@ -400,12 +402,13 @@ class HistoryTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'dialogue-source', 
-                    2 => 'not-is-any'),
+                    2 => 'not-is-any',
+                    3 => ''),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => array('$exists' => false))
+            null
             );
     }
     
@@ -444,12 +447,13 @@ class HistoryTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'interaction-source', 
-                    2 => 'is-any'),
+                    2 => 'is-any',
+                    3 => ''),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => array('$exists' => true))
+            null
             );
 
         $filter = array(
@@ -457,12 +461,13 @@ class HistoryTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'interaction-source', 
-                    2 => 'not-is-any'),
+                    2 => 'not-is-any',
+                    3 => ''),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => array('$exists' => false))
+            null
             );
     }
 
@@ -502,13 +507,15 @@ class HistoryTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'request-source', 
-                    2 => 'is-any'),
+                    2 => 'is-any',
+                    3 => ''
+                    ),
                 )
             ); 
         
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('request-id' => array('$exists' => true))
+            null
             );
         
         $filter = array(
@@ -516,12 +523,13 @@ class HistoryTestCase extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => 'request-source', 
-                    2 => 'not-is-any'),
+                    2 => 'not-is-any',
+                    3 => ''),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('request-id' => array('$exists' => false))
+            null
             );
     }
     
