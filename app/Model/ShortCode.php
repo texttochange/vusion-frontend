@@ -191,6 +191,10 @@ class ShortCode extends MongoModel
             return true;
         }
         
+        if ($existingShortcode['ShortCode']['international-prefix'] == $checkValue) {
+            return true;
+        }
+        
         return false;
         
     }
