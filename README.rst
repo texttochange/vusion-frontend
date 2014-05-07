@@ -51,6 +51,7 @@ Modules need to be install and configure in PHP
 
         $ tar zxvf mongodb-php-driver-1.2.9.tar.gz
         $ cd mongodb-php-driver-1.2.9
+        $ sudo apt-get install php5-dev
         $ phpize
         $ ./configure
         $ make all
@@ -71,12 +72,13 @@ Development PHP Modules
 - Pear and PHPUnit Installation
     ::
       
+    	$ sudo apt-get install php-pear
     	$ sudo pear channel-discover pear.phpunit.de
         $ sudo pear channel-discover components.ez.no
         $ sudo pear channel-discover pear.symfony-project.com
         $ sudo pear channel-discover pear.symfony.com
         $ sudo pear update-channels
-        $ sudo pear install --alldeps phpunit/PHPUnit
+        $ sudo pear install --alldeps phpunit/PHPUnit-3.7.27
         
  
  **- Note if PHPUnit fails, first upgrade pear with the command below**
@@ -178,4 +180,11 @@ Don't forget to change permissions on the */files/programs/ * directory
 
 **Note: We also want apache www folder to have access to our project folder; we are going to have to create a symlink folder inside the apache www hence when project folder files are updated apache can have access to the updates. go to command -**
 ::
-$ ln -s /actual project folder path/ /symlink folder path in the apache www/
+	$ ln -s /actual project folder path/ /symlink folder path in the apache www/
+
+In the /etc/apach2/port.conf file add this listen port 
+::
+
+	NameVirtualHost *:81
+	Listen 81
+
