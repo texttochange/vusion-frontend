@@ -8,7 +8,7 @@ App::uses('User', 'Model');
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'UserAccess');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -52,7 +52,7 @@ class UnmatchableReplyController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
-        $defaultConditions = $this->_getUserAccessCondition();
+        $defaultConditions = $this->UserAccess->getUnmatchableConditions();
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
@@ -125,7 +125,7 @@ class UnmatchableReplyController extends AppController
         $this->set('paginationCount', $paginationCount);
     }
     
-    protected function _getUserAccessCondition()
+    /*protected function _getUserAccessCondition()
     {
         $accessCondition = array();
         
@@ -148,6 +148,7 @@ class UnmatchableReplyController extends AppController
                 ));
         }
         return $accessCondition;
-    }
+        return $this->UserAccess->getUnmatchableConditions();
+    }*/
 
 }

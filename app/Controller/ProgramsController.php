@@ -19,7 +19,8 @@ class ProgramsController extends AppController
         'LocalizeUtils', 
         'PhoneNumber', 
         'ProgramPaginator', 
-        'Stats');
+        'Stats',
+        'UserAccess');
     var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
     
     var $uses = array('Program', 'Group');
@@ -182,7 +183,7 @@ class ProgramsController extends AppController
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
-            array('conditions' => array('direction' => 'incoming'), 
+            array('conditions' => $this->UserAccess->getUnmatchableConditions(), //array('direction' => 'incoming'), 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
