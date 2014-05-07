@@ -1182,10 +1182,10 @@ class ParticipantTestCase extends CakeTestCase
                     1 => 'optout', 
                     2 => 'now')
                 )
-            );        
+            );
         $this->assertEqual(
             $this->Participant->fromFilterToQueryConditions($filter),
-            array('session-id' => null)
+            array()
             );
         
         $filter = array(
