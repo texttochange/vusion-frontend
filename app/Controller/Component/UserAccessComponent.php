@@ -1,25 +1,33 @@
 <?php
 App::uses('Component', 'Controller');
-App::uses('Program', 'Model');
-App::uses('Group', 'Model');
+//App::uses('Program', 'Model');
+//App::uses('Group', 'Model');
 
 class UserAccessComponent extends Component
 {
     public $components = array('Auth', 'ProgramPaginator'); 
 
 
-    public function __construct($collection, $settings = array())
+    public function __construct(ComponentCollection $collection, $settings = array())
     {
+        //$settings         = array_merge($this->settings, (array)$settings);
+        $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
         
-        $this->Program = new Program();
-        $this->Group = new Group();
+        $this->Program = ClassRegistry::init('Program');
+        $this->Group   = ClassRegistry::init('Group');
+    }
+    
+    public function startup(Controller $controller)
+    {
+        parent::startup($controller);
     }
     
     
     public function getUnmatchableConditions()
     {
         $conditions = array();
+        print_r($this->Controller);
         
         $user = $this->Auth->user();
         
