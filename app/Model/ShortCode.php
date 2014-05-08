@@ -181,22 +181,14 @@ class ShortCode extends MongoModel
                 );
         }
         
-        $checkValues = array_values($check);
-        $checkValue = $checkValues[0];
-        if ($existingShortcode['ShortCode']['country'] == $checkValue) {
-            return true;
-        } 
+         reset($check);
+         $field = key($check);
+         
+         if ($existingShortcode['ShortCode'][$field] != $check[$field]) {
+             return false;         
+         }
         
-        if ($existingShortcode['ShortCode']['shortcode'] == $checkValue) {
-            return true;
-        }
-        
-        if ($existingShortcode['ShortCode']['international-prefix'] == $checkValue) {
-            return true;
-        }
-        
-        return false;
-        
+         return true;
     }
     
     
