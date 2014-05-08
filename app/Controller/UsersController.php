@@ -8,7 +8,7 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 class UsersController extends AppController
 {
     var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
-    var $uses = array('User', 'Group');
+    var $uses       = array('User', 'Group');
     
     public function beforeFilter()
     {
@@ -40,7 +40,7 @@ class UsersController extends AppController
             $paginate['conditions'] = $conditions;
         }
         
-        $this->paginate = $paginate;
+        $this->paginate        = $paginate;
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));
     }
@@ -156,7 +156,7 @@ class UsersController extends AppController
                     'User' => array(
                         'id' => $this->Session->read('Auth.User.id')
                         )
-                    ), 'Controllers/Users/index')){                
+                    ), 'Controllers/Users/index')) {                
                 $this->redirect(array('action' => 'index'));
                     } else {                  
                         $this->redirect(array('action' => 'view', $this->Session->read('Auth.User.id')));
@@ -221,7 +221,7 @@ class UsersController extends AppController
                     $this->redirect(array('controller' => 'admin'));
                 }
                 
-                $id = $this->Auth->user('id');
+                $id          = $this->Auth->user('id');
                 $allPrograms = $this->Program->find('authorized', array(
                     'specific_program_access' => 'true',
                     'user_id' => $id));
@@ -236,7 +236,7 @@ class UsersController extends AppController
                 
                 $this->redirect($this->Auth->redirect());
             } else {
-                if($this->request->is('post')) {
+                if ($this->request->is('post')) {
                     $this->Session->setFlash(__('Invalid username or password, try again.'));
                 }
                 return $this->redirect(array('controller' => 'users', 'action' => 'login'));
@@ -258,7 +258,7 @@ class UsersController extends AppController
     
     public function changePassword($id = null)
     {
-        $hash = Configure::read('Security.salt');
+        $hash           = Configure::read('Security.salt');
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
@@ -329,7 +329,7 @@ class UsersController extends AppController
             return;
         }
         
-        $email   = $this->request->data['emailEnter'];
+        $email = $this->request->data['emailEnter'];
         if (!$email) {
             $this->Session->setFlash(__('Please Enter Email address'));
             return;
@@ -353,7 +353,7 @@ class UsersController extends AppController
             return;
         }        
         $userName = $account[0]['User']['username'];
-        $userId = $account[0]['User']['id'];
+        $userId   = $account[0]['User']['id'];
         $this->Session->write('user_id',$userId);
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
@@ -435,7 +435,7 @@ class UsersController extends AppController
         $Group =& $this->User->Group;
         
         //allow admins to everything
-        $group = $Group->find('first', array('conditions' => array('name' => 'administrator')));
+        $group     = $Group->find('first', array('conditions' => array('name' => 'administrator')));
         $Group->id = $group['Group']['id'];
         $this->Acl->allow($Group, 'controllers');
         echo "Acl Done: ". $group['Group']['name']."</br>";
