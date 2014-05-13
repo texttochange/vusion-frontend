@@ -9,7 +9,10 @@ class CreditLogTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->CreditLog = ClassRegistry::init('CreditLog');
+        $options         = array('database'=>'test'); 
+        $this->CreditLog = new CreditLog($options);
+        $this->CreditLog->setDataSource('mongo_test');
+
         $this->dropData();
     }
 
@@ -151,9 +154,13 @@ class CreditLogTestCase extends CakeTestCase
             array(
                 'country' => 'Uganda',
                 'prefix' => '256',
+                'incoming' => 8,
+                'outgoing' => 4,
                 'codes' => array(
                     array(
                         'code' => '256-8181',
+                        'incoming' => 8,
+                        'outgoing' => 4,
                         'garbage' => array(
                             'object-type' => 'garbage-credit-log',
                             'code' => '256-8181',
@@ -189,10 +196,14 @@ class CreditLogTestCase extends CakeTestCase
             array(
                 'country' => 'Tanzania',
                 'prefix' => '255',
+                'incoming' => 2,
+                'outgoing' => 1,
                 'codes' => array(
                     array(
                         'code' => '255-15001',
                         'garbage' => array(),
+                        'incoming' => 2,
+                        'outgoing' => 1,
                         'programs' => array(
                             array('object-type' => 'program-credit-log',
                                 'code' => '255-15001',
@@ -205,4 +216,25 @@ class CreditLogTestCase extends CakeTestCase
                                 'outgoing-delivered' => 0)))))
             );
     }
+
+
+    public function testCalculateCreditPerCountry_noCredit()
+    {
+        $result = $this->CreditLog->calculateCreditPerCountry(array(), array());
+        $this->assertEqual($result, array());
+    }
+   
+
+    public function testFromTimeframeParametersToQueryConditions() 
+    {
+        $timeframeParameters = array(
+            'timeframe-type' => 'predefined-timeframe',
+            'predefined-timeframe' => 'current-month');
+
+        $this->assertEqual(
+            array('date' => array('$gte' => date('Y-m-01'))),
+            CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters)
+            );        
+    }
+
 }

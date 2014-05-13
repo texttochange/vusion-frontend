@@ -138,6 +138,9 @@ class Program extends AppModel
     public function fromFilterToQueryConditions($filter)
     {
         $conditions = array();
+        if (!isset($filter)) {
+            return $conditions;
+        }
         
         foreach ($filter['filter_param'] as $filterParam) {
             
@@ -285,6 +288,7 @@ class Program extends AppModel
     {
         //$countryMatch = false;
         //$shortcodeMatch = false;
+
         if ($conditions == array()) {
             return true;
         }

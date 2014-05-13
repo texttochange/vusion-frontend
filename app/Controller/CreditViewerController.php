@@ -1,16 +1,114 @@
 <?php
 App::uses('AppController', 'Controller');
-//App::uses('Program', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('Shortcode', 'Model');
+App::uses('CreditLog', 'Model');
+App::uses('Program', 'Model');
+
 
 class CreditViewerController extends AppController
 {
-    var $helpers = array('Js' => array('Jquery'), 'Time', 'PhoneNumber');
-    var $components = array('ProgramPaginator', 'CreditManager', 'RequestHandler', 'LocalizeUtils', 'PhoneNumber');
+    var $helpers = array(
+        'Js' => array('Jquery'), 
+        'Time', 
+        'PhoneNumber');
+    var $components = array(
+        'ProgramPaginator',
+        'CreditManager',
+        'RequestHandler',
+        'LocalizeUtils',
+        'PhoneNumber');
     
-    var $uses = array('Program', 'Group');
+    var $uses = array(
+        'Program', 
+        'Group');
     
-    var $filterOperatorOptions = array('all' => 'all');
+    
+    public function beforeFilter()
+    {    
+        parent::beforeFilter();
+    }
+    
+    
+    public function constructClasses()
+    {
+        parent::constructClasses();
+        
+        if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
+        $this->ShortCode        = new ShortCode($options);
+        $this->CreditLog        = new CreditLog($options);
+    }
+    
+    
+    public function index()
+    {        
+        $timeframeParameters = $this->_getTimeframeParameters();
+        if (!is_array($timeframeParameters)) {
+            $this->Session->setFlash($timeframeParameters);
+        }
+
+        $conditions = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
+        $countriesCredits   = $this->_getAllCredits($conditions);
+        $this->set(compact('countriesCredits'));
+    }    
+
+    
+    protected function _getAllCredits($conditions)
+    {
+        $countriesByPrefixes = $this->PhoneNumber->getCountriesByPrefixes();
+        $countriesCredits = $this->CreditLog->calculateCreditPerCountry($conditions, $countriesByPrefixes);
+        foreach ($countriesCredits as &$countryCredits) {
+            foreach ($countryCredits['codes'] as &$codeCredits) {
+                $codeCredits['code'] = DialogueHelper::fromPrefixedCodeToCode($codeCredits['code']);
+                foreach ($codeCredits['programs'] as &$programCredits) {
+                    $program = $this->Program->find('first', array('conditions' => array('database' => $programCredits['program-database'])));
+                    $programCredits['name'] = $program['Program']['name'];
+                }
+            }
+        }
+        return $countriesCredits;
+    }
+
+
+    protected function _getTimeframeParameters()
+    {
+        $parameters = array_intersect_key($this->params['url'], array_flip(array('date-from', 'date-to', 'predefined-timeframe')));
+
+        //Default parameters
+        if ($parameters == array()) {
+            $parameters = array(
+                'predefined-timeframe' => 'current-month',
+                'date-from' => '',
+                'date-to' => '');
+        }
+        //Create missing key
+        $parameters = array_merge(
+            array(
+                'predefined-timeframe' => '',
+                'date-from' => '',
+                'date-to' => ''),
+            $parameters);
+
+        if ($parameters['predefined-timeframe'] != '' && ($parameters['date-to']!= '' || $parameters['date-from']!= '')) {
+                return __("Please select between date or predefine timefame");
+            }
+       
+        
+        $this->set('timeframeParams', $parameters);        
+
+        return $parameters;
+    }
+    
+ /*  
+    /*    var $filterOperatorOptions = array('all' => 'all');
     var $filterFields = array(
             'country' => array(
                 'label' => 'country',
@@ -43,104 +141,39 @@ class CreditViewerController extends AppController
                         'label' => 'until',
                         'parameter-type' => 'date')))
         );
-    
-    public function beforeFilter()
-    {    
-        parent::beforeFilter();
-    }
-    
-    
-    public function constructClasses()
-    {
-        parent::constructClasses();
-        
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->ShortCode        = new ShortCode($options);
-        $this->DialogueHelper   = new DialogueHelper();
-    }
-    
-    
-    public function index()
-    {
-        $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
-        $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
-        $filters = $this->_getFilters();
-        print_r($filters);
-        $programFilters = $this->_filterFiltersOnFields($filters, array('name', 'country', 'shortcode'));
 
-        print_r($programFilters);
-
-        $conditions = $this->Program->fromFilterToQueryConditions($programFilters);
-
-        ## TODO move in the Program Paginator
-        $this->Program->recursive = -1; 
-        $user = $this->Auth->user();  
-        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-            $paginate = array(
-                'type' => 'authorized', 
-                'specific_program_access' => 'true',
-                'user_id' => $user['id'],
-                'conditions' => $conditions,
-                'order' => array('created' => 'desc'));
-        } else {
-            $paginate = array(
-                'type' => 'all', 
-                'conditions' => $conditions,
-                'order' => array('created' => 'desc'));
-        }
-
-        $this->paginate = $paginate;
-
-        #TODO remove the ProgramPaginator reference $this->paginate()
-        $programs = $this->ProgramPaginator->paginate();
-        
-        #Move this to the model
-        /*
-        $datePast = new DateTime('-1 month');
-        $dateNow = new DateTime('now');
-        
-        $defaultDateConditions = array(
-            1 => array(1=>'date', 2 => 'from', 3 => $datePast->format('d/m/Y')),
-            2 => array(1=>'date', 2 => 'to', 3 => $dateNow->format('d/m/Y'))
-        );
-        $this->set('defaultDateConditions', $defaultDateConditions);
-        */
-        $historyFilters = $this->_filterFiltersOnFields($filters, array('date'));
-        $programs = $this->_getCredits($programs, $historyFilters);
-        //print_r($programs);
-        $this->set(compact('programs'));
-    }
-
-    
-    protected function _getCredits($programs, $historyFilters)
+    protected function _getCredits($conditions)
     {
         if ($programs == array()) {
             return $programs;
         }
         
-        $conditions = History::fromFilterToQueryConditions($historyFilters);
-        print_r($conditions);
+        $databases = array();
+        $shortcodes = array();
+        foreach($programs as $program) {
+            $databases[] = $program['Program']['database'];
+            if (isset($program['Program']['prefixed-shortcode'])) {
+                $shortcodes[] = $program['Program']['prefixed-shortcode'];
+            }
+        }
+
+        $creditLogs = $this->CreditLog->calculateCredits($databases, $shortcodes, $conditions);
+
         foreach($programs as &$program) {
-            $tmpHistory = new History(array('database' => $program['Program']['database']));
-            $program['Program']['credits'] = $tmpHistory->getCreditsFromHistory($conditions);
-            unset($tempHistory);
+            $key = CreditLog::searchCreditLog($creditLogs, $program['Program']['database']);
+            if ($key!==false) {
+                $program['Program']['credit-logs'] = $creditLogs[$key];
+            }
         }
 
         return $programs;
     }
+
+
     
     protected function _filterFiltersOnFields($filters, $fields) 
     {
-        if (!isset($filters)) {
+        if (!isset($filters) || !isset($filters['filter_params'])) {
             return array();
         }
         $filters['filter_param'] = array_filter(
@@ -197,13 +230,15 @@ class CreditViewerController extends AppController
         return $result;
     }
     
-    
+
+    #Same as ProgramController... need to DRY    
     protected function _getFilterFieldOptions()
     {   
-        return $this->LocalizeUtils->localizeLabelInArray($this->filterFields);
+        return $this->LocalizeUtils->localizeLabelInArray($this->Program->filterFields);
     }
     
-    
+
+    #Same as ProgramController... need to DRY
     protected function _getFilterParameterOptions()
     {
         $shortcodes = $countries = array();
@@ -216,12 +251,14 @@ class CreditViewerController extends AppController
         }
         sort($countries);
         return array(
-            'operator' => $this->filterOperatorOptions,
+            'operator' => $this->Program->filterOperatorOptions,
             'shortcode' => (count($shortcodes)>0? $shortcodes : array()),
             'country' => (count($countries)>0? array_combine($countries, $countries) : array())
             );
     }
-    
+
+ 
+    ##TODRY: Same a Program Controller
     protected function _getFilters()
     {
         $filters = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
@@ -229,19 +266,16 @@ class CreditViewerController extends AppController
         if (!isset($filters['filter_param']))
             return null;
         
-        if (!isset($filters['filter_operator']) || !in_array($filters['filter_operator'], $this->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
+        if (!isset($filters['filter_operator']) || !in_array($filters['filter_operator'], $this->Program->filterOperatorOptions)) {
+            throw new FilterException(__('Filter operator %s is missing or not allowed.', $filters['filter_operator']));
         }
         
         $this->set('urlParams', http_build_query($filters));
         
         return $filters;
     }
-    
-    
 
-    
-    
+
     protected function _fromFilterToQueryConditions($filter)
     {
         if (!isset($filter))
@@ -257,9 +291,9 @@ class CreditViewerController extends AppController
             
             if ($filterParam[1] == 'date') {
                 if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = $this->DialogueHelper->ConvertDateFormat($filterParam[3]);
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } else {
                 $condition = $this->_fromFilterToNonDateConditions($filterParam);
@@ -345,6 +379,6 @@ class CreditViewerController extends AppController
                 throw new FilterException("'Date To' value is missing.");
         }
     }
-    
+*/    
     
 }

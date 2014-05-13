@@ -230,6 +230,17 @@ class DialogueHelper
         return $prefix;
     }
 
+    public static function fromPrefixedCodeToCode($prefixedCode) {
+        if (preg_match(VusionConst::PREFIXED_LOCAL_CODE_REGEX, $prefixedCode)) {
+            $explodedCode = explode('-', $prefixedCode);
+            return $explodedCode[1];
+        } elseif (preg_match(VusionConst::INTERNATIONAL_CODE_REGEX, $prefixedCode)) { 
+            return $prefixedCode;
+        }
+        return null;
+    }
+
+
 
 }
 

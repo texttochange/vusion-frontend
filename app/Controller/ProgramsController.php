@@ -181,7 +181,9 @@ class ProgramsController extends AppController
         
         $this->set('urlParams', http_build_query($filter));
         
-        return $this->Program->fromFilterToQueryConditions($filter);
+        $conditions = $this->Program->fromFilterToQueryConditions($filter);
+        
+        return $conditions;
     }
     
     

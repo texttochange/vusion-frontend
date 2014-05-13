@@ -1,6 +1,7 @@
 <?php
 App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('VusionException', 'Lib');
 
 
 class CreditLog extends MongoModel
@@ -31,8 +32,7 @@ class CreditLog extends MongoModel
         $programCreditLogFields = array(
             'program-database');
 
-        $garbageCreditLogFields = array(
-            'program-database');
+        $garbageCreditLogFields = array();
 
         switch($objectType) {
         case 'program-credit-log':
@@ -145,6 +145,9 @@ class CreditLog extends MongoModel
     public function calculateCreditPerCountry($conditions, $countriesByPrefixes) {
         $perCountry = array();
         $credits = $this->calculateCredits($conditions);
+        if ($credits == null) {
+            return array();
+        }
         $prefixedCodes = Set::classicExtract($credits, '{n}.code');
         $prefixedCodes = array_unique($prefixedCodes);
         $prefixes = array();
@@ -154,19 +157,33 @@ class CreditLog extends MongoModel
         }
         $prefixes = array_unique($prefixes);
         foreach ($prefixes as $prefix) {
-             $country = array(
+            $country = array(
                 'country' => $countriesByPrefixes[$prefix],
                 'prefix' => $prefix,
-                'codes' => array());
+                'codes' => array(),
+                'incoming' => 0,
+                'outgoing' => 0);
             $countryCodes = CreditLog::filterPrefixedCodeByPrefix($prefixedCodes, $prefix);
             foreach ($countryCodes as $countryCode) {
-                $shortcodeCredits = CreditLog::searchCreditLog($credits, 'code', $countryCode);
-                $programShortcodeCredits = CreditLog::searchCreditLog($shortcodeCredits, 'object-type', 'program-credit-log');
-                $garbageShortcodeCredit = CreditLog::searchCreditLog($shortcodeCredits, 'object-type', 'garbage-credit-log');
-                $country['codes'][] = array(
-                    'code'=> $countryCode,
-                    'programs' => $programShortcodeCredits,
-                    'garbage' => ($garbageShortcodeCredit == array()? array() : $garbageShortcodeCredit[0]));                
+                $code = array(
+                    'code' => $countryCode,
+                    'programs' => array(),
+                    'garbage' => null,
+                    'incoming' => 0,
+                    'outgoing' => 0);
+                $codeCredits = CreditLog::searchCreditLog($credits, 'code', $countryCode);
+                $code['programs'] = CreditLog::searchCreditLog($codeCredits, 'object-type', 'program-credit-log');
+                $code['garbage'] = CreditLog::searchCreditLog($codeCredits, 'object-type', 'garbage-credit-log');
+                if ($code['garbage'] != array()) {
+                    $code['garbage'] = $code['garbage'][0];
+                }
+                //Sum at code level
+                $code['incoming'] = (int)Set::apply('/incoming', $codeCredits, 'array_sum');
+                $code['outgoing'] = (int)Set::apply('/outgoing', $codeCredits, 'array_sum');
+                //Sum at country level
+                $country['codes'][] = $code;
+                $country['incoming'] += $code['incoming'];
+                $country['outgoing'] += $code['outgoing'];
             }
             $perCountry[] = $country; 
         }
@@ -174,41 +191,36 @@ class CreditLog extends MongoModel
     }
     
 
-    public static function fromFilterToQueryConditions($filter, $conditions = array()) {
+    public static function fromTimeframeParametersToQueryConditions($timeframeParameters, $conditions = array()) {
         
-        if (!isset($filter['filter_param'])) {
-            return $conditions;
+        $condition = null;
+  
+        if (isset($timeframeParameters['date-from']) && $timeframeParameters['date-from'] != '') {
+            $condition['date']['$gte'] = DialogueHelper::ConvertDateFormat($timeframeParameters['date-from']);
         }
-
-        foreach ($filter['filter_param'] as $filterParam) {
-            
-            $condition = null;
-                        
-            if ($filterParam[1] == 'date') {
-                if ($filterParam[2] == 'from') { 
-                    $condition['date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                } elseif ($filterParam[2] == 'to') {
-                    $condition['date']['$lte'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                }
+        if (isset($timeframeParameters['date-to']) && $timeframeParameters['date-to'] != '') {
+            $condition['date']['$lt'] = DialogueHelper::ConvertDateFormat($timeframeParameters['date-to']);
+        }
+        if (isset($timeframeParameters['predefined-timeframe']) && $timeframeParameters['predefined-timeframe'] != '') {
+            if ($timeframeParameters['predefined-timeframe'] == 'last-month') {
+                $dateFrom = date('Y-m-t', strtotime("first day of previous month") ) ;
+                $dateTo = date('Y-m-01') ;
+                $condition['date']['$gte'] = $dateFrom;
+                $condition['date']['$lt'] = $dateTo; 
+            } else if ($timeframeParameters['predefined-timeframe'] == 'current-month') {
+                $dateFrom = date('Y-m-01');
+                $condition['date']['$gte'] = $dateFrom;
+            } else {
+                throw new VusionException(__("Predefined timeframe %s not supported", $timeframeParameters['predefined-timeframe']));
             }
+        }
             
-            if ($filter['filter_operator'] == "all") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$and'])) {
-                    $conditions = array('$and' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$and'], $condition);
-                }
-            } elseif ($filter['filter_operator'] == "any") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$or'])) {
-                    $conditions = array('$or' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$or'], $condition);
-                }
-            }
+        if (count($conditions) == 0) {
+            $conditions = $condition;
+        } elseif (!isset($conditions['$and'])) {
+            $conditions = array('$and' => array($conditions, $condition));
+        } else {
+            array_push($conditions['$and'], $condition);
         }
         return $conditions;
     } 

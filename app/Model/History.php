@@ -233,7 +233,7 @@ class History extends MongoModel
     
     
     //Filter variables and functions
-    public static $filterFields = array(
+    public $filterFields = array(
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
@@ -331,18 +331,18 @@ class History extends MongoModel
         );
     
     
-    public static $filterOperatorOptions = array(
+    public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
     
-    public static $filterMessageDirectionOptions = array(
+    public $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
         );
     
     
-    public static $filterMessageStatusOptions = array(
+    public $filterMessageStatusOptions = array(
         'failed'=>'failed',
         'delivered'=>'delivered',
         'pending'=>'pending',
@@ -357,13 +357,13 @@ class History extends MongoModel
         );
     
     
-    public static function validateFilter($filterParam)
+    public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException(__("The filter's field is missing."));
         }
         
-        if (!isset(History::$filterFields[$filterParam[1]])) {
+        if (!isset($this->filterFields[$filterParam[1]])) {
             throw new FilterException(__("The filter's field '%s' is not supported.", $filterParam[1]));
         }
         
@@ -371,11 +371,11 @@ class History extends MongoModel
             throw new FilterException(__("The filter's operator is missing for field '%s'.", $filterParam[1]));
         }
         
-        if (!isset(History::$filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
+        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
             throw new FilterException(__("The filter's operator '%s' not supported for field '%s'.", $filterParam[2], $filterParam[1]));
         }
         
-        $operator = History::$filterFields[$filterParam[1]]['operators'][$filterParam[2]];
+        $operator = $this->filterFields[$filterParam[1]]['operators'][$filterParam[2]];
         
         if ($operator['parameter-type'] != 'none' && !isset($filterParam[3])) {
             throw new FilterException(__("The filter's parameter is missing for field '%s'.", $filterParam[1]));
@@ -389,13 +389,13 @@ class History extends MongoModel
     }
     
     
-    public static function fromFilterToQueryConditions($filter, $conditions = array()) {
+    public function fromFilterToQueryConditions($filter, $conditions = array()) {
         
         foreach ($filter['filter_param'] as $filterParam) {
             
             $condition = null;
             
-            History::validateFilter($filterParam);
+            $this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'message-direction' or $filterParam[1] == 'message-status') {
                 if ($filterParam[2] == 'is') {
@@ -530,7 +530,7 @@ class History extends MongoModel
         return $historyCount;
     }
     
-    
+    /*
     public function getCreditsFromHistory($conditions=array())
     {
 
@@ -602,6 +602,6 @@ class History extends MongoModel
         return ($month < 1);
         
     }
-    
+    */
     
 }

@@ -1,132 +1,188 @@
-<div class="users-index">
-    <ul class="ttc-actions">
-        <li>
-        <?php
-        echo $this->Html->tag(
-            'span', 
-            __('Filter'), 
-            array('class' => 'ttc-button', 'name' => 'add-filter')); 
-        $this->Js->get('[name=add-filter]')->event(
-            'click',
-            '$("#advanced_filter_form").show();
-            createFilter(false, "all", '.$this->Js->object($defaultDateConditions).');
-            createFilter();
-            ');
-        $showStatus = $showIncoming = $showOutgoing = 'none';
-        if (count($this->params['url']) > 0) {
-            $showIncoming = 'visible';
-            $showOutgoing = 'visible';
-        } else {
-            $showStatus = 'visible';
-        }
-		?> 
-		</li>
-	</ul>
+<?php
+$this->Html->script("jstree.min.js", array("inline" => false));
+?>
+<div class="credit-logs index users-index">
 	<h3><?php echo __('Credit Viewer');?></h3>
-	<div class="ttc-data-control">
-        <div id="data-control-nav" class="ttc-paging paging">
-            <?php
-                echo "<span class='ttc-page-count'>";
-                echo $this->Paginator->counter(array(
-                    'format' => __('{:start} - {:end} of {:count}')
-                    ));
-                echo "</span>";
-                echo $this->Paginator->prev('<', array(), null, array('class' => 'prev disabled'));
-                //echo $this->Paginator->numbers(array('separator' => ''));
-                echo $this->Paginator->next(' >', array(), null, array('class' => 'next disabled'));
-            ?>
-        </div>
-        <?php
-            $this->Js->set('filterFieldOptions', $filterFieldOptions);
-            foreach ($filterParameterOptions as $parameter => &$options) {
-                if (isset($parameter) and $parameter == 'shortcode') {
-                    foreach ($options as $shortcode => $value) {
-                        $options[$shortcode] = $this->PhoneNumber->replaceCountryCodeOfShortcode($value, $countryIndexedByPrefix);
-                    }
-                }
-                if (isset($options['_ajax'])) {
-                    $urlParameters = $this->params['url'];
-                    $urlParameters['parameter'] = $parameter;
-                    $ajaxUrl = $this->Html->url(array(
-                        'program' => $programDetails['url'], 
-                        'action' => 'getFilterParameterOptions',
-                        'ext' => 'json',
-                        '?' => $urlParameters));
-                    $this->Js->get('document')->event(
-                        $options['_ajax'],
-                        'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
-                    );
-                    $filterParameterOptions[$parameter] = array("Loading...");
-                }
-            }
-            $this->Js->set('filterParameterOptions', $filterParameterOptions);
-            
-            $url = $this->Html->url(array('controller'=>'creditViewer', 'action' => 'index'));
-            echo $this->Html->useTag(
-                'form',
-                $url,
-                array('method' => 'get',
-                    'id' => 'advanced_filter_form',
-                    'class' => 'ttc-advanced-filter')
-                
-            );
-            echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));
-            if (isset($this->params['url']['filter_operator']) && isset($this->params['url']['filter_param'])) {
-                $this->Js->get('document')->event(
-                    'ready',
-                    '$("#advanced_filter_form").show();
-                    createFilter(true, "'.$this->params['url']['filter_operator'].'",'.$this->Js->object($this->params['url']['filter_param']).');
-                    ');
-            }
-            $this->Js->get('#advanced_filter_form')->event(
-                'submit',
-                '$(":input[value=\"\"]").attr("disabled", true);
-                return true;');
-        ?>
-	</div>
+    <div>
+    <?php
+    $dateTimeframeClass = '';
+    $predefinedTimeframeClass = '';
+    if ((isset($timeframeParams['date-from']) && $timeframeParams['date-from'] != '') ||
+        (isset($timeframeParams['date-to']) && $timeframeParams['date-to'] != '')) {
+        $dateTimeframeClass = 'selected';
+    } else if (isset($timeframeParams['predefined-timeframe']) && $timeframeParams['predefined-timeframe'] != '') {
+        $predefinedTimeframeClass = 'selected';
+    }
+    echo $this->Form->create(
+        false, array(
+            'type' => 'get',
+            'id' => 'timeframe-form',
+            'class' => 'timeframe-form'));
+    echo $this->Html->tag('span', __("Calculate credits"));
+    echo "<span class='timeframe date-timeframe ".$dateTimeframeClass."'>";
+    echo $this->Form->input(
+        'date-from',
+        array(
+            'id' => 'date-from',
+            'label' => __("from"),
+            'style' => 'width:120px',
+            'div' => false,
+            'value' => (isset($timeframeParams['date-from']) ? $timeframeParams['date-from']: '')
+            ));
+    echo $this->Form->input(
+        'date-to',
+        array(
+            'id' => 'date-to',
+            'label' => "&nbsp;".__("to"),
+            'style' => 'width:120px',
+            'div' => false,
+            'value' => (isset($timeframeParams['date-to']) ? $timeframeParams['date-to']: '')
+            ));
+    echo "</span>";
+    echo $this->Html->tag('span', __(" or"));
+    echo "<span class='timeframe predefined-timeframe ".$predefinedTimeframeClass."'>";
+    echo $this->Form->input(
+        'predefined-timeframe',
+        array(
+            'options' => array(
+                'current-month' => __("current month"),
+                'last-month' => __("last month")),
+            'empty' => _('choose...'),
+            'div' => false,
+            'label' => false,
+            'value' => (isset($timeframeParams['predefined-timeframe']) ? $timeframeParams['predefined-timeframe']: ''),
+            ));
+    echo "</span>";
+
+    /*
+    echo "<div>";
+    echo "<div class='form-line'>";
+    echo $this->Form->radio(
+        'timeframe-type',
+        array('date-to-now' => __("Calculate credit from")),
+        array('legend' => false,
+            'hiddenField' => false));
+    echo "<span class='subinput' name='date-to-now-subtype'>";
+    echo $this->Form->input('date-from',
+        array(
+            'id' => 'date-from',
+            'label' => false,
+            'style' => 'width:60px',
+            'div' => false));
+    echo "</span>";
+    echo "</div>";
+    echo "<div class='form-line'>";
+    echo $this->Form->radio(
+        'timeframe-type',
+        array('between-dates' => __("Calculate credit from")),
+        array('legend' => false,
+            'hiddenField' => false));
+    echo "<span class='subinput' name='between-dates-subtype'>";
+    echo $this->Form->input('date-from',
+        array(
+            'id' => 'date-from',
+            'label' => false,
+            'style' => 'width:60px',
+            'div' => false));
+    echo $this->Form->input('date-to',
+        array(
+            'id' => 'date-to',
+            'label' => __("to"),
+            'style' => 'width:60px',
+            'div' => false));
+    echo "</span>";
+    echo "</div>";
+    echo "<div class='form-line'>"; 
+    echo $this->Form->radio(
+        'timeframe-type',
+        array('predefined-timeframe' => __("Calculate credit of")),
+        array('legend' => false,
+            'hiddenField' => false));
+    echo "<span class='subinput' name='predefined-timeframe-subtype'>";
+    echo $this->Form->select(
+        'predefined-timeframe',
+        array(
+            '' => __('choose a timeframe...')
+            'this-month' => __('this month'),
+            'last-month' => __('last month')),
+        array(
+            'placeholder' => __("Choose timeframe...")));
+    echo "</span>";
+    echo "</div>";
+    echo "</div>";
+    */
+    echo $this->Form->end(array(
+        'div' => false,
+        'class' => 'submit',
+        'label' => __('Calculate')));
+    
+    $this->Js->get(".date-timeframe")->event('click','
+        $(".predefined-timeframe").removeClass("selected").children("select").val(null);
+        $(this).addClass("selected");
+        ');
+    $this->Js->get(".predefined-timeframe")->event('click','
+        if ($(this).children("select").val() == "") {
+            $(".predefined-timeframe").removeClass("selected");
+            return;
+        }
+        $(".date-timeframe").removeClass("selected").children("input").val(null);
+        $(this).addClass("selected");
+        ');
+        
+    ?>
+    </div>
 	<div class="ttc-table-display-area">
-	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
-	    <thead>
-	        <tr>
-			    <th class="prefix"><?php echo $this->Paginator->sort('program');?></th>
-			    <th class="prefix"><?php echo $this->Paginator->sort('shortcode');?></th>
-            <?php
-			    echo "<th class='details' style='display:".$showIncoming."'>". __('Incoming credits') ."</th>";
-			    echo "<th class='details' style='display:".$showOutgoing."'>". __('Outgoing credits') ."</th>";
-            ?>
-			</tr>
-		</thead>
-		<tbody>
-		    <?php foreach ($programs as $program): ?>
-		    <tr>
-		        <td class="prefix"><?php echo h($program['Program']['name']); ?>&nbsp;</td>
-		        <td class="prefix">
-		            <?php 
-		                if (isset($program['Program']['shortcode'])) {
-		                    $shortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
-                                $program['Program']['shortcode'],
-                                $countryIndexedByPrefix);
-		                    echo __($shortcode);
-		                }
-		            ?>
-                </td>
+	    <div class="ttc-table-scrolling-area display-height-size">
+	         <div id="countries-credits-tree">
+                <ul>
                 <?php
-                    echo "<td class='details' style='display:".$showIncoming."'>". $program['Program']['credits']['incoming'] ."</td>";
-                    echo "<td class='details' style='display:".$showOutgoing."'>". $program['Program']['credits']['outgoing'] ."</td>";
+                foreach ($countriesCredits as $countryCredits) {
+                    echo '<li data-jstree=\'{"icon":"../img/country-icon.png"}\'>'. 
+                    __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $countryCredits['country'], $countryCredits['incoming'], $countryCredits['outgoing']);
+                    echo '<ul>';
+                    foreach ($countryCredits['codes'] as $code) {
+                        echo '<li data-jstree=\'{"icon":"../img/phone-icon-20.png"}\'>'. 
+                            __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $code['code'], $code['incoming'], $code['outgoing']);
+                        echo '<ul>';
+                        foreach ($code['programs'] as $programCreditLog) {
+                            echo '<li data-jstree=\'{"icon":"../img/vusion-logo-20.png"}\'>'. 
+                                __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $programCreditLog['name'], $programCreditLog['incoming'], $programCreditLog['outgoing']);
+                            echo '<ul>';
+                            echo '<li>'.__("<span style='font-weight:normal'>incoming: %s</span>", $programCreditLog['incoming']).'</li>';
+                            echo '<li>'.__("<span style='font-weight:normal'>outgoing: %s</span>", $programCreditLog['outgoing']);
+                            echo '<ul>';
+                            echo '<li>'.__("<span style='font-weight:normal'>ack: %s</span>", $programCreditLog['outgoing-ack']).'</li>';
+                            echo '<li>'.__("<span style='font-weight:normal'>nack: %s</span>", $programCreditLog['outgoing-nack']).'</li>';
+                            echo '<li>'.__("<span style='font-weight:normal'>delivered: %s</span>", $programCreditLog['outgoing-delivered']).'</li>';
+                            echo '<li>'.__("<span style='font-weight:normal'>failed: %s</span>", $programCreditLog['outgoing-failed']).'</li>';
+                            echo '</ul>';
+                            echo '</li>';                            
+                            echo '</ul></li>';
+                        }
+                        echo '<li data-jstree=\'{"icon":"../img/garbage-icon-20.png"}\'>'. __('unmatchable');
+                        echo '<ul>';
+                        echo '<li>'.__('incoming: %s', $code['garbage']['incoming']).'</li>';
+                        echo '<li>'.__('outgoing: %s', $code['garbage']['outgoing']).'</li>';
+                        echo '</ul></li>';
+                        echo '</ul>';
+                        echo '</li>';                        
+                    }
+                    echo '</ul>';
+                    echo '</li>';
+                }
+                $this->Js->get('document')->event('ready', '
+                $("#countries-credits-tree").jstree();');
                 ?>
-		    </tr>
-		   <?php endforeach; ?>
-		 </tbody>
-	</table>
+                </ul>
+             </div>
+        </div>
 	</div>
-	</div>	
-	</div>
-	<div class="admin-action">
-	<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-	</ul>
 </div>
-</div>
+<div class="admin-action">
+   <div class="actions">
+      <h3><?php echo __('Actions'); ?></h3>
+            <ul>
+                <li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+            </ul>
+   </div>
+ </div>

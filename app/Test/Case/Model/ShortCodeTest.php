@@ -11,9 +11,9 @@ class ShortCodeTestCase extends CakeTestCase
         parent::setUp();
         
         $option          = array('database'=>'test');
-        $this->ShortCode = new ShortCode($option);
-        
+        $this->ShortCode = new ShortCode($option);    
         $this->ShortCode->setDataSource('mongo_test');
+
         $this->ShortCode->deleteAll(true, false);
     }
     

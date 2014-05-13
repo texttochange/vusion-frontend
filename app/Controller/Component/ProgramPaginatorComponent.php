@@ -141,6 +141,7 @@ class ProgramPaginatorComponent extends PaginatorComponent
             $code = $this->ShortCode->find('prefixShortCode', array('prefixShortCode'=> $shortcode));
             $program['Program']['shortcode'] = $code['ShortCode']['shortcode'];
             $program['Program']['country'] = $code['ShortCode']['country'];
+            $program['Program']['prefixed-shortcode'] = $shortcode;
         }
 
         if ($this->params['ext']!='json') {

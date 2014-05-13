@@ -1392,4 +1392,20 @@ display: inline;
 	font-weight: normal;
 }
 
-.
+.timeframe-form {
+    margin-bottom: 5px;
+}
+
+.timeframe-form .timeframe{
+   margin: 4px;
+   padding: 4px;
+   border: dotted 1px grey;
+}
+
+.timeframe-form .submit{
+   margin-left: 10px;
+}
+
+.timeframe-form .selected{
+    background: lightgrey;
+}
