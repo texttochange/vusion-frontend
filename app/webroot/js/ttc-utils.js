@@ -332,6 +332,9 @@ function supplyParameterOptions(operatorElt) {
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value['name'], key));      
         })
+        if (options = []) {
+            $("[name='"+name+"[3]']").append(new Option("", ""));
+        }
         break;
     case "interaction":
         $(operatorElt).after("<select name='"+name+"[3]'></select>");
@@ -341,6 +344,9 @@ function supplyParameterOptions(operatorElt) {
                         $("[name='"+name+"[3]']").append(new Option(details['name']+" - "+content, interactionId));
                 });      
         })
+        if (options = []) {
+            $("[name='"+name+"[3]']").append(new Option("", ""));
+        }
         break;
     default:
         $(operatorElt).after("<select name='"+name+"[3]' data='"+operatorType+"'></select>");
@@ -348,6 +354,9 @@ function supplyParameterOptions(operatorElt) {
         $.each(options, function(key, value){
                 $("[name='"+name+"[3]']").append(new Option(value, key));      
         })
+        if (options = []) {
+            $("[name='"+name+"[3]']").append(new Option("", ""));
+        }
     }
 }
 
@@ -726,6 +735,15 @@ function getParameterByName(url, name){
     var regex = new RegExp("[\\?&]" + name +"=([^&#]*)"),
     results = regex.exec(url);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, ""));
+}
+
+
+function clickProgramBox(url,event) {
+    if (event.ctrlKey) {
+        window.open("/"+url);
+    } else {
+        window.location.pathname = "/"+url;
+    }
 }
 
 

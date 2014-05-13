@@ -33,7 +33,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
         ?>
         </span>
         </li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#ContentVariableAddForm").submit()' , true);?>
+        <?php $this->Js->get('#button-save')->event('click', '$("#content-variable-table").submit()' , true);?>
         </ul>
     <div class="ttc-display-area">
         <form id="content-variable-table" action="javascript:saveTable()">

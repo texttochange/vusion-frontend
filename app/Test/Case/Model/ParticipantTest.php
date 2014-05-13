@@ -213,55 +213,6 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testSave_auto_enrollment()
-    {
-        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        
-        $dialogue = $this->Maker->getOneDialogue();
-        $dialogue['Dialogue']['auto-enrollment'] = 'all';
-        
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-        
-        $participant = array(
-            'phone' => ' 07 ',
-            );
-        $this->Participant->create();
-        $savedParticipant = $this->Participant->save($participant);
-        
-        $this->assertEqual(
-            $savedParticipant['Participant']['enrolled'][0]['dialogue-id'],
-            $savedDialogue['Dialogue']['dialogue-id']
-            );
-        $this->assertRegExp(
-            '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/',
-            $savedParticipant['Participant']['enrolled'][0]['date-time']);
-        
-    }
-    
-    
-    public function testAutoEnrollDialogue()
-    {
-        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        
-        $participant = array(
-            'phone' => '+7',
-            );
-        $this->Participant->create();
-        $savedParticipant = $this->Participant->save($participant);
-        
-        $this->Participant->autoEnrollDialogue('01');
-        
-        $enrolledParticipant = $this->Participant->find('first', array(
-            'conditions' => $participant));
-        
-        $this->assertEqual(
-            $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
-            '01'
-            );
-    }
-    
-    
     public function testEditParticipantEnroll_notEnrolled_Ok()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1039,8 +990,8 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(6, count($participants));
         $this->assertEquals(6, count($report));
     }   
-
-
+    
+    
     //TEST FILTERS
     public function testFromFilterToQueryConditions_phone() 
     {
@@ -1175,10 +1126,10 @@ class ParticipantTestCase extends CakeTestCase
                     1 => 'optout', 
                     2 => 'now')
                 )
-            );        
+            );
         $this->assertEqual(
             $this->Participant->fromFilterToQueryConditions($filter),
-            array('session-id' => null)
+            array()
             );
         
         $filter = array(
@@ -1462,7 +1413,6 @@ class ParticipantTestCase extends CakeTestCase
             'phone' => '+8');   
         
         $this->Participant->addMassTags(' hi ', $conditions);
-        
         $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
         $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
         
@@ -1499,10 +1449,11 @@ class ParticipantTestCase extends CakeTestCase
             'phone' => '+8',                    
             );
         $this->Participant->create();
-        $savedParticipant = $this->Participant->save($participant_08);             
+        $savedParticipant                           = $this->Participant->save($participant_08);             
         $savedParticipant['Participant']['profile'] = ' city: kampala, name: mama';
-        $new = $this->Participant->save($savedParticipant);
-        $participantDb = $this->Participant->find();            
+        $new                                        = $this->Participant->save($savedParticipant);
+        $participantDb                              = $this->Participant->find();
+        
         $this->assertEqual($participantDb['Participant']['profile'][0]['label'],'city');
         $this->assertEqual($participantDb['Participant']['profile'][1]['label'],'name');
         $this->assertEqual($participantDb['Participant']['profile'][0]['value'],'kampala');
@@ -1555,11 +1506,9 @@ class ParticipantTestCase extends CakeTestCase
             );                                                                           
         
         $this->Participant->create();
-        $this->Participant->save($participant_09);   
-        
+        $this->Participant->save($participant_09);
         $this->Participant->deleteMassTags(' geek', array());
-        
-        $allTags= $this->Participant->getDistinctTags();
+        $allTags = $this->Participant->getDistinctTags();
         $this->assertEqual(array('cool', 'hi', 'another tag'), $allTags);      
         
     }
@@ -1602,15 +1551,13 @@ class ParticipantTestCase extends CakeTestCase
         
         
         $conditions = array(
-            'phone' => '+8');   
-        
+            'phone' => '+8'); 
         $this->Participant->deleteMassTags('hi', $conditions);
-        
         $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
         $this->assertEqual(array('geek', 'cool'), $participant['Participant']['tags']); 
         
     }
-
+    
     
     public function testClearPhone()
     {
@@ -1621,6 +1568,6 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual("+254700866920", Participant::clearPhone("+254700866920�"));
         $this->assertEqual("+254700866920", Participant::clearPhone(" +2547OO866920 "));
     }
-
-
+    
+    
 }

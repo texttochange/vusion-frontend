@@ -169,29 +169,36 @@ class Program extends AppModel
             $this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'country') {
-                if ($filterParam[2] == 'is') {
-                    $condition['country'] = $filterParam[3];
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition['country'] = $filterParam[3];
+                    }
                 }
             } elseif ($filterParam[1] == 'shortcode') {
-                if ($filterParam[2] == 'is') {
-                    $condition['shortcode'] = $filterParam[3];
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition['shortcode'] = $filterParam[3];
+                    }
                 }
-                
             } elseif ($filterParam[1] == 'name') {
-                if ($filterParam[2] == 'equal-to') {
-                    $condition['name'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'start-with') {
-                    $condition['name LIKE'] = $filterParam[3]."%"; 
-                }            
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'equal-to') {
+                        $condition['name'] = $filterParam[3];
+                    } elseif ($filterParam[2] == 'start-with') {
+                        $condition['name LIKE'] = $filterParam[3]."%"; 
+                    }
+                }
             }
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$and'])) {
-                    $conditions = array('$and' => array($conditions, $condition));
+                    if (!empty($condition))
+                        $conditions = array('$and' => array($conditions, $condition));
                 } else {
-                    array_push($conditions['$and'], $condition);
+                    if (!empty($condition))
+                        array_push($conditions['$and'], $condition);
                 }
             }  elseif ($filter['filter_operator'] == "any") {
                 if (count($conditions) == 0) {
