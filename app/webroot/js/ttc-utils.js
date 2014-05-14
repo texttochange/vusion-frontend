@@ -172,7 +172,7 @@ function createFilter(minimize, selectedStackOperator, stackRules){
             if (val==selectedStackOperator) {
                 $(option).attr('selected', true);
             }
-            $(stackOperatorSelect).append(option);
+            $(stackOperatorSelect).append(new Option(localize_label(option.value), option.value));
     });
     
     var stackOperator = document.createElement("div");
