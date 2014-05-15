@@ -1392,8 +1392,13 @@ display: inline;
 	font-weight: normal;
 }
 
-.timeframe-form {
+.timeframe {
     margin-bottom: 5px;
+}
+
+.timeframe .caption {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .timeframe-form .timeframe{
