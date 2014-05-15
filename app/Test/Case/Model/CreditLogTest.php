@@ -81,6 +81,7 @@ class CreditLogTestCase extends CakeTestCase
                 'program-database' => 'mydatabase',
                 'incoming' => 4,
                 'outgoing' => 2,
+                'outgoing-pending' => 0,
                 'outgoing-ack' => 0,
                 'outgoing-nack' => 0,
                 'outgoing-failed' => 0,
@@ -92,6 +93,7 @@ class CreditLogTestCase extends CakeTestCase
                 'program-database' => 'mydatabase2',
                 'incoming' => 2,
                 'outgoing' => 1,
+                'outgoing-pending' => 0,
                 'outgoing-ack' => 0,
                 'outgoing-nack' => 0,
                 'outgoing-failed' => 0,
@@ -102,6 +104,7 @@ class CreditLogTestCase extends CakeTestCase
                 'code' => '256-8181',
                 'incoming' => 2,
                 'outgoing' => 1,
+                'outgoing-pending' => 0,
                 'outgoing-ack' => 0,
                 'outgoing-nack' => 0,
                 'outgoing-failed' => 0,
@@ -166,6 +169,7 @@ class CreditLogTestCase extends CakeTestCase
                             'code' => '256-8181',
                             'incoming' => 2,
                             'outgoing' => 1,
+                            'outgoing-pending' => 0,
                             'outgoing-ack' => 0,
                             'outgoing-nack' => 0,
                             'outgoing-failed' => 0,
@@ -177,6 +181,7 @@ class CreditLogTestCase extends CakeTestCase
                                 'program-database' => 'mydatabase',
                                 'incoming' => 4,
                                 'outgoing' => 2,
+                                'outgoing-pending' => 0,
                                 'outgoing-ack' => 0,
                                 'outgoing-nack' => 0,
                                 'outgoing-failed' => 0,
@@ -186,6 +191,7 @@ class CreditLogTestCase extends CakeTestCase
                                 'program-database' => 'mydatabase2',
                                 'incoming' => 2,
                                 'outgoing' => 1,
+                                'outgoing-pending' => 0,
                                 'outgoing-ack' => 0,
                                 'outgoing-nack' => 0,
                                 'outgoing-failed' => 0,
@@ -210,6 +216,7 @@ class CreditLogTestCase extends CakeTestCase
                                 'program-database' => 'mydatabase3',
                                 'incoming' => 2,
                                 'outgoing' => 1,
+                                'outgoing-pending' => 0,
                                 'outgoing-ack' => 0,
                                 'outgoing-nack' => 0,
                                 'outgoing-failed' => 0,
@@ -235,6 +242,28 @@ class CreditLogTestCase extends CakeTestCase
             array('date' => array('$gte' => date('Y-m-01'))),
             CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters)
             );        
+    }
+
+    public function testDeletingProgram()
+    {
+        $creditLog = ScriptMaker::mkCreditLog();
+        $this->CreditLog->create();
+        $this->CreditLog->save($creditLog);
+
+        $creditLog = ScriptMaker::mkCreditLog();
+        $this->CreditLog->create();
+        $this->CreditLog->save($creditLog);
+
+        $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2014-04-10', 'mydatabase2');
+        $this->CreditLog->create();
+        $this->CreditLog->save($creditLog);
+
+        $this->CreditLog->deletingProgram('my program', 'mydatabase');
+
+        $this->assertEqual(2, $this->CreditLog->find('count', array('conditions' => array(
+            'object-type' => 'deleted-program-credit-log',
+            'program-name' => 'my program',
+            'program-database' => array('$exists' => false)))));
     }
 
 }

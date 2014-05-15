@@ -286,9 +286,6 @@ class Program extends AppModel
 
     public static function matchProgramConditions($programDetails, $conditions=array())
     {
-        //$countryMatch = false;
-        //$shortcodeMatch = false;
-
         if ($conditions == array()) {
             return true;
         }

@@ -53,69 +53,13 @@ $this->Html->script("jstree.min.js", array("inline" => false));
             'value' => (isset($timeframeParams['predefined-timeframe']) ? $timeframeParams['predefined-timeframe']: ''),
             ));
     echo "</span>";
-
-    /*
-    echo "<div>";
-    echo "<div class='form-line'>";
-    echo $this->Form->radio(
-        'timeframe-type',
-        array('date-to-now' => __("Calculate credit from")),
-        array('legend' => false,
-            'hiddenField' => false));
-    echo "<span class='subinput' name='date-to-now-subtype'>";
-    echo $this->Form->input('date-from',
-        array(
-            'id' => 'date-from',
-            'label' => false,
-            'style' => 'width:60px',
-            'div' => false));
-    echo "</span>";
-    echo "</div>";
-    echo "<div class='form-line'>";
-    echo $this->Form->radio(
-        'timeframe-type',
-        array('between-dates' => __("Calculate credit from")),
-        array('legend' => false,
-            'hiddenField' => false));
-    echo "<span class='subinput' name='between-dates-subtype'>";
-    echo $this->Form->input('date-from',
-        array(
-            'id' => 'date-from',
-            'label' => false,
-            'style' => 'width:60px',
-            'div' => false));
-    echo $this->Form->input('date-to',
-        array(
-            'id' => 'date-to',
-            'label' => __("to"),
-            'style' => 'width:60px',
-            'div' => false));
-    echo "</span>";
-    echo "</div>";
-    echo "<div class='form-line'>"; 
-    echo $this->Form->radio(
-        'timeframe-type',
-        array('predefined-timeframe' => __("Calculate credit of")),
-        array('legend' => false,
-            'hiddenField' => false));
-    echo "<span class='subinput' name='predefined-timeframe-subtype'>";
-    echo $this->Form->select(
-        'predefined-timeframe',
-        array(
-            '' => __('choose a timeframe...')
-            'this-month' => __('this month'),
-            'last-month' => __('last month')),
-        array(
-            'placeholder' => __("Choose timeframe...")));
-    echo "</span>";
-    echo "</div>";
-    echo "</div>";
-    */
     echo $this->Form->end(array(
         'div' => false,
         'class' => 'submit',
         'label' => __('Calculate')));
-    
+    $this->Js->get("document")->event(
+        'ready',
+        '$("input[name*=\"date-\"]").datepicker({dateformat:"dd/mm/yy"});');
     $this->Js->get(".date-timeframe")->event('click','
         $(".predefined-timeframe").removeClass("selected").children("select").val(null);
         $(this).addClass("selected");
@@ -128,7 +72,6 @@ $this->Html->script("jstree.min.js", array("inline" => false));
         $(".date-timeframe").removeClass("selected").children("input").val(null);
         $(this).addClass("selected");
         ');
-        
     ?>
     </div>
 	<div class="ttc-table-display-area">
@@ -136,6 +79,12 @@ $this->Html->script("jstree.min.js", array("inline" => false));
 	         <div id="countries-credits-tree">
                 <ul>
                 <?php
+                //Little function to help generating the tree leaves
+                function getTreeElt($label, $value, $isLeave=true) {
+                    $value = (is_numeric($value) ? $value : 0);
+                    return "<li><span style='font-weight:normal'>". $label . ": ". $value ."</span>". ($isLeave? "</li>":"");
+                }
+
                 foreach ($countriesCredits as $countryCredits) {
                     echo '<li data-jstree=\'{"icon":"../img/country-icon.png"}\'>'. 
                     __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $countryCredits['country'], $countryCredits['incoming'], $countryCredits['outgoing']);
@@ -148,24 +97,28 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                             echo '<li data-jstree=\'{"icon":"../img/vusion-logo-20.png"}\'>'. 
                                 __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $programCreditLog['name'], $programCreditLog['incoming'], $programCreditLog['outgoing']);
                             echo '<ul>';
-                            echo '<li>'.__("<span style='font-weight:normal'>incoming: %s</span>", $programCreditLog['incoming']).'</li>';
-                            echo '<li>'.__("<span style='font-weight:normal'>outgoing: %s</span>", $programCreditLog['outgoing']);
+                            echo getTreeElt(__("incoming"), $programCreditLog['incoming']);
+                            echo getTreeElt(__("outgoing"), $programCreditLog['outgoing'], false);
                             echo '<ul>';
-                            echo '<li>'.__("<span style='font-weight:normal'>ack: %s</span>", $programCreditLog['outgoing-ack']).'</li>';
-                            echo '<li>'.__("<span style='font-weight:normal'>nack: %s</span>", $programCreditLog['outgoing-nack']).'</li>';
-                            echo '<li>'.__("<span style='font-weight:normal'>delivered: %s</span>", $programCreditLog['outgoing-delivered']).'</li>';
-                            echo '<li>'.__("<span style='font-weight:normal'>failed: %s</span>", $programCreditLog['outgoing-failed']).'</li>';
+                            echo getTreeElt(__("pending"), $programCreditLog['outgoing-pending']);
+                            echo getTreeElt(__("acked"), $programCreditLog['outgoing-ack']);
+                            echo getTreeElt(__("nacked"), $programCreditLog['outgoing-nack']);
+                            echo getTreeElt(__("delivered"), $programCreditLog['outgoing-delivered']);
+                            echo getTreeElt(__("failed"), $programCreditLog['outgoing-failed']);
                             echo '</ul>';
                             echo '</li>';                            
                             echo '</ul></li>';
                         }
-                        echo '<li data-jstree=\'{"icon":"../img/garbage-icon-20.png"}\'>'. __('unmatchable');
-                        echo '<ul>';
-                        echo '<li>'.__('incoming: %s', $code['garbage']['incoming']).'</li>';
-                        echo '<li>'.__('outgoing: %s', $code['garbage']['outgoing']).'</li>';
-                        echo '</ul></li>';
-                        echo '</ul>';
-                        echo '</li>';                        
+                        if ($code['garbage'] != array()) {
+                            echo '<li data-jstree=\'{"icon":"../img/garbage-icon-20.png"}\'>'. 
+                            __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", __('Unmatchable Replies'), $code['garbage']['incoming'], $code['garbage']['outgoing']);
+                            echo '<ul>';
+                            echo getTreeElt(__("incoming"), $code['garbage']['incoming']);
+                            echo getTreeElt(__("outgoing"), $code['garbage']['outgoing']);
+                            echo '</ul></li>';
+                            echo '</ul>';
+                            echo '</li>';
+                        }                        
                     }
                     echo '</ul>';
                     echo '</li>';

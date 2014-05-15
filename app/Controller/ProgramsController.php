@@ -1,14 +1,12 @@
 <?php
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
-App::uses('Participant', 'Model');
-App::uses('Schedule', 'Model');
-App::uses('History', 'Model');
 App::uses('UnmatchableReply', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('Request', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('ShortCode', 'Model');
+App::uses('CreditLog', 'Model');
 
 
 class ProgramsController extends AppController
@@ -46,7 +44,7 @@ class ProgramsController extends AppController
                 );
         }
         $this->ShortCode  = new ShortCode($options);
-        
+        $this->CreditLog  = new CreditLog($options);
     }
     
     
@@ -309,6 +307,7 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
+            $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
             $this->Session->setFlash(__('Program deleted.'),
                 'default',

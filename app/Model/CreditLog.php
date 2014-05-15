@@ -32,11 +32,17 @@ class CreditLog extends MongoModel
         $programCreditLogFields = array(
             'program-database');
 
+        $deletedProgramCreditLogFields = array(
+            'program-name');
+
         $garbageCreditLogFields = array();
 
         switch($objectType) {
         case 'program-credit-log':
             $fields = array_merge($creditLogFields, $programCreditLogFields);
+            break;
+        case 'deleted-program-credit-log':
+            $fields = array_merge($creditLogFields, $deletedProgramCreditLogFields);
             break;
         case 'garbage-credit-log':
             $fields = array_merge($creditLogFields, $garbageCreditLogFields);
@@ -63,6 +69,9 @@ class CreditLog extends MongoModel
             "function(obj, prev){
                 prev.incoming += obj.incoming;
                 prev.outgoing += obj.outgoing;
+                if ('outgoing-pending' in obj) {
+                    prev['outgoing-pending'] += obj['outgoing-pending']; 
+                }
                 if ('outgoing-ack' in obj) {
                     prev['outgoing-ack'] += obj['outgoing-ack']; 
                 }
@@ -86,6 +95,7 @@ class CreditLog extends MongoModel
 		$initial = array(
 		    'incoming' => 0,
 		    'outgoing' => 0,
+		    'outgoing-pending' => 0,
 		    'outgoing-ack' => 0,
 		    'outgoing-nack' => 0,
 		    'outgoing-failed' => 0,
@@ -176,7 +186,7 @@ class CreditLog extends MongoModel
                 $code['garbage'] = CreditLog::searchCreditLog($codeCredits, 'object-type', 'garbage-credit-log');
                 if ($code['garbage'] != array()) {
                     $code['garbage'] = $code['garbage'][0];
-                }
+                } 
                 //Sum at code level
                 $code['incoming'] = (int)Set::apply('/incoming', $codeCredits, 'array_sum');
                 $code['outgoing'] = (int)Set::apply('/outgoing', $codeCredits, 'array_sum');
@@ -188,6 +198,17 @@ class CreditLog extends MongoModel
             $perCountry[] = $country; 
         }
         return $perCountry;
+    }
+    
+    public function deletingProgram($programName, $programDatabase) 
+    {
+        $conditions = array('program-database' => $programDatabase);
+        $updateData = array(
+            '$set'=> array(
+                'object-type' => 'deleted-program-credit-log',
+                'program-name' => $programName),
+            '$unset' => array('program-database' => ''));
+        $result = $this->updateAll($updateData, $conditions);
     }
     
 
