@@ -18,16 +18,11 @@ class UserAccessComponent extends Component
         $this->Group   = ClassRegistry::init('Group');
     }
     
-    public function startup(Controller $controller)
-    {
-        parent::startup($controller);
-    }
-    
     
     public function getUnmatchableConditions()
     {
         $conditions = array();
-        print_r($this->Controller);
+        //print_r($this->Controller);
         
         $user = $this->Auth->user();
         
@@ -38,6 +33,7 @@ class UserAccessComponent extends Component
             $index = 0;
             foreach ($programs as &$program) {
                 $program = $this->ProgramPaginator->getProgramDetails($program);
+                print_r($program);
                 $prefixedCodes[$index] = $program['program']['Program']['shortcode'];
                 $codes[$index] = substr(strrchr($prefixedCodes[$index], "-"), 1);
                 $index++;

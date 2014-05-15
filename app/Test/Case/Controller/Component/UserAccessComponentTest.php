@@ -40,11 +40,12 @@ class UserAccessComponentTest extends CakeTestCase
         parent::teardown();
     }
     
+    /*
     public function testGetUnmatchableConditions_NoUnmatchableAccess()
     {
         $this->AssertEqual(array(), $this->UserAccessComponent->getUnmatchableConditions());
     }
-    
+    */
     
     public function testGetUnmatchableConditions_hasUnmatchableAccess_hasSpecificProgramAccess()
     {
@@ -57,6 +58,7 @@ class UserAccessComponentTest extends CakeTestCase
         ->will($this->returnValue(true));
         
         $this->UserAccessComponent->Group = $groupMock;
+        print_r($this->UserAccessComponent->Program->find());
         
         $this->AssertEqual(array(), $this->UserAccessComponent->getUnmatchableConditions());
     }
