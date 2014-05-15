@@ -1002,7 +1002,6 @@ class Participant extends MongoModel
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
                    $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
-                  // $conditions = array_filter($condition);
                 } elseif (!isset($conditions['$and'])) {
                     $condition = array_filter($condition);
                     if (!empty($condition))
