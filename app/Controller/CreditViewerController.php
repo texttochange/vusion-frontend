@@ -69,8 +69,10 @@ class CreditViewerController extends AppController
             foreach ($countryCredits['codes'] as &$codeCredits) {
                 $codeCredits['code'] = DialogueHelper::fromPrefixedCodeToCode($codeCredits['code']);
                 foreach ($codeCredits['programs'] as &$programCredits) {
-                    $program = $this->Program->find('first', array('conditions' => array('database' => $programCredits['program-database'])));
-                    $programCredits['name'] = $program['Program']['name'];
+                    if (!isset($programCredits['program-name'])) { 
+                        $program = $this->Program->find('first', array('conditions' => array('database' => $programCredits['program-database'])));
+                        $programCredits['program-name'] = $program['Program']['name'];
+                    }
                 }
             }
         }
@@ -85,7 +87,7 @@ class CreditViewerController extends AppController
         //Default parameters
         if ($parameters == array()) {
             $parameters = array(
-                'predefined-timeframe' => 'current-month',
+                'predefined-timeframe' => 'today',
                 'date-from' => '',
                 'date-to' => '');
         }

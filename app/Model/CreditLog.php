@@ -90,6 +90,7 @@ class CreditLog extends MongoModel
 		    'object-type' => true,
 		    'code' => true,
 		    'program-database' => true,
+		    'program-name' => true,
 		    );
 
 		$initial = array(
@@ -122,6 +123,11 @@ class CreditLog extends MongoModel
     {
         if ($result['object-type'] === 'garbage-credit-log') {
             unset($result['program-database']);
+            unset($result['program-name']);
+        } else if ($result['object-type'] === 'program-credit-log') {
+            unset($result['program-name']);
+        } else if ($result['object-type'] === 'deleted-program-credit-log') {
+            unset($result['program-database']);
         }
         return $result;
     }
@@ -131,7 +137,7 @@ class CreditLog extends MongoModel
     {
         $results = array();
         foreach($credits as $key => $credit) {
-            if (isset($credit[$field]) && ($credit[$field] === $value)) {
+            if (isset($credit[$field]) && in_array($credit[$field], $value)) {
                 $results[] = $credit;
             }
         }
@@ -181,9 +187,9 @@ class CreditLog extends MongoModel
                     'garbage' => null,
                     'incoming' => 0,
                     'outgoing' => 0);
-                $codeCredits = CreditLog::searchCreditLog($credits, 'code', $countryCode);
-                $code['programs'] = CreditLog::searchCreditLog($codeCredits, 'object-type', 'program-credit-log');
-                $code['garbage'] = CreditLog::searchCreditLog($codeCredits, 'object-type', 'garbage-credit-log');
+                $codeCredits = CreditLog::searchCreditLog($credits, 'code', array($countryCode));
+                $code['programs'] = CreditLog::searchCreditLog($codeCredits, 'object-type', array('program-credit-log', 'deleted-program-credit-log'));
+                $code['garbage'] = CreditLog::searchCreditLog($codeCredits, 'object-type', array('garbage-credit-log'));
                 if ($code['garbage'] != array()) {
                     $code['garbage'] = $code['garbage'][0];
                 } 
@@ -231,6 +237,14 @@ class CreditLog extends MongoModel
             } else if ($timeframeParameters['predefined-timeframe'] == 'current-month') {
                 $dateFrom = date('Y-m-01');
                 $condition['date']['$gte'] = $dateFrom;
+            } else if ($timeframeParameters['predefined-timeframe'] == 'today') {
+                $dateFrom = date('Y-m-d');
+                $condition['date']['$gte'] = $dateFrom;
+            } else if ($timeframeParameters['predefined-timeframe'] == 'yesterday') {
+                $dateFrom = date('Y-m-d', time() - 60 * 60 * 24);
+                $dateTo = date('Y-m-d');
+                $condition['date']['$gte'] = $dateFrom;
+                $condition['date']['$lt'] = $dateTo;
             } else {
                 throw new VusionException(__("Predefined timeframe %s not supported", $timeframeParameters['predefined-timeframe']));
             }

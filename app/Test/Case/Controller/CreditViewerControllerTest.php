@@ -51,15 +51,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->ProgramSettingTest->deleteAll(true, false);  
         $this->ProgramSettingM6H->deleteAll(true, false);
         $this->ProgramSettingTrial->deleteAll(true, false);
-    
-        /*
-        $this->HistoryTest = new History(array('database' => 'testdbprogram'));
-        $this->HistoryTest->deleteAll(true, false);  
-        $this->HistoryM6H = new History(array('database' => 'm6h'));
-        $this->HistoryM6H->deleteAll(true, false);
-        $this->HistoryTrial = new History(array('database' => 'trial'));
-        $this->HistoryTrial->deleteAll(true, false);
-        */
     }
     
     
@@ -110,7 +101,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
 
         #One recent creditlog
         $creditLog = ScriptMaker::mkCreditLog(
-            'program-credit-log', date('Y-m-1'), 'testdbprogram', '256-8282');
+            'program-credit-log', date('Y-m-d'), 'testdbprogram', '256-8282');
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
 
@@ -131,7 +122,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $countriesCredits = $this->vars['countriesCredits'];
         $this->assertEquals(1, count($countriesCredits));
         $this->assertEqual('Uganda', $countriesCredits[0]['country']);
-        $this->assertEqual('test', $countriesCredits[0]['codes'][0]['programs'][0]['name']);
+        $this->assertEqual('test', $countriesCredits[0]['codes'][0]['programs'][0]['program-name']);
         $this->assertEqual(1, $countriesCredits[0]['codes'][0]['programs'][0]['outgoing']);
     }
 
@@ -165,7 +156,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $countriesCredits = $this->vars['countriesCredits'];
         $this->assertEquals(1, count($countriesCredits));
         $this->assertEqual('Uganda', $countriesCredits[0]['country']);
-        $this->assertEqual('test', $countriesCredits[0]['codes'][0]['programs'][0]['name']);
+        $this->assertEqual('test', $countriesCredits[0]['codes'][0]['programs'][0]['program-name']);
         $this->assertEqual(1, $countriesCredits[0]['codes'][0]['programs'][0]['outgoing']);
 
         $this->testAction('/creditViewer/index?date-from=01%2F03%2F2013&date-to=01%2F05%2F2013');
@@ -174,7 +165,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $countriesCredits = $this->vars['countriesCredits'];
         $this->assertEquals(1, count($countriesCredits));
         $this->assertEqual('Uganda', $countriesCredits[0]['country']);
-        $this->assertEqual('test', $countriesCredits[0]['codes'][0]['programs'][0]['name']);
+        $this->assertEqual('test', $countriesCredits[0]['codes'][0]['programs'][0]['program-name']);
         $this->assertEqual(1, $countriesCredits[0]['codes'][0]['programs'][0]['outgoing']);
 
         $this->testAction('/creditViewer/index?predefined-timeframe=current-month');

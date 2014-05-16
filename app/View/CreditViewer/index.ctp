@@ -6,6 +6,8 @@ $this->Html->script("jstree.min.js", array("inline" => false));
     <div>
     <?php
     $predefinedTimeframes = array(
+        'today' => __("today"),
+        'yesterday' => __("yesterday"),
         'current-month' => __("current month"),
         'last-month' => __("last month"));
     $dateTimeframeClass = '';
@@ -123,7 +125,7 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                         echo '<ul>';
                         foreach ($code['programs'] as $programCreditLog) {
                             echo '<li>'. 
-                                __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $programCreditLog['name'], $programCreditLog['incoming'], $programCreditLog['outgoing']);
+                                __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $programCreditLog['program-name'], $programCreditLog['incoming'], $programCreditLog['outgoing']);
                             echo '<ul>';
                             echo getTreeElt(__("incoming"), $programCreditLog['incoming']);
                             echo getTreeElt(__("outgoing"), $programCreditLog['outgoing'], false);

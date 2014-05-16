@@ -55,12 +55,12 @@ class CreditLogTestCase extends CakeTestCase
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
-        ##not to be counted as out of the dateframe
+        ## not to be counted as out of the dateframe
         $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2013-02-10', 'mydatabase2');
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
-        ##not to be counted as not in the list of database
+        ## not to be counted as out of the list
         $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2013-04-10', 'mydatabase3');
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
@@ -131,13 +131,13 @@ class CreditLogTestCase extends CakeTestCase
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
-        ##not to be counted as not in the list of database
-        $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2013-04-10', 'mydatabase3');
+        ##on a different shortcode
+        $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2014-04-10', 'mydatabase2', '255-15001');
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
-        ##same program but on a different shortcode
-        $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2014-04-10', 'mydatabase3', '255-15001');
+        ##to be counted as deleted program
+        $creditLog = ScriptMaker::mkCreditLog('deleted-program-credit-log', '2014-04-10', false, '255-15001');
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
@@ -202,18 +202,28 @@ class CreditLogTestCase extends CakeTestCase
             array(
                 'country' => 'Tanzania',
                 'prefix' => '255',
-                'incoming' => 2,
-                'outgoing' => 1,
+                'incoming' => 4,
+                'outgoing' => 2,
                 'codes' => array(
                     array(
                         'code' => '255-15001',
                         'garbage' => array(),
-                        'incoming' => 2,
-                        'outgoing' => 1,
+                        'incoming' => 4,
+                        'outgoing' => 2,
                         'programs' => array(
                             array('object-type' => 'program-credit-log',
                                 'code' => '255-15001',
-                                'program-database' => 'mydatabase3',
+                                'program-database' => 'mydatabase2',
+                                'incoming' => 2,
+                                'outgoing' => 1,
+                                'outgoing-pending' => 0,
+                                'outgoing-ack' => 0,
+                                'outgoing-nack' => 0,
+                                'outgoing-failed' => 0,
+                                'outgoing-delivered' => 0),
+                            array('object-type' => 'deleted-program-credit-log',
+                                'code' => '255-15001',
+                                'program-name' => 'My Deleted Program',
                                 'incoming' => 2,
                                 'outgoing' => 1,
                                 'outgoing-pending' => 0,
@@ -235,11 +245,28 @@ class CreditLogTestCase extends CakeTestCase
     public function testFromTimeframeParametersToQueryConditions() 
     {
         $timeframeParameters = array(
-            'timeframe-type' => 'predefined-timeframe',
             'predefined-timeframe' => 'current-month');
 
         $this->assertEqual(
             array('date' => array('$gte' => date('Y-m-01'))),
+            CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters)
+            );
+
+        $timeframeParameters = array(
+            'predefined-timeframe' => 'today');
+
+        $this->assertEqual(
+            array('date' => array('$gte' => date('Y-m-d'))),
+            CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters)
+            );
+
+        $timeframeParameters = array(
+            'predefined-timeframe' => 'yesterday');
+
+        $this->assertEqual(
+            array('date' => array(
+                '$gte' => date('Y-m-d', time() - 60 * 60 * 24),
+                '$lt' => date('Y-m-d'))),
             CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters)
             );        
     }

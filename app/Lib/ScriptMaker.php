@@ -245,6 +245,15 @@ class ScriptMaker
                 'incoming' => $incoming,
                 'outgoing' => $outgoing);
             break;
+        case 'deleted-program-credit-log':
+            return array(
+                'object-type' => $objectType,
+                'date' => $date,
+                'code' => $code,
+                'program-name' => 'My Deleted Program',
+                'incoming' => $incoming,
+                'outgoing' => $outgoing);
+            break;
         } 
         return null;
     }
