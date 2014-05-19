@@ -9,7 +9,7 @@ App::uses('DialogueHelper', 'Lib');
 class Interaction extends VirtualModel
 {
     var $name       = 'interaction';
-    var $version    = '3'; 
+    var $version    = '4'; 
     var $databaName = null;    
 
     var $payload = array();
@@ -125,8 +125,20 @@ class Interaction extends VirtualModel
                 'rule' => array(
                     'valueRequireFields', array(
                         'announcement' => array('content'),
-                        'question-answer' => array('content', 'keyword', 'set-use-template', 'type-question', 'type-unmatching-feedback', 'set-max-unmatching-answers', 'set-reminder'),
-                        'question-answer-keyword' => array('content', 'label-for-participant-profiling', 'answer-keywords', 'set-reminder'),
+                        'question-answer' => array(
+                            'content', 
+                            'keyword', 
+                            'set-use-template', 
+                            'type-question', 
+                            'type-unmatching-feedback',
+                            'set-matching-answer-actions',
+                            'set-max-unmatching-answers', 
+                            'set-reminder'),
+                        'question-answer-keyword' => array(
+                            'content', 
+                            'label-for-participant-profiling', 
+                            'answer-keywords', 
+                            'set-reminder'),
                         'message' => 'Type interaction required fields are missing.'
                         )
                     )
@@ -173,6 +185,25 @@ class Interaction extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'question-answer'),
                 'message' => 'A set-use-template field is required.',
+                ),
+            ),
+        'set-matching-answer-actions'=> array(
+            'requiredConditional' => array(
+                'rule' => array(
+                    'requiredConditionalFieldValue', 
+                    'type-interaction', 
+                    'question-answer'),
+                'message' => 'A set-matching-answer-action field is required.',
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array(null, 'matching-answer-actions')),
+                'message' => 'Type unmatching feedback is not valid.',
+                )
+            ),  
+        'matching-answer-actions' => array(
+            'validateActions' => array(
+                'rule' => 'validateActions',
+                'message' => null
                 ),
             ),
         'set-max-unmatching-answers' => array( 
@@ -614,6 +645,11 @@ class Interaction extends VirtualModel
             $this->_setDefault('set-use-template', null);
             $this->_setDefault('type-unmatching-feedback', 'no-unmatching-feedback');                        
             $this->_setDefault('set-reminder', null);
+            $this->_setDefault('set-matching-answer-actions', null);
+            if ($this->data['set-matching-answer-actions'] == 'matching-answer-actions') {
+                $this->_setDefault('matching-answer-actions', array());
+                $this->_beforeValidateActions(&$this->data['matching-answer-actions']);
+            }
             $this->_setDefault('set-max-unmatching-answers', null);
             if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {
                 $this->_setDefault('max-unmatching-answer-actions', array());
