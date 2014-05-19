@@ -4,6 +4,7 @@ App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
 App::uses('UserAccessComponent', 'Controller/Component');
+App::uses('ProgramSetting', 'Model');
 
 
 class TestUserAccessComponentController extends Controller
@@ -16,7 +17,7 @@ class UserAccessComponentTest extends CakeTestCase
 {
     public $UserAccessComponent = null;
     public $Controller = null;
-    //public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
+    public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
     
     public function setup()
     {
@@ -33,6 +34,17 @@ class UserAccessComponentTest extends CakeTestCase
     }
     
     
+    public function dropData()
+    {
+        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
+        $this->ProgramSettingTest->deleteAll(true, false);  
+        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
+        $this->ProgramSettingM6H->deleteAll(true, false);
+        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
+        $this->ProgramSettingTrial->deleteAll(true, false);
+    }
+    
+    
     public function teardown()
     {
         unset($this->UserAccessComponent);
@@ -40,34 +52,43 @@ class UserAccessComponentTest extends CakeTestCase
         parent::teardown();
     }
     
-    /*
-    public function testGetUnmatchableConditions_NoUnmatchableAccess()
+    
+    public function testGetUnmatchableConditions_allProgramAccess()
     {
         $this->AssertEqual(array(), $this->UserAccessComponent->getUnmatchableConditions());
     }
-    */
     
-    public function testGetUnmatchableConditions_hasUnmatchableAccess_hasSpecificProgramAccess()
+    
+    public function testGetUnmatchableConditions_hasSpecificProgramAccess()
     {
-        $groupMock = $this->getMock('Group', array('hasSpecificProgramAccess'));
-        
+        $groupMock = $this->getMock('Group', array('hasSpecificProgramAccess'));        
         $groupMock
         ->expects($this->once())
         ->method('hasSpecificProgramAccess')
-        //->with('id'==1)
         ->will($this->returnValue(true));
         
-        $this->UserAccessComponent->Group = $groupMock;
-        print_r($this->UserAccessComponent->Program->find());
+        $authMock = $this->getMock('Auth', array('user'));        
+        $authMock
+        ->expects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '1',
+            'group_id' => '1')));
         
-        $this->AssertEqual(array(), $this->UserAccessComponent->getUnmatchableConditions());
+        $this->UserAccessComponent->Group = $groupMock;
+        $this->UserAccessComponent->Auth = $authMock;
+        
+        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
+        $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
+        
+        $expected = array('$or' => array(
+            array('participant-phone' => array('$in' => array(0 => '256-8282'))),
+            array('to' => array('$in' => array(0 => '8282'))),
+            ));
+        
+        $this->AssertEqual($expected, $this->UserAccessComponent->getUnmatchableConditions());
     }
     
-    /*
-    public function testGetUnmatchableConditions_hasUnmatchableAccess_allProgramsAccess()
-    {
-        $this->AssertEqual(array(), $this->UserAccessComponent->getUnmatchableConditions());
-    }
-    */
     
 }

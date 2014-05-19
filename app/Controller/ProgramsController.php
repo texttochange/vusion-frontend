@@ -181,9 +181,12 @@ class ProgramsController extends AppController
         }
         
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
+        $unmatchableCondition = $this->UserAccess->getUnmatchableConditions();
+        $andCondition = array('$and' => array($unmatchableCondition, array('direction' => 'incoming')));
+        $unmatchedConditon  = (!empty($unmatchableCondition)) ? $andCondition : array('direction' => 'incoming');
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
-            array('conditions' => $this->UserAccess->getUnmatchableConditions(), //array('direction' => 'incoming'), 
+            array('conditions' => $unmatchedConditon, 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
