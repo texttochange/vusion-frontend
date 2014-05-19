@@ -65,7 +65,8 @@ var dialogue = {
                 "content",
                 "keyword", 
                 "set-use-template", 
-                "type-question", 
+                "type-question",
+                "set-matching-answer-actions",
                 "set-max-unmatching-answers", 
                 "type-unmatching-feedback",
                 "set-reminder"]},
@@ -91,7 +92,19 @@ var dialogue = {
         'type': "checkboxes",
         'value': 'use-template'
     },
-    "set-max-unmatching-answers":{
+    "set-matching-answer-actions": {
+        "type": "checkboxes",
+        "value": "matching-answer-actions",
+        "subfields": [
+            "matching-answer-actions"
+        ]
+    },
+    "matching-answer-actions": {
+        "type": "list",
+        "add-button": true,
+        "adds": "action"
+    },
+    "set-max-unmatching-answers": {
         'type': "checkboxes",
         "value": "max-unmatching-answers",
         "subfields": [

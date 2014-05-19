@@ -32,7 +32,7 @@ class Participant extends MongoModel
             'profile',
             );
     }
-
+    
     public $findMethods = array(
         'all' => true,
         'first' => true,
@@ -47,7 +47,7 @@ class Participant extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
-
+        
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
@@ -56,7 +56,7 @@ class Participant extends MongoModel
         $this->ProgramSetting = new ProgramSetting($options);
         $this->Dialogue       = new Dialogue($options);
     }
-
+    
     
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
@@ -64,7 +64,7 @@ class Participant extends MongoModel
         parent::deleteAll($conditions, $cascade, $callback);
         $this->flushCached();
     }
-
+    
     
     public $validate = array(
         'phone' => array(
@@ -248,7 +248,7 @@ class Participant extends MongoModel
             return 'many';
         }
     }
-
+    
     
     public function addMassTags($tag, $conditions)
     {   
@@ -946,24 +946,28 @@ class Participant extends MongoModel
                     $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'phone') {
-                if ($filterParam[2] == 'start-with-any') {
-                    $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    if ($phoneNumbers) {
-                        if (count($phoneNumbers) > 1) {
-                            $or = array();
-                            foreach ($phoneNumbers as $phoneNumber) {
-                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
-                                $or[] = array('phone' => $regex);
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'start-with-any') {
+                        $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
+                        if ($phoneNumbers) {
+                            if (count($phoneNumbers) > 1) {
+                                $or = array();
+                                foreach ($phoneNumbers as $phoneNumber) {
+                                    $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                                    $or[] = array('phone' => $regex);
+                                }
+                                $condition['$or'] = $or;
+                            } else {
+                                $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
                             }
-                            $condition['$or'] = $or;
-                        } else {
-                            $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
-                        }
-                    } 
-                } elseif ($filterParam[2] == 'start-with') {
-                    $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
-                } elseif ($filterParam[2] == 'equal-to') {
-                    $condition['phone'] = $filterParam[3];        
+                        } 
+                    } elseif ($filterParam[2] == 'start-with') {
+                        $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
+                    } elseif ($filterParam[2] == 'equal-to') {
+                        $condition['phone'] = $filterParam[3];        
+                    }
+                } else {
+                    $condition['phone'] = '';
                 }
             } elseif ($filterParam[1]=='tagged') {
                 if ($filterParam[2] == 'with') {
@@ -972,32 +976,40 @@ class Participant extends MongoModel
                     $condition['tags'] = array('$ne' => $filterParam[3]);
                 }
             } elseif ($filterParam[1] == 'labelled') {
-                $label = explode(":", $filterParam[3]);   
-                if ($filterParam[2] == 'with') {
-                    $condition['profile'] = array(
-                        '$elemMatch' => array(
-                            'label' => $label[0],
-                            'value' => $label[1])
-                        );
-                } elseif (($filterParam[2] == 'not-with')) {
-                    $condition['profile'] = array(
-                        '$elemMatch' => array(
-                            '$or' => array(
-                                array('label' => array('$ne' => $label[0])),
-                                array('value' => array('$ne' => $label[1]))
+                if ($filterParam[3]) {
+                    $label = explode(":", $filterParam[3]); 
+                    if ($filterParam[2] == 'with') {
+                        $condition['profile'] = array(
+                            '$elemMatch' => array(
+                                'label' => $label[0],
+                                'value' => $label[1])
+                            );
+                    } elseif (($filterParam[2] == 'not-with')) {
+                        $condition['profile'] = array(
+                            '$elemMatch' => array(
+                                '$or' => array(
+                                    array('label' => array('$ne' => $label[0])),
+                                    array('value' => array('$ne' => $label[1]))
+                                    )
                                 )
-                            )
-                        );
+                            );
+                    }
+                } else {
+                    $condition['profile'] = '';
                 }
             }
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
-                    $conditions = $condition;
+                    $conditions = array_filter($condition);
                 } elseif (!isset($conditions['$and'])) {
-                    $conditions = array('$and' => array($conditions, $condition));
+                    $condition = array_filter($condition);
+                    if (!empty($condition))
+                        $conditions = array('$and' => array($conditions, $condition));
                 } else {
-                    array_push($conditions['$and'], $condition);
+                    $condition = array_filter($condition);
+                    if (!empty($condition))
+                        array_push($conditions['$and'], $condition);
                 }
             } elseif ($filter['filter_operator'] == "any") {
                 if (count($conditions) == 0) {
@@ -1010,7 +1022,6 @@ class Participant extends MongoModel
             }
             
         }
-        
         return $conditions;
     }
     

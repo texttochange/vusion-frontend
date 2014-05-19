@@ -237,6 +237,19 @@ class ProgramsController extends AppController
             throw new FilterException('Filter operator is missing or not allowed.');
         }     
         
+        foreach ($filter['filter_param'] as $key => $filterParam) {
+            if (isset($filterParam[3])) {
+                if (!$filterParam[3]) {
+                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                }
+            } else {
+                return null;
+            }
+        }
+        
         $this->set('urlParams', http_build_query($filter));
         
         return $this->Program->fromFilterToQueryConditions($filter);
