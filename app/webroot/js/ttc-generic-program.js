@@ -222,6 +222,10 @@ function activeForm(){
             $(elt).change(updateCheckboxSubmenu);
             $(elt).addClass("activated");
     });
+    $.each($("input[name*='matching-answer-actions']:not(.activated)"),function (key, elt){
+            $(elt).change(updateCheckboxSubmenu);
+            $(elt).addClass("activated");
+    });
     $("input[name*='date-time']:not(.activated)").each(function (key, elt) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
                 $(this).parent().parent().find("input").attr("readonly", true);

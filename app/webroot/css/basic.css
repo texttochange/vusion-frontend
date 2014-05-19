@@ -1396,3 +1396,7 @@ display: inline;
 .sms-message-counter{
         padding-right:5px;       
 }
+
+.readonly-field {
+        color:#AAAAAA;
+}
