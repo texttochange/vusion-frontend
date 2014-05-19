@@ -2,25 +2,22 @@
 <h3><?php echo __('Edit ShortCode'); ?></h3>
 <?php echo $this->Form->create('ShortCode');?>
 	<fieldset>	
-	<div class='input text'>
+	
 	<?php
-	echo $this->Html->tag('label',__('Country'));
-	echo "<br />";
-	echo $this->Form->select('country', $countries, array('id'=> 'country'));
-	$this->Js->set('prefixesByCountriesOptions', $prefixesByCountriesOptions);
-	$this->Js->get('#country')->event('change',
-		'var country = $("#country :selected").val();
-		var internationalPrefix = window.app.prefixesByCountriesOptions[country];
-		$("#international-prefix").val(internationalPrefix);
-	    ');
-	?>
-	</div>
-	<?php
-	echo $this->Form->input('shortcode', array('label' => __('Shortcode')));
+	echo $this->Form->input('country',
+	    array('id'=> 'country',
+	        'type' => 'text',
+	        'readonly' => 'true',
+	        'class' => 'readonly-field'));
+	echo $this->Form->input('shortcode',
+	    array('label' => __('Shortcode'),
+	        'readonly' => 'true',
+	        'class' => 'readonly-field'));
 	echo $this->Form->input('international-prefix',
 	    array('id' => 'international-prefix',
 	        'label' => __('International Prefix'),
-	        'readonly' => true)
+	        'readonly' => true,
+	        'class' => 'readonly-field')
 	    );
 	?>
 	<div>

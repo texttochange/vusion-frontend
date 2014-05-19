@@ -1392,4 +1392,11 @@ display: inline;
 	font-weight: normal;
 }
 
-.
+/* padding for sms-message-counter */
+.sms-message-counter{
+        padding-right:5px;       
+}
+
+.readonly-field {
+        color:#AAAAAA;
+}

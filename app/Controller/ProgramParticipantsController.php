@@ -69,7 +69,7 @@ class ProgramParticipantsController extends AppController
         }
         
         $this->paginate = $paginate;
-        $participants = $this->paginate();
+        $participants   = $this->paginate();
         $this->set(compact('participants'));
     }
     
@@ -117,9 +117,8 @@ class ProgramParticipantsController extends AppController
     
     public function download()
     {
-        $programUrl = $this->params['program'];
-        $fileName = $this->params['url']['file'];
-        
+        $programUrl   = $this->params['program'];
+        $fileName     = $this->params['url']['file'];        
         $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
         
         if (!file_exists($fileFullPath)) {
@@ -138,27 +137,28 @@ class ProgramParticipantsController extends AppController
         $programUrl = $this->params['program'];
         $conditions = $this->_getConditions();
         
-        if ($this->request->is('get')){
-            if(!$conditions){
+        if ($this->request->is('get')) {
+            if (!$conditions) {
                 $conditions = array();
             }
-            if($this->Participant->addMassTags($this->params['url']['tag'], $conditions)){                
+            if ($this->Participant->addMassTags($this->params['url']['tag'], $conditions)) {                
                 $this->Session->setFlash(__('The MassTag has been added successfully.'),
                     'default',
-                    array('class'=>'message success'));
-            } else{                
+                    array('class'=>'message success')
+                    );
+            } else {                
                 $this->Session->setFlash(__('The MassTag'.$tag.' could not be added successfully.'), 
-                	'default',
-                	array('class' => 'message failure'));                            
+                    'default',
+                    array('class' => 'message failure'));                            
             }           
         }
         
         $redirectUrl = array(  
-        	'program' => $programUrl,
-        	'controller' => 'programParticipants',
-        	'action' => 'index'); 
+            'program' => $programUrl,
+            'controller' => 'programParticipants',
+            'action' => 'index'); 
         if (isset($this->viewVars['urlParams'])) {
-        	$redirectUrl['?'] = $this->viewVars['urlParams'];
+            $redirectUrl['?'] = $this->viewVars['urlParams'];
         }
         $this->redirect($redirectUrl);
     }
@@ -169,18 +169,20 @@ class ProgramParticipantsController extends AppController
         $programUrl = $this->params['program'];
         $conditions = $this->_getConditions();
         
-        if ($this->request->is('get')){
-            if(!$conditions){
+        if ($this->request->is('get')) {
+            if (!$conditions) {
                 $conditions = array();
             } 
-            if($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)){
+            if ($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)) {
                 $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
                     'default',
-                    array('class'=>'message success'));
-            } else{                
+                    array('class'=>'message success')
+                    );
+            } else {                
                 $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
                     'default',
-                    array('class' => 'message failure'));                                
+                    array('class' => 'message failure')
+                    );                                
             }
         } 
         
@@ -218,49 +220,47 @@ class ProgramParticipantsController extends AppController
         }
         
         try{
-            ##First a tmp file is created
+            //First a tmp file is created
             $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
             
-            ##TODO: the folder creation should be managed at program creation
+            //TODO: the folder creation should be managed at program creation
             if (!file_exists($filePath)) {
                 //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
                 mkdir($filePath);
                 chmod($filePath, 0764);
             }
             
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
-            $programName = $this->Session->read($programUrl.'_name');
-            $fileName = $programName . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
+            $programNow   = $this->ProgramSetting->getProgramTimeNow();
+            $programName  = $this->Session->read($programUrl.'_name');
+            $fileName     = $programName . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
+            $fileFullPath = $filePath . "/" . $fileName;
+            $handle       = fopen($fileFullPath, "w");            
+            $headers      = $this->Participant->getExportHeaders($conditions);
             
-            $fileFullPath = $filePath . "/" . $fileName;  
-            
-            $handle = fopen($fileFullPath, "w");
-            
-            $headers = $this->Participant->getExportHeaders($conditions);
-            ##Second we write the headers
+            //Second we write the headers
             fputcsv($handle, $headers,',' , '"' );
             
-            ##Third we extract the data and copy them in the file
-            
+            //Third we extract the data and copy them in the file            
             $participantCount = $this->Participant->find('count', array('conditions'=> $conditions));
-            $pageCount = intval(ceil($participantCount / $paginate['limit']));
-            for($count = 1; $count <= $pageCount; $count++) {
+            $pageCount        = intval(ceil($participantCount / $paginate['limit']));
+            
+            for ($count = 1; $count <= $pageCount; $count++) {
                 $paginate['page'] = $count;
-                $this->paginate = $paginate;
-                $participants = $this->paginate();
-                foreach($participants as $participant) {
+                $this->paginate   = $paginate;
+                $participants     = $this->paginate();
+                foreach ($participants as $participant) {
                     $line = array();
-                    foreach($headers as $header) {
+                    foreach ($headers as $header) {
                         if (in_array($header, array('phone', 'last-optin-date', 'last-optout-date'))) {
                             $line[] = $participant['Participant'][$header];
                         } else if ($header == 'tags') {
                             $line[] = implode(', ', $participant['Participant'][$header]);         
                         } else {
-                            $value = $this->_searchProfile($participant['Participant']['profile'], $header);
+                            $value  = $this->_searchProfile($participant['Participant']['profile'], $header);
                             $line[] = $value;
                         }
                     }
-                    fputcsv($handle, $line,',' , '"' );
+                    fputcsv($handle, $line,',' , '"');
                 }
             }
             
@@ -293,7 +293,20 @@ class ProgramParticipantsController extends AppController
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
-        }     
+        }
+        
+        foreach ($filter['filter_param'] as $key => $filterParam) {
+            if (isset($filterParam[3])) {
+                if (!$filterParam[3]) {
+                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                }
+            } else {
+                return null;
+            }
+        }
         
         $this->set('urlParams', http_build_query($filter));
         
@@ -346,7 +359,7 @@ class ProgramParticipantsController extends AppController
     protected function _getSelectOptions()
     {
         $selectOptions = array();
-        $dialogues = $this->Dialogue->getDialoguesInteractionsContent();
+        $dialogues     = $this->Dialogue->getDialoguesInteractionsContent();
         foreach ($dialogues as $key => $value) {
             $selectOptions[$key] = $value['name'];
         }
@@ -354,7 +367,7 @@ class ProgramParticipantsController extends AppController
     }
     
     
-    ##we should not be able to edit a phone number
+    //we should not be able to edit a phone number
     public function edit()   
     {
         $programUrl = $this->params['program'];
@@ -388,8 +401,8 @@ class ProgramParticipantsController extends AppController
             $this->request->data = $this->Participant->read(null, $id);
         }
         $selectOptions = $this->_getSelectOptions();
-        $oldEnrolls = array();
-        $enrolled = $participant['Participant']['enrolled'];
+        $oldEnrolls    = array();
+        $enrolled      = $participant['Participant']['enrolled'];
         foreach ($selectOptions as $key => $option) {
             foreach ($enrolled as $enrolledIn) {
                 if ($key == $enrolledIn['dialogue-id'])
@@ -403,8 +416,7 @@ class ProgramParticipantsController extends AppController
     public function massDelete() {
         
         $programUrl = $this->params['program'];
-        
-        $params = array('fields' => array('phone'));
+        $params     = array('fields' => array('phone'));
         
         $conditions = $this->_getConditions();
         if ($conditions) {
@@ -413,9 +425,9 @@ class ProgramParticipantsController extends AppController
             $conditions = true;
         }
         
-        $count = 0;
+        $count        = 0;
         $participants = $this->Participant->find('all', $params);
-        foreach($participants as $participant) {
+        foreach ($participants as $participant) {
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
@@ -450,8 +462,8 @@ class ProgramParticipantsController extends AppController
     
     public function delete() 
     {
-        $programUrl = $this->params['program'];
-        $id         = $this->params['id'];
+        $programUrl  = $this->params['program'];
+        $id          = $this->params['id'];
         $currentPage = (isset($this->params['url']['current_page'])) ? $this->params['url']['current_page'] : '1';
         
         if (isset($this->params['url']['include'])) {
@@ -522,7 +534,7 @@ class ProgramParticipantsController extends AppController
     public function optin()
     {
         $programUrl = $this->params['program'];
-        $id = $this->params['id'];
+        $id         = $this->params['id'];
         
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
@@ -532,17 +544,17 @@ class ProgramParticipantsController extends AppController
         if ($this->request->is('post')) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             
-            $tags = $participant['Participant']['tags'];
+            $tags    = $participant['Participant']['tags'];
             $profile = $participant['Participant']['profile'];
             
             $this->Participant->reset($participant['Participant']);
             
-            $participant['Participant']['session-id'] = $this->Participant->gen_uuid();
-            $participant['Participant']['last-optin-date'] = $programNow->format("Y-m-d\TH:i:s");
+            $participant['Participant']['session-id']       = $this->Participant->gen_uuid();
+            $participant['Participant']['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
             $participant['Participant']['last-optout-date'] = null;
-            $participant['Participant']['enrolled'] = $this->_getAutoEnrollments($programNow);
-            $participant['Participant']['tags'] = $tags;
-            $participant['Participant']['profile'] = $profile;
+            $participant['Participant']['enrolled']         = $this->_getAutoEnrollments($programNow);
+            $participant['Participant']['tags']             = $tags;
+            $participant['Participant']['profile']          = $profile;
             
             if ($this->Participant->save($participant['Participant'])) {
                 $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
@@ -568,7 +580,7 @@ class ProgramParticipantsController extends AppController
     public function optout()
     {
         $programUrl = $this->params['program'];
-        $id = $this->params['id'];
+        $id         = $this->params['id'];
         
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
@@ -582,7 +594,7 @@ class ProgramParticipantsController extends AppController
             
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             
-            $participant['Participant']['session-id'] = null;
+            $participant['Participant']['session-id']       = null;
             $participant['Participant']['last-optout-date'] = $programNow->format("Y-m-d\TH:i:s");
             if ($this->Participant->save($participant['Participant'])) {
                 $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
@@ -608,7 +620,7 @@ class ProgramParticipantsController extends AppController
     public function reset()
     {
         $programUrl = $this->params['program'];
-        $id = $this->params['id'];
+        $id         = $this->params['id'];
         
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
@@ -621,7 +633,7 @@ class ProgramParticipantsController extends AppController
                 false);
             $programNow = $this->ProgramSetting->getProgramTimeNow();            
             
-            $resetParticipant = $this->Participant->reset($participant['Participant']);            
+            $resetParticipant             = $this->Participant->reset($participant['Participant']);            
             $resetParticipant['enrolled'] = $this->_getAutoEnrollments($programNow);
             if ($this->Participant->save($resetParticipant)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
@@ -652,15 +664,17 @@ class ProgramParticipantsController extends AppController
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
         }
-        $participant = $this->Participant->read(null, $id);
+        $participant                  = $this->Participant->read(null, $id);
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-        $histories   = $this->History->getParticipantHistory(
+        $histories                    = $this->History->getParticipantHistory(
             $participant['Participant']['phone'],
-            $dialoguesInteractionsContent);
+            $dialoguesInteractionsContent
+            );
         
         $schedules = $this->Schedule->getParticipantSchedules(
             $participant['Participant']['phone'],
-            $dialoguesInteractionsContent);
+            $dialoguesInteractionsContent
+            );
         
         $this->set(compact('participant','histories', 'schedules'));
     }
@@ -687,7 +701,8 @@ class ProgramParticipantsController extends AppController
                     $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
                 }
                 $this->Session->setFlash($message, 
-                    'default', array('class' => "message failure"));
+                    'default', array('class' => "message failure")
+                    );
                 return;
             }
             
@@ -714,14 +729,14 @@ class ProgramParticipantsController extends AppController
             * the chmod function should not be called.
             */
             $wasFileAlreadyThere = false;
-            if(file_exists($filePath . DS . $fileName)) {
+            if (file_exists($filePath . DS . $fileName)) {
                 $wasFileAlreadyThere = true;
             }
             
             copy($this->request->data['Import']['file']['tmp_name'],
                 $filePath . DS . $fileName);
             
-            if(!$wasFileAlreadyThere) {
+            if (!$wasFileAlreadyThere) {
                 chmod($filePath . DS . $fileName, 0664);
             }
             
@@ -729,9 +744,10 @@ class ProgramParticipantsController extends AppController
                 $programUrl, 
                 $filePath . DS . $fileName, 
                 $tags,
-                $replaceTagsAndLabels);
+                $replaceTagsAndLabels
+                );
             if ($report) {
-                foreach($report as $participantReport) {
+                foreach ($report as $participantReport) {
                     if ($participantReport['saved']) {
                         $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
                     }    
@@ -739,23 +755,24 @@ class ProgramParticipantsController extends AppController
             } else {
                 $this->Session->setFlash(
                     $this->Participant->importErrors[0], 
-                    'default', array('class' => "message failure"));
+                    'default', array('class' => "message failure")
+                    );
             }
             
-            ##Remove file at the end of the import
+            //Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
         $this->set(compact('report'));
     }
-
-
+    
+    
     public function paginationCount()
     {
         if ($this->params['ext'] !== 'json') {
             return; 
         }
         $defaultConditions = array();
-        $paginationCount = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
+        $paginationCount   = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
     }
     
