@@ -18,7 +18,7 @@
 			    'style'=>'margin-bottom:0px'
 				));
 	    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');
-	    echo $this->Form->checkbox('limited_unmatchableReply_access');
+	    echo $this->Form->checkbox('unmatchable_reply_access');
 	    echo $this->Html->tag('label',__('Access Unmatchable Replies'));
 	?>
 	</fieldset>
