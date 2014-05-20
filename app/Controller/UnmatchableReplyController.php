@@ -43,7 +43,7 @@ class UnmatchableReplyController extends AppController
         }
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
-        $this->User             = new User();
+        $this->User             = ClassRegistry::init('User');
     }
     
     
@@ -125,30 +125,5 @@ class UnmatchableReplyController extends AppController
         $this->set('paginationCount', $paginationCount);
     }
     
-    /*protected function _getUserAccessCondition()
-    {
-        $accessCondition = array();
-        
-        $user = $this->Auth->user();
-        
-        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-            $programs = $this->Program->find('authorized', array(
-                'specific_program_access' => 'true',
-                'user_id' => $user['id']));
-            $index = 0;
-            foreach ($programs as &$program) {
-                $program = $this->ProgramPaginator->getProgramDetails($program);
-                $shortcodes[$index] = $program['program']['Program']['shortcode'];
-                $codes[$index] = substr(strrchr($shortcodes[$index], "-"), 1);
-                $index++;
-            }
-            $accessCondition = array('$or' => array(
-                array('participant-phone' => array('$in' => $shortcodes)),
-                array('to' => array('$in' => $codes)),
-                ));
-        }
-        return $accessCondition;
-        return $this->UserAccess->getUnmatchableConditions();
-    }*/
 
 }

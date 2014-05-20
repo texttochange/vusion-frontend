@@ -108,10 +108,6 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
-                #checkbox is checked => we store it in the ACL
-                if (isset($this->request->data['User']['unmatchable_reply_access'])) {
-                     $this->Acl->allow($this->User, 'controllers/UnmatchableReply');
-                }
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -153,8 +149,10 @@ class UsersController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->save($this->request->data)) {
                 #checkbox is checked => we store it in the ACL
-                if (isset($this->request->data['User']['unmatchable_reply_access'])) {
+                if ($this->request->data['User']['unmatchable_reply_access'] == true) {
                      $this->Acl->allow($this->User, 'controllers/UnmatchableReply');
+                } else {
+                    $this->Acl->deny($this->User, 'controllers/UnmatchableReply');
                 }
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
@@ -178,7 +176,7 @@ class UsersController extends AppController
         } else {
             $this->request->data = $this->User->read(null, $id);
             #As the information is stored in the ACL we need to retrieve it form the ACL component
-            $this->request->data['User']['limited_unmatchableReply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
+            $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
