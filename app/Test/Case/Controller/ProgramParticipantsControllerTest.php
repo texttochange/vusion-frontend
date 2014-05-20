@@ -1035,7 +1035,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=now");
-        $this->assertEquals(3, count($this->vars['participants']));
+        $this->assertEquals(4, count($this->vars['participants']));
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=date-from&filter_param%5B1%5D%5B3%5D=02%2F12%2F2012");
@@ -1047,7 +1047,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optout&filter_param%5B1%5D%5B2%5D=now");
-        $this->assertEquals(1, count($this->vars['participants']));
+        $this->assertEquals(4, count($this->vars['participants']));
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=enrolled&filter_param%5B1%5D%5B2%5D=in&filter_param%5B1%5D%5B3%5D=1");
@@ -1210,50 +1210,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEqual(0,count($participantFromDb['Participant']['enrolled']));
         $this->assertEquals(0, $this->Schedule->find('count'));
         $this->assertNotEqual($participantFromDb['Participant']['last-optin-date'], '2012-12-02T18:30:10');
-    }
-    
-    
-    public function testReset_with_auto_enrollment()
-    {
-        $participants = $this->mockProgramAccess();
-        $participants
-        ->expects($this->once())
-        ->method('_notifyUpdateBackendWorker')
-        ->with('testurl', '+7')
-        ->will($this->returnValue(true));
-        
-        $dialogue = $this->Maker->getOneDialogue();
-        $dialogue['Dialogue']['auto-enrollment'] = 'all';
-        
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-        
-        $participant = array(
-            'phone' => ' 07 ',
-            );
-        $this->Participant->create();
-        $savedParticipant = $this->Participant->save($participant);
-        
-        $this->assertEqual(
-            $savedParticipant['Participant']['enrolled'][0]['dialogue-id'],
-            $savedDialogue['Dialogue']['dialogue-id']
-            );
-        
-        $firstEnrollTime = $savedParticipant['Participant']['enrolled'][0]['date-time'];
-        sleep(2);
-        
-        $this->testAction(
-            "/testurl/programParticipants/reset/".$savedParticipant['Participant']['_id']
-            );
-        
-        $participantFromDb = $this->Participant->find();
-        $this->assertEqual(
-            $participantFromDb['Participant']['enrolled'][0]['dialogue-id'],
-            $savedDialogue['Dialogue']['dialogue-id']
-            );
-        
-        $this->assertNotEqual($participantFromDb['Participant']['enrolled'][0]['date-time'], $firstEnrollTime);
-        $this->assertEquals(1, count($participantFromDb['Participant']['enrolled']));
     }
     
     
