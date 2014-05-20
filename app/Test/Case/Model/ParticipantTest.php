@@ -1129,7 +1129,7 @@ class ParticipantTestCase extends CakeTestCase
             );
         $this->assertEqual(
             $this->Participant->fromFilterToQueryConditions($filter),
-            array()
+            array('session-id' => null)
             );
         
         $filter = array(
