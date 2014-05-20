@@ -116,25 +116,30 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                 }
 
                 foreach ($countriesCredits as $countryCredits) {
-                    echo '<li>'. 
+                    echo '<li data-jstree=\'{"icon":"../img/country-icon-20.png"}\'>'. 
                     __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $countryCredits['country'], $countryCredits['incoming'], $countryCredits['outgoing']);
                     echo '<ul>';
                     foreach ($countryCredits['codes'] as $code) {
-                        echo '<li>'. 
+                        echo '<li data-jstree=\'{"icon":"../img/code-icon-20.png"}\'>'. 
                             __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $code['code'], $code['incoming'], $code['outgoing']);
                         echo '<ul>';
                         foreach ($code['programs'] as $programCreditLog) {
-                            echo '<li>'. 
+                            if ($programCreditLog['object-type'] == 'deleted-program-credit-log') {
+                                $programIcon = "deleted-program-icon";
+                            } else {
+                                $programIcon = "program-icon";
+                            }
+                            echo '<li data-jstree=\'{"icon":"../img/'.$programIcon.'-20.png"}\'>'. 
                                 __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $programCreditLog['program-name'], $programCreditLog['incoming'], $programCreditLog['outgoing']);
                             echo '<ul>';
-                            echo getTreeElt(__("incoming"), $programCreditLog['incoming']);
-                            echo getTreeElt(__("outgoing"), $programCreditLog['outgoing'], false);
+                            echo getTreeElt(__("incoming"), $programCreditLog['incoming'], true, false, "../img/incoming-icon-20.png");
+                            echo getTreeElt(__("outgoing"), $programCreditLog['outgoing'], false, false, "../img/outgoing-icon-20.png");
                             echo '<ul>';
-                            echo getTreeElt(__("pending"), $programCreditLog['outgoing-pending'], "false", true, "tree-class");
-                            echo getTreeElt(__("acked"), $programCreditLog['outgoing-ack']);
-                            echo getTreeElt(__("nacked"), $programCreditLog['outgoing-nack']);
-                            echo getTreeElt(__("delivered"), $programCreditLog['outgoing-delivered']);
-                            echo getTreeElt(__("failed"), $programCreditLog['outgoing-failed']);
+                            echo getTreeElt(__("pending"), $programCreditLog['outgoing-pending'], true, false, "../img/status-pending-icon-20.png");
+                            echo getTreeElt(__("acked"), $programCreditLog['outgoing-ack'], true, false, "../img/status-acked-icon-20.png");
+                            echo getTreeElt(__("nacked"), $programCreditLog['outgoing-nack'], true, false, "../img/status-nacked-icon-20.png");
+                            echo getTreeElt(__("delivered"), $programCreditLog['outgoing-delivered'], true, false, "../img/status-delivered-icon-20.png");
+                            echo getTreeElt(__("failed"), $programCreditLog['outgoing-failed'], true, false, "../img/status-failed-icon-20.png");
                             echo '</ul>';
                             echo '</li>';                            
                             echo '</ul></li>';
@@ -143,8 +148,8 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                             echo '<li data-jstree=\'{"icon":"../img/garbage-icon-20.png"}\'>'. 
                             __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", __('Unmatchable Replies'), $code['garbage']['incoming'], $code['garbage']['outgoing']);
                             echo '<ul>';
-                            echo getTreeElt(__("incoming"), $code['garbage']['incoming']);
-                            echo getTreeElt(__("outgoing"), $code['garbage']['outgoing']);
+                            echo getTreeElt(__("incoming"), $code['garbage']['incoming'], true, false, "../img/incoming-icon-20.png");
+                            echo getTreeElt(__("outgoing"), $code['garbage']['outgoing'], true, false, "../img/outgoing-icon-20.png");
                             echo '</ul></li>';
                             echo '</ul>';
                             echo '</li>';
@@ -155,9 +160,8 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                 }
                 $this->Js->get('document')->event('ready', '
                     $("#countries-credits-tree").jstree({
-                        "core":{
-                            "themes":{
-                                "icons": false}}});');
+                  //      "core":{"themes":{"icons": false}}
+                                });');
                 ?>
                 </ul>
              </div>
