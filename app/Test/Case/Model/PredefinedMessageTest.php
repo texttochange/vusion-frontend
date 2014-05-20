@@ -106,7 +106,7 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->PredefinedMessage->create();
         $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
        $this->assertEquals(
-            "To be used as customized content, 'shoe' can only be either: participant, contentVariable, time.",
+            "To be used as customized content, 'shoe' can only be either: participant, contentVariable or time.",
             $this->PredefinedMessage->validationErrors['content'][0]);
         
         $predefinedMessage['content'] = "Hello [participant.gender.name]";

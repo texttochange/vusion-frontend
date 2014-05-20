@@ -33,9 +33,10 @@ class VusionValidation extends Validation {
                 }
                 $allowedDomainsRegex = '/^('.$allowedDomains.')$/';
                 if (!preg_match($allowedDomainsRegex, $match['domain'])) {
-                    return __("To be used as customized content, '%s' can only be either: %s.", 
+                    return __("To be used as customized content, '%s' can only be either: %s or %s.", 
                             $match['domain'],
-                            implode(', ', explode('|', $allowedDomains)));
+                            implode(', ', array_slice(explode('|', $allowedDomains), 0, -1)),
+                            end(explode('|', $allowedDomains)));
                 }
                 if ($match['domain'] == 'participant') {
                     if (isset($match['key2'])) {

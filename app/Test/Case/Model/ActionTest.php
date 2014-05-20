@@ -64,7 +64,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as customized content, 'shoe' can only be either: participant, contentVariable, time, context.",
+            "To be used as customized content, 'shoe' can only be either: participant, contentVariable, time or context.",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 
@@ -358,7 +358,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as customized content, 'times' can only be either: participant, contentVariable, time, context.",
+            "To be used as customized content, 'times' can only be either: participant, contentVariable, time or context.",
             $this->Action->validationErrors['forward-content'][0]);
         $this->assertEqual(
             1, 
