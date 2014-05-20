@@ -22,10 +22,14 @@ $this->Html->script("jstree.min.js", array("inline" => false));
     echo '<div id="timeframe-caption" class="caption">';
     if ($timeframeParams['predefined-timeframe'] != '') {
         $caption = __("Showing credits of %s", $predefinedTimeframes[$timeframeParams['predefined-timeframe']]);
-    } else if ($timeframeParams['date-from'] == '' && $timeframeParams['date-from'] == '') {
+    } else if ($timeframeParams['date-from'] == '' && $timeframeParams['date-to'] == '') {
         $caption = __("Showing all credits");
+    } else if ($timeframeParams['date-from'] != '' && $timeframeParams['date-to'] == '') {
+        $caption = __("Showing credits from %s to now", $timeframeParams['date-from']);
+    } else if ($timeframeParams['date-from'] == '' && $timeframeParams['date-to'] != '') {
+        $caption = __("Showing credits from the begining of times to %s", $timeframeParams['date-to']);
     } else {
-        $caption = __("Showing credits from %s to %s", $timeframeParams['date-from'], $timeframeParams['date-from']);
+        $caption = __("Showing credits from %s to %s", $timeframeParams['date-from'], $timeframeParams['date-to']);
     }
     echo $this->Html->tag('span', $caption);
     echo $this->Html->tag('span', __('Change'), array('class' => 'ttc-button', 'id' => 'change-timeframe'));
