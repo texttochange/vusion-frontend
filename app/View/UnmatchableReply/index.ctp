@@ -52,7 +52,7 @@
 			     echo '<td class="direction"">'.$to.'&nbsp;</td>';
 			     ?>
 			     <td class="message-unmatchable"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
-			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
+			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?> (UTC)</td>
 			 </tr>
 			 <?php endforeach; ?>
 	    </tbody>

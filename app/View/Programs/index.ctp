@@ -86,8 +86,11 @@
 	<ul class="ttc-issues-list">
 	<?php foreach ($unmatchableReplies as $unmatchableReply): ?>
 	<li>
-	<?php	    
-	    echo $this->Html->tag('div', $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']), array('class' => 'ttc-issue-time'));
+	<?php
+	    echo "<div class='ttc-issue-time' >";
+	    echo $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']);
+	    echo ' (UTC)';
+	    echo "</div>";
 	    echo "<div class='ttc-issue-content'>";
 	    echo $this->Html->tag('h3', $this->Html->link(__('unmatchable reply'),array('controller'=>'unmatchableReply','action' => 'index')));
 	    echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
