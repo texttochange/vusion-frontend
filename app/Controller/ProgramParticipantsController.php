@@ -303,8 +303,6 @@ class ProgramParticipantsController extends AppController
                         array('class' => "message failure")
                         );
                 }
-            } else {
-                return null;
             }
         }
         

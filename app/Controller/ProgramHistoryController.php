@@ -203,7 +203,7 @@ class ProgramHistoryController extends AppController
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->History->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }
-         
+        
         foreach ($filter['filter_param'] as $key => $filterParam) {
             if (isset($filterParam[3])) {
                 if (!$filterParam[3]) {
@@ -212,8 +212,6 @@ class ProgramHistoryController extends AppController
                         array('class' => "message failure")
                         );
                 }
-            } else {
-                return null;
             }
         }
         
