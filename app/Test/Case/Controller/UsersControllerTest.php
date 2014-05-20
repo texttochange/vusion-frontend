@@ -91,7 +91,7 @@ class UsersControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testEdit() 
+    public function testEdit_grant_unmatchable_reply_access() 
     {
         $users = $this->generate('Users', array(
             'components' => array(
@@ -103,21 +103,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
         
-        $users->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-        
-        $users->Acl
-        ->expects($this->any())
-        ->method('allow')
-        ->will($this->returnValue('true'));
-        
-        $users->Acl
-        ->expects($this->any())
-        ->method('deny')
-        ->will($this->returnValue('true'));
-        
         $users->Session
         ->expects($this->any())
         ->method('read')
@@ -127,13 +112,6 @@ class UsersControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('exists')
         ->will($this->returnValue('true'));
-        
-        $user = array(
-            'User'=> array(
-                'id' => 1,
-                'username' => 'gerald'
-                )
-            );
         
         $users->User
         ->expects($this->once())
@@ -147,50 +125,14 @@ class UsersControllerTestCase extends ControllerTestCase
             ))
         ->will($this->returnValue('true'));
         
-        $this->testAction("/users/edit/".$user['User']['id'],array(
-            'method' => 'post',
-            'data' => array(
-                'User' => array (
-                    'id' => $user['User']['id'],
-                    'username' => 'jared',
-                    'unmatchable_reply_access' => 1
-                    )
-                )
-            ));
-
-        $this->assertContains('/users/index', $this->headers['Location']);
-    }
-    
-    public function testEdit_grant_unmatchable_reply_access() 
-    {
-        $users = $this->generate('Users', array(
-            'components' => array(
-                'Acl' => array('check', 'allow'),
-                'Session' => array('read')
-                ),
-            'models' => array(
-                'User' => array('exists', 'save'),
-                )
-            ));
-        
-        $users->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-        
         $users->Acl
         ->expects($this->any())
         ->method('allow')
         ->will($this->returnValue('true'));
         
-        $users->Session
+        $users->Acl
         ->expects($this->any())
-        ->method('read')
-        ->will($this->returnValue('User'));
-        
-        $users->User
-        ->expects($this->once())
-        ->method('exists')
+        ->method('check')
         ->will($this->returnValue('true'));
         
         $user = array(
@@ -199,18 +141,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 'username' => 'gerald'
                 )
             );
-        
-        $users->User
-        ->expects($this->once())
-        ->method('save')
-        ->with(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1
-                )
-            ))
-        ->will($this->returnValue('true'));
         
         $this->testAction("/users/edit/".$user['User']['id'],array(
             'method' => 'post',
@@ -239,16 +169,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
         
-        $users->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-        
-        $users->Acl
-        ->expects($this->any())
-        ->method('deny')
-        ->will($this->returnValue('true'));
-        
         $users->Session
         ->expects($this->any())
         ->method('read')
@@ -258,14 +178,6 @@ class UsersControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('exists')
         ->will($this->returnValue('true'));
-        
-        $user = array(
-            'User'=> array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1
-                )
-            );
         
         $users->User
         ->expects($this->once())
@@ -278,6 +190,24 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ))
         ->will($this->returnValue('true'));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('allow')
+        ->will($this->returnValue('true'));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $user = array(
+            'User'=> array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 1
+                )
+            );
         
         $this->testAction("/users/edit/".$user['User']['id'],array(
             'method' => 'post',

@@ -52,23 +52,6 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-    /*
-    public function mockProgramAccess()
-    {
-        $unmatchableReplies = $this->generate('UnmatchableReplies', array(
-            'components' => array(
-                'Acl' => array('check'),
-                ),
-            ));
-        
-        $unmatchableReplies->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-        
-        return $unmatchableReplies;
-    }
-    */
     
     public function testFilter()
     {        

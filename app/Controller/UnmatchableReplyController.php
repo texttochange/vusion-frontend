@@ -19,12 +19,6 @@ class UnmatchableReplyController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        
-        //No need anymore done by the ACL at filter stage
-        /*$user = $this->Auth->user();
-        if (!$this->User->hasUnmatchableReplyAccess($user['id'])) {
-            $this->redirect(array('controller'=>'programs', 'action' => 'index'));
-        }*/
     }
     
     
