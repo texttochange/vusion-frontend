@@ -502,36 +502,38 @@ function generateFieldSummary(elt, parentName, field)
 
 //TODO need to generate a interaction id there.
 function updateOffsetConditions(elt){
-    var bucket = [];
-    var currentInteractionId = $(elt).parent().parent().parent().children('[name$="interaction-id"]').val();
-    var i =0;
-    $(elt).children().each(function(){bucket[i]=$(this).val(); i++;});
-    if (!(bucket instanceof Array)) {
-        bucket = [bucket];
+    //Get current interaction ID
+    var eltId = $(elt).parent().parent().parent().children('[name$="interaction-id"]').val();
+    //We obviously need to remove it from the options
+    var optionsToBeRemoved = [eltId];
+    var optionsBefore = [];
+    $(elt).children().each(function(){
+            optionsBefore.push($(this).val());
+        });
+    //Adding new interaction that are not yet save on the server
+    localQuestions = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').parent().parent();
+    for (var i = 0; i < localQuestions.length; i++) {
+        var localQuestionId = $(localQuestions[i]).children('[name$="interaction-id"]').val();
+        if (localQuestionId == "" || eltId == localQuestionId) {
+            continue;
+        }
+        optionsBefore.splice(optionsBefore.indexOf(localQuestionId), 1);
+        var option = $(elt).children("[value='" + localQuestionId + "']");
+        if (option.length == 0) {
+            $(elt).append(
+                    "<option class='ui-dform-option' value='" +
+                    localQuestionId + "'>" +
+                    $(localQuestions[i]).find('[name$="content"]').val() + "</option>")
+        }
     }
-    currentQA = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').parent().parent();
-    //Adding present interaction if not already there
-    for (var i=0; i<currentQA.length; i++) {
-        var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
-        var elementInteractionId = $(elt).children("[value='"+interactionId+"']");
-        bucket.splice(bucket.indexOf(interactionId), 1);
-        if (elementInteractionId.length==0)
-            $(elt).append("<option class='ui-dform-option' value='"+
-                    interactionId+"'>"+
-                    $(currentQA[i]).find('[name$="content"]').val()+"</option>")
-            else if (elementInteractionId.val() == currentInteractionId){ //To hide current interaction question
-                    elementInteractionId.hide();   
-        } 
-    }
-    //Removing deleted interactions
-    for (var i=0; i<bucket.length; i++) {
+    //Removing deleted interaction that have not yet been deleted on the server
+    optionsToBeRemoved = optionsToBeRemoved.concat(optionsBefore);
+    for (var i = 0; i < optionsToBeRemoved.length; i++) {
         //Do not delete the default choice
-        if (bucket[i]==0) {
+        if (optionsToBeRemoved[i] == 0) {
             continue
         }
-        $(elt).children("[value='"+bucket[i]+"']").remove();
-        defaultOptions = window.app['offset-condition-interaction-idOptions']
-        defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
+        $(elt).children("[value='" + optionsToBeRemoved[i] + "']").remove();
     }
 }
 
