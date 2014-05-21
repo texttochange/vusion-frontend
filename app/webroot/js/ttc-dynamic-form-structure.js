@@ -38,7 +38,7 @@ var dialogue = {
     },
     "interaction-id":{
         'type': "hidden",
-        'default-value': (function() {return 'local:' + Math.floor((Math.random() * 100) + 1)})
+        'default-value': (function() {return 'local:' + ($("[name*='.interaction-id']").length + 1)})
     },
     "activated": {
         'type': "hidden",
