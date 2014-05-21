@@ -116,22 +116,26 @@ class ProgramSetting extends MongoModel
         'double-matching-answer-feedback' => array(
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
-                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE,
+                'required' => false
                 ),
             'validContentVariable' => array(
                 'rule' => 'validContentVariable',
-                'message' => 'noMessage'
+                'message' => 'noMessage',
+                'required' => false
                 ),
             
             ),
         'double-optin-error-feedback' => array(
             'validApostrophe' => array(
                 'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
-                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE,
+                'required' => false,
                 ),
             'validContentVariable' => array(
                 'rule' => 'validContentVariable',
-                'message' => 'noMessage'
+                'message' => 'noMessage',
+                'required' => false
                 )
             
             )
@@ -154,13 +158,16 @@ class ProgramSetting extends MongoModel
     }
     
     
-    public function notRegex($check, $regex=null) 
+    public function notRegex($check, $regex) 
     {
         if (!is_array($check)) {
-            return VusionValidation::customNot($check, $regex[0]);
+            return true; 
         }
-        $keys = array_keys($check);
-        $key = $keys[0];
+        reset($check);
+        $key = key($check);
+        if ($check[$key]==null) {
+            return true;
+        }
         return VusionValidation::customNot($check[$key], $regex[0]);
     }
     
@@ -168,10 +175,13 @@ class ProgramSetting extends MongoModel
     public function validContentVariable($check)
     {
         if (!is_array($check)) {
-            return VusionValidation::validContentVariable($check);
+            return true; 
         }
-        $keys = array_keys($check);
-        $key = $keys[0];
+        reset($check);
+        $key = key($check);
+        if ($check[$key]==null) {
+            return true;
+        }
         return VusionValidation::validContentVariable($check[$key]);
         
     }

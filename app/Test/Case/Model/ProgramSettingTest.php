@@ -58,7 +58,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->deleteAll(true,false);
     }
     
-    
+
     public function testGetProgramSetting_notInDatabase()
     {         
         $result = $this->ProgramSetting->find(
@@ -183,8 +183,8 @@ class ProgramSettingTestCase extends CakeTestCase
             "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
             $this->ProgramSetting->validationErrors['double-optin-error-feedback'][0]);
     }
-    
-    
+
+
     public function testBeforeValidate_requestAndFeedbackPrioritized()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
@@ -196,7 +196,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual('request-and-feedback-prioritized', $settings[2]['ProgramSetting']['key']);
         $this->assertEqual('prioritized', $settings[2]['ProgramSetting']['value']);
     }
-    
+  
     
     public function testSaveSettings_ok()
     {
@@ -207,8 +207,7 @@ class ProgramSettingTestCase extends CakeTestCase
             'credit-from-date' => '02/12/2013',
             'credit-to-date' => '03/12/2013',
             'double-optin-error-feedback' => null,
-            'double-matching-answer-feedback' => null,
-            
+            'double-matching-answer-feedback' => '',
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -216,6 +215,18 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual(2000, $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-number')));
         $this->assertEqual('2013-12-02T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-from-date')));
         $this->assertEqual('2013-12-03T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-to-date')));
+        $this->assertEqual(null, $this->ProgramSetting->find('getProgramSetting', array('key' => 'double-optin-error-feedback')));
+        $this->assertEqual(null, $this->ProgramSetting->find('getProgramSetting', array('key' => 'double-matching-answer-feedback')));
+
+        //Some keys are missing
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            'credit-to-date' => '03/12/2013');
+        
+        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
     }
     
     
