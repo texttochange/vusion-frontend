@@ -1121,6 +1121,11 @@ function configToForm(item, elt, id_prefix, configTree){
             eltValue = configTree[item];
             if (item == 'date-time')
                 eltValue = fromIsoDateToFormDate(eltValue);
+        } else {
+            if ('default-value' in dynamicForm[item]) {
+                eltValue = dynamicForm[item]['default-value']();
+            }
+
         }
         var label = null;
         if (dynamicForm[item]['type'] != "hidden"){
