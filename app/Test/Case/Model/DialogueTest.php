@@ -21,17 +21,25 @@ class DialogueTestCase extends CakeTestCase
         $this->ProgramSetting = new ProgramSetting($option);
         
         $this->Maker = new ScriptMaker();
+        $this->dropData();
     }
-    
-    
-    public function tearDown()
+
+    public function dropData()
     {
         $this->Dialogue->deleteAll(true, false);
         $this->Schedule->deleteAll(true, false);
         $this->Participant->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
+    }
+
+
+    public function tearDown()
+    {
+        $this->dropData();
         unset($this->Dialogue);
         unset($this->Schedule);
+        unset($this->Participant);
+        unset($this->ProgramSetting);
         parent::tearDown();
     }
     
