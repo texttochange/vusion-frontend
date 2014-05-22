@@ -58,7 +58,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->ProgramSetting->deleteAll(true,false);
     }
     
-    
+
     public function testGetProgramSetting_notInDatabase()
     {         
         $result = $this->ProgramSetting->find(
@@ -150,9 +150,41 @@ class ProgramSettingTestCase extends CakeTestCase
         $settings = $this->ProgramSetting->find('all');
         
         $this->assertEqual($this->ProgramSetting->getModelVersion(), $settings[0]['ProgramSetting']['model-version']);
+    } 
+    
+    public function testApostrophe_fail()
+    {
+        $settings = array(
+            'double-matching-answer-feedback' => "’`‘",
+            'double-optin-error-feedback' => "’`‘"
+            );
+        $this->ProgramSetting->create();
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        
+        $this->assertEquals('The apostrophe used is not allowed.',
+            $this->ProgramSetting->validationErrors['double-matching-answer-feedback'][0]);
+        $this->assertEquals('The apostrophe used is not allowed.',
+            $this->ProgramSetting->validationErrors['double-optin-error-feedback'][0]);
     }
     
-    
+    public function testValidContentVariable_fail()
+    {
+        $settings = array(
+            'double-matching-answer-feedback' => 'There is a an [shoe.box] here.',
+            'double-optin-error-feedback' => 'There is a [shoe.box] here.'
+            );
+        $this->ProgramSetting->create();
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings));
+        
+        $this->assertEquals(
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->ProgramSetting->validationErrors['double-matching-answer-feedback'][0]);
+        $this->assertEquals(
+            "To be used as customized content, 'shoe' can only be either 'participant' or 'contentVariable'.",
+            $this->ProgramSetting->validationErrors['double-optin-error-feedback'][0]);
+    }
+
+
     public function testBeforeValidate_requestAndFeedbackPrioritized()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', 'value1');
@@ -164,7 +196,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual('request-and-feedback-prioritized', $settings[2]['ProgramSetting']['key']);
         $this->assertEqual('prioritized', $settings[2]['ProgramSetting']['value']);
     }
-    
+  
     
     public function testSaveSettings_ok()
     {
@@ -174,6 +206,8 @@ class ProgramSettingTestCase extends CakeTestCase
             'credit-number' => '2000',
             'credit-from-date' => '02/12/2013',
             'credit-to-date' => '03/12/2013',
+            'double-optin-error-feedback' => null,
+            'double-matching-answer-feedback' => '',
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -181,31 +215,45 @@ class ProgramSettingTestCase extends CakeTestCase
         $this->assertEqual(2000, $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-number')));
         $this->assertEqual('2013-12-02T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-from-date')));
         $this->assertEqual('2013-12-03T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-to-date')));
+        $this->assertEqual(null, $this->ProgramSetting->find('getProgramSetting', array('key' => 'double-optin-error-feedback')));
+        $this->assertEqual(null, $this->ProgramSetting->find('getProgramSetting', array('key' => 'double-matching-answer-feedback')));
+
+        //Some keys are missing
+        $settings = array(
+            'shortcode' => '256-8181',
+            'credit-type' => 'outgoing-only',
+            'credit-number' => '2000',
+            'credit-from-date' => '02/12/2013',
+            'credit-to-date' => '03/12/2013');
+        
+        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
     }
     
-
+    
     public function testSaveSettings_fail_keywordAlreadyUsed() 
     {
         $settings = array(
             'shortcode' => '256-8181',
             );
-         $usedKeywords = array(
+        $usedKeywords = array(
             'eotherkeyword' => array(
                 'program-db' => 'otherprogram', 
                 'program-name' => 'Other Program', 
                 'by-type' => 'Dialogue'));
-         $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings, $usedKeywords));
-         $this->assertEqual(
-             "'eotherkeyword' already used by a Dialogue of program 'Other Program'.",
-             $this->ProgramSetting->validationErrors['shortcode'][0]);
+        $this->assertFalse($this->ProgramSetting->saveProgramSettings($settings, $usedKeywords));
+        $this->assertEqual(
+            "'eotherkeyword' already used by a Dialogue of program 'Other Program'.",
+            $this->ProgramSetting->validationErrors['shortcode'][0]);
     }
-
+    
     
     public function testSaveSettings_ok_nolimit()
     {
         $settings = array(
             'shortcode' => '256-8181',
             'credit-type' => 'none',
+            'double-matching-answer-feedback' => null,
+            'double-optin-error-feedback' => null,
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -271,7 +319,9 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-forwarding-allowed' => 'none'
+            'sms-forwarding-allowed' => 'none',
+            'double-optin-error-feedback' => null,
+            'double-matching-answer-feedback' => null,
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -290,6 +340,6 @@ class ProgramSettingTestCase extends CakeTestCase
             'The sms forwarding value is not valid.',
             $this->ProgramSetting->validationErrors['sms-forwarding-allowed'][0]);
     }
-
+    
 }
 
