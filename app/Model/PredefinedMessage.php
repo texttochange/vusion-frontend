@@ -1,6 +1,8 @@
 <?php
 
 App::uses('MongoModel', 'Model');
+App::uses('VusionValidation', 'Lib');
+App::uses('VusionConst', 'Lib');
 
 class PredefinedMessage extends MongoModel
 {
@@ -39,6 +41,14 @@ class PredefinedMessage extends MongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please enter some content for this message.'
                 ),
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage'
+                ),
             ),
         );
     
@@ -54,6 +64,18 @@ class PredefinedMessage extends MongoModel
             'conditions' => $conditions
             ));
         return $result < 1;
+    }
+    
+    
+    public function notRegex($check, $regex=null) 
+    {
+        return VusionValidation::customNot($check['content'], $regex);
+    }
+    
+    
+    public function validContentVariable($check)
+    {
+        return VusionValidation::validContentVariable($check);
     }
     
 }
