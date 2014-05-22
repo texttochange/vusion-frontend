@@ -58,8 +58,8 @@ class StatsComponent extends Component
             'object-type' => 'program-stats',
             'model-version'=> '1');
         
-        $this->ProgramSetting = new ProgramSetting(array('database' => $database));
-        $programTimeNow = $this->ProgramSetting->getProgramTimeNow();            
+        $tempProgramSetting = new ProgramSetting(array('database' => $database));
+        $programTimeNow = $tempProgramSetting->getProgramTimeNow();            
         if(empty($programTimeNow)){
             return $programStats;
         }
@@ -122,6 +122,10 @@ class StatsComponent extends Component
                     array('object-type' => array('$exists' => false ))
                     )));  
         
+        unset($tempProgramSetting);
+        unset($tempParticipant);
+        unset($tempHistory);
+        unset($tempSchedule);
         return $programStats;        
     }
     

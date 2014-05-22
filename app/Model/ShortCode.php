@@ -79,6 +79,11 @@ class ShortCode extends MongoModel
                 'rule' => 'notAllowSameNationalShortCodeInCountriesWithMatchingInternationalPrefix',
                 'message' => 'Same national shortcode number is used in a country with matching international prefix, the system cannot handle this.',
                 'required' => true
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             ),
         'country' => array(
@@ -90,6 +95,11 @@ class ShortCode extends MongoModel
                 'rule' => 'isShortCodeCountryUnique',
                 'message' => 'There is already the same shortcode for this country.',
                 'required' => true
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             ),
         'max-character-per-sms' => array(
@@ -101,6 +111,13 @@ class ShortCode extends MongoModel
                 'rule' => array('inlist', array(70, 140, 160)),
                 'message' => 'The valid value are only 70, 140 and 160.'
                 ),
+            ),
+        'international-prefix' => array(
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
+                )
             )
         );
     
@@ -152,6 +169,26 @@ class ShortCode extends MongoModel
             return preg_match($pattern, $this->data['ShortCode']['shortcode']);
         } 
         return true;
+    }
+    
+    
+    public function isNotEditable($check) 
+    {
+        if ($this->id) {
+            $existingShortcode = $this->find(
+                'first', 
+                array('conditions'=> array('_id' => $this->id))
+                );
+        }
+        
+         reset($check);
+         $field = key($check);
+         
+         if ($existingShortcode['ShortCode'][$field] != $check[$field]) {
+             return false;         
+         }
+        
+         return true;
     }
     
     

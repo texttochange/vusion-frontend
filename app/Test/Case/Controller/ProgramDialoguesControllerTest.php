@@ -354,12 +354,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $savedParticipant = $this->Participant->save($participant);
         
         $this->testAction('/testurl/programDialogues/activate/'.$savedDialogue['Dialogue']['_id']);
-        
-        $enrolledParticipant = $this->Participant->find('first');
-        $this->assertEqual(
-            $enrolledParticipant['Participant']['enrolled'][0]['dialogue-id'],
-            $savedDialogue['Dialogue']['dialogue-id']
-            );
+   
     }
     
     
