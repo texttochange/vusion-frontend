@@ -19,6 +19,7 @@ class VusionValidation extends Validation {
         return VusionValidation::validCustomizeContent($field, $check, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_DEFAULT);
     }
 
+
     public function validCustomizeContent($field, $data, $allowedDomains)
     {
         if (isset($data[$field])) {
