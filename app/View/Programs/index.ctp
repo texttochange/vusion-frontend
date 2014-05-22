@@ -88,7 +88,7 @@
 	<li>
 	<?php
 	    echo "<div class='ttc-issue-time' >";
-	    echo $this->Time->format('d/m/Y H:i:s', $unmatchableReply['UnmatchableReply']['timestamp']);
+	    echo $this->Time->format('d/m/y H:i', $unmatchableReply['UnmatchableReply']['timestamp']);
 	    echo ' (UTC)';
 	    echo "</div>";
 	    echo "<div class='ttc-issue-content'>";
