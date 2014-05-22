@@ -621,7 +621,27 @@ class Interaction extends VirtualModel
         return $usedKeywords;
     }
 
-    
+    static public function replaceLocalIds(&$interactions)
+    {
+        $localIds = array();
+        foreach ($interactions as &$interaction) {
+            if (isset($interaction['interaction-id']) && preg_match('/^local:/', $interaction['interaction-id'])) {
+                $newId = uniqid();
+                $localIds[$interaction['interaction-id']] = $newId;
+                $interaction['interaction-id'] = $newId;
+            }
+        }
+
+        foreach ($interactions as &$interaction) {
+            if (isset($interaction['offset-condition-interaction-id'])) {
+                if (array_key_exists($interaction['offset-condition-interaction-id'], $localIds)) {
+                    $interaction['offset-condition-interaction-id'] = $localIds[$interaction['offset-condition-interaction-id']];
+                }
+            }
+        }
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();
