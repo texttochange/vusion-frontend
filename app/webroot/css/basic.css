@@ -520,7 +520,7 @@ display: inline;
         float: right;
         text-align: right;
         /*margin-top: 17px;*/
-        width: 54%;
+        width: 170px;
 }
 
 .ttc-issue-content h3 {
@@ -830,6 +830,10 @@ display: inline;
 
 .message-unmatchable {
         width: 593px;
+}
+
+.message-unmatchable-date-time {
+        width: 170px;
 }
 
 #log-css {
