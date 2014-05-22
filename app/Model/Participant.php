@@ -885,7 +885,7 @@ class Participant extends MongoModel
     }
     
     
-    public function validateFilter($filterParam)
+    /*public function validateFilter($filterParam)
     {
         if (!isset($filterParam[1])) {
             throw new FilterException("Field is missing.");
@@ -910,7 +910,7 @@ class Participant extends MongoModel
         if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
             throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
         }
-    }
+    }*/
     
     
     public function fromFilterToQueryConditions($filter) {
@@ -919,9 +919,9 @@ class Participant extends MongoModel
         
         foreach ($filter['filter_param'] as $filterParam) {
             
-            $condition = null;
+            $condition = array();
             
-            $this->validateFilter($filterParam);
+            //$this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'enrolled') {
                 if ($filterParam[2] == 'in') {
