@@ -55,7 +55,9 @@ var dialogue = {
                 "days",
                 "at-time"]},
             {'value': "offset-condition",
-            'subfields': ["offset-condition-interaction-id"]}]},
+            'subfields': [
+                "offset-condition-interaction-id",
+                "offset-condition-delay"]}]},
     "type-interaction": {
         "type": "radiobuttons",
         "options": [
@@ -182,6 +184,9 @@ var dialogue = {
         'data': 'server-dynamic',
         'fieldset': true,
         'onmouseover': 'updateOffsetConditions(this)',
+    },
+    "offset-condition-delay": {
+        "type": 'text',
     },
     "keyword": {"type": "text"},
 };

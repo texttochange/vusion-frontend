@@ -11,7 +11,7 @@ App::uses('VusionValidation', 'Lib');
 class Interaction extends VirtualModel
 {
     var $name       = 'interaction';
-    var $version    = '4'; 
+    var $version    = '5'; 
     var $databaName = null;    
 
     var $payload = array();
@@ -66,7 +66,9 @@ class Interaction extends VirtualModel
                         'fixed-time' => array('date-time'),
                         'offset-days' => array('days', 'at-time'),
                         'offset-time' => array('minutes'),
-                        'offset-condition' => array('offset-condition-interaction-id'))),
+                        'offset-condition' => array(
+                            'offset-condition-interaction-id',
+                            'offset-condition-delay'))),
                 'message' => 'Type schedule required field are not present.'
                 )
             ),
@@ -107,6 +109,16 @@ class Interaction extends VirtualModel
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-schedule', 'offset-condition'),
                 'message' => 'Schedule Condition required a offset-condition-interaction-id.',
+                )
+            ),
+        'offset-condition-delay' => array(
+            'isInt' => array(
+                'rule' => array('regex', '/^[0-9]*$/'),
+                'message' => 'The delay only accept full minutes.',
+                ),
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-schedule', 'offset-condition'),
+                'message' => 'Schedule Condition required a offset-condition-delay.',
                 )
             ),
         // Type Interaction
@@ -629,6 +641,9 @@ class Interaction extends VirtualModel
         
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
+        if ($this->data['type-schedule'] == 'offset-condition') {
+            $this->_setDefault('offset-condition-delay', '0');
+        }
         
         if (isset($this->data['date-time'])) {
             $this->data['date-time'] = DialogueHelper::convertDateFormat($this->data['date-time']);
