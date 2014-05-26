@@ -27,7 +27,7 @@
 			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('From'));?></th>
 			    <th class="direction"><?php echo $this->Paginator->sort('to', __('To'));?></th>
 			    <th class="message-unmatchable"><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
-			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
+			    <th class="message-unmatchable-date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
 			 </tr>
 		</thead>
 		<tbody>
