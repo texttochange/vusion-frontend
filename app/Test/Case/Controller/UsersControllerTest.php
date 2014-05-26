@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-    /*
+   
     public function testIndex() 
     {
         
@@ -90,7 +90,7 @@ class UsersControllerTestCase extends ControllerTestCase
         
     }
     
-    */
+   
     public function testEdit_grant_unmatchable_reply_access() 
     {
         $users = $this->generate('Users', array(
@@ -167,7 +167,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->assertContains('/users/index', $this->headers['Location']);
     }
     
-    /*
+    
     public function testEdit_deny_unmatchable_reply_access() 
     {
         $users = $this->generate('Users', array(
@@ -200,11 +200,22 @@ class UsersControllerTestCase extends ControllerTestCase
                 'unmatchable_reply_access' => 0
                 )
             ))
-        ->will($this->returnValue('true'));
+        ->will($this->returnValue(array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 0)
+            )));
         
         $users->Acl
         ->expects($this->once())
         ->method('deny')
+        ->with(array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 0)), 
+            "controllers/UnmatchableReply")
         ->will($this->returnValue('true'));
         
         $users->Acl
@@ -462,6 +473,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
     }
-    */
+    
     
 }
