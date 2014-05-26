@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-    
+    /*
     public function testIndex() 
     {
         
@@ -90,7 +90,7 @@ class UsersControllerTestCase extends ControllerTestCase
         
     }
     
-    
+    */
     public function testEdit_grant_unmatchable_reply_access() 
     {
         $users = $this->generate('Users', array(
@@ -126,12 +126,19 @@ class UsersControllerTestCase extends ControllerTestCase
         ->will($this->returnValue('true'));
         
         $users->Acl
-        ->expects($this->any())
+        ->expects($this->once())
         ->method('allow')
+        ->with(array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 1
+                )
+            ))
         ->will($this->returnValue('true'));
         
         $users->Acl
-        ->expects($this->any())
+        ->expects($this->once())
         ->method('check')
         ->will($this->returnValue('true'));
         
@@ -156,12 +163,12 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->assertContains('/users/index', $this->headers['Location']);
     }
     
-    
+    /*
     public function testEdit_deny_unmatchable_reply_access() 
     {
         $users = $this->generate('Users', array(
             'components' => array(
-                'Acl' => array('check', 'deny'),
+                'Acl' => array('check', 'allow', 'deny'),
                 'Session' => array('read')
                 ),
             'models' => array(
@@ -192,12 +199,12 @@ class UsersControllerTestCase extends ControllerTestCase
         ->will($this->returnValue('true'));
         
         $users->Acl
-        ->expects($this->any())
-        ->method('allow')
+        ->expects($this->once())
+        ->method('deny')
         ->will($this->returnValue('true'));
         
         $users->Acl
-        ->expects($this->any())
+        ->expects($this->once())
         ->method('check')
         ->will($this->returnValue('true'));
         
@@ -451,6 +458,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
     }
-    
+    */
     
 }
