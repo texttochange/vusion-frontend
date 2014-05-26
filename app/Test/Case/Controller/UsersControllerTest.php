@@ -103,6 +103,14 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
         
+        $mockedUser = array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 1
+                )
+            );
+        
         $users->Session
         ->expects($this->any())
         ->method('read')
@@ -116,28 +124,13 @@ class UsersControllerTestCase extends ControllerTestCase
         $users->User
         ->expects($this->once())
         ->method('save')
-        ->with(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1
-                )
-            ))
-        ->will($this->returnValue(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1)
-            )));
+        ->with($mockedUser)
+        ->will($this->returnValue($mockedUser));
         
         $users->Acl
         ->expects($this->once())
         ->method('allow')
-        ->with(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1)), 
+        ->with($mockedUser, 
             "controllers/UnmatchableReply")
         ->will($this->returnValue('true'));
         
@@ -180,6 +173,16 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
         
+        
+        
+        $mockedUser = array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 0
+                )
+            );
+        
         $users->Session
         ->expects($this->any())
         ->method('read')
@@ -193,28 +196,13 @@ class UsersControllerTestCase extends ControllerTestCase
         $users->User
         ->expects($this->once())
         ->method('save')
-        ->with(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 0
-                )
-            ))
-        ->will($this->returnValue(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 0)
-            )));
+        ->with($mockedUser)
+        ->will($this->returnValue($mockedUser));
         
         $users->Acl
         ->expects($this->once())
         ->method('deny')
-        ->with(array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 0)), 
+        ->with($mockedUser, 
             "controllers/UnmatchableReply")
         ->will($this->returnValue('true'));
         
