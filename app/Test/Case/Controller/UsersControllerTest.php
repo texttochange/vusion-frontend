@@ -123,7 +123,12 @@ class UsersControllerTestCase extends ControllerTestCase
                 'unmatchable_reply_access' => 1
                 )
             ))
-        ->will($this->returnValue('true'));
+        ->will($this->returnValue(array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared',
+                'unmatchable_reply_access' => 1)
+            )));
         
         $users->Acl
         ->expects($this->once())
@@ -132,9 +137,8 @@ class UsersControllerTestCase extends ControllerTestCase
             'User' =>array(
                 'id' => 1,
                 'username' => 'jared',
-                'unmatchable_reply_access' => 1
-                )
-            ))
+                'unmatchable_reply_access' => 1)), 
+            "controllers/UnmatchableReply")
         ->will($this->returnValue('true'));
         
         $users->Acl
