@@ -1112,6 +1112,7 @@ function configToForm(item, elt, id_prefix, configTree){
             elt["elements"].push({
                     "type":"fieldset",
                     'class': "actions",
+                    'style': (("style" in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
                     'elements': [select]
             });            
         }

@@ -180,9 +180,10 @@ var dialogue = {
         'skip': true,
     },
     "offset-condition-interaction-id": {
-        'type': "select",
+        'type': 'select',
         'data': 'server-dynamic',
         'fieldset': true,
+        'style': 'margin-left:0px',
         'onmouseover': 'updateOffsetConditions(this)',
     },
     "offset-condition-delay": {
