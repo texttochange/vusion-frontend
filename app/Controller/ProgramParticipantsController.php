@@ -294,17 +294,21 @@ class ProgramParticipantsController extends AppController
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }
-        
-        
+       
+        $filterError = "";
         foreach ($filter['filter_param'] as $key => $filterParam) {
             if (in_array("", $filterParam)) {
-                $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $filterError .= $filterParam[1]." ".$filterParam[2].", ";
+                unset($filter['filter_param'][$key]);
             }
         }
+        if (strlen($filterError) > 0) {
+         $this->Session->setFlash(__('"%s" Filter(s) ignored due to missing information', $filterError), 
+            'default',
+            array('class' => "message failure")
+            );
         
+        }
         
         $this->set('urlParams', http_build_query($filter));
         
