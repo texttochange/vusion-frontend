@@ -295,22 +295,37 @@ class ProgramParticipantsController extends AppController
             throw new FilterException('Filter operator is missing or not allowed.');
         }
        
-        $filterError = "";
-        foreach ($filter['filter_param'] as $key => $filterParam) {
+        $filterErrors = array();
+        $filter['filter_param'] = array_filter(
+            $filter['filter_param'], 
+            function($filterParam) use (&$filterErrors){
             if (in_array("", $filterParam)) {
-                $filterError .= $filterParam[1]." ".$filterParam[2].", ";
-                unset($filter['filter_param'][$key]);
+                if ($filterParam[1] == "") {
+                    $filterErrors[] = "filter x";  //x might be the index of the filter
+                } else if ($filterParam[2] == "") {
+                    $filterErrors[] = $filterParam[1];
+                } else {
+                    $filterErrors[] = $filterParam[1]." ".$filterParam[2];
+                } 
+                return false;  //will filter out
             }
-        }
-        if (strlen($filterError) > 0) {
-         $this->Session->setFlash(__('"%s" Filter(s) ignored due to missing information', $filterError), 
+            return true;   // will keep this filter
+        });
+
+        if (count($filterErrors) > 0) {
+            $this->Session->setFlash(
+                __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
             'default',
             array('class' => "message failure")
             );
         
         }
         
-        $this->set('urlParams', http_build_query($filter));
+        // all filters were incompelete don't event show the filters
+        if (count($filter['filter_param']) != 0) {
+            $this->set('urlParams', http_build_query($filter)); // To move to the views using filterParams
+            $this->set('filterParams', $filter);
+        }
         
         return $this->Participant->fromFilterToQueryConditions($filter);
     }

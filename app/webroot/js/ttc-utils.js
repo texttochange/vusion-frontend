@@ -255,14 +255,14 @@ function addStackFilter(){
     // add dropdown for fields
     var filterFieldDropDown = document.createElement("select");
     $(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
+    $(filterFieldDropDown).on('click', function(event){supplyOperatorOptions(this);});
     $.each(fieldOptions, function(value, details) {
             var option = new Option(details['label'], value);
-            $(filterFieldDropDown).append(option)
-            .on('click', function(event){supplyOperatorOptions(this);});
+            $(filterFieldDropDown).append(option);
     });
      
     $(stackFilter).append(filterFieldDropDown);
-    
+    $(filterFieldDropDown).click();
 }
 
 
