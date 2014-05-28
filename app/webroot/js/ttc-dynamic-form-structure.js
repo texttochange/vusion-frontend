@@ -3,7 +3,13 @@ var dynamicForm = {};
 var dialogue = {
     "Dialogue":{
         'type': 'container',
-        'contains': ["name",  "set-prioritized", "auto-enrollment", "interactions","dialogue-id", "activated"],
+        'contains': [
+            "name",  
+            "set-prioritized", 
+            "auto-enrollment-box", 
+            "interactions",
+            "dialogue-id", 
+            "activated"],
         'skip': true,
     },
     'name': {
@@ -12,12 +18,22 @@ var dialogue = {
     "dialogue-id":{ 
         'type': "hidden",
     },
+    "auto-enrollment-box": {
+        'type': 'container',
+        'contains': [
+            'auto-enrollment'],
+        'skip': false
+    },
     "auto-enrollment":{ 
-        'type': "select",
-        'data': "static",
-        'options':  ["none", "all"],
-        'fieldset': true
-    },   
+        'type': "radiobuttons",
+        'options':  [
+            {'value': 'none'},
+            {'value': 'all'},
+            {'value': 'matching-tag-label',
+            'subfields': [ 
+                "condition-operator", 
+                "subconditions"]}],
+    }, 
     "set-prioritized": {
         'type': "checkboxes",
         'value': 'prioritized'
@@ -34,7 +50,7 @@ var dialogue = {
             "type-interaction",
             "interaction-id", 
             "activated"],
-            'skip': true,
+        'skip': true,
     },
     "interaction-id":{
         'type': "hidden",

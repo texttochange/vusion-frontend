@@ -196,6 +196,10 @@ function activeForm(){
             $(elt).change(updateRadioButtonSubmenu);
             $(elt).addClass("activated");
     });
+    $.each($("input[name*='auto-enrollment']:not(.activated)"),function (key, elt){
+            $(elt).change(updateRadioButtonSubmenu);
+            $(elt).addClass("activated");
+    });
     $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
