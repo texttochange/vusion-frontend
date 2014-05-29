@@ -828,13 +828,22 @@ display: inline;
 }
 
 
-.message-unmatchable {
+.unmatchable-reply .message-unmatchables {
         width: 593px;
 }
 
-.message-unmatchable-date-time {
+.unmatchable-reply .date-time {
         width: 306px;
 }
+
+.unmatchable-reply .direction {
+        width: 118px;
+}
+
+.unmatchable-reply .phone {
+        width: 118px;
+}
+
 
 #log-css {
         width: 813px;
