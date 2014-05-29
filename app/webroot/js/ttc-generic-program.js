@@ -488,7 +488,7 @@ function foldForm(){
     default:
         summary = "not summarized view available for this item";
     }
-    $(parent).append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
+    $(parent).append('<div class="ttc-fold-summary">'+((summary != null)? summary.substring(0,70):'')+'...</div>');
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
 
