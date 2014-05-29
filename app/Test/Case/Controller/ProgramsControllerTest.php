@@ -3,6 +3,7 @@
 App::uses('ProgramsController', 'Controller');
 App::uses('Dialogue', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('CreditLog', 'Model');
 
 
 class TestProgramsController extends ProgramsController 
@@ -36,7 +37,9 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->Programs = new TestProgramsController();
         $this->Programs->constructClasses();
         
-        $this->ShortCode = new ShortCode(array('database' => "testdbmongo"));
+        $options = array('database' => "testdbmongo");
+        $this->ShortCode = new ShortCode($options);
+        $this->CreditLog = new CreditLog($options);
         $this->dropData();
     }
     
@@ -44,6 +47,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
     protected function dropData()
     {
         $this->ShortCode->deleteAll(true, false);
+        $this->CreditLog->deleteAll(true, false);
         $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->deleteAll(true, false);  
         $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
@@ -131,7 +135,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(3, count($this->vars['programs']));
     }
-    
+  
     
     public function testIndex_hasSpecificProgramAccess_True()
     {
@@ -167,8 +171,9 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
     }
-    
-    
+
+
+    #TODO move some case to the ProgramPaginatorComponentTest
     public function testIndex_filter()
     {
         $this->_saveShortcodesInMongoDatabase();
@@ -236,7 +241,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
     }
     
-    
+
     public function testView() 
     {
         $this->mockProgramAccess();
@@ -365,19 +370,30 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-        mkdir(WWW_ROOT . 'files/programs/test/');
-        
         $Programs
         ->expects($this->once())
         ->method('_stopBackendWorker')
         ->will($this->returnValue(true));
+
+        mkdir(WWW_ROOT . 'files/programs/test/');
         
+        $creditLog = ScriptMaker::mkCreditLog(
+            'program-credit-log', '2014-04-10', 'testdbprogram');
+        $this->CreditLog->create();
+        $this->CreditLog->save($creditLog);
+
         $this->testAction('/programs/delete/1');
         
         $this->assertFileNotExist(
             WWW_ROOT . 'files/programs/test/');
+        $this->assertEqual(
+            1, 
+            $this->CreditLog->find('count', array(
+                'conditions' => array(
+                    'object-type' => 'deleted-program-credit-log', 
+                    'program-name' => 'test'))));
         
     }
-    
+
     
 }

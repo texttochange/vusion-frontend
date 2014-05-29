@@ -27,8 +27,8 @@ class UserAccessComponent extends Component
             $index = 0;
             foreach ($programs as &$program) {
                 $program = $this->ProgramPaginator->getProgramDetails($program);
-                $prefixedCodes[$index] = $program['program']['Program']['shortcode'];
-                $codes[$index] = substr(strrchr($prefixedCodes[$index], "-"), 1);
+                $prefixedCodes[$index] = $program['Program']['prefixed-shortcode'];
+                $codes[$index] = $program['Program']['shortcode'];
                 $index++;
             }
             $conditions = array('$or' => array(
