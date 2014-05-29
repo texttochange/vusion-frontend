@@ -151,8 +151,6 @@ class ProgramDialoguesController extends AppController
         } else {
             $savedDialogue = $this->Dialogue->makeActive($dialogueId);
             if ($savedDialogue) {
-                if ($savedDialogue['Dialogue']['auto-enrollment'] == 'all')
-                    $this->Participant->autoEnrollDialogue($savedDialogue['Dialogue']['dialogue-id']);
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
                     'default',

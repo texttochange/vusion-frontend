@@ -17,7 +17,8 @@ class ProgramsController extends AppController
         'LocalizeUtils', 
         'PhoneNumber', 
         'ProgramPaginator', 
-        'Stats');
+        'Stats',
+        'UserAccess');
     var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
     
     var $uses = array('Program', 'Group');
@@ -123,9 +124,12 @@ class ProgramsController extends AppController
         }
         
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
+        $unmatchableCondition = $this->UserAccess->getUnmatchableConditions();
+        $andCondition = array('$and' => array($unmatchableCondition, array('direction' => 'incoming')));
+        $unmatchedConditon  = (!empty($unmatchableCondition)) ? $andCondition : array('direction' => 'incoming');
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
-            array('conditions' => array('direction' => 'incoming'), 
+            array('conditions' => $unmatchedConditon, 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
@@ -176,6 +180,19 @@ class ProgramsController extends AppController
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Program->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }     
+        
+        foreach ($filter['filter_param'] as $key => $filterParam) {
+            if (isset($filterParam[3])) {
+                if (!$filterParam[3]) {
+                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                }
+            } else {
+                return null;
+            }
+        }
         
         $this->set('urlParams', http_build_query($filter));
         

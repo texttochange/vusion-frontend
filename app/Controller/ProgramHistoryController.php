@@ -203,7 +203,18 @@ class ProgramHistoryController extends AppController
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->History->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
-        }     
+        }
+        
+        foreach ($filter['filter_param'] as $key => $filterParam) {
+            if (isset($filterParam[3])) {
+                if (!$filterParam[3]) {
+                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
+                        'default',
+                        array('class' => "message failure")
+                        );
+                }
+            }
+        }
         
         $this->set('urlParams', http_build_query($filter));
         
@@ -256,7 +267,7 @@ class ProgramHistoryController extends AppController
         }                   
     }
     
-
+    
     public function paginationCount()
     {
         if ($this->params['ext'] !== 'json') {
@@ -266,6 +277,6 @@ class ProgramHistoryController extends AppController
         $paginationCount = $this->History->count( $this->_getConditions($defaultConditions), null, -1);
         $this->set('paginationCount',$paginationCount);
     }
-
-
+    
+    
 }

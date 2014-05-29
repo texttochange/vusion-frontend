@@ -8,7 +8,7 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 class UsersController extends AppController
 {
     var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
-    var $uses = array('User', 'Group');
+    var $uses       = array('User', 'Group');
     
     public function beforeFilter()
     {
@@ -40,7 +40,7 @@ class UsersController extends AppController
             $paginate['conditions'] = $conditions;
         }
         
-        $this->paginate = $paginate;
+        $this->paginate        = $paginate;
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));
     }
@@ -147,7 +147,15 @@ class UsersController extends AppController
         } 
         
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->User->save($this->request->data)) {
+            $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
+            unset($this->request->data['User']['unmatchable_reply_access']);
+            if ($user = $this->User->save($this->request->data)) {
+                #checkbox is checked => we store it in the ACL
+                if ($umatchableReplyAccess == true) {
+                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
+                } else {
+                    $this->Acl->deny($user, 'controllers/UnmatchableReply');
+                }
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -156,7 +164,7 @@ class UsersController extends AppController
                     'User' => array(
                         'id' => $this->Session->read('Auth.User.id')
                         )
-                    ), 'Controllers/Users/index')){                
+                    ), 'Controllers/Users/index')) {                
                 $this->redirect(array('action' => 'index'));
                     } else {                  
                         $this->redirect(array('action' => 'view', $this->Session->read('Auth.User.id')));
@@ -169,6 +177,8 @@ class UsersController extends AppController
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
+            #As the information is stored in the ACL we need to retrieve it form the ACL component
+            $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
@@ -220,9 +230,23 @@ class UsersController extends AppController
                 if ($this->Session->read('Auth.User.group_id') == 1) {
                     $this->redirect(array('controller' => 'admin'));
                 }
+                
+                $id          = $this->Auth->user('id');
+                $allPrograms = $this->Program->find('authorized', array(
+                    'specific_program_access' => 'true',
+                    'user_id' => $id));
+                if ($this->Session->read('Auth.User.group_id') == 4) {
+                    if (count($allPrograms) == 1) {
+                        $programUrl = $allPrograms[0]['Program']['url'];
+                        $this->redirect(array('program' => $programUrl,
+                            'controller' => 'programHome',
+                            'action' => 'index'));
+                    }
+                }
+                
                 $this->redirect($this->Auth->redirect());
             } else {
-                if($this->request->is('post')) {
+                if ($this->request->is('post')) {
                     $this->Session->setFlash(__('Invalid username or password, try again.'));
                 }
                 return $this->redirect(array('controller' => 'users', 'action' => 'login'));
@@ -244,7 +268,7 @@ class UsersController extends AppController
     
     public function changePassword($id = null)
     {
-        $hash = Configure::read('Security.salt');
+        $hash           = Configure::read('Security.salt');
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
@@ -262,7 +286,7 @@ class UsersController extends AppController
         $this->set(compact('userId'));
         
         if ($this->request->is('post') || $this->request->is('put')) {
-
+            
             if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'),
                     'default',
@@ -315,7 +339,7 @@ class UsersController extends AppController
             return;
         }
         
-        $email   = $this->request->data['emailEnter'];
+        $email = $this->request->data['emailEnter'];
         if (!$email) {
             $this->Session->setFlash(__('Please Enter Email address'));
             return;
@@ -339,7 +363,7 @@ class UsersController extends AppController
             return;
         }        
         $userName = $account[0]['User']['username'];
-        $userId = $account[0]['User']['id'];
+        $userId   = $account[0]['User']['id'];
         $this->Session->write('user_id',$userId);
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
@@ -421,7 +445,7 @@ class UsersController extends AppController
         $Group =& $this->User->Group;
         
         //allow admins to everything
-        $group = $Group->find('first', array('conditions' => array('name' => 'administrator')));
+        $group     = $Group->find('first', array('conditions' => array('name' => 'administrator')));
         $Group->id = $group['Group']['id'];
         $this->Acl->allow($Group, 'controllers');
         echo "Acl Done: ". $group['Group']['name']."</br>";
@@ -445,7 +469,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
             $this->Acl->allow($Group, 'controllers/ShortCodes');
-            $this->Acl->allow($Group, 'controllers/UnmatchableReply');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
@@ -455,6 +479,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -467,7 +492,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->deny($Group, 'controllers/Programs');
             $this->Acl->allow($Group, 'controllers/Programs/index');
-            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -482,7 +507,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
-            $this->Acl->allow($Group, 'controllers/ShortCodes');
+            //$this->Acl->allow($Group, 'controllers/ShortCodes');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
@@ -503,7 +528,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
-            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             //$this->Acl->allow($Group, 'controllers/Users/login');
             //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
@@ -526,6 +551,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -539,7 +565,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
-            $this->Acl->allow($Group, 'controllers/Programs/getProgramStats');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
@@ -552,6 +578,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

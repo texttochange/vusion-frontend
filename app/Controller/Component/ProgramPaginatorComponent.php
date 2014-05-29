@@ -3,6 +3,7 @@ App::uses('Component', 'Controller');
 App::uses('PaginatorComponent', 'Controller/Component');
 App::uses('ShortCode', 'Model');
 App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 class ProgramPaginatorComponent extends PaginatorComponent 
 {  

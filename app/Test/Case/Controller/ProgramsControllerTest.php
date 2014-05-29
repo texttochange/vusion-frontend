@@ -120,7 +120,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
     * test methods
     *
     */
-    
+   
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();
@@ -153,7 +153,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             ));
         
         $Programs->Auth
-        ->staticExpects($this->once())
+        ->staticExpects($this->any())
         ->method('user')
         ->will($this->returnValue(array(
             'id' => '2',
@@ -164,6 +164,9 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->onConsecutiveCalls('false', 'false'));
         
+        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
+        $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8282');
         
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));

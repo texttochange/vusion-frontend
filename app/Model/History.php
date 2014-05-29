@@ -116,14 +116,14 @@ class History extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-
+        
         $this->Behaviors->load('CachingCount', array(
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
     }
-
-
+    
+    
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
     {
@@ -398,70 +398,100 @@ class History extends MongoModel
             $this->validateFilter($filterParam);
             
             if ($filterParam[1] == 'message-direction' or $filterParam[1] == 'message-status') {
-                if ($filterParam[2] == 'is') {
-                    $condition[$filterParam[1]] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-is') {
-                    $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition[$filterParam[1]] = $filterParam[3];
+                    } elseif ($filterParam[2] == 'not-is') {
+                        $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
+                    }
                 }
             } elseif ($filterParam[1] == 'date') {
-                if ($filterParam[2] == 'from') { 
-                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                } elseif ($filterParam[2] == 'to') {
-                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'from') { 
+                        $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                    } elseif ($filterParam[2] == 'to') {
+                        $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                    }
+                } else {
+                    $condition['timestamp'] = '';
                 }
             } elseif ($filterParam[1] == 'participant-phone') {
-                if ($filterParam[2] == 'equal-to') {
-                    $condition['participant-phone'] = $filterParam[3];                   
-                } elseif ($filterParam[2] == 'start-with') {
-                    $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
-                } elseif ($filterParam[2] == 'start-with-any') {
-                    $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = History::_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'equal-to') {
+                        $condition['participant-phone'] = $filterParam[3];                   
+                    } elseif ($filterParam[2] == 'start-with') {
+                        $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                    } elseif ($filterParam[2] == 'start-with-any') {
+                        $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
+                        $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                    }
+                } else {
+                    $condition['participant-phone'] = '';
                 }
             } elseif ($filterParam[1] == 'message-content') {
-                if ($filterParam[2] == 'equal-to') {
-                    $condition['message-content'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'contain') {
-                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
-                } elseif ($filterParam[2] == 'has-keyword') {
-                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
-                } elseif ($filterParam[2] == 'has-keyword-any') {
-                    $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = History::_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'equal-to') {
+                        $condition['message-content'] = $filterParam[3];
+                    } elseif ($filterParam[2] == 'contain') {
+                        $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                    } elseif ($filterParam[2] == 'has-keyword') {
+                        $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                    } elseif ($filterParam[2] == 'has-keyword-any') {
+                        $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
+                        $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                    }
+                } else {
+                    $condition['message-content'] = '';
                 }
             } elseif ($filterParam[1] == 'separate-message') {
-                if ($filterParam[2] == 'equal-to') {
-                    $condition['unattach-id'] = $filterParam[3];    
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'equal-to') {
+                        $condition['unattach-id'] = $filterParam[3];    
+                    } 
+                } else {
+                    $condition['unattach-id'] = '';
                 }
             } elseif ($filterParam[1] == 'dialogue-source') {
-                if ($filterParam[2] == 'is') {
-                    $condition['dialogue-id'] = $filterParam[3];    
-                } elseif ($filterParam[2] == 'not-is') {
-                    $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
-                } elseif ($filterParam[2] == 'is-any') {
-                    $condition['dialogue-id'] = array('$exists' => true);    
-                } elseif ($filterParam[2] == 'not-is-any') {
-                    $condition['dialogue-id'] = array('$exists' => false);
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition['dialogue-id'] = $filterParam[3];    
+                    } elseif ($filterParam[2] == 'not-is') {
+                        $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
+                    } elseif ($filterParam[2] == 'is-any') {
+                        $condition['dialogue-id'] = array('$exists' => true);    
+                    } elseif ($filterParam[2] == 'not-is-any') {
+                        $condition['dialogue-id'] = array('$exists' => false);
+                    }
+                } else {
+                    $condition['dialogue-id'] = '';
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
-                if ($filterParam[2] == 'is') {
-                    $condition['interaction-id'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-is') {
-                    $condition['interaction-id'] = array('$ne' => $filterParam[3]);
-                } elseif ($filterParam[2] == 'is-any') {
-                    $condition['interaction-id'] = array('$exists' => true);    
-                } elseif ($filterParam[2] == 'not-is-any') {
-                    $condition['interaction-id'] = array('$exists' => false);
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition['interaction-id'] = $filterParam[3];
+                    } elseif ($filterParam[2] == 'not-is') {
+                        $condition['interaction-id'] = array('$ne' => $filterParam[3]);
+                    } elseif ($filterParam[2] == 'is-any') {
+                        $condition['interaction-id'] = array('$exists' => true);    
+                    } elseif ($filterParam[2] == 'not-is-any') {
+                        $condition['interaction-id'] = array('$exists' => false);
+                    }
+                } else {
+                    $condition['interaction-id'] = '';
                 }
             } elseif ($filterParam[1] == 'request-source') {
-                if ($filterParam[2] == 'is') {
-                    $condition['request-id'] = new MongoId($filterParam[3]);
-                } elseif ($filterParam[2] == 'not-is') {
-                    $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
-                } elseif ($filterParam[2] == 'is-any') {
-                    $condition['request-id'] = array('$exists' => true);    
-                } elseif ($filterParam[2] == 'not-is-any') {
-                    $condition['request-id'] = array('$exists' => false);
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition['request-id'] = new MongoId($filterParam[3]);
+                    } elseif ($filterParam[2] == 'not-is') {
+                        $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
+                    } elseif ($filterParam[2] == 'is-any') {
+                        $condition['request-id'] = array('$exists' => true);    
+                    } elseif ($filterParam[2] == 'not-is-any') {
+                        $condition['request-id'] = array('$exists' => false);
+                    }
+                } else {
+                    $condition['request-id'] = '';
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {
@@ -475,7 +505,7 @@ class History extends MongoModel
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
-                    $conditions = $condition;
+                   $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
                 } elseif (!isset($conditions['$and'])) {
                     $conditions = array('$and' => array($conditions, $condition));
                 } else {
@@ -491,7 +521,6 @@ class History extends MongoModel
                 }
             }
         }
-        
         return $conditions;
     } 
     

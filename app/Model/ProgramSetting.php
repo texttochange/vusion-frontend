@@ -3,6 +3,7 @@ App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
+App::uses('VusionValidation', 'Lib');
 
 
 class ProgramSetting extends MongoModel
@@ -110,7 +111,33 @@ class ProgramSetting extends MongoModel
                 'rule' => array('inList', array('none', 'full')),
                 'message' => 'The sms forwarding value is not valid.',
                 'required' => true,
+                ),
+            ),
+        'double-matching-answer-feedback' => array(
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE,
+                'required' => false
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage',
+                'required' => false
+                ),
+            
+            ),
+        'double-optin-error-feedback' => array(
+            'validApostrophe' => array(
+                'rule' => array('notRegex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE,
+                'required' => false,
+                ),
+            'validContentVariable' => array(
+                'rule' => 'validContentVariable',
+                'message' => 'noMessage',
+                'required' => false
                 )
+            
             )
         );
     
@@ -128,6 +155,29 @@ class ProgramSetting extends MongoModel
         parent::__construct($id, $table, $ds);
         
         $this->ValidationHelper = new ValidationHelper($this);
+    }
+    
+    
+    public function notRegex($check, $regex) 
+    {
+        if (!is_array($check)) {
+            return true; 
+        }
+        reset($check);
+        $key = key($check);
+        if ($check[$key]==null) {
+            return true;
+        }
+        return VusionValidation::customNot($check[$key], $regex[0]);
+    }
+    
+    
+    public function validContentVariable($check)
+    {
+        if (!is_array($check)) {
+            return true; 
+        }
+        return VusionValidation::validContentVariable($check);        
     }
     
     
@@ -150,7 +200,6 @@ class ProgramSetting extends MongoModel
             and $this->data['ProgramSetting']['value'] == '1') {
         $this->data['ProgramSetting']['value'] = 'prioritized';
             }
-            
     }
     
     
@@ -249,8 +298,8 @@ class ProgramSetting extends MongoModel
             return false;
         return true;
     }
- 
-
+    
+    
     public function notUsedKeyword($check, $data, $other)
     {
         if (isset($check['shortcode']) && $this->usedKeywords != array()){
@@ -263,7 +312,7 @@ class ProgramSetting extends MongoModel
         }
         return true;
     }
-
+    
     
     public function getProgramTimeNow()
     {
