@@ -1,6 +1,7 @@
 <?php
 App::uses('Component', 'Controller');
 App::uses('ShortCode', 'Model');
+App::uses('ProgramSetting', 'Model');
 
 class ProgramPaginatorComponent extends Component 
 {  
