@@ -106,8 +106,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $mockedUser = array(
             'User' =>array(
                 'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1
+                'username' => 'jared'
                 )
             );
         
@@ -139,22 +138,12 @@ class UsersControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
-        $user = array(
-            'User'=> array(
-                'id' => 1,
-                'username' => 'gerald'
-                )
-            );
+        $formUser = $mockedUser;
+        $formUser['User']['unmatchable_reply_access'] = true;
         
-        $this->testAction("/users/edit/".$user['User']['id'],array(
+        $this->testAction("/users/edit/".$formUser['User']['id'],array(
             'method' => 'post',
-            'data' => array(
-                'User' => array (
-                    'id' => $user['User']['id'],
-                    'username' => 'jared',
-                    'unmatchable_reply_access' => 1
-                    )
-                )
+            'data' => $formUser
             ));
 
         $this->assertContains('/users/index', $this->headers['Location']);
@@ -178,8 +167,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $mockedUser = array(
             'User' =>array(
                 'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 0
+                'username' => 'jared'
                 )
             );
         
@@ -211,23 +199,12 @@ class UsersControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
-        $user = array(
-            'User'=> array(
-                'id' => 1,
-                'username' => 'jared',
-                'unmatchable_reply_access' => 1
-                )
-            );
+        $formUser = $mockedUser;
+        $formUser['User']['unmatchable_reply_access'] = false;
         
-        $this->testAction("/users/edit/".$user['User']['id'],array(
+        $this->testAction("/users/edit/".$formUser['User']['id'],array(
             'method' => 'post',
-            'data' => array(
-                'User' => array (
-                    'id' => $user['User']['id'],
-                    'username' => 'jared',
-                    'unmatchable_reply_access' => 0
-                    )
-                )
+            'data' => $formUser
             ));
 
         $this->assertContains('/users/index', $this->headers['Location']);
