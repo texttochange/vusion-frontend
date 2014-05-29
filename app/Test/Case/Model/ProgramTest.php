@@ -24,7 +24,7 @@ class ProgramTestCase extends CakeTestCase
         
         parent::tearDown();
     }
-    
+   
     
     public function testFind()
     {
@@ -189,90 +189,152 @@ class ProgramTestCase extends CakeTestCase
     }
     
     
-    public function testMatchProgramByShortcodeAndCountry()
+    public function testMatchProgramConditions()
     {
-        $programM4H['Program'] = array(
-            'id' => 9,
-            'name' => 'M4h',
-            'url' => 'm4h',
-            'database' => 'm4h',
-            'created' => '2012-01-24 15:29:24',
-            'modified' => '2012-01-24 15:29:24'
-            );
-        
-        $this->Program->create();
-        $savedProgramM4H = $this->Program->save($programM4H);
-        
-        $programTester['Program'] = array(
-            'id' => 4,
-            'name' => 'tester',
-            'url' => 'tester',
-            'database' => 'tester',
-            'created' => '2012-01-24 15:29:24',
-            'modified' => '2012-01-24 15:29:24'
-            );
-        
-        $this->Program->create();
-        $savedProgramTester = $this->Program->save($programTester);
-        
-        $codes = array(
-            array(
-                'shortcode' => '8181',
-                'international-prefix' => '256',
+        $programDetailM4H = array(
+            'Program' => array(
+                'id' => 3,
+                'name' => 'M4h',
+                'url' => 'm4h',
+                'database' => 'm4h',
+                'shortcode' => '8282',
                 'country' => 'uganda',
-                'supported-internationally' => '0',
-                'support-customized-id' => '1'
-                ),
-            array(
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            'shortcode' => array(
                 'shortcode' => '8282',
                 'international-prefix' => '256',
                 'country' => 'uganda',
                 'supported-internationally' => '0',
-                'support-customized-id' => '1'
-                )
+                'support-customized-id' => '1'),
+            'settings' => array(
+                'timezone' => 'Africa/Kampala',
+                'shortcode' => '256-8282')
             );
         
-        $this->ProgramSettingM4H = new ProgramSetting($programM4H['Program']['database']);
-        $this->ProgramSettingM4H->saveProgramSetting('timezone', 'Africa/Kampala');
-        $this->ProgramSettingM4H->saveProgramSetting('shortcode', '256-8282');
-        
-        $this->ProgramSettingTester = new ProgramSetting($programTester['Program']['database']);
-        $this->ProgramSettingTester->saveProgramSetting('timezone', 'Africa/Kampala');
-        $this->ProgramSettingTester->saveProgramSetting('shortcode', '256-8181');
-        
+        $programDetailTester = array(
+            'Program' => array(
+                'id' => 4,
+                'name' => 'tester',
+                'url' => 'tester',
+                'database' => 'tester',
+                'shortcode' => '8181',
+                'country' => 'uganda',
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            'shortcode' => array(
+                'shortcode' => '8181',
+                'international-prefix' => '256',
+                'country' => 'uganda',
+                'supported-internationally' => '0',
+                'support-customized-id' => '1'),
+            'settings' => array(
+                'timezone' => 'Africa/Kampala',
+                'shortcode' => '256-8181')
+            );
+                        
         //Test simple condition        
         $conditions = array('shortcode' => '8282');
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
-        $this->assertEquals($result[0]['Program']['name'], 'M4h');
-        $this->assertEquals(1, count($result));        
-        
-        //Test Or condtions
+        $this->assertTrue(
+            Program::matchProgramConditions($programDetailM4H, $conditions));
+        $this->assertFalse(
+            Program::matchProgramConditions($programDetailTester, $conditions));
+
+        //Test OR
         $conditions = array(
             '$or' => array(
                 array('shortcode' => '8234'),
                 array('shortcode' => '8181')
                 )
             );
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramM4H, $conditions, $codes);
-        $this->assertEquals(1, count($result));
+        $this->assertFalse(
+            Program::matchProgramConditions($programDetailM4H, $conditions));
+        $this->assertTrue(
+            Program::matchProgramConditions($programDetailTester, $conditions));
         
-        //Test And conditions
+        //Test AND
         $conditions = array(
             '$and' => array(
                 array('shortcode' => '8181'),
                 array('country' => 'uganda')
                 )
             );
-        $result = $this->Program->matchProgramByShortcodeAndCountry($savedProgramTester, $conditions, $codes);
-        $this->assertEquals($result[0]['Program']['name'], 'tester');
-        $this->assertEquals(1, count($result));
-        
-        //Clear data in program settings
-        $this->ProgramSettingM4H->deleteAll(true, false);
-        $this->ProgramSettingTester->deleteAll(true, false);
+        $this->assertFalse(
+            Program::matchProgramConditions($programDetailM4H, $conditions));
+        $this->assertTrue(
+            Program::matchProgramConditions($programDetailTester, $conditions));
+    }
+
+    public function testValidateProgramCondition()
+    {
+        $programDetailM4H = array(
+            'Program' => array(
+                'id' => 3,
+                'name' => 'M4h',
+                'url' => 'm4h',
+                'database' => 'm4h',
+                'shortcode' => '8282',
+                'country' => 'uganda',
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            );
+                        
+        $this->assertTrue(
+            Program::validProgramCondition($programDetailM4H, 'shortcode', '8282'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetailM4H, 'shortcode', '8181'));
+
+        $this->assertTrue(
+            Program::validProgramCondition($programDetailM4H, 'country', 'Uganda'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetailM4H, 'country', 'kenya'));
+
+        $this->assertTrue(
+            Program::validProgramCondition($programDetailM4H, 'name', 'm4h'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetailM4H, 'name', 'm6h'));
+
+        $this->assertTrue(
+            Program::validProgramCondition($programDetailM4H, 'name LIKE', 'm%'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetailM4H, 'name LIKE', 't%'));
+    }
+
+    public function testValidateProgramCondition_missingShortcodeSettings()
+    {
+        $programDetails = array(
+            'Program' => array(
+                'id' => 3,
+                'name' => 'M4h',
+                'url' => 'm4h',
+                'database' => 'm4h',
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            );
+                        
+        $this->assertFalse(
+            Program::validProgramCondition($programDetails, 'shortcode', '8282'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetails, 'country', 'Uganda'));
+
+        $programDetails = array(
+            'Program' => array(
+                'id' => 3,
+                'name' => 'M4h',
+                'url' => 'm4h',
+                'database' => 'm4h',
+                'country' => 'uganda',
+                'created' => '2012-01-24 15:29:24',
+                'modified' => '2012-01-24 15:29:24'),
+            );
+
+        $this->assertTrue(
+            Program::validProgramCondition($programDetails, 'country', 'Uganda'));
+        $this->assertFalse(
+            Program::validProgramCondition($programDetails, 'country', 'kenya'));
     }
     
-    
+
     public function testEditProgram_fail_database_name()
     {
         $program = array(

@@ -63,10 +63,11 @@ abstract class MongoModel extends Model
     
     public function checkFields($object)
     {        
-        if (isset($object['object-type']))
+        if (isset($object['object-type'])) {
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
-        else
-        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        } else {
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        }
         
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)) {

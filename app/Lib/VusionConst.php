@@ -54,4 +54,7 @@ class VusionConst
     
     const CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL = 'To be used in message, participant only accepts one key.';
     const CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL = 'To be used in message, contentVariable only accepts maximum three keys.';
+
+    const PREFIXED_LOCAL_CODE_REGEX = '/^[0-9]*\-[0-9]*$/';
+    const INTERNATIONAL_CODE_REGEX = '/^\+[0-9]*$/';
 }

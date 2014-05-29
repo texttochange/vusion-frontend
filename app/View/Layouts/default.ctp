@@ -17,13 +17,11 @@
 		    //'superfish/superfish-navbar-1.7.4',		    
 		    'superfish/megafish-1.7.4',
 		    'chosen/chosen-1.0.min',
-		    'handsontable/jquery.handsontable-0.9.18.full'
+		    'handsontable/jquery.handsontable-0.9.18.full',
+		    'jstree/style.min'
 		    ));		
-		//echo $this->Html->script('jquery-1.7.2.min.js');
 		echo $this->Html->script('jquery-1.10.2.min.js');
-		//echo $this->Html->script('jqueryui/js/jquery-ui-1.8.16.custom.min.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');
-		//echo $this->Html->script('jqueryui/js/jquery.ui.datepicker.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
 		## dynamic form
 		echo $this->Html->script('jquery.validate-1.9.0.js');
@@ -41,7 +39,6 @@
 		echo $this->Html->script('datejs/date.js');
 		echo $this->Html->script('xregexp-2.0.0/xregexp-all.js');
 		echo $this->Html->script('moment.js');
-		//echo $this->Html->script('chosen.jquery.min.js');
 		echo $this->Html->script('chosen-1.0.jquery.min.js');
 		## home brewed javascript
 		echo $this->Html->script('ttc-dynamic-form-structure.js');
@@ -101,7 +98,9 @@
 							array('class' => 'ttc-link-header'));
 			}
 			echo $this->AclLink->generateButton(
-			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header')); 
+			    __('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
+			echo $this->AclLink->generateButton(
+			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header'));
 			?>
 			</div> 
 		 </div>    
