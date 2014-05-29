@@ -139,7 +139,7 @@ var localized_labels = {
     "with": "<?php echo __('with')?>",
     "not-with": "<?php echo __('not with')?>",
     "none": "<?php echo __('none')?>",
-    "all": "<?php echo __('all participants')?>",
+    "all-participants": "<?php echo __('all participants')?>",
     "tagged": "<?php echo __('tagged')?>",
     "labelled": "<?php echo __('labelled')?>",
     "proportional-tagging": "<?php echo __('Proportional Tagging')?>",
@@ -173,5 +173,7 @@ var localized_labels = {
     "matching": "<?php echo __('matching')?>",
     "not-matching": "<?php echo __('not matching')?>",
     "many": "<?php echo __('many')?>",
+    "any": "<?php echo __('any')?>",
+    "all": "<?php echo __('all')?>",
 };
 

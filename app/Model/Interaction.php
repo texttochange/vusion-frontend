@@ -5,6 +5,8 @@ App::uses('MissingField', 'Lib');
 App::uses('VirtualModel', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('DialogueHelper', 'Lib');
+App::uses('VusionValidation', 'Lib');
+
 
 class Interaction extends VirtualModel
 {
@@ -159,7 +161,7 @@ class Interaction extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validCustomizeContent' => array(
-                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX),
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_DEFAULT),
                 'message' => 'noMessage'
                 ),
             ),
@@ -362,7 +364,7 @@ class Interaction extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validCustomizeContent' => array(
-                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_REGEX),
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_DEFAULT),
                 'message' => 'noMessage'
                 ),
             ),
@@ -469,7 +471,7 @@ class Interaction extends VirtualModel
                 'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
                 ),
             'validCustomizeContent' => array(
-                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_ALL_REGEX),
+                'rule' => array('validCustomizeContent', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE),
                 'message' => 'noMessage'
                 ),
             )
@@ -478,33 +480,8 @@ class Interaction extends VirtualModel
     
     public function validCustomizeContent($field, $data, $allowedDomain)
     {
-        if (isset($data[$field])) {
-            preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
-            $allowed = array("domain", "key1", "key2", "keys3", "otherkey");
-            foreach ($matches as $match) {
-                $match = array_intersect_key($match, array_flip($allowed));
-                foreach ($match as $key=>$value) {
-                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
-                        return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
-                    }
-                }                   
-                if (!preg_match($allowedDomain, $match['domain'])) {
-                    return __("To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'.", $match['domain']);
-                }
-                if ($match['domain'] == 'participant') {
-                    if (isset($match['key2'])) {
-                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
-                    }
-                } else if ($match['domain'] == 'contentVariable') {
-                    if (isset($match['otherkey'])) {
-                        return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
-                    }
-                } 
-            }
-        }
-        return true;
+        return VusionValidation::validCustomizeContent($field, $data, $allowedDomain);
     }
-
     
     public function validateAnswers($field, $data)
     {
@@ -621,7 +598,27 @@ class Interaction extends VirtualModel
         return $usedKeywords;
     }
 
-    
+    static public function replaceLocalIds(&$interactions)
+    {
+        $localIds = array();
+        foreach ($interactions as &$interaction) {
+            if (isset($interaction['interaction-id']) && preg_match('/^local:/', $interaction['interaction-id'])) {
+                $newId = uniqid();
+                $localIds[$interaction['interaction-id']] = $newId;
+                $interaction['interaction-id'] = $newId;
+            }
+        }
+
+        foreach ($interactions as &$interaction) {
+            if (isset($interaction['offset-condition-interaction-id'])) {
+                if (array_key_exists($interaction['offset-condition-interaction-id'], $localIds)) {
+                    $interaction['offset-condition-interaction-id'] = $localIds[$interaction['offset-condition-interaction-id']];
+                }
+            }
+        }
+    }
+
+
     public function beforeValidate()
     {
         parent::beforeValidate();

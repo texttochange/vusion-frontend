@@ -21,17 +21,25 @@ class DialogueTestCase extends CakeTestCase
         $this->ProgramSetting = new ProgramSetting($option);
         
         $this->Maker = new ScriptMaker();
+        $this->dropData();
     }
-    
-    
-    public function tearDown()
+
+    public function dropData()
     {
         $this->Dialogue->deleteAll(true, false);
         $this->Schedule->deleteAll(true, false);
         $this->Participant->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
+    }
+
+
+    public function tearDown()
+    {
+        $this->dropData();
         unset($this->Dialogue);
         unset($this->Schedule);
+        unset($this->Participant);
+        unset($this->ProgramSetting);
         parent::tearDown();
     }
     
@@ -232,22 +240,32 @@ class DialogueTestCase extends CakeTestCase
     }
     
     
-    public function saveAddingId()
+    public function testSaveAddingId()
     {
         $dialogueOne['Dialogue'] = array(
-            'interactions'=> array(
+            'auto-enrollment' => 'none',
+            'interactions' => array(
                 array(
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '2012-10-10T10:10:10',
                     'type-interaction' => 'question-answer', 
+                    'type-question' => 'open-question',
                     'content' => 'how are you', 
                     'keyword' => 'FEEL', 
                     ),
                 array(
-                    'type-interaction' => 'question-answer', 
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '2012-10-10T10:10:10',
+                    'type-interaction' => 'question-answer',
+                    'type-question' => 'open-question', 
                     'content' => 'How old are you?', 
                     'keyword' => 'Age', 
                     ),
                 array( 
-                    'type-interaction'=> 'question-answer', 
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '2012-10-10T10:10:10',
+                    'type-interaction' => 'question-answer',
+                    'type-question' => 'open-question',
                     'content' => 'What is you name?', 
                     'keyword'=> 'NAME', 
                     'interaction-id' => 'id not to be removed'
@@ -256,15 +274,70 @@ class DialogueTestCase extends CakeTestCase
             );
         
         
-        $saveDialogueOne = $this->Dialogue->saveDialogue($dialogueOne);
-        $this->assertTrue(isset($dialogueOne['Dialogue']['dialogue-id']));
-        $this->assertTrue(isset($dialogueOne['Dialogue']['interactions'][0]['interaction-id']));
-        $this->assertFalse($dialogueOne['Dialogue']['interactions'][0]['interaction-id']!=
-            $dialogueOne['Dialogue']['interactions'][1]['interaction-id']);
-        $this->assertEquals('id not to be removed', isset($dialogueOne['Dialogue']['interactions'][2]['interaction-id']));      
+        $saveDialogue = $this->Dialogue->saveDialogue($dialogueOne);
+        $this->assertTrue(isset($saveDialogue['Dialogue']['dialogue-id']));
+        $this->assertTrue(isset($saveDialogue['Dialogue']['interactions'][0]['interaction-id']));
+        $this->assertNotEqual(
+            $saveDialogue['Dialogue']['interactions'][0]['interaction-id'],
+            $saveDialogue['Dialogue']['interactions'][1]['interaction-id']);
+        $this->assertEquals(
+            'id not to be removed', 
+            $saveDialogue['Dialogue']['interactions'][2]['interaction-id']);      
     }
     
-    
+    public function testSaveConditionalScheduleReplacingLocalId()
+    {
+        $dialogueOne['Dialogue'] = array(
+            'auto-enrollment' => 'none',
+            'interactions' => array(
+                array(
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '2012-10-10T10:10:10',
+                    'type-interaction' => 'question-answer', 
+                    'type-question' => 'open-question',
+                    'interaction-id' => 'local:48',
+                    'content' => 'how are you', 
+                    'keyword' => 'FEEL', 
+                    ),
+                array(
+                    'type-schedule' => 'offset-condition',
+                    'offset-condition-interaction-id' => 'local:48',
+                    'type-interaction' => 'question-answer',
+                    'interaction-id' => 'local:50',
+                    'type-question' => 'open-question',
+                    'content' => 'How old are you?', 
+                    'keyword' => 'Age', 
+                    ),
+                 array( 
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '2012-10-10T10:10:10',
+                    'type-interaction' => 'question-answer',
+                    'type-question' => 'open-question',
+                    'content' => 'What is you name?', 
+                    'keyword'=> 'NAME', 
+                    'interaction-id' => '74363622826'
+                    )
+                )
+            );
+        
+        
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogueOne);
+        $this->assertTrue(isset($savedDialogue['Dialogue']['interactions'][0]['interaction-id']));
+        $this->assertNotEqual(
+            'local:48',
+            $savedDialogue['Dialogue']['interactions'][0]['interaction-id']);
+        $this->assertEqual(
+            $savedDialogue['Dialogue']['interactions'][0]['interaction-id'],
+            $savedDialogue['Dialogue']['interactions'][1]['offset-condition-interaction-id']);
+        $this->assertNotEqual(
+            'local:50',
+            $savedDialogue['Dialogue']['interactions'][1]['interaction-id']);
+        $this->assertNotEqual(
+            '74363622826',
+            $savedDialogue['Dialogue']['interactions'][1]['interaction-id']);
+    }
+
+  
     public function testDeleteDialogue()
     {
         $dialogueOne['Dialogue'] = array(
