@@ -239,11 +239,13 @@ function activeForm(){
                         timeOnly: false,
                         dateFormat:'dd/mm/yy',
                         defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
-                        onSelect:function(){
-                        $("#dynamic-generic-program-form").valid()},
-                        onClose: function(){
-                            $("#dynamic-generic-program-form").valid()
-                }});
+                        onSelect:function(selected, event){
+                            $("#"+event.input.context.getAttribute('id')).valid()
+                        },
+                        onClose: function(selected, event){
+                            $("#"+event.input.context.getAttribute('id')).valid()
+                        },
+                });
                 $(elt).rules("add",{
                         required:true,
                         isInThePast: $("#local-date-time").html(),
