@@ -147,9 +147,11 @@ class UsersController extends AppController
         } 
         
         if ($this->request->is('post') || $this->request->is('put')) {
+            $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
+            unset($this->request->data['User']['unmatchable_reply_access']);
             if ($user = $this->User->save($this->request->data)) {
                 #checkbox is checked => we store it in the ACL
-                if ($this->request->data['User']['unmatchable_reply_access'] == true) {
+                if ($umatchableReplyAccess == true) {
                      $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
                     $this->Acl->deny($user, 'controllers/UnmatchableReply');
