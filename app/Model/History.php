@@ -404,7 +404,9 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'to') {
                         $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                     }
-                } 
+                } else {
+                    $condition['timestamp'] = '';
+                }
             } elseif ($filterParam[1] == 'participant-phone') {
                 if ($filterParam[3]) {
                     if ($filterParam[2] == 'equal-to') {
@@ -415,6 +417,8 @@ class History extends MongoModel
                         $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
                         $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
                     }
+                } else {
+                    $condition['participant-phone'] = '';
                 }
             } elseif ($filterParam[1] == 'message-content') {
                 if ($filterParam[3]) {
@@ -428,13 +432,17 @@ class History extends MongoModel
                         $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
                         $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
                     }
+                } else {
+                    $condition['message-content'] = '';
                 }
             } elseif ($filterParam[1] == 'separate-message') {
                 if ($filterParam[3]) {
                     if ($filterParam[2] == 'equal-to') {
                         $condition['unattach-id'] = $filterParam[3];    
                     } 
-                } 
+                } else {
+                    $condition['unattach-id'] = '';
+                }
             } elseif ($filterParam[1] == 'dialogue-source') {
                 if ($filterParam[3]) {
                     if ($filterParam[2] == 'is') {
@@ -446,6 +454,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is-any') {
                         $condition['dialogue-id'] = array('$exists' => false);
                     }
+                } else {
+                    $condition['dialogue-id'] = '';
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
                 if ($filterParam[3]) {
@@ -458,6 +468,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is-any') {
                         $condition['interaction-id'] = array('$exists' => false);
                     }
+                } else {
+                    $condition['interaction-id'] = '';
                 }
             } elseif ($filterParam[1] == 'request-source') {
                 if ($filterParam[3]) {
@@ -470,6 +482,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is-any') {
                         $condition['request-id'] = array('$exists' => false);
                     }
+                } else {
+                    $condition['request-id'] = '';
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {
@@ -483,7 +497,7 @@ class History extends MongoModel
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
-                    $conditions = $condition;
+                   $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
                 } elseif (!isset($conditions['$and'])) {
                     $conditions = array('$and' => array($conditions, $condition));
                 } else {

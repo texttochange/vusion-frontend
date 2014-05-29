@@ -391,10 +391,9 @@ class HistoryTestCase extends CakeTestCase
                     3 => ''),
                 )
             );
-        print_r($this->History->fromFilterToQueryConditions($filter));
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            null
+            array()
             );
 
         $filter = array(
@@ -408,7 +407,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            null
+            array()
             );
     }
     
@@ -453,7 +452,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            null
+            array()
             );
 
         $filter = array(
@@ -467,7 +466,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            null
+            array()
             );
     }
 
@@ -515,7 +514,7 @@ class HistoryTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            null
+            array()
             );
         
         $filter = array(
@@ -529,7 +528,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            null
+           array()
             );
     }
     
