@@ -29,5 +29,6 @@ Vagrant::Config.run do |config|
   config.vm.share_folder('components', '/var/vusion/backend/components', 'backend/components', :nfs => true)
   config.vm.share_folder('tests', '/var/vusion/backend/tests', 'backend/tests', :nfs => true)
   config.vm.share_folder('dispatchers', '/var/vusion/backend/disptachers', 'backend/dispatchers', :nfs => true)
+  config.vm.share_folder('scripts', '/var/vusion/backend/scripts', 'backend/scripts', :nfs => true)
 
 end
