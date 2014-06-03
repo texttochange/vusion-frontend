@@ -114,58 +114,75 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                 //Little function to help generating the tree leaves
                 function getTreeElt($label, $value, $isLeave=true, $class=false, $icon=false) {
                     $value = (is_numeric($value) ? $value : 0);
-                    return "<li ". ($class? " class='".$class."' ":"") . ($icon? "data-jstree='{\"icon\":\"".$icon."\"}'":"") . " >"
+                    return "<li ". ($class? " class='".$class."' ":"") . ($icon? "data-jstree='{\"icon\":\"../img/".$icon."\"}'":"") . " >"
                             ."<span style='font-weight:normal'>". $label . ": ". $value ."</span>"
                             . ($isLeave? "</li>":"");
                 }
+                function getCountSummary($incomingCount, $outgoingCount) {
+                    return " <span style='font-weight:normal'>".
+                               "<span class='stat-summary' title='".__("Received")."'>".
+                                    "<img src='../img/incoming-icon-14.png'/> ".$incomingCount.
+                                "</span>".
+                                 "<span class='stat-summary' title='".__("Sent")."'>".
+                                    "<img src='../img/outgoing-icon-14.png' /> ".$outgoingCount.
+                                "</span>".
+                            "</span>";
+                }
 
                 foreach ($countriesCredits as $countryCredits) {
-                    echo '<li data-jstree=\'{"icon":"../img/country-icon-20.png"}\'>'. 
-                    __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $countryCredits['country'], $countryCredits['incoming'], $countryCredits['outgoing']);
+                    echo '<li data-jstree=\'{"icon":"../img/country-icon-20.png"}\'>'. $countryCredits['country'];
+                    echo getCountSummary(
+                            $this->Number->format($countryCredits['incoming']),
+                            $this->Number->format($countryCredits['outgoing']));
                     echo '<ul>';
                     foreach ($countryCredits['codes'] as $code) {
-                        echo '<li data-jstree=\'{"icon":"../img/code-icon-20.png"}\'>'. 
-                            __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $code['code'], $code['incoming'], $code['outgoing']);
+                        echo '<li data-jstree=\'{"icon":"../img/code-icon-20.png"}\'>'. $code['code'];
+                        echo getCountSummary(
+                                $this->Number->format($code['incoming']), 
+                                $this->Number->format($code['outgoing']));
                         echo '<ul>';
                         foreach ($code['programs'] as $programCreditLog) {
                             if ($programCreditLog['object-type'] == 'deleted-program-credit-log') {
                                 $programIcon = "deleted-program-icon";
+                                $programTitle = __("Deleted program");
                             } else {
                                 $programIcon = "program-icon";
+                                $programTitle = __("Running program");
                             }
-                            echo '<li data-jstree=\'{"icon":"../img/'.$programIcon.'-20.png"}\'>'. 
-                                __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", $programCreditLog['program-name'], $programCreditLog['incoming'], $programCreditLog['outgoing']);
+                            echo '<li data-jstree=\'{"icon":"../img/'.$programIcon.'-20.png"}\' title=\''.$programTitle.'\'>'. $programCreditLog['program-name'];
+                            echo getCountSummary(
+                                    $this->Number->format($programCreditLog['incoming']), 
+                                    $this->Number->format($programCreditLog['outgoing']));
                             echo '<ul>';
-                            echo getTreeElt(__("incoming"), $programCreditLog['incoming'], true, false, "../img/incoming-icon-20.png");
-                            echo getTreeElt(__("outgoing"), $programCreditLog['outgoing'], false, false, "../img/outgoing-icon-20.png");
+                            echo getTreeElt(__("Received"), $this->Number->format($programCreditLog['incoming']), true, false, "incoming-icon-20.png");
+                            echo getTreeElt(__("Sent"), $this->Number->format($programCreditLog['outgoing']), false, false, "outgoing-icon-20.png");
                             echo '<ul>';
-                            echo getTreeElt(__("pending"), $programCreditLog['outgoing-pending'], true, false, "../img/status-pending-icon-20.png");
-                            echo getTreeElt(__("acked"), $programCreditLog['outgoing-ack'], true, false, "../img/status-acked-icon-20.png");
-                            echo getTreeElt(__("nacked"), $programCreditLog['outgoing-nack'], true, false, "../img/status-nacked-icon-20.png");
-                            echo getTreeElt(__("delivered"), $programCreditLog['outgoing-delivered'], true, false, "../img/status-delivered-icon-20.png");
-                            echo getTreeElt(__("failed"), $programCreditLog['outgoing-failed'], true, false, "../img/status-failed-icon-20.png");
+                            echo getTreeElt(__("Pending"), $this->Number->format($programCreditLog['outgoing-pending']), true, false, "status-pending-icon-20.png");
+                            echo getTreeElt(__("Acked"), $this->Number->format($programCreditLog['outgoing-ack']), true, false, "status-acked-icon-20.png");
+                            echo getTreeElt(__("NAcked"), $this->Number->format($programCreditLog['outgoing-nack']), true, false, "status-nacked-icon-20.png");
+                            echo getTreeElt(__("Delivered"), $this->Number->format($programCreditLog['outgoing-delivered']), true, false, "status-delivered-icon-20.png");
+                            echo getTreeElt(__("Failed"), $this->Number->format($programCreditLog['outgoing-failed']), true, false, "status-failed-icon-20.png");
                             echo '</ul>';
                             echo '</li>';                            
                             echo '</ul></li>';
                         }
                         if ($code['garbage'] != array()) {
-                            echo '<li data-jstree=\'{"icon":"../img/garbage-icon-20.png"}\'>'. 
-                            __("%s  <span style='font-weight:normal'>in:%s  out:%s</span>", __('Unmatchable Replies'), $code['garbage']['incoming'], $code['garbage']['outgoing']);
+                            echo '<li data-jstree=\'{"icon":"../img/garbage-icon-20.png"}\'>'. __('Unmatchable Replies');
+                            echo getCountSummary(
+                                    $this->Number->format($code['garbage']['incoming']), 
+                                    $this->Number->format($code['garbage']['outgoing']));
                             echo '<ul>';
                             echo getTreeElt(__("incoming"), $code['garbage']['incoming'], true, false, "../img/incoming-icon-20.png");
                             echo getTreeElt(__("outgoing"), $code['garbage']['outgoing'], true, false, "../img/outgoing-icon-20.png");
                             echo '</ul></li>';
-                            echo '</ul>';
-                            echo '</li>';
                         }
+                        echo '</ul></li>';
+                
                     }
-                    echo '</ul>';
-                    echo '</li>';
+                    echo '</ul></li>';
                 }
                 $this->Js->get('document')->event('ready', '
-                    $("#countries-credits-tree").jstree({
-                  //      "core":{"themes":{"icons": false}}
-                                });');
+                    $("#countries-credits-tree").jstree();');
                 ?>
                 </ul>
              </div>

@@ -11,7 +11,8 @@ class CreditViewerController extends AppController
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
-        'PhoneNumber');
+        'PhoneNumber',
+        'Number');
     var $components = array(
         'ProgramPaginator',
         'CreditManager',
