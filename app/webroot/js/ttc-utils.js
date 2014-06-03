@@ -168,7 +168,7 @@ function createFilter(minimize, selectedStackOperator, stackRules){
     $(stackOperatorSelect).attr('name', 'filter_operator');
     
     $.each(window.app.filterParameterOptions['operator'], function(val, text) {
-            var option = new Option(text, val);
+            var option = new Option(localize_label(text), val);
             if (val==selectedStackOperator) {
                 $(option).attr('selected', true);
             }
@@ -701,12 +701,12 @@ function generateHtmlProgramStatsInside(programStats) {
     ' message(s)</td></tr>'+
     '<tr  '+
     ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Received Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<td><img src="/img/receivedmessage-icon-14.png"></td><td>'+
+    '<td><img src="/img/incoming-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)' : 'N/A')+
     ' received</td></tr>'+
     '<tr  '+
     ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Sent Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
-    '<td><img src="/img/sentmessage-icon-14.png"></td><td>'+
+    '<td><img src="/img/outgoing-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)' : 'N/A')+
     ' sent</td></tr>'+
     '<tr  '+

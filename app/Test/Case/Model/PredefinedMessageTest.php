@@ -33,7 +33,7 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->PredefinedMessage->deleteAll(true, false);
     }
     
-    
+
     public function testSave()
     {
         $predefinedMessage = array(
@@ -81,6 +81,45 @@ class PredefinedMessageTestCase extends CakeTestCase
         $this->assertFalse($this->PredefinedMessage->save($predefinedMessage02));
         $this->assertEquals('This name already exists. Please choose another.',
             $this->PredefinedMessage->validationErrors['name'][0]);
+    }
+    
+    
+    public function testApostrope_fail_content()
+    {
+        $predefinedMessage = array(
+            'name' => 'message one',
+            'content' => "’`’‘"
+            );
+        $this->PredefinedMessage->create();
+        $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
+        $this->assertEquals('The apostrophe used is not allowed.',
+            $this->PredefinedMessage->validationErrors['content'][0]);
+    }
+    
+    
+    public function testValidContentVariable_fail()
+    {
+        $predefinedMessage = array(
+            'name' => 'hello',
+            'content' => 'There is a an [shoe.box] here.',
+            );
+        $this->PredefinedMessage->create();
+        $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
+       $this->assertEquals(
+            "To be used as customized content, 'shoe' can only be either: participant, contentVariable or time.",
+            $this->PredefinedMessage->validationErrors['content'][0]);
+        
+        $predefinedMessage['content'] = "Hello [participant.gender.name]";
+        $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
+        $this->assertEquals(
+            "To be used in message, participant only accepts one key.",
+            $this->PredefinedMessage->validationErrors['content'][0]);
+        
+        $predefinedMessage['content'] = "Hello [contentVariable.kampala.pork.male.price]";
+        $this->assertFalse($this->PredefinedMessage->save($predefinedMessage));
+        $this->assertEquals(
+            "To be used in message, contentVariable only accepts maximum three keys.",
+            $this->PredefinedMessage->validationErrors['content'][0]); 
     }
     
 }

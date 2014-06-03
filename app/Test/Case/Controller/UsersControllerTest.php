@@ -42,7 +42,7 @@ class UsersControllerTestCase extends ControllerTestCase
     *
     * @var array
     */
-    public $fixtures = array('app.user', 'app.group');
+    public $fixtures = array('app.user', 'app.group', 'app.program');
     
     /**
     * setUp method
@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-    
+   
     public function testIndex() 
     {
         
@@ -90,10 +90,124 @@ class UsersControllerTestCase extends ControllerTestCase
         
     }
     
-    
-    public function testEdit() 
+   
+    public function testEdit_grant_unmatchable_reply_access() 
     {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check', 'allow', 'deny'),
+                'Session' => array('read')
+                ),
+            'models' => array(
+                'User' => array('exists', 'save'),
+                )
+            ));
         
+        $mockedUser = array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared'
+                )
+            );
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('read')
+        ->will($this->returnValue('User'));
+        
+        $users->User
+        ->expects($this->once())
+        ->method('exists')
+        ->will($this->returnValue('true'));
+        
+        $users->User
+        ->expects($this->once())
+        ->method('save')
+        ->with($mockedUser)
+        ->will($this->returnValue($mockedUser));
+        
+        $users->Acl
+        ->expects($this->once())
+        ->method('allow')
+        ->with($mockedUser, 
+            "controllers/UnmatchableReply")
+        ->will($this->returnValue('true'));
+        
+        $users->Acl
+        ->expects($this->once())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $formUser = $mockedUser;
+        $formUser['User']['unmatchable_reply_access'] = true;
+        
+        $this->testAction("/users/edit/".$formUser['User']['id'],array(
+            'method' => 'post',
+            'data' => $formUser
+            ));
+
+        $this->assertContains('/users/index', $this->headers['Location']);
+    }
+    
+    
+    public function testEdit_deny_unmatchable_reply_access() 
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check', 'allow', 'deny'),
+                'Session' => array('read')
+                ),
+            'models' => array(
+                'User' => array('exists', 'save'),
+                )
+            ));
+        
+        
+        
+        $mockedUser = array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'jared'
+                )
+            );
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('read')
+        ->will($this->returnValue('User'));
+        
+        $users->User
+        ->expects($this->once())
+        ->method('exists')
+        ->will($this->returnValue('true'));
+        
+        $users->User
+        ->expects($this->once())
+        ->method('save')
+        ->with($mockedUser)
+        ->will($this->returnValue($mockedUser));
+        
+        $users->Acl
+        ->expects($this->once())
+        ->method('deny')
+        ->with($mockedUser, 
+            "controllers/UnmatchableReply")
+        ->will($this->returnValue('true'));
+        
+        $users->Acl
+        ->expects($this->once())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $formUser = $mockedUser;
+        $formUser['User']['unmatchable_reply_access'] = false;
+        
+        $this->testAction("/users/edit/".$formUser['User']['id'],array(
+            'method' => 'post',
+            'data' => $formUser
+            ));
+
+        $this->assertContains('/users/index', $this->headers['Location']);
     }
     
     

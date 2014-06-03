@@ -46,7 +46,7 @@ class InteractionTestCase extends CakeTestCase
         $interaction = $this->Interaction->getCurrent();
         
         $this->assertEqual($interaction['activated'], 0);
-        $this->assertEqual($interaction['model-version'], '4');
+        $this->assertEqual($interaction['model-version'], '5');
         $this->assertTrue(isset($interaction['reminder-actions'][0]['model-version']));
     }
     
@@ -61,7 +61,7 @@ class InteractionTestCase extends CakeTestCase
         $this->assertEqual($interaction['activated'], 0);
         $this->assertTrue(isset($interaction['answers'][0]['answer-actions'][0]['model-version']));
     }
-    
+
     
     public function testBeforeValidate_multiKeywordQuestion()
     {
@@ -76,7 +76,24 @@ class InteractionTestCase extends CakeTestCase
         $this->assertTrue(isset($interaction['reminder-actions'][0]['model-version']));
     }
     
-    
+
+    public function testValidate_offsetConditionDelay_fail()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $interaction['type-schedule'] = 'offset-condition';
+        $interaction['offset-condition-interaction-id'] = 'local:20';
+        $interaction['offset-condition-delay'] = 'a string'; 
+
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $this->assertFalse($this->Interaction->validates());
+        $this->assertEqual(
+            $this->Interaction->validationErrors['offset-condition-delay'][0], 
+            'The delay only accept full minutes.');
+
+    }
+
+
     public function testValidate_keyword_ok()
     {
         $interaction = $this->Maker->getInteractionOpenQuestion();
@@ -95,7 +112,6 @@ class InteractionTestCase extends CakeTestCase
         $this->Interaction->set($interaction);
         $this->Interaction->beforeValidate();
         $this->assertTrue($this->Interaction->validates());
-        
     }
     
     
@@ -146,7 +162,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as customized content, 'participants' can only be either 'participant', 'contentVariable', 'context' or 'time'."
+            "To be used as customized content, 'participants' can only be either: participant, contentVariable or time."
             );
         
         ## test feedback action
@@ -161,8 +177,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['reminder-actions'][0]['content'][0], 
-            "To be used as customized content, 'person' can only be either 'participant', 'contentVariable', 'context' or 'time'."
-            );
+            "To be used as customized content, 'person' can only be either: participant, contentVariable, time or context.");
     }
     
     

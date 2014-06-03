@@ -1,14 +1,12 @@
 <?php
 App::uses('AppController', 'Controller');
 App::uses('ProgramSetting', 'Model');
-App::uses('Participant', 'Model');
-App::uses('Schedule', 'Model');
-App::uses('History', 'Model');
 App::uses('UnmatchableReply', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('Request', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('ShortCode', 'Model');
+App::uses('CreditLog', 'Model');
 
 
 class ProgramsController extends AppController
@@ -19,7 +17,8 @@ class ProgramsController extends AppController
         'LocalizeUtils', 
         'PhoneNumber', 
         'ProgramPaginator', 
-        'Stats');
+        'Stats',
+        'UserAccess');
     var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
     
     var $uses = array('Program', 'Group');
@@ -46,7 +45,7 @@ class ProgramsController extends AppController
                 );
         }
         $this->ShortCode  = new ShortCode($options);
-        
+        $this->CreditLog  = new CreditLog($options);
     }
     
     
@@ -95,44 +94,26 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
-        $this->Program->recursive = -1;
-        
-        $user = $this->Auth->user();   
-        
+                
         $conditions = $this->_getConditions();
-        
-        $nameCondition = $this->ProgramPaginator->getNameSqlCondition($conditions);
-        
+
+        ## TODO move in the Program Paginator
+        $this->Program->recursive = -1; 
+        $user = $this->Auth->user();  
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-            $programs = $this->Program->find('authorized', array(
+            $paginate = array(
+                'type' => 'authorized', 
                 'specific_program_access' => 'true',
                 'user_id' => $user['id'],
-                'conditions' => $nameCondition,
-                'order' => array(
-                    'Program.created' => 'desc'
-                    )
-                ));
-            
-            $allPrograms = $this->Program->find('authorized', array(
-                'specific_program_access' => 'true',
-                'user_id' => $user['id']));
+                'conditions' => $conditions,
+                'order' => array('created' => 'desc'));
         } else {
-            $programs    =  $this->Program->find('all', array(
-                'conditions' => $nameCondition,
-                'order' => array(
-                    'Program.created' => 'desc'
-                    ))
-                );
-            
-            $allPrograms = $this->Program->find('all');
+            $paginate = array(
+                'type' => 'all', 
+                'conditions' => $conditions,
+                'order' => array('created' => 'desc'));
         }
-        
-        if (isset($conditions['$or']) and !isset($nameCondition['OR']))
-            $programsList =  $allPrograms;
-        else
-        $programsList =  $programs;
-        
+
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
@@ -142,53 +123,20 @@ class ProgramsController extends AppController
             
         }
         
-        $filteredPrograms = array();
-        
-        foreach($programsList as &$program) {
-            $programDetails = $this->ProgramPaginator->getProgramDetails($program);
-            
-            $program = array_merge($program, $programDetails['program']);
-            
-            $filterPrograms = $this->Program->matchProgramByShortcodeAndCountry(
-                $programDetails['program'],
-                $conditions,
-                $programDetails['shortcode']);
-            if (count($filterPrograms)>0) {
-                foreach ($filterPrograms as $fProgram) {
-                    $filteredPrograms[] = $fProgram;
-                }
-            }
-        }
-        
-        if (count($filteredPrograms)>0
-            or (isset($conditions) && $nameCondition == array())
-        or (isset($conditions['$and']) && $nameCondition != array() && count($filteredPrograms) == 0)) {
-        $programsList = $filteredPrograms;
-        }
-        
-        if (isset($conditions['$or']) and !isset($nameCondition['OR']) and $nameCondition != array()) {
-            foreach($programs as &$program) {
-                $details = $this->ProgramPaginator->getProgramDetails($program);
-                $program = array_merge($program, $details['program']);            
-            }
-            foreach ($programsList as $listedProgram) {
-                if (!in_array($listedProgram, $programs))
-                    array_push($programs, $listedProgram);
-            }
-        } else {
-            $programs = $programsList;
-        }
-        
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
+        $unmatchableCondition = $this->UserAccess->getUnmatchableConditions();
+        $andCondition = array('$and' => array($unmatchableCondition, array('direction' => 'incoming')));
+        $unmatchedConditon  = (!empty($unmatchableCondition)) ? $andCondition : array('direction' => 'incoming');
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
-            array('conditions' => array('direction' => 'incoming'), 
+            array('conditions' => $unmatchedConditon, 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
         # paginate using ProgramPaginator
-        $this->ProgramPaginator->settings['limit'] = 10;
-        $programs = $this->ProgramPaginator->paginate($programs);
+        $this->paginate = $paginate;
+        //$this->ProgramPaginator->settings['limit'] = 10;
+        $programs = $this->ProgramPaginator->paginate();
         
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
@@ -248,7 +196,9 @@ class ProgramsController extends AppController
         
         $this->set('urlParams', http_build_query($filter));
         
-        return $this->Program->fromFilterToQueryConditions($filter);
+        $conditions = $this->Program->fromFilterToQueryConditions($filter);
+        
+        return $conditions;
     }
     
     
@@ -374,6 +324,7 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
+            $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
             $this->Session->setFlash(__('Program deleted.'),
                 'default',

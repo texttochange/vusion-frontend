@@ -1,6 +1,7 @@
 <?php
 /* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
+App::uses('DialogueHelper', 'Lib');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -649,7 +650,5 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->countUnattachedMessages('5','delivered');       
         $this->assertEquals(0, $output); 
     }            
-    
-    
     
 }

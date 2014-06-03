@@ -155,6 +155,8 @@ class Dialogue extends MongoModel
     
     public function _beforeValidateInteractions()
     {
+        Interaction::replaceLocalIds($this->data['Dialogue']['interactions']);
+
         foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
             if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
                 $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];

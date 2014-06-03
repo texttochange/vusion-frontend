@@ -1392,6 +1392,28 @@ display: inline;
 	font-weight: normal;
 }
 
+.timeframe {
+    margin-bottom: 5px;
+}
+
+.timeframe .caption {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.timeframe-form .timeframe{
+   margin: 4px;
+   padding: 4px;
+   border: dotted 1px grey;
+}
+
+.timeframe-form .submit{
+   margin-left: 10px;
+}
+
+.timeframe-form .selected{
+    background: lightgrey;
+}
 /* padding for sms-message-counter */
 .sms-message-counter{
         padding-right:5px;       
@@ -1399,4 +1421,16 @@ display: inline;
 
 .readonly-field {
         color:#AAAAAA;
+}
+
+.credit-logs .stat-summary {
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        -ms-border-radius: 6px;
+        -o-border-radius: 6px;
+        border-radius: 6px ;
+        margin-right: 10px;
+        background-color: lightblue;
+        padding: 2px 3px 1px 3px;
+
 }

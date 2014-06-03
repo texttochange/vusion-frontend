@@ -108,6 +108,8 @@ var localized_labels = {
     "reminder-actions": "<?php echo __('Actions')?>",
     "reminder-action": "<?php echo __('Action')?>",
     "offset-condition": "<?php echo __('Answer Required')?>",
+    "offset-condition-interaction-id": "<?php echo __('Participant has to answer')?>",
+    "offset-condition-delay": "<?php echo __('Delaying for (in minute)')?>",
     "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
     "set-use-template": "<?php echo __('Use template from program settings')?>",
     "set-no-request-matching-try-keyword-only": "<?php echo __('In case no matching on other requests, try to match only the message first word.')?>",
@@ -139,7 +141,7 @@ var localized_labels = {
     "with": "<?php echo __('with')?>",
     "not-with": "<?php echo __('not with')?>",
     "none": "<?php echo __('none')?>",
-    "all": "<?php echo __('all participants')?>",
+    "all-participants": "<?php echo __('all participants')?>",
     "tagged": "<?php echo __('tagged')?>",
     "labelled": "<?php echo __('labelled')?>",
     "proportional-tagging": "<?php echo __('Proportional Tagging')?>",
@@ -173,5 +175,7 @@ var localized_labels = {
     "matching": "<?php echo __('matching')?>",
     "not-matching": "<?php echo __('not matching')?>",
     "many": "<?php echo __('many')?>",
+    "any": "<?php echo __('any')?>",
+    "all": "<?php echo __('all')?>",
 };
 
