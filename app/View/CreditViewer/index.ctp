@@ -113,7 +113,6 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                 <?php
                 //Little function to help generating the tree leaves
                 function getTreeElt($label, $value, $isLeave=true, $class=false, $icon=false) {
-                    $value = (is_numeric($value) ? $value : 0);
                     return "<li ". ($class? " class='".$class."' ":"") . ($icon? "data-jstree='{\"icon\":\"../img/".$icon."\"}'":"") . " >"
                             ."<span style='font-weight:normal'>". $label . ": ". $value ."</span>"
                             . ($isLeave? "</li>":"");
@@ -172,8 +171,8 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                                     $this->Number->format($code['garbage']['incoming']), 
                                     $this->Number->format($code['garbage']['outgoing']));
                             echo '<ul>';
-                            echo getTreeElt(__("incoming"), $code['garbage']['incoming'], true, false, "../img/incoming-icon-20.png");
-                            echo getTreeElt(__("outgoing"), $code['garbage']['outgoing'], true, false, "../img/outgoing-icon-20.png");
+                            echo getTreeElt(__("Received"), $code['garbage']['incoming'], true, false, "../img/incoming-icon-20.png");
+                            echo getTreeElt(__("Sent"), $code['garbage']['outgoing'], true, false, "../img/outgoing-icon-20.png");
                             echo '</ul></li>';
                         }
                         echo '</ul></li>';
