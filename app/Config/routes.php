@@ -220,6 +220,22 @@
 			'action' => 'index'
 			)
 		);
+	
+	Router::connect(
+		'/creditViewer/:action/*',
+		array(
+			'controller' => 'creditViewer',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/creditViewer',
+		array(
+			'controller' => 'creditViewer',
+			'action' => 'index'
+			)
+		);
 
 	
 /**

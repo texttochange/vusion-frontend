@@ -223,4 +223,39 @@ class ScriptMaker
                 'since' => $since));
     }
 
+    static public function mkCreditLog($objectType='program-credit-log', $date='2014-04-10',
+                                $programDatabase='mydatabase', $code='256-8181', $incoming=2,
+                                $outgoing=1)
+    {
+        switch($objectType) {
+        case 'program-credit-log':
+            return array(
+                'object-type' => $objectType,
+                'date' => $date,
+                'code' => $code,
+                'program-database' => $programDatabase,
+                'incoming' => $incoming,
+                'outgoing' => $outgoing);
+            break;
+        case 'garbage-credit-log':
+            return array(
+                'object-type' => $objectType,
+                'date' => $date,
+                'code' => $code,
+                'incoming' => $incoming,
+                'outgoing' => $outgoing);
+            break;
+        case 'deleted-program-credit-log':
+            return array(
+                'object-type' => $objectType,
+                'date' => $date,
+                'code' => $code,
+                'program-name' => 'My Deleted Program',
+                'incoming' => $incoming,
+                'outgoing' => $outgoing);
+            break;
+        } 
+        return null;
+    }
+
 }

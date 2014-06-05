@@ -28,7 +28,7 @@ class History extends MongoModel
     
     function getModelVersion()
     {
-        return '2';
+        return '4';
     }
     
     
@@ -42,7 +42,8 @@ class History extends MongoModel
         
         $MESSAGE_FIELDS = array(
             'message-content',
-            'message-direction');
+            'message-direction',
+            'message-credits');
         
         $SPECIFIC_DIRECTION_FIELDS = array(
             'outgoing' => array('message-id', 'message-status'),
@@ -51,7 +52,14 @@ class History extends MongoModel
         $SPECIFIC_STATUS_FIELDS = array(
             'failed' => array('failure-reason'),
             'pending' => array(),
-            'delivered' => array());
+            'delivered' => array(),
+            'ack' => array(),
+            'nack' => array(),
+            'no-credit' => array(),
+            'no-credit-timeframe' => array(),
+            'missing-data' => array('missing-data'),
+            'received' => array(),
+            'forwarded' => array('forwards'));
         
         $OBJECT_WITH_DIALOGUE_REF = array(
             'dialogue-history',
@@ -404,7 +412,9 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'to') {
                         $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
                     }
-                } 
+                } else {
+                    $condition['timestamp'] = '';
+                }
             } elseif ($filterParam[1] == 'participant-phone') {
                 if ($filterParam[3]) {
                     if ($filterParam[2] == 'equal-to') {
@@ -415,6 +425,8 @@ class History extends MongoModel
                         $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
                         $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
                     }
+                } else {
+                    $condition['participant-phone'] = '';
                 }
             } elseif ($filterParam[1] == 'message-content') {
                 if ($filterParam[3]) {
@@ -428,13 +440,17 @@ class History extends MongoModel
                         $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
                         $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
                     }
+                } else {
+                    $condition['message-content'] = '';
                 }
             } elseif ($filterParam[1] == 'separate-message') {
                 if ($filterParam[3]) {
                     if ($filterParam[2] == 'equal-to') {
                         $condition['unattach-id'] = $filterParam[3];    
                     } 
-                } 
+                } else {
+                    $condition['unattach-id'] = '';
+                }
             } elseif ($filterParam[1] == 'dialogue-source') {
                 if ($filterParam[3]) {
                     if ($filterParam[2] == 'is') {
@@ -446,6 +462,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is-any') {
                         $condition['dialogue-id'] = array('$exists' => false);
                     }
+                } else {
+                    $condition['dialogue-id'] = '';
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
                 if ($filterParam[3]) {
@@ -458,6 +476,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is-any') {
                         $condition['interaction-id'] = array('$exists' => false);
                     }
+                } else {
+                    $condition['interaction-id'] = '';
                 }
             } elseif ($filterParam[1] == 'request-source') {
                 if ($filterParam[3]) {
@@ -470,6 +490,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is-any') {
                         $condition['request-id'] = array('$exists' => false);
                     }
+                } else {
+                    $condition['request-id'] = '';
                 }
             } elseif ($filterParam[1] == 'answer') {
                 if ($filterParam[2] == 'matching') {
@@ -483,7 +505,7 @@ class History extends MongoModel
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
-                    $conditions = $condition;
+                   $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
                 } elseif (!isset($conditions['$and'])) {
                     $conditions = array('$and' => array($conditions, $condition));
                 } else {
@@ -537,5 +559,78 @@ class History extends MongoModel
         return $historyCount;
     }
     
+    /*
+    public function getCreditsFromHistory($conditions=array())
+    {
+
+        $defaultConditions = array(
+                array('object-type'=> array(
+                    '$in'=> $this->messageType,
+                    )),
+                array('message-status' => array(
+                    '$nin' => array(
+                        'missing-data','no-credit','no-credit-timeframe')
+                    )),				            
+                ); 
+        
+        if (!empty($conditions)) {
+            $conditions = array('$and' => 
+                array_merge($defaultConditions, $conditions));
+        } else {
+            $conditions = array('$and' => $defaultConditions);
+        }
+
+        $reduce = new MongoCode(
+            "function(obj, prev){ 
+                if (!obj['message-credits']) {
+		            prev.credits += 1;
+			    } else { 
+				    prev.credits += obj['message-credits'];
+			    }
+			}");
+
+        $query = array(
+				'key' => array('message-direction' => true ),
+				'initial' => array('credits' => 0),
+				'reduce' => $reduce,
+				'options' => array(
+				    'condition' => $conditions
+				    )
+				);
+		$mongo = $this->getDataSource();
+		$resultGroup = $mongo->group($this, $query);
+		$result = array(
+		    'incoming' => 0,
+		    'outgoing' => 0);
+		if (isset($resultGroup['retval'])) {
+		    foreach($resultGroup['retval'] as $messageCount) {
+		        $result[$messageCount['message-direction']] = $messageCount['credits']; 
+		    }
+		}
+		return $result;  
+    }
+
+
+    public static function isConditionTimeframeOneMonth($conditions, $now) 
+    {
+        if (!isset($conditions['date-from'])) {
+            return false;
+        } 
+        $dateFrom = DialogueHelper::fromVusionDateToPhpDate($conditions['date-from']);
+
+        if (!isset($conditions['date-to'])) {
+            $dateTo = $now;
+        } else {
+            $dateTo = DialogueHelper::fromVusionDateToPhpDate($conditions['date-to']);
+        }
+        print_r($dateFrom);
+        $diff = $dateFrom->diff($dateTo);
+
+        $month = $diff->format('%m');
+        print_r($month);
+        return ($month < 1);
+        
+    }
+    */
     
 }

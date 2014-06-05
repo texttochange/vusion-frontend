@@ -219,7 +219,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=answer&filter_param[1][2]=not-matching");
-        $this->assertEquals(5, count($this->vars['statuses']));
+        $this->assertEquals(1, count($this->vars['statuses']));
         $this->assertEquals('name', $this->vars['statuses'][0]['History']['message-content']);
         
         $this->mockProgramAccess();
