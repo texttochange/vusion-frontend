@@ -32,7 +32,7 @@ class CreditManagerComponent extends Component
 
 
     public function getCount($programDatabase)
-    {   
+    {
         $countKey = $this->getCountKey($programDatabase);
         $count    = $this->redis->get($countKey);
         if ($count == null || !isset($count)) {

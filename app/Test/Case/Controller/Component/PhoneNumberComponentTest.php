@@ -59,5 +59,17 @@ class PhoneNumberComponentTest extends CakeTestCase {
         $this->assertEqual($prefixesOfCountries['France'], 33);
     }
     
+
+    public function testFromPrefixedCodeToCountry() 
+    {
+        $this->assertEqual('France', $this->PhoneNumberComponent->fromPrefixedCodeToCountry('33-8181'));
+        $this->assertEqual('Netherlands', $this->PhoneNumberComponent->fromPrefixedCodeToCountry('+31345433'));
+        try {
+            $this->PhoneNumberComponent->fromPrefixedCodeToCountry('+999999');
+            $this->fail();
+        } catch (VusionException $e){
+            $this->assertEqual($e->getMessage(), "Cannot find valid country prefix from +999999.");
+        }
+    }   
     
 }

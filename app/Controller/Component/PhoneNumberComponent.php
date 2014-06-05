@@ -1,5 +1,9 @@
 <?php
 App::uses('Component', 'Controller');
+App::uses('VusionException', 'Lib');
+App::uses('VusionConst', 'Lib');
+App::uses('DialogueHelper', 'Lib');
+
 
 class PhoneNumberComponent extends Component {
 
@@ -7,11 +11,17 @@ class PhoneNumberComponent extends Component {
     public function startup(Controller $controller)
     {
         parent::startup($controller);
+        $this->countriesByPrefixes = null;
     }
         
     
     public function getCountriesByPrefixes()
     { 
+        //avoid loading multiple time
+        if ($this->countriesByPrefixes != null) {
+            return $this->countriesByPrefixes;
+        }
+
     	$filePath = WWW_ROOT . "files"; 
         $fileName = "countries and codes.csv";
         $importedCountries = fopen($filePath . DS . $fileName,"r");
@@ -27,6 +37,7 @@ class PhoneNumberComponent extends Component {
            }
            $count++;           
         }
+        $this->countriesByPrefixes = $options;
         return $options;
     }
 
@@ -42,6 +53,15 @@ class PhoneNumberComponent extends Component {
         $countriesPrefixes = $this->getCountriesByPrefixes();
         return array_combine(array_values($countriesPrefixes), array_values($countriesPrefixes));  
     }
+
+    public function fromPrefixedCodeToCountry($prefixedCode)
+    {
+        $countriesByPrefixes = $this->getCountriesByPrefixes();
+        return DialogueHelper::fromPrefixedCodeToCountry($prefixedCode, $countriesByPrefixes);
+    }
+
+
+
     
     
 }

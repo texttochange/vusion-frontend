@@ -71,6 +71,7 @@ class ProgramHistoryController extends AppController
             $statuses = $this->paginate();
             $this->set(compact('statuses'));
         }
+        //print_r($statuses);
     }
     
     

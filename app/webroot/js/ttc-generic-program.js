@@ -239,11 +239,13 @@ function activeForm(){
                         timeOnly: false,
                         dateFormat:'dd/mm/yy',
                         defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
-                        onSelect:function(){
-                        $("#dynamic-generic-program-form").valid()},
-                        onClose: function(){
-                            $("#dynamic-generic-program-form").valid()
-                }});
+                        onSelect:function(selected, event){
+                            $("#"+event.input.context.getAttribute('id')).valid()
+                        },
+                        onClose: function(selected, event){
+                            $("#"+event.input.context.getAttribute('id')).valid()
+                        },
+                });
                 $(elt).rules("add",{
                         required:true,
                         isInThePast: $("#local-date-time").html(),
@@ -488,7 +490,7 @@ function foldForm(){
     default:
         summary = "not summarized view available for this item";
     }
-    $(parent).append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
+    $(parent).append('<div class="ttc-fold-summary">'+((summary != null)? summary.substring(0,70):'')+'...</div>');
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
 
@@ -502,33 +504,38 @@ function generateFieldSummary(elt, parentName, field)
 
 //TODO need to generate a interaction id there.
 function updateOffsetConditions(elt){
-    var bucket = []; 
-    var i =0;
-    $(elt).children().each(function(){bucket[i]=$(this).val(); i++;});
-    if (!(bucket instanceof Array)) {
-        bucket = [bucket];
+    //Get current interaction ID
+    var eltId = $(elt).parent().parent().parent().children('[name$="interaction-id"]').val();
+    //We obviously need to remove it from the options
+    var optionsToBeRemoved = [eltId];
+    var optionsBefore = [];
+    $(elt).children().each(function(){
+            optionsBefore.push($(this).val());
+        });
+    //Adding new interaction that are not yet save on the server
+    localQuestions = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').parent().parent();
+    for (var i = 0; i < localQuestions.length; i++) {
+        var localQuestionId = $(localQuestions[i]).children('[name$="interaction-id"]').val();
+        if (localQuestionId == "" || eltId == localQuestionId) {
+            continue;
+        }
+        optionsBefore.splice(optionsBefore.indexOf(localQuestionId), 1);
+        var option = $(elt).children("[value='" + localQuestionId + "']");
+        if (option.length == 0) {
+            $(elt).append(
+                    "<option class='ui-dform-option' value='" +
+                    localQuestionId + "'>" +
+                    $(localQuestions[i]).find('[name$="content"]').val() + "</option>")
+        }
     }
-    currentQA = $('[name$="type-interaction"]:checked:[value="question-answer"],[name$="type-interaction"]:checked:[value="question-answer-keyword"]').parent().parent();
-    //Adding present interaction if not already there
-    for (var i=0; i<currentQA.length; i++) {
-        var interactionId = $(currentQA[i]).children('[name$="interaction-id"]').val();
-        bucket.splice(bucket.indexOf(interactionId), 1);
-        if ($(elt).children("[value='"+interactionId+"']").length==0)
-        $(elt).append("<option class='ui-dform-option' value='"+
-            interactionId+"'>"+
-            $(currentQA[i]).find('[name$="content"]').val()+"</option>")
-        else
-            $(elt).children("[value='"+interactionId+"']").text($(currentQA[i]).find('[name$="content"]').val());
-    } 
-    //Removing deleted interactions
-    for (var i=0; i<bucket.length; i++) {
+    //Removing deleted interaction that have not yet been deleted on the server
+    optionsToBeRemoved = optionsToBeRemoved.concat(optionsBefore);
+    for (var i = 0; i < optionsToBeRemoved.length; i++) {
         //Do not delete the default choice
-        if (bucket[i]==0) {
+        if (optionsToBeRemoved[i] == 0) {
             continue
         }
-        $(elt).children("[value='"+bucket[i]+"']").remove();
-        defaultOptions = window.app['offset-condition-interaction-idOptions']
-        defaultOptions.splice(defaultOptions.indexOf(bucket[i]),1);
+        $(elt).children("[value='" + optionsToBeRemoved[i] + "']").remove();
     }
 }
 
@@ -1107,6 +1114,7 @@ function configToForm(item, elt, id_prefix, configTree){
             elt["elements"].push({
                     "type":"fieldset",
                     'class': "actions",
+                    'style': (("style" in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
                     'elements': [select]
             });            
         }
@@ -1116,6 +1124,11 @@ function configToForm(item, elt, id_prefix, configTree){
             eltValue = configTree[item];
             if (item == 'date-time')
                 eltValue = fromIsoDateToFormDate(eltValue);
+        } else {
+            if ('default-value' in dynamicForm[item]) {
+                eltValue = dynamicForm[item]['default-value']();
+            }
+
         }
         var label = null;
         if (dynamicForm[item]['type'] != "hidden"){
