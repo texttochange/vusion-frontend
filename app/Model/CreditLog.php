@@ -72,11 +72,11 @@ class CreditLog extends MongoModel
                 if ('outgoing-pending' in obj) {
                     prev['outgoing-pending'] += obj['outgoing-pending']; 
                 }
-                if ('outgoing-ack' in obj) {
-                    prev['outgoing-ack'] += obj['outgoing-ack']; 
+                if ('outgoing-acked' in obj) {
+                    prev['outgoing-acked'] += obj['outgoing-acked']; 
                 }
                 if ('outgoing-nack' in obj) {
-                    prev['outgoing-nack'] += obj['outgoing-nack']; 
+                    prev['outgoing-nacked'] += obj['outgoing-nacked']; 
                 }
                 if ('outgoing-delivered' in obj) {
                     prev['outgoing-delivered'] += obj['outgoing-delivered']; 
@@ -97,8 +97,8 @@ class CreditLog extends MongoModel
 		    'incoming' => 0,
 		    'outgoing' => 0,
 		    'outgoing-pending' => 0,
-		    'outgoing-ack' => 0,
-		    'outgoing-nack' => 0,
+		    'outgoing-acked' => 0,
+		    'outgoing-nacked' => 0,
 		    'outgoing-failed' => 0,
 		    'outgoing-delivered' =>0);
 
