@@ -26,7 +26,7 @@ class UnmatchableReply extends MongoModel
             'message-content',
             'timestamp');
     }
-
+    
     
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -36,11 +36,11 @@ class UnmatchableReply extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
-
+        
         $this->dialogueHelper = new DialogueHelper();
     }
-
-
+    
+    
     public function paginateCount($conditions, $recursive, $extra)
     {
         try{
@@ -60,21 +60,22 @@ class UnmatchableReply extends MongoModel
             return 'many';
         }
     }
-
+    
     
     public $filterFields = array(
-        'country' => array(
-            'label' => 'country',
-            'operators' => array(
-                'is' => array(
-                    'label' => 'is',
-                    'parameter-type' => 'country'))),
         'shortcode' => array(
             'label' => 'shortcode',
             'operators' => array(
                 'is' => array(
                     'label' => 'is',
                     'parameter-type' => 'text'))),
+        'country' => array(
+            'label' => 'country',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'country'))),
+        
         'from-phone' => array(
             'label' => 'from number',
             'operators' => array(

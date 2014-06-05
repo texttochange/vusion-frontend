@@ -89,7 +89,36 @@ class UnmatchableReplyController extends AppController
             throw new FilterException('Filter operator is missing or not allowed.');
         }     
         
-        $this->set('urlParams', http_build_query($filter));
+       
+        $filterErrors           = array();
+        $filter['filter_param'] = array_filter(
+            $filter['filter_param'], 
+            function($filterParam) use (&$filterErrors) {
+                if (in_array("", $filterParam)) {
+                    if ($filterParam[1] == "") {
+                        $filterErrors[] = "first filter field is missing";
+                    } else if ($filterParam[2] == "") {
+                        $filterErrors[] = $filterParam[1];
+                    } else {
+                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
+                    } 
+                    return false;  
+                }
+                return true;   
+            });
+        
+        if (count($filterErrors) > 0) {
+            $this->Session->setFlash(
+                __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
+                'default',
+                array('class' => "message failure")
+                );
+        }
+        
+        if (count($filter['filter_param']) != 0) {
+            $this->set('urlParams', http_build_query($filter));
+            $this->set('filterParams', $filter);
+        }
         
         return $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
     }

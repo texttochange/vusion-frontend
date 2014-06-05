@@ -74,6 +74,15 @@ class Program extends AppModel
     
     #Filter variables and functions
     public $filterFields = array(
+        'name' => array(
+            'label' => 'program name',
+            'operators' => array(
+                'start-with' => array(
+                    'label' => 'starts with',
+                    'parameter-type' => 'text'),
+                'equal-to' => array(
+                    'label' => 'equal to',
+                    'parameter-type' => 'text'))),
         'country' => array(
             'label' => 'country',
             'operators' => array(
@@ -85,16 +94,7 @@ class Program extends AppModel
             'operators' => array(
                 'is' => array(
                     'label' => 'is',
-                    'parameter-type' => 'shortcode'))),
-        'name' => array(
-            'label' => 'program name',
-            'operators' => array(
-                'start-with' => array(
-                    'label' => 'starts with',
-                    'parameter-type' => 'text'),
-                'equal-to' => array(
-                    'label' => 'equal to',
-                    'parameter-type' => 'text')))
+                    'parameter-type' => 'shortcode')))
         );
     
     public $filterOperatorOptions = array(

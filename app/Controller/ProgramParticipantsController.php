@@ -294,31 +294,31 @@ class ProgramParticipantsController extends AppController
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }
-       
-        $filterErrors = array();
+         
+        $filterErrors           = array();
         $filter['filter_param'] = array_filter(
             $filter['filter_param'], 
-            function($filterParam) use (&$filterErrors){
-            if (in_array("", $filterParam)) {
-                if ($filterParam[1] == "") {
-                    $filterErrors[] = "filter x";  //x might be the index of the filter
-                } else if ($filterParam[2] == "") {
-                    $filterErrors[] = $filterParam[1];
-                } else {
-                    $filterErrors[] = $filterParam[1]." ".$filterParam[2];
-                } 
-                return false;  //will filter out
-            }
-            return true;   // will keep this filter
-        });
-
+            function($filterParam) use (&$filterErrors) {
+                if (in_array("", $filterParam)) {
+                    if ($filterParam[1] == "") {
+                        $filterErrors[] = "first filter field is missing";
+                    } else if ($filterParam[2] == "") {
+                        $filterErrors[] = $filterParam[1];
+                    } else {
+                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
+                    } 
+                    return false;  //will filter out
+                }
+                return true;   // will keep this filter
+            });
+        
         if (count($filterErrors) > 0) {
             $this->Session->setFlash(
                 __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
-            'default',
-            array('class' => "message failure")
-            );
-        
+                'default',
+                array('class' => "message failure")
+                );
+            
         }
         
         // all filters were incompelete don't event show the filters

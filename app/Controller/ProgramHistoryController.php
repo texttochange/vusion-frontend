@@ -204,36 +204,42 @@ class ProgramHistoryController extends AppController
             throw new FilterException('Filter operator is missing or not allowed.');
         }
         
-        foreach ($filter['filter_param'] as $key => $filterParam) {
-            if (isset($filterParam[3])) {
-                if (!$filterParam[3]) {
-                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
-                        'default',
-                        array('class' => "message failure")
-                        );
+        $filterErrors           = array();
+        $filter['filter_param'] = array_filter(
+            $filter['filter_param'], 
+            function($filterParam) use (&$filterErrors) {
+                if (in_array("", $filterParam)) {
+                    if ($filterParam[1] == "") {
+                        $filterErrors[] = "first filter field is missing";
+                    } else if ($filterParam[2] == "") {
+                        $filterErrors[] = $filterParam[1];
+                    } else {
+                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
+                    } 
+                    return false;  
                 }
-            }
+                return true;   
+            });
+        
+        if (count($filterErrors) > 0) {
+            $this->Session->setFlash(
+                __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
+                'default',
+                array('class' => "message failure")
+                );
         }
         
-        $this->set('urlParams', http_build_query($filter));
-        
-        $conditions = $this->History->fromFilterToQueryConditions($filter);
-        
-        if ($conditions == array()) {
-            $conditions = $defaultConditions;
-        } else {
-            $conditions = array('$and' => array(
-                $defaultConditions,
-                $conditions));
+        if (count($filter['filter_param']) != 0) {
+            $this->set('urlParams', http_build_query($filter));
+            $this->set('filterParams', $filter);
         }
         
-        return $conditions;        
+        return $this->History->fromFilterToQueryConditions($filter);
     }
     
     
     public function delete()
     {
-        
         $programUrl = $this->params['program'];
         
         // Only get messages and avoid other stuff like markers
