@@ -181,10 +181,10 @@ class MongodbSource extends DboSource {
 
 			if (isset($this->config['replicaset']) && count($this->config['replicaset']) === 2) {
 				$this->connection = new Mongo($this->config['replicaset']['host'], $this->config['replicaset']['options']);
-			} else if ($this->_driverVersion >= '1.2.0') {
+			} else if ($this->_driverVersion >= '1.2.0' && $this->_driverVersion < '1.3.0') {
 				$this->connection = new Mongo($host, array("persist" => $this->config['persistent']));
 			} else {
-				$this->connection = new Mongo($host, true, $this->config['persistent']);
+				$this->connection = new MongoClient($host);
 			}
 
 			if (isset($this->config['slaveok'])) {
@@ -461,7 +461,7 @@ class MongodbSource extends DboSource {
 		try{
 			$return = $this->_db
 				->selectCollection($Model->table)
-				->insert($data, true);
+				->insert($data);
 		} catch (MongoException $e) {
 			$this->error = $e->getMessage();
 			trigger_error($this->error);

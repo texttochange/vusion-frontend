@@ -161,6 +161,9 @@ class Program extends AppModel
     public function fromFilterToQueryConditions($filter)
     {
         $conditions = array();
+        if (!isset($filter)) {
+            return $conditions;
+        }
         
         foreach ($filter['filter_param'] as $filterParam) {
             
@@ -309,109 +312,59 @@ class Program extends AppModel
         $db->drop();
         return true;
     }
-    
-    
-    public function matchProgramByShortcodeAndCountry($program, $conditions, $codes)
+
+
+    public static function matchProgramConditions($programDetails, $conditions=array())
     {
-        $result = array();
-        $countryMatch = false;
-        $shortcodeMatch = false;
-        
-        if (empty($codes))
-            return array();
-        
-        foreach ($codes as $code) {
-            if (isset($conditions['$and'])) { 
-                $conditionHas = $this->_conditonHasCountryAndShortcodeOptions($conditions);
-                if ($conditionHas['country'] == 1 and $conditionHas['shortcode'] == 1) {
-                    foreach ($conditions['$and'] as $key => $value) {
-                        if (!is_array($value))
-                            return;
-                        
-                        foreach ($value as $key2 => $value2) {
-                            if($key2 == 'country') {
-                                if (strtolower($value2) == strtolower($code['country'])) {
-                                    $countryMatch = true;
-                                }
-                            }
-                            if($key2 == 'shortcode') {
-                                if ($value2 == $code['shortcode']) {
-                                    $shortcodeMatch = true;
-                                }
-                            }
-                            
-                            if ($shortcodeMatch == true && $countryMatch == true) {
-                                array_push($result, $program);
-                            }
-                        }
-                    }
-                    #re-initialize countryMatch and shortcodeMatch to prevent duplicate results
-                    $countryMatch = false;
-                    $shortcodeMatch = false;
-                }
-                elseif ($conditionHas['country'] == 1) {
-                    foreach ($conditions['$and'] as $key => $value) {
-                        if (isset($value['country']))
-                            if (strtolower($value['country']) == strtolower($code['country']))
-                            array_push($result, $program);
-                    }
-                }
-                elseif ($conditionHas['shortcode'] == 1) {
-                    foreach ($conditions['$and'] as $key => $value) {
-                        if (isset($value['shortcode']))
-                            if ($value['shortcode'] == $code['shortcode'])
-                            array_push($result, $program);
-                    }
-                } else {
-                    # Do Nothing
-                }
-            } elseif (isset($conditions['$or'])) {
-                foreach ($conditions['$or'] as $key => $value) {
-                    if (is_array($value)) {
-                        if (isset($value['country'])) {
-                            if (strtolower($value['country']) == strtolower($code['country'])) {
-                                array_push($result, $program);                                
-                            }
-                        }
-                        if (isset($value['shortcode'])) {
-                            if ($value['shortcode'] == $code['shortcode']) {
-                                array_push($result, $program);
-                            }
-                        }
-                    }
-                }                
-            } else {
-                if (isset($conditions['country'])) {
-                    if (strtolower($conditions['country']) == strtolower($code['country'])) {
-                        array_push($result, $program);
-                    }
-                } elseif (isset($conditions['shortcode'])) {
-                    if ($conditions['shortcode'] == $code['shortcode']) {
-                        array_push($result, $program);
-                    }
+        if ($conditions == array()) {
+            return true;
+        }
+        ## AND
+        if (isset($conditions['$and'])) {
+            foreach ($conditions['$and'] as $subConditions) {
+                reset($subConditions);
+                $key = key($subConditions);
+                if (!Program::validProgramCondition($programDetails, $key, $subConditions[$key])) {
+                    return false; #one condition is false => AND failed
                 }
             }
-        }
-        return $result;
-    }
-    
-    
-    protected function _conditonHasCountryAndShortcodeOptions($conditions)
-    {
-        $conditionHas = array('country' => 0, 'shortcode' => 0);
-        if (isset($conditions['$and'])) {                
-            foreach ($conditions['$and'] as $key => $value) {
-                if (is_array($value)) {
-                    $test = array_keys($value);
-                    if (in_array('country',$test))
-                        $conditionHas['country'] = 1;
-                    if (in_array('shortcode',$test))
-                        $conditionHas['shortcode'] = 1;
+            return true; #all condition are true => AND succeed
+        }    
+        ## OR
+        if (isset($conditions['$or'])) {
+            foreach ($conditions['$or'] as $subConditions) {
+                reset($subConditions);
+                $key = key($subConditions);
+                if (Program::validProgramCondition($programDetails, $key, $subConditions[$key])) {
+                    return true; #one condition is true => OR succeed
                 }
             }
-        }
-        return $conditionHas;
+            return false; #all conditions are false => OR failed
+        } 
+        ## only one condition
+        reset($conditions);
+        $key = key($conditions);
+        return Program::validProgramCondition($programDetails, $key, $conditions[$key]);
     }
     
+    public static function startsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+        return (substr(strtolower($haystack), 0, $length) === strtolower($needle));
+    }
+
+
+    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue) {
+        switch ($conditionKey) {
+        case 'name LIKE':
+            return Program::startsWith($programDetails['Program']['name'],rtrim($conditionValue, '%'));        
+        default:
+            if (!isset($programDetails['Program'][$conditionKey])) {
+                return false;
+            }
+            return strcasecmp($programDetails['Program'][$conditionKey], $conditionValue) == 0;
+        }
+    }
+
     
 }

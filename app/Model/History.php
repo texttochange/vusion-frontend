@@ -28,7 +28,7 @@ class History extends MongoModel
     
     function getModelVersion()
     {
-        return '2';
+        return '4';
     }
     
     
@@ -42,7 +42,8 @@ class History extends MongoModel
         
         $MESSAGE_FIELDS = array(
             'message-content',
-            'message-direction');
+            'message-direction',
+            'message-credits');
         
         $SPECIFIC_DIRECTION_FIELDS = array(
             'outgoing' => array('message-id', 'message-status'),
@@ -51,7 +52,14 @@ class History extends MongoModel
         $SPECIFIC_STATUS_FIELDS = array(
             'failed' => array('failure-reason'),
             'pending' => array(),
-            'delivered' => array());
+            'delivered' => array(),
+            'ack' => array(),
+            'nack' => array(),
+            'no-credit' => array(),
+            'no-credit-timeframe' => array(),
+            'missing-data' => array('missing-data'),
+            'received' => array(),
+            'forwarded' => array('forwards'));
         
         $OBJECT_WITH_DIALOGUE_REF = array(
             'dialogue-history',
@@ -551,5 +559,78 @@ class History extends MongoModel
         return $historyCount;
     }
     
+    /*
+    public function getCreditsFromHistory($conditions=array())
+    {
+
+        $defaultConditions = array(
+                array('object-type'=> array(
+                    '$in'=> $this->messageType,
+                    )),
+                array('message-status' => array(
+                    '$nin' => array(
+                        'missing-data','no-credit','no-credit-timeframe')
+                    )),				            
+                ); 
+        
+        if (!empty($conditions)) {
+            $conditions = array('$and' => 
+                array_merge($defaultConditions, $conditions));
+        } else {
+            $conditions = array('$and' => $defaultConditions);
+        }
+
+        $reduce = new MongoCode(
+            "function(obj, prev){ 
+                if (!obj['message-credits']) {
+		            prev.credits += 1;
+			    } else { 
+				    prev.credits += obj['message-credits'];
+			    }
+			}");
+
+        $query = array(
+				'key' => array('message-direction' => true ),
+				'initial' => array('credits' => 0),
+				'reduce' => $reduce,
+				'options' => array(
+				    'condition' => $conditions
+				    )
+				);
+		$mongo = $this->getDataSource();
+		$resultGroup = $mongo->group($this, $query);
+		$result = array(
+		    'incoming' => 0,
+		    'outgoing' => 0);
+		if (isset($resultGroup['retval'])) {
+		    foreach($resultGroup['retval'] as $messageCount) {
+		        $result[$messageCount['message-direction']] = $messageCount['credits']; 
+		    }
+		}
+		return $result;  
+    }
+
+
+    public static function isConditionTimeframeOneMonth($conditions, $now) 
+    {
+        if (!isset($conditions['date-from'])) {
+            return false;
+        } 
+        $dateFrom = DialogueHelper::fromVusionDateToPhpDate($conditions['date-from']);
+
+        if (!isset($conditions['date-to'])) {
+            $dateTo = $now;
+        } else {
+            $dateTo = DialogueHelper::fromVusionDateToPhpDate($conditions['date-to']);
+        }
+        print_r($dateFrom);
+        $diff = $dateFrom->diff($dateTo);
+
+        $month = $diff->format('%m');
+        print_r($month);
+        return ($month < 1);
+        
+    }
+    */
     
 }

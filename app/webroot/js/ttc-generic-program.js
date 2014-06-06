@@ -243,11 +243,13 @@ function activeForm(){
                         timeOnly: false,
                         dateFormat:'dd/mm/yy',
                         defaultDate: moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").toDate(),
-                        onSelect:function(){
-                        $("#dynamic-generic-program-form").valid()},
-                        onClose: function(){
-                            $("#dynamic-generic-program-form").valid()
-                }});
+                        onSelect:function(selected, event){
+                            $("#"+event.input.context.getAttribute('id')).valid()
+                        },
+                        onClose: function(selected, event){
+                            $("#"+event.input.context.getAttribute('id')).valid()
+                        },
+                });
                 $(elt).rules("add",{
                         required:true,
                         isInThePast: $("#local-date-time").html(),
@@ -492,7 +494,7 @@ function foldForm(){
     default:
         summary = "not summarized view available for this item";
     }
-    $(parent).append('<div class="ttc-fold-summary">'+summary.substring(0,70)+'...</div>');
+    $(parent).append('<div class="ttc-fold-summary">'+((summary != null)? summary.substring(0,70):'')+'...</div>');
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-expand-icon').off().on('click', expandForm);
 }
 
@@ -1116,6 +1118,7 @@ function configToForm(item, elt, id_prefix, configTree){
             elt["elements"].push({
                     "type":"fieldset",
                     'class': "actions",
+                    'style': (("style" in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
                     'elements': [select]
             });            
         }

@@ -71,7 +71,9 @@ var dialogue = {
                 "days",
                 "at-time"]},
             {'value': "offset-condition",
-            'subfields': ["offset-condition-interaction-id"]}]},
+            'subfields': [
+                "offset-condition-interaction-id",
+                "offset-condition-delay"]}]},
     "type-interaction": {
         "type": "radiobuttons",
         "options": [
@@ -194,10 +196,14 @@ var dialogue = {
         'skip': true,
     },
     "offset-condition-interaction-id": {
-        'type': "select",
+        'type': 'select',
         'data': 'server-dynamic',
         'fieldset': true,
+        'style': 'margin-left:0px',
         'onmouseover': 'updateOffsetConditions(this)',
+    },
+    "offset-condition-delay": {
+        "type": 'text',
     },
     "keyword": {"type": "text"},
 };

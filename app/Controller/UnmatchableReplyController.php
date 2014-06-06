@@ -3,11 +3,12 @@
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('User', 'Model');
 
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber');
+    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'UserAccess');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -36,6 +37,7 @@ class UnmatchableReplyController extends AppController
         }
         $this->UnmatchableReply = new UnmatchableReply($options);
         $this->DialogueHelper   = new DialogueHelper();
+        $this->User             = ClassRegistry::init('User');
     }
     
     
@@ -43,6 +45,8 @@ class UnmatchableReplyController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
+        
+        $defaultConditions = $this->UserAccess->getUnmatchableConditions();
         
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
@@ -52,7 +56,7 @@ class UnmatchableReplyController extends AppController
         
         $this->paginate = array(
             'all',
-            'conditions' => $this->_getConditions(),
+            'conditions' => $this->_getConditions($defaultConditions),
             'order'=> $order,
             );
         $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
@@ -77,13 +81,13 @@ class UnmatchableReplyController extends AppController
     }
     
     
-    protected function _getConditions($conditions = null)
+    protected function _getConditions($defaultConditions)
     {
         $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
         $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
         
         if (!isset($filter['filter_param'])) 
-            return null;
+            return $defaultConditions;
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->UnmatchableReply->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
@@ -91,7 +95,17 @@ class UnmatchableReplyController extends AppController
         
         $this->set('urlParams', http_build_query($filter));
         
-        return $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
+        $conditions = $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
+        
+        if ($conditions == array()) {
+            $conditions = $defaultConditions;
+        } else if ($conditions != array() && $defaultConditions != array()) {
+            $conditions = array('$and' => array(
+                $defaultConditions,
+                $conditions));
+        }
+        
+        return $conditions;
     }
     
 
@@ -104,5 +118,6 @@ class UnmatchableReplyController extends AppController
         $paginationCount = $this->UnmatchableReply->count($this->_getConditions($defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
     }
+    
 
 }

@@ -109,7 +109,7 @@ var localized_labels = {
     "reminder-action": "<?php echo __('Action')?>",
     "offset-condition": "<?php echo __('Answer Required')?>",
     "offset-condition-interaction-id": "<?php echo __('Participant has to answer')?>",
-    "offset-condition-delay": "<?php echo __('Delaying send for (in minute)')?>",
+    "offset-condition-delay": "<?php echo __('Delaying for (in minute)')?>",
     "answer-accept-no-space": "<?php echo __('Accept no space between the keyword and the choice')?>",
     "set-use-template": "<?php echo __('Use template from program settings')?>",
     "set-no-request-matching-try-keyword-only": "<?php echo __('In case no matching on other requests, try to match only the message first word.')?>",

@@ -279,6 +279,14 @@ class ProgramSetting extends MongoModel
         }
         return $settings;
     }
+
+    public function getProgramSetting($settingKey) {
+        $setting = $this->find('programSetting', array('key' => $settingKey));
+        if (isset($setting[0])) {
+            return $setting[0]['ProgramSetting']['value'];
+        }
+        return null;
+    }
     
     
     public function isNotPast($time)
