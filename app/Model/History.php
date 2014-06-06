@@ -452,7 +452,7 @@ class History extends MongoModel
                     $condition['unattach-id'] = '';
                 }
             } elseif ($filterParam[1] == 'dialogue-source') {
-                if ($filterParam[3]) {
+                if (isset($filterParam[3]) && $filterParam[3]) {
                     if ($filterParam[2] == 'is') {
                         $condition['dialogue-id'] = $filterParam[3];    
                     } elseif ($filterParam[2] == 'not-is') {
@@ -466,7 +466,7 @@ class History extends MongoModel
                     $condition['dialogue-id'] = '';
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
-                if ($filterParam[3]) {
+                if (isset($filterParam[3]) && $filterParam[3]) {
                     if ($filterParam[2] == 'is') {
                         $condition['interaction-id'] = $filterParam[3];
                     } elseif ($filterParam[2] == 'not-is') {
@@ -480,7 +480,7 @@ class History extends MongoModel
                     $condition['interaction-id'] = '';
                 }
             } elseif ($filterParam[1] == 'request-source') {
-                if ($filterParam[3]) {
+                if (isset($filterParam[3]) && $filterParam[3]) {
                     if ($filterParam[2] == 'is') {
                         $condition['request-id'] = new MongoId($filterParam[3]);
                     } elseif ($filterParam[2] == 'not-is') {
