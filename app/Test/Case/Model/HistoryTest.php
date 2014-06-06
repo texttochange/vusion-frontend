@@ -389,12 +389,12 @@ class HistoryTestCase extends CakeTestCase
                 array(
                     1 => 'dialogue-source', 
                     2 => 'is-any',
-                    3 => ''),
+                    ),
                 )
             );
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array()
+            array('dialogue-id' => '')
             );
 
         $filter = array(
@@ -403,14 +403,15 @@ class HistoryTestCase extends CakeTestCase
                 array(
                     1 => 'dialogue-source', 
                     2 => 'not-is-any',
-                    3 => ''),
+                    ),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array()
+            array('dialogue-id' => '')
             );
     }
+
     
     public function testFromFilterToQueryConditions_interactionSource()
     {
@@ -448,12 +449,12 @@ class HistoryTestCase extends CakeTestCase
                 array(
                     1 => 'interaction-source', 
                     2 => 'is-any',
-                    3 => ''),
+                    ),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array()
+            array('interaction-id' => '')
             );
 
         $filter = array(
@@ -462,12 +463,12 @@ class HistoryTestCase extends CakeTestCase
                 array(
                     1 => 'interaction-source', 
                     2 => 'not-is-any',
-                    3 => ''),
+                    ),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array()
+            array('interaction-id' => '')
             );
     }
 
@@ -508,14 +509,13 @@ class HistoryTestCase extends CakeTestCase
                 array(
                     1 => 'request-source', 
                     2 => 'is-any',
-                    3 => ''
                     ),
                 )
             ); 
         
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array()
+            array('request-id' => '')
             );
         
         $filter = array(
@@ -524,16 +524,16 @@ class HistoryTestCase extends CakeTestCase
                 array(
                     1 => 'request-source', 
                     2 => 'not-is-any',
-                    3 => ''),
+                    ),
                 )
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-           array()
+           array('request-id' => '')
             );
     }
     
-    
+   
     public function testFromFilterToQueryConditions_answer()
     {
         $filter = array(
@@ -650,5 +650,5 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->countUnattachedMessages('5','delivered');       
         $this->assertEquals(0, $output); 
     }            
-    
+  
 }
