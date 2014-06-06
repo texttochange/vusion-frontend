@@ -82,8 +82,8 @@ class CreditLogTestCase extends CakeTestCase
                 'incoming' => 4,
                 'outgoing' => 2,
                 'outgoing-pending' => 0,
-                'outgoing-ack' => 0,
-                'outgoing-nack' => 0,
+                'outgoing-acked' => 0,
+                'outgoing-nacked' => 0,
                 'outgoing-failed' => 0,
                 'outgoing-delivered' => 0));
         $this->assertEqual(
@@ -94,8 +94,8 @@ class CreditLogTestCase extends CakeTestCase
                 'incoming' => 2,
                 'outgoing' => 1,
                 'outgoing-pending' => 0,
-                'outgoing-ack' => 0,
-                'outgoing-nack' => 0,
+                'outgoing-acked' => 0,
+                'outgoing-nacked' => 0,
                 'outgoing-failed' => 0,
                 'outgoing-delivered' => 0));
         $this->assertEqual(
@@ -105,8 +105,8 @@ class CreditLogTestCase extends CakeTestCase
                 'incoming' => 2,
                 'outgoing' => 1,
                 'outgoing-pending' => 0,
-                'outgoing-ack' => 0,
-                'outgoing-nack' => 0,
+                'outgoing-acked' => 0,
+                'outgoing-nacked' => 0,
                 'outgoing-failed' => 0,
                 'outgoing-delivered' => 0));
     }
@@ -170,8 +170,8 @@ class CreditLogTestCase extends CakeTestCase
                             'incoming' => 2,
                             'outgoing' => 1,
                             'outgoing-pending' => 0,
-                            'outgoing-ack' => 0,
-                            'outgoing-nack' => 0,
+                            'outgoing-acked' => 0,
+                            'outgoing-nacked' => 0,
                             'outgoing-failed' => 0,
                             'outgoing-delivered' => 0),
                         'programs' => array(
@@ -182,8 +182,8 @@ class CreditLogTestCase extends CakeTestCase
                                 'incoming' => 4,
                                 'outgoing' => 2,
                                 'outgoing-pending' => 0,
-                                'outgoing-ack' => 0,
-                                'outgoing-nack' => 0,
+                                'outgoing-acked' => 0,
+                                'outgoing-nacked' => 0,
                                 'outgoing-failed' => 0,
                                 'outgoing-delivered' => 0),
                             array('object-type' => 'program-credit-log',
@@ -192,8 +192,8 @@ class CreditLogTestCase extends CakeTestCase
                                 'incoming' => 2,
                                 'outgoing' => 1,
                                 'outgoing-pending' => 0,
-                                'outgoing-ack' => 0,
-                                'outgoing-nack' => 0,
+                                'outgoing-acked' => 0,
+                                'outgoing-nacked' => 0,
                                 'outgoing-failed' => 0,
                                 'outgoing-delivered' => 0)))))
             );
@@ -217,8 +217,8 @@ class CreditLogTestCase extends CakeTestCase
                                 'incoming' => 2,
                                 'outgoing' => 1,
                                 'outgoing-pending' => 0,
-                                'outgoing-ack' => 0,
-                                'outgoing-nack' => 0,
+                                'outgoing-acked' => 0,
+                                'outgoing-nacked' => 0,
                                 'outgoing-failed' => 0,
                                 'outgoing-delivered' => 0),
                             array('object-type' => 'deleted-program-credit-log',
@@ -227,8 +227,8 @@ class CreditLogTestCase extends CakeTestCase
                                 'incoming' => 2,
                                 'outgoing' => 1,
                                 'outgoing-pending' => 0,
-                                'outgoing-ack' => 0,
-                                'outgoing-nack' => 0,
+                                'outgoing-acked' => 0,
+                                'outgoing-nacked' => 0,
                                 'outgoing-failed' => 0,
                                 'outgoing-delivered' => 0)))))
             );
