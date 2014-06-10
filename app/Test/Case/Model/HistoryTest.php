@@ -38,7 +38,7 @@ class HistoryTestCase extends CakeTestCase
         $this->History->deleteAll(true, false);
     }
     
-    
+    /*
     public function testFindScriptFilter()
     {
         $participantsState = array(
@@ -122,6 +122,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEquals(1, $result);    
     }
     
+    */
     public function testFromFilterToQueryConditions_messageDirection()
     {
         $filter = array(
@@ -151,8 +152,22 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryConditions($filter),
             array('message-direction' => array('$ne' => 'incoming'))
             );
+        
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-direction', 
+                    2 => 'not-is', 
+                    3 => ''),
+                )
+            ); 
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array()
+            );
     }
-    
+   
     
     public function testFromFilterToQueryConditions_messageStatus()
     {
@@ -183,9 +198,24 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryConditions($filter),
             array('message-status' => array('$ne' => 'pending'))
             );
+        
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'message-status', 
+                    2 => 'is', 
+                    3 => ''),
+                )
+            ); 
+        
+        $this->assertEqual(
+            $this->History->fromFilterToQueryConditions($filter),
+            array()
+            );
     }
     
-    
+    /*
     public function testFromFilterToQueryConditions_date()
     {
         $filter = array(
@@ -650,5 +680,5 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->countUnattachedMessages('5','delivered');       
         $this->assertEquals(0, $output); 
     }            
-  
+ */ 
 }

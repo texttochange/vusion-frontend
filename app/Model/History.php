@@ -404,6 +404,8 @@ class History extends MongoModel
                     } elseif ($filterParam[2] == 'not-is') {
                         $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
                     }
+                } else {
+                    $condition[$filterParam[1]] = '';
                 }
             } elseif ($filterParam[1] == 'date') {
                 if ($filterParam[3]) {
