@@ -452,29 +452,29 @@ class History extends MongoModel
                     $condition['unattach-id'] = '';
                 }
             } elseif ($filterParam[1] == 'dialogue-source') {
-                if (isset($filterParam[3]) && $filterParam[3]) {
+                if ($filterParam[2] == 'is-any') {
+                    $condition['dialogue-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['dialogue-id'] = array('$exists' => false);
+                } elseif (isset($filterParam[3]) && $filterParam[3]) {
                     if ($filterParam[2] == 'is') {
                         $condition['dialogue-id'] = $filterParam[3];    
                     } elseif ($filterParam[2] == 'not-is') {
                         $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
-                    } elseif ($filterParam[2] == 'is-any') {
-                        $condition['dialogue-id'] = array('$exists' => true);    
-                    } elseif ($filterParam[2] == 'not-is-any') {
-                        $condition['dialogue-id'] = array('$exists' => false);
                     }
                 } else {
                     $condition['dialogue-id'] = '';
                 }
             } elseif ($filterParam[1] == 'interaction-source') {
-                if (isset($filterParam[3]) && $filterParam[3]) {
+                if ($filterParam[2] == 'is-any') {
+                    $condition['interaction-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['interaction-id'] = array('$exists' => false);
+                } elseif (isset($filterParam[3]) && $filterParam[3]) {
                     if ($filterParam[2] == 'is') {
                         $condition['interaction-id'] = $filterParam[3];
                     } elseif ($filterParam[2] == 'not-is') {
                         $condition['interaction-id'] = array('$ne' => $filterParam[3]);
-                    } elseif ($filterParam[2] == 'is-any') {
-                        $condition['interaction-id'] = array('$exists' => true);    
-                    } elseif ($filterParam[2] == 'not-is-any') {
-                        $condition['interaction-id'] = array('$exists' => false);
                     }
                 } else {
                     $condition['interaction-id'] = '';

@@ -394,7 +394,7 @@ class HistoryTestCase extends CakeTestCase
             );
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => '')
+            array('dialogue-id' => array('$exists' => true))
             );
 
         $filter = array(
@@ -408,7 +408,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => '')
+            array('dialogue-id' => array('$exists' => false))
             );
     }
 
@@ -454,7 +454,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => '')
+            array('interaction-id' => array('$exists' => true))
             );
 
         $filter = array(
@@ -468,7 +468,7 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => '')
+            array('interaction-id' => array('$exists' => false))
             );
     }
 
