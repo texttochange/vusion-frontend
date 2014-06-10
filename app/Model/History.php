@@ -480,15 +480,15 @@ class History extends MongoModel
                     $condition['interaction-id'] = '';
                 }
             } elseif ($filterParam[1] == 'request-source') {
-                if (isset($filterParam[3]) && $filterParam[3]) {
+                if ($filterParam[2] == 'is-any') {
+                    $condition['request-id'] = array('$exists' => true);    
+                } elseif ($filterParam[2] == 'not-is-any') {
+                    $condition['request-id'] = array('$exists' => false);
+                } elseif (isset($filterParam[3]) && $filterParam[3]) {
                     if ($filterParam[2] == 'is') {
                         $condition['request-id'] = new MongoId($filterParam[3]);
                     } elseif ($filterParam[2] == 'not-is') {
                         $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
-                    } elseif ($filterParam[2] == 'is-any') {
-                        $condition['request-id'] = array('$exists' => true);    
-                    } elseif ($filterParam[2] == 'not-is-any') {
-                        $condition['request-id'] = array('$exists' => false);
                     }
                 } else {
                     $condition['request-id'] = '';

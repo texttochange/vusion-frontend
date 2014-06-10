@@ -515,7 +515,7 @@ class HistoryTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-            array('request-id' => '')
+            array('request-id' => array('$exists' => true))
             );
         
         $filter = array(
@@ -529,11 +529,11 @@ class HistoryTestCase extends CakeTestCase
             ); 
         $this->assertEqual(
             $this->History->fromFilterToQueryConditions($filter),
-           array('request-id' => '')
+           array('request-id' => array('$exists' => false))
             );
     }
     
-   
+  
     public function testFromFilterToQueryConditions_answer()
     {
         $filter = array(
