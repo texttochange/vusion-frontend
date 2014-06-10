@@ -15,7 +15,9 @@ class ProgramParticipantsController extends AppController
 {
     
     var $uses       = array('Participant', 'History');
-    var $components = array('RequestHandler', 'LocalizeUtils');
+    var $components = array('RequestHandler', 
+        'LocalizeUtils',
+        'Filter');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array('className' => 'BigCountPaginator'));
@@ -294,40 +296,25 @@ class ProgramParticipantsController extends AppController
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
         }
-         
-        $filterErrors           = array();
-        $filter['filter_param'] = array_filter(
-            $filter['filter_param'], 
-            function($filterParam) use (&$filterErrors) {
-                if (in_array("", $filterParam)) {
-                    if ($filterParam[1] == "") {
-                        $filterErrors[] = "first filter field is missing";
-                    } else if ($filterParam[2] == "") {
-                        $filterErrors[] = $filterParam[1];
-                    } else {
-                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
-                    } 
-                    return false;  //will filter out
-                }
-                return true;   // will keep this filter
-            });
         
-        if (count($filterErrors) > 0) {
+        
+        $checkedFilter = $this->Filter->checkFilterFields($filter);
+        
+        if (count($checkedFilter['filterErrors']) > 0) {
             $this->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
+                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
                 'default',
                 array('class' => "message failure")
                 );
-            
         }
         
         // all filters were incompelete don't event show the filters
-        if (count($filter['filter_param']) != 0) {
-            $this->set('urlParams', http_build_query($filter)); // To move to the views using filterParams
-            $this->set('filterParams', $filter);
+        if (count($checkedFilter['filter']['filter_param']) != 0) {
+            $this->set('urlParams', http_build_query($checkedFilter['filter'])); // To move to the views using filterParams
+            $this->set('filterParams', $checkedFilter['filter']);
         }
         
-        return $this->Participant->fromFilterToQueryConditions($filter);
+        return $this->Participant->fromFilterToQueryConditions($checkedFilter['filter']);
     }
     
     
