@@ -1,7 +1,5 @@
 <?php
 App::uses('Component', 'Controller');
-App::uses('Program', 'Model');
-App::uses('ProgramSetting', 'Model');
 
 class FilterComponent extends Component 
 {
@@ -26,10 +24,7 @@ class FilterComponent extends Component
         
         $filterCheck['filter'] = $filter;
         $filterCheck['filterErrors'] = $filterErrors;
-         
-         //print_r($filter);
         return $filterCheck;
-        
     }
     
 }
