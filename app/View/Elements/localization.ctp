@@ -177,7 +177,7 @@ var localized_labels = {
     "many": "<?php echo __('many')?>",
     "any": "<?php echo __('any')?>",
     "all": "<?php echo __('all')?>",
-    "matching-tag-label": "<?php echo __('matching the following tags and labels')?>",
+    "match": "<?php echo __('match the following conditions')?>",
     "auto-enrollment-box": "<?php echo __('Auto enrollment')?>"
 };
 

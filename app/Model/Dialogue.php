@@ -6,6 +6,8 @@ App::uses('MissingField', 'Lib');
 App::uses('FieldValueIncorrect', 'Lib');
 App::uses('VusionException', 'Lib');
 App::uses('Interaction', 'Model');
+App::uses('VusionConst', 'Lib');
+App::uses('ValidationHelper', 'Lib');
 
 class Dialogue extends MongoModel
 {
@@ -16,16 +18,19 @@ class Dialogue extends MongoModel
     
     function getModelVersion()
     {
-        return '2';
+        return '3';
     }
     
     
     function getRequiredFields($objectType=null)
     {
+
         return array(
             'name',
             'dialogue-id',
             'auto-enrollment',
+            'condition-operator',
+            'subconditions',
             'interactions',
             'activated',
             'set-prioritized'
@@ -46,9 +51,33 @@ class Dialogue extends MongoModel
                 'message' => 'A auto-enrollment field cannot be empty.'
                 ),
             'validValue' => array(
-                'rule' => array('inList', array('none', 'all')),
+                'rule' => array('inList', array('none', 'all', 'match')),
                 'message' => 'The auto-enrollment value is not valid.'
                 ),
+            'valueRequireFields' => array(
+                'rule' => array(
+                    'valueRequireFields', array(
+                        'none' => array(),
+                        'all' => array(),
+                        'match' => array(
+                            'condition-operator',
+                            'subconditions'))))
+            ),
+        'condition-operator' => array(
+            'validValue' => array(
+                'rule' => array('inList', array('all-subconditions', 'any-subconditions')),
+                'message' => 'An operator between conditions has to be selected.',
+                'required' => false)
+            ),
+        'subconditions' => array(
+            'notEmptyArray' => array(
+                'rule' => array('notEmptyArray'),
+                'message' => 'At least one subconditions has to be set.'
+                ),
+            'validSubconditions' => array(
+                'rule' => array('validSubconditions'),
+                'message' => 'noMessage'
+                )
             ),
         'interactions' => array(
             'validInteractions' => array(
@@ -77,7 +106,52 @@ class Dialogue extends MongoModel
         );
     
     
+    public $validateSubcondition = array(
+        'subcondition-field' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The field is required.'
+                ),
+            ),
+        'subcondition-operator' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The operator is required.'
+                ),
+            ),
+        'subcondition-parameter' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The parameter is required.'
+                ),
+            ),
+        );
     
+    
+    public $validateSubconditionValues = array(
+        'labelled' => array(
+            'with' => array(
+                'regex' => VusionConst::LABEL_FULL_REGEX,
+                'message' => VusionConst::LABEL_FULL_FAIL_MESSAGE
+                ),
+            'not-with' => array(
+                'regex' => VusionConst::LABEL_FULL_REGEX,
+                'message' => VusionConst::LABEL_FULL_FAIL_MESSAGE,
+                ),
+            ),
+        'tagged' => array(
+            'with' => array(
+                'regex' => VusionConst::TAG_REGEX,
+                'message' => VusionConst::TAG_FAIL_MESSAGE,
+                ),
+            'not-with' => array(
+                'regex' => VusionConst::TAG_REGEX,
+                'message' => VusionConst::TAG_FAIL_MESSAGE,
+                ),
+            )
+        );
+
+
     public function validateInteractions($check) 
     {
         $index = 0;
@@ -101,6 +175,79 @@ class Dialogue extends MongoModel
         return true;
     }
     
+    public function valueRequireFields($check, $requiredFieldsPerValue) 
+    {   
+        $field = key($check);
+        $data = $this->data;
+        if (!array_key_exists($field, $data)) {
+            return true;
+        }
+        if (!isset($requiredFieldsPerValue[$data[$field]])) {
+            return true;
+        }
+        $requiredFields = $requiredFieldsPerValue[$data[$field]];
+        foreach ($requiredFields as $requiredField) {
+            if (!array_key_exists($requiredField, $data)) {
+                return __('The %s field with value %s require the field %s.', $field, $data[$field], $requiredField);
+            }
+        }
+        return true;
+    }
+
+    public function validSubconditions($check)
+    {
+        $field = key($check);
+        if (!isset($check[$field])) {
+            return true;
+        }
+        $count = 0;
+        $validationErrors = array();
+        foreach ($check[$field] as $subcondition) {
+            $result = $this->ValidationHelper->runValidationRules($subcondition, $this->validateSubcondition);
+            if (is_bool($result) && $result) {
+                $result = $this->validSubconditionValue($subcondition);
+            }
+            if (is_array($result)) {
+                $validationErrors[$count] = $result;
+            }
+            $count++;
+        }
+        if ($validationErrors != array()) {
+            return $validationErrors;
+        }
+        return true;
+    }
+
+    public function validSubconditionValue($subcondition)
+    {
+        if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
+            return array(
+                'subcondition-field' => array(
+                    __("The field value '%s' is not valid.", $subcondition['subcondition-field']))); 
+        }
+        $operators = $this->validateSubconditionValues[$subcondition['subcondition-field']]; 
+        if (!isset($operators[$subcondition['subcondition-operator']])) {
+            return array(
+                'subcondition-operator' => array( 
+                    __("The operator value '%s' is not valid.", $subcondition['subcondition-operator'])));
+        }
+        $subconditionOperator  =  $subcondition['subcondition-operator'];
+        $subconditionParameter = $subcondition['subcondition-parameter'];
+        if (!preg_match($operators[$subconditionOperator]['regex'], $subconditionParameter)) {
+            return array(
+                'subcondition-parameter' => array(
+                    $operators[$subcondition['subcondition-operator']]['message']));
+        }
+        return true;
+    }
+
+    public function notEmptyArray($check) {
+        $field = key($check);
+        if (!is_array($check[$field]) || count($check[$field]) < 1) {
+            return false;
+        }
+        return true;
+    }
     
     var $findMethods = array(
         'draft' => true,
@@ -115,6 +262,7 @@ class Dialogue extends MongoModel
         
         $this->Schedule    = new Schedule($id, $table, $ds);
         $this->Interaction = new Interaction($id['database']);
+        $this->ValidationHelper = new ValidationHelper($this);
     }
     
     
@@ -132,8 +280,8 @@ class Dialogue extends MongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-        
-       //Need to convert all dates
+                
+        //Need to convert all dates
         $this->data['Dialogue'] = DialogueHelper::objectToArray($this->data['Dialogue']);
         DialogueHelper::recurseScriptDateConverter($this->data['Dialogue']);
         
@@ -142,6 +290,13 @@ class Dialogue extends MongoModel
         $this->_setDefault('dialogue-id', uniqid());
         $this->_setDefault('interactions', array());
         $this->_setDefault('set-prioritized', null);
+        $this->_setDefault('auto-enrollment', 'none');
+
+        //cleaning necessary due to the beforeValidate of the MongoModel
+        if ($this->data['Dialogue']['auto-enrollment'] != 'match') {
+            unset($this->data['Dialogue']['condition-operator']);
+            unset($this->data['Dialogue']['subconditions']);
+        }
         
        //Need to make sure the value is an int
         $this->data['Dialogue']['activated'] = intval($this->data['Dialogue']['activated']);
@@ -297,18 +452,25 @@ class Dialogue extends MongoModel
         return ($dialogue['Dialogue']!=0);
     }
     
+    public function save($dialogue){
+        $result = parent::save($dialogue);
+        if (!$result && isset($this->validationErrors['subconditions'][0])) {
+            $this->validationErrors['subconditions'] = $this->validationErrors['subconditions'][0];
+        }
+        return $result;
+    }
     
     public function saveDialogue($dialogue, $usedKeywords = array())
     {
         $this->usedKeywords = $usedKeywords;
         
         if (!isset($dialogue['Dialogue']['dialogue-id'])) { 
-            $this->create();
+            $this->create(null, false);
             return $this->save($dialogue);
         }
         
         $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
-        $this->create();
+        $this->create(null, false);
         if ($draft) { 
             $this->id                          = $draft[0]['Dialogue']['_id'];
             $dialogue['Dialogue']['_id']       = $draft[0]['Dialogue']['_id'];
@@ -431,8 +593,7 @@ class Dialogue extends MongoModel
         $result     = $this->find('count', array('conditions' => $conditions));
         return $result == 0;        
     }
-    
-    
+
 }
 
 

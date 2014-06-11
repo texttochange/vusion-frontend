@@ -10,11 +10,12 @@ class DATABASE_CONFIG {
 		'database' => 'vusion_test',
 		'encoding' => 'utf8'
 	);
+
 	public $default = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'cake',
+		'login' => 'vusion',
 		'password' => 'password',
 		'database' => 'vusion',
 		'encoding' => 'utf8'

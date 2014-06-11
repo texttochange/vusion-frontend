@@ -486,7 +486,12 @@ function foldForm(){
         }
         break;
     case "subcondition":
-        summary = $('[name="'+nameToFold+'.subcondition-field"]').val()
+        summary = $('[name="'+nameToFold+'.subcondition-field"]').val();
+        operator = localize_label($('[name="'+nameToFold+'.subcondition-operator"]').val());
+        if (operator != null) { 
+            summary += " " + operator;
+            summary += " " + $('[name="'+nameToFold+'.subcondition-parameter"]').val();
+        }
         break;
     case "proportional-tag":
         summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();

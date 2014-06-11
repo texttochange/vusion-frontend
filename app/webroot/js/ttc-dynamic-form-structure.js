@@ -29,7 +29,7 @@ var dialogue = {
         'options':  [
             {'value': 'none'},
             {'value': 'all'},
-            {'value': 'matching-tag-label',
+            {'value': 'match',
             'subfields': [ 
                 "condition-operator", 
                 "subconditions"]}],
