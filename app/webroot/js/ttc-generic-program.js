@@ -30,8 +30,10 @@
             buildTtcForm : function(type, object, submitCall) {
                 $(this).empty().buildForm(fromBackendToFrontEnd(type, object, submitCall));
                 activeForm();
-                //On load fold every element 
-                $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
+                //On load fold every element
+                if (object!=null) {
+                    $('.ttc-fold-icon').each(function(){ $(this).trigger('click') });
+                }
             },
         });
 })(jQuery);
