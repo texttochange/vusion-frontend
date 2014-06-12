@@ -201,9 +201,10 @@ class DialogueTestCase extends CakeTestCase
 
     public function testValidate_autoenrollment_condition_failed()
     {
-        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue                                = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['auto-enrollment'] = 'matching-tag-lable';
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
+        
         $this->assertFalse($savedDialogue);
         $this->assertEqual(
             $this->Dialogue->validationErrors['auto-enrollment'][0],
@@ -212,26 +213,28 @@ class DialogueTestCase extends CakeTestCase
 
     public function testValidate_autoenrollment_condition_ok()
     {
-        $dialogue = $this->Maker->getOneDialogue();
-        $dialogue['Dialogue']['auto-enrollment'] = 'match';
+        $dialogue                                   = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment']    = 'match';
         $dialogue['Dialogue']['condition-operator'] = 'all-subconditions';
-        $dialogue['Dialogue']['subconditions'] = array(
+        $dialogue['Dialogue']['subconditions']      = array(
             array('subcondition-field' => 'tagged',
                 'subcondition-operator' => 'with',
                 'subcondition-parameter' => 'geek'));
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $savedDialogue                              = $this->Dialogue->saveDialogue($dialogue);
+
         $this->assertTrue(isset($savedDialogue['Dialogue']));
     }
    
     public function testValidate_autoenrollment_condition_fail()
     {
-        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue                                = $this->Maker->getOneDialogue();
         $dialogue['Dialogue']['auto-enrollment'] = 'match';
-        $dialogue['Dialogue']['subconditions'] = array(
+        $dialogue['Dialogue']['subconditions']   = array(
             array('subcondition-field' => 'tagged',
                 'subcondition-operator' => '',
                 'subcondition-parameter' => 'geek'));
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
+
         $this->assertFalse($savedDialogue);
         $this->assertEqual(
             $this->Dialogue->validationErrors['condition-operator'][0],
@@ -243,8 +246,8 @@ class DialogueTestCase extends CakeTestCase
 
     public function testValidate_autoenrollment_condition_parameter()
     {
-        $dialogue = $this->Maker->getOneDialogue();
-        $dialogue['Dialogue']['auto-enrollment'] = 'match';
+        $dialogue                                   = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['auto-enrollment']    = 'match';
         $dialogue['Dialogue']['condition-operator'] = 'all-subconditions';
         $dialogue['Dialogue']['subconditions'] = array(
             array('subcondition-field' => 'tagged',
@@ -253,7 +256,8 @@ class DialogueTestCase extends CakeTestCase
             array('subcondition-field' => 'tagged',
                 'subcondition-operator' => 'undefined',
                 'subcondition-parameter' => 'ge:k'));
-        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $savedDialogue                              = $this->Dialogue->saveDialogue($dialogue);
+        
         $this->assertFalse($savedDialogue);
         $this->assertEqual(
             $this->Dialogue->validationErrors['subconditions'][1]['subcondition-operator'][0],

@@ -20,8 +20,7 @@ var dialogue = {
     },
     "auto-enrollment-box": {
         'type': 'container',
-        'contains': [
-            'auto-enrollment'],
+        'contains': ['auto-enrollment'],
         'skip': false
     },
     "auto-enrollment":{ 
