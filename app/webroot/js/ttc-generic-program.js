@@ -1031,7 +1031,7 @@ function configToForm(item, elt, id_prefix, configTree){
         if (checkedItem && checkedItem['subfields']){
             var box = {
                 "type":"fieldset",
-                "caption": localize_label(checkedItem),
+                "caption": localize_label(checkedItem['value']),
                 "radiochildren":"radiochildren",
                 "elements":[]
             };
