@@ -210,6 +210,13 @@ function activeForm(){
             $(elt).before(foldButton);
             $(elt).before(deleteButton);
     });
+    //For the Auto-enrollment
+    $.each($(".ui-dform-fieldset[item='auto-enrollment-box']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
+            var foldButton = document.createElement('img');
+            $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/minimize-icon-16.png').on('click', foldForm);
+            $(elt).before(foldButton);
+    });
+
     $.each($("input[name*='at-time']:not(.activated)"), function (key,elt){
             $(elt).timepicker({timeFormat: 'hh:mm'});
             $(elt).addClass("activated");            
@@ -496,6 +503,9 @@ function foldForm(){
     case "proportional-tag":
         summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
         break;
+    case "auto-enrollment-box": 
+        summary = localize_label($('[name="Dialogue.auto-enrollment"]:checked').val());
+        break;  
     default:
         summary = "not summarized view available for this item";
     }
@@ -937,6 +947,9 @@ function configToForm(item, elt, id_prefix, configTree){
                 "name": id_prefix,
                 "elements": []
             }; 
+            if (dynamicForm[item]['item']) {
+                myelt['item'] = dynamicForm[item]['item'];
+            }
             elt["elements"].push(myelt);
             if ('add-prefix' in dynamicForm[item]) {
                 id_prefix = id_prefix + '.' + item;

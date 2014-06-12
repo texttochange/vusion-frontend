@@ -21,7 +21,8 @@ var dialogue = {
     "auto-enrollment-box": {
         'type': 'container',
         'contains': ['auto-enrollment'],
-        'skip': false
+        'skip': false,
+        'item': "auto-enrollment-box",
     },
     "auto-enrollment":{ 
         'type': "radiobuttons",
