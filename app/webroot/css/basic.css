@@ -154,8 +154,8 @@
         margin :5px;    
 }
 
-[name='Dialogue.subconditions'] {
-        background-color: lightblue;
+[name='Dialogue'] {
+        background-color: lightyellow;
 }
 
 [name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not(span):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
