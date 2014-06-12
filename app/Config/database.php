@@ -15,7 +15,7 @@ class DATABASE_CONFIG {
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'vusion',
+		'login' => 'cake',
 		'password' => 'password',
 		'database' => 'vusion',
 		'encoding' => 'utf8'
