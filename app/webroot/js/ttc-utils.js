@@ -195,9 +195,9 @@ function createFilter(minimize, selectedStackOperator, stackRules){
     var count = 1;
     $.each(stackRules, function(i, rule) {
             addStackFilter();
-            $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
+            $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").change();
             if (typeof(rule[2]) === 'undefined') return true;
-            $("[name='filter_param["+count+"][2]']").val(rule[2]).click();
+            $("[name='filter_param["+count+"][2]']").val(rule[2]).change();
             if (typeof(rule[3]) === 'undefined') return true;
             // If the selected element is not loaded, add it to the drop down
             if ($("[name='filter_param["+count+"][3]']select").size() > 0 && $("[name='filter_param["+count+"][3]'] option").size() == 1) {
@@ -255,14 +255,16 @@ function addStackFilter(){
     // add dropdown for fields
     var filterFieldDropDown = document.createElement("select");
     $(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
-    $(filterFieldDropDown).on('click', function(event){supplyOperatorOptions(this);});
+    $(filterFieldDropDown).on('change', function(event) {
+        supplyOperatorOptions(this);
+    });
     $.each(fieldOptions, function(value, details) {
             var option = new Option(details['label'], value);
             $(filterFieldDropDown).append(option);
     });
      
     $(stackFilter).append(filterFieldDropDown);
-    $(filterFieldDropDown).click();
+    $(filterFieldDropDown).change();
 }
 
 
@@ -294,7 +296,9 @@ function supplyOperatorOptions(elt) {
     
     var operatorDropDown = document.createElement("select");
     $(operatorDropDown).attr('name', operatorDropDownName + '[2]');
-    $(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
+    $(operatorDropDown).on('change', function(){ 
+        supplyParameterOptions(this); 
+    });
     $.each(operators, function(operator, details) {
             $(operatorDropDown).append(new Option(localize_label(operator), operator));
     });
