@@ -154,6 +154,10 @@
         margin :5px;    
 }
 
+[name='Dialogue'] {
+        background-color: lightyellow;
+}
+
 [name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not(span):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
         /*    background:#E3E4FA;*/
         background: #FFD97B;

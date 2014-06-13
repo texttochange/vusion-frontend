@@ -68,7 +68,7 @@ abstract class MongoModel extends Model
         } else {
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         }
-        
+
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)) {
                 unset($object[$field]);
@@ -83,12 +83,15 @@ abstract class MongoModel extends Model
         
         return $object;
     }
-    
-    
-    public function create($objectType=null)
+
+
+    public function create($objectType=null, $createDefaultFields=true)
     {
         parent::create();
         
+        if (!$createDefaultFields) {
+            return;
+        }
         $toCreate = array_merge($this->defaultFields, $this->getRequiredFields($objectType));
         
         foreach ($toCreate as $field) {

@@ -23,6 +23,7 @@ Vagrant::Config.run do |config|
 
   config.vm.network :hostonly, "10.11.12.13"
   config.vm.share_folder('frontend', '/var/vusion/app', 'app', :nfs => true)
+  config.vm.share_folder('lib', '/var/vusion/lib', 'lib', :nfs => true)
   config.vm.share_folder('vusion', '/var/vusion/backend/vusion', 'backend/vusion', :nfs => true)
   config.vm.share_folder('transports', '/var/vusion/backend/transports', 'backend/transports', :nfs => true)
   config.vm.share_folder('middlewares', '/var/vusion/backend/middlewares', 'backend/middlewares', :nfs => true)
