@@ -3,6 +3,46 @@ App::uses('Component', 'Controller');
 
 class FilterComponent extends Component 
 {
+    
+    public function initialize(Controller $controller)
+    {
+        parent::startup($controller);
+        $this->Controller = $controller;
+    }
+    
+    
+    public function getConditions($filterModel)
+    {
+        $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));
+        
+        if (!isset($filter['filter_param'])) 
+            return null;
+        
+        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $filterModel->filterOperatorOptions)) {
+            throw new FilterException('Filter operator is missing or not allowed.');
+        }
+        
+        
+        $checkedFilter = $this->checkFilterFields($filter);
+        
+        if (count($checkedFilter['filterErrors']) > 0) {
+            $this->Controller->Session->setFlash(
+                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
+                'default',
+                array('class' => "message failure")
+                );
+        }
+        
+        // all filters were incompelete don't event show the filters
+        if (count($checkedFilter['filter']['filter_param']) != 0) {
+            $this->Controller->set('urlParams', http_build_query($checkedFilter['filter'])); // To move to the views using filterParams
+            $this->Controller->set('filterParams', $checkedFilter['filter']);
+        }
+        
+        return $filterModel->fromFilterToQueryConditions($checkedFilter['filter']);
+    }
+    
+    
     public function checkFilterFields($filter)
     {
         $filterErrors           = array();

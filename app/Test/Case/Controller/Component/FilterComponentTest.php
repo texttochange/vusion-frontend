@@ -78,4 +78,26 @@ class FilterComponentTest extends CakeTestCase
             $checkedFilter['filterErrors'][0],
             'optin');
     }
+    
+    
+    public function testFilterCheckField_thirdField_empty() 
+    {
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => "phone", 
+                    2 => "start with",
+                    3 => ""
+                    )
+                )
+            );
+        $checkedFilter = $this->FilterComponent->checkFilterFields($filter);
+        
+        $this->assertEqual(
+            $checkedFilter['filterErrors'][0],
+            'phone start with');
+    }
+    
+    
 }
