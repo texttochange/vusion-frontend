@@ -63,9 +63,11 @@
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">
-			<?php echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id'])); ?>
-			<br>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $program['Program']['id']), array('name'=>'delete-program'), __('Are you sure you want to delete %s?', $program['Program']['name'])); ?>
+			<?php 
+			echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id']));
+			echo '<br/>';
+			echo $this->Form->postLink(__('Archive'), array('action' => 'archive', $program['Program']['id']), array('name'=>'delete-program'), __('Are you sure you want to archive %s? <br/> This action will stop any sending or receiving of SMS and will free the keyword on the shortcode. Still you will be able to access this program data.', $program['Program']['name'])); 
+			?>
 		</div>
 		<?php };
 		$this->Js->get("[name='delete-program']")->event("click", "event.stopPropagation()");
