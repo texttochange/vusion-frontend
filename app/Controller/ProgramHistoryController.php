@@ -11,7 +11,9 @@ class ProgramHistoryController extends AppController
 {
     
     var $uses       = array('History');
-    var $components = array('RequestHandler', 'LocalizeUtils');
+    var $components = array('RequestHandler',
+        'LocalizeUtils',
+        'Filter');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
@@ -59,19 +61,18 @@ class ProgramHistoryController extends AppController
         if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
             $statuses = $this->History->find(
                 'all', 
-                array('conditions' => $this->_getConditions($defaultConditions)),
+                array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
                 array('order'=> $order));
             $this->set(compact('statuses')); 
         } else {   
             $this->paginate = array(
                 'all',
-                'conditions' => $this->_getConditions($defaultConditions),
+                'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
                 'order'=> $order);
             
             $statuses = $this->paginate();
             $this->set(compact('statuses'));
         }
-        //print_r($statuses);
     }
     
     
@@ -101,7 +102,7 @@ class ProgramHistoryController extends AppController
     public function download()
     {
         $programUrl = $this->params['program'];
-        $fileName = $this->params['url']['file'];
+        $fileName   = $this->params['url']['file'];
         
         $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
         
@@ -139,13 +140,13 @@ class ProgramHistoryController extends AppController
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
         
-        $conditions = $this->_getConditions($defaultConditions);
+        $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
         
         try {
-            ##First a tmp file is created
+            //First a tmp file is created
             $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
             
             if (!file_exists($filePath)) {
@@ -153,22 +154,21 @@ class ProgramHistoryController extends AppController
                 chmod($filePath, 0764);
             }
             
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            $programNow  = $this->ProgramSetting->getProgramTimeNow();
             $programName = $this->Session->read($programUrl.'_name');
-            $fileName = $programName . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
+            $fileName    = $programName . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
             
             $fileFullPath = $filePath . "/" . $fileName;
-            
-            $handle = fopen($fileFullPath, "w");
+            $handle       = fopen($fileFullPath, "w");
             
             $headers = array('participant-phone','message-direction','message-status','message-content','timestamp');
-            ##write the headers
+            //write the headers
             fputcsv($handle, $headers,',','"');
             
-            ##Now extract the data and copy it into the file
+            //Now extract the data and copy it into the file
             
             $historyCount = $this->History->find('count', array('conditions'=> $conditions));
-            $pageCount = intval(ceil($historyCount / $paginate['limit']));
+            $pageCount    = intval(ceil($historyCount / $paginate['limit']));
             for($count = 1; $count <= $pageCount; $count++) {
                 $paginate['page'] = $count;
                 $this->paginate = $paginate;
@@ -193,52 +193,6 @@ class ProgramHistoryController extends AppController
     }
     
     
-    protected function _getConditions($defaultConditions)
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
-        if (!isset($filter['filter_param'])) {
-            return $defaultConditions;
-        }
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->History->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }
-        
-        $filterErrors           = array();
-        $filter['filter_param'] = array_filter(
-            $filter['filter_param'], 
-            function($filterParam) use (&$filterErrors) {
-                if (in_array("", $filterParam)) {
-                    if ($filterParam[1] == "") {
-                        $filterErrors[] = "first filter field is missing";
-                    } else if ($filterParam[2] == "") {
-                        $filterErrors[] = $filterParam[1];
-                    } else {
-                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
-                    } 
-                    return false;  
-                }
-                return true;   
-            });
-        
-        if (count($filterErrors) > 0) {
-            $this->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
-                'default',
-                array('class' => "message failure")
-                );
-        }
-        
-        if (count($filter['filter_param']) != 0) {
-            $this->set('urlParams', http_build_query($filter));
-            $this->set('filterParams', $filter);
-        }
-        
-        return $this->History->fromFilterToQueryConditions($filter);
-    }
-    
-    
     public function delete()
     {
         $programUrl = $this->params['program'];
@@ -248,8 +202,8 @@ class ProgramHistoryController extends AppController
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
         
-        $conditions = $this->_getConditions($defaultConditions);
-        $result = $this->History->deleteAll(
+        $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
+        $result     = $this->History->deleteAll(
             $conditions, 
             false);
         
@@ -280,7 +234,7 @@ class ProgramHistoryController extends AppController
             return; 
         }
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-        $paginationCount = $this->History->count( $this->_getConditions($defaultConditions), null, -1);
+        $paginationCount = $this->History->count( $this->Filter->getConditions($this->History, $defaultConditions), null, -1);
         $this->set('paginationCount',$paginationCount);
     }
     

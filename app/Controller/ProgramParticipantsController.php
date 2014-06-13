@@ -65,7 +65,7 @@ class ProgramParticipantsController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -137,7 +137,7 @@ class ProgramParticipantsController extends AppController
     public function massTag()
     {       
         $programUrl = $this->params['program'];
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         
         if ($this->request->is('get')) {
             if (!$conditions) {
@@ -169,7 +169,7 @@ class ProgramParticipantsController extends AppController
     public function massUntag()
     {   
         $programUrl = $this->params['program'];
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         
         if ($this->request->is('get')) {
             if (!$conditions) {
@@ -216,7 +216,7 @@ class ProgramParticipantsController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -283,38 +283,6 @@ class ProgramParticipantsController extends AppController
         }
         
         return null;
-    }
-    
-    
-    protected function _getConditions()
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
-        if (!isset($filter['filter_param'])) 
-            return null;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }
-        
-        
-        $checkedFilter = $this->Filter->checkFilterFields($filter);
-        
-        if (count($checkedFilter['filterErrors']) > 0) {
-            $this->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
-                'default',
-                array('class' => "message failure")
-                );
-        }
-        
-        // all filters were incompelete don't event show the filters
-        if (count($checkedFilter['filter']['filter_param']) != 0) {
-            $this->set('urlParams', http_build_query($checkedFilter['filter'])); // To move to the views using filterParams
-            $this->set('filterParams', $checkedFilter['filter']);
-        }
-        
-        return $this->Participant->fromFilterToQueryConditions($checkedFilter['filter']);
     }
     
     
@@ -422,7 +390,7 @@ class ProgramParticipantsController extends AppController
         $programUrl = $this->params['program'];
         $params     = array('fields' => array('phone'));
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         if ($conditions) {
             $params += array('conditions' => $conditions);
         } else {
@@ -776,7 +744,7 @@ class ProgramParticipantsController extends AppController
             return; 
         }
         $defaultConditions = array();
-        $paginationCount   = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
+        $paginationCount   = $this->Participant->count($this->Filter->getConditions($this->Participant, $defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
     }
     

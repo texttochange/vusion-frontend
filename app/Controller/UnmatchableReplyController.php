@@ -8,7 +8,12 @@ App::uses('User', 'Model');
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'UserAccess');
+    var $components = array('RequestHandler',
+        'LocalizeUtils',
+        'PhoneNumber',
+        'ProgramPaginator',
+        'UserAccess',
+        'Filter');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -56,10 +61,10 @@ class UnmatchableReplyController extends AppController
         
         $this->paginate = array(
             'all',
-            'conditions' => $this->_getConditions($defaultConditions),
+            'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions),
             'order'=> $order,
             );
-        $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
+        $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate();
         $this->set(compact('unmatchableReplies', 'countriesIndexes'));
     }
@@ -81,70 +86,13 @@ class UnmatchableReplyController extends AppController
     }
     
     
-    protected function _getConditions($defaultConditions)
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
-        
-        if (!isset($filter['filter_param'])) 
-            return $defaultConditions;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->UnmatchableReply->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }     
-        
-       
-        $filterErrors           = array();
-        $filter['filter_param'] = array_filter(
-            $filter['filter_param'], 
-            function($filterParam) use (&$filterErrors) {
-                if (in_array("", $filterParam)) {
-                    if ($filterParam[1] == "") {
-                        $filterErrors[] = "first filter field is missing";
-                    } else if ($filterParam[2] == "") {
-                        $filterErrors[] = $filterParam[1];
-                    } else {
-                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
-                    } 
-                    return false;  
-                }
-                return true;   
-            });
-        
-        if (count($filterErrors) > 0) {
-            $this->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($filterErrors), implode(', ', $filterErrors)), 
-                'default',
-                array('class' => "message failure")
-                );
-        }
-        
-        if (count($filter['filter_param']) != 0) {
-            $this->set('urlParams', http_build_query($filter));
-            $this->set('filterParams', $filter);
-        }
-        
-        $conditions = $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
-        
-        if ($conditions == array()) {
-            $conditions = $defaultConditions;
-        } else if ($conditions != array() && $defaultConditions != array()) {
-            $conditions = array('$and' => array(
-                $defaultConditions,
-                $conditions));
-        }
-        
-        return $conditions;
-    }
-    
-
     public function paginationCount()
     {
         if ($this->params['ext'] !== 'json') {
             return; 
         }
         $defaultConditions = array();
-        $paginationCount = $this->UnmatchableReply->count($this->_getConditions($defaultConditions), null, -1);
+        $paginationCount   = $this->UnmatchableReply->count($this->Filter->getConditions($this->UnmatchableReply, $defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
     }
     
