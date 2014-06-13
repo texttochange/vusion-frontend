@@ -339,12 +339,25 @@ class ActionTestCase extends CakeTestCase
     public function testValidateAction_ok_sms_forwarding_dynamic_content() {
         $action = array(
             'type-action' => 'sms-forwarding',
-            'forward-to'=>'my tag',
+            'forward-to'=>'my tag, mylabel:[participant.mylabel]',
             'forward-content' => 'Hello [participant.name]([participant.phone]) from 
                                   [participant.address] says [context.message] at [time.H]:[time.M]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
+    }
+
+    public function testValidateAction_fail_sms_forwarding_multi_selector() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'mylabel:[contentVariable:something]',
+            'forward-content' => 'Hello');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            "The selector mylabel:[contentVariable:something] should be a tags or a labels. For labels, their value could be matching the sender by using content variable notation.",
+            $this->Action->validationErrors['forward-to'][0]);
     }
 
     

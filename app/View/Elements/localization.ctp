@@ -150,7 +150,7 @@ var localized_labels = {
     "url-forwarding": "<?php echo __('URL Forward')?>",
     "forward-url": "<?php echo __('Forward URL')?>",
     "sms-forwarding": "<?php echo __('SMS Forward')?>",
-    "forward-to": "<?php echo __('Receiver Tag')?>",
+    "forward-to": "<?php echo __('Receiver Tags and Labels')?>",
     "forward-content": "<?php echo __('Content')?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
