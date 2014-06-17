@@ -23,7 +23,7 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'content', $("[name*='.content']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'forward-content', $("[name*='.forward-content']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'forward-to', $("[name*='.forward-to']").prev(":not(:has(img)):not(div):not(span)"));
-
+    addFormHelp(baseUrl, 'set-forward-message-condition', $("[name*='set-forward-message-condition']").next(":not(:has(img))"));
     addFormHelp(baseUrl, 'template', $("[name*='[template]']").prev(":not(:has(img)):not(div)"));
     addFormHelp(baseUrl, 'keyword', $("[name*='\.keyword']").prev("label").not(":has(img)"));
     addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));

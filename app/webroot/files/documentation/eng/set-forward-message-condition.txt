@@ -1,0 +1,5 @@
+<p>If checked, vusion will extract the second word of the message and make a receiver condition. In case no participant are matching this condition and the <b>Receiver Tags and Labels condition(s)</b>, an feedback message will be send back to the sender.</p>
+
+<p>Example: a participant is sending "ANSWER +256111111 i booked the doctor for an appointment with you tomorrow at 3pm". Vusion will extract <i>+256111111</i> and search for any opt-in participant with this phone number.</p>
+
+<p>The phone number MUST contain the country code and NO SPACE is allowed. However the <b>+</b> can be ommited or even replaced with <b>0</b> or <b>00</b></p>
