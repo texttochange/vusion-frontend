@@ -391,7 +391,6 @@ var action = {
     },
     "forward-message-no-participant-feedback": {
         'type': 'textarea',
-        'style': 'padding-top:5px',
     },
     "weight": {'type': 'text'},
     'forward-url': {'type': 'text'},
