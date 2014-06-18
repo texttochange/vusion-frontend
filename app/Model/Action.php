@@ -174,9 +174,9 @@ class Action extends VirtualModel
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
                 'message' => 'The Receiver Tag field require atag.',
                 ),
-            'validTag' => array(
-                'rule' => array('regex', VusionConst::TAG_REGEX),
-                'message' => VusionConst::TAG_FAIL_MESSAGE
+            'validForwardTo' => array(
+                'rule' => array('validForwardTo'),
+                'message' => 'noMessage'
                 ),
             ),
         'forward-content' => array(
@@ -423,6 +423,24 @@ class Action extends VirtualModel
             }
         }
         return true;
+    }
+
+    public function validForwardTo($field, $data) {
+        if (!isset($data[$field])) {
+            return true;
+        }
+
+        $selectors = explode(",", $data[$field]);
+        $selectors = array_map('trim', $selectors);
+        foreach ($selectors as $selector) {
+            if (!preg_match(VusionConst::TAG_REGEX, $selector) 
+                && !preg_match(VusionConst::LABEL_FULL_REGEX, $selector) 
+                && !preg_match(VusionConst::LABEL_SELECTOR_REGEX, $selector)) {
+                return __("The selector %s should be a tags or a labels. For labels, their value could be matching the sender by using content variable notation.", $selector);
+            }
+        }
+        return true;
+
     }
     
     

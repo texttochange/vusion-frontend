@@ -23,6 +23,8 @@ class VusionConst
     const LABEL_FULL_REGEX = '/^[a-z0-9A-Z\s]+:[a-z0-9A-Z\s\.]+$/';
     const LABEL_FULL_FAIL_MESSAGE = "The correct format is 'label:value'.";
 
+    const LABEL_SELECTOR_REGEX = '/^[a-z0-9A-Z\s]+:([a-z0-9A-Z\s\.]+|\[(participant)\.[a-z0-9A-Z\s]+\])$/';
+
     const LABEL_REGEX = '/^[a-z0-9A-Z\s]+$/';
     const LABEL_FAIL_MESSAGE = 'Use only space, letters and numbers for the label name.';
 

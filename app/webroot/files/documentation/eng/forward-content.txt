@@ -1,0 +1,30 @@
+You can personalize the content of a SMS forward message with:
+<ul>
+<li>
+<b>Participant's Label</b><br/>
+The participant label value will used in the message to this participant.
+Example: "Hello <i>[participant.name]</i>" for participant with lable name:Bob, the message "Hello <i>Bob</i>" will be send.
+A second feature allow you to use a sligh different the value of the label, but the exact content of the message that set this label.
+The exact content of the message that set the lable can be optain with adding "_raw" after the label example <i>[participant.name_raw]</i>.
+</li>
+<li>
+<b>Program's Content Variables</b><br/>
+Example: <i>[contentVariable.temperature.mombasa]</i> will be replace by the value of the content variable with keys "temperature.mombasa".
+</li>
+<li>
+<b>Reply Context</b><br/>
+<i>[context.message]</i> will be replace by the message that have trigger this action.
+</li>
+<li>
+<b>Time</b><br/>
+<ul>
+<li><i>[time.H]</i> will show the hour the participant sent the Alert message.</li>
+<li><i>[time.M]</i> will show the minutes the participant sent the Alert message.</li>
+<li><i>[time.d]</i> will show the day of the month in number the participant sent the Alert message.</li>
+<li><i>[time.m]</i> will show the month of the year in number the participant sent the Alert message.</li>
+<li><i>[time.y]</i> will show the year without century.</li>
+</ul>
+</li>
+</ul>
+<br/>
+WARNING: a missing label or content variable will result in an error and the message will not send. An error will appear in the program's history.
