@@ -3,6 +3,7 @@ App::uses('Component', 'Controller');
 
 class FilterComponent extends Component 
 {
+   
     
     public function initialize(Controller $controller)
     {
@@ -11,17 +12,16 @@ class FilterComponent extends Component
     }
     
     
-    public function getConditions($filterModel = null, $defaultConditions = null)
+    public function getConditions($filterModel = null, $defaultConditions = null, $countryPrefixes =  null)
     {
         $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
+               
         if (!isset($filter['filter_param'])) 
             return $defaultConditions;
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $filterModel->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
-        }
-        
+        }        
         
         $checkedFilter = $this->checkFilterFields($filter);
         
@@ -39,7 +39,7 @@ class FilterComponent extends Component
             $this->Controller->set('filterParams', $checkedFilter['filter']);
         }
         
-        return $filterModel->fromFilterToQueryConditions($checkedFilter['filter']);
+        return $filterModel->fromFilterToQueryConditions($checkedFilter['filter'], $countryPrefixes);
     }
     
     

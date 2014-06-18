@@ -154,7 +154,8 @@ class UnmatchableReply extends MongoModel
     }
     
     
-    public function fromFilterToQueryConditions($filter, $countryPrefixes = array()) {
+    public function fromFilterToQueryConditions($filter, $countryPrefixes = array())
+    {
         $conditions = array();
         
         foreach($filter['filter_param'] as $filterParam) {

@@ -59,9 +59,11 @@ class UnmatchableReplyController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
+        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        
         $this->paginate = array(
             'all',
-            'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions),
+            'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes),
             'order'=> $order,
             );
         $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
