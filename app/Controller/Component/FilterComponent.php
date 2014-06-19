@@ -21,14 +21,14 @@ class FilterComponent extends Component
         
         if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $filterModel->filterOperatorOptions)) {
             throw new FilterException('Filter operator is missing or not allowed.');
-        }
-        
+        }        
         
         $checkedFilter = $this->checkFilterFields($filter);
        
         if (count($checkedFilter['filterErrors']) > 0) {
+            $filterErrors = $this->replaceValue($checkedFilter['filterErrors']);
             $this->Controller->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
+                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $filterErrors)), 
                 'default',
                 array('class' => "message failure")
                 );
@@ -66,6 +66,12 @@ class FilterComponent extends Component
         $filterCheck['filter'] = $filter;
         $filterCheck['filterErrors'] = $filterErrors;
         return $filterCheck;
+    }
+    
+    public function replaceValue(&$checkedFilterErrors)
+    {
+        $checkedFilterErrorsValue = str_replace('-', ' ', $checkedFilterErrors);
+        return $checkedFilterErrorsValue;        
     }
     
 }
