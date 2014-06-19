@@ -4,6 +4,8 @@ App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
 App::uses('FilterComponent', 'Controller/Component');
+App::uses('ScriptMaker', 'Lib');
+App::uses('History', 'Model');
 
 
 class TestFilterComponentController extends Controller
@@ -28,11 +30,11 @@ class FilterComponentTest extends CakeTestCase
         $this->Controller      = new TestFilterComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
         $this->FilterComponent->initialize($this->Controller);
-    }
+    }   
     
     
     public function tearDown()
-    {
+    { 
         unset($this->FilterComponent);
         parent::tearDown();
     }
@@ -99,5 +101,54 @@ class FilterComponentTest extends CakeTestCase
             'phone start with');
     }
     
+    
+    public function testgetConditions_show_flash_on_filterMissing() 
+    {
+        $dummyHistory = $this->getMock('History');
+        $dummySession = $this->getMock('Session', array('setFlash'));
+        
+        $this->FilterComponent->Controller->Session = $dummySession; 
+        
+        $this->Controller->params['url'] = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                1 => array(
+                    1 => "phone", 
+                    2 => "start with",
+                    3 => ""
+                    ),
+                2 => array(
+                    1 => "optin", 
+                    2 => ""
+                    ),
+                3 => array(
+                    1 => "enrolled", 
+                    2 => "in",
+                    3 => "testop"
+                    )
+                )
+            );
+        
+        $dummySession
+        ->expects($this->any())
+        ->method('setFlash')
+        ->with(
+            __('2 filter(s) ignored due to missing information: "phone start with, optin"'), 
+            'default',
+            array('class' => "message failure"));
+        
+        $this->FilterComponent->getConditions($dummyHistory);
+        
+        $checkedFilter = $this->FilterComponent->checkFilterFields($this->Controller->params['url']);
+        
+        $this->assertEqual(
+            $checkedFilter['filter']['filter_param'],
+            array(3 => array(
+                1 => "enrolled", 
+                2 => "in",
+                3 => "testop"
+                ))
+            );
+    }
     
 }
