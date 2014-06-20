@@ -62,7 +62,7 @@ class FilterComponentTest extends CakeTestCase
             array());
     }
     
-    
+    /*
     public function testFilterCheckField_secondField_empty() 
     {
         $filter = array(
@@ -150,5 +150,5 @@ class FilterComponentTest extends CakeTestCase
                 ))
             );
     }
-    
+*/    
 }

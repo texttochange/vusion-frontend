@@ -3,44 +3,46 @@ App::uses('Component', 'Controller');
 
 class FilterComponent extends Component 
 {
+
+    var $localizedValueLabel = array();
     
-    public function __construct(ComponentCollection $collection, $localizedValueLabel= array())
+    public function __construct(ComponentCollection $collection, $settings = array())
     {
-       $localizedValueLabel = array(
-                                'not-with' => __('not with'),
-                                'not-is-any'=>  __('not is any'),
-                                'not-is'=>  __('not is'),
-                                'now' => __('now'),
-                                'start-with' => __('start with'),
-                                'start-with-any' => __('start with any'),
-                                'is-not' =>  __('is not'),
-                                'is'=>  __('is'),
-                                'is-any'=>  __('is any'),
-                                'in'=> __('in'),
-                                'not-in'=>  __('not in'),
-                                'equal-to' => __('equal to'),
-                                'enrolled' => __('enrolled'),
-                                'date-from'=>  __('date from'),
-                                'date-to'=>  __('date to'),
-                                'from'=> __('from'),
-                                'to'=>  __('to'), 
-                                'contain'=>  __('contain'),
-                                'has-keyword'=>  __('has keyword'), 
-                                'has-keyword-any'=>  __('has keyword any'), 
-                                'matching'=>  __('matching'),
-                                'not-matching'=> __('not matching'),
-                                'many'=>  __('many'),
-                                'any'=>  __('any'),
-                                'all'=> __('all'),
-                                'with' => __('with'),
-                                'phone' => __('phone'),
-                                'tagged' => __('tagged'),
-                                'labelled' => __('labelled'),
-                                'optin' => __('optin'),
-                                'optout' => __('optout'),
-                                ); 
+        $this->localizedValueLabel = array(
+            'not-with' => __('not with'),
+            'not-is-any'=>  __('not is any'),
+            'not-is'=>  __('not is'),
+            'now' => __('now'),
+            'start-with' => __('start with'),
+            'start-with-any' => __('start with any'),
+            'is-not' =>  __('is not'),
+            'is'=>  __('is'),
+            'is-any'=>  __('is any'),
+            'in'=> __('in'),
+            'not-in'=>  __('not in'),
+            'equal-to' => __('equal to'),
+            'enrolled' => __('enrolled'),
+            'date-from'=>  __('date from'),
+            'date-to'=>  __('date to'),
+            'from'=> __('from'),
+            'to'=>  __('to'), 
+            'contain'=>  __('contain'),
+            'has-keyword'=>  __('has keyword'), 
+            'has-keyword-any'=>  __('has keyword any'), 
+            'matching'=>  __('matching'),
+            'not-matching'=> __('not matching'),
+            'many'=>  __('many'),
+            'any'=>  __('any'),
+            'all'=> __('all'),
+            'with' => __('with'),
+            'phone' => __('phone'),
+            'tagged' => __('tagged'),
+            'labelled' => __('labelled'),
+            'optin' => __('optin'),
+            'optout' => __('optout'),
+            ); 
         $this->Controller = $collection->getController();
-        parent::__construct($collection, $localizedValueLabel);
+        parent::__construct($collection, $settings);
     }
       
     
@@ -82,24 +84,21 @@ class FilterComponent extends Component
         return $filterModel->fromFilterToQueryConditions($checkedFilter['filter'], $countryPrefixes);
     }
     
-    
+
     public function checkFilterFields($filter)
     {
-        print_r($this);
         $filterErrors           = array();
+        $localizedValueLabel    = $this->localizedValueLabel;
         $filter['filter_param'] = array_filter(
             $filter['filter_param'], 
-            function($filterParam) use (&$filterErrors) {
+            function($filterParam) use (&$filterErrors, $localizedValueLabel) {
+                function localizedValue($localizedValueLabel, $filterParamValue)
+                    {
+                        $localizedLabel = $localizedValueLabel[$filterParamValue];
+                        return $localizedLabel;        
+                    };
+
                 if (in_array("", $filterParam)) {
-                    if (!function_exists('localizedValue')) {
-                        function localizedValue(&$filterParamValue)
-                        {
-                            
-                            
-                            $localizedLabel = $localizedValueLabel[$filterParamValue];
-                            return $localizedLabel;        
-                        }
-                    }
                     if ($filterParam[1] == "") {
                         $filterErrors[] = __("first filter field is missing");
                     } else if ($filterParam[2] == "") {
