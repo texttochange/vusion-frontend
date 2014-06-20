@@ -150,5 +150,5 @@ class FilterComponentTest extends CakeTestCase
                 ))
             );
     }
-   
+
 }

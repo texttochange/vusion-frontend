@@ -98,6 +98,13 @@ class FilterComponent extends Component
         return $filterModel->fromFilterToQueryConditions($checkedFilter['filter'], $countryPrefixes);
     }
     
+    //Having a function is better to handle key error.
+    public function localize($value) {
+        if (isset($this->localizedValueLabel[$value])) {
+            return $this->localizedValueLabel[$value];
+        }
+        return __('%s', $value);
+    }
     
     public function checkFilterFields($filter)
     {
@@ -110,15 +117,24 @@ class FilterComponent extends Component
                     if ($filterParam[1] == "") {
                         $filterErrors[] = __("first filter field is missing");
                     } else if ($filterParam[2] == "") {
-                        $filterErrors[] = $localizedValueLabel[$filterParam[1]];
+                        $filterErrors[] = $filterParam[1];
                     } else {
-                        $filterErrors[] = $localizedValueLabel[$filterParam[1]]." ".$localizedValueLabel[$filterParam[2]];
+                        $filterErrors[] = array($filterParam[1], $filterParam[2]);
                     } 
                     return false;  //will filter out
                 }
                 return true;   // will keep this filter
             });
-        
+        foreach ($filterErrors as &$filterError) {
+            if (is_string($filterError)) {
+                $filterError = $this->localize($filterError);                
+            } else {
+                foreach ($filterError as &$item) {
+                    $item = $this->localize($item);
+                }
+                $filterError = implode(' ', $filterError);
+            }
+        } 
         $filterCheck['filter'] = $filter;
         $filterCheck['filterErrors'] = $filterErrors;
         return $filterCheck;
