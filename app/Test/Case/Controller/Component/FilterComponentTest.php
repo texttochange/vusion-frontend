@@ -62,7 +62,7 @@ class FilterComponentTest extends CakeTestCase
             array());
     }
     
-    /*
+    
     public function testFilterCheckField_secondField_empty() 
     {
         $filter = array(
@@ -89,7 +89,7 @@ class FilterComponentTest extends CakeTestCase
             'filter_param' => array(
                 array(
                     1 => "phone", 
-                    2 => "start with",
+                    2 => "start-with",
                     3 => ""
                     )
                 )
@@ -114,7 +114,7 @@ class FilterComponentTest extends CakeTestCase
             'filter_param' => array(
                 1 => array(
                     1 => "phone", 
-                    2 => "start with",
+                    2 => "start-with",
                     3 => ""
                     ),
                 2 => array(
@@ -150,5 +150,5 @@ class FilterComponentTest extends CakeTestCase
                 ))
             );
     }
-*/    
+   
 }

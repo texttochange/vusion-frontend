@@ -3,7 +3,7 @@ App::uses('Component', 'Controller');
 
 class FilterComponent extends Component 
 {
-
+    
     var $localizedValueLabel = array();
     
     public function __construct(ComponentCollection $collection, $settings = array())
@@ -13,6 +13,7 @@ class FilterComponent extends Component
             'not-is-any'=>  __('not is any'),
             'not-is'=>  __('not is'),
             'now' => __('now'),
+            'name' => __('program name'),
             'start-with' => __('start with'),
             'start-with-any' => __('start with any'),
             'is-not' =>  __('is not'),
@@ -24,18 +25,32 @@ class FilterComponent extends Component
             'enrolled' => __('enrolled'),
             'date-from'=>  __('date from'),
             'date-to'=>  __('date to'),
+            'dialogue-source' => __('dialogue source'),
+            'interaction-source' => __('interaction source'),
+            'request-source' => __('request source'),
             'from'=> __('from'),
+            'from-phone' => __('from number'),
+            'to-phone' => __('to number'),
             'to'=>  __('to'), 
             'contain'=>  __('contain'),
+            'country' => __('country'),
             'has-keyword'=>  __('has keyword'), 
             'has-keyword-any'=>  __('has keyword any'), 
             'matching'=>  __('matching'),
+            'not-matching'=>  __('not matching'),
+            'message-direction' => __('message direction'),
+            'message-status' => __('message status'),
+            'message-content' => __('message content'),
+            'separate-message' => __('separate message'),
+            'shortcode' => __('shortcode'),           
             'not-matching'=> __('not matching'),
+            'date' => __('date'),
             'many'=>  __('many'),
             'any'=>  __('any'),
             'all'=> __('all'),
             'with' => __('with'),
             'phone' => __('phone'),
+            'participant-phone' => __('participant phone'),
             'tagged' => __('tagged'),
             'labelled' => __('labelled'),
             'optin' => __('optin'),
@@ -44,14 +59,14 @@ class FilterComponent extends Component
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
     }
-      
     
-    /*public function initialize(Controller $controller)
+    
+    public function initialize(Controller $controller)
     {
         parent::startup($controller);
         $this->Controller = $controller;
     }
-    */
+    
     
     public function getConditions($filterModel = null, $defaultConditions = null, $countryPrefixes =  null)
     {       
@@ -67,7 +82,6 @@ class FilterComponent extends Component
         $checkedFilter = $this->checkFilterFields($filter);
         
         if (count($checkedFilter['filterErrors']) > 0) {
-            //$filterErrors = $this->replaceValue($checkedFilter['filterErrors']);
             $this->Controller->Session->setFlash(
                 __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
                 'default',
@@ -84,7 +98,7 @@ class FilterComponent extends Component
         return $filterModel->fromFilterToQueryConditions($checkedFilter['filter'], $countryPrefixes);
     }
     
-
+    
     public function checkFilterFields($filter)
     {
         $filterErrors           = array();
@@ -92,20 +106,13 @@ class FilterComponent extends Component
         $filter['filter_param'] = array_filter(
             $filter['filter_param'], 
             function($filterParam) use (&$filterErrors, $localizedValueLabel) {
-                function localizedValue($localizedValueLabel, $filterParamValue)
-                    {
-                        $localizedLabel = $localizedValueLabel[$filterParamValue];
-                        return $localizedLabel;        
-                    };
-
                 if (in_array("", $filterParam)) {
                     if ($filterParam[1] == "") {
                         $filterErrors[] = __("first filter field is missing");
                     } else if ($filterParam[2] == "") {
-                        $filterErrors[] = localizedValue($filterParam[1]);
+                        $filterErrors[] = $localizedValueLabel[$filterParam[1]];
                     } else {
-                        //$filterErrors[] = $filterParam[1]." ".$filterParam[2];
-                        $filterErrors[] = localizedValue($filterParam[1])." ".localizedValue($filterParam[2]);
+                        $filterErrors[] = $localizedValueLabel[$filterParam[1]]." ".$localizedValueLabel[$filterParam[2]];
                     } 
                     return false;  //will filter out
                 }
@@ -116,18 +123,4 @@ class FilterComponent extends Component
         $filterCheck['filterErrors'] = $filterErrors;
         return $filterCheck;
     }
-    
-    
-    /*public function localizedValue(&$filterParam)
-    {
-    $t = array(
-    'not-with' => __('not with'),
-    'start-with' => __('start with'),
-    'phone' => __('phone'),
-    'tagged' => __('tagged'));
-    
-    $localizedLabel = $t[$filterParam];
-    return $localizedLabel;        
-    }*/
-    
 }
