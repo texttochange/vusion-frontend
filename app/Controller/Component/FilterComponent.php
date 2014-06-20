@@ -26,9 +26,9 @@ class FilterComponent extends Component
         $checkedFilter = $this->checkFilterFields($filter);
        
         if (count($checkedFilter['filterErrors']) > 0) {
-            $filterErrors = $this->replaceValue($checkedFilter['filterErrors']);
+            //$filterErrors = $this->replaceValue($checkedFilter['filterErrors']);
             $this->Controller->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $filterErrors)), 
+                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
                 'default',
                 array('class' => "message failure")
                 );
@@ -51,12 +51,26 @@ class FilterComponent extends Component
             $filter['filter_param'], 
             function($filterParam) use (&$filterErrors) {
                 if (in_array("", $filterParam)) {
+                    if (!function_exists('localizedValue')) {
+                        function localizedValue(&$filterParamValue)
+                        {
+                            $t = array(
+                                'not-with' => __('not with'),
+                                'start-with' => __('start with'),
+                                'phone' => __('phone'),
+                                'tagged' => __('tagged'));
+                            
+                            $localizedLabel = $t[$filterParamValue];
+                            return $localizedLabel;        
+                        }
+                    }
                     if ($filterParam[1] == "") {
-                        $filterErrors[] = "first filter field is missing";
+                        $filterErrors[] = __("first filter field is missing");
                     } else if ($filterParam[2] == "") {
-                        $filterErrors[] = $filterParam[1];
+                        $filterErrors[] = localizedValue($filterParam[1]);
                     } else {
-                        $filterErrors[] = $filterParam[1]." ".$filterParam[2];
+                        //$filterErrors[] = $filterParam[1]." ".$filterParam[2];
+                        $filterErrors[] = localizedValue($filterParam[1])." ".localizedValue($filterParam[2]);
                     } 
                     return false;  //will filter out
                 }
@@ -68,10 +82,17 @@ class FilterComponent extends Component
         return $filterCheck;
     }
     
-    public function replaceValue(&$checkedFilterErrors)
+    
+    /*public function localizedValue(&$filterParam)
     {
-        $checkedFilterErrorsValue = str_replace('-', ' ', $checkedFilterErrors);
-        return $checkedFilterErrorsValue;        
-    }
+        $t = array(
+            'not-with' => __('not with'),
+            'start-with' => __('start with'),
+            'phone' => __('phone'),
+            'tagged' => __('tagged'));
+        
+        $localizedLabel = $t[$filterParam];
+        return $localizedLabel;        
+    }*/
     
 }
