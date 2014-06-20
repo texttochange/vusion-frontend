@@ -58,6 +58,7 @@ class FilterComponent extends Component
             ); 
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
+        $this->Controller->set('filterLabels', $this->localizedValueLabel);
     }
     
     
