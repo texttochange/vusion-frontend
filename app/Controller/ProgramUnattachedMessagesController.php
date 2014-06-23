@@ -15,7 +15,7 @@ class ProgramUnattachedMessagesController extends AppController
     
     var $helpers    = array('Js' => array('Jquery'), 'Time');
     var $uses       = array('UnattachedMessage', 'User');
-    var $components = array('DynamicForm');
+    var $components = array('Message');
     
     
     public function constructClasses()

@@ -67,6 +67,9 @@ var localized_labels = {
     if (isset($filterLabels)) {
         populate($filterLabels);
     }
+    if (isset($messageLabels)) {
+        populate($messageLabels);
+    }
     ?>
 };
 

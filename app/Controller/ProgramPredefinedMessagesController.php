@@ -7,7 +7,7 @@ App::uses('PredefinedMessage', 'Model');
 class ProgramPredefinedMessagesController extends AppController
 {
     var $uses        = array('PredefinedMessage');
-     var $components = array('DynamicForm');
+     var $components = array('Message');
     
     
     function constructClasses()
