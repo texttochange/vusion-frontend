@@ -21,12 +21,12 @@
 	?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
+	<table class="unmatchable-reply" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>                                                                        
 			    <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('From'));?></th>
 			    <th class="direction"><?php echo $this->Paginator->sort('to', __('To'));?></th>
-			    <th class="message-unmatchable"><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
+			    <th class="content"><?php echo $this->Paginator->sort('message-content', __('Message'));?></th>
 			    <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'));?></th>
 			 </tr>
 		</thead>
@@ -51,8 +51,8 @@
 			         $countriesIndexes);
 			     echo '<td class="direction"">'.$to.'&nbsp;</td>';
 			     ?>
-			     <td class="message-unmatchable"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
-			     <td class="date-time"><?php echo $this->Time->format('d/m/Y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?>&nbsp;</td>
+			     <td class="content"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
+			     <td class="date-time"><?php echo $this->Time->format('d/m/y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?> (UTC)</td>
 			 </tr>
 			 <?php endforeach; ?>
 	    </tbody>

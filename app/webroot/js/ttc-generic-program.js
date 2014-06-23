@@ -30,8 +30,10 @@
             buildTtcForm : function(type, object, submitCall) {
                 $(this).empty().buildForm(fromBackendToFrontEnd(type, object, submitCall));
                 activeForm();
-                //On load fold every element 
-                $('.ttc-fold-icon').each(function(){ $(this).trigger('click') })
+                //On load fold every element
+                if (object!=null) {
+                    $('.ttc-fold-icon').each(function(){ $(this).trigger('click') });
+                }
             },
         });
 })(jQuery);
@@ -196,6 +198,10 @@ function activeForm(){
             $(elt).change(updateRadioButtonSubmenu);
             $(elt).addClass("activated");
     });
+    $.each($("input[name*='auto-enrollment']:not(.activated)"),function (key, elt){
+            $(elt).change(updateRadioButtonSubmenu);
+            $(elt).addClass("activated");
+    });
     $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
@@ -206,6 +212,13 @@ function activeForm(){
             $(elt).before(foldButton);
             $(elt).before(deleteButton);
     });
+    //For the Auto-enrollment
+    $.each($(".ui-dform-fieldset[item='auto-enrollment-box']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
+            var foldButton = document.createElement('img');
+            $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/minimize-icon-16.png').on('click', foldForm);
+            $(elt).before(foldButton);
+    });
+
     $.each($("input[name*='at-time']:not(.activated)"), function (key,elt){
             $(elt).timepicker({timeFormat: 'hh:mm'});
             $(elt).addClass("activated");            
@@ -482,11 +495,19 @@ function foldForm(){
         }
         break;
     case "subcondition":
-        summary = $('[name="'+nameToFold+'.subcondition-field"]').val()
+        summary = $('[name="'+nameToFold+'.subcondition-field"]').val();
+        operator = localize_label($('[name="'+nameToFold+'.subcondition-operator"]').val());
+        if (operator != null) { 
+            summary += " " + operator;
+            summary += " " + $('[name="'+nameToFold+'.subcondition-parameter"]').val();
+        }
         break;
     case "proportional-tag":
         summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
         break;
+    case "auto-enrollment-box": 
+        summary = localize_label($('[name="Dialogue.auto-enrollment"]:checked').val());
+        break;  
     default:
         summary = "not summarized view available for this item";
     }
@@ -928,6 +949,9 @@ function configToForm(item, elt, id_prefix, configTree){
                 "name": id_prefix,
                 "elements": []
             }; 
+            if (dynamicForm[item]['item']) {
+                myelt['item'] = dynamicForm[item]['item'];
+            }
             elt["elements"].push(myelt);
             if ('add-prefix' in dynamicForm[item]) {
                 id_prefix = id_prefix + '.' + item;
@@ -1007,7 +1031,7 @@ function configToForm(item, elt, id_prefix, configTree){
         if (checkedItem && checkedItem['subfields']){
             var box = {
                 "type":"fieldset",
-                "caption": localize_label(checkedItem),
+                "caption": localize_label(checkedItem['value']),
                 "radiochildren":"radiochildren",
                 "elements":[]
             };
