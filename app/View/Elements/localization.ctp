@@ -154,7 +154,7 @@ var localized_labels = {
     "forward-content": "<?php echo __('Content')?>",
     "set-forward-message-condition": "<?php echo __('Retrive a condition in the message')?>",
     "forward-message-condition-type": "<?php echo __('Condition type') ?>",
-    "forward-message-no-participant-feedback": "<?php echo __('In case no participant are matching, feedback this message to sender') ?>",
+    "forward-message-no-participant-feedback": "<?php echo __('Feedback in case no participant is matching') ?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
     "is-not": "<?php echo __('is not')?>",

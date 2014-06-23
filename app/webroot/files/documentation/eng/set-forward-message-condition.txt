@@ -4,4 +4,9 @@
 
 <p>Example: a participant is sending "ANSWER +256111111 you have an appointment with the doctor". Vusion will extract <i>+256111111</i> and search for any opt-in participant with this phone number.</p>
 
-<p>The phone number MUST contain the country code and NO SPACE is allowed. However the <b>+</b> can be ommited or even replaced with <b>0</b> or <b>00</b>. So for example "ANSWER <b>+256111111</b> you have an appointment with the doctor" is equivalent to "ANSWER <b>256111111</b> you have an appointment with the doctor" is equivalent to "ANSWER <b>0256111111</b> you have an appointment with the doctor".</p>
+<p>The phone number MUST contain the country code and NO SPACE is allowed. However the <b>+</b> can be ommited or even replaced with <b>0</b> or <b>00</b>. So all the following examples are equivalent:
+<ul>
+<li>"ANSWER <b>+256111111</b> you have an appointment with the doctor"</li>
+<li>"ANSWER <b>256111111</b> you have an appointment with the doctor"</li>
+<li>"ANSWER <b>0256111111</b> you have an appointment with the doctor".</li>
+</ul></p>
