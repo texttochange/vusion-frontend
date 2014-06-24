@@ -15,7 +15,9 @@ class ProgramParticipantsController extends AppController
 {
     
     var $uses       = array('Participant', 'History');
-    var $components = array('RequestHandler', 'LocalizeUtils');
+    var $components = array('RequestHandler', 
+        'LocalizeUtils',
+        'Filter');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array('className' => 'BigCountPaginator'));
@@ -63,7 +65,7 @@ class ProgramParticipantsController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -135,7 +137,7 @@ class ProgramParticipantsController extends AppController
     public function massTag()
     {       
         $programUrl = $this->params['program'];
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         
         if ($this->request->is('get')) {
             if (!$conditions) {
@@ -167,7 +169,7 @@ class ProgramParticipantsController extends AppController
     public function massUntag()
     {   
         $programUrl = $this->params['program'];
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         
         if ($this->request->is('get')) {
             if (!$conditions) {
@@ -214,7 +216,7 @@ class ProgramParticipantsController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -281,34 +283,6 @@ class ProgramParticipantsController extends AppController
         }
         
         return null;
-    }
-    
-    
-    protected function _getConditions()
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
-        if (!isset($filter['filter_param'])) 
-            return null;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Participant->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }
-        
-        foreach ($filter['filter_param'] as $key => $filterParam) {
-            if (isset($filterParam[3])) {
-                if (!$filterParam[3]) {
-                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
-                        'default',
-                        array('class' => "message failure")
-                        );
-                }
-            }
-        }
-        
-        $this->set('urlParams', http_build_query($filter));
-        
-        return $this->Participant->fromFilterToQueryConditions($filter);
     }
     
     
@@ -416,7 +390,7 @@ class ProgramParticipantsController extends AppController
         $programUrl = $this->params['program'];
         $params     = array('fields' => array('phone'));
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Participant);
         if ($conditions) {
             $params += array('conditions' => $conditions);
         } else {
@@ -770,7 +744,7 @@ class ProgramParticipantsController extends AppController
             return; 
         }
         $defaultConditions = array();
-        $paginationCount   = $this->Participant->count($this->_getConditions($defaultConditions), null, -1);
+        $paginationCount   = $this->Participant->count($this->Filter->getConditions($this->Participant, $defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
     }
     

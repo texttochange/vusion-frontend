@@ -234,6 +234,15 @@ class History extends MongoModel
     
     //Filter variables and functions
     public $filterFields = array(
+        'participant-phone' => array(
+            'label' => 'participant phone',
+            'operators' => array(
+                'start-with' => array(
+                    'parameter-type' => 'text'),
+                'equal-to' => array(
+                    'parameter-type' => 'text'),
+                'start-with-any' => array(
+                    'parameter-type' => 'text'))),
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
@@ -255,15 +264,6 @@ class History extends MongoModel
                     'parameter-type' => 'date'),
                 'to' => array(
                     'parameter-type' => 'date'))),
-        'participant-phone' => array(
-            'label' => 'participant phone',
-            'operators' => array(
-                'start-with' => array(
-                    'parameter-type' => 'text'),
-                'equal-to' => array(
-                    'parameter-type' => 'text'),
-                'start-with-any' => array(
-                    'parameter-type' => 'text'))),
         'separate-message' => array(
             'label' => 'separate message',
             'operators' => array(
@@ -507,7 +507,7 @@ class History extends MongoModel
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
-                   $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
+                    $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
                 } elseif (!isset($conditions['$and'])) {
                     $conditions = array('$and' => array($conditions, $condition));
                 } else {
