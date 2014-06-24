@@ -56,20 +56,20 @@ var localized_actions= {
 
 var localized_labels = {
     <?php
-    function populate($valueLabels) {
-        foreach ($valueLabels as $value => $label) {
-            echo __('"%s":"%s",', $value, $label);
-        } 
-    }
+    $localizedLabels = array();
     if (isset($dynamicFormLabels)) {
-        populate($dynamicFormLabels);
+        $localizedLabels = array_merge($localizedLabels, $dynamicFormLabels);
     }
     if (isset($filterLabels)) {
-        populate($filterLabels);
+        $localizedLabels = array_merge($localizedLabels, $filterLabels);
     }
     if (isset($messageLabels)) {
-        populate($messageLabels);
+        $localizedLabels = array_merge($localizedLabels, $messageLabels);
     }
+
+    foreach ($localizedLabels as $value => $label) {
+        echo __('"%s":"%s",', $value, $label);
+    } 
     ?>
 };
 

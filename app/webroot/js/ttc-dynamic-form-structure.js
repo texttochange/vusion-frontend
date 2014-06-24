@@ -3,7 +3,13 @@ var dynamicForm = {};
 var dialogue = {
     "Dialogue":{
         'type': 'container',
-        'contains': ["name",  "set-prioritized", "auto-enrollment", "interactions","dialogue-id", "activated"],
+        'contains': [
+            "name",  
+            "set-prioritized", 
+            "auto-enrollment-box", 
+            "interactions",
+            "dialogue-id", 
+            "activated"],
         'skip': true,
     },
     'name': {
@@ -12,12 +18,22 @@ var dialogue = {
     "dialogue-id":{ 
         'type': "hidden",
     },
+    "auto-enrollment-box": {
+        'type': 'container',
+        'contains': ['auto-enrollment'],
+        'skip': false,
+        'item': "auto-enrollment-box",
+    },
     "auto-enrollment":{ 
-        'type': "select",
-        'data': "static",
-        'options':  ["none", "all"],
-        'fieldset': true
-    },   
+        'type': "radiobuttons",
+        'options':  [
+            {'value': 'none'},
+            {'value': 'all'},
+            {'value': 'match',
+            'subfields': [ 
+                "condition-operator", 
+                "subconditions"]}],
+    }, 
     "set-prioritized": {
         'type': "checkboxes",
         'value': 'prioritized'
@@ -34,7 +50,7 @@ var dialogue = {
             "type-interaction",
             "interaction-id", 
             "activated"],
-            'skip': true,
+        'skip': true,
     },
     "interaction-id":{
         'type': "hidden",
@@ -284,6 +300,7 @@ var action = {
         'options': [
             {'value': "all-subconditions"},
             {'value': "any-subconditions"}],
+        'style': 'padding-top:0px'
     },
     'subconditions': {
         'type': 'list',
@@ -331,7 +348,9 @@ var action = {
             {'value': 'url-forwarding',
             'subfields': ['forward-url']},
             {'value': 'sms-forwarding',
-            'subfields': ['forward-to', 'forward-content']}
+            'subfields': ['forward-to', 
+                           'set-forward-message-condition',
+                           'forward-content']}
         ]
     },
     "tag": {'type': 'text'},
@@ -355,6 +374,23 @@ var action = {
         'type': 'container', 
         'contains': ["tag", "weight"],
         'skip': true,
+    },
+    "set-forward-message-condition": {
+        'type': 'checkboxes',
+        'value': 'forward-message-condition',
+        'subfields': [
+            "forward-message-condition-type",
+            "forward-message-no-participant-feedback"],
+        'style': 'padding-top:0px;padding-bottom:5px',
+    },
+    "forward-message-condition-type": {
+        'type': 'radiobuttons',
+        'options': [
+            {'value': "phone-number"}],
+        'style': 'padding-top:0px',
+    },
+    "forward-message-no-participant-feedback": {
+        'type': 'textarea',
     },
     "weight": {'type': 'text'},
     'forward-url': {'type': 'text'},

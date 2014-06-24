@@ -114,6 +114,11 @@ class DynamicFormComponent extends Component
             "many"=> __('many'),
             "any"=> __('any'),
             "all"=> __('all'),
+            "match" => __('match the following conditions'),
+    		"auto-enrollment-box" => __('Auto enrollment'),
+    		"phone-number" => __('Phone number'),
+    		'with' => __('with'),
+      		'not-with' => __('not with'),
             );
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);

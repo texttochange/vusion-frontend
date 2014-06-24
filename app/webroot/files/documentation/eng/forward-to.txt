@@ -1,0 +1,5 @@
+<p>You can write a list of tags and labels separated by a coma. Only participant that match all the list will receive the SMS.</p>
+
+<p>Example: <b>doctor, hospital:mombasa</b>  then only participants who are TAGGED <i>doctor</i> and are LABELLED with <i>hospital</i> with value <i>mombasa</i> will received the SMS.</p>
+
+<p>You can also specify that the one that send the message and the one that will receive SMS fowarding should SHARE the same label value. This is usefull when using label to manage groups of participants. For example, let say that your have different groups based on the hospital which they are regular patient such as "hospital:mombasa" or "hospital:nairobi". Now i want the SMS forward to work only to the doctor of their regular hospital, you will have to write: <b>doctor, hospital:[participant.hospital]</b></p>
