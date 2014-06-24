@@ -1,0 +1,12 @@
+<p>If checked, Vusion will extract the <b>second word</b> of the message and make a condition that the receiver should match. For now the condition can only be a phone number, in the future we might allow this second word to be interpreted as a tag or a label.</p>
+
+<p>In case no participant is matching <b>this condition</b> and the <b>Receiver Tags and Labels condition(s)</b>, a feedback message will be sent back to the sender.</p>
+
+<p>Example: a participant is sending "ANSWER +256111111 you have an appointment with the doctor". Vusion will extract <i>+256111111</i> and search for any opt-in participant with this phone number.</p>
+
+<p>The phone number MUST contain the country code and NO SPACE is allowed. However the <b>+</b> can be ommited or even replaced with <b>0</b> or <b>00</b>. So all the following examples are equivalent:
+<ul>
+<li>"ANSWER <b>+256111111</b> you have an appointment with the doctor"</li>
+<li>"ANSWER <b>256111111</b> you have an appointment with the doctor"</li>
+<li>"ANSWER <b>0256111111</b> you have an appointment with the doctor".</li>
+</ul></p>

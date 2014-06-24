@@ -92,7 +92,7 @@ class Action extends VirtualModel
                         'feedback' => array('content'),
                         'proportional-tagging' => array('proportional-tags'),
                         'url-forwarding' => array('forward-url'),
-                        'sms-forwarding' => array('forward-to', 'forward-content'))),
+                        'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -172,7 +172,7 @@ class Action extends VirtualModel
         'forward-to' => array(
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
-                'message' => 'The Receiver Tag field require atag.',
+                'message' => 'The Receiver Tagged or Labelled Conditions field is required.',
                 ),
             'validForwardTo' => array(
                 'rule' => array('validForwardTo'),
@@ -192,10 +192,43 @@ class Action extends VirtualModel
                 'rule' => array('validContentVariable', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE),
                 'message' => 'noMessage'
                 ),
-            )
+            ),
+        'set-forward-message-condition' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-forwarding'),
+                'message' => 'The field is required.',
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array(null, 'forward-message-condition')),
+                'message' => 'This choice is not valide.'
+                ),
+            ),
+        'forward-message-condition-type' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'set-forward-message-condition', 'forward-message-condition'),
+                'message' => 'The set-forward-message-condition field has not the valid value.',
+                ),
+            'validValue' => array(
+                'rule' => array('inlist', array('phone-number')),
+                'message' => 'The field value is not valid.'
+                )
+            ),
+        "forward-message-no-participant-feedback" => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'set-forward-message-condition', 'forward-message-condition'),
+                'message' => 'The content field require an SMS Forward action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => array('validContentVariable', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE),
+                'message' => 'noMessage'
+                ),
+            ),
         );
-    
-    
+        
     public $validateOffsetDays = array(
         'days' => array(
             'required' => array(
@@ -308,6 +341,9 @@ class Action extends VirtualModel
             unset($this->data['type-answer-action']);
         }
         $this->_setDefault('type-action', null);
+        if ($this->data['type-action'] == 'sms-forwarding') {
+            $this->_setDefault('set-forward-message-condition', null);
+        }
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {
             $this->_setDefault('condition-operator', null);

@@ -152,6 +152,9 @@ var localized_labels = {
     "sms-forwarding": "<?php echo __('SMS Forward')?>",
     "forward-to": "<?php echo __('Receiver Tags and Labels')?>",
     "forward-content": "<?php echo __('Content')?>",
+    "set-forward-message-condition": "<?php echo __('Retrive a condition in the message')?>",
+    "forward-message-condition-type": "<?php echo __('Condition type') ?>",
+    "forward-message-no-participant-feedback": "<?php echo __('Feedback in case no participant is matching') ?>",
     "tag": "<?php echo __('Tag')?>",
     "weight": "<?php echo __('Weight')?>",
     "is-not": "<?php echo __('is not')?>",
@@ -178,6 +181,7 @@ var localized_labels = {
     "any": "<?php echo __('any')?>",
     "all": "<?php echo __('all')?>",
     "match": "<?php echo __('match the following conditions')?>",
-    "auto-enrollment-box": "<?php echo __('Auto enrollment')?>"
+    "auto-enrollment-box": "<?php echo __('Auto enrollment')?>",
+    "phone-number": "<?php echo __('Phone number') ?>",
 };
 
