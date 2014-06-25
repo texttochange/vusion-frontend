@@ -71,11 +71,12 @@
             'action'=>'index'), 
         'id' => 'advanced_filter_form', 
         'class' => 'ttc-advanced-filter'));
-    if (isset($this->params['url']['filter_operator']) && isset($this->params['url']['filter_param'])) {
+    //if (isset($this->params['url']['filter_operator']) && isset($this->params['url']['filter_param'])) {
+    if (isset($filterParams)) {
         $this->Js->get('document')->event(
             'ready',
             '$("#advanced_filter_form").show();
-            createFilter(true, "'.$this->params['url']['filter_operator'].'",'.$this->Js->object($this->params['url']['filter_param']).');
+            createFilter(true, "'.$filterParams['filter_operator'].'",'.$this->Js->object($filterParams['filter_param']).');
             ');
     }
     echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       

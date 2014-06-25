@@ -13,8 +13,9 @@ App::uses('PredefinedMessage', 'Model');
 class ProgramUnattachedMessagesController extends AppController
 {
     
-    var $helpers = array('Js' => array('Jquery'), 'Time');
-    var $uses = array('UnattachedMessage', 'User');
+    var $helpers    = array('Js' => array('Jquery'), 'Time');
+    var $uses       = array('UnattachedMessage', 'User');
+    var $components = array('Message');
     
     
     public function constructClasses()
@@ -80,18 +81,18 @@ class ProgramUnattachedMessagesController extends AppController
             } else if (0 < ($countNoCredit = $this->History->countUnattachedMessages($unattachId, array('no-credit', 'no-credit-timeframe')))){
                 $status['count-no-credit'] = $countNoCredit;   
             } else {               
-                $countSent = $this->History->countUnattachedMessages($unattachId);
-                $status['count-sent'] = $countSent;            
-                $countDelivered = $this->History->countUnattachedMessages($unattachId, 'delivered');
+                $countSent                 = $this->History->countUnattachedMessages($unattachId);
+                $status['count-sent']      = $countSent;            
+                $countDelivered            = $this->History->countUnattachedMessages($unattachId, 'delivered');
                 $status['count-delivered'] = $countDelivered;
-                $countPending = $this->History->countUnattachedMessages($unattachId, 'pending');
-                $status['count-pending'] = $countPending;
-                $countFailed = $this->History->countUnattachedMessages($unattachId, array('failed', 'no-credit', 'no-credit-timeframe', 'missing-data'));
-                $status['count-failed'] = $countFailed;
-                $countAck = $this->History->countUnattachedMessages($unattachId, 'ack');
-                $status['count-ack'] = $countAck; 
-                $countNack = $this->History->countUnattachedMessages($unattachId, 'nack');
-                $status['count-nack'] = $countNack; 
+                $countPending              = $this->History->countUnattachedMessages($unattachId, 'pending');
+                $status['count-pending']   = $countPending;
+                $countFailed               = $this->History->countUnattachedMessages($unattachId, array('failed', 'no-credit', 'no-credit-timeframe', 'missing-data'));
+                $status['count-failed']    = $countFailed;
+                $countAck                  = $this->History->countUnattachedMessages($unattachId, 'ack');
+                $status['count-ack']       = $countAck; 
+                $countNack                 = $this->History->countUnattachedMessages($unattachId, 'nack');
+                $status['count-nack']      = $countNack; 
             }
             $unattachedMessage['UnattachedMessage'] = array_merge(
                 $status, $unattachedMessage['UnattachedMessage']);
