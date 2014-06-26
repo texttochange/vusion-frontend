@@ -1,5 +1,16 @@
 <div class="unmatchable replies index users-index">
     <ul class="ttc-actions">
+		<li>
+		<?php 
+            $exportUrl = $this->Html->url(array('controller' => 'unmatchableReply', 'action'=>'export'));
+            echo $this->Html->tag(
+                'span', 
+                __('Export'), 
+                array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
+            $this->Js->get('[name=export]')->event('click',
+                'generateExportDialogue(this);');
+        ?>
+        </li>
         <li>
         <?php 
         echo $this->Html->tag(
