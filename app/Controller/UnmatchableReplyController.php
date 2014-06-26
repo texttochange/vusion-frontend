@@ -122,7 +122,7 @@ class UnmatchableReplyController extends AppController
     
     public function download()
     {
-        $url   = $this->params['controller'];
+        $url          = $this->params['controller'];
         $fileName     = $this->params['url']['file'];        
         $fileFullPath = WWW_ROOT . "files/programs/" . $url . "/" . $fileName; 
         
@@ -172,7 +172,7 @@ class UnmatchableReplyController extends AppController
                 chmod($filePath, 0764);
             }
             
-            $now = new DateTime('now');
+            $now      = new DateTime('now');
             $fileName = $url . "_history_" . $now->format("Y-m-d_H-i-s") . ".csv";
             
             $fileFullPath = $filePath . "/" . $fileName;
