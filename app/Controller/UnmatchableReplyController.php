@@ -134,10 +134,12 @@ class UnmatchableReplyController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
+        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();
         
-        $conditions = $this->_getConditions($defaultConditions);
+        $conditions = $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
