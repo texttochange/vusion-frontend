@@ -919,7 +919,7 @@ class Participant extends MongoModel
         
         foreach ($filter['filter_param'] as $filterParam) {
             
-            $condition = null;
+            $condition = array();
             
             $this->validateFilter($filterParam);
             

@@ -8,7 +8,12 @@ App::uses('User', 'Model');
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler', 'LocalizeUtils', 'PhoneNumber', 'ProgramPaginator', 'UserAccess');
+    var $components = array('RequestHandler',
+        'LocalizeUtils',
+        'PhoneNumber',
+        'ProgramPaginator',
+        'UserAccess',
+        'Filter');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -54,12 +59,14 @@ class UnmatchableReplyController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
+        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        
         $this->paginate = array(
             'all',
-            'conditions' => $this->_getConditions($defaultConditions),
+            'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes),
             'order'=> $order,
             );
-        $countriesIndexes = $this->PhoneNumber->getCountriesByPrefixes();
+        $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate();
         $this->set(compact('unmatchableReplies', 'countriesIndexes'));
     }
@@ -81,41 +88,13 @@ class UnmatchableReplyController extends AppController
     }
     
     
-    protected function _getConditions($defaultConditions)
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
-        
-        if (!isset($filter['filter_param'])) 
-            return $defaultConditions;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->UnmatchableReply->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }     
-        
-        $this->set('urlParams', http_build_query($filter));
-        
-        $conditions = $this->UnmatchableReply->fromFilterToQueryConditions($filter, $countryPrefixes);
-        
-        if ($conditions == array()) {
-            $conditions = $defaultConditions;
-        } else if ($conditions != array() && $defaultConditions != array()) {
-            $conditions = array('$and' => array(
-                $defaultConditions,
-                $conditions));
-        }
-        
-        return $conditions;
-    }
-    
-
     public function paginationCount()
     {
         if ($this->params['ext'] !== 'json') {
             return; 
         }
         $defaultConditions = array();
-        $paginationCount = $this->UnmatchableReply->count($this->_getConditions($defaultConditions), null, -1);
+        $paginationCount   = $this->UnmatchableReply->count($this->Filter->getConditions($this->UnmatchableReply, $defaultConditions), null, -1);
         $this->set('paginationCount', $paginationCount);
     }
     

@@ -227,6 +227,14 @@ function activeForm(){
             $(elt).change(updateCheckboxSubmenu);
             $(elt).addClass("activated");
     });
+    $.each($("input[name*='condition-operator']:not(.activated)"),function (key, elt){
+            $(elt).change(updateRadioButtonSubmenu);
+            $(elt).addClass("activated");
+    });
+    $.each($("input[name*='forward-message-condition-type']:not(.activated)"),function (key, elt){
+            $(elt).change(updateRadioButtonSubmenu);
+            $(elt).addClass("activated");
+    });
     $.each($("input[name*='condition']:not(.activated)"),function (key, elt){
             $(elt).change(updateCheckboxSubmenu);
             $(elt).addClass("activated");
@@ -1026,7 +1034,8 @@ function configToForm(item, elt, id_prefix, configTree){
         elt["elements"].push({
                 "name":id_prefix+"."+item,
                 "type": "radiobuttons",
-                "options": checkedRadio
+                "options": checkedRadio,
+                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
         });
         if (checkedItem && checkedItem['subfields']){
             var box = {
@@ -1059,7 +1068,8 @@ function configToForm(item, elt, id_prefix, configTree){
                 "name": id_prefix+"."+item,
                 "item": item,
                 "type": 'checkboxes',
-                "options": checkedCheckBox
+                "options": checkedCheckBox,
+                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
         });
         if (checkedItem && dynamicForm[item]['subfields']){
             var box = {
@@ -1162,7 +1172,8 @@ function configToForm(item, elt, id_prefix, configTree){
             "name":id_prefix+"."+item,
             "caption": label,
             "type": dynamicForm[item]['type'],
-        "value": eltValue}
+            "style": (("style" in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
+            "value": eltValue}
         if (dynamicForm[item]['style']) {
             newElt['style'] = dynamicForm[item]['style']; 
         }

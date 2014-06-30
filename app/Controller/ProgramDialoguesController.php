@@ -16,7 +16,8 @@ class ProgramDialoguesController extends AppController
         'RequestHandler', 
         'LocalizeUtils', 
         'Utils',
-        'Keyword');
+        'Keyword',
+        'DynamicForm');
 
     
     public function beforeFilter()
