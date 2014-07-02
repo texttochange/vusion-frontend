@@ -101,6 +101,39 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         $this->testAction("/unmatchableReply/paginationCount.json");
         $this->assertEqual($this->vars['paginationCount'], 0);
     }
+    
+    
+    public function testExport()
+    {
+        $this->UnmatchableReply->create();
+        $this->UnmatchableReply->save(array(
+            'participant-phone'=>'1234567890',
+            'to'=>'8181',
+            'message-content'=>'FEE bad',
+            'timestamp'=>'2012-12-07T15:20:23'
+            ));
+        $this->UnmatchableReply->create();
+        $this->UnmatchableReply->save(array(
+            'participant-phone'=>'9876543210',
+            'to'=>'8181',
+            'message-content'=>'FEE gd',
+            'timestamp'=>'2012-10-20T10:30:43'
+            ));
+        $this->UnmatchableReply->create();
+        $this->UnmatchableReply->save(array(
+            'participant-phone'=>'1234567890',
+            'to'=>'8181',
+            'message-content'=>'FEL weak',
+            'timestamp'=>'2012-09-07T12:20:43'
+            ));
+        
+        $this->testAction("/unmatchableReply/export");
+        
+        $this->assertTrue(isset($this->vars['fileName']));
+        $this->assertFileEquals(
+            TESTS . 'files/exported_unmatchableReply_history.csv',
+            WWW_ROOT . 'files/programs/unmatchableReply/' . $this->vars['fileName']);
+    }
 
     
 }
