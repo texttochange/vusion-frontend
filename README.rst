@@ -164,7 +164,7 @@ Then you clone the mod_xsendfile file from github
 
 	$ git clone http://github.com/nmaier/mod_xsendfile /opt/mod_xsendfile 
 
-**Note /opt/mod_xsendfile is destination whereyou are storing the cloned file **
+**Note /opt/mod_xsendfile is destination whereyou are storing the cloned file**
 
 Compile the file you have cloned. Run this command in the mod_xsednfile directory, in our case */opt/mod_xsendfile* 
 
@@ -187,4 +187,41 @@ In the /etc/apach2/port.conf file add this listen port
 
 	NameVirtualHost *:81
 	Listen 81
+
+Installation using Vagrant and VirtualBox
+=========================================
+This works on all Operating Systems.
+You need to install the following:
+::
+	Install VirtualBox
+		https://www.virtualbox.org/wiki/Downloads
+
+	Install Vagrant
+		https://www.vagrantup.com/downloads.html
+
+	Install Github
+		http://git-scm.com/downloads
+
+	Install IDE for coding e.g Sublime text
+
+Now you have all the installation for the vusion frontend. You need now to setup where the work project is going to be saved in your System.
+	::
+		 1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting ‘Run as Admin’.
+
+		 2. Enter the following commands in PowerShell
+		 		**dir c:\Development
+				  cd c:\Development**
+
+		 3. Now you are in the directory where you are going to work form so do a git clone using the commands below 
+		 		::
+		 			git clone https://github.com/texttochange/vusion-frontend
+		 				** Then retrive the Plugins and the Backend**
+		 			git submodule init
+		 			git submodule update
+
+		 4. Ask for the Vusion.box file and add it into c:\Development\vusion-frontend
+
+		 5. Run this command inthe PowerShell to start Vagrant and virtualbox
+		 		vagran up
+
 
