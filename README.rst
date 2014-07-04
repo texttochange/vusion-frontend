@@ -210,9 +210,8 @@ is going to be saved in your System.
 	1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
 	2. Enter the followig commands in the PowerShell.
-		::
-			mkdir c:\Development
-			cd c:\Development
+		mkdir c:\Development
+		cd c:\Development
 	
 	3.Now you are in the directory where you are going to work form so do the commands below		 	
 		git clone https://github.com/texttochange/vusion-frontend
