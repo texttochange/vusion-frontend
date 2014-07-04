@@ -223,5 +223,6 @@ is going to be saved in your System.
 
 	5. Run this command inthe PowerShell to start Vagrant and virtualbox
 		vagrant up
+- Ant
 
 
