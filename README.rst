@@ -207,10 +207,10 @@ You need to install the following:
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
 is going to be saved in your System.
 ::
-	1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+	1.Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
-	2. Enter the followig commands in the PowerShell.
-		mkdir c:\Development
+	2.Enter the followig commands in the PowerShell.
+		- mkdir c:\Development
 		cd c:\Development
 	
 	3.Now you are in the directory where you are going to work form so do the commands below		 	
