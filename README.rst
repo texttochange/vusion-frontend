@@ -93,10 +93,14 @@ Jenkins
 To run the different build task from build.xml, you need to install
 
 - Jdk6
-sudo apt-get install openjdk-6-jre;
+::
+
+ $ sudo apt-get install openjdk-6-jre;
 
 - Ant
-sudo apt-get install -u ant; or sudo apt-get install ant;
+::
+
+  $ sudo apt-get install -u ant; or sudo apt-get install ant;
 
 
     
@@ -206,14 +210,18 @@ You need to install the following:
 
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
 is going to be saved in your System.
-::
-	1.Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
-	2.Enter the followig commands in the PowerShell.
-		- mkdir c:\Development
+ 1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+
+ 2. Enter the followig commands in the PowerShell
+	::
+	
+		mkdir c:\Development
 		cd c:\Development
 	
-	3.Now you are in the directory where you are going to work form so do the commands below		 	
+ 3.Now you are in the directory where you are going to work form so do the commands below
+ 	::
+ 	
 		git clone https://github.com/texttochange/vusion-frontend
 			**Then retrive the Plugins and the Backend**
 		git submodule init
@@ -222,7 +230,8 @@ is going to be saved in your System.
 	4. Ask for the Vusion.box file and add it into c:\Development\vusion-frontend
 
 	5. Run this command inthe PowerShell to start Vagrant and virtualbox
+	::
+	
 		vagrant up
-              - ant
 
 
