@@ -209,19 +209,19 @@ Now you have all the installation for the vusion frontend. You need now to setup
 		 1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting ‘Run as Admin’.
 
 		 2. Enter the following commands in PowerShell
-		 		**dir c:\Development
-				  cd c:\Development**
+		 		**dir c:\Development**
+				**cd c:\Development**
 
 		 3. Now you are in the directory where you are going to work form so do a git clone using the commands below 
-		 		::
-		 			git clone https://github.com/texttochange/vusion-frontend
+		 	
+		 			*git clone https://github.com/texttochange/vusion-frontend
 		 				** Then retrive the Plugins and the Backend**
-		 			git submodule init
-		 			git submodule update
+		 			*git submodule init
+		 			*git submodule update
 
 		 4. Ask for the Vusion.box file and add it into c:\Development\vusion-frontend
 
 		 5. Run this command inthe PowerShell to start Vagrant and virtualbox
-		 		vagran up
+		 		*vagran up
 
 
