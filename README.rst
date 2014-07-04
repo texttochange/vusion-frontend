@@ -205,14 +205,14 @@ You need to install the following:
 	Install IDE for coding e.g Sublime text
 
 Now you have all the installation for the vusion frontend. You need now to setup where the work project is going to be saved in your System.
-	::
-		1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+::
+	1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
-		2. Enter the followig commands in the PowerShell.
-			  mkdir c:\Development
-			  cd c:\Development
+	2. Enter the followig commands in the PowerShell.
+		mkdir c:\Development
+		cd c:\Development
 
-	
+
 		Now you are in the directory where you are going to work form so do a git clone using the commands below 
 				 	
 			git clone https://github.com/texttochange/vusion-frontend
