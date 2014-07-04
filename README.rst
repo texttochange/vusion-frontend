@@ -222,6 +222,6 @@ is going to be saved in your System.
 	4. Ask for the Vusion.box file and add it into c:\Development\vusion-frontend
 
 	5. Run this command inthe PowerShell to start Vagrant and virtualbox
-	            -  vagrant up
+	            - vagrant up
 
 
