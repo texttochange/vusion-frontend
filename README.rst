@@ -215,7 +215,7 @@ is going to be saved in your System.
 
 	3.Now you are in the directory where you are going to work form so do the commands below		 	
 		git clone https://github.com/texttochange/vusion-frontend
-			** Then retrive the Plugins and the Backend**
+			**Then retrive the Plugins and the Backend**
 		git submodule init
 		git submodule update
 
