@@ -229,8 +229,8 @@ is going to be saved in your System.
 		vagrant up
 
 
-Installation using Vagrant and VirtualBox
-=========================================
+Installation to run backend development and testing
+===================================================
 
 Install Python and pip
   **For windows7(or8)**
