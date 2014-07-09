@@ -192,7 +192,7 @@ In the /etc/apach2/port.conf file add this listen port
 	NameVirtualHost *:81
 	Listen 81
 
-Installation using Vagrant and VirtualBox
+Developing using Vagrant and VirtualBox
 =========================================
 This works on all Operating Systems.
 You need to install the following:
@@ -227,5 +227,85 @@ is going to be saved in your System.
 
 	5. Run this command inthe PowerShell to start Vagrant and virtualbox
 		vagrant up
+
+
+Installation using Vagrant and VirtualBox
+=========================================
+
+Install Python and pip
+  **For windows7(or8)**
+	1. Dowload the MSI installer from http://www.python.org/download/. 
+	   Select 32/64 bit based on your system setting
+
+	2. Run the installer. Be sure to check the option to add Python to your PATH while installing.
+
+	3. Open PowerShell as admin by right clicking on the PowerShell icon and selecting ‘Run as Admin’.
+
+	4. To solve permission issues, run the following command.
+	   ::
+	    
+	         Set-ExecutionPolicy Unrestricted
+
+	5. Enter the following commands in PowerShell.
+           ::
+
+		mkdir c:\envs
+		cd c:\envs
+
+	6. Download the following files into your new folder.
+	
+	    http://python-distribute.org/distribute_setup.py
+	     
+	    https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+	   ::
+	   
+	    so now you have something like : 'c:\envs\distribute_setup.py' and 'c:\envs\get-pip.py'.
+
+	7. Run the following commands in you terminal.
+	
+	   ::
+		     
+		  python c:\envs\distribute_setup.py
+		  python c:\envs\get-pip.py
+
+           **Note: Once these commands run successfully, you can delete the scripts get-pip.py and distribute_setup.py**
+	
+	8. Now typing pip should work. If it doesn’t it means the Scripts folder is not in your path. 
+	   Run the next command in that case 
+	   (Note that this command must be run only once or your PATH will get longer and longer).
+	   Make sure to replace c:\Python27\Scripts with the correct location of your Python installation
+	   ::
+	   
+               setx PATH "%PATH%;C:\Python27\Scripts"
+
+           Close and reopen PowerShell after running this command.
+           
+        9. To create a Virtual Environment, use the following commands.
+        
+           ::
+             
+		cd c:\python
+		pip install virtualenv
+		pip install –no-deps -r requirements.pip
+		
+           Note: If you have varasall.bat fill missing please install visual studio C+++
+		::
+		   
+		   If you have Visual Studio 2010 installed, execute
+			SET VS90COMNTOOLS=%VS100COMNTOOLS%
+		   or with Visual Studio 2012 installed (Visual Studio Version 11)
+			SET VS90COMNTOOLS=%VS110COMNTOOLS%
+                   or with Visual Studio 2013 installed (Visual Studio Version 12)
+			SET VS90COMNTOOLS=%VS120COMNTOOLS%
+
+	10. To run the virtual Environment and backend tests.
+	
+	    ::
+	      
+		 virtualenv ve
+		 .\ve\Scripts\activate
+		 python  ve\Scripts\trial.phy  vusion
+		
+		
 
 
