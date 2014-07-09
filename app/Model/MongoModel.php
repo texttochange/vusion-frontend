@@ -167,7 +167,7 @@ abstract class MongoModel extends Model
     
     function beforeSave($option = array())
     {
-        $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
+        $this->data[$this->alias]['modified'] = new MongoDate(strtotime('now'));
         return true;
     }
     
