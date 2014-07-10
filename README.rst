@@ -232,29 +232,34 @@ is going to be saved in your System.
 	   ::
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
 	    to the file location of your development directory.
-	  ##Note##
-	    	In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
-	    	  `http port` 
+	  **Note**
+	    In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
+	    ::
+	      http port
 	    	  		 guest:80    == host:4567
 	    	  		 guest:9010  == host:4568
-
-	    	  `runing tests in your host environment`          
+            ::
+            
+              runing tests in your host environment`          
 	    	 		 guest:27017 == host:27017
 	    	  		 guest:6379  == host:6379
-	    	  `pushing message to the default transports`          
+	    ::
+	    
+	      pushing message to the default transports         
 	    	  		 guest:2221  == host:2221
 	    	  		 guest:2222  == host:2223
 
-	    	We also have the synced folders between the host and guest machine(virtual machine) with `config.vm.synced_folder`
-	    	here the `type:nfs` has to change to `type:smb`, for more information about why the type changes read the link below
+	   We also have the synced folders between the host and guest machine(virtual machine) with ``config.vm.synced_folder`` here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below
 	    	  http://docs.vagrantup.com/v2/synced-folders/nfs.html
+	    	  
 	    	  http://docs.vagrantup.com/v2/synced-folders/smb.html
 
 					    	  
 	6. Run this command in the PowerShell to start Vagrant and virtualbox
+	   ::
 		$ vagrant up
 
-		Enter the URL: localhost:4567 in your web browser vusion login page will show
+          Enter the URL: localhost:4567 in your web browser vusion login page will show
 
 	7. Settingup git flow to enable you create feature from branches for easy and organised development 
         a) Download and install `getopt.exe` from the [util-linux package](http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm) 
