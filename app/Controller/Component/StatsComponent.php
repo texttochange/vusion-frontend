@@ -8,6 +8,37 @@ class StatsComponent extends Component
     
     public $Controller = null;
     
+    
+    var $localizedValueLabel = array();
+    
+    public function __construct(ComponentCollection $collection, $settings = array())
+    {
+        $this->localizedValueLabel = array(
+            'scheduled' => __('scheduled'),
+            'sent' => __('sent'),
+            'received' => __('received'),
+            'message(s)' => __('message(s)'),
+            'participant(s)' => __('participant(s)'),
+            'Participant(s) Optin/Total' => __('Participant(s) Optin/Total'),
+            'Message(s)-Total(Current-Month)' => __('Message(s) Total(Current Month)'),
+            'Received Total(Current Month)' => __('Received Total(Current Month)'),
+            'Sent Total(Current Month)' => __('Sent Total(Current Month)'),
+            'Schedule Total(Today)' => __('Schedule Total(Today)'),
+            'total message(s)' => __('total message(s)'),
+            'sent message(s)' => __('sent message(s)'),
+            'schedule(s)' => __('schedule(s)'),
+            'Optin/Total participant(s)' => __('Optin/Total participant(s)'),
+            'Total(total current month) message(s)' => __('Total(total current month) message(s)'),
+            'Total(current month) received' => __('Total(current month) received'),
+            'Total(current month) sent' => __('Total(current month) sent'),
+            'Total(today) schedule(s)' => __('Total(today) schedule(s)'),            
+            'Stats Not Available' => __('Stats Not Available'),
+            );
+        $this->Controller = $collection->getController();
+        parent::__construct($collection, $settings);
+    }
+    
+    
     public function initialize(Controller $controller)
     {
         parent::startup($controller);
@@ -31,7 +62,10 @@ class StatsComponent extends Component
         }else{
             $this->redisProgramPrefix = 'vusion:programs';
         }
+        
+        $this->Controller->set('statsLabels', $this->localizedValueLabel);
     }
+    
     
     public function getProgramStat($model, $conditions=array())
     {
@@ -41,6 +75,7 @@ class StatsComponent extends Component
             return 'N/A';
         }
     }
+    
     
     protected function _getProgramStats($database)
     {
@@ -129,10 +164,12 @@ class StatsComponent extends Component
         return $programStats;        
     }
     
+    
     protected function _getStatsKey($database)
     {
         return $this->redisProgramPrefix.':'.$database.':stats';
     }
+    
     
     public function getProgramStats($database, $onlyCached=false)
     {
@@ -155,8 +192,8 @@ class StatsComponent extends Component
         $this->redis->setex($statsKey, $expiring, json_encode($programStats));
         return $programStats;
     }
-
-
+    
+    
     public function _getTimeToCacheStatsExpire($duration) 
     {
         foreach ($this->cacheStatsExpire as $computationDuration => $cacheDuration) {
@@ -166,7 +203,7 @@ class StatsComponent extends Component
         }
         return end($this->cacheStatsExpire);
     }
-
-
+    
+    
 }
 ?>
