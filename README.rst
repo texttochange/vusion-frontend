@@ -211,8 +211,8 @@ You need to install the following:
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
 is going to be saved in your System.
 
-
-	1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+**Steps**
+        1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
 	2. Enter the followig commands in the PowerShell.
 	   ::
@@ -232,7 +232,8 @@ is going to be saved in your System.
 	   ::
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
 	    to the file location of your development directory.
-	  **Note**
+	    
+	   **Note**
 	     In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
 	     ::
 	         http port
