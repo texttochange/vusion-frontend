@@ -1,35 +1,28 @@
-Vagrant::Config.run do |config|
+Vagrant::configure("2") do |config|
 
-  config.vm.box = "package"
-  config.vm.box_url = "file:///Users/olivier/Development/vusion/package.box"
+  config.vm.hostname = "vusion"
+  config.vm.box = "vusion"
+  config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"
 
-  #config.vm.provision :puppet do |puppet|
-  #  puppet.options = ["--verbose",  "--pluginsync"]
-  #  puppet.manifests_path = "puppet/manifests"
-  #  puppet.manifest_file = "vusion.pp"
-  #  puppet.module_path = "/home/oliv/.puppet/modules"
-  #end
-
-  config.vm.forward_port 80, 4567   
-  config.vm.forward_port 9010, 4568
+  config.vm.network "forwarded_port", guest:80, host:4567   
+  config.vm.network "forwarded_port", guest:9010, host:4568
 
   #to run the tests in your host env
-  config.vm.forward_port 27017, 27017
-  config.vm.forward_port 6379, 6379
+  config.vm.network "forwarded_port", guest:27017, host:27017
+  config.vm.network "forwarded_port", guest:6379, host:6379
 
   #to allow pushing messages to the default transports
-  config.vm.forward_port 2221, 2221
-  config.vm.forward_port 2222, 2223
+  config.vm.network "forwarded_port", guest:2221, host:2221
+  config.vm.network "forwarded_port", guest:2222, host:2223
 
-  config.vm.network :hostonly, "10.11.12.13"
-  config.vm.share_folder('frontend', '/var/vusion/app', 'app', :nfs => true)
-  config.vm.share_folder('lib', '/var/vusion/lib', 'lib', :nfs => true)
-  config.vm.share_folder('vusion', '/var/vusion/backend/vusion', 'backend/vusion', :nfs => true)
-  config.vm.share_folder('transports', '/var/vusion/backend/transports', 'backend/transports', :nfs => true)
-  config.vm.share_folder('middlewares', '/var/vusion/backend/middlewares', 'backend/middlewares', :nfs => true)
-  config.vm.share_folder('components', '/var/vusion/backend/components', 'backend/components', :nfs => true)
-  config.vm.share_folder('tests', '/var/vusion/backend/tests', 'backend/tests', :nfs => true)
-  config.vm.share_folder('dispatchers', '/var/vusion/backend/disptachers', 'backend/dispatchers', :nfs => true)
-  config.vm.share_folder('scripts', '/var/vusion/backend/scripts', 'backend/scripts', :nfs => true)
+  config.vm.network "private_network", ip:"10.11.12.13"
+  config.vm.synced_folder "app", "/var/vusion/app",  type:"nfs"
+  config.vm.synced_folder "backend/vusion", "/var/vusion/backend/vusion", type:"nfs"
+  config.vm.synced_folder "backend/transports", "/var/vusion/backend/transports", type:"nfs"
+  config.vm.synced_folder "backend/middlewares", "/var/vusion/backend/middlewares", type:"nfs"
+  config.vm.synced_folder "backend/components", "/var/vusion/backend/components", type:"nfs"
+  config.vm.synced_folder "backend/tests", "/var/vusion/backend/tests", type:"nfs"
+  config.vm.synced_folder "backend/dispatchers", "/var/vusion/backend/disptachers", type:"nfs"
+  config.vm.synced_folder "backend/scripts", "/var/vusion/backend/scripts", type:"nfs"
 
 end
