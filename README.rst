@@ -206,7 +206,7 @@ You need to install the following:
 	Install Github
 		http://git-scm.com/downloads
 
-	Install IDE for coding e.g Sublime text
+	Install IDE for coding
 
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
 is going to be saved in your System.
@@ -214,20 +214,59 @@ is going to be saved in your System.
 	1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
 	2. Enter the followig commands in the PowerShell
-		mkdir c:\Development
-		cd c:\Development
+		$ mkdir c:\Development
+		$ cd c:\Development
 			
-	3.Now you are in the directory where you are going to work form so do the commands below
-		git clone https://github.com/texttochange/vusion-frontend
-			Then retrive the Plugins and the Backend
-		git submodule init
-		git submodule update
+	3. Now you are in the directory where you are going to work form so do the commands below
+		$ git clone https://github.com/texttochange/vusion-frontend
+			 Then retrive the Plugins and the Backend
+		$ git submodule init
+		$ git submodule update
 
 	4. Ask for the Vusion.box file and add it into c:\Development\vusion-frontend
 
-	5. Run this command inthe PowerShell to start Vagrant and virtualbox
-		vagrant up
+	5. Using your IDE Open and edit the vagrantfile in "c:\Development\vusion-forntend\vagrantfile"
+	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
+	    to the file location of your development directory.
+	    ##Note##
+	    	In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
+	    	  `http port` 
+	    	  		 guest:80    == host:4567
+	    	  		 guest:9010  == host:4568
 
+	    	  `runing tests in your host environment`          
+	    	 		 guest:27017 == host:27017
+	    	  		 guest:6379  == host:6379
+	    	  `pushing message to the default transports`          
+	    	  		 guest:2221  == host:2221
+	    	  		 guest:2222  == host:2223
+
+	    	We also have the synced folders between the host and guest machine(virtual machine) with `config.vm.synced_folder`
+	    	here the `type:nfs` has to change to `type:smb`, for more information about why the type changes read the link below
+	    	  http://docs.vagrantup.com/v2/synced-folders/nfs.html
+	    	  http://docs.vagrantup.com/v2/synced-folders/smb.html
+
+					    	  
+	6. Run this command in the PowerShell to start Vagrant and virtualbox
+		$ vagrant up
+
+		Enter the URL: localhost:4567 in your web browser vusion login page will show
+
+	7. Settingup git flow to enable you create feature from branches for easy and organised development 
+        a) Download and install `getopt.exe` from the [util-linux package](http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm) 
+           into `C:\Program Files\Git\bin`. (Only `getopt.exe`, the others util-linux files are not used). Also install `libintl3.dll` and `libiconv2.dll` from the Dependencies packages ([libintl](http://gnuwin32.sourceforge.net/packages/libintl.htm) and [libiconv](http://gnuwin32.sourceforge.net/packages/libiconv.htm)), into the same directory
+       
+        b) Open a new Powershell as admin and create a directory
+             $ mkdir c:\Installgitflow
+             $ cd c:\Installgitflow
+
+        c) Clone the gitflow source from GitHub
+             $ git clone --recursive git://github.com/nvie/gitflow.git
+             $ cd gitflow\contrib
+
+		d) Run the `msysgit-install` script from a command-line prompt 
+			 $ msysgit-install 
+	
 
 Installation to run backend development and testing
 ===================================================
@@ -280,9 +319,9 @@ Install Python and pip
 
            Close and reopen PowerShell after running this command.
            
-        9. To create a Virtual Environment, use the following commands.
+    9. To create a Virtual Environment, use the following commands.
         
-           ::
+        ::
              
 		cd c:\python
 		pip install virtualenv
