@@ -13,11 +13,18 @@ App::uses('PredefinedMessage', 'Model');
 class ProgramUnattachedMessagesController extends AppController
 {
     
-    var $helpers    = array('Js' => array('Jquery'), 'Time');
-    var $uses       = array('UnattachedMessage', 'User');
-    var $components = array('Message');
+    var $uses       = array(
+        //'UnattachedMessage',
+        'User');
+    var $components = array(
+        'Message',
+        'RequestHandler');
+    var $helpers    = array(
+        'Js' => array('Jquery'),
+        'Time',
+        'Session');
     
-    
+
     public function constructClasses()
     {
         parent::constructClasses();
@@ -30,8 +37,9 @@ class ProgramUnattachedMessagesController extends AppController
         $options = array(
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
-        
+
         $this->loadModel('UnattachedMessage', $options);
+        //$this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule          = new Schedule($options);
         $this->Participant       = new Participant($options);
         $this->ProgramSetting    = new ProgramSetting($options);
@@ -68,7 +76,7 @@ class ProgramUnattachedMessagesController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         $this->paginate = array('order'=>$order);
-        $unattachedMessages = $this->paginate();
+        $unattachedMessages = $this->paginate('UnattachedMessage');
         
         foreach($unattachedMessages as &$unattachedMessage)
         {  
@@ -113,9 +121,19 @@ class ProgramUnattachedMessagesController extends AppController
     public function add()
     {
         $programUrl = $this->params['program'];
-        
+
         if ($this->request->is('post')) {
-            $this->saveUnattachedMessage();
+            $savedUnattachedMessage = $this->saveUnattachedMessage();
+            $this->set(compact('savedUnattachedMessage'));
+            if ($savedUnattachedMessage) {
+                if ($this->params['ext']!='json') {
+                    $this->redirect(
+                        array(
+                            'program' => $programUrl,
+                            'controller' => 'programUnattachedMessages',
+                            'action' => 'index'));
+                }
+            } 
         }
         
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
@@ -132,7 +150,11 @@ class ProgramUnattachedMessagesController extends AppController
     protected function saveUnattachedMessage()
     {
         $programUrl = $this->params['program'];
-        
+        $data = $this->data;
+        if (!isset($data['UnattachedMessage'])) {
+            $data = array('UnattachedMessage' => $data);
+        }
+
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(
                 __('Please set the program settings then try again.'), 
@@ -141,7 +163,7 @@ class ProgramUnattachedMessagesController extends AppController
         }
         $importMessage = '';
         $importReport = null;
-        if (isset($this->request->data['UnattachedMessage']['file'])) {
+        if (isset($data['UnattachedMessage']['file'])) {
             $importReport = $this->importParticipants();
             if ($importReport) {
                 $importFailed = array_filter($importReport, function($participantReport) { 
@@ -154,16 +176,16 @@ class ProgramUnattachedMessagesController extends AppController
                         return ($participantReport['saved'] || $participantReport['exist-before']);
                 });
                 foreach($participants as $participantReport) {
-                    $this->request->data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
+                    $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
                 }
             }
         }
         if ($this->UnattachedMessage->id == null) {
             $this->UnattachedMessage->create();
             $user = $this->Auth->user();
-            $this->request->data['UnattachedMessage']['created-by'] = $user['id'];
+            $data['UnattachedMessage']['created-by'] = $user['id'];
         }
-        $savedUnattached = $this->UnattachedMessage->save($this->request->data);
+        $savedUnattached = $this->UnattachedMessage->save($data);
         if ($savedUnattached) {
             $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
             if (isset($importReport)) {
@@ -179,12 +201,6 @@ class ProgramUnattachedMessagesController extends AppController
             
             $this->Session->setFlash(__('The message has been saved.' . $importMessage),
                 'default', array('class'=>'message success'));
-            $this->redirect(
-                array(
-                    'program' => $programUrl,
-                    'controller' => 'programUnattachedMessages',
-                    'action' => 'index'
-                    ));
         } else {
             if (isset($importReport)) {
                 if ($importReport) {
@@ -207,19 +223,19 @@ class ProgramUnattachedMessagesController extends AppController
     {    
         $programUrl = $this->params['program'];
         
-        if ($this->request->data['UnattachedMessage']['file']['error'] != 0) {
-            if ($this->request->data['UnattachedMessage']['file']['error'] == 4) {
+        if ($this->data['UnattachedMessage']['file']['error'] != 0) {
+            if ($this->data['UnattachedMessage']['file']['error'] == 4) {
                 $this->importErrors = __('Please select a file.');
             } else { 
-                $this->importErrors = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
+                $this->importErrors = __('Error while uploading the file: %s.', $this->data['Import']['file']['error']);
             }
             return false;
         }
         
-        $fileName = $this->request->data['UnattachedMessage']['file']['name'];
+        $fileName = $this->data['UnattachedMessage']['file']['name'];
         $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
         
-        copy($this->request->data['UnattachedMessage']['file']['tmp_name'], $filePath . DS . $fileName);
+        copy($this->data['UnattachedMessage']['file']['tmp_name'], $filePath . DS . $fileName);
         chmod($filePath . DS . $fileName, 0664);
         
         $report = $this->Participant->import($programUrl, $filePath . DS . $fileName);
@@ -240,10 +256,9 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function edit()
     {
-        $unattachedMessage = $this->params['unattchedMessage'];
-        $id                = $this->params['id'];
-        $programUrl        = $this->params['program'];
-        
+        $programUrl = $this->params['program'];
+        $id         = $this->params['id'];
+
         $this->UnattachedMessage->id = $id;
         
         if (!$this->UnattachedMessage->exists()) {
@@ -254,16 +269,16 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             $this->saveUnattachedMessage();
         } else {
-            $this->request->data = $this->UnattachedMessage->read(null, $id);
+            $this->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    
             $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
             date_timezone_set($now,timezone_open($programTimezone));      
-            $messageDate = new DateTime($this->request->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
+            $messageDate = new DateTime($this->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
             if ($now > $messageDate){   
                 throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
             }
             $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
-            if ($this->request->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
+            if ($this->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
                 $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
                     'default',
                     array('class' => "message warning")
@@ -277,9 +292,7 @@ class ProgramUnattachedMessagesController extends AppController
         }
         
         $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
-        $this->set(compact('selectors', 'predefinedMessageOptions'));
-        
-        return $unattachedMessage;
+        $this->set(compact('selectors', 'predefinedMessageOptions'));        
     }
     
     

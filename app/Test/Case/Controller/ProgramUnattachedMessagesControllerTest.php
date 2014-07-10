@@ -173,7 +173,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(1, count($this->vars['unattachedMessages']));	
     }
-    
+
     
     public function testAdd()
     {
@@ -210,10 +210,12 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'data' => $unattachedMessage
             )
             );
-        
+
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessageDB = $this->UnattachedMessage->find('all');
         
+        $this->assertTrue(isset($this->vars['savedUnattachedMessage']['UnattachedMessage']));
+
         $this->assertTrue(in_array('created-by', array_keys($unattachedMessageDB[0]['UnattachedMessage'])));
         $this->assertEquals(2, $unattachedMessageDB[0]['UnattachedMessage']['created-by']);   
     }
@@ -438,6 +440,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(1, count($this->vars['unattachedMessages'])); 
     }
-    
-    
+
+
 }

@@ -14,8 +14,11 @@ App::uses('FilterException', 'Lib');
 class ProgramParticipantsController extends AppController
 {
     
-    var $uses       = array('Participant', 'History');
-    var $components = array('RequestHandler', 
+    var $uses       = array(
+        'Participant',
+        'History');
+    var $components = array(
+        'RequestHandler', 
         'LocalizeUtils',
         'Filter');
     var $helpers    = array(

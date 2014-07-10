@@ -149,9 +149,13 @@ class UnattachedMessage extends MongoModel
     
     public function __construct($id = false, $table = null, $ds = null)
     {
+        //Seems to be necessary API loading Vs Web loading
+        if (isset($id['id'])) {
+            $options = array('database' => $id['id']['database']);
+        } else {
+            $options = array('database' => $id['database']);
+        }
         parent::__construct($id, $table, $ds);
-        
-        $options              = array('database'=>$id['database']);
         $this->ProgramSetting = new ProgramSetting($options);
     }
     
@@ -161,7 +165,7 @@ class UnattachedMessage extends MongoModel
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
-        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         
         if (isset($object['send-to-type']) && $object['send-to-type'] == 'match') {
             $toCheck = array_merge($toCheck, $this->matchFields);
@@ -186,19 +190,26 @@ class UnattachedMessage extends MongoModel
         return $object;
     }
     
+    private function _generateName() 
+    {
+        $now = $this->ProgramSetting->getProgramTimeNow();
+        $content = $this->data['UnattachedMessage']['content'];
+        return $now->format("d/m/Y H:i:s") . ' ' . implode(' ', array_slice(explode(' ', $content), 0, 2));
+    }
     
+
     public function beforeValidate()
     {
         parent::beforeValidate();
-        
-        /*if (!isset($this->data['UnattachedMessage']['created-by'])) {
-        $this->data['UnattachedMessage']['created-by'] = null;
-        }*/
+
+        $this->_setDefault('content', null);
+        $this->_setDefault('name', $this->_generateName());
         
         if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
             $now = $this->ProgramSetting->getProgramTimeNow();
-            if (isset($now))
-                $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");            
+            if (isset($now)) {
+                $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");
+            }            
         } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
             //Convert fixed-time to vusion format
             $this->data['UnattachedMessage']['fixed-time'] = DialogueHelper::convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
