@@ -233,48 +233,54 @@ is going to be saved in your System.
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
 	    to the file location of your development directory.
 	  **Note**
-	    In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
-	    ::
-	      http port
+	    i) In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
+	       ::
+	         http port
 	    	  		 guest:80    == host:4567
 	    	  		 guest:9010  == host:4568
-            ::
+               ::
             
-              runing tests in your host environment`          
-	    	 		 guest:27017 == host:27017
+                 runing tests in your host environment`          
+	     	 		 guest:27017 == host:27017
 	    	  		 guest:6379  == host:6379
-	    ::
+	       ::
 	    
-	      pushing message to the default transports         
+	         pushing message to the default transports         
 	    	  		 guest:2221  == host:2221
 	    	  		 guest:2222  == host:2223
 
-	   We also have the synced folders between the host and guest machine(virtual machine) with ``config.vm.synced_folder`` here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below
-	    	  http://docs.vagrantup.com/v2/synced-folders/nfs.html
+	    ii) We also have the synced folders between the host and guest machine(virtual machine) with ``config.vm.synced_folder`` here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
+	       
+	        - http://docs.vagrantup.com/v2/synced-folders/nfs.html
 	    	  
-	    	  http://docs.vagrantup.com/v2/synced-folders/smb.html
-
+	        - http://docs.vagrantup.com/v2/synced-folders/smb.html
+ 
 					    	  
 	6. Run this command in the PowerShell to start Vagrant and virtualbox
 	   ::
 		$ vagrant up
 
-          Enter the URL: localhost:4567 in your web browser vusion login page will show
+           Enter the URL: localhost:4567 in your web browser vusion login page will show
 
 	7. Settingup git flow to enable you create feature from branches for easy and organised development 
-        a) Download and install `getopt.exe` from the [util-linux package](http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm) 
-           into `C:\Program Files\Git\bin`. (Only `getopt.exe`, the others util-linux files are not used). Also install `libintl3.dll` and `libiconv2.dll` from the Dependencies packages ([libintl](http://gnuwin32.sourceforge.net/packages/libintl.htm) and [libiconv](http://gnuwin32.sourceforge.net/packages/libiconv.htm)), into the same directory
+        
+           a) Download and install ``getopt.exe`` from the [util-linux package](http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm) 
+              into ``C:\Program Files\Git\bin``.
+              (Only ``getopt.exe``, the others util-linux files are not used). Also install ``libintl3.dll`` and ``libiconv2.dll`` from the Dependencies packages ([libintl](http://gnuwin32.sourceforge.net/packages/libintl.htm) and [libiconv](http://gnuwin32.sourceforge.net/packages/libiconv.htm)), into the same directory
        
-        b) Open a new Powershell as admin and create a directory
-             $ mkdir c:\Installgitflow
-             $ cd c:\Installgitflow
+           b) Open a new Powershell as admin and create a directory.
+              ::
+                $ mkdir c:\Installgitflow
+                $ cd c:\Installgitflow
 
-        c) Clone the gitflow source from GitHub
-             $ git clone --recursive git://github.com/nvie/gitflow.git
-             $ cd gitflow\contrib
+           c) Clone the gitflow source from GitHub.
+              :: 
+                $ git clone --recursive git://github.com/nvie/gitflow.git
+                $ cd gitflow\contrib
 
-		d) Run the `msysgit-install` script from a command-line prompt 
-			 $ msysgit-install 
+	   d) Run the `msysgit-install` script from a command-line prompt 
+	      ::		 
+                $ msysgit-install 
 	
 
 Installation to run backend development and testing
@@ -282,7 +288,7 @@ Installation to run backend development and testing
 
 Install Python and pip
   **For windows7(or8)**
-	1. Dowload the MSI installer from http://www.python.org/download/. 
+	1. Dowload the MSI installer from http://www.python.org/download/   
 	   Select 32/64 bit based on your system setting
 
 	2. Run the installer. Be sure to check the option to add Python to your PATH while installing.
@@ -291,12 +297,10 @@ Install Python and pip
 
 	4. To solve permission issues, run the following command.
 	   ::
-	    
 	         Set-ExecutionPolicy Unrestricted
 
 	5. Enter the following commands in PowerShell.
            ::
-
 		mkdir c:\envs
 		cd c:\envs
 
@@ -305,18 +309,16 @@ Install Python and pip
 	    http://python-distribute.org/distribute_setup.py
 	     
 	    https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-	   ::
 	   
-	    so now you have something like : 'c:\envs\distribute_setup.py' and 'c:\envs\get-pip.py'.
+	    so now you have something like : **'c:\\envs\\distribute_setup.py'** and **'c:\\envs\\get-pip.py'**.
 
 	7. Run the following commands in you terminal.
-	
 	   ::
-		     
 		  python c:\envs\distribute_setup.py
 		  python c:\envs\get-pip.py
 
-           **Note: Once these commands run successfully, you can delete the scripts get-pip.py and distribute_setup.py**
+           **Note**
+              Once these commands run successfully, you can delete the scripts **get-pip.py** and **distribute_setup.py**.
 	
 	8. Now typing pip should work. If it doesn’t it means the Scripts folder is not in your path. 
 	   Run the next command in that case 
