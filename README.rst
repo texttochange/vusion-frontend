@@ -233,23 +233,23 @@ is going to be saved in your System.
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
 	    to the file location of your development directory.
 	  **Note**
-	    i) In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
-	       ::
+	     In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
+	     ::
 	         http port
 	    	  		 guest:80    == host:4567
 	    	  		 guest:9010  == host:4568
-               ::
+             ::
             
                  runing tests in your host environment`          
 	     	 		 guest:27017 == host:27017
 	    	  		 guest:6379  == host:6379
-	       ::
+	     ::
 	    
 	         pushing message to the default transports         
 	    	  		 guest:2221  == host:2221
 	    	  		 guest:2222  == host:2223
 
-	    ii) We also have the synced folders between the host and guest machine(virtual machine) with ``config.vm.synced_folder`` here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
+	     We also have the synced folders between the host and guest machine(virtual machine) with ``config.vm.synced_folder`` here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
 	       
 	        - http://docs.vagrantup.com/v2/synced-folders/nfs.html
 	    	  
@@ -264,9 +264,17 @@ is going to be saved in your System.
 
 	7. Settingup git flow to enable you create feature from branches for easy and organised development 
         
-           a) Download and install ``getopt.exe`` from the [util-linux package](http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm) 
+           a) Download and install ``getopt.exe`` from the util-linux-package_  
               into ``C:\Program Files\Git\bin``.
-              (Only ``getopt.exe``, the others util-linux files are not used). Also install ``libintl3.dll`` and ``libiconv2.dll`` from the Dependencies packages ([libintl](http://gnuwin32.sourceforge.net/packages/libintl.htm) and [libiconv](http://gnuwin32.sourceforge.net/packages/libiconv.htm)), into the same directory
+              (Only ``getopt.exe``, the others util-linux files are not used).
+              Also install ``libintl3.dll`` and ``libiconv2.dll`` from the Dependencies packages (libintl_ and libiconv_), into the same directory
+       
+       
+              .. _util-linux-package: http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm
+       
+              .. _libintl: http://gnuwin32.sourceforge.net/packages/libintl.htm
+       
+              .. _libiconv: http://gnuwin32.sourceforge.net/packages/libiconv.htm
        
            b) Open a new Powershell as admin and create a directory.
               ::
@@ -330,16 +338,16 @@ Install Python and pip
 
            Close and reopen PowerShell after running this command.
            
-    9. To create a Virtual Environment, use the following commands.
+        9. To create a Virtual Environment, use the following commands.
         
-        ::
+           ::
              
 		cd c:\python
 		pip install virtualenv
 		pip install –no-deps -r requirements.pip
 		
-           Note: If you have varasall.bat fill missing please install visual studio C+++
-		::
+           **Note:** If you have varasall.bat fill missing please install visual studio C+++
+           ::
 		   
 		   If you have Visual Studio 2010 installed, execute
 			SET VS90COMNTOOLS=%VS100COMNTOOLS%
