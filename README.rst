@@ -226,12 +226,13 @@ is going to be saved in your System.
 		$ git submodule init
 		$ git submodule update
 
-	4. Ask for the Vusion.box file and add it into **c:\\Development\\vusion-frontend**
+	4. Ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
-	5. Using your IDE Open and edit the vagrantfile in "c:\Development\vusion-forntend\vagrantfile"
+	5. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
+	   ::
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
 	    to the file location of your development directory.
-	    ##Note##
+	  ##Note##
 	    	In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
 	    	  `http port` 
 	    	  		 guest:80    == host:4567
