@@ -220,13 +220,13 @@ is going to be saved in your System.
 	     $ cd c:\Development
 			
 	3. Now you are in the directory where you are going to work form so do the commands below.
-	      ::
+	   ::
 		$ git clone https://github.com/texttochange/vusion-frontend
 			 Then retrive the Plugins and the Backend
 		$ git submodule init
 		$ git submodule update
 
-	4. Ask for the Vusion.box file and add it into c:\Development\vusion-frontend
+	4. Ask for the Vusion.box file and add it into **c:\\Development\\vusion-frontend**
 
 	5. Using your IDE Open and edit the vagrantfile in "c:\Development\vusion-forntend\vagrantfile"
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
