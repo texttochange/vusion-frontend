@@ -14,7 +14,6 @@ class ProgramUnattachedMessagesController extends AppController
 {
     
     var $uses       = array(
-        //'UnattachedMessage',
         'User');
     var $components = array(
         'Message',
