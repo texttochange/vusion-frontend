@@ -91,6 +91,11 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(
             array('a tag'),
             Participant::cleanTags($tags));
+
+        $tags = 'sometag,a tag ,';
+        $this->assertEquals(
+            array('sometag', 'a tag'),
+            Participant::cleanTags($tags));
     }
 
 
@@ -239,7 +244,7 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testSave_clearPhone()
+    public function testSave_cleanPhone()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         //1st assertion phone is already in the correct format
@@ -1631,14 +1636,14 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testClearPhone()
+    public function testcleanPhone()
     {
-        $this->assertEqual("+254700866920", Participant::clearPhone(" +254700866920 "));
-        $this->assertEqual("+254700866920", Participant::clearPhone("254700866920"));
-        $this->assertEqual("+254700866920", Participant::clearPhone("254 700 866 920"));
-        $this->assertEqual("+254700866920", Participant::clearPhone("00254700866920"));
-        $this->assertEqual("+254700866920", Participant::clearPhone("+254700866920�"));
-        $this->assertEqual("+254700866920", Participant::clearPhone(" +2547OO866920 "));
+        $this->assertEqual("+254700866920", Participant::cleanPhone(" +254700866920 "));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("254700866920"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("254 700 866 920"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("00254700866920"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("+254700866920�"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone(" +2547OO866920 "));
     }
 
     

@@ -216,7 +216,7 @@ class Participant extends MongoModel
     }
     
     
-    public static function clearPhone($phone) 
+    public static function cleanPhone($phone) 
     {
         if (isset($phone) and !empty($phone)) {
             $phone = trim($phone);           
@@ -289,7 +289,7 @@ class Participant extends MongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-        
+
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set
@@ -297,7 +297,7 @@ class Participant extends MongoModel
         }
 
         $this->_setDefault('phone', null);
-        $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
+        $this->data['Participant']['phone'] = $this->cleanPhone($this->data['Participant']['phone']);
                 
         $this->_setDefault('tags', array());
         $this->data['Participant']['tags'] = Participant::cleanTags($this->data['Participant']['tags']);
@@ -306,10 +306,10 @@ class Participant extends MongoModel
         $this->data['Participant']['profile'] = Participant::cleanProfile($this->data['Participant']['profile']);
         
         if (!$this->data['Participant']['_id']) {
-            $this->data['Participant']['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
-            $this->data['Participant']['last-optout-date'] = null;
-            $this->data['Participant']['session-id']       = $this->gen_uuid();
-            $this->data['Participant']['enrolled']         = array();            
+            $this->_setDefault('last-optin-date', $programNow->format("Y-m-d\TH:i:s"));
+            $this->_setDefault('last-optout-date', null);
+            $this->_setDefault('session-id', $this->gen_uuid());
+            $this->_setDefault('enrolled', array());            
         } else {
             $this->_editEnrolls();
         }
@@ -418,7 +418,7 @@ class Participant extends MongoModel
             return $cleanedTags;
         }
         if (!is_array($inputTags)) {
-            $inputTags = explode(', ', $inputTags); 
+            $inputTags = explode(',', $inputTags); 
         } 
         foreach ($inputTags as $tag) {
             $cleanedTags[] = trim(stripcslashes($tag), " \t\n\r\0\x0B,");
@@ -436,7 +436,7 @@ class Participant extends MongoModel
         } 
 
         if (!is_array($inputProfile)) {
-            $inputProfile = explode(",", $inputProfile);
+            $inputProfile = explode(',', $inputProfile);
             foreach ($inputProfile as &$profile) {
                 $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
                 list($label,$value)  = explode(":", $profile);
@@ -702,7 +702,7 @@ class Participant extends MongoModel
             }
             $participant          = array();
             //Get Phone
-            $participant['phone'] = $this->clearPhone($entry[$headers['phone']['index']]);
+            $participant['phone'] = $this->cleanPhone($entry[$headers['phone']['index']]);
             //Get Tags
             $participant['tags']  = array();
             if (isset($headers['tags']) && isset($entry[$headers['tags']['index']])) {
@@ -777,7 +777,7 @@ class Participant extends MongoModel
             }
             $participant = array();
             //Get Phone
-            $participant['phone'] = $this->clearPhone($data->val($i,'A'));
+            $participant['phone'] = $this->cleanPhone($data->val($i,'A'));
             //Get tags
             $participant['tags'] = array();
             if (isset($headers['tags'])) {
