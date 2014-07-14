@@ -6,6 +6,7 @@ App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
 
+
 class Participant extends MongoModel
 {
     
@@ -101,6 +102,7 @@ class Participant extends MongoModel
                 ),
             )
         );
+
     
     public $validateLabel = array(
         'label' => array(
@@ -288,43 +290,27 @@ class Participant extends MongoModel
     {
         parent::beforeValidate();
         
-        if (isset($this->data['Participant']['phone']) and !empty($this->data['Participant']['phone'])) {
-            $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        if ($programNow == null) {
+            //The program time MUST be set
+            return false;
         }
-        
+
+        $this->_setDefault('phone', null);
+        $this->data['Participant']['phone'] = $this->clearPhone($this->data['Participant']['phone']);
+                
         $this->_setDefault('tags', array());
-        //filter out empty tags
-        if (isset($this->data['Participant']['tags']) && is_array($this->data['Participant']['tags'])) {
-            $this->data['Participant']['tags'] = array_filter($this->data['Participant']['tags']);
-        }
-        
+        $this->data['Participant']['tags'] = Participant::cleanTags($this->data['Participant']['tags']);
+         
         $this->_setDefault('profile', array());
-        if (is_array($this->data['Participant']['profile'])) {
-            foreach ($this->data['Participant']['profile'] as &$label) {
-                if (!array_key_exists('raw', $label)) {
-                    $label['raw'] = null;
-                }
-            }
-        }
+        $this->data['Participant']['profile'] = Participant::cleanProfile($this->data['Participant']['profile']);
         
-        //The time should be provide by the controller
         if (!$this->data['Participant']['_id']) {
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
-            if ($programNow==null)
-                return false;
-            $lastOptinDate = (isset($this->data['Participant']['last-optin-date'])) ? $this->data['Participant']['last-optin-date'] : $programNow->format("Y-m-d\TH:i:s"); 
-            $this->data['Participant']['last-optin-date']  = $lastOptinDate;
+            $this->data['Participant']['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
             $this->data['Participant']['last-optout-date'] = null;
-            $sessionId                                     = (isset($this->data['Participant']['session-id'])) ? $this->data['Participant']['session-id'] : $this->gen_uuid();
-            $this->data['Participant']['session-id']       = $sessionId;
-            $tags                                          = (isset($this->data['Participant']['tags'])) ? $this->data['Participant']['tags'] : array();
-            $this->data['Participant']['tags']             = $tags;
-            $this->data['Participant']['enrolled']         = array();
+            $this->data['Participant']['session-id']       = $this->gen_uuid();
+            $this->data['Participant']['enrolled']         = array();            
         } else {
-            $this->_editTags();
-            
-            $this->_editProfile();
-            
             $this->_editEnrolls();
         }
         return true;
@@ -425,44 +411,61 @@ class Participant extends MongoModel
     }
     
     
-    protected function _editTags()
+    public static function cleanTags($inputTags=array())
     {
-        if(!isset($this->data['Participant']['tags']))
-            $this->data['Participant']['tags'] = array();
-        else if (isset($this->data['Participant']['tags']) and !is_array($this->data['Participant']['tags'])) {
-            $tags      = trim(stripcslashes($this->data['Participant']['tags']));
-            $tags      = array_filter(explode(",", $tags));
-            $cleanTags = array();
-            foreach ($tags as $tag) {
-                $cleanTags[] = trim($tag);
-            }
-            $this->data['Participant']['tags'] = $cleanTags;
+        $cleanedTags = array();
+        if ($inputTags == null) {
+            return $cleanedTags;
         }
-        return $this->data['Participant']['tags'];
+        if (!is_array($inputTags)) {
+            $inputTags = explode(', ', $inputTags); 
+        } 
+        foreach ($inputTags as $tag) {
+            $cleanedTags[] = trim(stripcslashes($tag), " \t\n\r\0\x0B,");
+        }
+        $cleanedTags = array_values(array_filter($cleanedTags));
+        return $cleanedTags;
     }
-    
-    
-    protected function _editProfile()
+
+
+    public static function cleanProfile($inputProfile) 
     {
-        if (isset($this->data['Participant']['profile']) and !is_array($this->data['Participant']['profile'])) {                   
-            $profiles    = trim(stripcslashes($this->data['Participant']['profile']));                    
-            $profiles    = array_filter(explode(",", $profiles));                    
-            $profileList = array();
-            foreach ($profiles as $profile) {                           
-                $profile             = (strpos($profile, ':') !== false) ? $profile : $profile.":";
+        $cleanedProfile = array();
+        if ($inputProfile == null) {
+            return $cleanedProfile;
+        } 
+
+        if (!is_array($inputProfile)) {
+            $inputProfile = explode(",", $inputProfile);
+            foreach ($inputProfile as &$profile) {
+                $profile = (strpos($profile, ':') !== false) ? $profile : $profile.":";
                 list($label,$value)  = explode(":", $profile);
-                $newProfile          = array();
-                $newProfile['label'] = trim($label);
-                $newProfile['value'] = trim($value);
-                $newProfile['raw']   = null;
-                $profileList[]       = $newProfile;                            
+                $profile = array(
+                    'label' => $label,
+                    'value' => $value,
+                    'raw' => null);
             }
-            $this->data['Participant']['profile'] = $profileList;
-        }    
-        return $this->data['Participant']['profile'];
+        }
+        foreach ($inputProfile as &$profile) {
+            if (!isset($profile['label'])) {
+                $profile = null;
+                continue;
+            }
+            $profile['label'] = trim(stripcslashes($profile['label']));
+            $profile['value'] = trim(stripcslashes($profile['value']));
+            if ($profile['label'] == '') {
+                $profile = null;
+                continue;
+            }
+            if (!isset($profile['raw'])) {
+                $profile['raw'] = null;
+            }
+        }
+        $cleanedProfile = array_values(array_filter($inputProfile));
+        return $cleanedProfile;
     }
     
-    
+
     protected function _editEnrolls()
     {
         $participantUpdateData = $this->data;

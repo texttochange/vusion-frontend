@@ -57,7 +57,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
         $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
     }
-    
+   
     
     
     public function testSave_clearEmpty()
@@ -72,6 +72,78 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual(
             $savedParticipant['Participant']['tags'],
             array('a tag'));
+    }
+
+
+    public function testCleanTags() 
+    {
+        $tags = ' a tag ';
+        $this->assertEquals(
+            array('a tag'),
+            Participant::cleanTags($tags));
+
+        $tags = ', a tag ,';
+        $this->assertEquals(
+            array('a tag'),
+            Participant::cleanTags($tags));
+
+        $tags = array('', 'a tag ');
+        $this->assertEquals(
+            array('a tag'),
+            Participant::cleanTags($tags));
+    }
+
+
+    public function testCleanProfile() 
+    {
+        $profile = ' group:1 ';
+        $this->assertEquals(
+            Participant::cleanProfile($profile),
+            array(
+                array(
+                    'label' => 'group',
+                    'value' => '1',
+                    'raw' => null)));
+
+        $profile = ', group : 1 ,';
+        $this->assertEquals(
+            Participant::cleanProfile($profile),
+            array(
+                array(
+                    'label' => 'group',
+                    'value' => '1',
+                    'raw' => null)));
+
+        $profile = array(
+            array(),
+            array(
+                'label' => 'group ',
+                'value' => ' 1'),
+            array());
+        $this->assertEquals(
+            Participant::cleanProfile($profile),
+            array(
+                array(
+                    'label' => 'group',
+                    'value' => '1',
+                    'raw' => null)));
+
+    }
+
+
+    public function testSave_tags_labels_as_string()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $participant = array(
+            'phone' => '+788601461',
+            'tags' => 'a tag, Another tag',
+          //  'profile' => 'group:1, town: kampala',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual(
+            $savedParticipant['Participant']['tags'],
+            array('a tag', 'Another tag'));
     }
     
     
@@ -1568,6 +1640,6 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual("+254700866920", Participant::clearPhone("+254700866920�"));
         $this->assertEqual("+254700866920", Participant::clearPhone(" +2547OO866920 "));
     }
-    
+
     
 }

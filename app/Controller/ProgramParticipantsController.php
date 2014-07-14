@@ -298,7 +298,7 @@ class ProgramParticipantsController extends AppController
     public function add() 
     {
         $programUrl = $this->params['program'];
-        
+
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(
@@ -307,27 +307,28 @@ class ProgramParticipantsController extends AppController
                     );
                 return;
             }
+            $savedParticipant = null;
             $this->Participant->create();
-            if ($this->Participant->save($this->request->data)) {
-                $participant = $this->Participant->read();
-                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+            if ($savedParticipant = $this->Participant->save($this->request->data)) {
+                //$savedParticipant = $this->Participant->read();
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
+                    array('class'=>'message success'));
+                if (!$this->request->is("ajax")) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'), 
                     'default',
                     array('class' => "message failure")
                     );
             }
-            
-        }        
+            $this->set(compact("savedParticipant"));
+        }    
     }
     
     
