@@ -298,6 +298,7 @@ class ProgramParticipantsController extends AppController
     public function add() 
     {
         $programUrl = $this->params['program'];
+        $data = $this->_ajaxDataPatch();
 
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
@@ -308,7 +309,7 @@ class ProgramParticipantsController extends AppController
             }
             $savedParticipant = null;
             $this->Participant->create();
-            if ($savedParticipant = $this->Participant->save($this->request->data)) {
+            if ($savedParticipant = $this->Participant->save($data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
