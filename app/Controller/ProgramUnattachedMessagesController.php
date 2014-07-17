@@ -126,11 +126,10 @@ class ProgramUnattachedMessagesController extends AppController
             $this->set(compact('savedUnattachedMessage'));
             if ($savedUnattachedMessage) {
                 if (!$this->request->is('ajax')) {
-                    $this->redirect(
-                        array(
-                            'program' => $programUrl,
-                            'controller' => 'programUnattachedMessages',
-                            'action' => 'index'));
+                    $this->redirect(array(
+                        'program' => $programUrl,
+                        'controller' => 'programUnattachedMessages',
+                        'action' => 'index'));
                 }
             } 
         }
