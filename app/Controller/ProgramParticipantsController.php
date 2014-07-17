@@ -546,8 +546,7 @@ class ProgramParticipantsController extends AppController
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
         
-        $data = $this->_ajaxDataPatch();
-        //Retrieving the participant to edit
+        $data        = $this->_ajaxDataPatch();
         $participant = $this->_loadParticipantId($data);
 
         if ($this->request->is('post')) {
@@ -568,20 +567,21 @@ class ProgramParticipantsController extends AppController
             if ($this->Participant->save($participant['Participant'])) {
                 $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been optin.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
+                    'default', array('class'=>'message success'));
+                $this->set('success', true);
+                if (!$this->request->is("ajax")) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'
+                        ));
+                }
             } else {
-                $this->Session->setFlash(__('The participant could not be reset.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->set('success', false);
+                $this->Session->setFlash(__('The participant could not be optin.'), 
+                    'default', array('class' => "message failure"));
             }
+            $this->set(compact('participant'));
         }
     }
     
@@ -607,19 +607,22 @@ class ProgramParticipantsController extends AppController
             if ($this->Participant->save($participant['Participant'])) {
                 $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been optout.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
+                    'default', array('class'=>'message success'));
+                $this->set('success', true);
+                if (!$this->request->is('ajax')) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                } 
             } else {
-                $this->Session->setFlash(__('The participant could not be reset.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->set('success', false);
+                $this->Session->setFlash(__('The participant could not be optout.'), 
+                    'default', array('class' => "message failure"));
+            }
+            $this->set(compact('participant'));
+            if ($this->request->is('ajax')) {
+                $this->render("optin");
             }
         }
     }
