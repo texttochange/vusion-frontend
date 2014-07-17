@@ -265,7 +265,14 @@ class ProgramUnattachedMessagesController extends AppController
         
         $this->UnattachedMessage->read();
         if ($this->request->is('post')) {
-            $this->saveUnattachedMessage();
+            if ($this->saveUnattachedMessage()) {
+                if (!$this->request->is('ajax')) {
+                    $this->redirect(array(
+                        'program' => $programUrl,
+                        'controller' => 'programUnattachedMessages',
+                        'action' => 'index'));
+                }
+            }
         } else {
             $this->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    
