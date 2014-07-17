@@ -4,6 +4,7 @@ App::uses('ProgramSetting', 'Model');
 App::uses('VirtualModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
+App::uses('Participant', 'Model');
 
 
 class UnattachedMessage extends MongoModel
@@ -213,7 +214,12 @@ class UnattachedMessage extends MongoModel
         } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
             //Convert fixed-time to vusion format
             $this->data['UnattachedMessage']['fixed-time'] = DialogueHelper::convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
-        }       
+        }
+        if (isset($this->data['UnattachedMessage']['send-to-phone'])) {
+            foreach ($this->data['UnattachedMessage']['send-to-phone'] as &$phone) {
+                $phone = Participant::cleanPhone($phone);
+            }
+        }
         return true;           	
     }    
     

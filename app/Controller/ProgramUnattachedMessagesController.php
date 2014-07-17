@@ -161,23 +161,30 @@ class ProgramUnattachedMessagesController extends AppController
         }
         $importMessage = '';
         $importReport = null;
-        if (isset($data['UnattachedMessage']['file'])) {
-            $importReport = $this->importParticipants();
-            if ($importReport) {
-                $importFailed = array_filter($importReport, function($participantReport) { 
-                        return (!$participantReport['saved'] && !$participantReport['exist-before']);
-                });
-                $imported = array_filter($importReport, function($participantReport) { 
-                        return ($participantReport['saved']);
-                });
-                $participants = array_filter($importReport, function($participantReport) { 
-                        return ($participantReport['saved'] || $participantReport['exist-before']);
-                });
-                foreach($participants as $participantReport) {
-                    $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
-                }
+        if (isset($data['UnattachedMessage']['send-to-type'])
+            &&  $data['UnattachedMessage']['send-to-type'] == 'phone') {
+            $importReport = null;
+            if (isset($data['UnattachedMessage']['file'])) {
+                $importReport = $this->importParticipants();    
+            } else if (isset($data['UnattachedMessage']['send-to-phone'])) {
+                $importReport = $this->importParticipantsFromList($data);
+                $data['UnattachedMessage']['send-to-phone'] = array();
             }
-        }
+            if ($importReport) {
+                    $importFailed = array_filter($importReport, function($participantReport) { 
+                            return (!$participantReport['saved'] && !$participantReport['exist-before']);
+                    });
+                    $imported = array_filter($importReport, function($participantReport) { 
+                            return ($participantReport['saved']);
+                    });
+                    $participants = array_filter($importReport, function($participantReport) { 
+                            return ($participantReport['saved'] || $participantReport['exist-before']);
+                    });
+                    foreach($participants as $participantReport) {
+                        $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
+                    }
+            }
+        } 
         if ($this->UnattachedMessage->id == null) {
             $this->UnattachedMessage->create();
             $user = $this->Auth->user();
@@ -251,6 +258,25 @@ class ProgramUnattachedMessagesController extends AppController
         return $report;
     }
     
+    protected function importParticipantsFromList($data) {
+        $programUrl = $this->params['program'];
+        $report = array();
+        foreach ($data['UnattachedMessage']['send-to-phone'] as $participantPhone) {
+            $report[] = $this->Participant->saveParticipantWithReport(
+                array('phone' => $participantPhone), false);
+        }
+        if ($report) {
+            foreach($report as $participantReport) {
+                if ($participantReport['saved']) {
+                    $this->_notifyUpdateBackendWorkerParticipant($programUrl, $participantReport['phone']);
+                }    
+            }
+        } else {
+            $this->importErrors = $this->Participant->importErrors[0];
+        }
+        return $report;
+    }
+
     
     public function edit()
     {
