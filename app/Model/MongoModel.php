@@ -38,6 +38,7 @@ abstract class MongoModel extends Model
                 $dbName = $id['database'];
             } else if (isset($id['id']['database'])) {
                 $dbName = $id['id']['database'];
+                unset($id['id']['database']);
             } else {
                 $dbName = 'mongo-test';
             }
