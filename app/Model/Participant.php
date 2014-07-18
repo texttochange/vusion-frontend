@@ -261,8 +261,9 @@ class Participant extends MongoModel
             '$push' => array(
                 'tags' => $tag              
                 )
-            );    
-        $this->updateAll($massTag, $conditions);        
+            );
+        $result = array_merge($conditions, array('tags'=> array('$ne' => $tag)));
+        $this->updateAll($massTag, $result);        
         return true;
     }
     
