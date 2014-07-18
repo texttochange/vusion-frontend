@@ -194,8 +194,9 @@ In the /etc/apach2/port.conf file add this listen port
 
 Developing using Vagrant and VirtualBox
 =========================================
-This works on all Operating Systems.
-You need to install the following:
+The below system configuration can be shortcut to set up development environment. 
+A Linux box with Vusion installed and configure is available.
+So one only have to follow the below tutorial to quickly get started.This works on all Operating Systems:
 ::
 	Install VirtualBox
 		https://www.virtualbox.org/wiki/Downloads
@@ -206,7 +207,6 @@ You need to install the following:
 	Install Github
 		http://git-scm.com/downloads
 
-	Install IDE for coding
 
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
 is going to be saved in your System.
@@ -226,7 +226,7 @@ is going to be saved in your System.
 		$ git submodule init
 		$ git submodule update
 
-	4. Ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
+	4. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
 	5. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
 	   ::
@@ -293,9 +293,8 @@ is going to be saved in your System.
 	
 
 Installation to run backend development and testing
-===================================================
-
-Install Python and pip
+-------------------------------------------------
+Install Python cause most of the backend development and testing are in pyhton and also install pip cause we need it install/run the virtual environment for backend testing.
   **For windows7(or8)**
 	1. Dowload the MSI installer from http://www.python.org/download/   
 	   Select 32/64 bit based on your system setting
