@@ -460,6 +460,10 @@
 .ttc-login-container .required label:after{
         content: "";
 }
+
+.report-message{
+        margin-left:7px;
+}
 /*
 .ttc-display-area .required:after {
 color: #E32;
@@ -1450,4 +1454,12 @@ display: inline;
         background-color: lightblue;
         padding: 2px 3px 1px 3px;
 
+}
+
+#yourName {
+        padding-right: 14px;
+}
+
+#yourEmail {
+        padding-right: 14px;
 }

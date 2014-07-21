@@ -4,10 +4,11 @@ App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
+App::uses('CakeEmail', 'Network/Email');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
+    var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha', 'Email');
     var $uses       = array('User', 'Group');
     
     public function beforeFilter()
@@ -152,7 +153,7 @@ class UsersController extends AppController
             if ($user = $this->User->save($this->request->data)) {
                 #checkbox is checked => we store it in the ACL
                 if ($umatchableReplyAccess == true) {
-                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
+                    $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
                     $this->Acl->deny($user, 'controllers/UnmatchableReply');
                 }
@@ -313,6 +314,48 @@ class UsersController extends AppController
                 }    
             }
         }
+    }
+    
+    
+    public function reportIssue()
+    {
+        if (!$this->request->is('post')) {
+            return;
+        }
+        
+        $yourName = $this->request->data['yourName'];
+        if (!$yourName) {
+            $this->Session->setFlash(__('Please Enter Your Name'));
+            return;
+        }
+        
+        $yourEmail = $this->request->data['yourEmail'];
+        if (!$yourEmail) {
+            $this->Session->setFlash(__('Please Enter Email address'));
+            return;
+        }
+        
+        $reportIssueMessage = $this->request->data['reportIssueMessage'];
+        if (!$reportIssueMessage) {
+            $this->Session->setFlash(__('Please Enter Report Message'));
+            return;
+        }
+        
+        $email = new CakeEmail();
+        $email->config('default');
+        $email->from($yourEmail);
+        //$email->to('mssembajjwe@texttochange.com');
+        $email->to('vusion-issues@texttochange.com'));
+        $email->subject('Vusion Report Issue by '.$yourName);
+        $email->send($reportIssueMessage);
+        
+        $this->Session->setFlash(
+            __('An Email has been sent to VUSION tech team.'),
+            'default',
+            array('class'=>'message success')
+            );
+        //$this->render('report_issue');
+        //$this->redirect('/');
     }
     
     
