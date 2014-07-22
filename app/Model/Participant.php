@@ -252,25 +252,29 @@ class Participant extends MongoModel
     }
     
     
-    public function addMassTags($tag, $conditions)
+    public function addMassTags($tag, $conditions=array())
     {   
         $tag = trim($tag);       
         $valid = $this->validateTag($tag);
         if (!is_bool($valid) || $valid != true){
             return $valid;
         }
+        if (isset($conditions['tags'])) {
+            $conditions['tags'] = $conditions['tags'] . array('$ne' => $tag);
+        } else {
+            $conditions['tags'] = array('$ne' => $tag);
+        }
         $massTag = array(
             '$push' => array(
                 'tags' => $tag              
                 )
-            );
-        $result = array_merge($conditions, array('tags'=> array('$ne' => $tag)));
-        $this->updateAll($massTag, $result);        
+            );    
+        $this->updateAll($massTag, $conditions);        
         return true;
     }
     
     
-    public function deleteMassTags($tag, $conditions)
+    public function deleteMassTags($tag, $conditions=array())
     {   
         $tag = trim($tag);  
         $valid = $this->validateTag($tag);
@@ -626,7 +630,7 @@ class Participant extends MongoModel
             
             $savedParticipant       = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
             $this->id               = $savedParticipant['Participant']['_id']."";
-            $tags                   = $participant['tags'];
+            $tags                   = (isset($participant['tags']) ? $participant['tags'] : array());
             $labels                 = (isset($participant['profile']) ? $participant['profile'] : array());
             $participant            = $savedParticipant['Participant'];
             $participant['tags']    = $tags;
