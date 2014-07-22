@@ -756,9 +756,9 @@ function clickProgramBox(url,event) {
 
 function popupBrowser(obj) {
     var url = $(obj).attr("url") + window.location.search;
-    var newwindow = window.open(url, 'name', 'height=550, width=950');
+    var newpopupwindow = window.open(url, 'name', 'height=550, width=950');
     if (window.focus) {
-        newwindow.focus();
+        newpopupwindow.focus();
     }
     return false;
 }
