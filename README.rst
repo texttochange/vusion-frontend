@@ -222,6 +222,7 @@ General configuration setup
 The following port are exposed from the guest machine to the host.
  
  ::
+ 
      http port
 	  		 guest:80    == host:4567          # for web access
 	  		 guest:9010  == host:4568          # for supervisord monitoring
@@ -239,14 +240,14 @@ The following port are exposed from the guest machine to the host.
 **Folder Sync**
 In order to allow editing source code on the host, some folders are synced between from the host to the guest.
 We have experience various Vagrant option to sync folders and it appears that the default r_sync was not working properly.
-Therefor we had to use nfs on Unix systems and smb on Windows which are working fine and with good performances.
+Therefore we had to use nfs on Unix systems and smb on Windows which are working fine and with good performances.
 
 Only specific source folders are synced in order to avoid conflict on compiled file. 
 
 
 Steps on a Windows (8.x/7) Host
 ------------------------
-    1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+        1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
 	2. Enter the followig commands in the PowerShell.
 	   ::
@@ -306,7 +307,8 @@ Steps on a Windows (8.x/7) Host
                 $ msysgit-install 
 	
 
-### Installation to run backend development and testing on host
+Installation to run backend development and testing on host
+--------------------------------------------------
 
 Install Python cause most of the backend development and testing are in pyhton and also install pip cause we need it install/run the virtual environment for backend testing.
 
@@ -352,15 +354,16 @@ Install Python cause most of the backend development and testing are in pyhton a
 
            Close and reopen PowerShell after running this command.
            
-    9. To create a Virtual Environment, use the following commands.
+        9. To create a Virtual Environment, use the following commands.
         
-        ::
+           ::
              
 		cd c:\python
 		pip install virtualenv
 		pip install –no-deps -r requirements.pip
 		
            **Note:** If you have varasall.bat fill missing please install visual studio C+++
+          
            ::
 		   
 		   If you have Visual Studio 2010 installed, execute
@@ -370,7 +373,7 @@ Install Python cause most of the backend development and testing are in pyhton a
                    or with Visual Studio 2013 installed (Visual Studio Version 12)
 			SET VS90COMNTOOLS=%VS120COMNTOOLS%
 
-	10. To run the virtual Environment and backend tests.
+        10. To run the virtual Environment and backend tests.
 	
 	    ::
 	      
