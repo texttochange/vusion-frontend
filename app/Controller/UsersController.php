@@ -345,7 +345,7 @@ class UsersController extends AppController
         $email->config('default');
         $email->from($yourEmail);
         //$email->to('mssembajjwe@texttochange.com');
-        $email->to('vusion-issues@texttochange.com'));
+        $email->to('vusion-issues@texttochange.com');
         $email->subject('Vusion Report Issue by '.$yourName);
         $email->send($reportIssueMessage);
         
