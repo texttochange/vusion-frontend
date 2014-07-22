@@ -194,9 +194,13 @@ In the /etc/apach2/port.conf file add this listen port
 
 Developing using Vagrant and VirtualBox
 =========================================
-The below system configuration can be shortcut to set up development environment. 
-A Linux box with Vusion installed and configure is available.
-So one only have to follow the below tutorial to quickly get started.This works on all Operating Systems:
+The below system configuration is shortcut to set up environment for developers. 
+So one only have to follow the below tutorial to quickly get started.
+The main idea is to have a virtual machine running on your computer. 
+Your computer is refered as *host*, the virtual machine is refered as *guest*.
+The guest machine is a 3GB linux box with Vusion installed and configure.
+
+This works on all Operating Systems:
 ::
 	Install VirtualBox
 		https://www.virtualbox.org/wiki/Downloads
@@ -211,8 +215,38 @@ So one only have to follow the below tutorial to quickly get started.This works 
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
 is going to be saved in your System.
 
-**Steps**
-        1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+General configuration setup
+----------------------------
+
+**Port Forwarding**
+The following port are exposed from the guest machine to the host.
+ 
+ ::
+     http port
+	  		 guest:80    == host:4567          # for web access
+	  		 guest:9010  == host:4568          # for supervisord monitoring
+ ::
+    
+    runing tests in your host environment, usefull when running an debugger in IDE       
+ 	 		 guest:27017 == host:27017         # for Mongodb
+	  		 guest:6379  == host:6379          # for Redis
+ ::
+
+     pushing message to the default transports, usefull for faking interaction with operator/aggregator
+	  		 guest:2221  == host:2221  
+	  		 guest:2222  == host:2223
+
+**Folder Sync**
+In order to allow editing source code on the host, some folders are synced between from the host to the guest.
+We have experience various Vagrant option to sync folders and it appears that the default r_sync was not working properly.
+Therefor we had to use nfs on Unix systems and smb on Windows which are working fine and with good performances.
+
+Only specific source folders are synced in order to avoid conflict on compiled file. 
+
+
+Steps on a Windows (8.x/7) Host
+------------------------
+    1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
 	2. Enter the followig commands in the PowerShell.
 	   ::
@@ -233,29 +267,9 @@ is going to be saved in your System.
 	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
 	    to the file location of your development directory.
 	    
-	   **Note**
-	     In this vagrantfile we have port forwarding between the host and guest machine(virtual machine) with `config.vm.network`
-	     ::
-	         http port
-	    	  		 guest:80    == host:4567
-	    	  		 guest:9010  == host:4568
-             ::
-            
-                 runing tests in your host environment`          
-	     	 		 guest:27017 == host:27017
-	    	  		 guest:6379  == host:6379
-	     ::
-	    
-	         pushing message to the default transports         
-	    	  		 guest:2221  == host:2221
-	    	  		 guest:2222  == host:2223
-
-	     We also have the synced folders between the host and guest machine(virtual machine) with ``config.vm.synced_folder`` here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
-	       
-	        - http://docs.vagrantup.com/v2/synced-folders/nfs.html
-	    	  
-	        - http://docs.vagrantup.com/v2/synced-folders/smb.html
- 
+	  
+	    We also have the synced, here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
+	  
 					    	  
 	6. Run this command in the PowerShell to start Vagrant and virtualbox
 	   ::
@@ -292,10 +306,10 @@ is going to be saved in your System.
                 $ msysgit-install 
 	
 
-Installation to run backend development and testing
--------------------------------------------------
+### Installation to run backend development and testing on host
+
 Install Python cause most of the backend development and testing are in pyhton and also install pip cause we need it install/run the virtual environment for backend testing.
-  **For windows7(or8)**
+
 	1. Dowload the MSI installer from http://www.python.org/download/   
 	   Select 32/64 bit based on your system setting
 
@@ -338,9 +352,9 @@ Install Python cause most of the backend development and testing are in pyhton a
 
            Close and reopen PowerShell after running this command.
            
-        9. To create a Virtual Environment, use the following commands.
+    9. To create a Virtual Environment, use the following commands.
         
-           ::
+        ::
              
 		cd c:\python
 		pip install virtualenv
@@ -364,6 +378,3 @@ Install Python cause most of the backend development and testing are in pyhton a
 		 .\ve\Scripts\activate
 		 python  ve\Scripts\trial.phy  vusion
 		
-		
-
-
