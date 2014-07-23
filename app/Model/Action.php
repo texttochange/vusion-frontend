@@ -343,6 +343,7 @@ class Action extends VirtualModel
         $this->_setDefault('type-action', null);
         if ($this->data['type-action'] == 'sms-forwarding') {
             $this->_setDefault('set-forward-message-condition', null);
+            $this->_setDefault('forward-to', null);
         }
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {

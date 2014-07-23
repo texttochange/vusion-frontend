@@ -121,6 +121,9 @@ function handleResponseValidationErrors(validationErrors){
             case 'content':
                 errorClass = "ttc-textarea-validation-error dialogue";
                 break;
+            case 'forward-content':
+                errorClass = "ttc-textarea-validation-error dialogue";
+                break;
             case 'unmatching-feedback-content':
                 errorClass = "ttc-textarea-validation-error dialogue";
                 break;
