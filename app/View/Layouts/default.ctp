@@ -107,7 +107,7 @@
 			    if ($userLanguage == 'fre') {
 			        echo $this->Html->link(
 			            __('Help'),
-			            'http://vusion-doc.texttochange.org/fre',
+			            'http://vusion-doc.texttochange.org/fr',
 			            array('class' => 'ttc-link-header'));
 			    }
 			    echo $this->Html->link(
