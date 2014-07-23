@@ -91,11 +91,25 @@
 			    echo $this->Html->link(
 			        __('Logout'),
 			        array('controller'=> 'users', 'action'=>'logout'), 
-			        array('class' => 'ttc-link-header'));					
-			    echo $this->Html->link(
-			        __('Help'),
-			        'http://vusion-doc.texttochange.org/en',
-			        array('class' => 'ttc-link-header'));					
+			        array('class' => 'ttc-link-header'));
+			    if ($userLanguage == 'eng') {
+			        echo $this->Html->link(
+			            __('Help'),
+			            'http://vusion-doc.texttochange.org/en',
+			            array('class' => 'ttc-link-header'));
+			    }
+			    if ($userLanguage == 'spa') {
+			        echo $this->Html->link(
+			            __('Help'),
+			            'http://vusion-doc.texttochange.org/es',
+			            array('class' => 'ttc-link-header'));
+			    }
+			    if ($userLanguage == 'fre') {
+			        echo $this->Html->link(
+			            __('Help'),
+			            'http://vusion-doc.texttochange.org/fre',
+			            array('class' => 'ttc-link-header'));
+			    }
 			    echo $this->Html->link(
 			        __('My Account'),
 			        array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
