@@ -118,7 +118,9 @@ class DynamicFormComponent extends Component
     		"auto-enrollment-box" => __('Auto enrollment'),
     		"phone-number" => __('Phone number'),
     		'with' => __('with'),
-      		'not-with' => __('not with'),
+            'not-with' => __('not with'),
+            "set-forward-message-condition" => __("Retrive a condition in the message"),
+            "forward-message-no-participant-feedback" => __("Feedback in case no participant is matching"),
             );
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);

@@ -218,15 +218,28 @@ class UsersController extends AppController
     
     public function login()
     {
-        if ($this->request->is('post')) {
+        if ($this->Auth->user()) {
+            $this->Session->setFlash(
+                __('Already logged in...'),
+                'default', 
+                array('class'=>'message success'));
+            $this->redirect($this->Auth->redirect());
+        }
+
+        if ($this->request->is('ajax')) {
+            if ($this->Auth->login()) {
+                return;
+            } else {
+                throw new UnauthorizedException();
+            }
+        } else if ($this->request->is('post')) {
             if ($this->Auth->login()) {
                 $group     = $this->Group->findById($this->Session->read('Auth.User.group_id'));
                 $groupName = $group['Group']['name'];
                 $this->Session->write('groupName', $groupName);
                 $this->Session->setFlash(__('Login successful.'),
                     'default',
-                    array('class'=>'message success')
-                    );
+                    array('class'=>'message success'));
                 if ($this->Session->read('Auth.User.group_id') == 1) {
                     $this->redirect(array('controller' => 'admin'));
                 }

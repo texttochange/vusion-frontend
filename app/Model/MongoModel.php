@@ -38,6 +38,7 @@ abstract class MongoModel extends Model
                 $dbName = $id['database'];
             } else if (isset($id['id']['database'])) {
                 $dbName = $id['id']['database'];
+                unset($id['id']['database']);
             } else {
                 $dbName = 'mongo-test';
             }
@@ -167,7 +168,7 @@ abstract class MongoModel extends Model
     
     function beforeSave($option = array())
     {
-        $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
+        $this->data[$this->alias]['modified'] = new MongoDate(strtotime('now'));
         return true;
     }
     

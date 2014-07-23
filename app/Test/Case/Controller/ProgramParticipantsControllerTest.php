@@ -563,7 +563,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants
         ->expects($this->once())
         ->method('_notifyUpdateBackendWorker')
-        ->with('testurl', '+256712747841')
+        ->with('testurl', '+7')
         ->will($this->returnValue(true));
         
         $participant = array(
@@ -596,14 +596,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertEquals(
-            1,
-            $this->Participant->find('count')
-            );
-        $this->assertEquals(
-            0,
-            $this->Schedule->find('count')
-            );
+        $this->assertEquals(1, $this->Participant->find('count'));
+        $this->assertEquals(0, $this->Schedule->find('count'));
     }
     
     
@@ -643,7 +637,45 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEqual($participantFromDb['Participant']['profile'][0]['label'], 'gender');
         $this->assertEqual($participantFromDb['Participant']['profile'][0]['value'], 'male');
     }
-    
+
+
+    public function testEditParticipantProfile_without_id()
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorker')
+        ->with('testurl', '+256712747841')
+        ->will($this->returnValue(true));
+        
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256712747841',
+                )
+            );
+        
+        $this->Participant->create();
+        $participantDB = $this->Participant->save($participant);
+        
+        $editedParticipant = $this->testAction(
+            "/testurl/programParticipants/edit",
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array(
+                        'phone' => '+256712747841',
+                        'profile' => 'gender:male',
+                        )
+                    )
+                )
+            );
+        
+        $participantFromDb = $this->Participant->find();
+        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEqual($participantFromDb['Participant']['profile'][0]['label'], 'gender');
+        $this->assertEqual($participantFromDb['Participant']['profile'][0]['value'], 'male');
+    }
+
     
     public function testEditParticipantProfile_specialCharacters_fail()
     {
@@ -765,7 +797,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEqual($participantFromDb['Participant']['tags'][2], 'him');
     }
     
-    
+   
     public function testEditParticipantTags_notAlphaNumeric_fail()
     {
         $participants = $this->mockProgramAccess();
@@ -953,7 +985,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=%2B2");
         $this->assertEquals(0, count($this->vars['participants']));
     }
-    
+
     
     public function testIndex_filter()
     {
@@ -1024,7 +1056,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $savedParticipant['Participant']['last-optin-date'] = '2012-12-02T18:30:10';
         $this->Participant->id = $savedParticipant['Participant']['_id']."";
         $this->Participant->save($savedParticipant);
-        
+      
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=phone&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=%2B2");
         $this->assertEquals(4, count($this->vars['participants']));
@@ -1036,11 +1068,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=now");
         $this->assertEquals(3, count($this->vars['participants']));
-        
+
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=date-from&filter_param%5B1%5D%5B3%5D=02%2F12%2F2012");
         $this->assertEquals(1, count($this->vars['participants']));
-        
+       
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=optin&filter_param%5B1%5D%5B2%5D=date-to&filter_param%5B1%5D%5B3%5D=02%2F12%2F2012");
         $this->assertEquals(2, count($this->vars['participants']));
@@ -1059,7 +1091,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
-        $this->assertEquals(1, count($this->vars['participants']));
+        $this->assertEquals(1, count($this->vars['participants']));        
     }
     
     
@@ -1377,6 +1409,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programParticipants/paginationCount.json");
         $this->assertEqual($this->vars['paginationCount'], 0);
     }
-    
+
     
 }
