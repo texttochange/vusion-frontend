@@ -367,7 +367,7 @@ class RequestTestCase extends CakeTestCase
         $savedRequest = $this->Request->save($request);
         $this->assertFalse($savedRequest);
         $this->assertEqual(
-            "To be used as customized content, 'show' can only be either: participant, contentVariable or time.",
+            "To be used as customized content, 'show' can only be either: participant, contentVariable, time or context.",
             $this->Request->validationErrors['responses'][0]['content'][0]);
         
         $request['Request']['responses'][0]['content'] = "here is [participant.name.gender]";

@@ -346,6 +346,15 @@ class ActionTestCase extends CakeTestCase
         $this->assertTrue($this->Action->validates());
     }
 
+    public function testValidateAction_sms_forwarding_ok_missing_field() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-content' => 'Hello');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+
     public function testValidateAction_sms_forwarding_fail_multi_selector() {
         $action = array(
             'type-action' => 'sms-forwarding',

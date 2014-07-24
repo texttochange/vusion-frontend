@@ -103,7 +103,7 @@ class DynamicFormComponent extends Component
             "url-forwarding"=> __('URL Forward'),
             "forward-url"=> __('Forward URL'),
             "sms-forwarding"=> __('SMS Forward'),
-            "forward-to"=> __('Receiver Tag'),
+            "forward-to"=> __('Receiver Tag(s) and/or Label(s)'),
             "forward-content"=> __('Content'),
             "tag"=> __('Tag'),
             "weight"=> __('Weight'),
