@@ -93,8 +93,7 @@
 			        array('controller'=> 'users', 'action'=>'logout'), 
 			        array('class' => 'ttc-link-header'));			    
 			    
-			    echo $this->Documentation->link();
-			        
+			    echo $this->Documentation->link();        
 			    
 			    echo $this->Html->link(
 			        __('My Account'),
