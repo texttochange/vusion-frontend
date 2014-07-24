@@ -11,7 +11,8 @@ class DocumentationHelper extends AppHelper
 		'spa' => 'es',
 		'fre' => 'fr');
 	
-	public function link() {
+	public function link()
+	{
 		$userLanguage = Configure::read('Config.language');
      	$lang         = 'en';
 		if (isset($this->convertLanguageNotation[$userLanguage])) {
