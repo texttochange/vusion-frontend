@@ -14,8 +14,11 @@ App::uses('FilterException', 'Lib');
 class ProgramParticipantsController extends AppController
 {
     
-    var $uses       = array('Participant', 'History');
-    var $components = array('RequestHandler', 
+    var $uses       = array(
+        'Participant',
+        'History');
+    var $components = array(
+        'RequestHandler', 
         'LocalizeUtils',
         'Filter');
     var $helpers    = array(
@@ -69,7 +72,7 @@ class ProgramParticipantsController extends AppController
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
-        
+
         $this->paginate = $paginate;
         $participants   = $this->paginate();
         $this->set(compact('participants'));
@@ -295,36 +298,35 @@ class ProgramParticipantsController extends AppController
     public function add() 
     {
         $programUrl = $this->params['program'];
-        
+        $data = $this->_ajaxDataPatch();
+
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(
                     __('Please set the program settings then try again.'), 
-                    'default', array('class' => "message failure")
-                    );
+                    'default', array('class' => "message failure"));
                 return;
             }
+            $savedParticipant = null;
             $this->Participant->create();
-            if ($this->Participant->save($this->request->data)) {
-                $participant = $this->Participant->read();
-                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+            if ($savedParticipant = $this->Participant->save($data)) {
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
+                    array('class'=>'message success'));
+                if (!$this->request->is("ajax")) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'), 
                     'default',
-                    array('class' => "message failure")
-                    );
+                    array('class' => "message failure"));
             }
-            
-        }        
+            $this->set(compact("savedParticipant"));
+        }    
     }
     
     
@@ -338,36 +340,72 @@ class ProgramParticipantsController extends AppController
         return $selectOptions;
     }
     
+
+    protected function _loadParticipantId($data)
+    {
+        if ($this->params['id']) { 
+            $id = $this->params['id'];
+            $this->Participant->id = $id;
+            if (!$this->Participant->exists()) {
+                throw new NotFoundException(__('Invalid participant'));
+            }
+            $participant = $this->Participant->read();
+        } else { 
+            if ($data['Participant']['phone']) {
+                $phone = $data['Participant']['phone'];
+            } else {
+                throw new NotFoundException(__('Invalid participant'));   
+            }
+            $participant = $this->Participant->find(
+                'first',
+                array('conditions' => array('phone' => Participant::cleanPhone($phone))));
+            if (!$participant) {
+                throw new NotFoundException(__('Invalid participant'));   
+            }
+            $this->Participant->id = $participant['Participant']['_id'];
+        }
+        return $participant;
+    }
+
+    protected function _ajaxDataPatch()
+    {
+        $data = $this->data;
+        if (!isset($data['Participant'])) {
+            $data = array('Participant' => $data);
+        }
+        return $data;
+    }
     
     //we should not be able to edit a phone number
     public function edit()   
     {
         $programUrl = $this->params['program'];
-        $id         = $this->params['id'];
+        $id   = null;
+        $data = $this->_ajaxDataPatch();
+
+        //Retrieving the participant to edit
+        $participant = $this->_loadParticipantId($data);
         
-        $this->Participant->id = $id;
-        if (!$this->Participant->exists()) {
-            throw new NotFoundException(__('Invalid participant'));
-        }
-        $participant = $this->Participant->read();
-        
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->Participant->save($this->request->data)) {
+        if ($this->request->is('post')) {
+            if ($savedParticipant = $this->Participant->save($data)) {
+                $this->set('savedParticipant', $savedParticipant);
                 $this->Schedule->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
-                    false
-                    );
-                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
+                    false);
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
+                $participant = $savedParticipant;
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array('program' => $programUrl, 'action' => 'index'));
+                    array('class'=>'message success'));
+                if ($this->request->is('ajax')) {
+                    $this->render('add');
+                } else {
+                    $this->redirect(array('program' => $programUrl, 'action' => 'index'));
+                } 
             } else {
                 $this->Session->setFlash(__('The participant could not be saved. Please, try again.'), 
                     'default',
-                    array('class' => "message failure")
-                    );
+                    array('class' => "message failure"));
             }
         } else {
             $this->request->data = $this->Participant->read(null, $id);
@@ -508,11 +546,9 @@ class ProgramParticipantsController extends AppController
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
         
-        $this->Participant->id = $id;
-        if (!$this->Participant->exists()) {
-            throw new NotFoundException(__('Invalid participant'));
-        }
-        $participant = $this->Participant->read(null, $id);
+        $data        = $this->_ajaxDataPatch();
+        $participant = $this->_loadParticipantId($data);
+
         if ($this->request->is('post')) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             
@@ -531,20 +567,21 @@ class ProgramParticipantsController extends AppController
             if ($this->Participant->save($participant['Participant'])) {
                 $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been optin.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
+                    'default', array('class'=>'message success'));
+                $this->set('success', true);
+                if (!$this->request->is("ajax")) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'
+                        ));
+                }
             } else {
-                $this->Session->setFlash(__('The participant could not be reset.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->set('success', false);
+                $this->Session->setFlash(__('The participant could not be optin.'), 
+                    'default', array('class' => "message failure"));
             }
+            $this->set(compact('participant'));
         }
     }
     
@@ -553,12 +590,11 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl = $this->params['program'];
         $id         = $this->params['id'];
-        
-        $this->Participant->id = $id;
-        if (!$this->Participant->exists()) {
-            throw new NotFoundException(__('Invalid participant'));
-        }
-        $participant = $this->Participant->read(null, $id);
+
+        $data = $this->_ajaxDataPatch();
+        //Retrieving the participant to edit
+        $participant = $this->_loadParticipantId($data);
+       
         if ($this->request->is('post')) {
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
@@ -571,19 +607,22 @@ class ProgramParticipantsController extends AppController
             if ($this->Participant->save($participant['Participant'])) {
                 $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                 $this->Session->setFlash(__('The participant has been optout.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
-                $this->redirect(array(
-                    'program' => $programUrl,  
-                    'controller' => 'programParticipants',
-                    'action' => 'index'
-                    ));
+                    'default', array('class'=>'message success'));
+                $this->set('success', true);
+                if (!$this->request->is('ajax')) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                } 
             } else {
-                $this->Session->setFlash(__('The participant could not be reset.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->set('success', false);
+                $this->Session->setFlash(__('The participant could not be optout.'), 
+                    'default', array('class' => "message failure"));
+            }
+            $this->set(compact('participant'));
+            if ($this->request->is('ajax')) {
+                $this->render("optin");
             }
         }
     }

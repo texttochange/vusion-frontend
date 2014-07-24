@@ -66,6 +66,9 @@ var localized_labels = {
     if (isset($messageLabels)) {
         $localizedLabels = array_merge($localizedLabels, $messageLabels);
     }
+    if (isset($statsLabels)) {
+        $localizedLabels = array_merge($localizedLabels, $statsLabels);
+    }
 
     foreach ($localizedLabels as $value => $label) {
         echo __('"%s":"%s",', $value, $label);

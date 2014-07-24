@@ -173,7 +173,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(1, count($this->vars['unattachedMessages']));	
     }
-    
+
     
     public function testAdd()
     {
@@ -210,16 +210,18 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'data' => $unattachedMessage
             )
             );
-        
+
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessageDB = $this->UnattachedMessage->find('all');
         
+        $this->assertTrue(isset($this->vars['savedUnattachedMessage']['UnattachedMessage']));
+
         $this->assertTrue(in_array('created-by', array_keys($unattachedMessageDB[0]['UnattachedMessage'])));
         $this->assertEquals(2, $unattachedMessageDB[0]['UnattachedMessage']['created-by']);   
     }
     
     
-    public function testAdd_importParticipant()
+    public function testAdd_importParticipantFromFile()
     {
         $regexId = $this->matchesRegularExpression('/^.{24}$/');
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]+$/');
@@ -280,7 +282,63 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             $unattachedMessage['UnattachedMessage']['send-to-phone']);
         $this->assertEquals(2, $this->Participant->find('count'));
     }
-    
+
+    public function testAdd_importParticipantFromList()
+    {
+        $regexId = $this->matchesRegularExpression('/^.{24}$/');
+        $regexPhone = $this->matchesRegularExpression('/^\+[0-9]+$/');
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $unattachedMessages = $this->mock_program_access();
+        $unattachedMessages->Auth
+        ->staticExpects($this->once())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '2',
+            'group_id' => '2')));
+        
+        $unattachedMessages
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorkerUnattachedMessage')
+        ->with('testurl', $regexId)
+        ->will($this->returnValue(true));
+        
+        $unattachedMessages
+        ->expects($this->exactly(2))
+        ->method('_notifyUpdateBackendWorkerParticipant')
+        ->with('testurl', $regexPhone)
+        ->will($this->returnValue(true));
+        
+        $unattachedMessages->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('The message has been saved. To be send to 2 participants, 2 have been imported and 0 failed to be imported.');
+        
+        $date = new DateTime('tomorrow');    
+        $unattachedMessage = array(
+            'UnattachedMessage' => array(
+                'name' => 'my message',
+                'send-to-type' => 'phone',
+                'content' => 'Hello!!!!',
+                'type-schedule' => 'immediately',
+                'send-to-phone' => array('256788601462','+256712747841'))
+            );
+        
+        $this->testAction("/testurl/programUnattachedMessages/add", array(
+            'method' => 'POST',
+            'data' => $unattachedMessage
+            )
+            );
+        
+        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
+        $this->assertEquals(1, $this->UnattachedMessage->find('count'));
+        $unattachedMessage = $this->UnattachedMessage->find('first');
+        $this->assertEquals(
+            array("+256788601462", "+256712747841"),
+            $unattachedMessage['UnattachedMessage']['send-to-phone']);
+        $this->assertEquals(2, $this->Participant->find('count'));
+    }    
     
     public function testEdit()
     { 
@@ -438,6 +496,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(1, count($this->vars['unattachedMessages'])); 
     }
-    
-    
+
+
 }
