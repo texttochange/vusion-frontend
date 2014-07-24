@@ -119,16 +119,16 @@ function handleResponseValidationErrors(validationErrors){
                 style = 'left:-200px';
                 break;
             case 'content':
-                errorClass = "ttc-textarea-validation-error dialogue";
+                errorClass = "ttc-textarea-validation-error";
                 break;
             case 'forward-content':
-                errorClass = "ttc-textarea-validation-error dialogue";
+                errorClass = "ttc-textarea-validation-error";
                 break;
             case 'forward-message-no-participant-feedback':
-                errorClass = "ttc-textarea-validation-error dialogue";
+                errorClass = "ttc-textarea-validation-error";
                 break;
             case 'unmatching-feedback-content':
-                errorClass = "ttc-textarea-validation-error dialogue";
+                errorClass = "ttc-textarea-validation-error";
                 break;
             default:
                 if (dynamicForm[item]['type'] == 'list') {
