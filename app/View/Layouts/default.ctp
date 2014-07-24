@@ -91,25 +91,35 @@
 			    echo $this->Html->link(
 			        __('Logout'),
 			        array('controller'=> 'users', 'action'=>'logout'), 
-			        array('class' => 'ttc-link-header'));
-			    if ($userLanguage == 'eng') {
+			        array('class' => 'ttc-link-header'));			    
+			    
+			    switch($userLanguage) {
+			    case 'eng':
+			        echo $this->Html->link(
+			            __('Help'),
+			            'http://vusion-doc.texttochange.org/en',
+			            array('class' => 'ttc-link-header'));
+			        break;
+			    case 'spa':
+			        echo $this->Html->link(
+			            __('Help'),
+			            'http://vusion-doc.texttochange.org/es',
+			            array('class' => 'ttc-link-header'));
+			        break;
+			    case 'fre':
+			        echo $this->Html->link(
+			            __('Help'),
+			            'http://vusion-doc.texttochange.org/fr',
+			            array('class' => 'ttc-link-header'));
+			        break;
+			    default:
 			        echo $this->Html->link(
 			            __('Help'),
 			            'http://vusion-doc.texttochange.org/en',
 			            array('class' => 'ttc-link-header'));
 			    }
-			    if ($userLanguage == 'spa') {
-			        echo $this->Html->link(
-			            __('Help'),
-			            'http://vusion-doc.texttochange.org/es',
-			            array('class' => 'ttc-link-header'));
-			    }
-			    if ($userLanguage == 'fre') {
-			        echo $this->Html->link(
-			            __('Help'),
-			            'http://vusion-doc.texttochange.org/fr',
-			            array('class' => 'ttc-link-header'));
-			    }
+			    
+			    
 			    echo $this->Html->link(
 			        __('My Account'),
 			        array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
