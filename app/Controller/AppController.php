@@ -59,7 +59,8 @@ class AppController extends Controller
         'AclLink',
         'Text',
         'BigNumber',
-        'CreditManager'
+        'CreditManager',
+        'Documentation'
         );
     
     var $redis              = null;
@@ -102,8 +103,7 @@ class AppController extends Controller
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
-        $userLanguage           = Configure::read('Config.language');
-        $this->set(compact('countryIndexedByPrefix', 'userLanguage'));
+        $this->set(compact('countryIndexedByPrefix'));
     }
     
     
