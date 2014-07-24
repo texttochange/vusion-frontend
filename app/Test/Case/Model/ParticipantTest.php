@@ -57,7 +57,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
         $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
     }
-    
+   
     
     
     public function testSave_clearEmpty()
@@ -72,6 +72,97 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual(
             $savedParticipant['Participant']['tags'],
             array('a tag'));
+    }
+
+
+    public function testCleanTags() 
+    {
+        $tags = ' a tag ';
+        $this->assertEquals(
+            array('a tag'),
+            Participant::cleanTags($tags));
+
+        $tags = ', a tag ,';
+        $this->assertEquals(
+            array('a tag'),
+            Participant::cleanTags($tags));
+
+        $tags = array('', 'a tag ');
+        $this->assertEquals(
+            array('a tag'),
+            Participant::cleanTags($tags));
+
+        $tags = 'sometag,a tag ,';
+        $this->assertEquals(
+            array('sometag', 'a tag'),
+            Participant::cleanTags($tags));
+    }
+
+
+    public function testCleanProfile() 
+    {
+        $profile = ' group:1 ';
+        $this->assertEquals(
+            Participant::cleanProfile($profile),
+            array(
+                array(
+                    'label' => 'group',
+                    'value' => '1',
+                    'raw' => null)));
+
+        $profile = ', group : 1 ,';
+        $this->assertEquals(
+            Participant::cleanProfile($profile),
+            array(
+                array(
+                    'label' => 'group',
+                    'value' => '1',
+                    'raw' => null)));
+
+        $profile = array(
+            array(),
+            array(
+                'label' => 'group ',
+                'value' => ' 1'),
+            array());
+        $this->assertEquals(
+            Participant::cleanProfile($profile),
+            array(
+                array(
+                    'label' => 'group',
+                    'value' => '1',
+                    'raw' => null)));
+
+    }
+
+
+    public function testSave_tags_labels_as_string()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $participant = array(
+            'phone' => '+788601461',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'profile' => 'email:someone@gmail.com, town: kampala, accent: áéíóúüñ',
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertEqual(
+            $savedParticipant['Participant']['tags'],
+            array('a tag', 'Another tag1', 'áéíóúüñ'));
+        
+        $this->assertEqual(
+            $savedParticipant['Participant']['profile'],
+            array(
+                array('label'=>'email',
+                    'value' => 'someone@gmail.com',
+                    'raw' => null),
+                array('label' => 'town',
+                    'value' => 'kampala',
+                    'raw' => null),
+                array('label' => 'accent',
+                    'value' => 'áéíóúüñ',
+                    'raw' => null))
+            );
     }
     
     
@@ -167,7 +258,7 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testSave_clearPhone()
+    public function testSave_cleanPhone()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         //1st assertion phone is already in the correct format
@@ -1559,16 +1650,16 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testClearPhone()
+    public function testcleanPhone()
     {
-        $this->assertEqual("+254700866920", Participant::clearPhone(" +254700866920 "));
-        $this->assertEqual("+254700866920", Participant::clearPhone("254700866920"));
-        $this->assertEqual("+254700866920", Participant::clearPhone("254 700 866 920"));
-        $this->assertEqual("+254700866920", Participant::clearPhone("00254700866920"));
-        $this->assertEqual("+254700866920", Participant::clearPhone("+254700866920�"));
-        $this->assertEqual("+254700866920", Participant::clearPhone(" +2547OO866920 "));
+        $this->assertEqual("+254700866920", Participant::cleanPhone(" +254700866920 "));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("254700866920"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("254 700 866 920"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("00254700866920"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone("+254700866920�"));
+        $this->assertEqual("+254700866920", Participant::cleanPhone(" +2547OO866920 "));
     }
-    
+
     
     public function testAddMassTags_noduplicate_tags()
     {
@@ -1609,9 +1700,10 @@ class ParticipantTestCase extends CakeTestCase
         $conditions = array();   
         
         $this->Participant->addMassTags(' hi ', $conditions);
-        $participant = $this->Participant->find('all', array('conditions' => $conditions));       
-        $this->assertEqual(array('geek', 'cool', 'hi'), $participant[0]['Participant']['tags']);
-        $this->assertEqual(array('geek', 'another tag', 'hi'), $participant[1]['Participant']['tags']);
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+8')));
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+9')));
+        $this->assertEqual(array('geek', 'another tag', 'hi'), $participant['Participant']['tags']);
     }
    
     
@@ -1623,42 +1715,27 @@ class ParticipantTestCase extends CakeTestCase
         
         $participant_08 = array(
             'phone' => '+8',
-            'tags' => array('geek', 'cool', 'hi'),
-            'profile' => array(
-                array('label'=>'city',
-                    'value'=> 'kampala',
-                    'raw'=> null),
-                array('label'=>'gender',
-                    'value'=> 'Male',
-                    'raw'=> null),
-                ));
+            'tags' => array('geek', 'cool', 'hi'));
         $this->Participant->create();
         $this->Participant->save($participant_08);
         
         $participant_09 = array(
             'phone' => '+9',
-            'tags' => array('geek', 'another tag'),
-            'profile' => array(
-                array('label'=>'city',
-                    'value'=> 'jinja',
-                    'raw'=> 'live in jinja'),
-                array('label'=>'gender',
-                    'value'=> 'Male',
-                    'raw'=> 'gender M'),
-                )
-            );                                                                           
+            'tags' => array('geek', 'another tag'));                                                                           
         
         $this->Participant->create();
         $this->Participant->save($participant_09);   
         
         $conditions = array(
-            'phone' => '+8');       
+            'tags' => 'cool');      
         
         $this->Participant->addMassTags('hi', $conditions);
         
-        $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+8')));
         $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);
+        $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+9')));
+        $this->assertEqual(array('geek', 'another tag'), $participant['Participant']['tags']);
     }
-    
+
     
 }
