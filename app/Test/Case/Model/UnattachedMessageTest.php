@@ -35,8 +35,25 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
     }
+
     
-    
+    public function testSave_ok_minimu()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $unattachedMessage = array(
+            'send-to-type' => 'all',
+            'content' => 'hello there how are you',
+            'type-schedule' => 'immediately',
+            'created-by' => 1);
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+       
+        $this->assertEquals(1, $this->UnattachedMessage->find('count'));
+        $this->assertRegExp('/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2} \w* \w*$/', $savedUnattachedMessage['UnattachedMessage']['name']);
+    }
+
+
     public function testSave_ok_allParticipants()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -294,7 +311,9 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->save($otherUnattachedMessage);
         
         //1st assertion, count does not increase, remains 1
-        $this->assertEquals(0,$this->UnattachedMessage->find('count'));
+        $this->assertEquals(
+            0,
+            $this->UnattachedMessage->find('count'));
         //2st assertion, error fixed time cannot be in the past
         $this->assertEquals(
             'Please choose a type of schedule for this message.',
@@ -501,5 +520,6 @@ class UnattachedMessageTestCase extends CakeTestCase
         
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
     }
+
     
 }

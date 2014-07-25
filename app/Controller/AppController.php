@@ -59,10 +59,11 @@ class AppController extends Controller
         'AclLink',
         'Text',
         'BigNumber',
-        'CreditManager'
+        'CreditManager',
+        'Documentation'
         );
     
-    var $redis = null;
+    var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
     
     
@@ -97,8 +98,8 @@ class AppController extends Controller
             
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
             $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);
-            $programStats = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
-            $creditStatus = $this->CreditManager->getOverview($programDetails['database']);
+            $programStats       = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
+            $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
         }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
@@ -112,8 +113,8 @@ class AppController extends Controller
         
         $this->redis = new Redis();
         $redisConfig = Configure::read('vusion.redis');
-        $redisHost = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
-        $redisPort = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
+        $redisHost   = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
+        $redisPort   = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
         $this->redis->connect($redisHost, $redisPort);
         $redisPrefix = Configure::read('vusion.redisPrefix');
         if (is_array($redisPrefix)) { 
@@ -125,23 +126,23 @@ class AppController extends Controller
     protected function _getcurrentProgramData($databaseName)
     {
         $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
-        $unattachedMessages = $unattachedMessageModel->find('future');
+        $unattachedMessages     = $unattachedMessageModel->find('future');
         if (isset($unattachedMessages))
             $programUnattachedMessages = $unattachedMessages;
         else
         $programUnattachedMessages = null;
         
         $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));
-        $predefinedMessages = $predefinedMessageModel->find('all');
+        $predefinedMessages     = $predefinedMessageModel->find('all');
         if (isset($predefinedMessages))
             $programPredefinedMessages = $predefinedMessages;
         else
         $programPredefinedMessages = null;
         
         $dialogueModel = new Dialogue(array('database' => $databaseName));
-        $dialogues = $dialogueModel->getActiveAndDraft();
-        $requestModel = new Request(array('database' => $databaseName));
-        $requests = $requestModel->find('all');
+        $dialogues     = $dialogueModel->getActiveAndDraft();
+        $requestModel  = new Request(array('database' => $databaseName));
+        $requests      = $requestModel->find('all');
         
         $currentProgramData = array(
             'unattachedMessages' => $programUnattachedMessages,

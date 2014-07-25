@@ -38,6 +38,7 @@ abstract class MongoModel extends Model
                 $dbName = $id['database'];
             } else if (isset($id['id']['database'])) {
                 $dbName = $id['id']['database'];
+                unset($id['id']['database']);
             } else {
                 $dbName = 'mongo-test';
             }
@@ -68,7 +69,7 @@ abstract class MongoModel extends Model
         } else {
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         }
-        
+
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)) {
                 unset($object[$field]);
@@ -83,12 +84,15 @@ abstract class MongoModel extends Model
         
         return $object;
     }
-    
-    
-    public function create($objectType=null)
+
+
+    public function create($objectType=null, $createDefaultFields=true)
     {
         parent::create();
         
+        if (!$createDefaultFields) {
+            return;
+        }
         $toCreate = array_merge($this->defaultFields, $this->getRequiredFields($objectType));
         
         foreach ($toCreate as $field) {
@@ -164,7 +168,7 @@ abstract class MongoModel extends Model
     
     function beforeSave($option = array())
     {
-        $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
+        $this->data[$this->alias]['modified'] = new MongoDate(strtotime('now'));
         return true;
     }
     

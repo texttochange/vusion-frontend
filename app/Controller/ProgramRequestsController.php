@@ -15,7 +15,8 @@ class ProgramRequestsController extends AppController
         'RequestHandler', 
         'LocalizeUtils', 
         'Utils',
-        'Keyword');
+        'Keyword',
+        'DynamicForm');
     var $uses = array('Request');
     
     

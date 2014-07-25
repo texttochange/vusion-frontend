@@ -196,7 +196,7 @@ class Request extends MongoModel
     
     public function validContentVariable($check)
     {
-        return VusionValidation::validContentVariable($check);
+        return VusionValidation::validContentVariable($check, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
     }
     
     

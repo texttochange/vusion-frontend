@@ -18,10 +18,12 @@ class ProgramsController extends AppController
         'PhoneNumber', 
         'ProgramPaginator', 
         'Stats',
-        'UserAccess');
-    var $helpers = array('Time', 'Js' => array('Jquery'), 'PhoneNumber'); 
-    
-    var $uses = array('Program', 'Group');
+        'UserAccess',
+        'Filter');
+    var $helpers = array('Time',
+        'Js' => array('Jquery'), 
+        'PhoneNumber');    
+    var $uses     = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
         'order' => array(
@@ -49,7 +51,8 @@ class ProgramsController extends AppController
     }
     
     
-    protected function _instanciateVumiRabbitMQ(){
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
     
@@ -64,7 +67,7 @@ class ProgramsController extends AppController
     protected function _getPrograms()
     {
         $this->Program->recursive = -1;
-        $user = $this->Auth->user();
+        $user                     = $this->Auth->user();
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
             return  $this->Program->find('authorized', array(
                 'specific_program_access' => 'true',
@@ -78,7 +81,7 @@ class ProgramsController extends AppController
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
-        $user = $this->Auth->user();
+        $user                     = $this->Auth->user();
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
             return  $this->Program->find('authorized', array(
                 'specific_program_access' => 'true',
@@ -95,9 +98,9 @@ class ProgramsController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
                 
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->Program);
 
-        ## TODO move in the Program Paginator
+        // TODO move in the Program Paginator
         $this->Program->recursive = -1; 
         $user = $this->Auth->user();  
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
@@ -125,15 +128,15 @@ class ProgramsController extends AppController
         
         $tempUnmatchableReply = new UnmatchableReply(array('database'=>'vusion'));
         $unmatchableCondition = $this->UserAccess->getUnmatchableConditions();
-        $andCondition = array('$and' => array($unmatchableCondition, array('direction' => 'incoming')));
-        $unmatchedConditon  = (!empty($unmatchableCondition)) ? $andCondition : array('direction' => 'incoming');
+        $andCondition         = array('$and' => array($unmatchableCondition, array('direction' => 'incoming')));
+        $unmatchedConditon    = (!empty($unmatchableCondition)) ? $andCondition : array('direction' => 'incoming');
         $this->set('unmatchableReplies', $tempUnmatchableReply->find(
             'all', 
             array('conditions' => $unmatchedConditon, 
                 'limit' => 8, 
                 'order'=> array('timestamp' => 'DESC'))));
         
-        # paginate using ProgramPaginator
+        // paginate using ProgramPaginator
         $this->paginate = $paginate;
         //$this->ProgramPaginator->settings['limit'] = 10;
         $programs = $this->ProgramPaginator->paginate();
@@ -153,11 +156,11 @@ class ProgramsController extends AppController
     protected function _getFilterParameterOptions()
     {
         $shortcodes = $countries = array();
-        $codes = $this->ShortCode->find('all');
+        $codes      = $this->ShortCode->find('all');
         if (!empty($codes)) {
             foreach ($codes as $code) {
                 $shortcodes[] = $code['ShortCode']['shortcode'];
-                $countries[] = $code['ShortCode']['country'];
+                $countries[]  = $code['ShortCode']['country'];
             }
         }
         sort($countries);
@@ -167,38 +170,6 @@ class ProgramsController extends AppController
             'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
             'country' => (count($countries)>0? array_combine($countries, $countries) : array())
             );
-    }
-    
-    
-    protected function _getConditions()
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
-        if (!isset($filter['filter_param'])) 
-            return null;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->Program->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }     
-        
-        foreach ($filter['filter_param'] as $key => $filterParam) {
-            if (isset($filterParam[3])) {
-                if (!$filterParam[3]) {
-                    $this->Session->setFlash(__('"%s" Filter ignored due to missing information', $filterParam[1]), 
-                        'default',
-                        array('class' => "message failure")
-                        );
-                }
-            } else {
-                return null;
-            }
-        }
-        
-        $this->set('urlParams', http_build_query($filter));
-        
-        $conditions = $this->Program->fromFilterToQueryConditions($filter);
-        
-        return $conditions;
     }
     
     
@@ -221,33 +192,33 @@ class ProgramsController extends AppController
                     'default',
                     array('class'=>'message success')
                     );
-                ##Start the backend
+                //Start the backend
                 $this->_startBackendWorker(
                     $this->request->data['Program']['url'],
                     $this->request->data['Program']['database']
                     );
-                ##Create necessary folders
+                //Create necessary folders
                 $programDirPath = WWW_ROOT . "files/programs/". $this->request->data['Program']['url'];
                 if (!file_exists($programDirPath)) {
                     mkdir($programDirPath);
                     chmod($programDirPath, 0764);
                 }
-                ##Importing Dialogue and Request from another Program
+                //Importing Dialogue and Request from another Program
                 if (isset($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
-                    $importFromProgram = $this->_getProgram($importFromProgramId);
+                    $importFromProgram   = $this->_getProgram($importFromProgramId);
                     if (isset($importFromProgram)) {
                         $importFromDialogueModel = new Dialogue(array('database' => $importFromProgram['Program']['database']));
-                        $dialogues = $importFromDialogueModel->getActiveDialogues();
-                        $importToDialogueModel = new Dialogue(array('database' => $this->request->data['Program']['database']));
+                        $dialogues               = $importFromDialogueModel->getActiveDialogues();
+                        $importToDialogueModel   = new Dialogue(array('database' => $this->request->data['Program']['database']));
                         foreach($dialogues as $dialogue){
                             $importToDialogueModel->create();
                             unset($dialogue['Dialogue']['_id']);
                             $importToDialogueModel->save($dialogue['Dialogue']);
                         }
                         $importFromRequestModel = new Request(array('database' => $importFromProgram['Program']['database']));
-                        $requests = $importFromRequestModel->find('all');
-                        $importToRequestModel = new Request(array('database' => $this->request->data['Program']['database']));
+                        $requests               = $importFromRequestModel->find('all');
+                        $importToRequestModel   = new Request(array('database' => $this->request->data['Program']['database']));
                         foreach($requests as $request){
                             $importToRequestModel->create();
                             unset($request['Request']['_id']);
@@ -264,7 +235,7 @@ class ProgramsController extends AppController
             }
         }
         
-        $programs = $this->_getPrograms();
+        $programs       = $this->_getPrograms();
         $programOptions = array();
         foreach($programs as $program) 
             $programOptions[$program['Program']['id']] = $program['Program']['name']; 
@@ -338,4 +309,6 @@ class ProgramsController extends AppController
             );
         $this->redirect(array('action' => 'index'));
     }
+    
+    
 }

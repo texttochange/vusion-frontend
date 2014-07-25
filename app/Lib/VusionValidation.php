@@ -12,19 +12,19 @@ class VusionValidation extends Validation {
     }
     
     
-    public static function validContentVariable($check)
+    public static function validContentVariable($check, $allowedDomains=VusionConst::CUSTOMIZE_CONTENT_DOMAIN_DEFAULT)
     {
         reset($check);
         $field = key($check);
-        return VusionValidation::validCustomizeContent($field, $check, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_DEFAULT);
+        return VusionValidation::validCustomizeContent($field, $check, $allowedDomains);
     }
 
 
-    public function validCustomizeContent($field, $data, $allowedDomains)
+    public static function validCustomizeContent($field, $data, $allowedDomains)
     {
         if (isset($data[$field])) {
             preg_match_all(VusionConst::CUSTOMIZE_CONTENT_MATCHER_REGEX, $data[$field], $matches, PREG_SET_ORDER);
-            $allowed = array("domain", "key1", "key2", "keys3", "otherkey");
+            $allowed = array("domain", "key1", "key2", "key3", "otherkey");
             foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
                 foreach ($match as $key=>$value) {
@@ -47,8 +47,43 @@ class VusionValidation extends Validation {
                     if (isset($match['otherkey'])) {
                         return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
                     }
+                } else if ($match['domain'] == 'context') {
+                    $contextValidation = VusionValidation::validCustomizeContentContext($match);
+                    if (is_string($contextValidation)) {
+                        return $contextValidation;
+                    }
                 } 
             }
+        }
+        return true;
+    }
+
+    private static function validCustomizeContentContext($match) 
+    {
+        if (isset($match['otherkey'])) {
+            return __("To be used in message, context only accept maximum of 3 keys. %s not allowed.", $match['otherkey']);
+        }
+        if ($match['key1'] == 'message') {
+            if (!isset($match['key2']))  {
+                return true;
+            }
+            if (is_numeric($match['key2'])) {
+                if (intval($match['key2']) < 1 || intval($match['key2']) > 2) {
+                    return __("On [context.message.x], x has to be either 1 or 2.");
+                }
+                if (isset($match['key3'])) {
+                    return __("On [context.message.x.y], y is not allowed if x is a number.");
+                }
+            } else if (in_array($match['key2'], array('after', 'before'))) {
+                if (!isset($match['key3'])) {
+                    return __("On [context.message.after/before.x], only after/before .");
+                } 
+                if (!is_numeric($match['key3']) || intval($match['key3']) < 1 || intval($match['key3']) > 2) {
+                    return __("On [context.message.after/before.x], x has to be either 1 or 2.");
+                } 
+            } else {
+                    return __("On [context.message.x], x can be 'after', 'before' or a number.");
+            }      
         }
         return true;
     }
