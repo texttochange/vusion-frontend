@@ -29,44 +29,48 @@
 	    echo "No results found.";
 	$programStatsToCompute =array();
 	foreach ($programs as $program): 
-     $url = $program['Program']['url'];?>
-        <div id='<?php echo $program['Program']['url']; ?>' class='ttc-program-box' onclick="clickProgramBox('<?php echo $program['Program']['url'];?>', event)">
-        
-        <?php $programName = $this->Text->truncate($program['Program']['name'], 
+     	$url = $program['Program']['url']; 
+     	$class = "ttc-program-box";
+     	if ($program['Program']['status'] === 'archived') {
+     		$class = $class . " archived";
+     	}
+        echo "<div id=" . $program['Program']['url'] ." class='".$class."' onclick='clickProgramBox(\"". $program['Program']['url'] ."\", event)'>";        
+        $programName = $this->Text->truncate($program['Program']['name'], 
             24, 
             array('ellipsis' => '...',
             'exact' => true ));
         echo $this->Html->tag('div', $programName, array('class' => 'ttc-program-title','title' => $program['Program']['name']));
-        if (isset($program['Program']['shortcode'])){
+        if (isset($program['Program']['shortcode'])) {
             $shortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
-                $program['Program']['shortcode'],
+                $program['Program']['prefixed-shortcode'],
                 $countryIndexedByPrefix);
+         	if ($program['Program']['status'] === 'archived') {
+     			$shortcode = __("Archived from %s", $shortcode);
+     		}   
             echo $this->Html->tag('div', $shortcode, array('class'=>'ttc-program-details'));
+        } elseif ($program['Program']['status'] === 'archived') {
+        	echo $this->Html->tag('div', __('Archived'), array('class'=>'ttc-program-details'));
         }
-        ?>
-        <?php
-		if (isset($program['Program']['shortcode'])) {
+		if (isset($program['Program']['shortcode']) || ($program['Program']['status'] ==='archived')) {
 			echo '<div class ="ttc-program-stats">';
 			$programStatsToCompute[] = $program;			
 			echo '<div>';
 			echo '<img src="/img/ajax-loader.gif">';
 			echo '</div>';
 			echo '</div>';
-		}else{
+		} else {
 			echo $this->Html->link('Configure Shortcode and TimeZone', 
 				array('program' => $program['Program']['url'],
 					'controller' => 'programSettings',
 					'action' => 'index'
 					),
-				array('class' => 'configure-program-settings'));
-		}
+				array('class' => 'ttc-program-stats configure-program-settings'));
+		} 
 		?>
 		<?php if ($isProgramEdit) { ?>
 		<div class="ttc-program-quicklinks">
 			<?php 
 			echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id']));
-			echo '<br/>';
-			echo $this->Form->postLink(__('Archive'), array('action' => 'archive', $program['Program']['id']), array('name'=>'delete-program'), __('Are you sure you want to archive %s? <br/> This action will stop any sending or receiving of SMS and will free the keyword on the shortcode. Still you will be able to access this program data.', $program['Program']['name'])); 
 			?>
 		</div>
 		<?php };

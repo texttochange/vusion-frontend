@@ -11,6 +11,7 @@
 		echo $this->Html->css(array(
 		    'cake.generic',
 		    'basic',
+		    'admin',
 		    'jquery-ui/jquery-ui-1.10.3.custom.min',
 		    'superfish/superfish-1.7.4',
 		    'superfish/superfish-vertical-1.7.4',

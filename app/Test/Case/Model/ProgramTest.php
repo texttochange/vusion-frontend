@@ -25,7 +25,7 @@ class ProgramTestCase extends CakeTestCase
         parent::tearDown();
     }
    
-    
+    /*
     public function testFind()
     {
         $result   = $this->Program->find();
@@ -65,7 +65,7 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->assertEquals($expected, $result);
-    }    
+    } */   
     
     
     public function testFindAuthorized()
@@ -178,6 +178,36 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEqual(
             $this->Program->validationErrors['database'][0], 
             'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.');
+    }
+
+    public function testArchive()
+    {
+        $this->Program->id = 1;
+        $this->assertTrue($this->Program->archive());
+        
+        $archivedProgram = $this->Program->read();
+        $this->assertEqual(
+            $archivedProgram['Program']['status'], 
+            'archived');
+    }
+
+
+    public function testUnArchive()
+    {
+        $program = array(
+            'name' => 'something new',
+            'url' => 'img',
+            'database' => 'vusion',
+            'status' => 'archived');
+        
+        $this->Program->create();
+        $this->Program->save($program);
+        $this->assertTrue($this->Program->unarchive());
+        
+        $archivedProgram = $this->Program->read();
+        $this->assertEqual(
+            $archivedProgram['Program']['status'], 
+            'running');
     }
     
     

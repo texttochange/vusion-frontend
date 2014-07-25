@@ -68,6 +68,11 @@ class Program extends AppModel
                 'message' => 'This field is read only.',
                 'on' => 'update'
                 )
+            ),
+        'status' => array(
+            'inList' => array(
+                'rule' => array('inList', array('running', 'archived')),
+                'message' => 'The status can only be running or archived.'),
             )
         );
     
@@ -94,7 +99,18 @@ class Program extends AppModel
             'operators' => array(
                 'is' => array(
                     'label' => 'is',
-                    'parameter-type' => 'shortcode')))
+                    'parameter-type' => 'shortcode'))),
+        'status' => array(
+            'label' => 'status',
+            'operators' => array(
+                'is' => array(
+                    'label' => 'is',
+                    'parameter-type' => 'program-status')))
+        );
+    
+    public $filterProgramStatusOptions = array(
+        'running' => 'running',
+        'archived' => 'archived'
         );
     
     public $filterOperatorOptions = array(
@@ -191,7 +207,13 @@ class Program extends AppModel
                         $condition['name LIKE'] = $filterParam[3]."%"; 
                     }
                 }
-            }
+            } elseif ($filterParam[1] == 'status') {
+                if ($filterParam[3]) {
+                    if ($filterParam[2] == 'is') {
+                        $condition['status'] = $filterParam[3];
+                    }
+                }
+            } 
             
             if ($filter['filter_operator'] == "all") {
                 if (count($conditions) == 0) {
@@ -290,6 +312,25 @@ class Program extends AppModel
         return $query;
     }
     
+
+    public function archive() 
+    {
+        $modifier = $this->saveField('status', 'archived', array('validate' => true));
+        if ($modifier['Program']['id'] === '0') {
+            return false;
+        }
+        return true;
+    }
+
+    public function unArchive()
+    {
+        $modifier = $this->saveField('status', 'running', array('validate' => true));
+        if ($modifier['Program']['id'] === '0') {
+            return false;
+        }
+        return true;
+    }
+
     
     public function deleteProgram()
     {

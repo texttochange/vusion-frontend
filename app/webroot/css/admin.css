@@ -1,0 +1,50 @@
+.boxed-group {
+	margin-bottom: 20px;
+}
+
+.boxed-group h3 {
+	background-color: #f5f5f5;
+	border-radius: 3px 3px 0px 0px;
+	border: 1px solid #d8d8d8;
+	border-bottom: 0px;
+	padding: 10px 10px 10px;
+	font-size: 16px;
+	margin-bottom: 0px;
+}
+
+.boxed-group-inner form div {
+	margin: 0px;
+}
+
+.boxed-group-inner {
+	border: 1px solid #d8d8d8;
+	padding: 10px 10px 10px;
+}
+
+.boxed-group-inner h4 {
+	color: black;
+	font-weight: bold;
+}
+
+.boxed-group-inner p {
+	font-size: 12px;
+}
+
+.rule {
+	background: transparent;
+	border-bottom: 1px solid #ddd;
+	height: 0px;
+	overflow: hidden;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.boxed-group .danger-zone {
+	background-color: #df3e3e;
+	color: white;
+	font-weight: bold;
+}
+
+.danger {
+	color: #b33630;
+}

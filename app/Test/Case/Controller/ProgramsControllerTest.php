@@ -251,6 +251,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'name' => 'test',
             'url' => 'test',
             'database' => 'testdbprogram',
+            'status' => 'running',
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             ),
@@ -392,8 +393,44 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'conditions' => array(
                     'object-type' => 'deleted-program-credit-log', 
                     'program-name' => 'test'))));
-        
     }
 
+
+    public function testArchive()
+    {
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_stopBackendWorker'    
+                    )
+                )
+            );
+        $Programs
+        ->expects($this->once())
+        ->method('_stopBackendWorker')
+        ->will($this->returnValue(true));
+
+        $this->testAction('/programs/archive/1');
+    }
+
+    
+    public function testUnarchive()
+    {
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker'    
+                    )
+                )
+            );
+        $Programs
+        ->expects($this->once())
+        ->method('_startBackendWorker')
+        ->will($this->returnValue(true));
+
+        $this->testAction('/programs/unarchive/1');
+    }
     
 }
