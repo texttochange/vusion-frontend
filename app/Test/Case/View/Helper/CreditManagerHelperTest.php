@@ -42,7 +42,7 @@ class CreditManagerHelperTest extends CakeTestCase
         $settings = $this->maker->getSettings(
             $shortcode = '256-8181', $timezone = "Africa/Kampala", 
             $creditType = "outgoing-only", $creditNumber = "100",
-            $creditFromDate = "2013-07-07T00:00:00", $creditToDate = "2014-07-07T00:00:00");
+            $creditFromDate = "2013-07-07T00:00:00", $creditToDate = "2100-07-07T00:00:00");
 
         $creditStatus = $this->maker->getCreditStatus($count = '10', $status = 'ok');
         
@@ -58,7 +58,7 @@ class CreditManagerHelperTest extends CakeTestCase
         $settings = $this->maker->getSettings(
             $shortcode = '256-8181', $timezone = "Africa/Kampala", 
             $creditType = "outgoing-only", $creditNumber = "100",
-            $creditFromDate = "2013-07-07T00:00:00", $creditToDate = "2014-07-07T00:00:00");
+            $creditFromDate = "2013-07-07T00:00:00", $creditToDate = "2100-07-07T00:00:00");
 
         $creditStatus = $this->maker->getCreditStatus($count = '60', $status = 'ok');
         

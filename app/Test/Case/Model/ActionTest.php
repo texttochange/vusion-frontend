@@ -15,7 +15,6 @@ class ActionTestCase extends CakeTestCase
         unset($this->Action);
     }
 
-
     public function testValidateAction_fail_feedback_contentNotAllow() {
         $action = array(
             'type-action' => 'feedback',
@@ -241,7 +240,7 @@ class ActionTestCase extends CakeTestCase
     }
 
 
-    public function testValidateAction_ok_forwarding() {
+    public function testValidateAction_url_forwarding_ok() {
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php');
@@ -280,7 +279,7 @@ class ActionTestCase extends CakeTestCase
     }
 
     
-    public function testValidateAction_fail_forwarding_format() {
+    public function testValidateAction_url_forwarding_fail_format() {
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'partner.com/receive_mo.php');
@@ -313,7 +312,7 @@ class ActionTestCase extends CakeTestCase
     }
 
 
-    public function testValidateAction_fail_forwarding_replace() {        
+    public function testValidateAction_url_forwarding_fail_replace() {        
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[Message]');
@@ -336,7 +335,7 @@ class ActionTestCase extends CakeTestCase
     }
     
     
-    public function testValidateAction_ok_sms_forwarding_dynamic_content() {
+    public function testValidateAction_sms_forwarding_ok_dynamic_content() {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag, mylabel:[participant.mylabel]',
@@ -347,7 +346,16 @@ class ActionTestCase extends CakeTestCase
         $this->assertTrue($this->Action->validates());
     }
 
-    public function testValidateAction_fail_sms_forwarding_multi_selector() {
+    public function testValidateAction_sms_forwarding_ok_missing_field() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-content' => 'Hello');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+
+    public function testValidateAction_sms_forwarding_fail_multi_selector() {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'mylabel:[contentVariable:something]',
@@ -361,7 +369,7 @@ class ActionTestCase extends CakeTestCase
     }
 
     
-    public function testValidateAction_fail_sms_forwarding_wrong_customized_content() {
+    public function testValidateAction_sms_forwarding_fail_wrong_customized_content() {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
@@ -379,7 +387,7 @@ class ActionTestCase extends CakeTestCase
     }
     
     
-    public function testValidateAction_fail_sms_forwarding_wrong_fieldmissing() {
+    public function testValidateAction_sms_forwarding_fail_wrong_fieldmissing() {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
@@ -395,5 +403,50 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['forward-content']));
     }
-        
-} 
+
+    public function testValidateAction_sms_forwarding_message_condition_ok() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'my tag',
+            'set-forward-message-condition' => 'forward-message-condition',
+            'forward-message-condition-type' => 'phone-number',
+            'forward-message-no-participant-error' => 'The phone number don\'t match any patient',
+            'forward-content' => 'Hello');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+     
+    public function testValidateAction_sms_forwarding_message_condition_fail() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'my tag',
+            'set-forward-message-condition' => 'forward-message-condition',
+            'forward-message-condition-type' => 'tag',
+            'forward-message-no-participant-error' => 'The phone number don\'t match any patient',
+            'forward-content' => 'Hello');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The field value is not valid.',
+            $this->Action->validationErrors['forward-message-condition-type'][0]);
+    }
+
+    public function testValidateAction_sms_forwarding_no_participant_feedback_fail() {
+        $action = array(
+            'type-action' => 'sms-forwarding',
+            'forward-to'=>'my tag',
+            'set-forward-message-condition' => 'forward-message-condition',
+            'forward-message-condition-type' => 'phone-number',
+            'forward-message-no-participant-feedback' => 'The phone number [contet.condition] don\'t match any patient',
+            'forward-content' => 'Hello');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'To be used as customized content, \'contet\' can only be either: participant, contentVariable, time or context.',
+            $this->Action->validationErrors['forward-message-no-participant-feedback'][0]);
+    }
+
+}

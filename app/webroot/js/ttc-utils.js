@@ -23,7 +23,7 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'content', $("[name*='.content']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'forward-content', $("[name*='.forward-content']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'forward-to', $("[name*='.forward-to']").prev(":not(:has(img)):not(div):not(span)"));
-
+    addFormHelp(baseUrl, 'set-forward-message-condition', $("[name*='set-forward-message-condition']").next(":not(:has(img))"));
     addFormHelp(baseUrl, 'template', $("[name*='[template]']").prev(":not(:has(img)):not(div)"));
     addFormHelp(baseUrl, 'keyword', $("[name*='\.keyword']").prev("label").not(":has(img)"));
     addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));
@@ -198,9 +198,9 @@ function createFilter(minimize, selectedStackOperator, stackRules){
     var count = 1;
     $.each(stackRules, function(i, rule) {
             addStackFilter();
-            $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").click();
+            $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").change();
             if (typeof(rule[2]) === 'undefined') return true;
-            $("[name='filter_param["+count+"][2]']").val(rule[2]).click();
+            $("[name='filter_param["+count+"][2]']").val(rule[2]).change();
             if (typeof(rule[3]) === 'undefined') return true;
             // If the selected element is not loaded, add it to the drop down
             if ($("[name='filter_param["+count+"][3]']select").size() > 0 && $("[name='filter_param["+count+"][3]'] option").size() == 1) {
@@ -258,13 +258,16 @@ function addStackFilter(){
     // add dropdown for fields
     var filterFieldDropDown = document.createElement("select");
     $(filterFieldDropDown).attr('name','filter_param['+count+'][1]');
-    $(filterFieldDropDown).append(new Option("", ""))
-    .on('click', function(event){supplyOperatorOptions(this);});
-    $.each(fieldOptions, function(value, details) {
-            $(filterFieldDropDown).append(new Option(details['label'], value));
+    $(filterFieldDropDown).on('change', function(event) {
+        supplyOperatorOptions(this);
     });
+    $.each(fieldOptions, function(value, details) {
+            var option = new Option(details['label'], value);
+            $(filterFieldDropDown).append(option);
+    });
+     
     $(stackFilter).append(filterFieldDropDown);
-    
+    $(filterFieldDropDown).change();
 }
 
 
@@ -296,7 +299,9 @@ function supplyOperatorOptions(elt) {
     
     var operatorDropDown = document.createElement("select");
     $(operatorDropDown).attr('name', operatorDropDownName + '[2]');
-    $(operatorDropDown).on('click', function(){ supplyParameterOptions(this) });
+    $(operatorDropDown).on('change', function(){ 
+        supplyParameterOptions(this); 
+    });
     $.each(operators, function(operator, details) {
             $(operatorDropDown).append(new Option(localize_label(operator), operator));
     });
@@ -637,27 +642,27 @@ function generateHtmlProgramStats(programStats) {
     }
     
     var myTemplate ='<div>'+
-    '<span class="stat" '+ ((programStats['active-participant-count']['exact'] != 'N/A' || programStats['participant-count']['exact'] != 'N/A') ? 'title="Optin/Total participant(s)"' : 'title="Stats Not Available"') +'>'+
+    '<span class="stat" '+ ((programStats['active-participant-count']['exact'] != 'N/A' || programStats['participant-count']['exact'] != 'N/A') ? 'title="'+localize_label("Optin/Total participant(s)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +'>'+
     ((programStats['active-participant-count']['exact'] != 'N/A' || programStats['participant-count']['exact'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+                    
-    '</span> participant(s)'+
+    '</span> '+localize_label('participant(s)')+
     '</div>'+
     '<div>'+
-    '<span class="stat" '+ ((programStats['history-count']['exact'] != 'N/A' || programStats['total-current-month-messages-count']['exact'] != 'N/A') ? 'title="Total(total current month) message(s)"' : 'title="Stats Not Available"') +'>'+
+    '<span class="stat" '+ ((programStats['history-count']['exact'] != 'N/A' || programStats['total-current-month-messages-count']['exact'] != 'N/A') ? 'title="'+localize_label("Total(total current month) message(s)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +'>'+
     'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)'+
-    '</span> total message(s)'+
+    '</span> '+localize_label('total message(s)')+
     '</div>'+
     '<div>'+
-    '<span class="stat" '+ ((programStats['all-received-messages-count']['exact'] != 'N/A' || programStats['current-month-received-messages-count']['exact'] != 'N/A') ? 'title="Total(current month) received"' : 'title="Stats Not Available"') +'>'+
+    '<span class="stat" '+ ((programStats['all-received-messages-count']['exact'] != 'N/A' || programStats['current-month-received-messages-count']['exact'] != 'N/A') ? 'title="'+localize_label("Total(current month) received")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +'>'+
     'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)'+
-    '</span> received -'+
-    '<span class="stat" '+ ((programStats['all-sent-messages-count']['exact'] != 'N/A' || programStats['current-month-sent-messages-count']['exact'] != 'N/A') ? 'title="Total(current month) sent"' : 'title="Stats Not Available"') +'>'+
+    '</span> '+localize_label('received')+' -'+
+    '<span class="stat" '+ ((programStats['all-sent-messages-count']['exact'] != 'N/A' || programStats['current-month-sent-messages-count']['exact'] != 'N/A') ? 'title="'+localize_label("Total(current month) sent")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +'>'+
     'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)'+
-    '</span> sent message(s)'+
+    '</span> '+localize_label('sent message(s)')+
     '</div>'+
     '<div>'+
-    '<span class="stat" '+ ((programStats['schedule-count']['exact'] != 'N/A' || programStats['today-schedule-count']['exact'] != 'N/A') ? 'title="Total(today) schedule(s)"' : 'title="Stats Not Available"') +'>'+
+    '<span class="stat" '+ ((programStats['schedule-count']['exact'] != 'N/A' || programStats['today-schedule-count']['exact'] != 'N/A') ? 'title="'+localize_label("Total(today) schedule(s)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +'>'+
     'SCHEDULE(TODAY_SCHEDULE)'+
-    '</span> schedule(s)'+
+    '</span> '+localize_label('schedule(s)')+
     '</div>'
     
     myTemplate = myTemplate.replace('ACTIVE_PARTICIPANT', programStats['active-participant-count']['exact']);
@@ -693,30 +698,30 @@ function generateHtmlProgramStatsInside(programStats) {
     
     var myTemplate ='<table class="stat">'+
     '<tr '+
-    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="Participant(s) Optin/Total"' : 'title="Stats Not Available"') +' >'+
+    ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'title="'+localize_label('Participant(s) Optin/Total')+'"' : 'title="'+localize_label("Stats Not Available")+'"') +' >'+
     '<td><img  src="/img/participant-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ACTIVE_PARTICIPANT/TOTAL_PARTICIPANT' : 'N/A')+
-    ' participant(s)</td></tr>'+
+    ' '+localize_label('participant(s)')+'</td></tr>'+
     '<tr '+
-    ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="Message(s) Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
+    ((programStats['history-count'] != 'N/A' || programStats['total-current-month-messages-count'] != 'N/A') ? 'title="'+localize_label("Message(s)-Total(Current-Month)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +' >'+
     '<td><img src="/img/message-icon-14.png"> </td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'TOTAL_HISTORY(TOTAL_CURRENT_MONTH_MESSAGES)' : 'N/A')+
-    ' message(s)</td></tr>'+
+    ' '+localize_label('message(s)')+'</td></tr>'+
     '<tr  '+
-    ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="Received Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
+    ((programStats['all-received-messages-count'] != 'N/A' || programStats['current-month-received-messages-count'] != 'N/A') ? 'title="'+localize_label("Received Total(Current Month)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +' >'+
     '<td><img src="/img/incoming-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_RECEIVED_MESSAGES(CURRENT_MONTH_RECEIVED_MESSAGES)' : 'N/A')+
-    ' received</td></tr>'+
+    ' '+localize_label('received')+'</td></tr>'+
     '<tr  '+
-    ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="Sent Total(Current Month)"' : 'title="Stats Not Available"') +' >'+
+    ((programStats['all-sent-messages-count'] != 'N/A' || programStats['current-month-sent-messages-count'] != 'N/A') ? 'title="'+localize_label("Sent Total(Current Month)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +' >'+
     '<td><img src="/img/outgoing-icon-14.png"></td><td>'+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'ALL_SENT_MESSAGES(CURRENT_MONTH_SENT_MESSAGES)' : 'N/A')+
-    ' sent</td></tr>'+
+    ' '+localize_label('sent')+'</td></tr>'+
     '<tr  '+
-    ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="Schedule Total(Today)"' : 'title="Stats Not Available"') +' >'+
+    ((programStats['schedule-count'] != 'N/A' || programStats['today-schedule-count'] != 'N/A') ? 'title="'+localize_label("Schedule Total(Today)")+'"' : 'title="'+localize_label("Stats Not Available")+'"') +' >'+
     '<td><img  src="/img/schedule-icon-14.png"></td><td> '+
     ((programStats['active-participant-count'] != 'N/A' || programStats['participant-count'] != 'N/A') ? 'SCHEDULE(TODAY_SCHEDULE)' : 'N/A')+
-    ' scheduled</td></tr>'+
+    ' '+localize_label('scheduled')+'</td></tr>'+
     '</table>'
     
     myTemplate = myTemplate.replace('ACTIVE_PARTICIPANT', programStats['active-participant-count']['rounded']);

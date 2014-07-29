@@ -300,6 +300,7 @@ var action = {
         'options': [
             {'value': "all-subconditions"},
             {'value': "any-subconditions"}],
+        'style': 'padding-top:0px'
     },
     'subconditions': {
         'type': 'list',
@@ -347,7 +348,9 @@ var action = {
             {'value': 'url-forwarding',
             'subfields': ['forward-url']},
             {'value': 'sms-forwarding',
-            'subfields': ['forward-to', 'forward-content']}
+            'subfields': ['forward-to', 
+                           'set-forward-message-condition',
+                           'forward-content']}
         ]
     },
     "tag": {'type': 'text'},
@@ -371,6 +374,23 @@ var action = {
         'type': 'container', 
         'contains': ["tag", "weight"],
         'skip': true,
+    },
+    "set-forward-message-condition": {
+        'type': 'checkboxes',
+        'value': 'forward-message-condition',
+        'subfields': [
+            "forward-message-condition-type",
+            "forward-message-no-participant-feedback"],
+        'style': 'padding-top:0px;padding-bottom:5px',
+    },
+    "forward-message-condition-type": {
+        'type': 'radiobuttons',
+        'options': [
+            {'value': "phone-number"}],
+        'style': 'padding-top:0px',
+    },
+    "forward-message-no-participant-feedback": {
+        'type': 'textarea',
     },
     "weight": {'type': 'text'},
     'forward-url': {'type': 'text'},

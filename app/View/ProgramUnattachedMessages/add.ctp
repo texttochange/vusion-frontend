@@ -125,7 +125,7 @@
             );
         $this->Js->get('#predefined-message')->event('change','addPredefinedContent();');
     }
-    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5, 'label' => 'Content'));
+    echo $this->Form->input('content', array('id'=>'unattached-content', 'rows'=>5, 'label' => __('Content')));
     if ($this->Form->isFieldError('type-schedule') || 
         $this->Form->isFieldError('fixed-time')) { 
         $errorSchedule = "error";
