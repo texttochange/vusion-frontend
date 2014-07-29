@@ -342,7 +342,8 @@ class UsersController extends AppController
         $yourEmail          = $this->Session->read('Auth.User.email');        
         $reportIssueMessage = $this->request->data['reportIssueMessage'];
         $path               = WWW_ROOT.'img';
-        $attachment         = $this->request->data['ReportIssue']['Screenshort'];
+        $attachment         = 'test.jpg';
+        print_r($path.$attachment);
         if (!$reportIssueMessage) {
             $this->Session->setFlash(__('Please Enter Report Message'));
             return;
@@ -351,8 +352,8 @@ class UsersController extends AppController
         $email = new CakeEmail();
         $email->config('default');
         $email->from($yourEmail);
-        //$email->to('mssembajjwe@texttochange.com');
-        $email->to('vusion-issues@texttochange.com');
+        $email->to('mssembajjwe@texttochange.com');
+        //$email->to('vusion-issues@texttochange.com');
         $email->subject('Vusion Report Issue by '.$yourName);
         $email->attachments($path.$attachment);
         $email->send($reportIssueMessage);
