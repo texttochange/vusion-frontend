@@ -1,21 +1,14 @@
 <?php
-echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
+echo $this->Html->tag('div', null, array('class'=>'ttc-report-issue-container'));
 echo $this->Html->tag('h2', __('Report Issue'));
 echo $this->Form->create('ReportIssue', array('url' => array('controller' => 'users', 'action' =>'reportIssue')));
-echo $this->Form->input('text', array(
-	'label' => __('Your Name'),
-	'id' => 'yourName',
-	'name' => 'yourName',
-	'value' =>  $this->Session->read('Auth.User.username'),
-	'readonly' => 'true'
-	));
-echo $this->Form->input('text', array(
-	'label' => __('Your Email'),
-	'id' => 'yourEmail', 
-	'name' => 'yourEmail',
-	'value' =>  $this->Session->read('Auth.User.email'),
-	'readonly' => 'true'
-	));
+echo $this->Html->tag('span', __('<h1><b>Note</b></h1>
+    <p>When reporting Vusion issues Please add the following details in your report:<br>
+     1. How to reproduce the issue ie <i>URL, step that lead to the issue. </i><br>
+     2. Occurence ie <i>All the time, once in a while.</i><br>
+     3. Attach screenshots. <br>
+    </p>'));
 echo $this->Form->textarea('text', array('placeholder' => __('Message'), 'id' => 'reportIssueMessage', 'name' => 'reportIssueMessage', 'class' => 'report-message'));
-echo $this->Form->end(__('Submit'));
+echo $this->Form->input('Screenshort', array('type' => 'file', 'id' => 'attachments'));
+echo $this->Form->end(array('label' => __('Send')));
 ?>

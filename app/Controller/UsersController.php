@@ -219,15 +219,28 @@ class UsersController extends AppController
     
     public function login()
     {
-        if ($this->request->is('post')) {
+        if ($this->Auth->user()) {
+            $this->Session->setFlash(
+                __('Already logged in...'),
+                'default', 
+                array('class'=>'message success'));
+            $this->redirect($this->Auth->redirect());
+        }
+
+        if ($this->request->is('ajax')) {
+            if ($this->Auth->login()) {
+                return;
+            } else {
+                throw new UnauthorizedException();
+            }
+        } else if ($this->request->is('post')) {
             if ($this->Auth->login()) {
                 $group     = $this->Group->findById($this->Session->read('Auth.User.group_id'));
                 $groupName = $group['Group']['name'];
                 $this->Session->write('groupName', $groupName);
                 $this->Session->setFlash(__('Login successful.'),
                     'default',
-                    array('class'=>'message success')
-                    );
+                    array('class'=>'message success'));
                 if ($this->Session->read('Auth.User.group_id') == 1) {
                     $this->redirect(array('controller' => 'admin'));
                 }
@@ -319,23 +332,17 @@ class UsersController extends AppController
     
     public function reportIssue()
     {
+        $this->layout = 'popup';
+         
         if (!$this->request->is('post')) {
             return;
         }
-        
-        $yourName = $this->request->data['yourName'];
-        if (!$yourName) {
-            $this->Session->setFlash(__('Please Enter Your Name'));
-            return;
-        }
-        
-        $yourEmail = $this->request->data['yourEmail'];
-        if (!$yourEmail) {
-            $this->Session->setFlash(__('Please Enter Email address'));
-            return;
-        }
-        
+       
+        $yourName           = $this->Session->read('Auth.User.username');        
+        $yourEmail          = $this->Session->read('Auth.User.email');        
         $reportIssueMessage = $this->request->data['reportIssueMessage'];
+        $path               = WWW_ROOT.'img';
+        $attachment         = $this->request->data['ReportIssue']['Screenshort'];
         if (!$reportIssueMessage) {
             $this->Session->setFlash(__('Please Enter Report Message'));
             return;
@@ -347,15 +354,14 @@ class UsersController extends AppController
         //$email->to('mssembajjwe@texttochange.com');
         $email->to('vusion-issues@texttochange.com');
         $email->subject('Vusion Report Issue by '.$yourName);
+        $email->attachments($path.$attachment);
         $email->send($reportIssueMessage);
         
         $this->Session->setFlash(
-            __('An Email has been sent to VUSION tech team.'),
+            __('VUSION tech team will contact you soon by Email.Thank you'),
             'default',
             array('class'=>'message success')
-            );
-        //$this->render('report_issue');
-        //$this->redirect('/');
+            );       
     }
     
     
