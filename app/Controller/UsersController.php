@@ -333,22 +333,31 @@ class UsersController extends AppController
     public function reportIssue()
     {
         $this->layout = 'popup';
-         
+        
         if (!$this->request->is('post')) {
             return;
         }
-       
+        
         $yourName           = $this->Session->read('Auth.User.username');        
         $yourEmail          = $this->Session->read('Auth.User.email');        
         $reportIssueMessage = $this->request->data['reportIssueMessage'];       
         $attachment         = $this->request->data['ReportIssue']['Screenshort'];
         $filePath           = WWW_ROOT . 'img';
         
-        print_r($filePath.DS.$attachment);
         if (!$reportIssueMessage) {
             $this->Session->setFlash(__('Please Enter Report Message'));
             return;
         }
+        
+        if ($attachment['error'] != 0) {            
+            $message = __('Error while uploading the file: %s.', $attachment['error']);            
+            $this->Session->setFlash($message, 
+                'default', array('class' => "message failure")
+                );
+            return;
+        }
+        
+        copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         
         $email = new CakeEmail();
         $email->config('default');
@@ -356,7 +365,7 @@ class UsersController extends AppController
         $email->to('mssembajjwe@texttochange.com');
         //$email->to('vusion-issues@texttochange.com');
         $email->subject('Vusion Report Issue by '.$yourName);
-        $email->attachments($filePath.DS.$attachment);
+        $email->attachments($filePath . DS .$attachment['name']);
         $email->send($reportIssueMessage);
         
         $this->Session->setFlash(
@@ -364,7 +373,8 @@ class UsersController extends AppController
             'default',
             array('class'=>'message success')
             );
-        unlink($filePath . DS . $attachment);
+        
+        unlink($filePath . DS . $attachment['name']);
     }
     
     
@@ -532,6 +542,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -568,6 +579,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -604,6 +616,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -631,6 +644,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
