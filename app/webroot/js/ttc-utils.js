@@ -763,3 +763,9 @@ function popupBrowser(obj) {
     return false;
 }
 
+function popupNewBrowserTab(obj) {
+    var url = $(obj).attr("url") + window.location.search;
+    var newPopupWindow = window.open(url, '_blank');
+    newPopupWindow.focus();
+}
+
