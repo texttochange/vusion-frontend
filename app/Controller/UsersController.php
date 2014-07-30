@@ -340,8 +340,11 @@ class UsersController extends AppController
        
         $yourName           = $this->Session->read('Auth.User.username');        
         $yourEmail          = $this->Session->read('Auth.User.email');        
-        $reportIssueMessage = $this->request->data['reportIssueMessage'];
+        $reportIssueMessage = $this->request->data['reportIssueMessage'];       
+        $attachment         = $this->request->data['ReportIssue']['Screenshort'];
+        $filePath           = WWW_ROOT . 'img';
         
+        print_r($filePath.DS.$attachment);
         if (!$reportIssueMessage) {
             $this->Session->setFlash(__('Please Enter Report Message'));
             return;
@@ -350,22 +353,24 @@ class UsersController extends AppController
         $email = new CakeEmail();
         $email->config('default');
         $email->from($yourEmail);
-        //$email->to('mssembajjwe@texttochange.com');
-        $email->to('vusion-issues@texttochange.com');
+        $email->to('mssembajjwe@texttochange.com');
+        //$email->to('vusion-issues@texttochange.com');
         $email->subject('Vusion Report Issue by '.$yourName);
+        $email->attachments($filePath.DS.$attachment);
         $email->send($reportIssueMessage);
         
         $this->Session->setFlash(
             __('VUSION tech team will contact you soon by Email.Thank you'),
             'default',
             array('class'=>'message success')
-            );       
+            );
+        unlink($filePath . DS . $attachment);
     }
     
     
     public function captcha()
     {
-        $this->autoRender = false;
+        $this->autoRender = false;  
         $this->layout     = 'ajax';
         if (!isset($this->Captcha)) { 
             $this->Captcha = $this->Components->load(
