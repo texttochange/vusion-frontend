@@ -369,10 +369,8 @@ class UsersController extends AppController
         $email->send($reportIssueMessage);
         
         $this->Session->setFlash(
-            __('VUSION tech team will contact you soon by Email.Thank you'),
-            'default',
-            array('class'=>'message success')
-            );
+            __('The tech team will contact you in the next 2 days by Email. Thank you.'),
+            'default', array('class'=>'message success'));
         
         unlink($filePath . DS . $attachment['name']);
     }

@@ -1,18 +1,25 @@
-<?php
-echo $this->Html->tag('div', null, array('class'=>'ttc-report-issue-container'));
-echo $this->Html->tag('h2', __('Report Issue'));
-echo $this->Form->create('ReportIssue', array('type' => 'file', 'url' => array('controller' => 'users', 'action' =>'reportIssue')));
-echo $this->Html->tag('span', __('<b>NB.</b>
-    When reporting Vusion issues <b>Please</b> add the following details in your report:  
-        <ul>
-            <li> Describe the issue ie.<i> expected and now results</i></li>
-            <li> How to reproduce the issue ie. <i> steps that lead to the issue.</i></li>
-            <li> Provide <b>URL</b> to Vusion your program.</li>
-            <li> Occurence ie. <i>All the time, once in a while.</i></li>            
-            <li>Attach screenshots.</li>
-        </ul>    
-    '));
-echo $this->Form->textarea('text', array('placeholder' => __('Message'), 'id' => 'reportIssueMessage', 'name' => 'reportIssueMessage', 'class' => 'report-message'));
-echo $this->Form->input('ReportIssue.Screenshort', array('type' => 'file'));
-echo $this->Form->end(array('label' => __('Send')));
-?>
+<div class='ttc-report-issue-container'>
+	<h2><?php echo __('Report Issue'); ?></h2>
+	<p><?php echo __('When reporting an issue add as much details as possible so that the tech team can <b>reproduce the issue</b>. Also keep in mind that a uploading a good screenshot is worth a thousand words.'); ?></p> 
+    <?php
+	echo $this->Form->create('ReportIssue', array('type' => 'file', 'url' => array('controller' => 'users', 'action' =>'reportIssue')));
+	echo "<div class='input text' style='margin-bottom:0px'>";
+	echo $this->Form->input(
+		'reportIssueSubject', 
+		array(
+			'title' => __('Expected and current behavior'),
+			'label' => __('Describe the issue'),
+			'placeholder' => __('Expected and current behavior'),
+			'div' => false));
+	echo "</div>";
+	echo $this->Html->tag('label', __('How to reproduce the issue'), array('style'=>'padding-left:8px'));
+	echo $this->Form->textarea(
+		'reportIssueMessage', 
+		array(
+			'title' => __('How to reproduce step by step, copy/past the program url and occurence'),
+			'placeholder' => __('How to reproduce step by step, copy/past the program url and occurence'),
+			'class' => 'report-message'));
+	echo $this->Form->input('ReportIssue.Screenshort', array('type' => 'file'));
+	echo $this->Form->end(array('label' => __('Report')));
+	?>	
+</div>
