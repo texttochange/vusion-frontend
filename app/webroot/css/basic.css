@@ -481,8 +481,11 @@
         background: black;
         min-width: 560px;
 }
+.report-issue-describtion {
+        width: 521px;        
+}
 
-.report-message {
+.report-issue-message {
         margin-left:7px;
         height: 115px;
         resize: none;

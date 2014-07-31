@@ -10,6 +10,7 @@
 			'title' => __('Expected and current behavior'),
 			'label' => __('Describe the issue'),
 			'placeholder' => __('Expected and current behavior'),
+			'class' => 'report-issue-describtion',
 			'div' => false));
 	echo "</div>";
 	echo $this->Html->tag('label', __('How to reproduce the issue'), array('style'=>'padding-left:8px'));
@@ -18,7 +19,7 @@
 		array(
 			'title' => __('How to reproduce step by step, copy/past the program url and occurence'),
 			'placeholder' => __('How to reproduce step by step, copy/past the program url and occurence'),
-			'class' => 'report-message'));
+			'class' => 'report-issue-message'));
 	echo $this->Form->input('ReportIssue.Screenshort', array('type' => 'file'));
 	echo $this->Form->end(array('label' => __('Report')));
 	?>	

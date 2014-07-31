@@ -338,11 +338,18 @@ class UsersController extends AppController
             return;
         }
         
-        $yourName           = $this->Session->read('Auth.User.username');        
-        $yourEmail          = $this->Session->read('Auth.User.email');        
-        $reportIssueMessage = $this->request->data['reportIssueMessage'];       
+        $userName           = $this->Session->read('Auth.User.username');        
+        $userEmail          = $this->Session->read('Auth.User.email');
+        $reportIssueToEmail = Configure::read('vusion.vusionReportToEmail');
+        $reportIssueSubject = $this->request->data['ReportIssue']['reportIssueSubject'];
+        $reportIssueMessage = $this->request->data['ReportIssue']['reportIssueMessage'];       
         $attachment         = $this->request->data['ReportIssue']['Screenshort'];
         $filePath           = WWW_ROOT . 'img';
+        
+        if (!$reportIssueSubject) {
+            $this->Session->setFlash(__('Please Enter Report Describtion'));
+            return;
+        }
         
         if (!$reportIssueMessage) {
             $this->Session->setFlash(__('Please Enter Report Message'));
@@ -352,7 +359,7 @@ class UsersController extends AppController
         if ($attachment['error'] != 0) {            
             $message = __('Error while uploading the file: %s.', $attachment['error']);            
             $this->Session->setFlash($message, 
-                'default', array('class' => "message failure")
+                'default', array('class' => 'message failure')
                 );
             return;
         }
@@ -361,10 +368,10 @@ class UsersController extends AppController
         
         $email = new CakeEmail();
         $email->config('default');
-        $email->from($yourEmail);
-        $email->to('mssembajjwe@texttochange.com');
+        $email->from($userEmail);
+        $email->to($reportIssueToEmail);
         //$email->to('vusion-issues@texttochange.com');
-        $email->subject('Vusion Report Issue by '.$yourName);
+        $email->subject('[vusion-issues] '.$reportIssueSubject);
         $email->attachments($filePath . DS .$attachment['name']);
         $email->send($reportIssueMessage);
         

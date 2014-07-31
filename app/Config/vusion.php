@@ -46,7 +46,8 @@ $config = array(
                     'noisecolor' => array(60, 90, 120)
                     )
                 )
-            )
+            ),
+        'vusionReportToEmail' => 'mssembajjwe@texttochange.com'
         
         )
     );   
