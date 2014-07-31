@@ -77,7 +77,7 @@ class ProgramsUsersController extends AppController
         if (!$this->ProgramsUser->exists()) {
             throw new NotFoundException(__('Invalid programs user.'));
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->ProgramsUser->save($this->request->data)) {
                 $this->Session->setFlash(__('The programs user has been saved.'),
                     'default',

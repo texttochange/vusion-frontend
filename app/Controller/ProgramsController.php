@@ -264,7 +264,7 @@ class ProgramsController extends AppController
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->Program->save($this->request->data)) {
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',

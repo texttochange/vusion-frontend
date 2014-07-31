@@ -74,7 +74,7 @@ class ProgramPredefinedMessagesController extends AppController
         }
         $predefinedMessage = $this->PredefinedMessage->read();
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->PredefinedMessage->save($this->request->data)) {
                 $this->Session->setFlash(
                     __('The predefined message has been saved.'),

@@ -74,7 +74,7 @@ class ShortCodesController extends AppController
         if (!$this->ShortCode->exists()) {
             throw new NotFoundException(__('Invalid shortcode.') . $id);
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->ShortCode->save($this->request->data)) {
                 $shortcode = $this->request->data;
                 $this->Session->setFlash(__('The shortcode has been saved.'),
