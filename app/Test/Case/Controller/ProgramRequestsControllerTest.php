@@ -25,7 +25,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             'Program' => array(
                 'name' => 'Test Name',
                 'url' => 'testurl',
-                'database' => 'testdbprogram'
+                'database' => 'testdbprogram',
+                'status' => 'running'
                 )
             )
         );
@@ -35,7 +36,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             'Program' => array(
                 'name' => 'Test Name 2',
                 'url' => 'testurl2',
-                'database' => 'testdbprogram2'
+                'database' => 'testdbprogram2',
+                'status' => 'running'
                 )
             )
         );
