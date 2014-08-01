@@ -572,7 +572,7 @@ display: inline;
         border: 1px solid #BBBBBB;
 }
 
-.ttc-program-box.archived {
+.archived {
     background-color: lightgray;
 }
 
