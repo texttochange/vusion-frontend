@@ -400,13 +400,23 @@
         left: 191px\9;
 }
 
+.ui-dform-form textarea {
+        height: 30px;
+        font-size: 12px;
+}
+
+/*FF hack*/
+@-moz-document url-prefix() { 
+  .ttc-textarea-validation-error {top: -59px;}
+}
+
 /*Chrome hack*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
         .ttc-validation-error{ top: -32px; }
         .ttc-radio-validation-error{ top: -38px;}
         .ttc-textarea-validation-error {top: -60px; left: 170px}
         .ttc-input-validation-error {left: 198px; top: -61px;}
-        .ttc-textarea-validation-error.dialogue {top: -60px}
+        .ttc-textarea-validation-error.dialogue {top: -60px; left: 68px;}
         .ttc-textarea-validation-error.request {top: -60px; left: 170px;}
 }
 

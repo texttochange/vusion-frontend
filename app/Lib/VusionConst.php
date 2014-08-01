@@ -23,7 +23,7 @@ class VusionConst
     const LABEL_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}@\.]+$/u';
     const LABEL_VALUE_FAIL_MESSAGE = 'Use only DOT, space, letters and numbers for the label value.';
 
-    const LABEL_FULL_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}0-9\s]+:[\p{L}\p{Mn}\p{N}\p{Zs}@\.]+$/u';
+    const LABEL_FULL_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+:[\p{L}\p{Mn}\p{N}\p{Zs}@\.]+$/u';
     const LABEL_FULL_FAIL_MESSAGE = "The correct format is 'label:value'.";
 
     const LABEL_SELECTOR_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+:([\p{L}\p{Mn}\p{N}\p{Zs}@\.]+|\[(participant)\.[\p{L}\p{Mn}\p{N}\p{Zs}]+\])$/u';
@@ -43,14 +43,14 @@ class VusionConst
     const FORWARD_URL_REGEX = '/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))(&[-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))*)?)?$/';
     const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
     
-    const CONTENT_VARIABLE_KEY_REGEX = '/^[a-z0-9A-Z\s]+$/';
+    const CONTENT_VARIABLE_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]*$/u';
     const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
         
-    const CONTENT_VARIABLE_VALUE_REGEX = '/^[a-z0-9A-Z\s\.\,]*$/';
+    const CONTENT_VARIABLE_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\.\,]*$/u';
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
 
     # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
-    const CUSTOMIZE_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]+)\.(?P<key1>[^\.\]]+)(\.(?P<key2>[^\.\]]+))?(\.(?P<key3>[^\.\]]+))?(\.(?P<otherkey>[^\.\]]+))?\]/';
+    const CUSTOMIZE_CONTENT_MATCHER_REGEX = '/\[(?P<domain>[^\.\]]*)\.(?P<key1>[^\.\]]*)(\.(?P<key2>[^\.\]]*))?(\.(?P<key3>[^\.\]]*))?(\.(?P<otherkey>[^\.\]]*))?\]/';
     const CUSTOMIZE_CONTENT_DOMAIN_DEFAULT = 'participant|contentVariable|time';
     const CUSTOMIZE_CONTENT_DOMAIN_RESPONSE = 'participant|contentVariable|time|context';
     

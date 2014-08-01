@@ -1415,7 +1415,7 @@ class ParticipantTestCase extends CakeTestCase
                 )
             );
     }
-    
+  
     
     public function testAddMassTags_filter()
     {
@@ -1453,14 +1453,43 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $this->Participant->save($participant_09);   
         
+        //Mass tag all participant with phone +8
         $conditions = array(
             'phone' => '+8');       
         
         $this->Participant->addMassTags('hi', $conditions);
         
         $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
-        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);       
-        
+        $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);
+
+        //Mass tag all participant with tag geek
+        $conditions = array(
+            'tags' => 'hi');
+        $this->Participant->addMassTags('nerd', $conditions);
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));
+        $this->assertEqual(array('geek', 'cool', 'hi', 'nerd'), $participant['Participant']['tags']);
+
+        //Double mass tag
+        $this->Participant->addMassTags('nerd', $conditions);
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));
+        $this->assertEqual(array('geek', 'cool', 'hi', 'nerd'), $participant['Participant']['tags']);
+
+        //Mass tag all particiant that don't have tag
+        $conditions = array(
+            'tags' => array('$ne' => 'hi'));
+        $this->Participant->addMassTags('bye', $conditions);
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));
+        $this->assertEqual(array('geek', 'another tag', 'bye'), $participant['Participant']['tags']);
+
+        //Mass tag all participant that tagged geek and not hi
+        $conditions = array(
+            '$and' => array(
+                array('tags' => array('$ne' => 'hi')),
+                array('tags' => 'geek')));
+        $this->Participant->addMassTags('last tag', $conditions);
+        $participant = $this->Participant->find('first', array('conditions' => $conditions));
+        $this->assertEqual(array('geek', 'another tag', 'bye', 'last tag'), $participant['Participant']['tags']); 
+
     }
     
     
