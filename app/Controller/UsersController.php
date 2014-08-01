@@ -338,16 +338,17 @@ class UsersController extends AppController
             return;
         }
         
-        $userName           = $this->Session->read('Auth.User.username');        
-        $userEmail          = $this->Session->read('Auth.User.email');
-        $reportIssueToEmail = Configure::read('vusion.vusionReportToEmail');
-        $reportIssueSubject = $this->request->data['ReportIssue']['reportIssueSubject'];
-        $reportIssueMessage = $this->request->data['ReportIssue']['reportIssueMessage'];       
-        $attachment         = $this->request->data['ReportIssue']['Screenshort'];
-        $filePath           = WWW_ROOT . 'img';
+        $userName                 = $this->Session->read('Auth.User.username');        
+        $userEmail                = $this->Session->read('Auth.User.email');
+        $reportIssueToEmail       = Configure::read('vusion.reportIssue.email');
+        $reportIssueSubjectPrefix = Configure::read('vusion.reportIssue.subjectPrefix');
+        $reportIssueSubject       = $this->request->data['ReportIssue']['reportIssueSubject'];
+        $reportIssueMessage       = $this->request->data['ReportIssue']['reportIssueMessage'];       
+        $attachment               = $this->request->data['ReportIssue']['Screenshort'];
+        $filePath                 = WWW_ROOT . 'img';
         
         if (!$reportIssueSubject) {
-            $this->Session->setFlash(__('Please Enter Report Describtion'));
+            $this->Session->setFlash(__('Please Enter Report Description'));
             return;
         }
         
@@ -356,8 +357,12 @@ class UsersController extends AppController
             return;
         }
         
-        if ($attachment['error'] != 0) {            
-            $message = __('Error while uploading the file: %s.', $attachment['error']);            
+        if ($attachment['error'] != 0) {
+            if ($attachment['error'] == 4) { 
+                $message = __("Please add a screenshot.");
+            } else { 
+                $message = __('Error while uploading the file: %s.', $attachment['error']);            
+            }
             $this->Session->setFlash($message, 
                 'default', array('class' => 'message failure')
                 );
@@ -370,8 +375,7 @@ class UsersController extends AppController
         $email->config('default');
         $email->from($userEmail);
         $email->to($reportIssueToEmail);
-        //$email->to('vusion-issues@texttochange.com');
-        $email->subject('[vusion-issues] '.$reportIssueSubject);
+        $email->subject($reportIssueSubjectPrefix.$reportIssueSubject);
         $email->attachments($filePath . DS .$attachment['name']);
         $email->send($reportIssueMessage);
         
@@ -380,6 +384,8 @@ class UsersController extends AppController
             'default', array('class'=>'message success'));
         
         unlink($filePath . DS . $attachment['name']);
+        
+        return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
     

@@ -47,7 +47,9 @@ $config = array(
                     )
                 )
             ),
-        'vusionReportToEmail' => 'mssembajjwe@texttochange.com'
-        
+        'reportIssue' => array(
+            'email' => 'mssembajjwe@texttochange.com',
+            'subjectPrefix' => '[vusion-issues]'
+            )        
         )
     );   
