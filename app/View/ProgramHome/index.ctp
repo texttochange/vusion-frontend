@@ -9,7 +9,11 @@
 	               array('method' => 'GET',
                          'async' => true, 
 	                     'dataExpression' => true,
-	                     'success' => '$("#flashMessage").show().text(data["message"]).attr("class","message success")')));
+	                     'success' => 'if (data["status"] == "ok") {'.
+	                                  '  $("#flashMessage").show().text(data["message"]).attr("class","message success")'.
+	                                  ' } else {'.
+	                                  '  $("#flashMessage").show().text(data["message"]);'.
+	                                  '}')));
 		?></li>
 	</ul>
 	<h3><?php echo __('Sending Next');?></h3>
