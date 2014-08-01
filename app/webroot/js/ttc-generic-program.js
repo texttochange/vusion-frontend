@@ -54,7 +54,8 @@ function saveFormOnServer(){
             dataType: 'json', 
             success: function(response) {
                 if (response['status'] == 'fail') {
-                    message = handleResponseValidationErrors(response['message']);
+                    showFlashMessages(response['message'], response['status']);
+                    message = handleResponseValidationErrors(response['validation-errors']);
                     reactivateSaveButtons();
                     return;
                 }
@@ -64,11 +65,10 @@ function saveFormOnServer(){
                     objectId = response['request-id'];
                 }
                 if (location.href.indexOf(objectId)>0) {  //it's an edit
-                    $("#flashMessage").attr('class', 'message success').show().text(response['message']);
-                    $("#flashMessage").delay(3000).fadeOut(1000)
+                    showFlashMessages(response['message'], response['status']);
                     reactivateSaveButtons(); 
                 } else {                                   //it's a add
-                    $("#flashMessage").show().attr('class', 'message success').text(response['message']+" "+localized_messages['wait_redirection']);
+                    showFlashMessages(response['message']+" "+localized_messages['wait_redirection'], response['status']);
                     setTimeout( function() { 
                             if (location.href.match(/edit\/\w/g)) { 
                                 window.location.replace(response['dialogue-obj-id']);
@@ -85,7 +85,6 @@ function saveFormOnServer(){
 }
 
 function handleResponseValidationErrors(validationErrors){
-    showErrorMessages(localized_errors.validation_error);
     errorMessages = new Object();
     errors = object2array(validationErrors);
     $.each(errors, function(k, error) {
@@ -149,8 +148,13 @@ function hideValidationLabel(name) {
     $("span[name='"+name+"']").remove();
 }
 
-function showErrorMessages(errorMessage){
-    $("#flashMessage").attr('class', 'message error').show().text(errorMessage);
+function showFlashMessages(message, status){
+    if (status == 'ok') {
+        $("#flashMessage").attr('class', 'message success').show().text(message);
+        $("#flashMessage").delay(3000).fadeOut(1000);           
+    } else {
+        $("#flashMessage").attr('class', 'message error').show().text(message);
+    }
 }
 
 function convertDateToIso(data) {   
@@ -674,15 +678,20 @@ function duplicateKeywordValidation(value, element, param) {
     function validateKeywordReply(data, textStatus) {
         var elt = $("[name='"+this.inputName+"']");
         $('#connectionState').hide();
-        if (data.status=='fail') { //not used
-            if ($(elt).prev("label").has('.ttc-ok')) {
-                $(elt).prev("label").children('img.ttc-ok').remove();
-            }
-            errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
-            isValid = false;
-        } else {
+        if (data['status'] == 'ok') {
             $(elt).prev("label").not(":has('.ttc-ok')").append("<img class='ttc-ok' src='/img/ok-icon-16.png'/>");
             isValid = true;
+        } else { //fail
+            if ('message' in data) {
+                showFlashMessages(data['message'], data['status']);
+            }
+            if ('found-message' in data) {
+                if ($(elt).prev("label").has('.ttc-ok')) {
+                    $(elt).prev("label").children('img.ttc-ok').remove();
+                }
+                errors[$(elt).attr('name')] = wrapErrorMessage(data['found-message']);
+                isValid = false;
+            }
         }
     };
     
@@ -691,7 +700,8 @@ function duplicateKeywordValidation(value, element, param) {
             url: url,
             type: "POST",
             async: false,
-            data: { 
+            dataType: 'json',
+            data: {
                 'keyword': keywords.join(", "), 
                 'dialogue-id': $("[name$=dialogue-id]").val(),
                 'object-id': $("[name$='_id']").val()},

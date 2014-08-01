@@ -81,14 +81,13 @@ class ProgramRequestsController extends AppController
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($programUrl."_db");
         
-        if (!$this->request->is('post')) {
+        if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
  
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => __('Please set the program settings then try again.')));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set('ajaxResult', array('status' => 'fail')); 
             return;
         }
 
@@ -99,17 +98,13 @@ class ProgramRequestsController extends AppController
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', $id);
         if ($savedRequest = $this->Request->saveRequest($request,  $foundKeywords)) {
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
-            $this->set(
-                'result', array(
+            $this->Session->setFlash(__('Request saved.'));
+            $this->set('ajaxResult', array(
                     'status' => 'ok',
-                    'request-id' => $this->Request->id,
-                    'message' => 'Request saved.'));
+                    'request-id' => $this->Request->id));
         } else {
             $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
-            $this->set(
-                'result', array(
-                    'status' => 'fail',
-                    'message' => array('Request' => $this->Request->validationErrors)));
+            $this->set('ajaxResult', array('status' => 'fail'));
         }
     }
     
@@ -156,24 +151,27 @@ class ProgramRequestsController extends AppController
         $usedKeywords      = $this->request->data['keyword'];
         $requestId         = $this->request->data['object-id'];
 
+        if (!$this->request->is('post') || !$this->_isAjax()) {
+            return;
+        }
+
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => __('Please set the program settings then try again.')));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set('ajaxResult', array('status' => 'fail'));
             return;
         }
         
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Request', $requestId); 
         if ($foundKeywords) {
-            $message = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => $message));
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $this->set('ajaxResult', array(
+                'status' => 'fail',
+                'foundMessage' => $foundMessage));
             return;
         }
         
-        $this->set('result', array('status' => 'ok'));
+        $this->set('ajaxResult', array('status' => 'ok'));
     }
     
     

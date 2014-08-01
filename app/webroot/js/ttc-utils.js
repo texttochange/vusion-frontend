@@ -68,7 +68,7 @@ function saveAjaxError(jqXHR, textStatus, errorThrown){
             message = message.replace(/\{0\}/g, this.userAction);
             message = message.replace(/\{1\}/g, localized_errors["timeout"]);
         } else {
-            message = localized_errors['vusion_ajax_action_failed']+this.userAction;
+            message = localized_errors['vusion_ajax_action_failed']+" "+this.userAction;
             message = message.replace(/\{0\}/g, this.userAction)
         }
         $('#flashMessage').show().text(message).attr('class', 'message failure');

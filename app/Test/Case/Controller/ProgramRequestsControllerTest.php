@@ -184,7 +184,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $request = $this->Maker->getOneRequest();
         
         $this->testAction(
-            "testurl/programRequests/save",
+            "testurl/programRequests/save.json",
             array(
                 'method' => 'post',
                 'data' => $request));
@@ -198,15 +198,15 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $request = $this->Maker->getOneRequest();
         
         $this->testAction(
-            "testurl/programRequests/save",
+            "testurl/programRequests/save.json",
             array(
                 'method' => 'post',
                 'data' => $request));
 
-         $this->assertEquals('fail', $this->vars['result']['status']);
+         $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
     }
     
-    
+   
     public function testSave_edit_ok()
     {
         $requests = $this->mockProgramAccess();
@@ -231,7 +231,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->will($this->returnValue(true));
 
         $this->testAction(
-            "testurl/programRequests/save",
+            "testurl/programRequests/save.json",
             array(
                 'method' => 'POST',
                 'data' => $savedRequest
@@ -266,11 +266,11 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $savedRequest['Request']['keyword'] = 'KEYWORD 1';
         
         $this->testAction(
-            "testurl/programRequests/save",
+            "testurl/programRequests/save.json",
             array(
                 'method' => 'POST',
                 'data' => $savedRequest));
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
     }
    
 
@@ -295,11 +295,11 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $request = $this->Maker->getOneRequest('11');
         
         $this->testAction(
-            "testurl/programRequests/save",
+            "testurl/programRequests/save.json",
             array(
                 'method' => 'POST',
                 'data' => $request));
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
     }
 
     
@@ -345,11 +345,11 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->Dialogue->makeActive($saveDialogue['Dialogue']['_id']);
         
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'keyword request', 'object-id' =>'')));
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
     }
     
     
@@ -370,15 +370,15 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $savedRequest = $this->Request->save($request);
                 
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'keyword request', 'object-id' =>'')));
 
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
         $this->assertEquals(
             "'keyword request' already used in Request 'keyword request' of the same program.", 
-            $this->vars['result']['message']);
+            $this->vars['ajaxResult']['foundMessage']);
     }
 
 
@@ -399,15 +399,15 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $savedRequest = $this->Request->save($request);
                 
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'11', 'object-id' =>'')));
 
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
         $this->assertEquals(
             "'11' already used in Request '11' of the same program.", 
-            $this->vars['result']['message']);
+            $this->vars['ajaxResult']['foundMessage']);
     }
 
 
@@ -428,14 +428,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $savedRequest = $this->Request->save($request);
      
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array (
                     'keyword'=>'otherkeyword request',
                     'object-id' => $savedRequest['Request']['_id'].'')));
         
-        $this->assertEquals('ok', $this->vars['result']['status']);
+        $this->assertEquals('ok', $this->vars['ajaxResult']['status']);
     }
     
 
@@ -452,12 +452,12 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
                 
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'otherkeyword', 'object-id' => null)));
 
-        $this->assertEquals('ok', $this->vars['result']['status']);        
+        $this->assertEquals('ok', $this->vars['ajaxResult']['status']);        
     }
 
    
@@ -478,14 +478,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
         
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'otherkeyword stuff', 'object-id' => null)));
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
         $this->assertEquals(
             "'otherkeyword' already used by a Request of program 'other program'.", 
-            $this->vars['result']['message']);
+            $this->vars['ajaxResult']['foundMessage']);
     }
 
 
@@ -506,14 +506,14 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
 
         $this->testAction(
-            "testurl/programRequests/validateKeyword",
+            "testurl/programRequests/validateKeyword.json",
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'otherkeyword', 'object-id' => null)));
-        $this->assertEquals('fail', $this->vars['result']['status']);
+        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
         $this->assertEquals(
             "'otherkeyword' already used by a Dialogue of program 'other program'.", 
-            $this->vars['result']['message']);
+            $this->vars['ajaxResult']['foundMessage']);
     }
 
   

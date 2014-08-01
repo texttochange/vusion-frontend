@@ -1,3 +1,4 @@
-<?php 
-echo $this->Js->object($result);
-?>	
+<?php
+if (isset($ajaxResult['foundMessage'])) {
+	echo ',"found-message":"'.$ajaxResult['foundMessage'].'"';
+}
