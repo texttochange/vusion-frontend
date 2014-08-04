@@ -96,7 +96,7 @@ class AppController extends Controller
             $this->set(compact('programDetails')); 
 
             if (!$this->ArchivedProgram->isAllowed()) {
-                $this->Controller->_stop();
+                $this->_stop();
                 return;
             }
             

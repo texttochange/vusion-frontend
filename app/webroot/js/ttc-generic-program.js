@@ -41,11 +41,10 @@
 function saveFormOnServer(){
 
     var formData = form2js('dynamic-generic-program-form', '.', true);
-    
-    var inData= JSON.stringify(formData, null, '\t');
-    
-    var saveUrl = location.href.indexOf("edit/")<0 ? "./save.json" : "../save.json";
-    
+    var inData   = JSON.stringify(formData, null, '\t');
+    var saveUrl  = location.href.indexOf("edit/")<0 ? "./save.json" : "../save.json";
+    hideFlashMessage();
+
     $.ajax({
             url: saveUrl,
             type:'POST',
@@ -155,6 +154,10 @@ function showFlashMessages(message, status){
     } else {
         $("#flashMessage").attr('class', 'message error').show().text(message);
     }
+}
+
+function hideFlashMessage() {
+    $('#flashMessage').hide();
 }
 
 function convertDateToIso(data) {   

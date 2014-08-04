@@ -101,7 +101,7 @@ class ProgramRequestsController extends AppController
             $this->Session->setFlash(__('Request saved.'));
             $this->set('ajaxResult', array(
                     'status' => 'ok',
-                    'request-id' => $this->Request->id));
+                    'requestId' => $this->Request->id));
         } else {
             $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
             $this->set('ajaxResult', array('status' => 'fail'));

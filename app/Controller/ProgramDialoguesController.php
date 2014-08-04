@@ -59,14 +59,13 @@ class ProgramDialoguesController extends AppController
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($this->params['program']."_db");
 
-        if (!$this->request->is('post')) {
+        if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
 
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status'=>'fail', 
-                'message' => __('Please set the program settings then try again.')));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set('ajaxResult', array('status'=>'fail'));
             return;
         }
 
@@ -76,19 +75,14 @@ class ProgramDialoguesController extends AppController
         $keywords      = Dialogue::getDialogueKeywords($dialogue);
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
         if ($this->Dialogue->saveDialogue($dialogue, $foundKeywords)) {
-            $this->set(
-                'result', 
-                array(
+            $this->Session->setFlash(__('Dialogue saved as draft.'));
+            $this->set('ajaxResult', array(
                     'status'=>'ok',
-                    'dialogue-obj-id' => $this->Dialogue->id,
-                    'message' => __('Dialogue saved as draft.')));
+                    'dialogueObjectId' => $this->Dialogue->id));
         } else {
-            $errors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
-            $this->set(
-                'result', 
-                array(
-                    'status'=>'fail',
-                    'message' => array('Dialogue' => $errors)));
+            $this->Session->setFlash(__('This dialogue has a validation error, please correct it and save again.'));
+            $this->Dialogue->validationErrors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
+            $this->set('ajaxResult', array('status'=>'fail'));
         }
         
     }
@@ -139,8 +133,9 @@ class ProgramDialoguesController extends AppController
     {      
         return array();
     }
-    
-    
+
+
+    //TODO need to check keyword before activate!
     public function activate()
     {
         $programUrl = $this->params['program'];
@@ -150,22 +145,37 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
         } else {
-            $savedDialogue = $this->Dialogue->makeActive($dialogueId);
-            if ($savedDialogue) {
+            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
-                    'default',
-                    array('class' => "message success")
-                    );
-            } else
-            $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                    'default', array('class' => "message success"));
+            } else {
+                $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
+            }
         } 
         $this->redirect(array('program' => $programUrl, 'action' => 'index'));
     }
-    
+
+
+    public function validateName()
+    {
+        $dialogueName = $this->request->data['name'];
+        $dialogueId = $this->request->data['dialogue-id'];
+
+        if (!$this->request->is('post') || !$this->_isAjax()) {
+            return;
+        }
+
+        if (!$this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId)) {
+            $this->set('ajaxResult', array(
+                'status' => 'fail',
+                'foundMessage' => "'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName)); 
+            return;
+        }           
+        
+        $this->set('ajaxResult', array('status'=>'ok'));        
+    }
+
     
     public function validateKeyword()
     {   
@@ -174,10 +184,13 @@ class ProgramDialoguesController extends AppController
         $usedKeywords = $this->request->data['keyword'];
         $dialogueId   = $this->request->data['dialogue-id'];
         
+        if (!$this->request->is('post') || !$this->_isAjax()) {
+            return;
+        }
+
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => __('Please set the program settings then try again.')));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set('ajaxResult', array('status' => 'fail'));
             return;
         }
        
@@ -185,20 +198,21 @@ class ProgramDialoguesController extends AppController
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Dialogue', $dialogueId);
         if ($foundKeywords) {
-            $message = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => $message));
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $this->set('ajaxResult', array(
+                'status' => 'fail',
+                'foundMessage' => $foundMessage));
             return;
         }
  
-        $this->set('result', array('status' => 'ok'));
+        $this->set('ajaxResult', array('status' => 'ok'));
     }
     
-    
+    //TODO check that the phone number is correct
     public function testSendAllMessages()
     {
         $programUrl = $this->params['program'];
+
         if (isset($this->params['id'])) {
             $objectId = $this->params['id'];
             $this->set(compact('objectId'));
@@ -208,12 +222,10 @@ class ProgramDialoguesController extends AppController
             $phoneNumber = $this->request->data['SendAllMessages']['phone-number'];
             $dialogueId  = $this->request->data['SendAllMessages']['dialogue-obj-id'];
             $result      = $this->_notifySendAllMessagesBackendWorker($programUrl, $phoneNumber, $dialogueId);
-            $this->Session->setFlash(
-                __('Message(s) being sent, should arrive shortly...'), 
-                'default',
-                array('class' => "message success")
-                );
+            $this->Session->setFlash(__('Message(s) being sent, should arrive shortly...'), 
+                'default', array('class' => "message success"));
         }
+
         $dialogues = $this->Dialogue->getActiveAndDraft();    
         $this->set(compact('dialogues'));         
     }
@@ -241,9 +253,11 @@ class ProgramDialoguesController extends AppController
     {
         $programUrl = $this->params['program'];
         $dialogueId = $this->params['id'];
+
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
+
         if ($this->Dialogue->deleteDialogue($dialogueId)) {
             $result = $this->_notifyUpdateRegisteredKeywords($programUrl);
             $this->Session->setFlash(
@@ -267,25 +281,6 @@ class ProgramDialoguesController extends AppController
                 'action' => 'index'
                 )
             );
-    }
-    
-    
-    public function validateName()
-    {
-        $dialogueName = $this->request->data['name'];
-        $dialogueId = $this->request->data['dialogue-id'];
-        $isValid = $this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId);
-        if($isValid == false){
-            $this->set(
-                'result', array(
-                    'status'=>'fail',
-                    'message'=>__("'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName)
-                    ));	
-            return;
-		}    		
-        
-        $this->set('result', array('status'=>'ok'));
-        
     }
     
     

@@ -25,7 +25,8 @@ class ArchivedProgramComponent extends Component
 					'save' => __('Saving a Dialogue is not allowed within archived program.'),
 					'delete' => __('Deleting a Dialogue is not allowed within archived program.'),
 					'testSendAllMessages' => __('Sending all dialogue messages is not allowed withing a archived program.'),
-					'activate' => __('Activation of Dialogue is not allowed within an archived program'))
+					'activate' => __('Activation of Dialogue is not allowed within an archived program'),
+					'validateKeyword' => __('The validation of keyword is not allowed within archived program.'))
 				), 
 			'programRequests' => array(
 				'POST' => array(
