@@ -98,6 +98,10 @@ class ProgramParticipantsController extends AppController
     
     public function getFilterParameterOptions()
     {
+        if (!$this->_isAjax()) {
+            return;
+        }
+
         if (!isset($this->request->query['parameter'])) {
             throw new Exception(__("The required filter parameter option is missing."));
         }
@@ -116,7 +120,7 @@ class ProgramParticipantsController extends AppController
             throw new Exception(__("The requested parameter option %s is not supported.", $requestedParameterOption));
         }        
         $this->set(compact('results'));
-        $this->render('ajaxResults');
+        $this->set('ajaxResult', array('status' => 'ok'));
     }
     
     
@@ -565,8 +569,7 @@ class ProgramParticipantsController extends AppController
                     $this->redirect(array(
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
-                        'action' => 'index'
-                        ));
+                        'action' => 'index'));
                 } else {
                     $this->set('ajaxResult', array('status' => 'ok'));
                 }

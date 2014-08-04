@@ -541,12 +541,14 @@ function loadFilterParameterOptions(parameter, url) {
     url = url.replace(/&amp;/g, "&");
     $.ajax({
             url: url,
+            contentType: 'application/json; charset=utf-8',
             success: function(data){
                 $('#connectionState').hide();
-                if (data['results']) {
+                if (data['data']) {
+                    var results = data['data'];
                     var options = {};
-                    for (var i = 0; i < data['results'].length; i++) {
-                        options[data['results'][i]] = data['results'][i];
+                    for (var i = 0; i < results.length; i++) {
+                        options[results[i]] = results[i];
                     }
                     window.app.filterParameterOptions[parameter] = options;
                     $("select[data='"+parameter+"']").each( function(index, select) {
@@ -557,7 +559,6 @@ function loadFilterParameterOptions(parameter, url) {
                             })
                             $(select).val(curentVal);
                     });
-                    
                 }
             },
             timeout: 0,
