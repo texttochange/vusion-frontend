@@ -376,8 +376,14 @@ class UsersController extends AppController
         $email->from($userEmail);
         $email->to($reportIssueToEmail);
         $email->subject($reportIssueSubjectPrefix.$reportIssueSubject);
+        $email->template('reportissue_template');
+        $email->emailFormat('html');
+        $email->viewVars(array(
+            'reportIssueSubject' => $reportIssueSubject,
+            'reportIssueMessage' => $reportIssueMessage,
+            'userName' => $userName));
         $email->attachments($filePath . DS .$attachment['name']);
-        $email->send($reportIssueMessage);
+        $email->send();
         
         $this->Session->setFlash(
             __('The tech team will contact you in the next 2 days by Email. Thank you.'),
@@ -385,7 +391,7 @@ class UsersController extends AppController
         
         unlink($filePath . DS . $attachment['name']);
         
-        return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
+        // return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
     
