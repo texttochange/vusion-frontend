@@ -1,6 +1,5 @@
 <?php
-$result = array(
-    'status' => 'ok',
-    'paginationCount' => $paginationCount,
-    'roundedCount' => $this->BigNumber->replaceBigNumbers($paginationCount, 3));
-echo $this->Js->object($result);
+if ($ajaxResult['paginationCount']) {
+	echo ',"pagination-count":"' . $ajaxResult['paginationCount'] . '"';
+    echo ',"rounded-count":"' . $this->BigNumber->replaceBigNumbers($ajaxResult['paginationCount'], 3) . '"';
+}

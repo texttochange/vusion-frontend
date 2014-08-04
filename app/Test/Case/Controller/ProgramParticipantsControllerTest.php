@@ -1178,10 +1178,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->testAction("/testurl/programParticipants/export");
         
-        $this->assertTrue(isset($this->vars['fileName']));
+        $this->assertTrue(isset($this->vars['ajaxResult']['fileName']));
         $this->assertFileEquals(
             TESTS . 'files/exported_participants.csv',
-            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+            WWW_ROOT . 'files/programs/testurl/' . $this->vars['ajaxResult']['fileName']);
     }
     
     
@@ -1408,7 +1408,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/paginationCount.json");
-        $this->assertEqual($this->vars['paginationCount'], 0);
+        $this->assertEqual($this->vars['ajaxResult']['paginationCount'], 0);
     }
 
     
