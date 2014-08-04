@@ -36,10 +36,16 @@ class ProgramLogsController extends AppController
     
     public function getBackendNotifications()
     {
+        if (!$this->_isAjax()) {
+            return;
+        }
+
         $programUrl = $this->params['program'];
         $databaseName = $this->Session->read($programUrl."_db");
         $programLogs = $this->LogManager->getLogs($databaseName, 5);
-        $this->set(compact('programLogs'));
+        $this->set('ajaxResult', array(
+            'status' => 'ok',
+            'programLogs' => $programLogs));
     }
     
     
