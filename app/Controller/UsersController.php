@@ -391,7 +391,7 @@ class UsersController extends AppController
         
         unlink($filePath . DS . $attachment['name']);
         
-        // return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
+        return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
     
@@ -447,9 +447,8 @@ class UsersController extends AppController
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $this->ResetPasswordTicket->saveToken($token);
-        $message = $this->ResetPasswordTicket->createMessage($token);
         
-        $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
+        $this->ResetPasswordTicket->sendEmail($email, $userName, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
             'default',
