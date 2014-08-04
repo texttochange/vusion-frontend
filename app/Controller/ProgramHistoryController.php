@@ -193,7 +193,7 @@ class ProgramHistoryController extends AppController
                 'status' => 'ok', 
                 'fileName' => $fileName));
         } catch (Exception $e) {
-            $this->Session->setFalsh($e->getMessage());
+            $this->Session->setFlash($e->getMessage());
             $this->set('ajaxResult', array('status' => 'fail'));
         }
     }
