@@ -573,8 +573,8 @@ function loadPaginationCount(url) {
         url: url,
         success: function(data){
             if (data['status'] == 'ok') {
-                $('.ttc-page-count').attr('title', data['paginationCount']);
-                $('#paging-count').text(data['roundedCount']);
+                $('.ttc-page-count').attr('title', data['pagination-count']);
+                $('#paging-count').text(data['rounded-count']);
             }
         },
         timeout: 45000,  //45 sec

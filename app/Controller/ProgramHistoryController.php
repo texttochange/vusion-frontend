@@ -58,12 +58,15 @@ class ProgramHistoryController extends AppController
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
         
-        if ($this->params['ext'] == 'csv' or $this->params['ext'] == 'json') {
+        if ($this->params['ext'] === 'csv' || $this->_isAjax()) {
             $statuses = $this->History->find(
                 'all', 
                 array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
-                array('order'=> $order));
-            $this->set(compact('statuses')); 
+                array('order' => $order));
+            $this->set(compact('statuses'));
+            if ($this->_isAjax()) {
+                $this->set('ajaxResult', array('status' => 'ok'));
+            } 
         } else {   
             $this->paginate = array(
                 'all',
@@ -186,9 +189,12 @@ class ProgramHistoryController extends AppController
                 }
             }
             
-            $this->set(compact('fileName'));
+            $this->set('ajaxResult', array(
+                'status' => 'ok', 
+                'fileName' => $fileName));
         } catch (Exception $e) {
-            $this->set('errorMessage', $e->getMessage());
+            $this->Session->setFalsh($e->getMessage());
+            $this->set('ajaxResult', array('status' => 'fail'));
         }
     }
     
@@ -230,12 +236,14 @@ class ProgramHistoryController extends AppController
     
     public function paginationCount()
     {
-        if ($this->params['ext'] !== 'json') {
+        if (!$this->_isAjax()) {
             return; 
         }
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
         $paginationCount = $this->History->count( $this->Filter->getConditions($this->History, $defaultConditions), null, -1);
-        $this->set('paginationCount',$paginationCount);
+        $this->set('ajaxResult', array(
+            'status' => 'ok',
+            'paginationCount' => $paginationCount));
     }
     
     

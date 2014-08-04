@@ -1,7 +1,4 @@
 <?php 
-    if (isset($errorMessage)) {
-        echo $this->Js->object(array("status"=>"fail", "message" => $errorMessage));
-        return;
-    }
-    echo $this->Js->object(array("status" => "ok","file" => $fileName));   
-?>
+if (isset($ajaxResult['fileName'])) {
+    echo ',"file":' . json_encode($ajaxResult['fileName']);   
+}
