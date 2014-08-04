@@ -399,8 +399,7 @@ class ProgramParticipantsController extends AppController
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
                 $participant = $savedParticipant;
                 $this->Session->setFlash(__('The participant has been saved.'),
-                    'default',
-                    array('class'=>'message success'));
+                    'default', array('class'=>'message success'));
                 if ($this->_isAjax()) {
                     $this->set('ajaxResult', array('status' => 'ok'));
                 } else {
@@ -502,27 +501,19 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
             }
-            $this->Session->setFlash(
-                __('Participant and related schedule deleted.'),
-                'default',
-                array('class'=>'message success')
-                );
-            $this->redirect(
-                array('program' => $programUrl,
-                    'action' => 'index',
-                    'page' => $currentPage,
-                    '?' => $this->params['url'],
-                    )
-                );
-        }
-        $this->Session->setFlash(__('Participant was not deleted.'));
-        $this->redirect(
-            array(
+            $this->Session->setFlash(__('Participant and related schedule deleted.'),
+                'default', array('class'=>'message success'));
+            $this->redirect(array(
                 'program' => $programUrl,
                 'action' => 'index',
                 'page' => $currentPage,
-                )
-            );
+                '?' => $this->params['url']));
+        }
+        $this->Session->setFlash(__('Participant was not deleted.'));
+        $this->redirect(array(
+                'program' => $programUrl,
+                'action' => 'index',
+                'page' => $currentPage));
     }
     
     
