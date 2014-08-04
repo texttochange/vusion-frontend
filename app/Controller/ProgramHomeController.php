@@ -89,17 +89,18 @@ class ProgramHomeController extends AppController
     
     public function restartWorker()
     {
+        if (!$this->request->is('get') || !$this->_isAjax()) {
+            return;
+        }
+
         $programUrl   = $this->params['program'];
         $databaseName = $this->Session->read($programUrl.'_db');
         
         $this->_startBackendWorker(
             $programUrl,
-            $databaseName
-            );
-        $this->set(
-            'result',
-            array('status'=>'ok','message'=> __('Worker is starting.'))
-            );
+            $databaseName);
+        $this->Session->setFlash(__('Worker is starting.'));
+        $this->set('ajaxResult', array('status'=>'ok'));
     }   
     
     
