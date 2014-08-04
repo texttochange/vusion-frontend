@@ -375,7 +375,7 @@ class UsersController extends AppController
         $email->config('default');
         $email->from($userEmail);
         $email->to($reportIssueToEmail);
-        $email->subject($reportIssueSubjectPrefix.$reportIssueSubject);
+        $email->subject($reportIssueSubjectPrefix . " " . $reportIssueSubject);
         $email->template('reportissue_template');
         $email->emailFormat('html');
         $email->viewVars(array(
