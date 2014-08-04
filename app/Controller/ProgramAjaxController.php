@@ -10,18 +10,22 @@ class ProgramAjaxController extends AppController
         'RequestHandler',
         'Stats');
     
-    function constructClasses()
-    {
-        parent::constructClasses();
-    }
-    
     
     public function getStats()
     { 
+        if (!$this->_isAjax()) {
+            return;
+        }
+
         $programUrl      = $this->params['program'];
         $programDatabase = $this->Session->read($programUrl."_db");        
         $programStats    = $this->Stats->getProgramStats($programDatabase);
         
-        $this->set(compact('programStats', 'programUrl'));
+        $this->set('ajaxResult',array(
+            'status' => 'ok',
+            'programStats' => $programStats,
+            'programUrl' => $programUrl));
     }
+
+
 }

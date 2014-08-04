@@ -593,13 +593,13 @@ function loadProgramStats(){
         var programUrl = program['Program']['url'];
         $.ajax({
                 type: "GET",
-                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
                 url: "/"+programUrl+"/programAjax/getStats.json",
                 success: function(data){
-                    renderStats(data)
+                    renderStats(data['program-url'], data['program-stats'])
                 },
                 timeout: 360000,  // 6 minutes
-                error: function(){
+                error: function(jqXHR, textStatus, errorThrown){
                     var url = this.url;
                     renderStatsError(url)
                 }
@@ -608,11 +608,11 @@ function loadProgramStats(){
 }
 
 
-function renderStats(data) {
+function renderStats(programUrl, stats) {
     if(window.app.isProgramSpecific) {
-        $("#programstats").empty().append(generateHtmlProgramStatsInside(data['programStats']))
+        $("#programstats").empty().append(generateHtmlProgramStatsInside(stats));
     }
-    $("#"+data['programUrl']+" .ttc-program-stats").empty().append(generateHtmlProgramStats(data['programStats']))
+    $("#"+programUrl+" .ttc-program-stats").empty().append(generateHtmlProgramStats(stats));
 }
 
 

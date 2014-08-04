@@ -1,10 +1,4 @@
 <?php
-if(isset($programStats)){
-    $roundOffStats = $this->BigNumber->roundOffNumbers($programStats);
-    $response      = array('status' =>'ok', 'programUrl' => $programUrl, 'programStats' => $roundOffStats);
-} else {
-    $response = array('status' =>'ok', 'programUrl' => $programUrl, 'programStats' => null);
-}
-
-    echo $this->Js->object($response);
-?>	
+echo ',"program-url":"' . $ajaxResult['programUrl']. '"';
+$roundOffStats = $this->BigNumber->roundOffNumbers($ajaxResult['programStats']);
+echo ',"program-stats":' . $this->Js->object($roundOffStats);
