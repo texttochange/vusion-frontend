@@ -20,7 +20,8 @@
 			'title' => __('How to reproduce step by step, copy/past the program url and occurence'),
 			'placeholder' => __('How to reproduce step by step, copy/past the program url and occurence'),
 			'class' => 'report-issue-message'));
-	echo $this->Form->input('ReportIssue.Screenshort', array('type' => 'file'));
-	echo $this->Form->end(array('label' => __('Report')));
+	echo $this->Form->input('ReportIssue.Screenshort', array('type' => 'file'));	
+	echo $this->Form->button(__('Report'), array('class'=>'ttc-button', 'type' => 'submit'));
+	echo $this->Form->button(__('Close'), array('class'=>'ttc-button', 'onclick'=> 'popupBrowserClose()'));	
 	?>	
 </div>

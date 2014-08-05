@@ -763,6 +763,13 @@ function popupBrowser(obj) {
     return false;
 }
 
+function popupBrowserClose() {
+    var windowCloseConfirm = confirm("Do you want to close this window?");
+    if (windowCloseConfirm == true) {
+        window.close();
+    }
+}
+
 function popupNewBrowserTab(obj) {
     var url = $(obj).attr("url") + window.location.search;
     var newPopupWindow = window.open(url, '_blank');

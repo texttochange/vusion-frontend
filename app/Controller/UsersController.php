@@ -226,7 +226,7 @@ class UsersController extends AppController
                 array('class'=>'message success'));
             $this->redirect($this->Auth->redirect());
         }
-
+        
         if ($this->request->is('ajax')) {
             if ($this->Auth->login()) {
                 return;
