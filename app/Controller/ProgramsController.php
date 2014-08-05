@@ -325,32 +325,9 @@ class ProgramsController extends AppController
                 'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('Program %s has not been archived.', $program['Program']['name']), 
-            'default', array('class' => "message failure"));
-        $this->redirect(array('action' => 'index'));
-    }
-
-
-    public function unarchive($id = null)
-    {
-        $this->Program->id = $id;
-        if (!$this->Program->exists()) {
-            throw new NotFoundException(__('Invalid program.'));
-        }
-        $program= $this->Program->read();
-        if ($this->Program->unarchive()) {
-            $programSetting = new ProgramSetting(array('database' => $program['Program']['database']));
-            $programSetting->saveProgramSetting('shortcode', null);
-            $this->_startBackendWorker(
-                $program['Program']['url'],
-                $program['Program']['database']);
-            $this->Session->setFlash(__('Program %s has been unarchived.', $program['Program']['name']),
-                'default', array('class'=>'message success'));
-            $this->redirect(array('action' => 'index'));
-        }
-        $this->Session->setFlash(__('Program %s has not been unarchived.', $program['Program']['name']), 
-            'default', array('class' => "message failure"));
+        $this->Session->setFlash(__('Program %s has not been archived.', $program['Program']['name']));
         $this->redirect(array('action' => 'index'));
     }
     
+
 }

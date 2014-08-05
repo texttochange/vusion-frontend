@@ -34,30 +34,19 @@
 					array(
 						'class' => 'ttc-button danger',
 						'style' => 'float:right'), 
-					__('Are you sure you want to Archive %s? This action will stop any sending'
-						.' or receiving of SMS and will free the keywords on the shortcode.'
-						.' Still you will be able to access this program pages.', $this->data['Program']['name']));
+					__('Are you sure you want to Archive %s? This is NOT a reversible action.',
+						$this->data['Program']['name']));
 		?>	
 		<p> <?php echo __('Archiving a program will stop any sending and receiving'
 						.' of SMS and will free the keywords on the shortcode.'
-						.' Still you will be able to access this program pages.') ?></p>
+						.' Still you will be able to access this program pages.') ?>
+			<b><?php echo __('Archiving is NOT a reversible action.') ?></b>
+		</p>
     <?php } else { ?>
-	    <h4><?php echo __("Unarchive this program")?></h4>
-		<?php
-		echo $this->Form->postLink(
-					__('Unarchive'), 
-					array(
-						'action' => 'unarchive', 
-						$this->data['Program']['id']), 
-					array(
-						'class' => 'ttc-button danger',
-						'style' => 'float:right'), 
-					__('Are you sure you want to Unarchive %s?'
-						.' Still you will have to edit the program settings in order to select a shortcode.', $this->data['Program']['name']));
-		?>	
-		<p> <?php echo __('Unarchiving a program will resume its ability to send and receive'
-						.' SMS. However the shortcode will be rest in the program setting,'
-						.' Therefor one need to re-select a shortcode in this program setting.') ?></p>
+	    <h4><?php echo __("This program has been archived.")?></h4>
+		<p> <?php echo __('Vusion is not yet able to un-archive automatically a program.'
+						. ' In case you wish to run the same program again,'
+						. ' Create a new program and import Dialogues, Requests and Participants.') ?></p>
     <?php } ?>
 	<div class="rule"></div>
 	<h4><?php echo __("Delete this program")?></h4>

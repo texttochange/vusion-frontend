@@ -415,22 +415,4 @@ class ProgramsControllerTestCase extends ControllerTestCase
     }
 
     
-    public function testUnarchive()
-    {
-        $Programs = $this->generate(
-            'Programs', array(
-                'methods' => array(
-                    '_instanciateVumiRabbitMQ',
-                    '_startBackendWorker'    
-                    )
-                )
-            );
-        $Programs
-        ->expects($this->once())
-        ->method('_startBackendWorker')
-        ->will($this->returnValue(true));
-
-        $this->testAction('/programs/unarchive/1');
-    }
-    
 }
