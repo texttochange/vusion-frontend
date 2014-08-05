@@ -348,12 +348,12 @@ class UsersController extends AppController
         $filePath                 = WWW_ROOT . 'img';
         
         if (!$reportIssueSubject) {
-            $this->Session->setFlash(__('Please Enter Report Description'));
+            $this->Session->setFlash(__('Please enter a report description'));
             return;
         }
         
         if (!$reportIssueMessage) {
-            $this->Session->setFlash(__('Please Enter Report Message'));
+            $this->Session->setFlash(__('Please enter a report message'));
             return;
         }
         
@@ -367,6 +367,12 @@ class UsersController extends AppController
                 'default', array('class' => 'message failure')
                 );
             return;
+        }
+        
+        $fileExtension = end(explode('.', $attachment['name']));
+        if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
+            $this->Session->setFlash( __('The file format ".%s" is not supported.', $fileExtension)); 
+            return ;
         }
         
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
