@@ -97,11 +97,10 @@ class AppController extends Controller
 
             if (!$this->ArchivedProgram->isAllowed()) {
                 $this->_stop();
-                return;
             }
             
             //In case of a Json request, no need to set up the variables
-            if ($this->params['ext']=='json' or $this->params['ext']=='csv') {
+            if ($this->_isAjax() || $this->params['ext']=='csv') {
                 return;
             }
             

@@ -48,6 +48,7 @@ class UnmatchableReplyController extends AppController
     
     public function index()
     {
+        $requestSuccess = true;
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
@@ -68,7 +69,7 @@ class UnmatchableReplyController extends AppController
             );
         $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate();
-        $this->set(compact('unmatchableReplies', 'countriesIndexes'));
+        $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
     }
     
     
