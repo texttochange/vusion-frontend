@@ -353,7 +353,7 @@ class UsersController extends AppController
         }
         
         if (!$reportIssueMessage) {
-            $this->Session->setFlash(__('Please enter a report message'));
+            $this->Session->setFlash(__('Please enter how to reproduce the issue'));
             return;
         }
         
