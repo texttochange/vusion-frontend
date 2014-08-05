@@ -61,7 +61,7 @@ class ArchivedProgramComponent extends Component
 		} else {
 			$this->Session->setFlash($this->archivedAuthorization[$controller][$method][$action]);
 			if ($this->Controller->request->is('ajax')) {
-				$this->Controller->set('ajaxResult', array('status' => 'fail'));
+				$this->Controller->set('requestSuccess', false);
 				$this->Controller->render('/Elements/ajax_return', 'ajax');
 				$this->Controller->response->send();
 			} else {

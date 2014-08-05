@@ -378,10 +378,10 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->testAction("/testurl/programHistory/export");
         
-        $this->assertTrue(isset($this->vars['ajaxResult']['fileName']));
+        $this->assertTrue(isset($this->vars['fileName']));
         $this->assertFileEquals(
             TESTS . 'files/exported_history.csv',
-            WWW_ROOT . 'files/programs/testurl/' . $this->vars['ajaxResult']['fileName']);
+            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
     }
 
 
@@ -389,7 +389,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/paginationCount.json");
-        $this->assertEqual($this->vars['ajaxResult']['paginationCount'], 0);
+        $this->assertEqual($this->vars['paginationCount'], 0);
     }
 
 }

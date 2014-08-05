@@ -125,7 +125,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         ->will($this->returnValue($programLogs));           
         
         $this->testAction("testurl/programLogs/getBackendNotifications.json");
-        $this->assertEquals(5, count($this->vars['ajaxResult']['programLogs']));
+        $this->assertEquals(5, count($this->vars['programLogs']));
     }
     
     

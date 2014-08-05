@@ -1,4 +1,4 @@
 <?php
-echo ',"program-url":"' . $ajaxResult['programUrl']. '"';
-$roundOffStats = $this->BigNumber->roundOffNumbers($ajaxResult['programStats']);
+echo ',"program-url":"' . $programDetails['url']. '"';
+$roundOffStats = $this->BigNumber->roundOffNumbers($programStats);
 echo ',"program-stats":' . $this->Js->object($roundOffStats);

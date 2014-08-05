@@ -203,7 +203,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => $request));
 
-         $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+         $this->assertFalse($this->vars['requestSuccess']);
     }
     
    
@@ -270,7 +270,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'POST',
                 'data' => $savedRequest));
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
     }
    
 
@@ -299,7 +299,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'POST',
                 'data' => $request));
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
     }
 
     
@@ -349,7 +349,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'keyword request', 'object-id' =>'')));
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
     }
     
     
@@ -375,10 +375,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array ('keyword'=>'keyword request', 'object-id' =>'')));
 
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
         $this->assertEquals(
             "'keyword request' already used in Request 'keyword request' of the same program.", 
-            $this->vars['ajaxResult']['foundMessage']);
+            $this->vars['foundMessage']);
     }
 
 
@@ -404,10 +404,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array ('keyword'=>'11', 'object-id' =>'')));
 
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
         $this->assertEquals(
             "'11' already used in Request '11' of the same program.", 
-            $this->vars['ajaxResult']['foundMessage']);
+            $this->vars['foundMessage']);
     }
 
 
@@ -435,7 +435,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                     'keyword'=>'otherkeyword request',
                     'object-id' => $savedRequest['Request']['_id'].'')));
         
-        $this->assertEquals('ok', $this->vars['ajaxResult']['status']);
+        $this->assertTrue($this->vars['requestSuccess']);
     }
     
 
@@ -457,7 +457,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array ('keyword'=>'otherkeyword', 'object-id' => null)));
 
-        $this->assertEquals('ok', $this->vars['ajaxResult']['status']);        
+        $this->assertTrue($this->vars['requestSuccess']);        
     }
 
    
@@ -482,10 +482,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'otherkeyword stuff', 'object-id' => null)));
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
         $this->assertEquals(
             "'otherkeyword' already used by a Request of program 'other program'.", 
-            $this->vars['ajaxResult']['foundMessage']);
+            $this->vars['foundMessage']);
     }
 
 
@@ -510,10 +510,10 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'post',
                 'data' => array ('keyword'=>'otherkeyword', 'object-id' => null)));
-        $this->assertEquals('fail', $this->vars['ajaxResult']['status']);
+        $this->assertFalse($this->vars['requestSuccess']);
         $this->assertEquals(
             "'otherkeyword' already used by a Dialogue of program 'other program'.", 
-            $this->vars['ajaxResult']['foundMessage']);
+            $this->vars['foundMessage']);
     }
 
   

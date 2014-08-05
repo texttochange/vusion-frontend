@@ -46,7 +46,9 @@ class ProgramHistoryController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
-        
+
+        $requestSuccess = true;
+
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
         } else if (isset($this->params['named']['direction'])) {
@@ -63,19 +65,14 @@ class ProgramHistoryController extends AppController
                 'all', 
                 array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
                 array('order' => $order));
-            $this->set(compact('statuses'));
-            if ($this->_isAjax()) {
-                $this->set('ajaxResult', array('status' => 'ok'));
-            } 
         } else {   
             $this->paginate = array(
                 'all',
                 'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
-                'order'=> $order);
-            
+                'order'=> $order);            
             $statuses = $this->paginate();
-            $this->set(compact('statuses'));
         }
+        $this->set(compact('statuses', 'requestSuccess'));
     }
     
     
@@ -123,7 +120,8 @@ class ProgramHistoryController extends AppController
     public function export()
     {
         $programUrl = $this->params['program'];
-        
+        $requestSuccess = false;
+
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
@@ -188,13 +186,11 @@ class ProgramHistoryController extends AppController
                     fputcsv($handle, $line,',' , '"' );
                 }
             }
-            
-            $this->set('ajaxResult', array(
-                'status' => 'ok', 
-                'fileName' => $fileName));
+            $requestSuccess = true;
+            $this->set(compact('requestSuccess', 'fileName'));
         } catch (Exception $e) {
             $this->Session->setFlash($e->getMessage());
-            $this->set('ajaxResult', array('status' => 'fail'));
+            $this->set(compact('requestSuccess'));
         }
     }
     
@@ -236,14 +232,13 @@ class ProgramHistoryController extends AppController
     
     public function paginationCount()
     {
+        $requestSuccess = true;
         if (!$this->_isAjax()) {
-            return; 
+            throw new MethodNotAllowedException();
         }
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
         $paginationCount = $this->History->count( $this->Filter->getConditions($this->History, $defaultConditions), null, -1);
-        $this->set('ajaxResult', array(
-            'status' => 'ok',
-            'paginationCount' => $paginationCount));
+        $this->set(compact('requestSuccess', 'paginationCount'));
     }
     
     

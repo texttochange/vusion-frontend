@@ -730,22 +730,22 @@ function duplicateDialogueNameValidation(value, element, param) {
     function validateNameReply(data, textStatus) {
         var elt = $("[name='"+this.inputName+"']");
         $('#connectionState').hide();
-        if (data.status=='fail') {
-            errors[$(elt).attr('name')] = wrapErrorMessage(data.message);
+        if (data['status'] == 'fail') {
+            errors[$(elt).attr('name')] = wrapErrorMessage(data['found-message']);
             isValid = false;
         } else {
             isValid = true;
         }
     };
-    
-    
+        
     $.ajax({
             url: url,
             type: "POST",
             async: false,
-            data: {  'name' : dialogueName,
+            data: {  
+                'name' : dialogueName,
                 'dialogue-id': $("[name$=dialogue-id]").val(),
-            'object-id': $("[name$='_id']").val()},
+                'object-id': $("[name$='_id']").val()},
             inputName: $(dialogueNameInput).attr('name'),
             success: validateNameReply,
             timeout: 1000,

@@ -1,7 +1,7 @@
 <?php 
 if ($this->validationErrors['Request']!=array()) {
-	echo ',"validation-errors":{"Request":'.$this->Js->object($this->validationErrors['Request']).'},';
+	echo ',"validation-errors":'.$this->Js->object(array('Request' => $this->validationErrors['Request']));
 }
-if (isset($ajaxResult['requestId'])) {
-	echo ',"request-id":"'.$ajaxResult['request-id'].'"';
+if (isset($savedRequest)) {
+	echo ',"request-id":'. json_encode($savedRequest['Request']['_id']);
 }

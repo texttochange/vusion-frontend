@@ -13,18 +13,15 @@ class ProgramAjaxController extends AppController
     
     public function getStats()
     { 
+        $requestSuccess  = true;
         if (!$this->_isAjax()) {
-            return;
+            throw new MethodNotAllowedException();
         }
 
         $programUrl      = $this->params['program'];
         $programDatabase = $this->Session->read($programUrl."_db");        
         $programStats    = $this->Stats->getProgramStats($programDatabase);
-        
-        $this->set('ajaxResult',array(
-            'status' => 'ok',
-            'programStats' => $programStats,
-            'programUrl' => $programUrl));
+        $this->set(compact('requestSuccess', 'programStats'));
     }
 
 

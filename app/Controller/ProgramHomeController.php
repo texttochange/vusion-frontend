@@ -89,8 +89,9 @@ class ProgramHomeController extends AppController
     
     public function restartWorker()
     {
+        $requestSuccess = true;
         if (!$this->request->is('get') || !$this->_isAjax()) {
-            return;
+            throw new MethodNotAllowedException();
         }
 
         $programUrl   = $this->params['program'];
@@ -100,7 +101,7 @@ class ProgramHomeController extends AppController
             $programUrl,
             $databaseName);
         $this->Session->setFlash(__('Worker is starting.'));
-        $this->set('ajaxResult', array('status'=>'ok'));
+        $this->set(compact('requestSuccess'));
     }   
     
     

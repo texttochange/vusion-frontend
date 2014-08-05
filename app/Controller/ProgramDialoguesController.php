@@ -58,6 +58,7 @@ class ProgramDialoguesController extends AppController
     {
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($this->params['program']."_db");
+        $requestSuccess = false;
 
         if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
@@ -65,7 +66,7 @@ class ProgramDialoguesController extends AppController
 
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
-            $this->set('ajaxResult', array('status'=>'fail'));
+            $this->set(compact('requestSuccess'));
             return;
         }
 
@@ -75,16 +76,14 @@ class ProgramDialoguesController extends AppController
         $keywords      = Dialogue::getDialogueKeywords($dialogue);
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
         if ($this->Dialogue->saveDialogue($dialogue, $foundKeywords)) {
+            $requestSuccess = true;
             $this->Session->setFlash(__('Dialogue saved as draft.'));
-            $this->set('ajaxResult', array(
-                    'status'=>'ok',
-                    'dialogueObjectId' => $this->Dialogue->id));
+            $this->set('dialogueObjectId', $this->Dialogue->id);
         } else {
             $this->Session->setFlash(__('This dialogue has a validation error, please correct it and save again.'));
             $this->Dialogue->validationErrors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
-            $this->set('ajaxResult', array('status'=>'fail'));
         }
-        
+        $this->set(compact('requestSuccess'));       
     }
     
     
@@ -99,9 +98,7 @@ class ProgramDialoguesController extends AppController
         $this->Dialogue->id = $id;
         if (!$this->Dialogue->exists()) {
             $this->Session->setFlash(__("Dialogue doesn't exist."), 
-                'default',
-                array('class' => "message failure")
-                );
+                'default', array('class' => "message failure"));
             return;
         }
         
@@ -159,21 +156,22 @@ class ProgramDialoguesController extends AppController
 
     public function validateName()
     {
-        $dialogueName = $this->request->data['name'];
-        $dialogueId = $this->request->data['dialogue-id'];
+        $dialogueName   = $this->request->data['name'];
+        $dialogueId     = $this->request->data['dialogue-id'];
+        $requestSuccess = false;
+        $foundMessage   = null;
 
         if (!$this->request->is('post') || !$this->_isAjax()) {
-            return;
+            throw new BadRequestException();
         }
 
         if (!$this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId)) {
-            $this->set('ajaxResult', array(
-                'status' => 'fail',
-                'foundMessage' => "'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName)); 
-            return;
-        }           
+            $foundMessage = __("'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName);
+        } else {
+            $requestSuccess = true;
+        } 
         
-        $this->set('ajaxResult', array('status'=>'ok'));        
+        $this->set(compact('requestSuccess', 'foundMessage'));        
     }
 
     
@@ -184,13 +182,16 @@ class ProgramDialoguesController extends AppController
         $usedKeywords = $this->request->data['keyword'];
         $dialogueId   = $this->request->data['dialogue-id'];
         
+        $requestSuccess = false;
+        $foundMessage   = null;
+
         if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
 
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
-            $this->set('ajaxResult', array('status' => 'fail'));
+            $this->set(compact('requestSuccess'));
             return;
         }
        
@@ -199,13 +200,11 @@ class ProgramDialoguesController extends AppController
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Dialogue', $dialogueId);
         if ($foundKeywords) {
             $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
-            $this->set('ajaxResult', array(
-                'status' => 'fail',
-                'foundMessage' => $foundMessage));
-            return;
-        }
- 
-        $this->set('ajaxResult', array('status' => 'ok'));
+        } else {
+            $requestSuccess = true;
+        } 
+        
+        $this->set(compact('requestSuccess', 'foundMessage')); 
     }
     
     //TODO check that the phone number is correct

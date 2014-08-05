@@ -147,12 +147,12 @@ class ProgramContentVariablesController extends AppController
     {   
         $programUrl = $this->params['program'];
         if ($this->request->is('post') && $this->_isAjax()) {
+            $requestSuccess = false;
             $this->ContentVariableTable->create();
             if ($this->ContentVariableTable->save($this->request->data)) {
-                $this->set('ajaxResult', array('status' => 'ok'));
-            } else {
-                $this->set('ajaxResult', array('status' => 'fail'));
+                $requestSuccess = true;
             }
+            $this->set(compact('requestSuccess'));
         }
     }
     
@@ -202,11 +202,11 @@ class ProgramContentVariablesController extends AppController
         $contentVariableTable = $this->ContentVariableTable->read();
         
         if ($this->request->is('post') && $this->_isAjax()) {
+            $requestSuccess = false;
             if ($this->ContentVariableTable->save($this->request->data)) {
-                $this->set('ajaxResult', array('status' => 'ok'));
-            } else {
-                $this->set('ajaxResult', array('status' => 'fail'));
-            }
+                $requestSuccess = true;
+            } 
+            $this->set(compact('requestSuccess'));
         } else {
             $this->request->data = $this->ContentVariableTable->read(null, $id);
         }
@@ -227,15 +227,15 @@ class ProgramContentVariablesController extends AppController
         }
         
         if ($this->request->is("post")) {
+            $requestSuccess = false;
             $contentVariable = $contentVariables[0];
             $this->ContentVariable->id = $contentVariable['ContentVariable']['_id'];
             $contentVariable['ContentVariable']['value'] = $this->request->data['ContentVariable']['value'];
             if ($this->ContentVariable->save($contentVariable)) {
                 $this->ContentVariableTable->updateTableFromKeysValue($contentVariable);
-                $this->set('ajaxResult', array('status' => 'ok'));
-            } else {
-                $this->set('ajaxResult', array('status' => 'fail'));
+                $requestSuccess = true;
             }
+            $this->set(compact('requestSuccess'));
         }
     }
     

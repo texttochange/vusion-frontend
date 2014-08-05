@@ -1,4 +1,4 @@
 <?php
-if (isset($ajaxResult['foundMessage'])) {
-	echo ',"found-message":"'.$ajaxResult['foundMessage'].'"';
+if (isset($foundMessage)) {
+	echo ',"found-message":"'.$foundMessage.'"';
 }

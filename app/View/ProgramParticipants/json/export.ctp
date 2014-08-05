@@ -1,4 +1,4 @@
 <?php 
-if (isset($ajaxResult['fileName'])) {
-    echo ',"file":' . json_encode($ajaxResult['fileName']);   
+if (isset($fileName)) {
+    echo ',"file":' . json_encode($fileName);   
 }
