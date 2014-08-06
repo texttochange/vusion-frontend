@@ -7,23 +7,24 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
-    var $uses       = array('User', 'Group');
+    var $components = array(
+        'LocalizeUtils',
+        'ResetPasswordTicket',
+        'Captcha',
+        'Filter');
+
+    var $uses = array(
+        'User',
+        'Group');
     
     public function beforeFilter()
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
         $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
-        //$this->Auth->allow('*');
     }
     
     
-    /**
-    * index method
-    *
-    * @return void
-    */
     public function index()
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
@@ -82,12 +83,6 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * view method
-    *
-    * @param string $id
-    * @return void
-    */
     public function view($id = null)
     {
         $this->User->id = $id;
@@ -98,11 +93,6 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * add method
-    *
-    * @return void
-    */
     public function add()
     {
         if ($this->request->is('post')) {
@@ -126,12 +116,6 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * edit method
-    *
-    * @param string $id
-    * @return void
-    */
     public function edit($id = null)
     {
         $this->User->id = $id;
@@ -186,12 +170,7 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * delete method
-    *
-    * @param string $id
-    * @return void
-    */
+
     public function delete($id = null)
     {
         if (!$this->request->is('post')) {
