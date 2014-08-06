@@ -371,7 +371,7 @@ class UsersController extends AppController
         
         $fileExtension = end(explode('.', $attachment['name']));
         if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
-            $this->Session->setFlash( __('The file format ".%s" is not supported.', $fileExtension)); 
+            $this->Session->setFlash( __('The file format ".%s" is not supported use ".jpg or .png"', $fileExtension)); 
             return ;
         }
         
