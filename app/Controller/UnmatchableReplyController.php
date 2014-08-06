@@ -8,7 +8,8 @@ App::uses('User', 'Model');
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler',
+    var $components = array(
+        'RequestHandler',
         'LocalizeUtils',
         'PhoneNumber',
         'ProgramPaginator',

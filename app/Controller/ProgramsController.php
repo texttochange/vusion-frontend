@@ -297,15 +297,11 @@ class ProgramsController extends AppController
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
             $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
-                'default',
-                array('class'=>'message success')
-                );
+                'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
         }
         $this->Session->setFlash(__('Program %s was not deleted.', $program['Program']['name']), 
-            'default',
-            array('class' => "message failure")
-            );
+            'default', array('class' => "message failure"));
         $this->redirect(array('action' => 'index'));
     }
 
@@ -316,17 +312,19 @@ class ProgramsController extends AppController
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        $program = $this->Program->read();
         if ($this->Program->archive()) {
+            $program = $this->Program->read();
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
-            $this->Session->setFlash(__('Program %s has been archived.', $program['Program']['name']),
+            $this->Session->setFlash(__('This program has been archived. All sending and receiving of message have stopped.'),
                 'default', array('class'=>'message success'));
-            $this->redirect(array('action' => 'index'));
+            $this->redirect(array(
+                'action' => 'edit/'.$id));
+        } else {
+            $this->Session->setFlash(__('This program couldn\'t be archived.'));
+            $this->redirect(array('action' => 'edit'));
         }
-        $this->Session->setFlash(__('Program %s has not been archived.', $program['Program']['name']));
-        $this->redirect(array('action' => 'index'));
     }
     
 

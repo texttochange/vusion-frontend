@@ -39,14 +39,15 @@
 		?>	
 		<p> <?php echo __('Archiving a program will stop any sending and receiving'
 						.' of SMS and will free the keywords on the shortcode.'
-						.' Still you will be able to access this program pages.') ?>
+						.' Still you will be able to access this program pages and most of the data.'
+						.' The only deleted data are the messages/actions scheduled in the future.') ?>
 			<b><?php echo __('Archiving is NOT a reversible action.') ?></b>
 		</p>
     <?php } else { ?>
 	    <h4><?php echo __("This program has been archived.")?></h4>
 		<p> <?php echo __('Vusion is not yet able to un-archive automatically a program.'
 						. ' In case you wish to run the same program again,'
-						. ' Create a new program and import Dialogues, Requests and Participants.') ?></p>
+						. ' rather create a new program and import Dialogues, Requests and Participants.') ?></p>
     <?php } ?>
 	<div class="rule"></div>
 	<h4><?php echo __("Delete this program")?></h4>

@@ -1,6 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
-App::uses('History', 'Model');
+App::uses('Schedule', 'Model');
 
 
 class Program extends AppModel
@@ -319,15 +319,11 @@ class Program extends AppModel
         if ($modifier['Program']['id'] === '0') {
             return false;
         }
-        return true;
-    }
-
-    public function unArchive()
-    {
-        $modifier = $this->saveField('status', 'running', array('validate' => true));
-        if ($modifier['Program']['id'] === '0') {
-            return false;
-        }
+        if ($this->data == null) {
+            $this->read();
+        } 
+        $schedule = new Schedule(array('database' => $this->data['Program']['database']));
+        $schedule->deleteAll(true, false);
         return true;
     }
 

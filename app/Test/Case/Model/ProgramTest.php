@@ -1,7 +1,7 @@
 <?php
-/* Program Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('Program', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
 
 class ProgramTestCase extends CakeTestCase
@@ -15,6 +15,8 @@ class ProgramTestCase extends CakeTestCase
         parent::setUp();
         
         $this->Program = ClassRegistry::init('Program');
+
+        $this->maker = new ScriptMaker();
     }
     
     
@@ -25,7 +27,7 @@ class ProgramTestCase extends CakeTestCase
         parent::tearDown();
     }
    
-    /*
+    
     public function testFind()
     {
         $result   = $this->Program->find();
@@ -34,7 +36,8 @@ class ProgramTestCase extends CakeTestCase
                 'id' => 2,
                 'name' => 'm6h',
                 'url' => 'm6h',
-                'database' => 'm6h',            
+                'database' => 'm6h', 
+                'status' => 'running',           
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24'
                 ),
@@ -43,6 +46,7 @@ class ProgramTestCase extends CakeTestCase
                 'name' => 'test',
                 'url' => 'test',
                 'database' => 'testdbprogram',
+                'status' => 'running',
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24'
                 ),
@@ -65,7 +69,7 @@ class ProgramTestCase extends CakeTestCase
             );
         
         $this->assertEquals($expected, $result);
-    } */   
+    } 
     
     
     public function testFindAuthorized()
@@ -182,6 +186,11 @@ class ProgramTestCase extends CakeTestCase
 
     public function testArchive()
     {
+        $database = array('database' => 'testdbprogram');
+        $this->Schedule = new Schedule($database);
+        $this->Schedule->create('dialogue-schedule');
+        $this->Schedule->save($this->maker->getDialogueSchedule());
+
         $this->Program->id = 1;
         $this->assertTrue($this->Program->archive());
         
@@ -189,25 +198,9 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEqual(
             $archivedProgram['Program']['status'], 
             'archived');
-    }
 
-
-    public function testUnArchive()
-    {
-        $program = array(
-            'name' => 'something new',
-            'url' => 'img',
-            'database' => 'vusion',
-            'status' => 'archived');
-        
-        $this->Program->create();
-        $this->Program->save($program);
-        $this->assertTrue($this->Program->unarchive());
-        
-        $archivedProgram = $this->Program->read();
-        $this->assertEqual(
-            $archivedProgram['Program']['status'], 
-            'running');
+        $this->assertEquals(0,
+            $this->Schedule->count());
     }
     
     

@@ -43,10 +43,7 @@
         if (isset($program['Program']['shortcode'])) {
             $shortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
                 $program['Program']['prefixed-shortcode'],
-                $countryIndexedByPrefix);
-         	if ($program['Program']['status'] === 'archived') {
-     			$shortcode = __("Archived from %s", $shortcode);
-     		}   
+                $countryIndexedByPrefix);   
             echo $this->Html->tag('div', $shortcode, array('class'=>'ttc-program-details'));
         } elseif ($program['Program']['status'] === 'archived') {
         	echo $this->Html->tag('div', __('Archived'), array('class'=>'ttc-program-details'));
