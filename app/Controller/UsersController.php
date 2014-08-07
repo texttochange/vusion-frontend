@@ -36,7 +36,7 @@ class UsersController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->User);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -64,25 +64,8 @@ class UsersController extends AppController
             );
         
     }
-    
-    
-    protected function _getConditions()
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
-        if (!isset($filter['filter_param'])) 
-            return null;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->User->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }     
-        
-        $this->set('urlParams', http_build_query($filter));
-        
-        return $this->User->fromFilterToQueryConditions($filter);
-    }
-    
-    
+
+
     public function view($id = null)
     {
         $this->User->id = $id;
