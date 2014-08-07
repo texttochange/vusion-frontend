@@ -341,9 +341,9 @@ class UsersController extends AppController
         $userEmail                = $this->Session->read('Auth.User.email');
         $reportIssueToEmail       = Configure::read('vusion.reportIssue.email');
         $reportIssueSubjectPrefix = Configure::read('vusion.reportIssue.subjectPrefix');
-        $filePath                 = WWW_ROOT . 'img';
+        $filePath                 = WWW_ROOT . 'img';        
+        $validationErrors         = array();
         
-        $validationErrors = array();
         if (!isset($this->request->data['ReportIssue']['subject']) || ($this->request->data['ReportIssue']['subject'] == "")) {
             $validationErrors['subject'] = array(__('Please describe the expect vs current behavior.'));
         } else {
