@@ -348,12 +348,16 @@ class UsersController extends AppController
         $filePath                 = WWW_ROOT . 'img';
         
         if (!$reportIssueSubject) {
-            $this->Session->setFlash(__('Describe the issue is missing.<br><br> Please write the expect vs current behavior.'));
+            $this->validationErrors['ReportIssue']['reportIssueSubject'] = __('Describe the issue is missing. Please write the expect vs current behavior.');
+            //$this->Session->setFlash(__('Describe the issue is missing. 
+            //Please write the expect vs current behavior.'));
             return;
         }
         
         if (!$reportIssueMessage) {
-            $this->Session->setFlash(__('How to reproduce is missing.<br><br> Please explain to us how to reproduce the issue on our computers.'));
+            $this->validationErrors['ReportIssue']['reportIssueMessage'] = __('How to reproduce is missing. Please explain to us how to reproduce the issue on our computers.');
+            //$this->Session->setFlash(__('How to reproduce is missing. 
+            //Please explain to us how to reproduce the issue on our computers.'));
             return;
         }
         
@@ -374,7 +378,7 @@ class UsersController extends AppController
             $this->Session->setFlash( __('The file format ".%s" is not supported. Please upload an image .jpg or .png.', $fileExtension)); 
             return ;
         }
-        
+       
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         
         $email = new CakeEmail();
