@@ -115,24 +115,60 @@
            echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programUnattachedMessages','add');
            ?>
            </li>
-           <?php 
-           if(isset($currentProgramData['unattachedMessages']) && $currentProgramData['unattachedMessages']!=null) { 
-               foreach ($currentProgramData['unattachedMessages'] as $unattachedMessage) {
+           <li>
+           <?php
+           echo $this->AclLink->generateLink(__('Scheduled'), $programDetails['url'],
+                    'programUnattachedMessages', 'index', null, null, array('type' => 'sent')); 
+           ?>
+           <ul>
+           <?php
+           if (isset($currentProgramData['unattachedMessages']['scheduled'])) { 
+               foreach ($currentProgramData['unattachedMessages']['scheduled'] as $unattachedMessage) {
                    echo "<li title='".$unattachedMessage['UnattachedMessage']['name']."'>";
                    $unattachedMessageLinkName = $this->Text->truncate(
                        $unattachedMessage['UnattachedMessage']['name'],
                        20,
-                       array('ellipsis' => '...',
-                           'exact' => true
-                           ));      
-		
-                   
+                       array(
+                        'ellipsis' => '...',
+                        'exact' => true));
                    echo $this->AclLink->generateLink($unattachedMessageLinkName,
                        $programDetails['url'], 'programUnattachedMessages', 'edit', $unattachedMessage['UnattachedMessage']['_id']);
                    echo "</li>";
                }
            } 
            ?>
+           </ul>
+           </li>
+           <li>
+           <?php
+           echo $this->AclLink->generateLink(__('Drafted'),$programDetails['url'],
+                    'programUnattachedMessages','index', null, null, array('type' => 'drafted'));
+           ?>
+           <ul>
+           <?php
+           if (isset($currentProgramData['unattachedMessages']['drafted'])) { 
+               foreach ($currentProgramData['unattachedMessages']['drafted'] as $unattachedMessage) {
+                   echo "<li title='".$unattachedMessage['UnattachedMessage']['name']."'>";
+                   $unattachedMessageLinkName = $this->Text->truncate(
+                       $unattachedMessage['UnattachedMessage']['name'],
+                       20,
+                       array(
+                        'ellipsis' => '...',
+                        'exact' => true));
+                   echo $this->AclLink->generateLink($unattachedMessageLinkName,
+                       $programDetails['url'], 'programUnattachedMessages', 'edit', $unattachedMessage['UnattachedMessage']['_id']);
+                   echo "</li>";
+               }
+           } 
+           ?>
+           </ul>
+           </li>
+           <li>
+           <?php
+           echo $this->AclLink->generateLink(
+                    __('Sent'), $programDetails['url'],
+                    'programUnattachedMessages','index', null, null, array('type' => 'sent')); ?>
+           </li>
        </ul>
     </li>
     <li>

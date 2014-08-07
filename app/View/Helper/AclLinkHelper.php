@@ -28,18 +28,19 @@ class AclLinkHelper extends AppHelper
     }
 
 
-    function generateLink( $title, $url, $controller, $action = 'index', $id = null, $ext = null)
+    function generateLink( $title, $url, $controller, $action = 'index', $id = null, $ext = null, $named = array())
     {
         $aclUrl = 'controllers/'.ucfirst($controller).($action ? '/'.$action : '');
         if ($this->_allow($aclUrl)) {
-            return $this->Html->link($title,
-                array(
-                    'program'=>$url,
-                    'controller'=>$controller,
-                    'action'=>$action.($ext ? $ext : ''),
-                    'id'=>$id
-                    )
-                );
+            $url = array(
+                'program'=>$url,
+                'controller'=>$controller,
+                'action'=>$action.($ext ? $ext : ''),
+                'id'=>$id);
+            if ($named != array()) {
+                $url = array_merge($named, $url);
+            } 
+            return $this->Html->link($title, $url);
         } else {
             return $this->Html->tag('span', $title, array('class'=>'ttc-disabled-link'));
         }

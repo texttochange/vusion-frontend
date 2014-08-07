@@ -107,16 +107,19 @@ class UnattachedMessage extends MongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please choose a type of schedule for this message.'
+                ),
+            'validValue' => array(
+                'rule' => array('inList', array('immediately', 'fixed-time', 'none')),
+                'message' => 'This type of schedule is not allowed.'
                 )
             ),
         'fixed-time' => array(
             'notempty' => array(
-                'rule' => array('notempty'),
+                'rule' => array('notEmptyIfNoSchedule'),
                 'message' => 'Please enter a fixed time for this message.'
                 ),
             'isNotPast' => array(
-                'rule' => 'isNotPast',
-                'required' => true,
+                'rule' => 'validateIsNotPast',
                 'message' => 'Fixed time cannot be in the past.'
                 )
             ),
@@ -132,10 +135,12 @@ class UnattachedMessage extends MongoModel
         'all' => true,
         'first' => true,
         'count' => true,
-        'future' => true);
+        'scheduled' => true,
+        'drafted' => true,
+        'sent' => true);
     
     
-    protected function _findFuture($state, $query, $results = array())
+    protected function _findScheduled($state, $query, $results = array())
     {
         if ($state == 'before') {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
@@ -146,7 +151,30 @@ class UnattachedMessage extends MongoModel
         }
         return $results;
     }
-    
+
+
+    protected function _findSent($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $query['conditions']['fixed-time'] = array('$lt' => $programNow->format("Y-m-d\TH:i:s"));
+            }
+            return $query;
+        }
+        return $results;
+    }
+
+
+    protected function _findDrafted($state, $query, $results = array())
+    {
+        if ($state == 'before') {
+            $query['conditions']['type-schedule'] = 'none';
+            return $query;
+        }
+        return $results;
+    }
+
     
     public function __construct($id = false, $table = null, $ds = null)
     {
@@ -205,16 +233,20 @@ class UnattachedMessage extends MongoModel
 
         $this->_setDefault('content', null);
         $this->_setDefault('name', $this->_generateName());
-        
-        if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
-            $now = $this->ProgramSetting->getProgramTimeNow();
-            if (isset($now)) {
-                $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");
-            }            
-        } elseif (isset($this->data['UnattachedMessage']['fixed-time'])) {
-            //Convert fixed-time to vusion format
-            $this->data['UnattachedMessage']['fixed-time'] = DialogueHelper::convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
+
+        if (isset($this->data['UnattachedMessage']['type-schedule'])) {
+            if ($this->data['UnattachedMessage']['type-schedule'] == 'none') {
+                $this->data['UnattachedMessage']['fixed-time'] = null;
+            } else if ($this->data['UnattachedMessage']['type-schedule'] == 'immediately') {
+                $now = $this->ProgramSetting->getProgramTimeNow();
+                if (isset($now)) {
+                    $this->data['UnattachedMessage']['fixed-time'] = $now->format("Y-m-d\TH:i:s");
+                }            
+            } else if (isset($this->data['UnattachedMessage']['fixed-time'])) {
+                $this->data['UnattachedMessage']['fixed-time'] = DialogueHelper::convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
+            } 
         }
+
         if (isset($this->data['UnattachedMessage']['send-to-phone'])) {
             foreach ($this->data['UnattachedMessage']['send-to-phone'] as &$phone) {
                 $phone = Participant::cleanPhone($phone);
@@ -223,7 +255,18 @@ class UnattachedMessage extends MongoModel
         return true;           	
     }    
     
+    public function notEmptyIfNoSchedule($check)
+    {
+        if ($this->data['UnattachedMessage']['type-schedule'] === 'none') {
+            return true;
+        }
+        if (!isset($check['fixed-time'])) {
+            return false;    
+        }
+        return !in_array($check['fixed-time'], array(null, ''));   
+    }
     
+
     public function isNotPast($check)
     {
         $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
@@ -231,6 +274,14 @@ class UnattachedMessage extends MongoModel
         return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
+
+    public function validateIsNotPast($check)
+    {
+        if ($this->data['UnattachedMessage']['type-schedule'] === 'none') {
+            return true;
+        }
+        return $this->isNotPast($check);
+    }
     
     public function isVeryUnique($check)
     {
