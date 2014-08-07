@@ -78,17 +78,17 @@ class ProgramRequestsController extends AppController
 
     public function save()
     {
-        $programUrl = $this->params['program'];
-        $programDb  = $this->Session->read($programUrl."_db");
+        $programUrl     = $this->params['program'];
+        $programDb      = $this->Session->read($programUrl."_db");
+        $requestSuccess = false;
         
-        if (!$this->request->is('post')) {
-            return;
+        if (!$this->request->is('post') || !$this->_isAjax()) {
+            throw new MethodNotAllowedException();
         }
  
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => __('Please set the program settings then try again.')));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set(compact('requestSuccess')); 
             return;
         }
 
@@ -99,18 +99,14 @@ class ProgramRequestsController extends AppController
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Request', $id);
         if ($savedRequest = $this->Request->saveRequest($request,  $foundKeywords)) {
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
-            $this->set(
-                'result', array(
-                    'status' => 'ok',
-                    'request-id' => $this->Request->id,
-                    'message' => 'Request saved.'));
+            $requestSuccess = true;
+            $this->Session->setFlash(__('Request saved.'));
+            $this->set(compact('savedRequest'));
         } else {
+            $this->Session->setFlash(__('This request has a validation error, please correct it and save again.'));
             $this->Request->validationErrors = $this->Utils->fillNonAssociativeArray($this->Request->validationErrors);
-            $this->set(
-                'result', array(
-                    'status' => 'fail',
-                    'message' => array('Request' => $this->Request->validationErrors)));
         }
+        $this->set(compact('requestSuccess'));
     }
     
     
@@ -151,29 +147,30 @@ class ProgramRequestsController extends AppController
     
     public function validateKeyword()
     {
-        $programUrl        = $this->params['program'];
-        $programDb         = $this->Session->read($programUrl."_db");
-        $usedKeywords      = $this->request->data['keyword'];
-        $requestId         = $this->request->data['object-id'];
+        $programUrl     = $this->params['program'];
+        $programDb      = $this->Session->read($programUrl."_db");
+        $usedKeywords   = $this->request->data['keyword'];
+        $requestId      = $this->request->data['object-id'];
+        $requestSuccess = true;
+
+        if (!$this->request->is('post') || !$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
 
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => __('Please set the program settings then try again.')));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
             return;
         }
         
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Request', $requestId); 
         if ($foundKeywords) {
-            $message = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
-            $this->set('result', array(
-                'status' => 'fail', 
-                'message' => $message));
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $requestSuccess = false;
+            $this->set(compact('requestSuccess', 'foundMessage'));
             return;
         }
-        
-        $this->set('result', array('status' => 'ok'));
+        $this->set(compact('requestSuccess'));
     }
     
     

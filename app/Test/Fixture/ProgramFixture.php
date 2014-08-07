@@ -18,6 +18,7 @@ class ProgramFixture extends CakeTestFixture
         'name' => array('type' => 'string', 'null' => true, 'length' => 50),
         'url' => array('type' => 'string', 'null' => true, 'length' => 20),
         'database' => array('type' => 'string', 'null' => true, 'length' => 20),
+        'status' => array('type' => 'string', 'default' => 'running', 'length' => 50),
         'created' => array('type' => 'datetime', 'null' => true),
         'modified' => array('type' => 'datetime', 'null' => true),
         'indexes' => array(),
@@ -30,6 +31,7 @@ class ProgramFixture extends CakeTestFixture
             'name' => 'test',
             'url' => 'test',
             'database' => 'testdbprogram',
+            'status' => 'running',
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             ),
@@ -37,7 +39,8 @@ class ProgramFixture extends CakeTestFixture
             'id' => 2,
             'name' => 'm6h',
             'url' => 'm6h',
-            'database' => 'm6h',            
+            'database' => 'm6h',
+            'status' => 'running',         
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             ),
@@ -45,7 +48,8 @@ class ProgramFixture extends CakeTestFixture
             'id' => 3,
             'name' => 'trial',
             'url' => 'trial',
-            'database' => 'trial',            
+            'database' => 'trial',
+            'status' => 'archived',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             ),

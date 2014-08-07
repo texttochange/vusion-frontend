@@ -572,6 +572,10 @@ display: inline;
         border: 1px solid #BBBBBB;
 }
 
+.archived {
+    background-color: lightgray;
+}
+
 .ttc-program-box:hover{
         background: #19C1FF;;
 }
@@ -595,14 +599,14 @@ display: inline;
 
 .ttc-program-stats {
         position: absolute;
-        left:400px;
+        left:360px;
         top: 4px;
 }
 
 .ttc-program-quicklinks{
         position: absolute;
-        left: 622px;
-        top: 10px;
+        left: 92%;
+        top: 5px;
 }
 
 .ttc-program-news .ttc-program-box {
@@ -1160,25 +1164,20 @@ display: inline;
 @media projection, screen  {    
         body {        
                 margin: 0;
-                min-width: 1061px;      
-                
+                min-width: 1061px;
         } 
         #content { 
-                /*padding: 10px 3px 20px 1px;*/
-                /*min-width: 550px;*/
                 padding-top: 10px;
                 padding-left: 20px;
                 padding-right: 20px;
                 padding-bottom: 20px;
                 min-width: 800px;
-                /*max-width: 1366px;*/
                 position: relative;
                 overflow-x: hidden;
                 height: 483px;
         }         
-        .ttc-program-stats {             
-                /*left:277px;*/
-                left: 42%; 
+        .ttc-program-stats {
+                left: 36%; 
                 padding-left: 73px;
                 font-size: 11px;
         }
@@ -1203,11 +1202,7 @@ display: inline;
         .ttc-program-stats .stat {
                 font-weight: bold;
         }
-        
-        .ttc-program-quicklinks{             
-                /*left: 435px;*/ 
-                left: 90%;             
-        }
+
         .ttc-program-index {
                 float: left;
                 padding: 15px 2%;
@@ -1399,9 +1394,7 @@ display: inline;
 .configure-program-settings {
 	font-size:14px; 
 	color:#C43C35; 
-	position: absolute; 
-	padding-left: 341px; 
-	top: 22px
+	padding-top: 20px;
 }
 
 .forget-password {

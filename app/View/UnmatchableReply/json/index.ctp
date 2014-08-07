@@ -1,3 +1,2 @@
 <?php
-echo $this->Js->object(array("results" => $unmatchableReplies));
-?>	
+echo ',"data":'. $this->Js->object($unmatchableReplies);

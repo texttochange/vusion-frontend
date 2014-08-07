@@ -138,9 +138,7 @@ class ProgramsController extends AppController
         
         // paginate using ProgramPaginator
         $this->paginate = $paginate;
-        //$this->ProgramPaginator->settings['limit'] = 10;
         $programs = $this->ProgramPaginator->paginate();
-        
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
     }
@@ -168,7 +166,8 @@ class ProgramsController extends AppController
         return array(
             'operator' => $this->Program->filterOperatorOptions,
             'shortcode' => (count($shortcodes)>0? array_combine($shortcodes, $shortcodes) : array()),
-            'country' => (count($countries)>0? array_combine($countries, $countries) : array())
+            'country' => (count($countries)>0? array_combine($countries, $countries) : array()),
+            'program-status' => $this->Program->filterProgramStatusOptions
             );
     }
     
@@ -265,7 +264,7 @@ class ProgramsController extends AppController
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->Program->save($this->request->data)) {
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
@@ -297,18 +296,36 @@ class ProgramsController extends AppController
                 $program['Program']['database']);
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
-            $this->Session->setFlash(__('Program deleted.'),
-                'default',
-                array('class'=>'message success')
-                );
+            $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
+                'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('Program was not deleted.'), 
-            'default',
-            array('class' => "message failure")
-            );
+        $this->Session->setFlash(__('Program %s was not deleted.', $program['Program']['name']), 
+            'default', array('class' => "message failure"));
         $this->redirect(array('action' => 'index'));
     }
+
+
+    public function archive($id = null)
+    {
+        $this->Program->id = $id;
+        if (!$this->Program->exists()) {
+            throw new NotFoundException(__('Invalid program.'));
+        }
+        if ($this->Program->archive()) {
+            $program = $this->Program->read();
+            $this->_stopBackendWorker(
+                $program['Program']['url'],
+                $program['Program']['database']);
+            $this->Session->setFlash(__('This program has been archived. All sending and receiving of message have stopped.'),
+                'default', array('class'=>'message success'));
+            $this->redirect(array(
+                'action' => 'edit/'.$id));
+        } else {
+            $this->Session->setFlash(__('This program couldn\'t be archived.'));
+            $this->redirect(array('action' => 'edit'));
+        }
+    }
     
-    
+
 }

@@ -146,9 +146,13 @@ class ProgramContentVariablesController extends AppController
     public function addTable()
     {   
         $programUrl = $this->params['program'];
-        if ($this->request->is('post') && $this->params['ext'] === 'json') {
+        if ($this->request->is('post') && $this->_isAjax()) {
+            $requestSuccess = false;
             $this->ContentVariableTable->create();
-            $this->ContentVariableTable->save($this->request->data); 
+            if ($this->ContentVariableTable->save($this->request->data)) {
+                $requestSuccess = true;
+            }
+            $this->set(compact('requestSuccess'));
         }
     }
     
@@ -182,10 +186,7 @@ class ProgramContentVariablesController extends AppController
                     )
                 );
         }
-        $this->Session->setFlash(__('A Table was not deleted from Content Variable.'), 
-            'default',
-            array('class' => "message failure")
-            );
+        $this->Session->setFlash(__('A Table was not deleted from Content Variable.'));
     }
     
     
@@ -200,8 +201,12 @@ class ProgramContentVariablesController extends AppController
         }
         $contentVariableTable = $this->ContentVariableTable->read();
         
-        if ($this->request->is('post') && $this->params['ext'] === 'json') {
-            $this->ContentVariableTable->save($this->request->data);
+        if ($this->request->is('post') && $this->_isAjax()) {
+            $requestSuccess = false;
+            if ($this->ContentVariableTable->save($this->request->data)) {
+                $requestSuccess = true;
+            } 
+            $this->set(compact('requestSuccess'));
         } else {
             $this->request->data = $this->ContentVariableTable->read(null, $id);
         }
@@ -222,12 +227,15 @@ class ProgramContentVariablesController extends AppController
         }
         
         if ($this->request->is("post")) {
+            $requestSuccess = false;
             $contentVariable = $contentVariables[0];
             $this->ContentVariable->id = $contentVariable['ContentVariable']['_id'];
             $contentVariable['ContentVariable']['value'] = $this->request->data['ContentVariable']['value'];
             if ($this->ContentVariable->save($contentVariable)) {
                 $this->ContentVariableTable->updateTableFromKeysValue($contentVariable);
+                $requestSuccess = true;
             }
+            $this->set(compact('requestSuccess'));
         }
     }
     

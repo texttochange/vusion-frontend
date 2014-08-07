@@ -262,6 +262,24 @@ class KewyordComponentTest extends CakeTestCase
         $this->assertEqual($valid, $expected);    
     }
 
+    public function testAreKeywordsUsedByOtherPrograms_keywordUsedInArchivedProgram() 
+    {   
+        $this->instanciateExternalModels('trial');
+
+        $this->externalModels['request']->create();
+        $savedRequest = $this->externalModels['request']->save($this->Maker->getOneRequest());
+        $this->externalModels['programSetting']->create();
+        $this->externalModels['programSetting']->save(array('key'=>'shortcode', 'value'=>'256-8181'));
+     
+        $expected = array();
+   
+        $valid = $this->KeywordComponent->areKeywordsUsedByOtherPrograms(
+            'testdbprogram',
+            '256-8181',
+            array('KEYWORD'));
+        $this->assertEqual($valid, $expected);    
+    }
+
 
     public function testAreKeywordsUsedByOtherPrograms_keywordUsedInOtherProgramDialogue() 
     {
