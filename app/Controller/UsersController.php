@@ -16,7 +16,6 @@ class UsersController extends AppController
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
         $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
-        //$this->Auth->allow('*');
     }
     
     
@@ -342,41 +341,36 @@ class UsersController extends AppController
         $userEmail                = $this->Session->read('Auth.User.email');
         $reportIssueToEmail       = Configure::read('vusion.reportIssue.email');
         $reportIssueSubjectPrefix = Configure::read('vusion.reportIssue.subjectPrefix');
-        $reportIssueSubject       = $this->request->data['ReportIssue']['reportIssueSubject'];
-        $reportIssueMessage       = $this->request->data['ReportIssue']['reportIssueMessage'];       
-        $attachment               = $this->request->data['ReportIssue']['Screenshort'];
         $filePath                 = WWW_ROOT . 'img';
         
-        if (!$reportIssueSubject) {
-            $this->validationErrors['ReportIssue']['reportIssueSubject'] = __('Describe the issue is missing. Please write the expect vs current behavior.');
-            //$this->Session->setFlash(__('Describe the issue is missing. 
-            //Please write the expect vs current behavior.'));
-            return;
+        $validationErrors = array();
+        if (!isset($this->request->data['ReportIssue']['subject']) || ($this->request->data['ReportIssue']['subject'] == "")) {
+            $validationErrors['subject'] = array(__('Please describe the expect vs current behavior.'));
+        } else {
+            $subject = $this->request->data['ReportIssue']['subject'];
+        } 
+        if (!isset($this->request->data['ReportIssue']['message']) || ($this->request->data['ReportIssue']['message'] == "")) {
+            $validationErrors['message'] = array(__('Please explain us how to reproduce the issue on our computers.'));
+        } else {
+            $message = $this->request->data['ReportIssue']['message'];
         }
-        
-        if (!$reportIssueMessage) {
-            $this->validationErrors['ReportIssue']['reportIssueMessage'] = __('How to reproduce is missing. Please explain to us how to reproduce the issue on our computers.');
-            //$this->Session->setFlash(__('How to reproduce is missing. 
-            //Please explain to us how to reproduce the issue on our computers.'));
-            return;
-        }
-        
+        $attachment               = $this->request->data['ReportIssue']['screenshot'];
         if ($attachment['error'] != 0) {
             if ($attachment['error'] == 4) { 
-                $message = __("Screenshot is missing. Please take one screenshot and upload the image.");
+                $validationErrors['screenshot'] = array(__("Please take one screenshot and upload it."));
             } else { 
-                $message = __('Error while uploading the file: %s.', $attachment['error']);            
+                $validationErrors['screenshot'] = array(__('Error while uploading the file: %s.', $attachment['error']));
             }
-            $this->Session->setFlash($message, 
-                'default', array('class' => 'message failure')
-                );
-            return;
+        } else {
+            $fileExtension = end(explode('.', $attachment['name']));
+            if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
+                $validationErrors['screenshot'] = array(__('The file format ".%s" is not supported. Please upload an image .jpg or .png.', $fileExtension)); 
+            }
         }
-        
-        $fileExtension = end(explode('.', $attachment['name']));
-        if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
-            $this->Session->setFlash( __('The file format ".%s" is not supported. Please upload an image .jpg or .png.', $fileExtension)); 
-            return ;
+        if ($validationErrors != array()) {
+            $this->Session->setFlash(__("Reporting failed due to incorrect report."));
+            $this->set(compact('validationErrors'));
+            return;
         }
        
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
@@ -385,12 +379,12 @@ class UsersController extends AppController
         $email->config('default');
         $email->from($userEmail);
         $email->to($reportIssueToEmail);
-        $email->subject($reportIssueSubjectPrefix . " " . $reportIssueSubject);
+        $email->subject($reportIssueSubjectPrefix . " " . $subject);
         $email->template('reportissue_template');
         $email->emailFormat('html');
         $email->viewVars(array(
-            'reportIssueSubject' => $reportIssueSubject,
-            'reportIssueMessage' => $reportIssueMessage,
+            'subject' => $subject,
+            'message' => $message,
             'userName' => $userName));
         $email->attachments($filePath . DS .$attachment['name']);
         $email->send();
