@@ -764,10 +764,7 @@ function popupBrowser(obj) {
 }
 
 function popupBrowserClose() {
-    var windowCloseConfirm = confirm("Do you want to close this window?");
-    if (windowCloseConfirm == true) {
         window.close();
-    }
 }
 
 function popupNewBrowserTab(obj) {

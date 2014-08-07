@@ -348,18 +348,18 @@ class UsersController extends AppController
         $filePath                 = WWW_ROOT . 'img';
         
         if (!$reportIssueSubject) {
-            $this->Session->setFlash(__('Please enter a report description'));
+            $this->Session->setFlash(__('Describe the issue is missing.<br><br> Please write the expect vs current behavior.'));
             return;
         }
         
         if (!$reportIssueMessage) {
-            $this->Session->setFlash(__('Please enter how to reproduce the issue'));
+            $this->Session->setFlash(__('How to reproduce is missing.<br><br> Please explain to us how to reproduce the issue on our computers.'));
             return;
         }
         
         if ($attachment['error'] != 0) {
             if ($attachment['error'] == 4) { 
-                $message = __("Please add a screenshot.");
+                $message = __("Screenshot is missing. Please take one screenshot and upload the image.");
             } else { 
                 $message = __('Error while uploading the file: %s.', $attachment['error']);            
             }
@@ -371,7 +371,7 @@ class UsersController extends AppController
         
         $fileExtension = end(explode('.', $attachment['name']));
         if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
-            $this->Session->setFlash( __('The file format ".%s" is not supported use ".jpg or .png"', $fileExtension)); 
+            $this->Session->setFlash( __('The file format ".%s" is not supported. Please upload an image .jpg or .png.', $fileExtension)); 
             return ;
         }
         
