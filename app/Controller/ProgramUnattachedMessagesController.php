@@ -120,20 +120,20 @@ class ProgramUnattachedMessagesController extends AppController
     public function add()
     {
         $programUrl = $this->params['program'];
+        $requestSuccess = false;
 
         if ($this->request->is('post')) {
             if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
+                $requestSuccess = true;
                 $this->set(compact('savedUnattachedMessage'));
-                $this->set('ajaxResult', array('status' => 'ok'));
                 if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,
                         'controller' => 'programUnattachedMessages',
                         'action' => 'index'));
                 }
-            } else {
-                $this->set('ajaxResult', array('status' => 'fail'));
             }
+            $this->set(compact('requestSuccess'));
         }
         
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
@@ -282,8 +282,9 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function edit()
     {
-        $programUrl = $this->params['program'];
-        $id         = $this->params['id'];
+        $programUrl     = $this->params['program'];
+        $id             = $this->params['id'];
+        $requestSuccess = false;
 
         $this->UnattachedMessage->id = $id;
         
@@ -293,17 +294,17 @@ class ProgramUnattachedMessagesController extends AppController
         
         $this->UnattachedMessage->read();
         if ($this->request->is('post')) {
-            if ($this->saveUnattachedMessage()) {
-                $this->set('ajaxResult', array('status' => 'ok'));
+            if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
+                $requestSuccess = true;
+                $this->set(compact('savedUnattachedMessage'));
                 if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,
                         'controller' => 'programUnattachedMessages',
                         'action' => 'index'));
                 }
-            } else {
-                $this->set('ajaxResult', array('status' => 'fail'));
             }
+            $this->set(compact('requestSuccess'));
         } else {
             $this->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    
