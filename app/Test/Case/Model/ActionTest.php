@@ -55,6 +55,7 @@ class ActionTestCase extends CakeTestCase
         $this->assertTrue($this->Action->validates());
     }
 
+
     public function testValidateAction_fail_feedback_dynamic_content() {
         $action = array(
             'type-action' => 'feedback',
@@ -237,6 +238,29 @@ class ActionTestCase extends CakeTestCase
         $this->assertEqual(
             'The weight value can only be a integer.',
             $this->Action->validationErrors['proportional-tags'][0]['weight'][0]);
+    }
+
+
+    public function testValidateAction_fail_proportionalLabelling() {
+        $action = array(
+            'type-action' => 'proportional-labelling',
+            'label-name' => '',
+            'proportional-labels' => array(
+                array(
+                    'label-value' => 'control`',
+                    'weight' => '6.5')));
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "Use only space, letters and numbers for the label name.",
+            $this->Action->validationErrors['label-name'][0]);
+        $this->assertEqual(
+            "Use only DOT, space, letters and numbers for the label value.",
+            $this->Action->validationErrors['proportional-labels'][0]['label-value'][0]);
+        $this->assertEqual(
+            'The weight value can only be a integer.',
+            $this->Action->validationErrors['proportional-labels'][0]['weight'][0]);
     }
 
 
