@@ -440,4 +440,100 @@ class UsersControllerTestCase extends ControllerTestCase
     }
     
     
+    public function testReportIssue_fail_fieldsEmpty()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+                ),
+            'models' => array(
+                'User' => array('exists', 'read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+       
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => '',
+                'message' => '',
+                'screenshot'=> array(
+                    'name' => 'hi.gif' ,
+                    'error'=>0)
+                ))
+            ));
+        
+        $this->assertEqual($this->vars['validationErrors']['subject'][0],
+            'Please describe the expect vs current behavior.');
+        $this->assertEqual($this->vars['validationErrors']['message'][0],
+            'Please explain us how to reproduce the issue on our computers.');
+        $this->assertEqual($this->vars['validationErrors']['screenshot'][0],
+            'The file format ".gif" is not supported. Please upload an image .jpg or .png.');
+        
+    }
+    
+    
+    public function testReportIssue_Successfully()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read', 'setFlash')
+                ),
+            'models' => array(
+                'User' => array('read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $mockedUser = array(
+            'User' =>array(
+                'id' => 1,
+                'username' => 'maxmass',
+                'email' => 'vusion@ttc.com'
+                )
+            );
+            
+        $users->User
+        ->expects($this->once())
+        ->method('save')
+        ->with($mockedUser)
+        ->will($this->returnValue($mockedUser));
+        
+        $users->Session
+            ->expects($this->any())
+            ->method('write')
+            ->will($this->returnValue($mockedUser)); 
+            
+         
+       
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => 'testing email subject',
+                'message' => 'testing email message',
+                'screenshot'=> array(
+                    'name' => 'hi.jpg',
+                    'error'=>0,
+                    'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
+                ))
+            ));
+        
+         $users->Session
+            ->expects($this->once())
+            ->method('setFlash')
+            ->with('Password changed successfully.');
+    }
+    
+    
 }
