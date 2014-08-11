@@ -394,18 +394,22 @@ class UsersController extends AppController
             'userName' => $userName));
         $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
         
-        try
-        {
-             $this->CakeEmail->send();
-        }
-        catch(Exception $e)
-        {
+        try {
+            $this->CakeEmail->send();
+        } catch (SocketException $e) {
             $this->Session->setFlash(
-                __('Email server is down. Please try agian '),
+                __('Email server connection is down. Please send an Email to vusion-issue directly'),
+                'default',
+                array('class' => 'message failure'));
+            return;  
+        } catch (Exception $e) {
+            $this->Session->setFlash(
+                __('Email server is down. Please send an Email to vusion-issue directly'),
                 'default',
                 array('class' => 'message failure'));
             return;
         }
+        
         $this->Session->setFlash(
             __('The tech team will contact you in the next 2 days by Email. Thank you.'),
             'default', array('class'=>'message success'));

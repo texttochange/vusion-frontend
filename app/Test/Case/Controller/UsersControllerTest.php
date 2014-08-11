@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-   
+   /*
     public function testIndex() 
     {
         
@@ -541,9 +541,15 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
     }
+    */
+    
+    public function socketExceptionMock()
+    {
+        throw new \Exception('SocketException');
+    }
     
     
-    public function testReportIssue_fail_noStmpTransport()
+    public function testReportIssue_fail_connectRefused()
     {
         $users = $this->generate('Users', array(
             'components' => array(
@@ -556,7 +562,7 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
         
-        $users->Acl
+          $users->Acl
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
@@ -572,6 +578,16 @@ class UsersControllerTestCase extends ControllerTestCase
         ->method('read')
         ->with('Auth.User.email')
         ->will($this->returnValue('vusion@ttc.com'));
+        
+        $CakeEmail = $this->getMock('CakeEmail', array('send'));
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->returnCallback(array('socketExceptionMock')));
+        
+        $users->CakeEmail = $CakeEmail;
+        
         
         $users->Session
         ->expects($this->any())
