@@ -499,14 +499,14 @@ class UsersControllerTestCase extends ControllerTestCase
             ->will($this->returnValue('true'));
             
         $users->Session
-            ->expects($this->any())
+            ->expects($this->at(0))
             ->method('read')
             ->with('Auth.User.username')
             ->will($this->returnValue('maxmass'));
             
        
         $users->Session
-            ->expects($this->any())
+            ->expects($this->at(1))
             ->method('read')
             ->with('Auth.User.email')
             ->will($this->returnValue('vusion@ttc.com'));
