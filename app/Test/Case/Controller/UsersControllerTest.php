@@ -489,27 +489,26 @@ class UsersControllerTestCase extends ControllerTestCase
                 ),
             'models' => array(
                 'User' => array('read', 'save')
-                ),
-           'CakeEmail' => array('from', 'send')
+                )
             ));
         
         $users->Acl
-            ->expects($this->any())
-            ->method('check')
-            ->will($this->returnValue('true'));
-            
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
         $users->Session
-            ->expects($this->at(0))
-            ->method('read')
-            ->with('Auth.User.username')
-            ->will($this->returnValue('maxmass'));
-            
-       
+        ->expects($this->at(0))
+        ->method('read')
+        ->with('Auth.User.username')
+        ->will($this->returnValue('maxmass'));
+        
+        
         $users->Session
-            ->expects($this->at(1))
-            ->method('read')
-            ->with('Auth.User.email')
-            ->will($this->returnValue('vusion@ttc.com'));
+        ->expects($this->at(1))
+        ->method('read')
+        ->with('Auth.User.email')
+        ->will($this->returnValue('vusion@ttc.com'));
         
         
         $this->testAction('/users/reportIssue', array(  
@@ -523,13 +522,23 @@ class UsersControllerTestCase extends ControllerTestCase
                     'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
                 ))
             ));
-       
-        $users->CakeEmail
-            ->expects($this->once())
-            ->method('from')
-            ->with($this->equalTo('vusion@ttc.com'));
-            
-       /* 
+        
+        $CakeEmail = $this->getMock('CakeEmail', array(
+            'from',
+            'send'));
+        $this->User->CakeEmail = $CakeEmail;
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->returnValue('true'));
+        
+        
+        $CakeEmail
+        ->expects($this->once())
+        ->method('from')
+        ->with($this->equalTo('vusion@ttc.com'));
+        
+        /* 
         $users->Session
         ->expects($this->once())
         ->method('setFlash')
