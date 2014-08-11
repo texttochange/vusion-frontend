@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-   
+   /*
     public function testIndex() 
     {
         
@@ -379,7 +379,7 @@ class UsersControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testNewPassWord_Reset_Successfully()
+    public function testNewPassWord_reset_ok()
     {
         $hash = Configure::read('Security.salt');
         $users = $this->generate('Users', array(
@@ -477,46 +477,41 @@ class UsersControllerTestCase extends ControllerTestCase
             'The file format ".gif" is not supported. Please upload an image .jpg or .png.');
         
     }
+    */
     
-    
-    public function testReportIssue_Successfully()
+    public function testReportIssue_ok()
     {
         $users = $this->generate('Users', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read', 'setFlash')
+                'Session' => array('read', 'setFlash', 'write'),
+                'Auth' => array('user')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
-                )
+                ),
+           'CakeEmail' => array('from', 'send')
             ));
         
         $users->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-        
-        $mockedUser = array(
-            'User' =>array(
-                'id' => 1,
-                'username' => 'maxmass',
-                'email' => 'vusion@ttc.com'
-                )
-            );
+            ->expects($this->any())
+            ->method('check')
+            ->will($this->returnValue('true'));
             
-        $users->User
-        ->expects($this->once())
-        ->method('save')
-        ->with($mockedUser)
-        ->will($this->returnValue($mockedUser));
-        
         $users->Session
             ->expects($this->any())
-            ->method('write')
-            ->will($this->returnValue($mockedUser)); 
+            ->method('read')
+            ->with('Auth.User.username')
+            ->will($this->returnValue('maxmass'));
             
-         
        
+        $users->Session
+            ->expects($this->any())
+            ->method('read')
+            ->with('Auth.User.email')
+            ->will($this->returnValue('vusion@ttc.com'));
+        
+        
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
             'data' => array('ReportIssue' => array(
@@ -528,11 +523,17 @@ class UsersControllerTestCase extends ControllerTestCase
                     'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
                 ))
             ));
-        
-         $users->Session
+       
+        $users->CakeEmail
             ->expects($this->once())
-            ->method('setFlash')
-            ->with('Password changed successfully.');
+            ->method('from')
+            ->with($this->equalTo('vusion@ttc.com'));
+            
+       /* 
+        $users->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('The tech team will contact you in the next 2 days by Email. Thank you.');*/
     }
     
     
