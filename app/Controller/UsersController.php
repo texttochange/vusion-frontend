@@ -393,8 +393,7 @@ class UsersController extends AppController
             'message' => $message,
             'userName' => $userName));
         $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
-        $this->CakeEmail->send();
-       
+        
         try
         {
              $this->CakeEmail->send();
