@@ -1,3 +1,4 @@
 <?php 
-echo $this->Js->object($result);
-?>	
+if (isset($foundMessage)) {
+	echo ',"found-message":"'.$foundMessage.'"';
+}

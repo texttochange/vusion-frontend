@@ -9,7 +9,7 @@ if (count($programStats['programStats']) <= 0) {
     $programStats['programStats'] = $this->BigNumber->roundOffNumbers($programStats['programStats']);
     $this->Js->get('document')->event(
         'ready',
-        'renderStats('.$this->Js->object($programStats).')');
+        'renderStats("programstats",'.$this->Js->object($programStats['programStats']).')');
 }
 echo '<span id="programstats">';
 echo '<img src="/img/ajax-loader.gif">';

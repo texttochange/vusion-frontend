@@ -100,6 +100,7 @@ class RequestTestCase extends CakeTestCase
 
     public function testGetKeywords()
     {
+        $expected = array('key', 'keyword', 'otherkeyword', 'k2', 'frere');
         $request['Request'] = array(
             'keyword' => 'key request, keyword, otherkeyword request'
             );
@@ -111,9 +112,12 @@ class RequestTestCase extends CakeTestCase
         $this->Request->create();
         $this->Request->save($request);
         
+        $result = $this->Request->getKeywords();
+        asort($expected);
+        asort($result);
         $this->assertEqual(
-            array('key', 'keyword', 'otherkeyword', 'k2', 'frere'),
-            $this->Request->getKeywords());
+            array_values($expected),
+            array_values($result));
     }
 
 

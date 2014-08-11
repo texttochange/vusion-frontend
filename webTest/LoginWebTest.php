@@ -24,7 +24,7 @@ class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
   }
 
 
-  public function testProgramManagerCanEditProgramSettings()
+  public function testProgramManagerCannotEditProgramSettings()
   {
     $this->windowMaximize();
     $this->open("/users/login");
@@ -36,7 +36,7 @@ class LoginWebTest extends PHPUnit_Extensions_SeleniumTestCase
     $this->waitForPageToLoad("30000");
     $this->click("link=Settings");
     $this->waitForPageToLoad("30000");
-    $this->assertTrue((bool)preg_match('/^[\s\S]*\/edit$/',$this->getLocation()));
+    $this->assertTrue((bool)preg_match('/^[\s\S]*\/view$/',$this->getLocation()));
   }
 
 

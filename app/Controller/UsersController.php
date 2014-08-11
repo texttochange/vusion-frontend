@@ -7,23 +7,24 @@ App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 
 class UsersController extends AppController
 {
-    var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha');
-    var $uses       = array('User', 'Group');
+    var $components = array(
+        'LocalizeUtils',
+        'ResetPasswordTicket',
+        'Captcha',
+        'Filter');
+
+    var $uses = array(
+        'User',
+        'Group');
     
     public function beforeFilter()
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
         $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
-        //$this->Auth->allow('*');
     }
     
     
-    /**
-    * index method
-    *
-    * @return void
-    */
     public function index()
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
@@ -35,7 +36,7 @@ class UsersController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->_getConditions();
+        $conditions = $this->Filter->getConditions($this->User);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -63,31 +64,8 @@ class UsersController extends AppController
             );
         
     }
-    
-    
-    protected function _getConditions()
-    {
-        $filter = array_intersect_key($this->params['url'], array_flip(array('filter_param', 'filter_operator')));
-        
-        if (!isset($filter['filter_param'])) 
-            return null;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $this->User->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }     
-        
-        $this->set('urlParams', http_build_query($filter));
-        
-        return $this->User->fromFilterToQueryConditions($filter);
-    }
-    
-    
-    /**
-    * view method
-    *
-    * @param string $id
-    * @return void
-    */
+
+
     public function view($id = null)
     {
         $this->User->id = $id;
@@ -98,11 +76,6 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * add method
-    *
-    * @return void
-    */
     public function add()
     {
         if ($this->request->is('post')) {
@@ -126,12 +99,6 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * edit method
-    *
-    * @param string $id
-    * @return void
-    */
     public function edit($id = null)
     {
         $this->User->id = $id;
@@ -146,7 +113,7 @@ class UsersController extends AppController
             throw new NotFoundException(__('Invalid user.'));
         } 
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
             if ($user = $this->User->save($this->request->data)) {
@@ -186,12 +153,7 @@ class UsersController extends AppController
     }
     
     
-    /**
-    * delete method
-    *
-    * @param string $id
-    * @return void
-    */
+
     public function delete($id = null)
     {
         if (!$this->request->is('post')) {
@@ -298,7 +260,7 @@ class UsersController extends AppController
         $userId = $id;
         $this->set(compact('userId'));
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             
             if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'),

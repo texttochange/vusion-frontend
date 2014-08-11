@@ -79,7 +79,7 @@ class TemplatesController extends AppController
             throw new NotFoundException(__('Invalid template.') . $id);
         }
         $this->set('typeTemplateOptions', $this->typeTemplateOptions);
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->Template->save($this->request->data)) {
                 $template = $this->request->data;
                 $this->Session->setFlash(__('The template has been saved.'),
