@@ -20,6 +20,7 @@
 		array(
 			'type' => 'textarea',
 			'rows' => 6,
+			'class' => 'report-issue-describtion',
 			'label' => __('How to reproduce the issue'),
 			'title' => __('How to reproduce step by step, copy/past the program url and occurence'),
 			'placeholder' => __('How to reproduce step by step, copy/past the program url and occurence')));
