@@ -379,24 +379,25 @@ class UsersController extends AppController
        
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         
-        if (!$CakeEmail) {
-            $email = new CakeEmail();
+        if (!$this->CakeEmail) {
+            $this->CakeEmail = new CakeEmail();
         }
-        $email->config('default');
-        $email->from($userEmail);
-        $email->to($reportIssueToEmail);
-        $email->subject($reportIssueSubjectPrefix . " " . $subject);
-        $email->template('reportissue_template');
-        $email->emailFormat('html');
-        $email->viewVars(array(
+        $this->CakeEmail->config('default');
+        $this->CakeEmail->from($userEmail);
+        $this->CakeEmail->to($reportIssueToEmail);
+        $this->CakeEmail->subject($reportIssueSubjectPrefix . " " . $subject);
+        $this->CakeEmail->template('reportissue_template');
+        $this->CakeEmail->emailFormat('html');
+        $this->CakeEmail->viewVars(array(
             'subject' => $subject,
             'message' => $message,
             'userName' => $userName));
-        $email->attachments($filePath . DS .$attachment['name']);
-        $email->send();
-        /*try
+        $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
+        $this->CakeEmail->send();
+       
+        try
         {
-            $email->send();
+             $this->CakeEmail->send();
         }
         catch(Exception $e)
         {
@@ -405,7 +406,7 @@ class UsersController extends AppController
                 'default',
                 array('class' => 'message failure'));
             return;
-        }*/
+        }
         $this->Session->setFlash(
             __('The tech team will contact you in the next 2 days by Email. Thank you.'),
             'default', array('class'=>'message success'));

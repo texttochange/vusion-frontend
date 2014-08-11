@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-   /*
+   
     public function testIndex() 
     {
         
@@ -477,7 +477,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'The file format ".gif" is not supported. Please upload an image .jpg or .png.');
         
     }
-    */
+    
     
     public function testReportIssue_ok()
     {
@@ -519,7 +519,17 @@ class UsersControllerTestCase extends ControllerTestCase
         ->method('send')
         ->will($this->returnValue('true')); 
         
-        $this->Users->CakeEmail = $CakeEmail;
+        $CakeEmail
+        ->expects($this->any())
+        ->method('from')
+        ->with($this->equalTo('vusion@ttc.com')); 
+        
+        $users->CakeEmail = $CakeEmail;
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('setFlash')
+        ->with('The tech team will contact you in the next 2 days by Email. Thank you.');
         
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
@@ -532,14 +542,8 @@ class UsersControllerTestCase extends ControllerTestCase
                     'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
                 ))
             ));
-        
-        
-        /* 
-        $users->Session
-        ->expects($this->once())
-        ->method('setFlash')
-        ->with('The tech team will contact you in the next 2 days by Email. Thank you.');*/
     }
+    
     
     
 }
