@@ -398,15 +398,11 @@ class UsersController extends AppController
             $this->CakeEmail->send();
         } catch (SocketException $e) {
             $this->Session->setFlash(
-                __('Email server connection is down. Please send an Email to vusion-issue directly'),
-                'default',
-                array('class' => 'message failure'));
+                __('Email server connection is down. Please send report to vusion-issue@texttochange.com'));
             return;  
         } catch (Exception $e) {
             $this->Session->setFlash(
-                __('Email server is down. Please send an Email to vusion-issue directly'),
-                'default',
-                array('class' => 'message failure'));
+                __('Email server is down. Please send report to vusion-issue@texttochange.com'));
             return;
         }
         

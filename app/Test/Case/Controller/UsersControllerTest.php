@@ -72,7 +72,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-   /*
+   
     public function testIndex() 
     {
         
@@ -541,15 +541,9 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
     }
-    */
     
-    public function socketExceptionMock()
-    {
-        throw new \Exception('SocketException');
-    }
-    
-    
-    public function testReportIssue_fail_connectRefused()
+   
+    public function testReportIssue_fail_connectionRefused()
     {
         $users = $this->generate('Users', array(
             'components' => array(
@@ -562,7 +556,7 @@ class UsersControllerTestCase extends ControllerTestCase
                 )
             ));
         
-          $users->Acl
+        $users->Acl
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
@@ -584,15 +578,14 @@ class UsersControllerTestCase extends ControllerTestCase
         $CakeEmail
         ->expects($this->any())
         ->method('send')
-        ->will($this->returnCallback(array('socketExceptionMock')));
+        ->will($this->throwException(new SocketException($message= '')));
         
         $users->CakeEmail = $CakeEmail;
         
-        
         $users->Session
         ->expects($this->any())
-        ->method('setFlash')
-        ->with('Email server is down. Please try agian ');
+        ->method('setFlash')    
+        ->with('Email server connection is down. Please send report to vusion-issue@texttochange.com');
         
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
@@ -607,4 +600,61 @@ class UsersControllerTestCase extends ControllerTestCase
             ));
     }
     
+    
+    public function testReportIssue_fail_otherExceptions()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read', 'setFlash', 'write'),
+                'Auth' => array('user')
+                ),
+            'models' => array(
+                'User' => array('read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $users->Session
+        ->expects($this->at(0))
+        ->method('read')
+        ->with('Auth.User.username')
+        ->will($this->returnValue('maxmass'));
+        
+        $users->Session
+        ->expects($this->at(1))
+        ->method('read')
+        ->with('Auth.User.email')
+        ->will($this->returnValue('vusion@ttc.com'));
+        
+        $CakeEmail = $this->getMock('CakeEmail', array('send'));
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->throwException(new Exception()));
+        
+        $users->CakeEmail = $CakeEmail;
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('setFlash')    
+        ->with('Email server is down. Please send report to vusion-issue@texttochange.com');
+        
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => 'testing email subject',
+                'message' => 'testing email message',
+                'screenshot'=> array(
+                    'name' => 'hi.jpg',
+                    'error'=>0,
+                    'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
+                ))
+            ));
+    }
 }
