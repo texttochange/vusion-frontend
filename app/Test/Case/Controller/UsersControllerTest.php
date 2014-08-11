@@ -510,6 +510,16 @@ class UsersControllerTestCase extends ControllerTestCase
         ->with('Auth.User.email')
         ->will($this->returnValue('vusion@ttc.com'));
         
+        $CakeEmail = $this->getMock('CakeEmail', array(
+            'from',
+            'send'));
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->returnValue('true')); 
+        
+        $this->Users->CakeEmail = $CakeEmail;
         
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
@@ -523,20 +533,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
         
-        $CakeEmail = $this->getMock('CakeEmail', array(
-            'from',
-            'send'));
-        $this->User->CakeEmail = $CakeEmail;
-        $CakeEmail
-        ->expects($this->any())
-        ->method('send')
-        ->will($this->returnValue('true'));
-        
-        
-        $CakeEmail
-        ->expects($this->once())
-        ->method('from')
-        ->with($this->equalTo('vusion@ttc.com'));
         
         /* 
         $users->Session

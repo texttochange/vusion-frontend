@@ -8,8 +8,12 @@ App::uses('CakeEmail', 'Network/Email');
 
 class UsersController extends AppController
 {
+    public $CakeEmail = null;
+    
+    
     var $components = array('LocalizeUtils', 'ResetPasswordTicket', 'Captcha', 'Email');
     var $uses       = array('User', 'Group');
+    
     
     public function beforeFilter()
     {
@@ -326,7 +330,7 @@ class UsersController extends AppController
                 }    
             }
         }
-    }
+    }  
     
     
     public function reportIssue()
@@ -375,7 +379,9 @@ class UsersController extends AppController
        
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         
-        $email = new CakeEmail();
+        if (!$CakeEmail) {
+            $email = new CakeEmail();
+        }
         $email->config('default');
         $email->from($userEmail);
         $email->to($reportIssueToEmail);
@@ -388,7 +394,18 @@ class UsersController extends AppController
             'userName' => $userName));
         $email->attachments($filePath . DS .$attachment['name']);
         $email->send();
-        
+        /*try
+        {
+            $email->send();
+        }
+        catch(Exception $e)
+        {
+            $this->Session->setFlash(
+                __('Email server is down. Please try agian '),
+                'default',
+                array('class' => 'message failure'));
+            return;
+        }*/
         $this->Session->setFlash(
             __('The tech team will contact you in the next 2 days by Email. Thank you.'),
             'default', array('class'=>'message success'));
