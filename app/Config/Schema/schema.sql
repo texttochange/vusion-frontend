@@ -132,6 +132,7 @@ CREATE TABLE `programs` (
   `name` varchar(50) DEFAULT NULL,
   `url` varchar(50) DEFAULT NULL,
   `database` varchar(50) DEFAULT NULL,
+  `status` varchar(50) DEFAULT `running`,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

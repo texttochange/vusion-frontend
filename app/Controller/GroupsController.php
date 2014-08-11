@@ -80,7 +80,7 @@ class GroupsController extends AppController
         if (!$this->Group->exists()) {
             throw new NotFoundException(__('Invalid group.'));
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             if ($this->Group->save($this->request->data)) {
                 $this->Session->setFlash(__('The group has been saved.'),
                     'default',

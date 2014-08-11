@@ -113,7 +113,7 @@ class UsersController extends AppController
             throw new NotFoundException(__('Invalid user.'));
         } 
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
             if ($user = $this->User->save($this->request->data)) {
@@ -260,7 +260,7 @@ class UsersController extends AppController
         $userId = $id;
         $this->set(compact('userId'));
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             
             if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
                 $this->Session->setFlash(__('old password is incorrect. Please try again.'),

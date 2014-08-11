@@ -29,7 +29,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'Program' => array(
                 'name' => 'Test Name',
                 'url' => 'testurl',
-                'database' => 'testdbprogram'
+                'database' => 'testdbprogram',
+                'status' => 'running'
                 )
             ));
     

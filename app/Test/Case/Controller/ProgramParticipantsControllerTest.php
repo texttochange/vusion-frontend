@@ -27,7 +27,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'name' => 'Test Name',
                 'url' => 'testurl',
                 'timezone' => 'utc',
-                'database' => 'testdbprogram'
+                'database' => 'testdbprogram',
+                'status' => 'running'
                 )
             ));
     
