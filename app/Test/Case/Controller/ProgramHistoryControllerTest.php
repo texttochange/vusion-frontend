@@ -382,6 +382,11 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->assertFileEquals(
             TESTS . 'files/exported_history.csv',
             WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+        
+        //Asserting that programName "Test Name" is adding to export file
+        $this->assertEquals(
+            substr($this->vars['fileName'], 0, -23),
+            'Test Name_history_');
     }
 
 

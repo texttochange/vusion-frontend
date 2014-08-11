@@ -169,22 +169,25 @@ class ProgramUnattachedMessagesController extends AppController
             if (isset($data['UnattachedMessage']['file'])) {
                 $importReport = $this->importParticipants();    
             } else if (isset($data['UnattachedMessage']['send-to-phone'])) {
+                if (!is_array($data['UnattachedMessage']['send-to-phone'])) {
+                    $data['UnattachedMessage']['send-to-phone'] = array($data['UnattachedMessage']['send-to-phone']);
+                }
                 $importReport = $this->importParticipantsFromList($data);
                 $data['UnattachedMessage']['send-to-phone'] = array();
             }
             if ($importReport) {
-                    $importFailed = array_filter($importReport, function($participantReport) { 
-                            return (!$participantReport['saved'] && !$participantReport['exist-before']);
-                    });
-                    $imported = array_filter($importReport, function($participantReport) { 
-                            return ($participantReport['saved']);
-                    });
-                    $participants = array_filter($importReport, function($participantReport) { 
-                            return ($participantReport['saved'] || $participantReport['exist-before']);
-                    });
-                    foreach($participants as $participantReport) {
-                        $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
-                    }
+                $importFailed = array_filter($importReport, function($participantReport) { 
+                        return (!$participantReport['saved'] && !$participantReport['exist-before']);
+                });
+                $imported = array_filter($importReport, function($participantReport) { 
+                        return ($participantReport['saved']);
+                });
+                $participants = array_filter($importReport, function($participantReport) { 
+                        return ($participantReport['saved'] || $participantReport['exist-before']);
+                });
+                foreach($participants as $participantReport) {
+                    $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
+                }
             }
         } 
         if ($this->UnattachedMessage->id == null) {

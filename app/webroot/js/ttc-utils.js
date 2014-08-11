@@ -303,7 +303,7 @@ function supplyOperatorOptions(elt) {
         supplyParameterOptions(this); 
     });
     $.each(operators, function(operator, details) {
-            $(operatorDropDown).append(new Option(localize_label(operator), operator));
+        $(operatorDropDown).append(new Option(localize_label(operator), operator));
     });
     $(elt).after(operatorDropDown);
     supplyParameterOptions(operatorDropDown);

@@ -259,8 +259,11 @@ class Participant extends MongoModel
         if (!is_bool($valid) || $valid != true){
             return $valid;
         }
-        if (isset($conditions['tags'])) {
-            $conditions['tags'] = $conditions['tags'] . array('$ne' => $tag);
+        if (isset($conditions['$and'])) {
+            $conditions['$and'] = array_merge($conditions['$and'], array(array('tags' => array('$ne' => $tag))));
+        } else if (isset($conditions['tags'])) {
+            $conditions['$and'] = array_merge(array(array('tags' => $conditions['tags'])), array(array('tags' => array('$ne' => $tag))));
+            unset($conditions['tags']);
         } else {
             $conditions['tags'] = array('$ne' => $tag);
         }

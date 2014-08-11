@@ -89,6 +89,7 @@ class AppController extends Controller
                 $programDetails[$key] = $data[0]['Program'][$key];
             }
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
+            $this->Session->write($programDetails['url']."_name", $programDetails['name']);
             
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
