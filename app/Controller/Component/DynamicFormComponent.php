@@ -126,6 +126,7 @@ class DynamicFormComponent extends Component
             'not-with' => __('not with'),
             "set-forward-message-condition" => __("Retrive a condition in the message"),
             "forward-message-no-participant-feedback" => __("Feedback in case no participant is matching"),
+            "set-only-optin-count" => __("Set count only optin participant"),
             );
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);

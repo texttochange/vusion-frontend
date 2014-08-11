@@ -91,8 +91,8 @@ class Action extends VirtualModel
                         'tagging' => array('tag'),
                         'reset' => array(),
                         'feedback' => array('content'),
-                        'proportional-tagging' => array('proportional-tags'),
-                        'proportional-labelling' => array('label-name', 'proprotional-labels'),
+                        'proportional-tagging' => array('set-only-optin-count', 'proportional-tags'),
+                        'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proprotional-labels'),
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'))),
                 'message' => 'The action-type required field are not present.'
@@ -161,6 +161,12 @@ class Action extends VirtualModel
                 'rule' => 'validProportionalLabels',
                 'message' => 'noMessage',
                 ),
+            ),
+        'set-only-optin-count' => array(
+            'validValue' => array(
+                'rule' => array('inList', array(null, 'only-optin-count')),
+                'message' => 'The field set-only-optin-count doesn\'t have a valide value.'
+                )
             ),
         'label-name' => array(
             'requiredConditional' => array (
@@ -389,6 +395,9 @@ class Action extends VirtualModel
         if ($this->data['type-action'] == 'sms-forwarding') {
             $this->_setDefault('set-forward-message-condition', null);
             $this->_setDefault('forward-to', null);
+        }
+        if (in_array($this->data['type-action'] array('proportional-tagging', 'proportional-labelling'))) {
+            $this->_setDefault('set-only-optin-count', null);
         }
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {

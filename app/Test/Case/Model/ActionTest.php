@@ -225,6 +225,7 @@ class ActionTestCase extends CakeTestCase
     public function testValidateAction_fail_proportionalTagging() {
         $action = array(
             'type-action' => 'proportional-tagging',
+            'set-only-optin-count' => 'something',
             'proportional-tags' => array(
                 array(
                     'tag' => 'a tag$',
@@ -232,6 +233,9 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
+         $this->assertEqual(
+            "The field set-only-optin-count doesn't have a valide value.",
+            $this->Action->validationErrors['set-only-optin-count'][0]);
         $this->assertEqual(
             "Use only space, letters and numbers for tag, e.g 'group 1'.",
             $this->Action->validationErrors['proportional-tags'][0]['tag'][0]);
@@ -245,6 +249,7 @@ class ActionTestCase extends CakeTestCase
         $action = array(
             'type-action' => 'proportional-labelling',
             'label-name' => '',
+            'set-only-optin-count' => 'something',
             'proportional-labels' => array(
                 array(
                     'label-value' => 'control`',
@@ -255,6 +260,9 @@ class ActionTestCase extends CakeTestCase
         $this->assertEqual(
             "Use only space, letters and numbers for the label name.",
             $this->Action->validationErrors['label-name'][0]);
+        $this->assertEqual(
+            "The field set-only-optin-count doesn't have a valide value.",
+            $this->Action->validationErrors['set-only-optin-count'][0]);
         $this->assertEqual(
             "Use only DOT, space, letters and numbers for the label value.",
             $this->Action->validationErrors['proportional-labels'][0]['label-value'][0]);
