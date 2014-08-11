@@ -456,7 +456,6 @@ class UsersControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
-        
        
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
@@ -502,7 +501,6 @@ class UsersControllerTestCase extends ControllerTestCase
         ->method('read')
         ->with('Auth.User.username')
         ->will($this->returnValue('maxmass'));
-        
         
         $users->Session
         ->expects($this->at(1))
@@ -569,13 +567,11 @@ class UsersControllerTestCase extends ControllerTestCase
         ->with('Auth.User.username')
         ->will($this->returnValue('maxmass'));
         
-        
         $users->Session
         ->expects($this->at(1))
         ->method('read')
         ->with('Auth.User.email')
         ->will($this->returnValue('vusion@ttc.com'));
-        
         
         $users->Session
         ->expects($this->any())
