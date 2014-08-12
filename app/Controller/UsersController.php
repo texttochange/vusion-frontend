@@ -401,8 +401,9 @@ class UsersController extends AppController
                 __('Email server connection is down. Please send report to vusion-issue@texttochange.com'));
             return;  
         } catch (Exception $e) {
+            $exceptionMessage = $e->getMessage();
             $this->Session->setFlash(
-                __('Email server is down. Please send report to vusion-issue@texttochange.com'));
+                __('"%s". Please send report to vusion-issue@texttochange.com', $exceptionMessage));
             return;
         }
         

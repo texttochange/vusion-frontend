@@ -542,7 +542,7 @@ class UsersControllerTestCase extends ControllerTestCase
             ));
     }
     
-   
+    
     public function testReportIssue_fail_connectionRefused()
     {
         $users = $this->generate('Users', array(
@@ -578,7 +578,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $CakeEmail
         ->expects($this->any())
         ->method('send')
-        ->will($this->throwException(new SocketException($message= '')));
+        ->will($this->throwException(new SocketException('Email server connection is down. Please send report to vusion-issue@texttochange.com')));
         
         $users->CakeEmail = $CakeEmail;
         
@@ -636,14 +636,14 @@ class UsersControllerTestCase extends ControllerTestCase
         $CakeEmail
         ->expects($this->any())
         ->method('send')
-        ->will($this->throwException(new Exception()));
+        ->will($this->throwException(new Exception('Email server is down')));
         
         $users->CakeEmail = $CakeEmail;
         
         $users->Session
         ->expects($this->any())
         ->method('setFlash')    
-        ->with('Email server is down. Please send report to vusion-issue@texttochange.com');
+        ->with('"Email server is down". Please send report to vusion-issue@texttochange.com');
         
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
@@ -657,4 +657,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
     }
+    
+    
 }
