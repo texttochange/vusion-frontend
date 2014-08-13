@@ -15,7 +15,8 @@ class UsersController extends AppController
         'LocalizeUtils', 
         'ResetPasswordTicket',
         'Captcha',
-        'Email');
+        'Email',
+        'Filter');
     
     var $uses = array(
         'User',
