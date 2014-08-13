@@ -340,7 +340,7 @@ class UsersController extends AppController
             $this->set(compact('validationErrors'));
             return;
         }
-       
+        
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         
         if (!$this->CakeEmail) {
@@ -363,11 +363,13 @@ class UsersController extends AppController
         } catch (SocketException $e) {
             $this->Session->setFlash(
                 __('Email server connection is down. Please send report to vusion-issues@texttochange.com'));
+            unlink($filePath . DS . $attachment['name']);
             return;  
         } catch (Exception $e) {
             $exceptionMessage = $e->getMessage();
             $this->Session->setFlash(
                 __('"%s". Please send report to vusion-issues@texttochange.com', $exceptionMessage));
+            unlink($filePath . DS . $attachment['name']);
             return;
         }
         
