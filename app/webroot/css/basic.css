@@ -470,6 +470,39 @@
 .ttc-login-container .required label:after{
         content: "";
 }
+
+.ttc-report-issue-container {
+        position: relative;
+        width: 558px;        
+}
+
+.popup-layout {
+        min-width: 560px;
+}
+
+.popup-container {
+        text-align: left;
+        min-width: 560px;
+}
+
+.popup-header {
+        padding: 5px 20px;
+        height: 40px;
+        background: black;
+        min-width: 560px;
+}
+.report-issue-describtion {
+        width: 516px;        
+}
+
+.report-issue-message {
+        margin-left:7px;
+        height: 115px;
+        resize: none;
+}
+.report-message-footer {
+        width: 560px;
+}
 /*
 .ttc-display-area .required:after {
 color: #E32;
@@ -984,9 +1017,9 @@ display: inline;
 
 
 .ttc-paging {
-    float: right;
-    width: 200px;
-    text-align: right;
+        float: right;
+        width: 200px;
+        text-align: right;
 }
 
 .ttc-stack-filter input{
@@ -1174,12 +1207,34 @@ display: inline;
                 position: relative;
                 overflow-x: hidden;
                 height: 483px;
+        } 
+        
+        #content-popup { 
+                /*padding: 10px 3px 20px 1px;*/
+                /*min-width: 550px;*/
+                padding-top: 10px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 20px;
+                min-width: 560px;
+                /*max-width: 1366px;*/
+                position: relative;
+                overflow-x: hidden;
+                height: 483px;
+                background: #fff;
+                clear: both;
+                color: #333;
+                padding: 10px 20px 20px 20px;
+                overflow: auto;
+                height: 470px;	
         }         
+
         .ttc-program-stats {
-                left: 36%; 
+                left: 36%;
                 padding-left: 73px;
                 font-size: 11px;
         }
+        
         .ttc-program-stats-inside {
                 padding: 2px;
                 font-size: 12px;
@@ -1412,26 +1467,26 @@ display: inline;
 }
 
 .timeframe {
-    margin-bottom: 5px;
+        margin-bottom: 5px;
 }
 
 .timeframe .caption {
-    margin-top: 10px;
-    margin-bottom: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
 }
 
 .timeframe-form .timeframe{
-   margin: 4px;
-   padding: 4px;
-   border: dotted 1px grey;
+        margin: 4px;
+        padding: 4px;
+        border: dotted 1px grey;
 }
 
 .timeframe-form .submit{
-   margin-left: 10px;
+        margin-left: 10px;
 }
 
 .timeframe-form .selected{
-    background: lightgrey;
+        background: lightgrey;
 }
 /* padding for sms-message-counter */
 .sms-message-counter{
@@ -1451,5 +1506,6 @@ display: inline;
         margin-right: 10px;
         background-color: lightblue;
         padding: 2px 3px 1px 3px;
-
+        
 }
+

@@ -489,7 +489,7 @@ function generateMassUntagDialogue(obj){
 }
 
 
-function submitMassUntag(){    
+function submitMassUntag() {    
     var tag = $('[name*="untag"]').val();    
     var url = $('#massuntag-dialogue').find('form').attr('url');
     var untagConfirm = confirm("Do you want to delete this tag?");
@@ -755,4 +755,22 @@ function clickProgramBox(url,event) {
     }
 }
 
+function popupBrowser(obj) {
+    var url = $(obj).attr("url") + window.location.search;
+    var newPopupWindow = window.open(url, 'reportissue', 'titlebar=no, toolbar=no, resizable=no, height=610, width=600');
+    if (window.focus) {
+        newPopupWindow.focus();
+    }
+    return false;
+}
+
+function popupBrowserClose() {
+        window.close();
+}
+
+function popupNewBrowserTab(obj) {
+    var url = $(obj).attr("url") + window.location.search;
+    var newPopupWindow = window.open(url, '_blank');
+    newPopupWindow.focus();
+}
 
