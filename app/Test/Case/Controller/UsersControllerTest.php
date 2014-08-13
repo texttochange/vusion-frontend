@@ -585,7 +585,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $users->Session
         ->expects($this->any())
         ->method('setFlash')    
-        ->with('Email server connection is down. Please send report to vusion-issue@texttochange.com');
+        ->with('Email server connection is down. Please send report to vusion-issues@texttochange.com');
         
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
@@ -643,7 +643,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $users->Session
         ->expects($this->any())
         ->method('setFlash')    
-        ->with('"Email server is down". Please send report to vusion-issue@texttochange.com');
+        ->with('"Email server is down". Please send report to vusion-issues@texttochange.com');
         
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
