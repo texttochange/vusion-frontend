@@ -341,6 +341,7 @@ class UsersController extends AppController
             return;
         }
         
+        chmod($filePath, 0764);
         copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         
         if (!$this->CakeEmail) {
