@@ -8,7 +8,8 @@ App::uses('User', 'Model');
 class UnmatchableReplyController extends AppController
 {
     
-    var $components = array('RequestHandler',
+    var $components = array(
+        'RequestHandler',
         'LocalizeUtils',
         'PhoneNumber',
         'ProgramPaginator',
@@ -48,6 +49,7 @@ class UnmatchableReplyController extends AppController
     
     public function index()
     {
+        $requestSuccess = true;
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
@@ -68,7 +70,7 @@ class UnmatchableReplyController extends AppController
             );
         $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate();
-        $this->set(compact('unmatchableReplies', 'countriesIndexes'));
+        $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
     }
     
     
@@ -90,12 +92,13 @@ class UnmatchableReplyController extends AppController
     
     public function paginationCount()
     {
-        if ($this->params['ext'] !== 'json') {
-            return; 
+        $requestSuccess = true;
+        if (!$this->_isAjax()) {
+            throw new MethodNotAllowedException();
         }
         $defaultConditions = array();
         $paginationCount   = $this->UnmatchableReply->count($this->Filter->getConditions($this->UnmatchableReply, $defaultConditions), null, -1);
-        $this->set('paginationCount', $paginationCount);
+        $this->set(compact('requestSuccess', 'paginationCount'));
     }
     
     
@@ -118,7 +121,8 @@ class UnmatchableReplyController extends AppController
     
     public function export()
     {
-        $url = $this->params['controller'];
+        $url            = $this->params['controller'];
+        $requestSuccess = false;
         
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
@@ -184,10 +188,11 @@ class UnmatchableReplyController extends AppController
                     fputcsv($handle, $line,',' , '"' );
                 }
             }
-            
-            $this->set(compact('fileName'));
+            $requestSuccess = true;
+            $this->set(compact('requestSuccess', 'fileName'));
         } catch (Exception $e) {
-            $this->set('errorMessage', $e->getMessage());
+            $this->Session->setFlash($e->getMessage());
+            $this->set(compact('requestSuccess'));
         }
     }
     

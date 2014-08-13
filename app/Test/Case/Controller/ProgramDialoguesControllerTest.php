@@ -30,7 +30,8 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             'Program' => array(
                 'name' => 'Test Name',
                 'url' => 'testurl',
-                'database' => 'testdbprogram'
+                'database' => 'testdbprogram',
+                'status' => 'running'
                 )
             )
         );
@@ -40,7 +41,8 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             'Program' => array(
                 'name' => 'Test Name 2',
                 'url' => 'testurl2',
-                'database' => 'testdbprogram2'
+                'database' => 'testdbprogram2',
+                'status' => 'running'
                 )
             )
         );
@@ -206,14 +208,14 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
         $dialogue = $this->Maker->getOneDialogue();
         $this->testAction(
-            "/testurl/programDialogues/save", 
+            "/testurl/programDialogues/save.json", 
             array(
                 'method' => 'post',
                 'data' => $dialogue
                 )
             );
-        $this->assertEquals('ok', $this->vars['result']['status']);
-        $this->assertTrue(isset($this->vars['result']['dialogue-obj-id']));        
+        $this->assertTrue($this->vars['requestSuccess']);
+        $this->assertTrue(isset($this->vars['dialogueObjectId']));        
     }
     
     
@@ -233,16 +235,13 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         unset($dialogue['Dialogue']['interactions'][0]['type-schedule']);
         
         $this->testAction(
-            "/testurl/programDialogues/save", 
+            "/testurl/programDialogues/save.json", 
             array(
                 'method' => 'post',
                 'data' => $dialogue
                 )
             );
-        $this->assertEqual('fail', $this->vars['result']['status']);
-        $this->assertEqual(
-            'Type Schedule field cannot be empty.', 
-            $this->vars['result']['message']['Dialogue']['interactions'][0]['type-schedule'][0]);        
+        $this->assertFalse($this->vars['requestSuccess']);
     }
 
 
@@ -264,35 +263,30 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
 
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
 
-        $this->testAction(
-            '/testurl/programDialogue/save', array(
+        $result = $this->testAction(
+            '/testurl/programDialogue/save.json', array(
                 'method' => 'post',
                 'data' => $dialogue));
         
-        $this->assertEquals(
-            'fail',
-            $this->vars['result']['status']);
-        $this->assertEquals(
-            "'usedkeyword' already used by a dialogue of program 'other program'.",
-            $this->vars['result']['message']['Dialogue']['interactions'][0]['keyword'][0]);        
+        $this->assertFalse($this->vars['requestSuccess']);
     }
+
     
     public function testSave_missingProgramSettings()
     {
         $dialogues = $this->mockProgramAccess();
-                
+        $dialogues->Session
+            ->expects($this->once())
+            ->method('setFlash')
+            ->with('Please set the program settings then try again.');
+
         $dialogue = $this->Maker->getOneDialogue('usedKeyword');
         
         $this->testAction(
-            '/testurl/programDialogue/save', array(
+            '/testurl/programDialogue/save.json', array(
                 'method' => 'post',
                 'data' => $dialogue));
-        $this->assertEquals(
-            'fail',
-            $this->vars['result']['status']);
-        $this->assertEquals(
-            'Please set the program settings then try again.',
-            $this->vars['result']['message']);        
+        $this->assertFalse($this->vars['requestSuccess']);
     }
 
 
@@ -375,7 +369,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
 
         $this->testAction(
-            '/testurl/scripts/validateKeyword', array(
+            '/testurl/scripts/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
@@ -383,8 +377,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedkeyword' already used by a Dialogue of program 'other program'.", $this->vars['result']['message']);
+        $this->assertFalse($this->vars['requestSuccess']);
+        $this->assertEquals(
+            "'usedkeyword' already used by a Dialogue of program 'other program'.",
+            $this->vars['foundMessage']);
         
     }
     
@@ -406,7 +402,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
 
         $this->testAction(
-            '/testurl/scripts/validateKeyword', array(
+            '/testurl/scripts/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
@@ -414,8 +410,10 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedkeyword' already used by a Request of program 'other program'.", $this->vars['result']['message']);
+        $this->assertFalse($this->vars['requestSuccess']);
+        $this->assertEquals(
+            "'usedkeyword' already used by a Request of program 'other program'.",
+            $this->vars['foundMessage']);
         
     }
     
@@ -433,7 +431,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
 
         $this->testAction(
-            '/testurl/programDialogues/validateKeyword', array(
+            '/testurl/programDialogues/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
@@ -441,7 +439,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertEquals('ok', $this->vars['result']['status']);
+        $this->assertTrue($this->vars['requestSuccess']);
     }
     
 
@@ -462,13 +460,13 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
                 
         $this->testAction(
-            '/testurl/programDialogues/validateKeyword', array(
+            '/testurl/programDialogues/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
                     'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'])));
  
-        $this->assertEquals('ok', $this->vars['result']['status']);
+        $this->assertTrue($this->vars['requestSuccess']);
     }
   
     
@@ -489,14 +487,16 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         
         $this->testAction(
-            '/testurl/programDialogues/validateKeyword', array(
+            '/testurl/programDialogues/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
                     'dialogue-id'=> '')));
         
-        $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'usedkeyword' already used in Dialogue 'my dialogue' of the same program.", $this->vars['result']['message']);
+        $this->assertFalse($this->vars['requestSuccess']);
+        $this->assertEquals(
+            "'usedkeyword' already used in Dialogue 'my dialogue' of the same program.",
+            $this->vars['foundMessage']);
     }
     
   
@@ -516,14 +516,16 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Request->save($this->Maker->getOneRequest());
         
         $this->testAction(
-            '/testurl/programDialogues/validateKeyword', array(
+            '/testurl/programDialogues/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'KEYWORD',
                     'dialogue-id'=>'')));
         
-        $this->assertEquals('fail', $this->vars['result']['status']);
-        $this->assertEquals("'keyword' already used in Request 'KEYWORD request' of the same program.", $this->vars['result']['message']);
+        $this->assertFalse($this->vars['requestSuccess']);
+        $this->assertEquals(
+            "'keyword' already used in Request 'KEYWORD request' of the same program.",
+            $this->vars['foundMessage']);
     }
     
     
@@ -544,7 +546,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         
         $this->testAction(
-            '/testurl/scripts/validateKeyword', array(
+            '/testurl/scripts/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usingAnOtherKeyword',
@@ -552,7 +554,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertEquals('ok', $this->vars['result']['status']);
+        $this->assertTrue($this->vars['requestSuccess']);
     }
     
     
@@ -587,14 +589,14 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->Dialogue->makeDraftActive($savedDialogue['Dialogue']['dialogue-id']);
         
         $this->testAction(
-            '/testurl/scripts/validateKeyword', array(
+            '/testurl/scripts/validateKeyword.json', array(
                 'method' => 'post',
                 'data' => array(
                     'keyword' => 'usedKeyword',
                     'dialogue-id' => '')
                 )
             );
-        $this->assertEquals('ok', $this->vars['result']['status']);
+        $this->assertTrue($this->vars['requestSuccess']);
     }    
     
     

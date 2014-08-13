@@ -322,7 +322,7 @@ class Request extends MongoModel
             $requestKeywords = DialogueHelper::fromKeyphrasesToKeywords($request['Request']['keyword']);
             $keywords = array_merge($keywords, $requestKeywords);
         }
-        return array_unique($keywords);
+        return array_values(array_unique($keywords));
     }
 
     

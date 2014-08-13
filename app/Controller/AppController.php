@@ -46,7 +46,8 @@ class AppController extends Controller
         'PhoneNumber',
         'CreditManager',
         'LogManager',
-        'Stats'
+        'Stats',
+        'ArchivedProgram'
         );
     
     var $helpers = array(
@@ -65,7 +66,7 @@ class AppController extends Controller
     
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
-    
+    var $programDetails     = array();
     
     function beforeFilter()
     {    
@@ -82,19 +83,27 @@ class AppController extends Controller
             if (count($data)==0) {
                 throw new NotFoundException('Could not find this page.');
             }
-            $programDetails = array(
-                'name' => $data[0]['Program']['name'],
-                'url' => $data[0]['Program']['url'],
-                'database' => $data[0]['Program']['database']);
+
+            $programDetails = array();
+            foreach (array('name', 'url', 'database', 'status') as $key) {
+                $programDetails[$key] = $data[0]['Program'][$key];
+            }
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
+            $this->Session->write($programDetails['url']."_name", $programDetails['name']);
             
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
+            $this->programDetails = $programDetails;
             $this->set(compact('programDetails')); 
+
+            if (!$this->ArchivedProgram->isAllowed()) {
+                $this->_stop();
+            }
             
             //In case of a Json request, no need to set up the variables
-            if ($this->params['ext']=='json' or $this->params['ext']=='csv')
+            if ($this->_isAjax() || $this->params['ext']=='csv') {
                 return;
+            }
             
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
             $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);
@@ -152,6 +161,11 @@ class AppController extends Controller
             );
         
         return $currentProgramData;
+    }
+
+    protected function _isAjax() 
+    {
+        return ($this->request->is('ajax') ||  $this->request->ext == 'json');
     }
     
     

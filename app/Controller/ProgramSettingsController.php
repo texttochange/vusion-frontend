@@ -82,7 +82,15 @@ class ProgramSettingsController extends AppController
     {        
         $programUrl = $this->params['program'];
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->programDetails['status'] === 'archived') {
+            $this->Session->setFlash(__("The Program Settings cannot be edited while the program is archived."));
+            $this->redirect(array(
+                'program' => $programUrl,
+                'controller' => 'programSettings',
+                'action' => 'view'));
+        }
+
+        if ($this->request->is('post')) {
             
             $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
                 $this->Session->read($programUrl.'_db'), 

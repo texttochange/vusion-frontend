@@ -11,6 +11,7 @@
 		echo $this->Html->css(array(
 		    'cake.generic',
 		    'basic',
+		    'admin',
 		    'jquery-ui/jquery-ui-1.10.3.custom.min',
 		    'superfish/superfish-1.7.4',
 		    'superfish/superfish-vertical-1.7.4',
@@ -126,10 +127,15 @@
             $this->Js->set('isProgramSpecific', true);
             echo "<div class='program-left-column'>";			   
             echo $this->element('navigation_menu');
-            if (isset($programDetails['settings']['shortcode']) && isset($programDetails['settings']['timezone'])) {
-                echo $this->element('program_statistics');
-            }
-            echo $this->element('backend_notifications');
+            if ($programDetails['status'] == 'running') {
+	            if (isset($programDetails['settings']['shortcode']) 
+            		&& isset($programDetails['settings']['timezone'])) {
+               	    echo $this->element('program_statistics');
+            	}
+            	echo $this->element('backend_notifications');
+	        } else {  //archived program
+	        	echo $this->element('program_statistics');
+	        }
             echo "</div>";
             echo "<div class='program-body'>";
 			echo $content_for_layout;

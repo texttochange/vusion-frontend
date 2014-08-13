@@ -8,8 +8,9 @@
 	               array('program'=>$programDetails['url'], 'action'=>'restartWorker.json'),
 	               array('method' => 'GET',
                          'async' => true, 
-	                     'dataExpression' => true,
-	                     'success' => '$("#flashMessage").show().text(data["message"]).attr("class","message success")')));
+	                     'contentType' => 'application/json; charset=utf-8',
+	                     'dataType' => 'json',
+	                     'success' => 'showFlashMessages(data["message"], data["status"]);')));
 		?></li>
 	</ul>
 	<h3><?php echo __('Sending Next');?></h3>

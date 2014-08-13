@@ -27,7 +27,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'name' => 'Test Name',
                 'url' => 'testurl',
                 'timezone' => 'utc',
-                'database' => 'testdbprogram'
+                'database' => 'testdbprogram',
+                'status' => 'running'
                 )
             ));
     
@@ -1181,6 +1182,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertFileEquals(
             TESTS . 'files/exported_participants.csv',
             WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+        
+        //Asserting that programName "Test Name" is adding to export file
+        $this->assertEquals(
+            substr($this->vars['fileName'], 0, -23),
+            'Test Name_participants_');
     }
     
     

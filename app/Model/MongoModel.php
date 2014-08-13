@@ -7,7 +7,8 @@ abstract class MongoModel extends Model
 {
     
     var $specific     = false;
-    var $databaseName = null;    
+    var $databaseName = null; 
+    var $useDbConfig = 'mongo';   
 
     var $mongoFields = array(
         '_id',

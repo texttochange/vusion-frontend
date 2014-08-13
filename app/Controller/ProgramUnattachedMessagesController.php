@@ -120,18 +120,20 @@ class ProgramUnattachedMessagesController extends AppController
     public function add()
     {
         $programUrl = $this->params['program'];
+        $requestSuccess = false;
 
         if ($this->request->is('post')) {
-            $savedUnattachedMessage = $this->saveUnattachedMessage();
-            $this->set(compact('savedUnattachedMessage'));
-            if ($savedUnattachedMessage) {
-                if (!$this->request->is('ajax')) {
+            if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
+                $requestSuccess = true;
+                $this->set(compact('savedUnattachedMessage'));
+                if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,
                         'controller' => 'programUnattachedMessages',
                         'action' => 'index'));
                 }
-            } 
+            }
+            $this->set(compact('requestSuccess'));
         }
         
         $selectorValues = $this->Participant->getDistinctTagsAndLabels();
@@ -283,8 +285,9 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function edit()
     {
-        $programUrl = $this->params['program'];
-        $id         = $this->params['id'];
+        $programUrl     = $this->params['program'];
+        $id             = $this->params['id'];
+        $requestSuccess = false;
 
         $this->UnattachedMessage->id = $id;
         
@@ -294,14 +297,17 @@ class ProgramUnattachedMessagesController extends AppController
         
         $this->UnattachedMessage->read();
         if ($this->request->is('post')) {
-            if ($this->saveUnattachedMessage()) {
-                if (!$this->request->is('ajax')) {
+            if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
+                $requestSuccess = true;
+                $this->set(compact('savedUnattachedMessage'));
+                if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,
                         'controller' => 'programUnattachedMessages',
                         'action' => 'index'));
                 }
             }
+            $this->set(compact('requestSuccess'));
         } else {
             $this->data = $this->UnattachedMessage->read(null, $id);
             $now = new DateTime('now');    
@@ -314,9 +320,7 @@ class ProgramUnattachedMessagesController extends AppController
             $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
             if ($this->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
                 $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
-                    'default',
-                    array('class' => "message warning")
-                    );
+                    'default', array('class' => "message warning"));
             }
         }
         
@@ -362,23 +366,14 @@ class ProgramUnattachedMessagesController extends AppController
         
         if ($this->UnattachedMessage->delete()) {
             $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
-            $this->Session->setFlash(
-                __('Message deleted'),
-                'default',
-                array('class'=>'message success')
-                );
-            $this->redirect(
-                array(
-                    'program' => $programUrl,
-                    'controller' => 'programUnattachedMessages',
-                    'action' => 'index'
-                    )
-                );
+            $this->Session->setFlash(__('Message deleted'),
+                'default', array('class'=>'message success'));
+            $this->redirect(array(
+                'program' => $programUrl,
+                'controller' => 'programUnattachedMessages',
+                'action' => 'index'));
         }
-        $this->Session->setFlash(__('Message was not deleted.'), 
-            'default',
-            array('class' => "message failure")
-            );
+        $this->Session->setFlash(__('Message was not deleted.'));
     }
     
     
