@@ -26,7 +26,6 @@ class UsersController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        CakeEmail::transport();
         //For initial creation of the admin users uncomment the line below
         $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
     }
