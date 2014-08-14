@@ -110,5 +110,61 @@ class CreditViewerController extends AppController
         return $parameters;
     }
 
+
+    public function export()
+    {
+      try{
+            //First a tmp file is created
+            $filePath = WWW_ROOT . "files/programs/"; 
+            
+            //TODO: the folder creation should be managed at program creation
+            if (!file_exists($filePath)) {
+                //echo 'create folder: ' . WWW_ROOT . "files/";
+                mkdir($filePath);
+                chmod($filePath, 0764);
+            }
+            
+            //$programNow    = $this->ProgramSetting->getProgramTimeNow();
+           // $programName   = $this->Session->read($programUrl.'_name');
+            $fileName      = "CreditViewerExport.csv";            
+            $fileFullPath  = $filePath . "/" . $fileName;
+            $handle        = fopen($fileFullPath, "w");
+            
+            $headers       = $this->Participant->getExportHeaders($conditions);
+            
+            //Second we write the headers
+            fputcsv($handle, $headers,',' , '"' );
+            
+            //Third we extract the data and copy them in the file            
+            $participantCount = $this->Participant->find('count', array('conditions'=> $conditions));
+            $pageCount        = intval(ceil($participantCount / $paginate['limit']));
+            
+            for ($count = 1; $count <= $pageCount; $count++) {
+                $paginate['page'] = $count;
+                $this->paginate   = $paginate;
+                $participants     = $this->paginate();
+                foreach ($participants as $participant) {
+                    $line = array();
+                    foreach ($headers as $header) {
+                        if (in_array($header, array('phone', 'last-optin-date', 'last-optout-date'))) {
+                            $line[] = $participant['Participant'][$header];
+                        } else if ($header == 'tags') {
+                            $line[] = implode(', ', $participant['Participant'][$header]);         
+                        } else {
+                            $value  = $this->_searchProfile($participant['Participant']['profile'], $header);
+                            $line[] = $value;
+                        }
+                    }
+                    fputcsv($handle, $line,',' , '"');
+                }
+            }
+            $requestSuccess = true;
+            $this->set(compact('requestSuccess', 'fileName'));
+        } catch (Exception $e) {
+            $this->Session->setFlash($e->getMessage());
+            $this->set(compact('requestSuccess'));
+        }  
+    }
+
     
 }

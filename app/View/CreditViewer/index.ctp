@@ -2,6 +2,20 @@
 $this->Html->script("jstree.min.js", array("inline" => false));
 ?>
 <div class="credit-logs index users-index">
+    <ul class="ttc-actions">
+        <li>
+            <?php
+                $exportUrl = $this->Html->url(array('controller' => 'CreditViewer', 'action'=>'export'));
+                echo $this->Html->tag(
+                    'span', 
+                    __('Export'), 
+                    array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
+                $this->Js->get('[name=export]')->event('click',
+                    'generateExportDialogue(this);');
+            ?>
+        </li>
+    </ul>
+
 	<h3><?php echo __('Credit Viewer');?></h3>
     <div>
     <?php
