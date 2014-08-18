@@ -5,7 +5,7 @@
 <div class="boxed-group">
 	<h3><?php echo __('Admin Settings'); ?></h3>
 <div class="boxed-group-inner">
-<?php echo $this->Form->create('Program');?>
+<?php echo $this->Form->create('Program', array('type' => 'post'));?>
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('name', array('label' => __('Name')));		
