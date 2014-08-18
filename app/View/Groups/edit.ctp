@@ -1,6 +1,6 @@
 <div class="groups form users-index program-body">
 <h3><?php echo __('Edit Group'); ?></h3>
-<?php echo $this->Form->create('Group');?>
+<?php echo $this->Form->create('Group',  array('type' => 'post'));?>
 	<fieldset>
 	
 	<?php
