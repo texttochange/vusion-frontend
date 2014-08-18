@@ -1,6 +1,6 @@
 <div class="shortcodes form users-index program-body">
 <h3><?php echo __('Edit ShortCode'); ?></h3>
-<?php echo $this->Form->create('ShortCode');?>
+<?php echo $this->Form->create('ShortCode',  array('type' => 'post'));?>
 	<fieldset>	
 	
 	<?php
