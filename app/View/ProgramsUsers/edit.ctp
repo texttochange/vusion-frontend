@@ -1,5 +1,5 @@
 <div class="programsUsers form width-size">
-<?php echo $this->Form->create('ProgramsUser');?>
+<?php echo $this->Form->create('ProgramsUser',  array('type' => 'post'));?>
 	<fieldset>
 		<legend><?php echo __('Edit Programs User'); ?></legend>
 	<?php
