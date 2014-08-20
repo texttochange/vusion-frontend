@@ -137,7 +137,7 @@ class CreditViewerController extends AppController
             $handle        = fopen($fileFullPath, "w");            
             $headers       = array(
                 'country',
-                'code',
+                'shortcode',
                 'program-name',
                 'incoming',
                 'outgoing',
@@ -154,83 +154,26 @@ class CreditViewerController extends AppController
             $creditLogCount = $this->CreditLog->find('count');
             $pageCount      = intval(ceil($creditLogCount / $paginate['limit']));
             
-            /*for ($count = 1; $count <= $pageCount; $count++) {
-                $paginate['page'] = $count;
-                $this->paginate   = $paginate;
-                $creditLogs       = $this->_getAllCredits($conditions);
-                
-                foreach ($creditLogs as $creditLog) {
-                    print_r($creditLog);
-                    echo "*************************************";
-                    
-                    $line = array();
-                    $codesCount = count($creditLog['codes']);
-                    foreach ($headers as $header) {
-                        foreach ($creditLog['codes'] as $code) {
-                            $programsCount = count($code['programs']);
-                            for ($count =1; $count <= $programsCount; $count++) {
-                                if ($header == 'country') {
-                                    //if ($creditLog['country'] == $header)
-                                    //$line[] = $creditLog['country'];
-                                    print_r($header);
-                                    echo "     ";
-                                    print_r($creditLog['country']);
-                                    echo "\n";
-                                }
-                                /*if ($header == 'code') {
-                                    //$line[] = $code['code'];
-                                   print_r($header);
-                                    echo "     ";
-                                    print_r($code['code']);
-                                    echo "\n";
-                                }
-                            }
-                            foreach ($code['programs'] as $key => $value) {
-                                    if (isset($code['programs'][$key][$header]))  {
-                                        //$line[] = $code['programs'][0][$header];
-                                        print_r($header);
-                                        echo "     ";
-                                        print_r($code['programs'][$key][$header]);
-                                        echo "\n";
-                                    } 
-                                }
-                        }
-                        
-                        
-                        /*
-                        /*if (isset($creditLog[$header])) {
-                        $line[] = $creditLog[$header];
-                        } else if ($header == 'code') {
-                        $line[] = $creditLog['codes'][0][$header];         
-                        } else if ($header == 'program-name') {
-                        // $programNames = $creditLog['codes'][0]['programs'][0]['program-name'];
-                        // $value  = $this->_searchLabel($programNames, $header);
-                        $line[] = $creditLog['codes'][0]['programs'][0][$header];
-                        } else {
-                        $line[] = "";
-                        }
-                    }
-                    fputcsv($handle, $line,',' , '"');
-                }
-            }*/
             
             $creditLogs       = $this->_getAllCredits($conditions);
             
-            foreach ($creditLogs as $creditLog) {
-                //print_r($creditLog);
-                //echo "*************************************";
+            foreach ($creditLogs as $creditLog) {               
                 foreach ($creditLog['codes'] as $code) {
                     $programsCount = $this->_getProgramCount($code);
+                    $index = 0;
                     for ($count =1; $count <= $programsCount; $count++) {
                         $line = array();
                         foreach ($headers as $header) {
                             if ($header == 'country') {
                                 $line[] = $creditLog['country'];
+                            } else if ($header == 'shortcode') {
+                                $line[] = $code['code'];
                             } else {
-                                $line[] = $this->_getProgramCredits($code, $header);
+                                $line[] = $this->_getProgramCredits($code, $header, $index, $programsCount);                                
                             }
                         }
-                        //print_r($line);
+                        $index++;
+                        
                         fputcsv($handle, $line,',' , '"');
                     }
                 }
@@ -253,35 +196,15 @@ class CreditViewerController extends AppController
     }
     
     
-    protected function _getProgramCredits($code, $header)
+    protected function _getProgramCredits($code, $header, $programIndex, $programsCount)
     {
         $programCredits = '';
-        //print_r($code);
-        //echo "*************************************";
-        foreach ($code['programs'] as $key => $value) {
-            //print_r($code['programs'][$key][$header]);
-            //echo "*************************************";
-            if (isset($code['programs'][$key][$header])) {
-                //$programCredits = $code['programs'][$key][$header];
-                // if (in_array($header, $value)) {
-                print_r($value[$header]);
-                echo "*************************************";
-                 echo "\n";
-                $programCredits = $value[$header];
-                
-            }
             
-            
-            
+        if ($programIndex < $programsCount) {
+            if (in_array($header, $code['programs'][$programIndex]))
+                $programCredits = $code['programs'][$programIndex][$header];
         }
-        /*if ($programIndex < $programsCount) {//echo "here";
-        $programCredits = $code['programs'][$programIndex][$header];
-        }*/
-        /*for ($index = 0; $index < $programCount:  as $program) {
-        if (in_array($header, $program)) {
-        $programCredits = $program[$header];
-        }
-        }*/
+
         return $programCredits;
     }
     
