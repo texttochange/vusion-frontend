@@ -5,7 +5,7 @@ $this->Html->script("jstree.min.js", array("inline" => false));
     <ul class="ttc-actions">
         <li>
             <?php
-                $exportUrl = $this->Html->url(array('controller' => 'CreditViewer', 'action'=>'export'));
+                $exportUrl = $this->Html->url(array('controller' => 'creditViewer', 'action'=>'export'));
                 echo $this->Html->tag(
                     'span', 
                     __('Export'), 

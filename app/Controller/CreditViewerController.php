@@ -109,55 +109,133 @@ class CreditViewerController extends AppController
 
         return $parameters;
     }
-
-
+    
+    
     public function export()
     {
+         $url                 = $this->params['controller'];
+         $requestSucces       = false;
+         $timeframeParameters = $this->_getTimeframeParameters();
+         $conditions          = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
+         
+         $paginate = array(
+            'all',
+            'limit' => 500,
+            'maxLimit' => 500);
+
       try{
-            //First a tmp file is created
-            $filePath = WWW_ROOT . "files/programs/"; 
+            $filePath = WWW_ROOT . "files/programs/" . $url;
             
-            //TODO: the folder creation should be managed at program creation
             if (!file_exists($filePath)) {
-                //echo 'create folder: ' . WWW_ROOT . "files/";
                 mkdir($filePath);
                 chmod($filePath, 0764);
             }
             
-            //$programNow    = $this->ProgramSetting->getProgramTimeNow();
-           // $programName   = $this->Session->read($programUrl.'_name');
-            $fileName      = "CreditViewerExport.csv";            
+            $now           = new DateTime('now');
+            $fileName      = $url .'_' . $now->format('Y-m-d_H-i-s') . '.csv';            
             $fileFullPath  = $filePath . "/" . $fileName;
-            $handle        = fopen($fileFullPath, "w");
-            
-            $headers       = $this->Participant->getExportHeaders($conditions);
+            $handle        = fopen($fileFullPath, "w");            
+            $headers       = array(
+                'country',
+                'code',
+                'program-name',
+                'incoming',
+                'outgoing',
+                'outgoing-pending',
+                'outgoing-acked',
+                'outgoing-nacked',
+                'outgoing-delivered',
+                'outgoing-failed');
             
             //Second we write the headers
             fputcsv($handle, $headers,',' , '"' );
             
             //Third we extract the data and copy them in the file            
-            $participantCount = $this->Participant->find('count', array('conditions'=> $conditions));
-            $pageCount        = intval(ceil($participantCount / $paginate['limit']));
+            $creditLogCount = $this->CreditLog->find('count');
+            $pageCount      = intval(ceil($creditLogCount / $paginate['limit']));
             
-            for ($count = 1; $count <= $pageCount; $count++) {
+            /*for ($count = 1; $count <= $pageCount; $count++) {
                 $paginate['page'] = $count;
                 $this->paginate   = $paginate;
-                $participants     = $this->paginate();
-                foreach ($participants as $participant) {
+                $creditLogs       = $this->_getAllCredits($conditions);
+                
+                foreach ($creditLogs as $creditLog) {
+                    print_r($creditLog);
+                    echo "*************************************";
+                    
                     $line = array();
+                    $codesCount = count($creditLog['codes']);
                     foreach ($headers as $header) {
-                        if (in_array($header, array('phone', 'last-optin-date', 'last-optout-date'))) {
-                            $line[] = $participant['Participant'][$header];
-                        } else if ($header == 'tags') {
-                            $line[] = implode(', ', $participant['Participant'][$header]);         
+                        foreach ($creditLog['codes'] as $code) {
+                            $programsCount = count($code['programs']);
+                            for ($count =1; $count <= $programsCount; $count++) {
+                                if ($header == 'country') {
+                                    //if ($creditLog['country'] == $header)
+                                    //$line[] = $creditLog['country'];
+                                    print_r($header);
+                                    echo "     ";
+                                    print_r($creditLog['country']);
+                                    echo "\n";
+                                }
+                                /*if ($header == 'code') {
+                                    //$line[] = $code['code'];
+                                   print_r($header);
+                                    echo "     ";
+                                    print_r($code['code']);
+                                    echo "\n";
+                                }
+                            }
+                            foreach ($code['programs'] as $key => $value) {
+                                    if (isset($code['programs'][$key][$header]))  {
+                                        //$line[] = $code['programs'][0][$header];
+                                        print_r($header);
+                                        echo "     ";
+                                        print_r($code['programs'][$key][$header]);
+                                        echo "\n";
+                                    } 
+                                }
+                        }
+                        
+                        
+                        /*
+                        /*if (isset($creditLog[$header])) {
+                        $line[] = $creditLog[$header];
+                        } else if ($header == 'code') {
+                        $line[] = $creditLog['codes'][0][$header];         
+                        } else if ($header == 'program-name') {
+                        // $programNames = $creditLog['codes'][0]['programs'][0]['program-name'];
+                        // $value  = $this->_searchLabel($programNames, $header);
+                        $line[] = $creditLog['codes'][0]['programs'][0][$header];
                         } else {
-                            $value  = $this->_searchProfile($participant['Participant']['profile'], $header);
-                            $line[] = $value;
+                        $line[] = "";
                         }
                     }
                     fputcsv($handle, $line,',' , '"');
                 }
+            }*/
+            
+            $creditLogs       = $this->_getAllCredits($conditions);
+            
+            foreach ($creditLogs as $creditLog) {
+                //print_r($creditLog);
+                //echo "*************************************";
+                foreach ($creditLog['codes'] as $code) {
+                    $programsCount = $this->_getProgramCount($code);
+                    for ($count =1; $count <= $programsCount; $count++) {
+                        $line = array();
+                        foreach ($headers as $header) {
+                            if ($header == 'country') {
+                                $line[] = $creditLog['country'];
+                            } else {
+                                $line[] = $this->_getProgramCredits($code, $header);
+                            }
+                        }
+                        //print_r($line);
+                        fputcsv($handle, $line,',' , '"');
+                    }
+                }
             }
+            
             $requestSuccess = true;
             $this->set(compact('requestSuccess', 'fileName'));
         } catch (Exception $e) {
@@ -165,6 +243,64 @@ class CreditViewerController extends AppController
             $this->set(compact('requestSuccess'));
         }  
     }
-
+    
+    protected function _getProgramCount($code)
+    {
+        $programsCount = 0;
+        
+        $programsCount += count($code['programs']);        
+        return $programsCount;
+    }
+    
+    
+    protected function _getProgramCredits($code, $header)
+    {
+        $programCredits = '';
+        //print_r($code);
+        //echo "*************************************";
+        foreach ($code['programs'] as $key => $value) {
+            //print_r($code['programs'][$key][$header]);
+            //echo "*************************************";
+            if (isset($code['programs'][$key][$header])) {
+                //$programCredits = $code['programs'][$key][$header];
+                // if (in_array($header, $value)) {
+                print_r($value[$header]);
+                echo "*************************************";
+                 echo "\n";
+                $programCredits = $value[$header];
+                
+            }
+            
+            
+            
+        }
+        /*if ($programIndex < $programsCount) {//echo "here";
+        $programCredits = $code['programs'][$programIndex][$header];
+        }*/
+        /*for ($index = 0; $index < $programCount:  as $program) {
+        if (in_array($header, $program)) {
+        $programCredits = $program[$header];
+        }
+        }*/
+        return $programCredits;
+    }
+    
+    
+    public function download()
+    {
+        $url          = $this->params['controller'];
+        $fileName     = $this->params['url']['file'];        
+        $fileFullPath = WWW_ROOT . "files/programs/" . $url . "/" . $fileName; 
+        
+        if (!file_exists($fileFullPath)) {
+            throw new NotFoundException();
+        }
+        
+        $this->response->header("X-Sendfile: $fileFullPath");
+        $this->response->header("Content-type: application/octet-stream");
+        $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
+        $this->response->send();
+    }
+    
     
 }
