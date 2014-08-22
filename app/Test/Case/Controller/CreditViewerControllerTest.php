@@ -90,7 +90,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->ShortCode->save($shortcode3);
     }
     
-/*
+
     public function testIndex_not_timeframed()
     {
         $this->_saveShortcodesInMongoDatabase();
@@ -126,6 +126,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->assertEqual(1, $countriesCredits[0]['codes'][0]['programs'][0]['outgoing']);
     }
 
+    
     public function testIndex_timeframed()
     {
         $this->_saveShortcodesInMongoDatabase();
@@ -174,7 +175,8 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $countriesCredits = $this->vars['countriesCredits'];
         $this->assertEquals(0, count($countriesCredits));
     }
-    */
+    
+    
     public function testExport()
     {
         $this->_saveShortcodesInMongoDatabase();
@@ -197,7 +199,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
         $creditLog = ScriptMaker::mkCreditLog(
-            'program-credit-log', date('Y-m-d'), 'm6h', '256-8181');
+            'program-credit-log', date('Y-m-d'), 'trial', '256-8181');
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog); 
 
@@ -211,18 +213,19 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Daresalaam');
         $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8181');
         
-        $this->testAction("/creditViewer/export");
+        $this->testAction("/creditViewer/export?date-from=01%2F03%2F2014&date-to=01%2F05%2F2053");
         
-        /*$this->assertTrue(isset($this->vars['fileName']));
+        $this->assertTrue(isset($this->vars['fileName']));
         $this->assertFileEquals(
-            TESTS . 'files/exported_history.csv',
-            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+            TESTS . 'files/exported_creditViewer.csv',
+            WWW_ROOT . 'files/programs/creditViewer/' . $this->vars['fileName']);
         
-        //Asserting that programName "Test Name" is adding to export file
+       //Asserting that programName "creditViewer" is adding to export file
         $this->assertEquals(
             substr($this->vars['fileName'], 0, -23),
-            'Test Name_history_');*/
+            'creditViewer_');
     }
+    
     
 }
 

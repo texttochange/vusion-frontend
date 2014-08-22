@@ -44,8 +44,8 @@ class CreditViewerController extends AppController
                 'database' => Configure::read("mongo_db")
                 );
         }
-        $this->ShortCode        = new ShortCode($options);
-        $this->CreditLog        = new CreditLog($options);
+        $this->ShortCode = new ShortCode($options);
+        $this->CreditLog = new CreditLog($options);
     }
     
     
@@ -55,17 +55,17 @@ class CreditViewerController extends AppController
         if (!is_array($timeframeParameters)) {
             $this->Session->setFlash($timeframeParameters);
         }
-
-        $conditions = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
-        $countriesCredits   = $this->_getAllCredits($conditions);
+        
+        $conditions       = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
+        $countriesCredits = $this->_getAllCredits($conditions);
         $this->set(compact('countriesCredits'));
     }    
-
+    
     
     protected function _getAllCredits($conditions)
     {
         $countriesByPrefixes = $this->PhoneNumber->getCountriesByPrefixes();
-        $countriesCredits = $this->CreditLog->calculateCreditPerCountry($conditions, $countriesByPrefixes);
+        $countriesCredits    = $this->CreditLog->calculateCreditPerCountry($conditions, $countriesByPrefixes);
         foreach ($countriesCredits as &$countryCredits) {
             foreach ($countryCredits['codes'] as &$codeCredits) {
                 $codeCredits['code'] = DialogueHelper::fromPrefixedCodeToCode($codeCredits['code']);
@@ -79,12 +79,12 @@ class CreditViewerController extends AppController
         }
         return $countriesCredits;
     }
-
-
+    
+    
     protected function _getTimeframeParameters()
     {
         $parameters = array_intersect_key($this->params['url'], array_flip(array('date-from', 'date-to', 'predefined-timeframe')));
-
+        
         //Default parameters
         if ($parameters == array()) {
             $parameters = array(
@@ -99,33 +99,27 @@ class CreditViewerController extends AppController
                 'date-from' => '',
                 'date-to' => ''),
             $parameters);
-
+        
         if ($parameters['predefined-timeframe'] != '' && ($parameters['date-to']!= '' || $parameters['date-from']!= '')) {
-                return __("Please select between date or predefine timefame");
-            }
-       
+            return __("Please select between date or predefine timefame");
+        }
+        
         
         $this->set('timeframeParams', $parameters);        
-
+        
         return $parameters;
     }
     
     
     public function export()
     {
-         $url                 = $this->params['controller'];
-         $requestSucces       = false;
-         $timeframeParameters = $this->_getTimeframeParameters();
-         $conditions          = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
-         
-         $paginate = array(
-            'all',
-            'limit' => 500,
-            'maxLimit' => 500);
-
-      try{
-            $filePath = WWW_ROOT . "files/programs/" . $url;
-            
+        $url                 = $this->params['controller'];
+        $requestSucces       = false;
+        $timeframeParameters = $this->_getTimeframeParameters();
+        $conditions          = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
+        
+        try{
+            $filePath = WWW_ROOT . "files/programs/" . $url;            
             if (!file_exists($filePath)) {
                 mkdir($filePath);
                 chmod($filePath, 0764);
@@ -134,8 +128,29 @@ class CreditViewerController extends AppController
             $now           = new DateTime('now');
             $fileName      = $url .'_' . $now->format('Y-m-d_H-i-s') . '.csv';            
             $fileFullPath  = $filePath . "/" . $fileName;
-            $handle        = fopen($fileFullPath, "w");            
-            $headers       = array(
+            $handle        = fopen($fileFullPath, "w");
+            
+            $headers2 = array(
+                'Date From',
+                'Date To',
+                '');
+            
+            foreach ($headers2 as $header) {
+                $line1 = array();
+                if ($header == 'Date From') {
+                    $value = array($header, $timeframeParameters['date-from']);
+                    $line1 = $value;
+                } else if ($header == 'Date To') {
+                    $value = array($header, $timeframeParameters['date-to']);
+                    $line1 = $value;
+                } else {
+                    $line1[] = '';
+                }
+                fputcsv($handle, $line1,',' , '"' );
+            }
+            
+            
+            $headers = array(
                 'country',
                 'shortcode',
                 'program-name',
@@ -147,20 +162,16 @@ class CreditViewerController extends AppController
                 'outgoing-delivered',
                 'outgoing-failed');
             
-            //Second we write the headers
+            // We write the headers
             fputcsv($handle, $headers,',' , '"' );
             
-            //Third we extract the data and copy them in the file            
-            $creditLogCount = $this->CreditLog->find('count');
-            $pageCount      = intval(ceil($creditLogCount / $paginate['limit']));
-            
-            
-            $creditLogs       = $this->_getAllCredits($conditions);
+            //We extract the data and copy them in the file 
+            $creditLogs = $this->_getAllCredits($conditions);
             
             foreach ($creditLogs as $creditLog) {               
                 foreach ($creditLog['codes'] as $code) {
                     $programsCount = $this->_getProgramCount($code);
-                    $index = 0;
+                    $programIndex = 0;
                     for ($count =1; $count <= $programsCount; $count++) {
                         $line = array();
                         foreach ($headers as $header) {
@@ -169,11 +180,10 @@ class CreditViewerController extends AppController
                             } else if ($header == 'shortcode') {
                                 $line[] = $code['code'];
                             } else {
-                                $line[] = $this->_getProgramCredits($code, $header, $index, $programsCount);                                
+                                $line[] = $this->_getProgramCredits($code, $header, $programIndex, $programsCount);                                
                             }
                         }
-                        $index++;
-                        
+                        $programIndex++;
                         fputcsv($handle, $line,',' , '"');
                     }
                 }
@@ -187,6 +197,7 @@ class CreditViewerController extends AppController
         }  
     }
     
+    
     protected function _getProgramCount($code)
     {
         $programsCount = 0;
@@ -199,12 +210,12 @@ class CreditViewerController extends AppController
     protected function _getProgramCredits($code, $header, $programIndex, $programsCount)
     {
         $programCredits = '';
-            
+        
         if ($programIndex < $programsCount) {
             if (in_array($header, $code['programs'][$programIndex]))
                 $programCredits = $code['programs'][$programIndex][$header];
         }
-
+        
         return $programCredits;
     }
     
