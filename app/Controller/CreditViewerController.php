@@ -186,8 +186,8 @@ class CreditViewerController extends AppController
                         $programIndex++;
                         fputcsv($handle, $line,',' , '"');
                     }
-                    $unmatchableReply = $this->_getUnmatcahableReplyCount($creditLog, $code, $headers);
-                    fputcsv($handle, $unmatchableReply,',' , '"');
+                    $unmatchableReplies = $this->_getUnmatcahableReplyCount($creditLog, $code, $headers);
+                    fputcsv($handle, $unmatchableReplies,',' , '"');
                 }
             }
             
@@ -227,23 +227,28 @@ class CreditViewerController extends AppController
         foreach ($headers as $header) {
             if ($header == 'country') {
                 $line[] = $creditLog['country'];
-            } else if ($header == 'shortcode') {
+            }
+            if ($header == 'shortcode') {
                 $line[] = $code['code'];
-            } else if ($header == 'program-name' ){
+            }
+            if ($header == 'program-name' ){
                 $line[] = 'Unmatchable Reply';                                
-            } else if ($header == 'incoming') {
+            }
+            if ($header == 'incoming') {
                 if (!empty($code['garbage'])) {
                     $line[] = $code['garbage']['incoming']; 
                 } else {
                     $line[] = 0;
                 }
-            } else if ($header == 'outgoing') {
+            }
+            if ($header == 'outgoing') {
                 if (!empty($code['garbage'])) {
                     $line[] = $code['garbage']['outgoing'];
                 } else {
                     $line[] = 0;
                 }
-            } else {
+            }
+            if (!isset($header)) {
                 $line[] = 0;
             }
         }

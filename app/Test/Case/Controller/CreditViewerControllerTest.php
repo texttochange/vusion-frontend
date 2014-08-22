@@ -183,8 +183,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     {
         $this->_saveShortcodesInMongoDatabase();
         
-        
-        
         #One recent creditlog
         $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
@@ -204,8 +202,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
             'garbage-credit-log', date('Y-m-d'), '' , '256-8282', 10, 25);
         $this->CreditLog->create();        
         $this->CreditLog->save($garbageCreditLog);
-        
-        
         
         $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->saveProgramSetting('timezone','Africa/Kampala');
