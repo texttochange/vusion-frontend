@@ -189,18 +189,23 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
+        
         $creditLog = ScriptMaker::mkCreditLog(
             'program-credit-log', date('Y-m-d'), 'testdbprogram', '256-8282');
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
         
-        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
-        $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Kampala');
-        $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8282');
         $creditLog = ScriptMaker::mkCreditLog(
             'program-credit-log', date('Y-m-d'), 'm6h', '256-8282');
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
+        
+        $garbageCreditLog = ScriptMaker::mkCreditLog(
+            'garbage-credit-log', date('Y-m-d'), '' , '256-8282', 10, 25);
+        $this->CreditLog->create();        
+        $this->CreditLog->save($garbageCreditLog);
+        
+        
         
         $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->saveProgramSetting('timezone','Africa/Kampala');

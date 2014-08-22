@@ -232,9 +232,17 @@ class CreditViewerController extends AppController
             } else if ($header == 'program-name' ){
                 $line[] = 'Unmatchable Reply';                                
             } else if ($header == 'incoming') {
-                $line[] = $code['incoming'];                    
+                if (!empty($code['garbage'])) {
+                    $line[] = $code['garbage']['incoming']; 
+                } else {
+                    $line[] = 0;
+                }
             } else if ($header == 'outgoing') {
-                $line[] = $code['outgoing'];
+                if (!empty($code['garbage'])) {
+                    $line[] = $code['garbage']['outgoing'];
+                } else {
+                    $line[] = 0;
+                }
             } else {
                 $line[] = 0;
             }
