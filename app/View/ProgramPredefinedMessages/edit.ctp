@@ -17,7 +17,7 @@
 	</ul>
     <h3><?php echo __('Edit Predefined Message'); ?></h3>
     <div class="ttc-display-area">
-    <?php echo $this->Form->create('PredefinedMessage'); ?>
+    <?php echo $this->Form->create('PredefinedMessage',  array('type' => 'post')); ?>
     <fieldset>
        <?php echo $this->Form->input('name', array('label'=>__('name'), 'id' => 'name')); ?>
        <?php echo $this->Form->input('content', array('label'=>__('content'), 'rows'=>5)); ?>

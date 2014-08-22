@@ -1,6 +1,6 @@
 <div class="templates form users-index program-body">
     <h3><?php echo __('Edit Template'); ?></h3>
-    <?php echo $this->Form->create('Template'); ?>
+    <?php echo $this->Form->create('Template',  array('type' => 'post')); ?>
        <?php echo $this->Form->input('name', array('label' => __('Name'))); ?>
        <div class="input select required <?php if ($this->Form->isFieldError('type-template')) {echo "error";}?>">
        <?php 
