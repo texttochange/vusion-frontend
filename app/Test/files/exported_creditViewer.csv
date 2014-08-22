@@ -4,5 +4,8 @@
 country,shortcode,program-name,incoming,outgoing,outgoing-pending,outgoing-acked,outgoing-nacked,outgoing-delivered,outgoing-failed
 Uganda,8282,test,2,1,0,0,0,0,0
 Uganda,8282,m6h,2,1,0,0,0,0,0
+Uganda,8282,"Unmatchable Reply",4,2,0,0,0,0,0
 Uganda,8181,trial,2,1,0,0,0,0,0
-Kenya,21222,test,2,1,0,0,0,0,0
+Uganda,8181,"Unmatchable Reply",2,1,0,0,0,0,0
+Kenya,21222,m9h,2,1,0,0,0,0,0
+Kenya,21222,"Unmatchable Reply",2,1,0,0,0,0,0
