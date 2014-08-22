@@ -136,7 +136,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         $this->testAction("/programs/index");
-        $this->assertEquals(3, count($this->vars['programs']));
+        $this->assertEquals(4, count($this->vars['programs']));
     }
   
     
