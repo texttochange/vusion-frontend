@@ -503,6 +503,12 @@ class UsersController extends AppController
             $this->render('new_password');          
         }
     }
+
+
+    public function inviteUser()
+    {
+
+    }
     
     
     public function initDB()
@@ -547,6 +553,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->allow($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -584,6 +591,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->allow($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

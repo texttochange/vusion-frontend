@@ -109,6 +109,8 @@
 			    
 			}
 			echo $this->AclLink->generateButton(
+			    __('Invite User'), null, 'users', 'inviteUser', array('class'=>'ttc-link-header'));
+			echo $this->AclLink->generateButton(
 			    __('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
 			echo $this->AclLink->generateButton(
 			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header'));
