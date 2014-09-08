@@ -100,7 +100,7 @@ echo $this->Paginator->next(
     	    <td class="content"><?php echo $unattachedMessage['UnattachedMessage']['content']; ?>&nbsp;</td>
     	        <?php    
                 if ($unattachedMessage['UnattachedMessage']['type-schedule'] === 'none') {
-                    echo '<td class="delivery"><em><b>' .  __("not scheduled") . '</b></em></td>';
+                    echo '<td class="delivery"><em><b>' .  __("drafted") . '</b></em></td>';
     	        } else if (isset($unattachedMessage['UnattachedMessage']['count-schedule'])) {
     	            echo '<td class="delivery"><em><b>' .  __("%s scheduled", $unattachedMessage['UnattachedMessage']['count-schedule']) . '</b></em></td>';
     	        } else if (isset($unattachedMessage['UnattachedMessage']['count-no-credit'])) {

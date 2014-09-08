@@ -86,8 +86,9 @@ class ProgramUnattachedMessagesController extends AppController
                 $findType = 'scheduled';
             }
         }
+        $paginate['conditions'] = $this->UnattachedMessage->addFindTypeCondition($findType);
         $this->set(compact('findType'));
-        $paginate = array_merge(array($findType), $paginate);
+        $paginate = $paginate;
 
         $this->paginate = $paginate;
         $unattachedMessages = $this->paginate('UnattachedMessage');

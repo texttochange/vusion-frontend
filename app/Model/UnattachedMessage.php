@@ -138,15 +138,37 @@ class UnattachedMessage extends MongoModel
         'scheduled' => true,
         'drafted' => true,
         'sent' => true);
-    
+
+    public function addFindTypeCondition($findType, $conditions=array()) {
+        switch ($findType) {
+            case 'all':
+                break;
+            case 'scheduled':
+                $programNow = $this->ProgramSetting->getProgramTimeNow();
+                if ($programNow) {
+                    $conditions['fixed-time'] = array('$gt' => $programNow->format("Y-m-d\TH:i:s"));
+                }
+                break;
+            case 'sent':
+                $programNow = $this->ProgramSetting->getProgramTimeNow();
+                if ($programNow) {
+                    $conditions['fixed-time'] = array('$lt' => $programNow->format("Y-m-d\TH:i:s"));
+                }
+                break;
+            case 'drafted':
+                $conditions['type-schedule'] = 'none';
+                break;
+            default:
+                throw new Exception(__('FindType not supported: %s', $findType));
+        }
+        return $conditions;
+    }
+
     
     protected function _findScheduled($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
-            if ($programNow) {
-                $query['conditions']['fixed-time'] = array('$gt' => $programNow->format("Y-m-d\TH:i:s"));
-            }
+            $query['conditions'] = $this->addFindTypeCondition('scheduled', $query['conditions']);
             return $query;
         }
         return $results;
@@ -156,10 +178,7 @@ class UnattachedMessage extends MongoModel
     protected function _findSent($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
-            if ($programNow) {
-                $query['conditions']['fixed-time'] = array('$lt' => $programNow->format("Y-m-d\TH:i:s"));
-            }
+            $query['conditions']= $this->addFindTypeCondition('sent', $query['conditions']);
             return $query;
         }
         return $results;
@@ -169,7 +188,7 @@ class UnattachedMessage extends MongoModel
     protected function _findDrafted($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $query['conditions']['type-schedule'] = 'none';
+            $query['conditions'] = $this->addFindTypeCondition('drafted', $query['conditions']);
             return $query;
         }
         return $results;
