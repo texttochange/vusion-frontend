@@ -118,7 +118,7 @@
            <li>
            <?php
            echo $this->AclLink->generateLink(__('Scheduled'), $programDetails['url'],
-                    'programUnattachedMessages', 'index', null, null, array('type' => 'sent')); 
+                    'programUnattachedMessages', 'index', null, null, array('type' => 'scheduled')); 
            ?>
            <ul>
            <?php
