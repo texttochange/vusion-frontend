@@ -118,7 +118,7 @@ class UsersController extends AppController
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
             if ($user = $this->User->save($this->request->data)) {
-                //checkbox is checked => we store it in the ACL
+                ##checkbox is checked => we store it in the ACL
                 if ($umatchableReplyAccess == true) {
                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
@@ -142,14 +142,13 @@ class UsersController extends AppController
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
-            //As the information is stored in the ACL we need to retrieve it form the ACL component
+            ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
         $this->set(compact('groups', 'programs'));
     }
-    
     
     
     public function delete($id = null)
