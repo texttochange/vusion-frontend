@@ -101,7 +101,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page.'));
+            $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
             $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
         }            
         if (!$this->User->exists()) {
@@ -111,7 +111,7 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $userId = $this->request->data['User']['id'];
             if ($this->Auth->user('group_id') != 1 && $userId != $this->Auth->user('id')) {
-                $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page.'));
+                $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
                 $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
             }  
             
@@ -241,7 +241,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page.'));
+            $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
             $this->redirect(array('action' => 'changePassword', $this->Auth->user('id')));
         }            
         
