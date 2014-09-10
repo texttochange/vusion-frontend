@@ -28,6 +28,7 @@
     $errorSendTo = "";
     $errorSchedule = "";
     $scheduleOptions = array(
+        'none' => __('Draft'),
         'immediately'=>__('Immediately'),
         'fixed-time'=> __('Fixed Time:'));
     $matchSelectDisabled = true;
