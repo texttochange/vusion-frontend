@@ -157,8 +157,10 @@ class ProgramHistoryController extends AppController
             
             $programNow  = $this->ProgramSetting->getProgramTimeNow();
             $programName = $this->Session->read($programUrl.'_name');
-            $fileName    = $programName . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";
             
+            $programNameUnderscore = str_replace(' ', '_', $programName);
+            
+            $fileName     = $programNameUnderscore . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
             $handle       = fopen($fileFullPath, "w");
             

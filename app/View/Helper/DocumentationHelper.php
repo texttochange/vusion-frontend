@@ -18,11 +18,14 @@ class DocumentationHelper extends AppHelper
         if (isset($this->convertLanguageNotation[$userLanguage])) {
             $lang = $this->convertLanguageNotation[$userLanguage];
         }
-        
+        $documentationUrl = 'http://vusion-doc.texttochange.org/' . $lang;
         echo $this->Html->link(
             __('Help'),
-            'http://vusion-doc.texttochange.org/' . $lang,
-            array('class' => 'ttc-link-header'));
+            array(),
+            array(
+                'class' => 'ttc-link-header', 
+                'url' => $documentationUrl, 
+                'onclick'=> 'popupNewBrowserTab(this)'));
     }
     
     
