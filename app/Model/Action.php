@@ -92,7 +92,7 @@ class Action extends VirtualModel
                         'reset' => array(),
                         'feedback' => array('content'),
                         'proportional-tagging' => array('set-only-optin-count', 'proportional-tags'),
-                        'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proprotional-labels'),
+                        'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proportional-labels'),
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'))),
                 'message' => 'The action-type required field are not present.'
@@ -396,7 +396,7 @@ class Action extends VirtualModel
             $this->_setDefault('set-forward-message-condition', null);
             $this->_setDefault('forward-to', null);
         }
-        if (in_array($this->data['type-action'] array('proportional-tagging', 'proportional-labelling'))) {
+        if (in_array($this->data['type-action'], array('proportional-tagging', 'proportional-labelling'))) {
             $this->_setDefault('set-only-optin-count', null);
         }
         $this->_setDefault('set-condition', null);
