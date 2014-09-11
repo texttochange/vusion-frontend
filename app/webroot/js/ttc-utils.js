@@ -27,7 +27,9 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'template', $("[name*='[template]']").prev(":not(:has(img)):not(div)"));
     addFormHelp(baseUrl, 'keyword', $("[name*='\.keyword']").prev("label").not(":has(img)"));
     addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));
-}
+    addFormHelp(baseUrl, 'proportional-labelling', $("[value='proportional-labelling']:checked").parent().next().children('legend').not(":has(img)"));
+    addFormHelp(baseUrl, 'proportional-tagging', $("[value='proportional-tagging']:checked").parent().next().children('legend').not(":has(img)"));
+}   
 
 
 function addFormHelp(baseUrl, name, selector) {
