@@ -176,11 +176,11 @@
         background: #FFCB4B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(odd) {
+[name*=Request][item=action]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(odd) {
         background: #FFD97B;
 }
 
-[name*=Request][name*=actions\[]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(even) {
+[name*=Request][item=action]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(even) {
         background: #FFCB4B;
 }
 

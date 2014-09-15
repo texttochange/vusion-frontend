@@ -344,9 +344,9 @@ var action = {
             {'value': "feedback",
             'subfields': ['content']},
             {'value': 'proportional-tagging',
-            'subfields': ['set-only-optin-count', 'proportional-tags']},
+            'subfields': ['proportional-tags']},
             {'value': 'proportional-labelling',
-            'subfields': ['label-name', 'set-only-optin-count', 'proportional-labels']},
+            'subfields': ['label-name', 'proportional-labels']},
             {'value': 'url-forwarding',
             'subfields': ['forward-url']},
             {'value': 'sms-forwarding',
@@ -356,10 +356,6 @@ var action = {
         ]
     },
     "tag": {'type': 'text'},
-    "set-only-optin-count": {
-        'type': 'checkboxes',
-        'value': 'set-only-optin-count'
-    },
     "enroll": {
         'type': 'select',
         'data': 'server-dynamic',
