@@ -379,7 +379,7 @@ class UsersControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testNewPassWord_Reset_Successfully()
+    public function testNewPassWord_reset_ok()
     {
         $hash = Configure::read('Security.salt');
         $users = $this->generate('Users', array(
@@ -436,6 +436,225 @@ class UsersControllerTestCase extends ControllerTestCase
                 'newPassword' => 'mark',
                 'confirmPassword' => 'mark'
                 )
+            ));
+    }
+    
+    
+    public function testReportIssue_fail_fieldsEmpty()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+                ),
+            'models' => array(
+                'User' => array('exists', 'read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+       
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => '',
+                'message' => '',
+                'screenshot'=> array(
+                    'name' => 'hi.gif' ,
+                    'error'=>0)
+                ))
+            ));
+        
+        $this->assertEqual($this->vars['validationErrors']['subject'][0],
+            'Please describe the expect vs current behavior.');
+        $this->assertEqual($this->vars['validationErrors']['message'][0],
+            'Please explain us how to reproduce the issue on our computers.');
+        $this->assertEqual($this->vars['validationErrors']['screenshot'][0],
+            'The file format ".gif" is not supported. Please upload an image .jpg or .png.');
+        
+    }
+    
+    
+    public function testReportIssue_ok()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read', 'setFlash', 'write'),
+                'Auth' => array('user')
+                ),
+            'models' => array(
+                'User' => array('read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $users->Session
+        ->expects($this->at(0))
+        ->method('read')
+        ->with('Auth.User.username')
+        ->will($this->returnValue('maxmass'));
+        
+        $users->Session
+        ->expects($this->at(1))
+        ->method('read')
+        ->with('Auth.User.email')
+        ->will($this->returnValue('vusion@ttc.com'));
+        
+        $CakeEmail = $this->getMock('CakeEmail', array(
+            'from',
+            'send'));
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->returnValue('true')); 
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('from')
+        ->with($this->equalTo('vusion@ttc.com')); 
+        
+        $users->CakeEmail = $CakeEmail;
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('setFlash')
+        ->with('The tech team will contact you in the next 2 days by Email. Thank you.');
+        
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => 'testing email subject',
+                'message' => 'testing email message',
+                'screenshot'=> array(
+                    'name' => 'hi.jpg',
+                    'error'=>0,
+                    'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
+                ))
+            ));
+    }
+    
+    
+    public function testReportIssue_fail_connectionRefused()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read', 'setFlash', 'write'),
+                'Auth' => array('user')
+                ),
+            'models' => array(
+                'User' => array('read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $users->Session
+        ->expects($this->at(0))
+        ->method('read')
+        ->with('Auth.User.username')
+        ->will($this->returnValue('maxmass'));
+        
+        $users->Session
+        ->expects($this->at(1))
+        ->method('read')
+        ->with('Auth.User.email')
+        ->will($this->returnValue('vusion@ttc.com'));
+        
+        $CakeEmail = $this->getMock('CakeEmail', array('send'));
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->throwException(new SocketException('Email server connection is down. Please send report to vusion-issue@texttochange.com')));
+        
+        $users->CakeEmail = $CakeEmail;
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('setFlash')    
+        ->with('Email server connection is down. Please send report to vusion-issues@texttochange.com');
+        
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => 'testing email subject',
+                'message' => 'testing email message',
+                'screenshot'=> array(
+                    'name' => 'hi.jpg',
+                    'error'=>0,
+                    'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
+                ))
+            ));
+    }
+    
+    
+    public function testReportIssue_fail_otherExceptions()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read', 'setFlash', 'write'),
+                'Auth' => array('user')
+                ),
+            'models' => array(
+                'User' => array('read', 'save')
+                )
+            ));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $users->Session
+        ->expects($this->at(0))
+        ->method('read')
+        ->with('Auth.User.username')
+        ->will($this->returnValue('maxmass'));
+        
+        $users->Session
+        ->expects($this->at(1))
+        ->method('read')
+        ->with('Auth.User.email')
+        ->will($this->returnValue('vusion@ttc.com'));
+        
+        $CakeEmail = $this->getMock('CakeEmail', array('send'));
+        
+        $CakeEmail
+        ->expects($this->any())
+        ->method('send')
+        ->will($this->throwException(new Exception('Email server is down')));
+        
+        $users->CakeEmail = $CakeEmail;
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('setFlash')    
+        ->with('"Email server is down". Please send report to vusion-issues@texttochange.com');
+        
+        $this->testAction('/users/reportIssue', array(  
+            'method' => 'post',
+            'data' => array('ReportIssue' => array(
+                'subject' => 'testing email subject',
+                'message' => 'testing email message',
+                'screenshot'=> array(
+                    'name' => 'hi.jpg',
+                    'error'=>0,
+                    'tmp_name'=> TESTS . 'files/reportIssue_test_image.png')
+                ))
             ));
     }
     

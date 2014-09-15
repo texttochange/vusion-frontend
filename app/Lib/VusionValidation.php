@@ -67,23 +67,34 @@ class VusionValidation extends Validation {
             if (!isset($match['key2']))  {
                 return true;
             }
-            if (is_numeric($match['key2'])) {
-                if (intval($match['key2']) < 1 || intval($match['key2']) > 2) {
-                    return __("On [context.message.x], x has to be either 1 or 2.");
-                }
-                if (isset($match['key3'])) {
-                    return __("On [context.message.x.y], y is not allowed if x is a number.");
-                }
-            } else if (in_array($match['key2'], array('after', 'before'))) {
+            if (!isset($match['key2'])) {
                 if (!isset($match['key3'])) {
-                    return __("On [context.message.after/before.x], only after/before .");
-                } 
-                if (!is_numeric($match['key3']) || intval($match['key3']) < 1 || intval($match['key3']) > 2) {
-                    return __("On [context.message.after/before.x], x has to be either 1 or 2.");
-                } 
+                    return __("On [context.message.x], x has to be a number.");
+                } else {
+                    return __("On [context.message.x.y], x has to be a number.");
+                }
+            }
+            if (!isset($match['key3'])) {
+                if (!is_numeric($match['key2'])) {
+                    return __("On [context.message.x], x has to be a number.");
+                }
+                if (intval($match['key2']) < 1) {
+                    return __("On [context.message.x], x has to be greater or equal to 1.");
+                }
             } else {
-                    return __("On [context.message.x], x can be 'after', 'before' or a number.");
-            }      
+                if (!is_numeric($match['key2'])) {
+                    return __("On [context.message.x.y], x has to be a number.");
+                }
+                if (!is_numeric($match['key3']) && ($match['key3']!='end')) {
+                    return __("On [context.message.x.y], y has to be a number or 'end'.");
+                }
+                if (intval($match['key2']) < 1) {
+                    return __("On [context.message.x.y], x has to be greater or equal to 1.");
+                }
+                if (is_numeric($match['key3']) && intval($match['key2']) > intval($match['key3'])) {
+                    return __("On [context.message.x.y], y cannot be lower than x.");
+                }
+            }
         }
         return true;
     }

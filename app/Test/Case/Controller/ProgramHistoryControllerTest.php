@@ -29,7 +29,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'Program' => array(
                 'name' => 'Test Name',
                 'url' => 'testurl',
-                'database' => 'testdbprogram'
+                'database' => 'testdbprogram',
+                'status' => 'running'
                 )
             ));
     
@@ -385,7 +386,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         //Asserting that programName "Test Name" is adding to export file
         $this->assertEquals(
             substr($this->vars['fileName'], 0, -23),
-            'Test Name_history_');
+            'Test_Name_history_');
     }
 
 

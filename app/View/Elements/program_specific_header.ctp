@@ -1,4 +1,4 @@
-<div class='ttc-program-header'>
+<div class='ttc-program-header <?php if ($programDetails['status']==='archived') { echo "archived";} ?>'>
 	<div class="ttc-program-time">
 		<?php
 		if (isset($programDetails['settings']['timezone'])) {
@@ -26,23 +26,26 @@
 						'controller' => 'programHome',
 						'action' => 'index'
 						), array('style'=>'text-decoration:none;font-weight:normal; font-size:22px'));
-		echo  '<l class = "blackets"> (</l>';
-		if (isset($programDetails['settings']['shortcode'])) {
-		    $countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
-		        $programDetails['settings']['shortcode'],
-		        $countryIndexedByPrefix);
-		}
-		if (isset($countryAndShortcode)){
-				echo '<l class ="blackets">'.$countryAndShortcode.'</l>';
-		}else{
-				echo $this->Html->link('configure Shortcode', 
+	    if ($programDetails['status']==='running') {
+			echo  '<l class = "blackets"> (</l>';
+			if (isset($programDetails['settings']['shortcode'])) {
+			    $countryAndShortcode = $this->PhoneNumber->replaceCountryCodeOfShortcode(
+			        $programDetails['settings']['shortcode'],
+			        $countryIndexedByPrefix);
+			}
+			if (isset($countryAndShortcode)){
+					echo '<l class ="blackets">'.$countryAndShortcode.'</l>';
+			} else {
+					echo $this->Html->link(
+						__('configure Shortcode'), 
 						array('program' => $programDetails['url'],
 								'controller' => 'programSettings',
 								'action' => 'index'
 								),
 						array('style'=>'text-decoration:none;font-weight:normal; font-size:14px; color:#C43C35'));
-		}				
-		echo  '<l class = "blackets">)</l>';
+			}				
+			echo  '<l class = "blackets">)</l>';
+		}
 		?>
 	</div>
 	<div class="ttc-program-link">

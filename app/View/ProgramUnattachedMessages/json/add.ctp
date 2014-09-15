@@ -1,15 +1,7 @@
 <?php
-if ($savedUnattachedMessage) {
-	$result = array(
-    	'status' => 'ok',
-    	'id' => $savedUnattachedMessage['UnattachedMessage']['_id'],
-    	'name' => $savedUnattachedMessage['UnattachedMessage']['name']);
+if ($this->validationErrors['UnattachedMessage'] != array()) {
+    echo ',"validation-errors":' . $this->Js->object($this->validationErrors['UnattachedMessage']);
 } else {
-	$result = array(
-    	'status' => 'fail',
-    	'message' => $this->Session->read('Message.flash.message'));
-	if (isset($this->validationErrors['UnattachedMessage'])) {
-    	$result['validation-errors'] = $this->validationErrors['UnattachedMessage'];
-	}
-}
-echo $this->Js->object($result);
+	echo ',"id":' . json_encode($savedUnattachedMessage['UnattachedMessage']['_id']);
+    echo ',"name":' . json_encode($savedUnattachedMessage['UnattachedMessage']['name']);
+} 

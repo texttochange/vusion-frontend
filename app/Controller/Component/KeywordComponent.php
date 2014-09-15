@@ -99,7 +99,9 @@ class KeywordComponent extends Component
     {
         $usedKeywords = array();
         $programs = $this->Program->find(
-            'all', array('conditions' => array('Program.database !=' => $programDb)));
+            'all', array('conditions' => array(
+                'Program.database !=' => $programDb,
+                'Program.status != "archived"')));
         foreach ($programs as $program) {
             $usedKeywords = $this->areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords);
         }

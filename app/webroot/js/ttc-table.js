@@ -82,15 +82,15 @@ function saveTable() {
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: function (data) {
-                if (data.status === "ok") {
+                if (data['status'] === "ok") {
                     $("#flashMessage").show().attr('class', 'message success').text(localized_messages.table_saved+" "+localized_messages.wait_redirection);
                     if (location.href.indexOf("editTable/")<0) {
                          window.location.replace("indexTable")
                     } else {
                         window.location.replace("../indexTable");
                     }
-                } else if (data.status === "fail") {
-                    showValidationError($("#columns"), data.reason);
+                } else if (data['status'] === "fail") {
+                    showValidationError($("#columns"), data['validation-errors']);
                     reactivateSaveButtons();
                 }
             },
@@ -196,7 +196,7 @@ function saveValueCallback(data) {
     } else {
         var cellProperties = $("#"+this.callbackData.table).handsontable("getCellMeta", this.callbackData.change[0], this.callbackData.change[1]);
         cellProperties.valid = false;
-        cellProperties.validationError = data.reason;
+        cellProperties.validationError = data['validation-errors'];
         cell.setAttribute('title', cellProperties.validationError);
     }
     cell.className = cellClass;

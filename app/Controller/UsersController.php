@@ -4,18 +4,24 @@ App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
+App::uses('CakeEmail', 'Network/Email');
 
 class UsersController extends AppController
 {
+    public $CakeEmail = null;
+    
+    
     var $components = array(
-        'LocalizeUtils',
+        'LocalizeUtils', 
         'ResetPasswordTicket',
         'Captcha',
+        'Email',
         'Filter');
-
+    
     var $uses = array(
         'User',
         'Group');
+    
     
     public function beforeFilter()
     {
@@ -64,8 +70,8 @@ class UsersController extends AppController
             );
         
     }
-
-
+    
+    
     public function view($id = null)
     {
         $this->User->id = $id;
@@ -87,10 +93,7 @@ class UsersController extends AppController
                     );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
             }
         }
         $groups   = $this->User->Group->find('list');
@@ -104,22 +107,26 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
-                'default',
-                array('class' => "message failure"));
+            $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
             $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
         }            
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user.'));
         } 
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
+            $userId = $this->request->data['User']['id'];
+            if ($this->Auth->user('group_id') != 1 && $userId != $this->Auth->user('id')) {
+                $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
+                $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
+            }  
+            
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
             if ($user = $this->User->save($this->request->data)) {
-                #checkbox is checked => we store it in the ACL
+                ##checkbox is checked => we store it in the ACL
                 if ($umatchableReplyAccess == true) {
-                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
+                    $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
                     $this->Acl->deny($user, 'controllers/UnmatchableReply');
                 }
@@ -137,14 +144,11 @@ class UsersController extends AppController
                         $this->redirect(array('action' => 'view', $this->Session->read('Auth.User.id')));
                     }
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
-            #As the information is stored in the ACL we need to retrieve it form the ACL component
+            ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
         }
         $groups   = $this->User->Group->find('list');
@@ -153,7 +157,6 @@ class UsersController extends AppController
     }
     
     
-
     public function delete($id = null)
     {
         if (!$this->request->is('post')) {
@@ -170,10 +173,7 @@ class UsersController extends AppController
                 );
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('User was not deleted.'), 
-            'default',
-            array('class' => "message failure")
-            );
+        $this->Session->setFlash(__('User was not deleted.'));
         $this->redirect(array('action' => 'index'));
     }
     
@@ -187,7 +187,7 @@ class UsersController extends AppController
                 array('class'=>'message success'));
             $this->redirect($this->Auth->redirect());
         }
-
+        
         if ($this->request->is('ajax')) {
             if ($this->Auth->login()) {
                 return;
@@ -247,9 +247,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
-                'default',
-                array('class' => "message failure"));
+            $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
             $this->redirect(array('action' => 'changePassword', $this->Auth->user('id')));
         }            
         
@@ -260,18 +258,12 @@ class UsersController extends AppController
         $userId = $id;
         $this->set(compact('userId'));
         
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post')) {
             
             if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
-                $this->Session->setFlash(__('old password is incorrect. Please try again.'),
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('Old password is incorrect. Please try again.'));
             } else if ($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
-                $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'));
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
@@ -281,19 +273,102 @@ class UsersController extends AppController
                         );
                     $this->redirect(array('action' => 'view', $id));
                 } else {
-                    $this->Session->setFlash(__('Password saving failed.'), 
-                        'default',
-                        array('class' => "message failure")
-                        );
+                    $this->Session->setFlash(__('Password saving failed.'));
                 }    
             }
         }
+    }  
+    
+    
+    public function reportIssue()
+    {
+        $this->layout = 'popup';
+        
+        if (!$this->request->is('post')) {
+            return;
+        }
+        
+        $userName                 = $this->Session->read('Auth.User.username');        
+        $userEmail                = $this->Session->read('Auth.User.email');
+        $reportIssueToEmail       = Configure::read('vusion.reportIssue.email');
+        $reportIssueSubjectPrefix = Configure::read('vusion.reportIssue.subjectPrefix');
+        $filePath                 = WWW_ROOT . 'img';        
+        $validationErrors         = array();
+        
+        if (!isset($this->request->data['ReportIssue']['subject']) || ($this->request->data['ReportIssue']['subject'] == "")) {
+            $validationErrors['subject'] = array(__('Please describe the expect vs current behavior.'));
+        } else {
+            $subject = $this->request->data['ReportIssue']['subject'];
+        } 
+        if (!isset($this->request->data['ReportIssue']['message']) || ($this->request->data['ReportIssue']['message'] == "")) {
+            $validationErrors['message'] = array(__('Please explain us how to reproduce the issue on our computers.'));
+        } else {
+            $message = $this->request->data['ReportIssue']['message'];
+        }
+        $attachment               = $this->request->data['ReportIssue']['screenshot'];
+        if ($attachment['error'] != 0) {
+            if ($attachment['error'] == 4) { 
+                $validationErrors['screenshot'] = array(__("Please take one screenshot and upload it."));
+            } else { 
+                $validationErrors['screenshot'] = array(__('Error while uploading the file: %s.', $attachment['error']));
+            }
+        } else {
+            $fileExtension = end(explode('.', $attachment['name']));
+            if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
+                $validationErrors['screenshot'] = array(__('The file format ".%s" is not supported. Please upload an image .jpg or .png.', $fileExtension)); 
+            }
+        }
+        if ($validationErrors != array()) {
+            $this->Session->setFlash(__("Reporting failed due to incorrect report."));
+            $this->set(compact('validationErrors'));
+            return;
+        }
+        
+        copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
+        
+        if (!$this->CakeEmail) {
+            $this->CakeEmail = new CakeEmail();
+        }
+        $this->CakeEmail->config('default');
+        $this->CakeEmail->from($userEmail);
+        $this->CakeEmail->to($reportIssueToEmail);
+        $this->CakeEmail->subject($reportIssueSubjectPrefix . " " . $subject);
+        $this->CakeEmail->template('reportissue_template');
+        $this->CakeEmail->emailFormat('html');
+        $this->CakeEmail->viewVars(array(
+            'subject' => $subject,
+            'message' => $message,
+            'userName' => $userName));
+        $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
+        
+        try {
+            $this->CakeEmail->send();
+        } catch (SocketException $e) {
+            $this->Session->setFlash(
+                __('Email server connection is down. Please send report to vusion-issues@texttochange.com'));
+            unlink($filePath . DS . $attachment['name']);
+            return;  
+        } catch (Exception $e) {
+            $exceptionMessage = $e->getMessage();
+            $this->Session->setFlash(
+                __('"%s". Please send report to vusion-issues@texttochange.com', $exceptionMessage));
+            unlink($filePath . DS . $attachment['name']);
+            return;
+        }
+        
+        $this->Session->setFlash(
+            __('The tech team will contact you in the next 2 days by Email. Thank you.'),
+            'default', array('class'=>'message success'));
+        
+        unlink($filePath . DS . $attachment['name']);
+        
+        return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
     
     public function captcha()
     {
-        $this->autoRender = false;
+        $this->autoRender = false;  
         $this->layout     = 'ajax';
         if (!isset($this->Captcha)) { 
             $this->Captcha = $this->Components->load(
@@ -331,10 +406,7 @@ class UsersController extends AppController
         
         if ($this->request->data['captchaField'] != $this->Captcha->getCaptchaCode()) {
             $this->Session->setFlash(
-                __('Please enter correct captcha code and try again.'),
-                'default',
-                array('class' => "message failure")
-                );
+                __('Please enter correct captcha code and try again.'));
             return;
         }        
         $userName = $account[0]['User']['username'];
@@ -343,9 +415,8 @@ class UsersController extends AppController
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $this->ResetPasswordTicket->saveToken($token);
-        $message = $this->ResetPasswordTicket->createMessage($token);
         
-        $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
+        $this->ResetPasswordTicket->sendEmail($email, $userName, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
             'default',
@@ -387,10 +458,7 @@ class UsersController extends AppController
         
         if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
             $this->Session->setFlash(
-                __('New passwords doesn\'t match. Please try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                __('New passwords doesn\'t match. Please try again.'));
             $this->render('new_password');
             return;
         }
@@ -405,10 +473,7 @@ class UsersController extends AppController
                 );
             $this->redirect('/');
         } else {        
-            $this->Session->setFlash(__('Password saving failed.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            $this->Session->setFlash(__('Password saving failed.'));
             $this->render('new_password');          
         }
     }
@@ -455,6 +520,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -491,6 +557,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -527,6 +594,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -554,6 +622,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

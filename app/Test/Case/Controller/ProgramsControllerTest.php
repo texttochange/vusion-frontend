@@ -2,6 +2,7 @@
 /* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramsController', 'Controller');
 App::uses('Dialogue', 'Model');
+App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
 App::uses('CreditLog', 'Model');
 
@@ -41,6 +42,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->ShortCode = new ShortCode($options);
         $this->CreditLog = new CreditLog($options);
         $this->dropData();
+
+        $this->maker = new ScriptMaker();
     }
     
     
@@ -133,7 +136,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         $this->testAction("/programs/index");
-        $this->assertEquals(3, count($this->vars['programs']));
+        $this->assertEquals(4, count($this->vars['programs']));
     }
   
     
@@ -251,6 +254,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'name' => 'test',
             'url' => 'test',
             'database' => 'testdbprogram',
+            'status' => 'running',
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             ),
@@ -392,7 +396,32 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'conditions' => array(
                     'object-type' => 'deleted-program-credit-log', 
                     'program-name' => 'test'))));
-        
+    }
+
+
+    public function testArchive()
+    {
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_stopBackendWorker'    
+                    ),
+                'models' => array(
+                    'Program' => array('archive'))
+                )
+            );
+        $Programs
+        ->expects($this->once())
+        ->method('_stopBackendWorker')
+        ->will($this->returnValue(true));
+
+        $Programs->Program
+        ->expects($this->once())
+        ->method('archive')
+        ->will($this->returnValue(true));
+
+        $this->testAction('/programs/archive/1');
     }
 
     
