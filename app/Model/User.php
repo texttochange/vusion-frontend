@@ -44,6 +44,14 @@ class User extends AppModel
                 //'last' => false, // Stop validation after this rule
                 //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
+            'minLength' => array(
+                'rule' => array('minLength', 8),
+                'message' => 'Password must be at least 8 characters long'
+                ),
+            'alphaNumeric' => array(
+                'rule' => 'alphaNumeric',
+                'message' => 'Password must contain letters and numbers only'
+                ),
             ),
         'email' => array(
             'email' => array(

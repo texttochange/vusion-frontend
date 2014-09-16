@@ -507,7 +507,11 @@ class UsersController extends AppController
 
     public function inviteUser()
     {
+        if (!$this->request->is('post')) {
+            return;
+        }
 
+        $userName = $this->Session->read('Auth.User.username'); 
     }
     
     
