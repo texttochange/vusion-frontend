@@ -11,48 +11,78 @@ class VusionValidationTest extends CakeTestCase
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertTrue($result);
 
-		$data = array('content' => 'Hello [context.message.after.2] ');
+		$data = array('content' => 'Hello [context.message.2.2]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertTrue($result);
 
-		$data = array('content' => 'Hello [context.message.before.2]');
+		$data = array('content' => 'Hello [context.message.1.2] ');
+		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
+		$this->assertTrue($result);
+
+		$data = array('content' => 'Hello [context.message.3.end]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertTrue($result);
 	}
 
 
-	public function testValidCustomizeContent_context_fail()
+	public function testValidCustomizeContent_context_fail_x_is_0()
 	{
-		$data = array('content' => 'Hello [context.message.3]');
+		$data = array('content' => 'Hello [context.message.0]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertEquals(
 			$result,
-			"On [context.message.x], x has to be either 1 or 2.");
+			"On [context.message.x], x has to be greater or equal to 1.");
+	}
 
+
+	public function testValidCustomizeContent_context_fail_x_is_end() 
+	{
+		$data = array('content' => 'Hello [context.message.end]');
+		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
+		$this->assertEquals(
+			$result,
+			"On [context.message.x], x has to be a number.");
+	}
+
+
+	public function testValidCustomizeContent_context_fail_x_lower_y()
+	{
 		$data = array('content' => 'Hello [context.message.2.1]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertEquals(
 			$result,
-			"On [context.message.x.y], y is not allowed if x is a number.");
+			"On [context.message.x.y], y cannot be lower than x.");
+	}
 
-		$data = array('content' => 'Hello [context.message.after.3]');
+
+	public function testValidCustomizeContent_context_fail_y_is_string()
+	{
+		$data = array('content' => 'Hello [context.message.2.something]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertEquals(
 			$result,
-			"On [context.message.after/before.x], x has to be either 1 or 2.");
+			"On [context.message.x.y], y has to be a number or 'end'.");
+	}
 
-		$data = array('content' => 'Hello [context.message.after.]');
+
+	public function testValidCustomizeContent_context_fail_y_not_set()
+	{
+		$data = array('content' => 'Hello [context.message.2.]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertEquals(
 			$result,
-			"On [context.message.after/before.x], x has to be either 1 or 2.");
+			"On [context.message.x.y], y has to be a number or 'end'.");
+	}
 
+
+	public function testValidCustomizeContent_context_fail_x_is_string()
+	{
 		$data = array('content' => 'Hello [context.message.something.3]');
 		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
 		$this->assertEquals(
 			$result,
-			"On [context.message.x], x can be 'after', 'before' or a number.");
-
+			"On [context.message.x.y], x has to be a number.");
 	}
+
 
 }

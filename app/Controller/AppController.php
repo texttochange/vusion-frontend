@@ -134,32 +134,19 @@ class AppController extends Controller
     
     protected function _getcurrentProgramData($databaseName)
     {
-        $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
-        $unattachedMessages     = $unattachedMessageModel->find('future');
-        if (isset($unattachedMessages))
-            $programUnattachedMessages = $unattachedMessages;
-        else
-        $programUnattachedMessages = null;
-        
-        $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));
-        $predefinedMessages     = $predefinedMessageModel->find('all');
-        if (isset($predefinedMessages))
-            $programPredefinedMessages = $predefinedMessages;
-        else
-        $programPredefinedMessages = null;
-        
+        $unattachedMessageModel   = new UnattachedMessage(array('database' => $databaseName));
+        $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));        
         $dialogueModel = new Dialogue(array('database' => $databaseName));
-        $dialogues     = $dialogueModel->getActiveAndDraft();
         $requestModel  = new Request(array('database' => $databaseName));
-        $requests      = $requestModel->find('all');
         
         $currentProgramData = array(
-            'unattachedMessages' => $programUnattachedMessages,
-            'predefinedMessages' => $programPredefinedMessages,
-            'dialogues' => $dialogues,
-            'requests' => $requests
+            'unattachedMessages' => array(
+                'scheduled' => $unattachedMessageModel->find('scheduled'),
+                'drafted' => $unattachedMessageModel->find('drafted')),
+            'predefinedMessages' => $predefinedMessageModel->find('all'),
+            'dialogues' => $dialogueModel->getActiveAndDraft(),
+            'requests' => $requestModel->find('all'),
             );
-        
         return $currentProgramData;
     }
 

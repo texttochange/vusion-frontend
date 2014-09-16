@@ -70,8 +70,8 @@ class UsersController extends AppController
             );
         
     }
-
-
+    
+    
     public function view($id = null)
     {
         $this->User->id = $id;
@@ -93,10 +93,7 @@ class UsersController extends AppController
                     );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
             }
         }
         $groups   = $this->User->Group->find('list');
@@ -110,9 +107,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
-                'default',
-                array('class' => "message failure"));
+            $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
             $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
         }            
         if (!$this->User->exists()) {
@@ -120,10 +115,16 @@ class UsersController extends AppController
         } 
         
         if ($this->request->is('post')) {
+            $userId = $this->request->data['User']['id'];
+            if ($this->Auth->user('group_id') != 1 && $userId != $this->Auth->user('id')) {
+                $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
+                $this->redirect(array('action' => 'edit', $this->Auth->user('id')));
+            }  
+            
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
             if ($user = $this->User->save($this->request->data)) {
-                #checkbox is checked => we store it in the ACL
+                ##checkbox is checked => we store it in the ACL
                 if ($umatchableReplyAccess == true) {
                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
@@ -143,14 +144,11 @@ class UsersController extends AppController
                         $this->redirect(array('action' => 'view', $this->Session->read('Auth.User.id')));
                     }
             } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
             }
         } else {
             $this->request->data = $this->User->read(null, $id);
-            #As the information is stored in the ACL we need to retrieve it form the ACL component
+            ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
         }
         $groups   = $this->User->Group->find('list');
@@ -159,7 +157,6 @@ class UsersController extends AppController
     }
     
     
-
     public function delete($id = null)
     {
         if (!$this->request->is('post')) {
@@ -176,10 +173,7 @@ class UsersController extends AppController
                 );
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('User was not deleted.'), 
-            'default',
-            array('class' => "message failure")
-            );
+        $this->Session->setFlash(__('User was not deleted.'));
         $this->redirect(array('action' => 'index'));
     }
     
@@ -253,9 +247,7 @@ class UsersController extends AppController
         $this->User->id = $id;
         
         if ($this->Auth->user('group_id') != 1 && $id != $this->Auth->user('id')) {
-            $this->Session->setFlash(__('Stop trying to ACCESS this user, you have been redirected to your page'),
-                'default',
-                array('class' => "message failure"));
+            $this->Session->setFlash(__('You are not allowed to edit another user\'s details, your tentative has been reported to Vusion adminstrator.'));
             $this->redirect(array('action' => 'changePassword', $this->Auth->user('id')));
         }            
         
@@ -269,15 +261,9 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             
             if (Security::hash($hash.$this->request->data['oldPassword']) != $user['User']['password']) {
-                $this->Session->setFlash(__('old password is incorrect. Please try again.'),
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('Old password is incorrect. Please try again.'));
             } else if ($this->request->data['newPassword'] != $this->request->data['confirmNewPassword']) {
-                $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('New passwords doesn\'t match. Please try again.'));
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
@@ -287,10 +273,7 @@ class UsersController extends AppController
                         );
                     $this->redirect(array('action' => 'view', $id));
                 } else {
-                    $this->Session->setFlash(__('Password saving failed.'), 
-                        'default',
-                        array('class' => "message failure")
-                        );
+                    $this->Session->setFlash(__('Password saving failed.'));
                 }    
             }
         }
@@ -423,10 +406,7 @@ class UsersController extends AppController
         
         if ($this->request->data['captchaField'] != $this->Captcha->getCaptchaCode()) {
             $this->Session->setFlash(
-                __('Please enter correct captcha code and try again.'),
-                'default',
-                array('class' => "message failure")
-                );
+                __('Please enter correct captcha code and try again.'));
             return;
         }        
         $userName = $account[0]['User']['username'];
@@ -478,10 +458,7 @@ class UsersController extends AppController
         
         if ($this->request->data['newPassword'] != $this->request->data['confirmPassword']) {
             $this->Session->setFlash(
-                __('New passwords doesn\'t match. Please try again.'), 
-                'default',
-                array('class' => "message failure")
-                );
+                __('New passwords doesn\'t match. Please try again.'));
             $this->render('new_password');
             return;
         }
@@ -496,10 +473,7 @@ class UsersController extends AppController
                 );
             $this->redirect('/');
         } else {        
-            $this->Session->setFlash(__('Password saving failed.'), 
-                'default',
-                array('class' => "message failure")
-                );
+            $this->Session->setFlash(__('Password saving failed.'));
             $this->render('new_password');          
         }
     }
