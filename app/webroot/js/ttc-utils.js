@@ -774,3 +774,6 @@ function popupNewBrowserTab(obj) {
     newPopupWindow.focus();
 }
 
+function disableSubmit() {
+    $('#submit-report').attr('disabled', true);
+}
