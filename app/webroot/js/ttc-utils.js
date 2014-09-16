@@ -776,4 +776,5 @@ function popupNewBrowserTab(obj) {
 
 function disableSubmit() {
     $('#submit-report').attr('disabled', true);
+    $('#submit-report').empty().append('Sending email....');
 }
