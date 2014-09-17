@@ -26,6 +26,6 @@
 			'placeholder' => __('How to reproduce step by step, copy/past the program url and occurence')));
 	echo $this->Form->input('ReportIssue.screenshot', array('type' => 'file'));
 	echo $this->Form->button(__('Report'), array('class'=>'ttc-button', 'type' => 'submit','id' => 'submit-report', 'onclick' => 'disableSubmit()'));
-	echo $this->Form->button(__('Close'), array('class'=>'ttc-button', 'onclick'=> 'popupBrowserClose()'));	
+	echo $this->Form->button(__('Close'), array('class'=>'ttc-button', 'id' => 'close-report', 'onclick'=> 'popupBrowserClose()'));	
 	?>	
 </div>
