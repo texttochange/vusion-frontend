@@ -345,6 +345,8 @@ var action = {
             'subfields': ['content']},
             {'value': 'proportional-tagging',
             'subfields': ['proportional-tags']},
+            {'value': 'proportional-labelling',
+            'subfields': ['label-name', 'proportional-labels']},
             {'value': 'url-forwarding',
             'subfields': ['forward-url']},
             {'value': 'sms-forwarding',
@@ -375,6 +377,18 @@ var action = {
         'contains': ["tag", "weight"],
         'skip': true,
     },
+    "proportional-labels": {
+        'type': 'list',
+        'add-button': true,
+        'adds': 'proportional-label',
+    },
+    "proportional-label": {
+        'type': 'container', 
+        'contains': ["label-value", "weight"],
+        'skip': true,
+    },
+    "label-name": {'type': 'text'},
+    "label-value": {'type': 'text'},
     "set-forward-message-condition": {
         'type': 'checkboxes',
         'value': 'forward-message-condition',

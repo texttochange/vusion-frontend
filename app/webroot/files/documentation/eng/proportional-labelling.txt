@@ -1,0 +1,14 @@
+<p>Proportional Labelling is a feature that enables participants to be automatically assigned to different groups by labelling them with different label value.</p>
+
+<p>
+This feature can be useful to compare group reaction to different set of information. 
+Indeed when participants have been labelled, you could auto-enrol them in different dialogues.
+</p>
+
+<p>
+If participants are to be distributed equally to all groups, all weights should be set to 1. 
+It is also possible to distribute them unequally. 
+By setting different weights to different groups you can put for instance 1 in 4 participants in a group, while the rest goes in the other group.
+</p>
+
+<p><a href="http://vusion-doc.texttochange.org/en/advanced/proportional_tagging.html" target="_blank">Read more about Proportional Tagging</a></p>
