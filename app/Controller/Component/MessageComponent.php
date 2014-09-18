@@ -18,6 +18,7 @@ class MessageComponent extends Component
             "save"=> __('Save'),
             "any"=> __('any'),
             "all"=> __('all'),
+            "Sending the report by email, it might take a few minutes..."=> __('Sending the report by email, it might take a few minutes...'),
             );
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);

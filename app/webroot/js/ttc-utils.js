@@ -779,5 +779,5 @@ function popupNewBrowserTab(obj) {
 function disableSubmit() {
     $('#close-report').attr('style', 'visibility:hidden');
     $('#submit-report').attr('style', 'visibility:hidden');
-    $('#sending-email').empty().append('Sending email, it might take a few minutes....');
+    $('#sending-email').append(localize_label('Sending the report by email, it might take a few minutes....'));
 }
