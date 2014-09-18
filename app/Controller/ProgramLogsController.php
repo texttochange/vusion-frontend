@@ -7,7 +7,7 @@ class ProgramLogsController extends AppController
 	
     var $components = array(
         'RequestHandler', 
-        'LogManager');
+        'BackendLog');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time');
@@ -29,7 +29,7 @@ class ProgramLogsController extends AppController
     {
         $programUrl = $this->params['program'];
         $databaseName = $this->Session->read($programUrl."_db");
-        $programLogs = $this->LogManager->getLogs($databaseName, 200);
+        $programLogs = $this->BackendLog->getLogs($databaseName, 200);
         $this->set(compact('programLogs'));
     } 
     
@@ -44,7 +44,7 @@ class ProgramLogsController extends AppController
 
         $programUrl = $this->params['program'];
         $databaseName = $this->Session->read($programUrl."_db");
-        $programLogs = $this->LogManager->getLogs($databaseName, 5);
+        $programLogs = $this->BackendLog->getLogs($databaseName, 5);
         $this->set(compact('requestSuccess', 'programLogs'));
     }
     

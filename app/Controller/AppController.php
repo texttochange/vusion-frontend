@@ -45,7 +45,7 @@ class AppController extends Controller
         'Cookie', 
         'PhoneNumber',
         'CreditManager',
-        'LogManager',
+        'BackendLog',
         'Stats',
         'ArchivedProgram'
         );
@@ -106,7 +106,7 @@ class AppController extends Controller
             }
             
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
-            $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);
+            $programLogsUpdates = $this->BackendLog->getLogs($programDetails['database'], 5);
             $programStats       = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
             $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 

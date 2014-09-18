@@ -59,7 +59,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read'),
-                    'LogManager' => array('getLogs')
+                    'BackendLog' => array('getLogs')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -98,7 +98,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
             );
         
         $logs = $this->mock_program_access();
-        $logs->LogManager
+        $logs->BackendLog
         ->expects($this->exactly(2)) //one for the notification window and once for the full page
         ->method('getLogs')
         ->will($this->returnValue($programLogs));
@@ -118,7 +118,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
             );
         
         $logs = $this->mock_program_access();
-        $logs->LogManager
+        $logs->BackendLog
         ->expects($this->once())
         ->method('getLogs')
         ->with('testdbprogram', 5)
