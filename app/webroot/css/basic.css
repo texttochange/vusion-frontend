@@ -405,6 +405,15 @@
         font-size: 12px;
 }
 
+.ui-dform-spanradio {
+    white-space: nowrap;
+}
+
+.ui-dform-spanradiobuttons {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
 /*FF hack*/
 @-moz-document url-prefix() { 
   .ttc-textarea-validation-error {top: -59px;}
