@@ -12,7 +12,6 @@ class UsersController extends AppController
     
     
     var $components = array(
-        'Message',
         'LocalizeUtils', 
         'ResetPasswordTicket',
         'Captcha',
