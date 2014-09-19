@@ -997,44 +997,36 @@ function configToForm(item, elt, id_prefix, configTree){
         }
         elt["elements"].push(list);
     } else if ($.inArray(dynamicForm[item]['type'], ["radiobuttons", "spanradiobuttons"]) > -1) {
-        var checkedRadio = {};
-        var checkedItem;
         //In order to support old model for action that used type-answer-action
         if (item == 'type-action' && configTree && 'type-answer-action' in configTree) {
             configTree['type-action'] = configTree['type-answer-action'];
         }
-        $.each(dynamicForm[item]['options'],function(k,v) {
-                if (configTree && v['value']==configTree[item]) {
-                    checkedRadio[v['value']] = {
-                        "value": v['value'],
-                        "item": item,
-                        "caption": localize_label(v['value']),
-                        "checked":"checked"};
-                    checkedItem = v;
-                    checkedItemLabel = localize_label(v['value']);
-                } else {
-                    checkedRadio[v['value']] = { 
-                        "value": v['value'],
-                        "item": item,
-                        "caption": localize_label(v['value'])};
-                }})
         var radiobuttons = {
-                "name": id_prefix+"."+item,
-                "type": dynamicForm[item]['type'],
-                "options": checkedRadio,
-                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: '')};
-        if (checkedItem && checkedItem['subfields']){
-            var box = {
-                "type": "fieldset",
-                "caption": localize_label(checkedItem['value']),
-                "radiochildren": "radiochildren",
-                "elements":[]};
-            $.each(checkedItem['subfields'], function (k,v) {
-                configToForm(v, box, id_prefix, configTree);});
-            radiobuttons["radiochildren"] = box;
-        };
+            "name": id_prefix+"."+item,
+            "type": dynamicForm[item]['type'],
+            "options": {},
+            "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: '')};
+        $.each(dynamicForm[item]['options'],function(k, optionDef) {
+            var option = { 
+                "value": optionDef['value'],
+                "item": item,
+                "caption": localize_label(optionDef['value'])};
+            if (configTree && optionDef['value'] == configTree[item]) {
+                option["checked"] = "checked";
+                if (optionDef['subfields']) {
+                    var radiochildren = {
+                        "type": "fieldset",
+                        "caption": localize_label(option['value']),
+                        "radiochildren": "radiochildren",
+                        "elements":[]};
+                    $.each(optionDef['subfields'], function (k,v) {
+                        configToForm(v, radiochildren, id_prefix, configTree);});
+                    radiobuttons["radiochildren"] = radiochildren;
+                }
+            }
+            radiobuttons['options'][option['value']] = option;
+        });
         elt["elements"].push(radiobuttons);
-        
     } else if (dynamicForm[item]['type'] == "checkboxes") {
         var checkedCheckBox = {};
         var checkedItem;
@@ -1253,15 +1245,15 @@ function fromBackendToFrontEnd(type, object, submitCall) {
         if (type == "spanradiobuttons") {
             var scoper = this;
             $.each(options, function(value, content) {
-                    var boxoptions = {
+                    var radioOption = {
                         "item": content['item'], 
                         "type": "spanradio",
                         "spancaption": content['caption'],
                         "value": value};
                     if (content['checked']) { 
-                        boxoptions['checked'] = "checked";
+                        radioOption['checked'] = "checked";
                     }
-                    $(scoper).formElement(boxoptions);
+                    $(scoper).formElement(radioOption);
                 });
         }
     });
@@ -1281,9 +1273,9 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     });
     $.dform.subscribe("[post]", function (options, type) {
         if (type == "spanradiobuttons") {
-            $(this).find('input').attr('name', options['name']).change(updateRadioButtonSubmenu).addClass("activated");
+            $(this).children('span').children('input').attr('name', options['name']).change(updateRadioButtonSubmenu).addClass("activated");
             //Workaround to have the span wraping in the div
-            $(this).find('span').after(' ');
+            $(this).children('span').after(' ');
         }
     })
     
