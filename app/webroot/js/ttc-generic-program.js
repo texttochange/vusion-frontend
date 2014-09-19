@@ -204,17 +204,15 @@ function hiddeUndisabled(key, item){
 
 function activeForm(){
     $.each($('.ui-dform-addElt:not(.activated)'),function(key,elt){
-            $(elt).click(clickBasicButton);
-            $(elt).addClass("activated");    
+            $(elt).click(clickBasicButton).addClass("activated");    
     });
     $.each($("input[name*='type-']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateRadioButtonSubmenu).addClass("activated");
     });
+    /*
     $.each($("input[name*='auto-enrollment']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
-    });
+            $(elt).change(updateRadioButtonSubmenu).addClass("activated");
+    });*/
     $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
@@ -233,32 +231,19 @@ function activeForm(){
     });
 
     $.each($("input[name*='at-time']:not(.activated)"), function (key,elt){
-            $(elt).timepicker({timeFormat: 'hh:mm'});
-            $(elt).addClass("activated");            
+            $(elt).timepicker({timeFormat: 'hh:mm'}).addClass("activated");
     });
     $.each($("input[name*='reminder']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
-    });
-    $.each($("input[name*='condition-operator']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
-    });
-    $.each($("input[name*='forward-message-condition-type']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='condition']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='max-unmatching-answers']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='matching-answer-actions']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $("input[name*='date-time']:not(.activated)").each(function (key, elt) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
@@ -870,19 +855,20 @@ function isArray(obj) {
 function updateRadioButtonSubmenu() {
     //var elt = event.currentTarget;
     var elt = this;
-    var item = $(elt).attr('item');
+    var item = $(elt).attr("item");
     var radiobuttons = $(elt).closest(".ui-dform-spanradiobuttons")[0];
     var radiochildren = $(radiobuttons).children("fieldset").remove(); 
-    var name = $(radiobuttons).attr("name");
+    var name = $(radiobuttons).closest(".ui-dform-fieldset").attr("name");
+    var checked = $(elt).attr("value");
     var label = $(elt).next().text();
     
     var newContent = {
-        "type":"fieldset",
+        "type": "fieldset",
         "caption": label,
-        "radiochildren":"radiochildren",
-        "name":name,
-        "elements":[]};
-    checked = $(elt).attr('value');
+        "radiochildren": "radiochildren",
+        "name": name,
+        "elements": []};
+
     option = dynamicForm[item]['options'].filter(function (option) { return option.value == checked});
     if (option[0]['subfields']) {
         $.each(option[0]['subfields'], function(k, v) {
@@ -1017,7 +1003,7 @@ function configToForm(item, elt, id_prefix, configTree){
             "adds": dynamicForm[item]['adds']});
         }
         elt["elements"].push(list);
-    } else if (dynamicForm[item]['type'] == "radiobuttons" || dynamicForm[item]['type'] == "spanradiobuttons") {
+    } else if ($.inArray(dynamicForm[item]['type'], ["radiobuttons", "spanradiobuttons"]) > -1) {
         var checkedRadio = {};
         var checkedItem;
         //In order to support old model for action that used type-answer-action
@@ -1299,7 +1285,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     });
     $.dform.subscribe("[post]", function (options, type) {
         if (type == "spanradiobuttons") {
-            $(this).find('input').attr('name', options['name']);
+            $(this).find('input').attr('name', options['name']).change(updateRadioButtonSubmenu).addClass("activated");
             //Workaround to have the span wraping in the div
             $(this).find('span').after(' ');
         }
