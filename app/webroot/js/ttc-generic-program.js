@@ -206,13 +206,6 @@ function activeForm(){
     $.each($('.ui-dform-addElt:not(.activated)'),function(key,elt){
             $(elt).click(clickBasicButton).addClass("activated");    
     });
-    $.each($("input[name*='type-']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu).addClass("activated");
-    });
-    /*
-    $.each($("input[name*='auto-enrollment']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu).addClass("activated");
-    });*/
     $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
@@ -1016,8 +1009,7 @@ function configToForm(item, elt, id_prefix, configTree){
                         "value": v['value'],
                         "item": item,
                         "caption": localize_label(v['value']),
-                        "checked":"checked"
-                    }
+                        "checked":"checked"};
                     checkedItem = v;
                     checkedItemLabel = localize_label(v['value']);
                 } else {
@@ -1026,25 +1018,23 @@ function configToForm(item, elt, id_prefix, configTree){
                         "item": item,
                         "caption": localize_label(v['value'])};
                 }})
-        elt["elements"].push({
-                "name":id_prefix+"."+item,
+        var radiobuttons = {
+                "name": id_prefix+"."+item,
                 "type": dynamicForm[item]['type'],
                 "options": checkedRadio,
-                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
-        });
+                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: '')};
         if (checkedItem && checkedItem['subfields']){
             var box = {
-                "type":"fieldset",
+                "type": "fieldset",
                 "caption": localize_label(checkedItem['value']),
-                "radiochildren":"radiochildren",
-                "elements":[]
-            };
+                "radiochildren": "radiochildren",
+                "elements":[]};
             $.each(checkedItem['subfields'], function (k,v) {
-                    configToForm(v, box, id_prefix, configTree);
-            });
-            if (box['type'])
-                elt["elements"].push(box);
+                configToForm(v, box, id_prefix, configTree);});
+            radiobuttons["radiochildren"] = box;
         };
+        elt["elements"].push(radiobuttons);
+        
     } else if (dynamicForm[item]['type'] == "checkboxes") {
         var checkedCheckBox = {};
         var checkedItem;
@@ -1273,6 +1263,12 @@ function fromBackendToFrontEnd(type, object, submitCall) {
                     }
                     $(scoper).formElement(boxoptions);
                 });
+        }
+    });
+    $.dform.subscribe("radiochildren", function (options, type) {
+        if (type == "spanradiobuttons") {
+            var scoper = this;
+            $(scoper).formElement(options);
         }
     });
     $.dform.addType("spanradio", function(option) {
