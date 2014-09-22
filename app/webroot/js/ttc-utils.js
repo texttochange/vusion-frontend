@@ -776,3 +776,8 @@ function popupNewBrowserTab(obj) {
     newPopupWindow.focus();
 }
 
+function disableSubmit() {
+    $('#close-report').attr('style', 'visibility:hidden');
+    $('#submit-report').attr('style', 'visibility:hidden');
+    $('#sending-email').append(localized_messages['sending_report']);
+}
