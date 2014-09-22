@@ -526,6 +526,9 @@ function foldForm(){
     case "proportional-tag":
         summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
         break;
+    case "proportional-label":
+        summary = $('[name="'+nameToFold+'.label-value"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
+        break;
     case "auto-enrollment-box": 
         summary = localize_label($('[name="Dialogue.auto-enrollment"]:checked').val());
         break;  
