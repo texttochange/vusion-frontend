@@ -25,7 +25,7 @@ var dialogue = {
         'item': "auto-enrollment-box",
     },
     "auto-enrollment":{ 
-        'type': "radiobuttons",
+        'type': "spanradiobuttons",
         'options':  [
             {'value': 'none'},
             {'value': 'all'},
@@ -60,7 +60,7 @@ var dialogue = {
         'type': "hidden",
     },
     "type-schedule": {
-        "type": "radiobuttons",
+        "type": "spanradiobuttons",
         "options": [
             {"value": "fixed-time",
             "subfields":["date-time"]},
@@ -75,7 +75,7 @@ var dialogue = {
                 "offset-condition-interaction-id",
                 "offset-condition-delay"]}]},
     "type-interaction": {
-        "type": "radiobuttons",
+        "type": "spanradiobuttons",
         "options": [
             {"value": "announcement",
             "subfields": ["content"]},
@@ -97,7 +97,7 @@ var dialogue = {
                 "set-reminder"]}]
     },
     "type-unmatching-feedback" : {
-        'type': "radiobuttons",
+        'type': "spanradiobuttons",
         'options': [
             {"value": "no-unmatching-feedback"}, 
             {'value': "program-unmatching-feedback"},
@@ -139,7 +139,7 @@ var dialogue = {
         'adds': "action"
     },
     "type-question":{
-        'type': "radiobuttons",
+        'type': "spanradiobuttons",
         "options": [
             {"value": "closed-question",
              "subfields": [
@@ -264,7 +264,7 @@ var reminder = {
         'type': 'text',
     },
     "type-schedule-reminder": {
-        'type': "radiobuttons",
+        'type': "spanradiobuttons",
         'options': [
             {'value': "reminder-offset-time",
             'subfields': ['reminder-minutes']},
@@ -296,7 +296,7 @@ var action = {
             "subconditions"],
     },
     "condition-operator": { 
-        'type': 'radiobuttons',
+        'type': 'spanradiobuttons',
         'options': [
             {'value': "all-subconditions"},
             {'value': "any-subconditions"}],
@@ -330,7 +330,7 @@ var action = {
         'style': 'width:200px'
     },
     "type-action": {
-        'type': 'radiobuttons',
+        'type': 'spanradiobuttons',
         'options': [
             {'value': "optin"},
             {'value': "optout"}, 
@@ -398,7 +398,7 @@ var action = {
         'style': 'padding-top:0px;padding-bottom:5px',
     },
     "forward-message-condition-type": {
-        'type': 'radiobuttons',
+        'type': 'spanradiobuttons',
         'options': [
             {'value': "phone-number"}],
         'style': 'padding-top:0px',
