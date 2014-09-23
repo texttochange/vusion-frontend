@@ -344,7 +344,41 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Please enter a fixed time for this message.',
             $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
-    
+
+
+    public function testSave_fail_notAccepted_typeSchedule()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $otherUnattachedMessage = array(
+            'name' => 'hello',
+            'send-to-type' => 'all',
+            'content' => 'hello there',
+            'type-schedule' => 'something',
+            'created-by' => 1);
+        $this->UnattachedMessage->create("unattached-message");
+        $this->UnattachedMessage->save($otherUnattachedMessage);
+        $this->assertEquals(
+            'This type of schedule is not allowed.',
+            $this->UnattachedMessage->validationErrors['type-schedule'][0]);
+    }
+
+
+    public function testSave_ok_typeSchedule_none()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $otherUnattachedMessage = array(
+            'name' => 'hello',
+            'send-to-type' => 'all',
+            'content' => 'hello there',
+            'type-schedule' => 'none',
+            'created-by' => 1);
+        $this->UnattachedMessage->create("unattached-message");
+        $unattached = $this->UnattachedMessage->save($otherUnattachedMessage);
+        $this->assertTrue(isset($unattached['UnattachedMessage']));
+    }
+
     
     public function testSave_ok_scheduleImmediatly()
     {
@@ -431,10 +465,22 @@ class UnattachedMessageTestCase extends CakeTestCase
     public function testIsNotPast()
     {    
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-        
         $now = new DateTime('now', timezone_open('Africa/Kampala'));   
-        $check = array('fixed-time'=> $now->modify('-30 minutes')->format("Y-m-d\TH:i:s"));
-        $this->assertFalse($this->UnattachedMessage->isNotPast($check));
+        $past = $now->modify('-30 minutes')->format("Y-m-d\TH:i:s");
+       
+        $unattachedMessage = array(
+            'name'=>'hello',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'fixed-time',
+            'fixed-time' => $past,
+            'created-by' => 1
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $this->UnattachedMessage->save($unattachedMessage);
+        $this->assertEquals(
+            'Fixed time cannot be in the past.',
+            $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
     
     

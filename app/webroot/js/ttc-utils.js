@@ -27,7 +27,9 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'template', $("[name*='[template]']").prev(":not(:has(img)):not(div)"));
     addFormHelp(baseUrl, 'keyword', $("[name*='\.keyword']").prev("label").not(":has(img)"));
     addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));
-}
+    addFormHelp(baseUrl, 'proportional-labelling', $("[value='proportional-labelling']:checked").parent().next().children('legend').not(":has(img)"));
+    addFormHelp(baseUrl, 'proportional-tagging', $("[value='proportional-tagging']:checked").parent().next().children('legend').not(":has(img)"));
+}   
 
 
 function addFormHelp(baseUrl, name, selector) {
@@ -489,7 +491,7 @@ function generateMassUntagDialogue(obj){
 }
 
 
-function submitMassUntag(){    
+function submitMassUntag() {    
     var tag = $('[name*="untag"]').val();    
     var url = $('#massuntag-dialogue').find('form').attr('url');
     var untagConfirm = confirm("Do you want to delete this tag?");
@@ -755,4 +757,27 @@ function clickProgramBox(url,event) {
     }
 }
 
+function popupBrowser(obj) {
+    var url = $(obj).attr("url") + window.location.search;
+    var newPopupWindow = window.open(url, 'reportissue', 'titlebar=no, toolbar=no, resizable=no, height=610, width=600');
+    if (window.focus) {
+        newPopupWindow.focus();
+    }
+    return false;
+}
 
+function popupBrowserClose() {
+        window.close();
+}
+
+function popupNewBrowserTab(obj) {
+    var url = $(obj).attr("url") + window.location.search;
+    var newPopupWindow = window.open(url, '_blank');
+    newPopupWindow.focus();
+}
+
+function disableSubmit() {
+    $('#close-report').attr('style', 'visibility:hidden');
+    $('#submit-report').attr('style', 'visibility:hidden');
+    $('#sending-email').append(localized_messages['sending_report']);
+}

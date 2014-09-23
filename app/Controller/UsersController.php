@@ -4,18 +4,24 @@ App::uses('AppController', 'Controller');
 App::uses('User', 'Model');
 App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
+App::uses('CakeEmail', 'Network/Email');
 
 class UsersController extends AppController
 {
+    public $CakeEmail = null;
+    
+    
     var $components = array(
-        'LocalizeUtils',
+        'LocalizeUtils', 
         'ResetPasswordTicket',
         'Captcha',
+        'Email',
         'Filter');
     
     var $uses = array(
         'User',
         'Group');
+    
     
     public function beforeFilter()
     {
@@ -271,12 +277,98 @@ class UsersController extends AppController
                 }    
             }
         }
+    }  
+    
+    
+    public function reportIssue()
+    {
+        $this->layout = 'popup';
+        
+        if (!$this->request->is('post')) {
+            return;
+        }
+        
+        $userName                 = $this->Session->read('Auth.User.username');        
+        $userEmail                = $this->Session->read('Auth.User.email');
+        $reportIssueToEmail       = Configure::read('vusion.reportIssue.email');
+        $reportIssueSubjectPrefix = Configure::read('vusion.reportIssue.subjectPrefix');
+        $filePath                 = WWW_ROOT . 'files/report-issues';        
+        $validationErrors         = array();
+        
+        if (!isset($this->request->data['ReportIssue']['subject']) || ($this->request->data['ReportIssue']['subject'] == "")) {
+            $validationErrors['subject'] = array(__('Please describe the expect vs current behavior.'));
+        } else {
+            $subject = $this->request->data['ReportIssue']['subject'];
+        } 
+        if (!isset($this->request->data['ReportIssue']['message']) || ($this->request->data['ReportIssue']['message'] == "")) {
+            $validationErrors['message'] = array(__('Please explain us how to reproduce the issue on our computers.'));
+        } else {
+            $message = $this->request->data['ReportIssue']['message'];
+        }
+        $attachment               = $this->request->data['ReportIssue']['screenshot'];
+        if ($attachment['error'] != 0) {
+            if ($attachment['error'] == 4) { 
+                $validationErrors['screenshot'] = array(__("Please take one screenshot and upload it."));
+            } else { 
+                $validationErrors['screenshot'] = array(__('Error while uploading the file: %s.', $attachment['error']));
+            }
+        } else {
+            $fileExtension = end(explode('.', $attachment['name']));
+            if (!($fileExtension == 'jpg') and !($fileExtension == 'png')) {
+                $validationErrors['screenshot'] = array(__('The file format ".%s" is not supported. Please upload an image .jpg or .png.', $fileExtension)); 
+            }
+        }
+        if ($validationErrors != array()) {
+            $this->Session->setFlash(__("Reporting failed due to incorrect report."));
+            $this->set(compact('validationErrors'));
+            return;
+        }
+        
+        copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
+        
+        if (!$this->CakeEmail) {
+            $this->CakeEmail = new CakeEmail();
+        }
+        $this->CakeEmail->config('default');
+        $this->CakeEmail->from($userEmail);
+        $this->CakeEmail->to($reportIssueToEmail);
+        $this->CakeEmail->subject($reportIssueSubjectPrefix . " " . $subject);
+        $this->CakeEmail->template('reportissue_template');
+        $this->CakeEmail->emailFormat('html');
+        $this->CakeEmail->viewVars(array(
+            'subject' => $subject,
+            'message' => $message,
+            'userName' => $userName));
+        $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
+        
+        try {
+            $this->CakeEmail->send();
+        } catch (SocketException $e) {
+            $this->Session->setFlash(
+                __('Email server connection is down. Please send report to vusion-issues@texttochange.com'));
+            unlink($filePath . DS . $attachment['name']);
+            return;  
+        } catch (Exception $e) {
+            $exceptionMessage = $e->getMessage();
+            $this->Session->setFlash(
+                __('"%s". Please send report to vusion-issues@texttochange.com', $exceptionMessage));
+            unlink($filePath . DS . $attachment['name']);
+            return;
+        }
+        
+        $this->Session->setFlash(
+            __('The tech team will contact you in the next 2 days by Email. Thank you.'),
+            'default', array('class'=>'message success'));
+        
+        unlink($filePath . DS . $attachment['name']);
+        
+        return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
     
     public function captcha()
     {
-        $this->autoRender = false;
+        $this->autoRender = false;  
         $this->layout     = 'ajax';
         if (!isset($this->Captcha)) { 
             $this->Captcha = $this->Components->load(
@@ -323,9 +415,8 @@ class UsersController extends AppController
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $this->ResetPasswordTicket->saveToken($token);
-        $message = $this->ResetPasswordTicket->createMessage($token);
         
-        $this->ResetPasswordTicket->sendEmail($email, $userName, $message);
+        $this->ResetPasswordTicket->sendEmail($email, $userName, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
             'default',
@@ -429,6 +520,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -465,6 +557,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -501,6 +594,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -528,6 +622,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

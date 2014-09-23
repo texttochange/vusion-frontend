@@ -53,6 +53,15 @@ class ProgramFixture extends CakeTestFixture
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             ),
+        array(
+            'id' => 4,
+            'name' => 'm9h',
+            'url' => 'm9h',
+            'database' => 'm9h',
+            'status' => 'running',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            ),
         );
     
 }

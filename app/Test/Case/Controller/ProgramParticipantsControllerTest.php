@@ -1186,7 +1186,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         //Asserting that programName "Test Name" is adding to export file
         $this->assertEquals(
             substr($this->vars['fileName'], 0, -23),
-            'Test Name_participants_');
+            'Test_Name_participants_');
     }
     
     

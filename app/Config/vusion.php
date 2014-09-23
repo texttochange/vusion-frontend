@@ -46,7 +46,10 @@ $config = array(
                     'noisecolor' => array(60, 90, 120)
                     )
                 )
-            )
-        
+            ),
+        'reportIssue' => array(
+            'email' => 'vusion-issues@texttochange.com',
+            'subjectPrefix' => '[vusion-issues]'
+            )        
         )
     );   

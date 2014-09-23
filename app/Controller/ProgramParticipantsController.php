@@ -241,7 +241,10 @@ class ProgramParticipantsController extends AppController
             
             $programNow   = $this->ProgramSetting->getProgramTimeNow();
             $programName  = $this->Session->read($programUrl.'_name');
-            $fileName     = $programName . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
+            
+            $programNameUnderscore = str_replace(' ', '_', $programName);
+            
+            $fileName     = $programNameUnderscore . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
             $handle       = fopen($fileFullPath, "w");            
             $headers      = $this->Participant->getExportHeaders($conditions);
