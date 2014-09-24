@@ -528,7 +528,7 @@ function generateFieldSummary(elt, parentName, field)
 //TODO need to generate a interaction id there.
 function updateOffsetConditions(elt){
     //Get current interaction ID
-    var eltId = $('[item="interaction"]').children('[name$="interaction-id"]').val();
+    var eltId = $(elt).closest('[item="interaction"]').children('[name$="interaction-id"]').val();
     //We obviously need to remove it from the options
     var optionsToBeRemoved = [eltId];
     var optionsBefore = [];
@@ -536,7 +536,7 @@ function updateOffsetConditions(elt){
             optionsBefore.push($(this).val());
         });
     //Adding new interaction that are not yet save on the server
-    localQuestions = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').parent().parent();
+    localQuestions = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').closest("[item='interaction']");
     for (var i = 0; i < localQuestions.length; i++) {
         var localQuestionId = $(localQuestions[i]).children('[name$="interaction-id"]').val();
         if (localQuestionId == "" || eltId == localQuestionId) {
