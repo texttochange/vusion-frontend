@@ -528,7 +528,7 @@ function generateFieldSummary(elt, parentName, field)
 //TODO need to generate a interaction id there.
 function updateOffsetConditions(elt){
     //Get current interaction ID
-    var eltId = $(elt).parent().parent().parent().children('[name$="interaction-id"]').val();
+    var eltId = $('[item="interaction"]').children('[name$="interaction-id"]').val();
     //We obviously need to remove it from the options
     var optionsToBeRemoved = [eltId];
     var optionsBefore = [];
