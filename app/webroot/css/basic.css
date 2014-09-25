@@ -154,33 +154,33 @@
         margin :5px;    
 }
 
-[name='Dialogue'] {
+[name*='Dialogue'][item=auto-enrollment-box] {
         background-color: lightyellow;
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not(span):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(odd) {
+[name*=Dialogue][item=interaction]:nth-child(odd) {
         /*    background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=interactions\[]:not(input):not(textarea):not([name*=answer]):not([name*=feedbacks]):not([name*=reminder]):not(span):not([radiochildren]):not(.ttc-interaction-disabled):nth-child(even) {
+[name*=Dialogue][item=interaction]:nth-child(even) {
         /*background:#FDEEF4;*/
         background: #FFCB4B;
 }
 
-[name*=responses\[]:not(input):not(textarea):nth-child(odd) {
+[name*=Request][item=response]:nth-child(odd) {
         background: #FFD97B;
 }
 
-[name*=responses\[]:not(input):not(textarea):nth-child(even) {
+[name*=Request][item=response]:nth-child(even) {
         background: #FFCB4B;
 }
 
-[name*=Request][item=action]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(odd) {
+[name*=Request][item=action]:nth-child(odd) {
         background: #FFD97B;
 }
 
-[name*=Request][item=action]:not(input):not([radiochildren]):not(select):not(textarea):not(span):not([name*=subconditions]):nth-child(even) {
+[name*=Request][item=action]:nth-child(even) {
         background: #FFCB4B;
 }
 
@@ -403,6 +403,15 @@
 .ui-dform-form textarea {
         height: 30px;
         font-size: 12px;
+}
+
+.ui-dform-spanradio {
+    white-space: nowrap;
+}
+
+.ui-dform-spanradiobuttons {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
 }
 
 /*FF hack*/
