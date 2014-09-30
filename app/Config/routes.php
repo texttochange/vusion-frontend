@@ -236,6 +236,14 @@
 			'action' => 'index'
 			)
 		);
+	
+	Router::connect(
+		'/userlogs',
+		array(
+			'controller' => 'userLogs',
+			'action' => 'index'
+			)
+		);
 
 	
 /**

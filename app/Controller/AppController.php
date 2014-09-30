@@ -47,7 +47,8 @@ class AppController extends Controller
         'CreditManager',
         'BackendLog',
         'Stats',
-        'ArchivedProgram'
+        'ArchivedProgram',
+        'UserLogManager'
         );
     
     var $helpers = array(
@@ -95,7 +96,9 @@ class AppController extends Controller
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             $this->programDetails = $programDetails;
             $this->set(compact('programDetails')); 
-
+            
+            $this->UserLogManager->logAction();
+            
             if (!$this->ArchivedProgram->isAllowed()) {
                 $this->_stop();
             }

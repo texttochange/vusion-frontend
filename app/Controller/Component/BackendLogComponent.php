@@ -1,7 +1,7 @@
 <?php
 App::uses('Component', 'Controller');
 
-class BackendLogManagerComponent extends Component
+class BackendLogComponent extends Component
 {
 
     public $Controller         = null;
