@@ -17,9 +17,9 @@ class UserLogManagerComponent extends Component
 	    $this->userLogActions  = array(
 	        'default' => array(
 				'POST' => array(
-					'add' => __('Adding this is not allowed within an archived program.'),
-					'edit' => __('Editing this is not allowed within archived program.'),
-					'delete' => __('Deleting this is not allowed within archived program.'))
+					'add' => __('Adding '),
+					'edit' => __('Editing '),
+					'delete' => __('Deleting '))
 				),
 	        'programParticipants' => array(
 	            'POST' => array(
