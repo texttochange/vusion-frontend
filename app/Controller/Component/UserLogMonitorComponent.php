@@ -1,10 +1,9 @@
 <?php
 App::uses('Component', 'Controller');
 App::uses('UserLog', 'Model');
-App::uses('ProgramSetting', 'Model');
 
 
-class UserLogManagerComponent extends Component
+class UserLogMonitorComponent extends Component
 {
     
 	var $components = array('Session');
@@ -13,7 +12,18 @@ class UserLogManagerComponent extends Component
 	public function initialize($controller)
 	{
 	    $this->Controller = $controller;
-	    
+	    if (!Configure::read("mongo_db")) {
+            $options = array(
+                'database' => 'vusion'
+                );
+        } else {
+            $options = array(
+                'database' => Configure::read("mongo_db")
+                );
+        }
+        
+        $this->UserLog = new UserLog($options);
+        
 	    $this->userLogActions  = array(
 	        'default' => array(
 				'POST' => array(
@@ -30,10 +40,8 @@ class UserLogManagerComponent extends Component
 	
 	
 	public function logAction()
-	{
-	    $this->UserLog = new UserLog();
-	    $now           = new DateTime('now');
-	    // $this->ProgramSetting = new ProgramSetting($options);
+	{	    
+	    $now = new DateTime('now');	    
 	    
 		$controller = 'default';
 		if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
@@ -45,6 +53,7 @@ class UserLogManagerComponent extends Component
 		if (isset($this->Controller->request->action)) {
 			$action = $this->Controller->request->action;
 		}
+		
 		if (!isset($this->userLogActions[$controller][$method][$action])){
 			return true;
 		} else {
@@ -56,14 +65,10 @@ class UserLogManagerComponent extends Component
 		    $userLog['user-id']               = $this->Session->read('Auth.User.id');
 		    $userLog['user-name']             = $this->Session->read('Auth.User.username');
 		    $userLog['timestamp']             = $now->format("d/m/Y H:i:s");
-		    $userLog['timezone']              = 'EXT';		    
+		    $userLog['timezone']              = $this->Controller->programDetails['settings']['timezone'];		    
 		    
 		    $this->UserLog->create();
 		    $this->UserLog->save($userLog);
-		    
-		    $this->Session->setFlash($userLog['controller']);
-			
-			
 		}
 		return true;
 		

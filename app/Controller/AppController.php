@@ -48,7 +48,7 @@ class AppController extends Controller
         'BackendLog',
         'Stats',
         'ArchivedProgram',
-        'UserLogManager'
+        'UserLogMonitor'
         );
     
     var $helpers = array(
@@ -97,7 +97,7 @@ class AppController extends Controller
             $this->programDetails = $programDetails;
             $this->set(compact('programDetails')); 
             
-            $this->UserLogManager->logAction();
+            $this->UserLogMonitor->logAction();
             
             if (!$this->ArchivedProgram->isAllowed()) {
                 $this->_stop();
