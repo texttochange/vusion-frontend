@@ -16,7 +16,8 @@ class UsersController extends AppController
         'ResetPasswordTicket',
         'Captcha',
         'Email',
-        'Filter');
+        'Filter',
+        'Ticket');
     
     var $uses = array(
         'User',
@@ -507,11 +508,49 @@ class UsersController extends AppController
 
     public function inviteUser()
     {
+
+        $groups   = $this->User->Group->find('list');
+        $user = $this->Auth->user();
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
+           $rawPrograms = $this->User->Program->find(
+                'authorized',
+                array(
+                'specific_program_access' => 'true',
+                'user_id' => $user['id'],
+                ));
+           foreach ($rawPrograms as $program) {
+             $programs[$program['Program']['id']] = $program['Program']['name'];
+           }
+        } else {
+            $programs = $this->User->Program->find('list');
+        }
+
+        $this->set(compact('groups', 'programs'));
+
         if (!$this->request->is('post')) {
             return;
         }
+        echo "here";
+        $email = $this->request->data['emailInvitee'];
+        if (!$email) {
+            $this->Session->setFlash(__('Please Enter Email address'));
+            return;
+        }
 
-        $userName = $this->Session->read('Auth.User.username'); 
+        $this->Ticket->setTicketPrefix('inviteuser');
+        
+        $token = md5 (date('mdy').rand(4000000, 4999999));
+        $this->Ticket->saveToken($token);
+
+        $userName = $this->Session->read('Auth.User.username');
+        
+        $this->Ticket->sendEmail($email, $userName, $token);
+        $this->Session->setFlash(
+            __('An Email has been sent to your email account.'),
+            'default',
+            array('class'=>'message success')
+            );
+        //$this->redirect('/');
     }
     
     
