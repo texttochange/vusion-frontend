@@ -88,19 +88,18 @@ class UserLogMonitorComponent extends Component
 	}
 	
 	
-	public function logAction()
+	public function logAction($sessionAction, $method)
 	{	    
 	    $now = new DateTime('now');	    
 	    
 		$controller = 'default';
 		if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
 			$controller = $this->Controller->request->params['controller'];
-		} 
-		$method = $this->Controller->request->method();
+		}
 		
 		$action = 'index';
 		if (isset($this->Controller->request->action)) {
-			$action = $this->Controller->request->action;
+			$action = $sessionAction;
 		}
 		
 		if (!isset($this->userLogActions[$controller][$method][$action])){

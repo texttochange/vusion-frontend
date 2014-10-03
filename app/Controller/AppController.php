@@ -68,7 +68,6 @@ class AppController extends Controller
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
     var $programDetails     = array();
-    var $requestSuccess     = false;
     
     function beforeFilter()
     {    
@@ -120,9 +119,10 @@ class AppController extends Controller
     
     function afterFilter()
     {
-        Print_r($this->requestSuccess);
-        if ($this->requestSuccess) {            
-            $this->UserLogMonitor->logAction();
+        if ($this->Session->check('Success')) {
+            $sessionAction = $this->Session->read('Success');
+            $this->UserLogMonitor->logAction($sessionAction[0], $sessionAction[1]);
+            $this->Session->delete('Success');
         }
     }
     

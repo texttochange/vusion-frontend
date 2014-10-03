@@ -316,9 +316,10 @@ class ProgramParticipantsController extends AppController
             $savedParticipant = null;
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
+                $requestSuccess = true;
                 
-                $this->requestSuccess = true;
+                $this->Session->write('Success', array('add','POST'));
                 
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
@@ -327,11 +328,11 @@ class ProgramParticipantsController extends AppController
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'index'));
-                } 
+                }
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'));
             }
-            $this->set(compact('savedParticipant'));
+            $this->set(compact('requestSuccess', 'savedParticipant'));
         }    
     }
     
@@ -501,7 +502,6 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
             }
-            $this->requestSuccess = true;
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
