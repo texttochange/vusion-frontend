@@ -69,6 +69,7 @@ class AppController extends Controller
     var $redisProgramPrefix = "vusion:programs"; 
     var $programDetails     = array();
     
+    
     function beforeFilter()
     {    
         //Verify the access of user to this program
@@ -84,7 +85,7 @@ class AppController extends Controller
             if (count($data)==0) {
                 throw new NotFoundException('Could not find this page.');
             }
-
+            
             $programDetails = array();
             foreach (array('name', 'url', 'database', 'status') as $key) {
                 $programDetails[$key] = $data[0]['Program'][$key];
@@ -97,7 +98,7 @@ class AppController extends Controller
             $this->programDetails = $programDetails;
             $this->set(compact('programDetails')); 
             
-            $this->UserLogMonitor->logAction();
+            //$this->UserLogMonitor->logAction();
             
             if (!$this->ArchivedProgram->isAllowed()) {
                 $this->_stop();
@@ -114,8 +115,19 @@ class AppController extends Controller
             $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
         }
+        $requestSuccess = false;
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
-        $this->set(compact('countryIndexedByPrefix'));
+        $this->set(compact('countryIndexedByPrefix', 'requestSuccess'));
+    }
+    
+    
+    function afterFilter()
+    {
+       
+        if ($this->requestSuccess) {
+             Print_r('hello pali');
+            $this->UserLogMonitor->logAction();
+        }
     }
     
     
@@ -137,10 +149,10 @@ class AppController extends Controller
     
     protected function _getcurrentProgramData($databaseName)
     {
-        $unattachedMessageModel   = new UnattachedMessage(array('database' => $databaseName));
+        $unattachedMessageModel = new UnattachedMessage(array('database' => $databaseName));
         $predefinedMessageModel = new PredefinedMessage(array('database' => $databaseName));        
-        $dialogueModel = new Dialogue(array('database' => $databaseName));
-        $requestModel  = new Request(array('database' => $databaseName));
+        $dialogueModel          = new Dialogue(array('database' => $databaseName));
+        $requestModel           = new Request(array('database' => $databaseName));
         
         $currentProgramData = array(
             'unattachedMessages' => array(
@@ -152,7 +164,8 @@ class AppController extends Controller
             );
         return $currentProgramData;
     }
-
+    
+    
     protected function _isAjax() 
     {
         return ($this->request->is('ajax') ||  $this->request->ext == 'json');

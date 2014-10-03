@@ -33,8 +33,57 @@ class UserLogMonitorComponent extends Component
 				),
 	        'programParticipants' => array(
 	            'POST' => array(
-	                'delete' => __('delete participants'))
-	            ));
+	                'delete' => __('Deleted participant(s)'),
+	                'add' => __('Added a new participant'),
+	                'edit' => __('Edited participant'),
+	                'import' => __('Imported new participant(s)')
+	                ),
+	            'GET' => array(
+	                'massTag' => __('MassTaged participant(s)'),
+	                'massUntag' => __('MassUntaged participant(s)')
+	                )
+	            ),
+	        'programs' => array(
+	            'POST' => array(
+	                'add' => __('Added a new program'),
+	                'delete' => __('Deleted a program'),
+	                'archive' => __('Archived a program')
+	                )
+	            ),
+	        'programDialogues' => array(
+	            'POST' => array(
+	                'save' => __('Added new a dialogue'),
+	                'delete' => __('Deleted a dialogue'),
+	                'activate' => __('Activated a dialogue')
+	                )
+	            ),
+	        'programUnattachedMessages' => array(
+	            'POST' => array(
+	                'add' => __('Added a new separate message'),
+	                'edit' => __('Edited a separate message'),
+	                'delete' => __('Deleted a separate message')
+	                )
+	            ),
+	        'programRequests' => array(
+	            'POST' => array (
+	                'save' => __('Added a new request'),
+	                'delete' => __('Deleted a request')
+	                ),
+	            'GET' => array(
+	                'edit' => __('Edited a request')
+	                )
+	            ),
+	        'programHistory' => array(
+	            'POSt' => array(
+	                'delete' => __('Deleted program History')
+	                )
+	            ),
+	        'programSetting' => array(
+	            'POST' => array(
+	                'edit' => __('Edited program settings')
+	                )
+	            )
+	        );
 	    
 	}
 	
@@ -66,6 +115,8 @@ class UserLogMonitorComponent extends Component
 		    $userLog['user-name']             = $this->Session->read('Auth.User.username');
 		    $userLog['timestamp']             = $now->format("d/m/Y H:i:s");
 		    $userLog['timezone']              = $this->Controller->programDetails['settings']['timezone'];		    
+		    
+		    $this->Session->setFlash('hihii');
 		    
 		    $this->UserLog->create();
 		    $this->UserLog->save($userLog);

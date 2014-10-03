@@ -318,9 +318,9 @@ class ProgramParticipantsController extends AppController
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
-                $requestSuccess = true;
-                $this->Session->setFlash(__('The participant has been saved.'),
-                    'default', array('class'=>'message success'));
+                $this->requestSuccess = true;
+                //$this->Session->setFlash(__('The participant has been saved.'),
+                  //  'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,  
