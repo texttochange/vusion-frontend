@@ -68,6 +68,7 @@ class AppController extends Controller
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
     var $programDetails     = array();
+    var $requestSuccess     = false;
     
     function beforeFilter()
     {    
@@ -95,9 +96,7 @@ class AppController extends Controller
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             $this->programDetails = $programDetails;
-            $this->set(compact('programDetails')); 
-            
-            //$this->UserLogMonitor->logAction();
+            $this->set(compact('programDetails'));
             
             if (!$this->ArchivedProgram->isAllowed()) {
                 $this->_stop();
@@ -113,14 +112,13 @@ class AppController extends Controller
             $programStats       = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
             $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
-        }        
-        $requestSuccess     = true;
+        }
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
-        $this->set(compact('countryIndexedByPrefix', 'requestSuccess'));
+        $this->set(compact('countryIndexedByPrefix'));
     }
     
     
-    function beforeRender()
+    function afterFilter()
     {
         Print_r($this->requestSuccess);
         if ($this->requestSuccess) {            

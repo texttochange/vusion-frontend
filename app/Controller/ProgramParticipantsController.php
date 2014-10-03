@@ -501,6 +501,7 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
             }
+            $this->requestSuccess = true;
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
