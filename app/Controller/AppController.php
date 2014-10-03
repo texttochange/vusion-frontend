@@ -69,7 +69,6 @@ class AppController extends Controller
     var $redisProgramPrefix = "vusion:programs"; 
     var $programDetails     = array();
     
-    
     function beforeFilter()
     {    
         //Verify the access of user to this program
@@ -114,18 +113,17 @@ class AppController extends Controller
             $programStats       = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
             $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
-        }
-        $requestSuccess = false;
+        }        
+        $requestSuccess     = true;
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix', 'requestSuccess'));
     }
     
     
-    function afterFilter()
+    function beforeRender()
     {
-       
-        if ($this->requestSuccess) {
-             Print_r('hello pali');
+        Print_r($this->requestSuccess);
+        if ($this->requestSuccess) {            
             $this->UserLogMonitor->logAction();
         }
     }

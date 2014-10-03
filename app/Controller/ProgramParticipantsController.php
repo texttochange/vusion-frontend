@@ -38,7 +38,7 @@ class ProgramParticipantsController extends AppController
     function beforeFilter() 
     {
         parent::beforeFilter();
-
+        
         $options = array('database' => ($this->Session->read($this->params['program']."_db"))); 
         $this->Participant       = new Participant($options);
         $this->History           = new History($options);
@@ -70,7 +70,7 @@ class ProgramParticipantsController extends AppController
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
-
+        
         $this->paginate = $paginate;
         $participants   = $this->paginate('Participant');
         $this->set(compact('participants', 'requestSuccess'));
@@ -97,11 +97,11 @@ class ProgramParticipantsController extends AppController
     public function getFilterParameterOptions()
     {
         $requestSuccess = true;
-
+        
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         if (!isset($this->request->query['parameter'])) {
             throw new Exception(__("The required filter parameter option is missing."));
         }
@@ -209,7 +209,7 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl    = $this->params['program'];
         $requestSucces = false;
-
+        
         $this->set('filterFieldOptions', $this->Participant->fieldFilters);
         $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
         $this->set('filterDialogueConditionsOptions', $dialoguesContent);
@@ -305,10 +305,9 @@ class ProgramParticipantsController extends AppController
     
     public function add() 
     {
-        $programUrl     = $this->params['program'];
-        $requestSuccess = false;
-        $data           = $this->_ajaxDataPatch();
-
+        $programUrl = $this->params['program'];
+        $data       = $this->_ajaxDataPatch();
+        
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(__('Please set the program settings then try again.'));
@@ -318,9 +317,11 @@ class ProgramParticipantsController extends AppController
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
+                
                 $this->requestSuccess = true;
-                //$this->Session->setFlash(__('The participant has been saved.'),
-                  //  'default', array('class'=>'message success'));
+                
+                $this->Session->setFlash(__('The participant has been saved.'),
+                    'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,  
@@ -330,7 +331,7 @@ class ProgramParticipantsController extends AppController
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'));
             }
-            $this->set(compact('requestSuccess', 'savedParticipant'));
+            $this->set(compact('savedParticipant'));
         }    
     }
     
@@ -345,7 +346,7 @@ class ProgramParticipantsController extends AppController
         return $selectOptions;
     }
     
-
+    
     protected function _loadParticipantId($data)
     {
         if ($this->params['id']) { 
@@ -371,7 +372,7 @@ class ProgramParticipantsController extends AppController
         }
         return $participant;
     }
-
+    
     protected function _ajaxDataPatch()
     {
         $data = $this->data;
@@ -388,7 +389,7 @@ class ProgramParticipantsController extends AppController
         $requestSuccess = false;
         $id             = null;
         $data           = $this->_ajaxDataPatch();
-
+        
         //Retrieving the participant to edit
         $participant = $this->_loadParticipantId($data);
         
@@ -510,9 +511,9 @@ class ProgramParticipantsController extends AppController
         }
         $this->Session->setFlash(__('Participant was not deleted.'));
         $this->redirect(array(
-                'program' => $programUrl,
-                'action' => 'index',
-                'page' => $currentPage));
+            'program' => $programUrl,
+            'action' => 'index',
+            'page' => $currentPage));
     }
     
     
@@ -541,7 +542,7 @@ class ProgramParticipantsController extends AppController
         
         $data        = $this->_ajaxDataPatch();
         $participant = $this->_loadParticipantId($data);
-
+        
         if ($this->request->is('post')) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             
@@ -581,11 +582,11 @@ class ProgramParticipantsController extends AppController
         $programUrl     = $this->params['program'];
         $id             = $this->params['id'];
         $requestSuccess = false;
-
+        
         $data = $this->_ajaxDataPatch();
         //Retrieving the participant to edit
         $participant = $this->_loadParticipantId($data);
-       
+        
         if ($this->request->is('post')) {
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
