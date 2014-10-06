@@ -18,7 +18,8 @@ class ProgramParticipantsController extends AppController
     var $components = array(
         'RequestHandler', 
         'LocalizeUtils',
-        'Filter');
+        'Filter',
+        'UserLogMonitor');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array('className' => 'BigCountPaginator'));
@@ -150,6 +151,7 @@ class ProgramParticipantsController extends AppController
                 $conditions = array();
             }
             if ($this->Participant->addMassTags($this->params['url']['tag'], $conditions)) {                
+                $this->Session->write('Success', array('massTag','GET'));
                 $this->Session->setFlash(__('The MassTag has been added successfully.'),
                     'default',
                     array('class'=>'message success')
@@ -182,6 +184,7 @@ class ProgramParticipantsController extends AppController
                 $conditions = array();
             } 
             if ($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)) {
+                $this->Session->write('Success', array('massUntag','GET'));
                 $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
                     'default',
                     array('class'=>'message success')
@@ -319,7 +322,7 @@ class ProgramParticipantsController extends AppController
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
                 $requestSuccess = true;
                 
-                $this->Session->write('Success', array('add','POST'));
+                $this->UserLogMonitor->userLogSessionWrite('UserLogMonitor', 'add', 'POST', 'programParticipants');
                 
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
@@ -401,8 +404,11 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
-                $participant = $savedParticipant;
+                $participant    = $savedParticipant;
                 $requestSuccess = true;
+                
+                $this->Session->write('Success', array('edit','POST'));
+                
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
@@ -502,6 +508,9 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
             }
+            
+            $this->Session->write('Success', array('delete','POST'));
+            
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
@@ -748,6 +757,7 @@ class ProgramParticipantsController extends AppController
                         $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
                     }    
                 }
+                $this->Session->write('Success', array('import','POST'));
             } else {
                 $this->Session->setFlash(
                     $this->Participant->importErrors[0], 

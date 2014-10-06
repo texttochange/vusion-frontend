@@ -27,9 +27,9 @@ class UserLogMonitorComponent extends Component
 	    $this->userLogActions  = array(
 	        'default' => array(
 				'POST' => array(
-					'add' => __('Adding this is not allowed within an archived program.'),
-					'edit' => __('Editing this is not allowed within archived program.'),
-					'delete' => __('Deleting this is not allowed within archived program.'))
+					'add' => __('Adding to unlisted action in  program.'),
+					'edit' => __('Editing to unlisted action in program.'),
+					'delete' => __('Deleting to unlisted action in program.'))
 				),
 	        'programParticipants' => array(
 	            'POST' => array(
@@ -46,6 +46,7 @@ class UserLogMonitorComponent extends Component
 	        'programs' => array(
 	            'POST' => array(
 	                'add' => __('Added a new program'),
+	                'edit' => __('Edited a program'),
 	                'delete' => __('Deleted a program'),
 	                'archive' => __('Archived a program')
 	                )
@@ -88,7 +89,27 @@ class UserLogMonitorComponent extends Component
 	}
 	
 	
-	public function logAction($sessionAction, $method)
+	public function userLogSessionWrite($userLogMonitor, $action, $method, $controller)
+	{
+	    $this->Session->write($userLogMonitor, array(
+	        'action' => $action,
+	        'method' => $method,
+	        'controller' => $controller));
+	}
+	
+	
+	public function logAction()
+	{
+	    if ($this->Session->check('UserLogMonitor')) {
+            $sessionAction = $this->Session->read('UserLogMonitor');
+            $this->_logAction($sessionAction['action'], $sessionAction['method']);
+            $this->Session->delete('UserLogMonitor');
+        }
+        
+	}
+		
+	
+	protected function _logAction($sessionAction, $method)
 	{	    
 	    $now = new DateTime('now');	    
 	    
@@ -102,20 +123,33 @@ class UserLogMonitorComponent extends Component
 			$action = $sessionAction;
 		}
 		
+		$programDatabaseName = 'None';
+		if (isset($this->Controller->programDetails['database'])) {
+		    $programDatabaseName = $this->Controller->programDetails['database'];
+		}
+		
+		$programName = 'None'; 
+		if (isset($this->Controller->programDetails['name'])) {
+		    $programName = $this->Controller->programDetails['name'];
+		}
+		
+		$programTimezone = 'None';
+		if (isset($this->Controller->programDetails['settings']['timezone'])) {
+		    $programTimezone = $this->Controller->programDetails['settings']['timezone'];
+		}
+		
 		if (!isset($this->userLogActions[$controller][$method][$action])){
 			return true;
 		} else {
 		    $userLog['controller']            = $controller;
 	        $userLog['action']                = $action;
-		    $userLog['program-database-name'] = $this->Controller->programDetails['database'];
-		    $userLog['program-name']          = $this->Controller->programDetails['name'];
+		    $userLog['program-database-name'] = $programDatabaseName;
+		    $userLog['program-name']          = $programName;
 		    $userLog['parameters']            = $this->userLogActions[$controller][$method][$action];
 		    $userLog['user-id']               = $this->Session->read('Auth.User.id');
 		    $userLog['user-name']             = $this->Session->read('Auth.User.username');
 		    $userLog['timestamp']             = $now->format("d/m/Y H:i:s");
-		    $userLog['timezone']              = $this->Controller->programDetails['settings']['timezone'];		    
-		    
-		    $this->Session->setFlash('hihii');
+		    $userLog['timezone']              = $programTimezone;
 		    
 		    $this->UserLog->create();
 		    $this->UserLog->save($userLog);

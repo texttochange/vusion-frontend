@@ -70,7 +70,7 @@ class AppController extends Controller
     var $programDetails     = array();
     
     function beforeFilter()
-    {    
+    {
         //Verify the access of user to this program
         if (!empty($this->params['program'])) {
             $this->Program->recursive = -1;
@@ -112,18 +112,9 @@ class AppController extends Controller
             $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
         }
+        $this->UserLogMonitor->logAction();
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
-    }
-    
-    
-    function afterFilter()
-    {
-        if ($this->Session->check('Success')) {
-            $sessionAction = $this->Session->read('Success');
-            $this->UserLogMonitor->logAction($sessionAction[0], $sessionAction[1]);
-            $this->Session->delete('Success');
-        }
     }
     
     
