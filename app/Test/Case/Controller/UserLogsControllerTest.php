@@ -1,6 +1,7 @@
 <?php
 App::uses('UserLogsController', 'Controller');
 App::uses('Program', 'Model');
+App::uses('UserLog', 'Model');
 App::uses('ScriptMaker', 'Lib');
 
 
@@ -19,25 +20,16 @@ class TestUserLogsController extends UserLogsController
 class UserLogsControllerTestCase extends ControllerTestCase
 {
     
+    var $databaseName = "testdbmongo";
     
-    var $programData = array(
-        0 => array( 
-            'Program' => array(
-                'name' => 'Test Name',
-                'url' => 'testurl',
-                'timezone' => 'utc',
-                'database' => 'testdbprogram',
-                'status' => 'running'
-                )
-            ));
-    
-
     public function setUp()
     {
+        Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->UserLogs = new TestUserLogsController();
-        $this->UserLog  = new UserLog();
+        $options        = array('database' => $this->databaseName);
+        $this->UserLog  = new UserLog($options);
         
         $this->dropData();
     }
@@ -62,19 +54,17 @@ class UserLogsControllerTestCase extends ControllerTestCase
         $userLogs = $this->generate(
             'UserLogs', array(
                 'components' => array(
-                    'Acl' => array('check')
-                    ),
-                'models' => array(
-                    'UserLog' => array('getUserLogs'),
-                    'Group' => array()
-                    ),
+                    'Acl' => array('check'),
+                    'Session' => array('read', 'setFlash'),
+                    'Auth'
+                    )
                 )
             );
         
         $userLogs->Acl
         ->expects($this->any())
         ->method('check')
-        ->will($this->returnValue('true'));
+        ->will($this->returnValue('true'));        
         
         return $userLogs;
     }
@@ -82,6 +72,7 @@ class UserLogsControllerTestCase extends ControllerTestCase
     
     public function testIndex()
     {
+        $this->mock_program_access();   
         $userLog2 = array(
             'timestamp' => '2014-20-10T20:25:00',
             'timezone' => 'Australia/Sydney',
@@ -93,14 +84,10 @@ class UserLogsControllerTestCase extends ControllerTestCase
             'action' => 'delete',
             'parameters' => 'all participant with tag: today'
             );
+        $this->UserLog->create();
+        $this->UserLog->save($userLog2);
         
-        $userLogs = $this->mock_program_access();
-        //print_r($userLogs);
-        $userLogs->UserLog
-        ->expects($this->once()) 
-        ->method('getUserLogs');
-       //->will($this->returnValue($userLog2));
-        
-        $this->testAction("testurl/userlogs/index");        
+        $this->testAction("/userLogs/index");
+        $this->assertEquals(1, count($this->vars['userLogs']));
     }
 }

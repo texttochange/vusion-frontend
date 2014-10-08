@@ -45,43 +45,48 @@ class UserLogMonitorComponent extends Component
 	            ),
 	        'programs' => array(
 	            'POST' => array(
-	                'add' => __('Added a new program'),
-	                'edit' => __('Edited a program'),
-	                'delete' => __('Deleted a program'),
-	                'archive' => __('Archived a program')
+	                'add' => __('Added anew program'),
+	                'edit' => __('Edited aprogram'),
+	                'delete' => __('Deleted aprogram'),
+	                'archive' => __('Archived aprogram')
 	                )
 	            ),
 	        'programDialogues' => array(
 	            'POST' => array(
-	                'save' => __('Added new a dialogue'),
+	                'save' => __('Added anew draft dialogue'),
 	                'delete' => __('Deleted a dialogue'),
 	                'activate' => __('Activated a dialogue')
 	                )
 	            ),
 	        'programUnattachedMessages' => array(
 	            'POST' => array(
-	                'add' => __('Added a new separate message'),
-	                'edit' => __('Edited a separate message'),
-	                'delete' => __('Deleted a separate message')
+	                'add' => __('Added anew separate message'),
+	                'edit' => __('Edited aseparate message'),
+	                'delete' => __('Deleted aseparate message')
 	                )
 	            ),
 	        'programRequests' => array(
 	            'POST' => array (
-	                'save' => __('Added a new request'),
-	                'delete' => __('Deleted a request')
-	                ),
-	            'GET' => array(
-	                'edit' => __('Edited a request')
+	                'save' => __('Added anew request'),
+	                'delete' => __('Deleted arequest')
 	                )
 	            ),
 	        'programHistory' => array(
-	            'POSt' => array(
+	            'POST' => array(
 	                'delete' => __('Deleted program History')
 	                )
 	            ),
-	        'programSetting' => array(
+	        'programSettings' => array(
 	            'POST' => array(
 	                'edit' => __('Edited program settings')
+	                )
+	            ),
+	        'users' => array(
+	            'POST' => array(
+	                'add' => __('Added new User'),
+	                'edit' => __('Edited User'),
+	                'delete' => __('Deleted User'),
+	                'changePassword' => __('Changed Password')
 	                )
 	            )
 	        );
@@ -89,9 +94,21 @@ class UserLogMonitorComponent extends Component
 	}
 	
 	
-	public function userLogSessionWrite($userLogMonitor, $action, $method, $controller)
+	public function userLogSessionWrite()
 	{
-	    $this->Session->write($userLogMonitor, array(
+	    $controller = 'default';
+		if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
+			$controller = $this->Controller->request->params['controller'];
+		}
+	    
+	    $action = 'index';
+		if (isset($this->Controller->request->action)) {
+			$action = $this->Controller->request->action;
+		}
+		
+		$method = $this->Controller->request->method();
+	    
+	    $this->Session->write('UserLogMonitor', array(
 	        'action' => $action,
 	        'method' => $method,
 	        'controller' => $controller));
@@ -102,27 +119,17 @@ class UserLogMonitorComponent extends Component
 	{
 	    if ($this->Session->check('UserLogMonitor')) {
             $sessionAction = $this->Session->read('UserLogMonitor');
-            $this->_logAction($sessionAction['action'], $sessionAction['method']);
+            print_r($sessionAction);
+            $this->_logAction($sessionAction['action'], $sessionAction['method'], $sessionAction['controller']);
             $this->Session->delete('UserLogMonitor');
         }
-        
 	}
-		
 	
-	protected function _logAction($sessionAction, $method)
-	{	    
-	    $now = new DateTime('now');	    
+	
+	protected function _logAction($action, $method, $controller)
+	{
+	    $now = new DateTime('now');
 	    
-		$controller = 'default';
-		if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
-			$controller = $this->Controller->request->params['controller'];
-		}
-		
-		$action = 'index';
-		if (isset($this->Controller->request->action)) {
-			$action = $sessionAction;
-		}
-		
 		$programDatabaseName = 'None';
 		if (isset($this->Controller->programDetails['database'])) {
 		    $programDatabaseName = $this->Controller->programDetails['database'];
@@ -150,7 +157,8 @@ class UserLogMonitorComponent extends Component
 		    $userLog['user-name']             = $this->Session->read('Auth.User.username');
 		    $userLog['timestamp']             = $now->format("d/m/Y H:i:s");
 		    $userLog['timezone']              = $programTimezone;
-		    
+		    print_r('....................');
+		    print_r($userLog);
 		    $this->UserLog->create();
 		    $this->UserLog->save($userLog);
 		}

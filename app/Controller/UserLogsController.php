@@ -3,9 +3,7 @@ App::uses('AppController','Controller');
 App::uses('UserLog','Model');
 
 class UserLogsController extends AppController
-{  
-    
-    
+{
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -13,9 +11,21 @@ class UserLogsController extends AppController
     
     
     public function index()
-    {
-        $userLogs = $this->UserLog->getUserLogs();
-        $this->set(compact('userLogs'));
+    {        
+        $paginate = array('all');
+        
+        if (!isset($this->params['named']['sort'])) {
+            $paginate['order'] = array('timestamp' => 'desc');
+        } else if (isset($this->params['named']['direction'])) {
+            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        } else {
+            $paginate['order'] = null;
+        }
+        
+        $this->paginate = $paginate;
+        $userLogs       = $this->UserLog->getUserLogs();
+        
+        $this->set('userLogs', $this->paginate());
     }
 
 }
