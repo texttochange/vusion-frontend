@@ -122,40 +122,6 @@ class FilterComponent extends Component
         }
         return __('%s', $value);
     }
-    
-/*
-    public function checkFilterFields($filter)
-    {
-        $filterErrors           = array();
-        $localizedValueLabel    = $this->localizedValueLabel;
-        $filter['filter_param'] = array_filter(
-            $filter['filter_param'], 
-            function($filterParam) use (&$filterErrors, $localizedValueLabel) {
-                if (in_array("", $filterParam)) {
-                    if ($filterParam[1] == "") {
-                        $filterErrors[] = __("first filter field is missing");
-                    } else if ($filterParam[2] == "") {
-                        $filterErrors[] = $filterParam[1];
-                    } else {
-                        $filterErrors[] = array($filterParam[1], $filterParam[2]);
-                    } 
-                    return false;  //will filter out
-                }
-                return true;   // will keep this filter
-            });
-        foreach ($filterErrors as &$filterError) {
-            if (is_string($filterError)) {
-                $filterError = $this->localize($filterError);                
-            } else {
-                foreach ($filterError as &$item) {
-                    $item = $this->localize($item);
-                }
-                $filterError = implode(' ', $filterError);
-            }
-        } 
-        $filterCheck['filter'] = $filter;
-        $filterCheck['filterErrors'] = $filterErrors;
-        return $filterCheck;
-    }
-    */
+
+
 }
