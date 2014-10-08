@@ -5,6 +5,7 @@ class FilterComponent extends Component
 {
     
     var $localizedValueLabel = array();
+    var $currentQuery = array();
     
     public function __construct(ComponentCollection $collection, $settings = array())
     {
@@ -51,10 +52,12 @@ class FilterComponent extends Component
             'with' => __('with'),
             'phone' => __('phone'),
             'participant-phone' => __('participant phone'),
+            'participant' => __('participant'),
             'tagged' => __('tagged'),
             'labelled' => __('labelled'),
             'optin' => __('optin'),
             'optout' => __('optout'),
+            'has-schedule' => __('has schedule'),
             ); 
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
@@ -69,34 +72,47 @@ class FilterComponent extends Component
     }
     
     
-    public function getConditions($filterModel = null, $defaultConditions = null, $countryPrefixes =  null)
+    public function getConditions($filterModel, $defaultConditions = null, $otherModels = array())
     {       
-        $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));
+        $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));       
         
-        if (!isset($filter['filter_param'])) 
-            return $defaultConditions;
-        
-        if (!isset($filter['filter_operator']) || !in_array($filter['filter_operator'], $filterModel->filterOperatorOptions)) {
-            throw new FilterException('Filter operator is missing or not allowed.');
-        }        
-        
-        $checkedFilter = $this->checkFilterFields($filter);
-        
-        if (count($checkedFilter['filterErrors']) > 0) {
+        $checkedFilter = $filterModel->validateFilter($filter);
+        //Make sure the incorrect filters will be mention in the flash message    
+        if (count($checkedFilter['errors']) > 0) {
+            $filterErrors = array();
+            foreach ($checkedFilter['errors'] as $filterError) {
+                if (is_string($filterError)) {
+                    $filterErrors[] = $this->localize($filterError);                
+                } else {
+                    foreach ($filterError as &$item) {
+                        $item = $this->localize($item);
+                    }
+                    $filterErrors[] = implode(' ', $filterError);
+                }
+            } 
             $this->Controller->Session->setFlash(
-                __('%s filter(s) ignored due to missing information: "%s"', count($checkedFilter['filterErrors']), implode(', ', $checkedFilter['filterErrors'])), 
-                'default',
-                array('class' => "message failure")
-                );
+                __('%s filter(s) ignored due to missing information: "%s"', 
+                    count($checkedFilter['errors']), 
+                    implode(', ', $filterErrors)));
         }
         
-        // all filters were incompelete don't event show the filters
-        if (count($checkedFilter['filter']['filter_param']) != 0) {
-            $this->Controller->set('urlParams', http_build_query($checkedFilter['filter'])); // To move to the views using filterParams
+        //All incomplete filters are deleted
+        if (count($checkedFilter['filter']['filter_params']) != 0) {
+            // To move to the views using filterParams
+            $this->Controller->set('urlParams', http_build_query($checkedFilter['filter'])); 
             $this->Controller->set('filterParams', $checkedFilter['filter']);
         }
-        
-        return $filterModel->fromFilterToQueryConditions($checkedFilter['filter'], $countryPrefixes);
+
+        //Run the pre-join request
+        $otherModelConditions = array();
+        foreach($checkedFilter['joins'] as $join) {
+            $results = call_user_func(
+                array($otherModels[$join['model']], $join['function']),
+                $join['parameters']);
+            $otherModelConditions[] = array(
+                $join['field'] => array('$join' => $results));
+        }
+        return $filterModel->fromFiltersToQueryCondition($checkedFilter['filter'], $otherModelConditions);
     }
     
     //Having a function is better to handle key error.
@@ -107,6 +123,7 @@ class FilterComponent extends Component
         return __('%s', $value);
     }
     
+/*
     public function checkFilterFields($filter)
     {
         $filterErrors           = array();
@@ -140,4 +157,5 @@ class FilterComponent extends Component
         $filterCheck['filterErrors'] = $filterErrors;
         return $filterCheck;
     }
+    */
 }
