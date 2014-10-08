@@ -100,6 +100,7 @@ class ProgramRequestsController extends AppController
         if ($savedRequest = $this->Request->saveRequest($request,  $foundKeywords)) {
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $requestSuccess = true;
+            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(__('Request saved.'));
             $this->set(compact('savedRequest'));
         } else {
@@ -128,6 +129,7 @@ class ProgramRequestsController extends AppController
         }
         if ($this->Request->delete()) {
             $this->_notifyReloadRequest($programUrl, $id);
+            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(
                 __('The request has been deleted.'),
                 'default',

@@ -141,6 +141,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
                 $requestSuccess = true;
+                $this->UserLogMonitor->userLogSessionWrite();
                 $this->set(compact('savedUnattachedMessage'));
                 if (!$this->_isAjax()) {
                     $this->redirect(array(
@@ -318,6 +319,7 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->request->is('post')) {
             if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
                 $requestSuccess = true;
+                $this->UserLogMonitor->userLogSessionWrite();
                 $this->set(compact('savedUnattachedMessage'));
                 if (!$this->_isAjax()) {
                     $this->redirect(array(
@@ -387,8 +389,11 @@ class ProgramUnattachedMessagesController extends AppController
         
         if ($this->UnattachedMessage->delete()) {
             $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
+            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(__('Message deleted'),
-                'default', array('class'=>'message success'));
+                'default',
+                array('class'=>'message success')
+                );
             $this->redirect(array(
                 'program' => $programUrl,
                 'controller' => 'programUnattachedMessages',

@@ -98,6 +98,7 @@ class ProgramSettingsController extends AppController
             
             if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'], $keywordValidation)) {
                 $this->_notifyUpdateProgramSettings($programUrl);
+                $this->UserLogMonitor->userLogSessionWrite();
                 $this->Session->setFlash(__("Program Settings saved."),
                     'default',
                     array('class'=>'message success'));

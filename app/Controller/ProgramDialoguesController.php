@@ -11,14 +11,14 @@ App::uses('DialogueHelper', 'Lib');
 
 class ProgramDialoguesController extends AppController
 {
-
+    
     var $components = array(
         'RequestHandler', 
         'LocalizeUtils', 
         'Utils',
         'Keyword',
         'DynamicForm');
-
+    
     
     public function beforeFilter()
     {
@@ -59,17 +59,17 @@ class ProgramDialoguesController extends AppController
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($this->params['program']."_db");
         $requestSuccess = false;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             $this->set(compact('requestSuccess'));
             return;
         }
-
+        
         $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
         $dialogue      = DialogueHelper::objectToArray($this->request->data);
         $id            = Dialogue::getDialogueId($dialogue);
@@ -77,6 +77,7 @@ class ProgramDialoguesController extends AppController
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
         if ($this->Dialogue->saveDialogue($dialogue, $foundKeywords)) {
             $requestSuccess = true;
+            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(__('Dialogue saved as draft.'));
             $this->set('dialogueObjectId', $this->Dialogue->id);
         } else {
@@ -130,8 +131,8 @@ class ProgramDialoguesController extends AppController
     {      
         return array();
     }
-
-
+    
+    
     //TODO need to check keyword before activate!
     public function activate()
     {
@@ -142,29 +143,30 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
         } else {
-            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
+            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {                
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
-                    'default', array('class' => "message success"));
+                    'default', 
+                    array('class' => "message success"));
             } else {
                 $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
             }
         } 
         $this->redirect(array('program' => $programUrl, 'action' => 'index'));
     }
-
-
+    
+    
     public function validateName()
     {
         $dialogueName   = $this->request->data['name'];
         $dialogueId     = $this->request->data['dialogue-id'];
         $requestSuccess = false;
         $foundMessage   = null;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             throw new BadRequestException();
         }
-
+        
         if (!$this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId)) {
             $foundMessage = __("'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName);
         } else {
@@ -173,7 +175,7 @@ class ProgramDialoguesController extends AppController
         
         $this->set(compact('requestSuccess', 'foundMessage'));        
     }
-
+    
     
     public function validateKeyword()
     {   
@@ -184,17 +186,17 @@ class ProgramDialoguesController extends AppController
         
         $requestSuccess = false;
         $foundMessage   = null;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             $this->set(compact('requestSuccess'));
             return;
         }
-       
+        
         /**Is the keyword used by another program*/
         $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Dialogue', $dialogueId);
@@ -211,7 +213,7 @@ class ProgramDialoguesController extends AppController
     public function testSendAllMessages()
     {
         $programUrl = $this->params['program'];
-
+        
         if (isset($this->params['id'])) {
             $objectId = $this->params['id'];
             $this->set(compact('objectId'));
@@ -224,7 +226,7 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Message(s) being sent, should arrive shortly...'), 
                 'default', array('class' => "message success"));
         }
-
+        
         $dialogues = $this->Dialogue->getActiveAndDraft();    
         $this->set(compact('dialogues'));         
     }
@@ -252,13 +254,14 @@ class ProgramDialoguesController extends AppController
     {
         $programUrl = $this->params['program'];
         $dialogueId = $this->params['id'];
-
+        
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
-
+        
         if ($this->Dialogue->deleteDialogue($dialogueId)) {
             $result = $this->_notifyUpdateRegisteredKeywords($programUrl);
+            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(
                 __('Dialogue deleted.'),
                 'default',
@@ -270,10 +273,7 @@ class ProgramDialoguesController extends AppController
                 ));
         }  
         $this->Session->setFlash(
-            __('Delete dialogue failed.'), 
-            'default',
-            array('class' => "message failure")
-            );
+            __('Delete dialogue failed.'));
         $this->redirect(
             array(
                 'program' => $programUrl,

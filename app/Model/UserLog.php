@@ -15,6 +15,7 @@ class UserLog extends MongoModel
         return '1';
     }
 
+    
     function getRequiredFields($objectType = null)
     {
         return array (

@@ -151,15 +151,13 @@ class ProgramParticipantsController extends AppController
                 $conditions = array();
             }
             if ($this->Participant->addMassTags($this->params['url']['tag'], $conditions)) {                
-                $this->Session->write('Success', array('massTag','GET'));
+                $this->UserLogMonitor->userLogSessionWrite();
                 $this->Session->setFlash(__('The MassTag has been added successfully.'),
                     'default',
                     array('class'=>'message success')
                     );
             } else {                
-                $this->Session->setFlash(__('The MassTag '.$tag.' could not be added successfully.'), 
-                    'default',
-                    array('class' => 'message failure'));                            
+                $this->Session->setFlash(__('The MassTag '.$tag.' could not be added successfully.'));                            
             }           
         }
         
@@ -184,16 +182,13 @@ class ProgramParticipantsController extends AppController
                 $conditions = array();
             } 
             if ($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)) {
-                $this->Session->write('Success', array('massUntag','GET'));
+                $this->UserLogMonitor->userLogSessionWrite();
                 $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
                     'default',
                     array('class'=>'message success')
                     );
             } else {                
-                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
-                    'default',
-                    array('class' => 'message failure')
-                    );                                
+                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'));                                
             }
         } 
         
@@ -322,7 +317,7 @@ class ProgramParticipantsController extends AppController
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
                 $requestSuccess = true;
                 
-                $this->UserLogMonitor->userLogSessionWrite('UserLogMonitor', 'add', 'POST', 'programParticipants');
+                $this->UserLogMonitor->userLogSessionWrite();
                 
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
@@ -405,10 +400,8 @@ class ProgramParticipantsController extends AppController
                     false);
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
                 $participant    = $savedParticipant;
-                $requestSuccess = true;
-                
-                $this->Session->write('Success', array('edit','POST'));
-                
+                $requestSuccess = true;                
+                $this->UserLogMonitor->userLogSessionWrite();                
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
@@ -507,10 +500,8 @@ class ProgramParticipantsController extends AppController
                 $this->History->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
-            }
-            
-            $this->Session->write('Success', array('delete','POST'));
-            
+            }            
+            $this->UserLogMonitor->userLogSessionWrite();            
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
@@ -757,7 +748,7 @@ class ProgramParticipantsController extends AppController
                         $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
                     }    
                 }
-                $this->Session->write('Success', array('import','POST'));
+                $this->UserLogMonitor->userLogSessionWrite();
             } else {
                 $this->Session->setFlash(
                     $this->Participant->importErrors[0], 

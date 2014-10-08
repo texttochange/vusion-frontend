@@ -210,7 +210,7 @@ class ProgramHistoryController extends AppController
         $result     = $this->History->deleteAll(
             $conditions, 
             false);
-        
+        $this->UserLogMonitor->userLogSessionWrite();
         $this->Session->setFlash(
             __('Histories have been deleted.'),
             'default',
