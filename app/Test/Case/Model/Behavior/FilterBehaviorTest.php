@@ -66,7 +66,7 @@ class FilterBehaviorTest extends CakeTestCase
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_params' => array()),
+                'filter_param' => array()),
             'joins' => array(array(
                 'field' => 'phone',
                 'model' => 'SecondDummyModel',
@@ -91,7 +91,7 @@ class FilterBehaviorTest extends CakeTestCase
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_params' => array()),
+                'filter_param' => array()),
             'joins' => array(),
             'errors' => array(array(
                 'phone', 'is', 'missing parameter')));
@@ -114,7 +114,7 @@ class FilterBehaviorTest extends CakeTestCase
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_params' => array()),
+                'filter_param' => array()),
             'joins' => array(),
             'errors' => array(array(
                 'schedule', 'something', 'not supported')));
@@ -138,7 +138,7 @@ class FilterBehaviorTest extends CakeTestCase
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_params' => array()),
+                'filter_param' => array()),
             'joins' => array(),
             'errors' => array(array(
                 'schedule', 'operator not defined')));
@@ -162,7 +162,7 @@ class FilterBehaviorTest extends CakeTestCase
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_params' => array()),
+                'filter_param' => array()),
             'joins' => array(),
             'errors' => array('condition is missing'));
 
@@ -185,7 +185,7 @@ class FilterBehaviorTest extends CakeTestCase
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_params' => array(
+                'filter_param' => array(
                     array(
                         1 => 'optin', 
                         2 => 'now'))),

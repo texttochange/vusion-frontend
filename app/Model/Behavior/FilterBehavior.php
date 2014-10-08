@@ -70,7 +70,7 @@ class FilterBehavior extends ModelBehavior {
         $resultFilter = array(
             'filter' => array(
                 'filter_operator' => null,
-                'filter_params' => array()),
+                'filter_param' => array()),
             'joins' => array(),
             'errors' => array());
 
@@ -91,7 +91,7 @@ class FilterBehavior extends ModelBehavior {
                 if ($model->isJoin($filterParam)) {
                     $resultFilter['joins'][] = $model->getJoin($filterParam);
                 } else {
-                    $resultFilter['filter']['filter_params'][] = $filterParam;
+                    $resultFilter['filter']['filter_param'][] = $filterParam;
                 }
                 continue;
             } 

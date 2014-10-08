@@ -18,8 +18,8 @@ class TestFilterComponentController extends Controller
 
 class FirstDummyModel extends MongoModel 
 {
-    var $name = "FirstDummy";
-    var $specific = true;
+    public $name = "FirstDummy";
+    public $specific = true;
     public function getModelVersion() {}
     public function getRequiredFields($objectType) {}
 
@@ -100,7 +100,14 @@ class FilterComponentTest extends CakeTestCase
         parent::tearDown();
     }
     
-    
+    public function testGetConditions_emptyFilter() 
+    {
+        $this->Controller->params['url'] = array();
+        $conditions = $this->FilterComponent->getConditions($this->Controller->FirstDummyModel);
+        $this->assertEqual(array(), $conditions);
+    }
+
+
     public function testGetConditions_fail_firstFieldEmpty() 
     {
         $filter = array(
@@ -118,7 +125,7 @@ class FilterComponentTest extends CakeTestCase
                 array(
                     'filter' => array(
                         'filter_operator' => 'all',
-                        'filter_params' => array()),
+                        'filter_param' => array()),
                     'joins' => array(),
                     'errors' => array(
                         array('first field is missing')))));
@@ -128,7 +135,7 @@ class FilterComponentTest extends CakeTestCase
             ->with(
                 array(
                     'filter_operator' => 'all',
-                    'filter_params' => array()))
+                    'filter_param' => array()))
             ->will($this->returnValue(array()));
 
         $dummySession = $this->getMock('Session', array('setFlash'));
@@ -171,7 +178,7 @@ class FilterComponentTest extends CakeTestCase
                 array(
                     'filter' => array(
                         'filter_operator' => 'all',
-                        'filter_params' => array(
+                        'filter_param' => array(
                             1 => array(
                                 1 => "enrolled", 
                                 2 => "in",
@@ -186,7 +193,7 @@ class FilterComponentTest extends CakeTestCase
             ->with(
                 array(
                     'filter_operator' => 'all',
-                    'filter_params' => array(
+                    'filter_param' => array(
                         1 => array(
                             1 => "enrolled", 
                             2 => "in",
@@ -228,7 +235,7 @@ class FilterComponentTest extends CakeTestCase
                 array(
                     'filter' => array(
                         'filter_operator' => 'any',
-                        'filter_params' => array(
+                        'filter_param' => array(
                             1 => array(
                                 1 => "phone", 
                                 2 => "is",
@@ -253,7 +260,7 @@ class FilterComponentTest extends CakeTestCase
             ->with(
                 array(
                     'filter_operator' => 'any',
-                    'filter_params' => array(
+                    'filter_param' => array(
                         1 => array(
                             1 => "phone", 
                             2 => "is",

@@ -57,7 +57,7 @@ class FilterComponent extends Component
             'labelled' => __('labelled'),
             'optin' => __('optin'),
             'optout' => __('optout'),
-            'has-schedule' => __('has schedule'),
+            'are-present' => __('are present'),
             ); 
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
@@ -76,6 +76,10 @@ class FilterComponent extends Component
     {       
         $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));       
         
+        if ($filter == array()) {
+            return array();
+        }
+
         $checkedFilter = $filterModel->validateFilter($filter);
         //Make sure the incorrect filters will be mention in the flash message    
         if (count($checkedFilter['errors']) > 0) {
@@ -97,7 +101,7 @@ class FilterComponent extends Component
         }
         
         //All incomplete filters are deleted
-        if (count($checkedFilter['filter']['filter_params']) != 0) {
+        if (count($checkedFilter['filter']['filter_param']) != 0) {
             // To move to the views using filterParams
             $this->Controller->set('urlParams', http_build_query($checkedFilter['filter'])); 
             $this->Controller->set('filterParams', $checkedFilter['filter']);
