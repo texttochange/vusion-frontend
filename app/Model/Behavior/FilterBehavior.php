@@ -4,16 +4,16 @@ App::uses('VusionConst', 'Lib');
 
 class FilterBehavior extends ModelBehavior {
 
-    var $MAX_JOIN_PHONES = VusionConst::MAX_JOIN_PHONES;
     var $joinCursor = null;
-
-
+    var $originalJoinQuery = null;
+   
 	public function setup($model, $settings = array()) 
 	{
 		if (!isset($model->filterFields)) {
 			throw new Exception("Model %s is missing filters definition" % $model->name);
 		}
-	}
+        $model->MAX_JOIN_PHONES = VusionConst::MAX_JOIN_PHONES;
+   }
 
 
 	public function getFilters($model, $subset=null) 
@@ -162,28 +162,29 @@ class FilterBehavior extends ModelBehavior {
     //Require to allow allSafeJoin as find function in Model
     //All make the protected _findAllSafeJoin call this function
     public function findAllSafeJoin($model, $state, $query, $results=array()) {
+        
         if ($state === 'before') {
             if (!isset($query['limit'])) {
                 throw new VusionException('FindAllSafe has to be used with limit');
             }
-            //TODO: the $join operator can be in different part of the conditions
-            if (isset($query['conditions']['phone']['$join']) || $model->joinCursor != null) {
-                if (isset($query['conditions']['phone']['$join'])) {
-                    $model->joinCursor = $query['conditions']['phone']['$join'];
-                    $model->joinCursor->rewind();    //initialize the cursor
-                    unset($query['conditions']['phone']['$join']);
+            if (FilterBehavior::hasJoin($query) || $model->joinCursor != null) {
+                if ($cursor = FilterBehavior::hasJoin($query)) {
+                    $model->joinCursor = $cursor;
+                    $model->joinCursor->rewind();
+                    $model->originalJoinQuery = $query;
                 }
-                $query['conditions']['phone']['$in'] = array();
+                $join = array('$in' => array());
                 $i = 1;
                 while ($model->joinCursor->valid()) {
                     $phone = $model->joinCursor->current();
-                    $query['conditions']['phone']['$in'][] = $phone['_id'];
+                    $join['$in'][] = $phone['_id'];
                     if ($i > $model->MAX_JOIN_PHONES) {
                         break;
                     }
                     $model->joinCursor->next();
                     $i++;
                 }
+                $query = FilterBehavior::replaceJoin($model->originalJoinQuery, $join);
                 $model->joinCursor->next();
                 if (!$model->joinCursor->valid()) {
                     $model->joinCursor = null;
@@ -200,30 +201,56 @@ class FilterBehavior extends ModelBehavior {
         return $results;
     }
 
+    //Only works with 1 join only
     public static function hasJoin($conditions) {
-        return isset($conditions['phone']['$join']);
+        foreach ($conditions as $key => $value) {
+            if ($key === '$join') {
+                return $conditions[$key];
+            }
+            if (is_array($value)) {
+                if ($join = FilterBehavior::hasJoin($value)) {
+                    return $join;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public static function replaceJoin($conditions, $replaceWith) {
+        foreach ($conditions as $key => $value) {
+            if ($key === '$join') {
+                unset($conditions['$join']);
+                $conditions = array_merge($conditions, $replaceWith);
+            }
+            if (is_array($value)) {
+                $conditions[$key] = FilterBehavior::replaceJoin($value, $replaceWith);
+           }
+        }
+        return $conditions;
     }
 
 
     public function countSafeJoin($model, $callback, $conditions = true, $limit = null, $timeout = 30000) {
         $result = 0;
-        $joinCursor = $conditions['phone']['$join'];
+        $joinCursor = FilterBehavior::hasJoin($conditions);
+        $originalJoinQuery = $conditions;
         $joinCursor->rewind();    //initialize the cursor
-        unset($conditions['phone']['$join']);
         while ($joinCursor->valid()) {
-            $conditions['phone']['$in'] = array();
+            $join = array('$in' => array());
             $i = 1;
             while ($joinCursor->valid()) {
                 $phone = $joinCursor->current();
-                $conditions['phone']['$in'][] = $phone['_id'];
+                $join['$in'][] = $phone['_id'];
                 if ($i > $model->MAX_JOIN_PHONES) {
                     break;
                 }
                 $joinCursor->next();
                 $i++;
             }
-            $joinCursor->next();
+            $conditions = FilterBehavior::replaceJoin($originalJoinQuery, $join);
             $result = $result + $model->{$callback}($conditions, $limit, $timeout);
+            $joinCursor->next();
         }
         return $result;
     }

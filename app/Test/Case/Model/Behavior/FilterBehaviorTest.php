@@ -9,8 +9,6 @@ class Dummy extends MongoModel
 	var $specific = true;
    	public function getModelVersion() {}
    	public function getRequiredFields($objectType) {}
-    public $findMethods = array(
-        'allSafeJoin' => true);
 
     var $filterOperatorOptions = array('all', 'any');
 	public $filterFields = array(
@@ -500,5 +498,62 @@ class FilterBehaviorTest extends CakeTestCase
             6,
             $this->Model->countSafeJoin('aCallback', $conditions));
     }
+
+
+    public function testHasJoin() 
+    {
+        
+        $conditions = array(
+            'phone' => array(
+                '$join' => 'something'));
+        $this->assertEqual(
+            'something',
+            FilterBehavior::hasJoin($conditions));
+
+        $conditions = array(
+            '$and' => array(
+                array(
+                    'something' => array(
+                        '$join' => 'something'))));
+        $this->assertEqual(
+            'something',
+            FilterBehavior::hasJoin($conditions));
+
+        $conditions = array(
+            '$or' => array(
+                array(
+                    'phone' => array(
+                        '$join' => ''))));
+        $this->assertEqual(
+            '',
+            FilterBehavior::hasJoin($conditions));
+    }
+
+
+    public function testReplaceJoin() 
+    {   
+        $conditions = array(
+            'phone' => array(
+                '$join' => ''));
+        $conditions = FilterBehavior::replaceJoin($conditions, array('$in' => 'something'));
+        $this->assertEqual(
+            $conditions,
+            array('phone' => array('$in' => 'something')));
+        
+        $conditions = array(
+            '$and' => array(
+                array(
+                    'something' => array(
+                        '$join' => ''))));
+        $conditions = FilterBehavior::replaceJoin($conditions, array('$in' => 'something'));
+        $this->assertEqual(
+            $conditions,
+            array(
+                '$and' => array(
+                    array(
+                        'something' => array(
+                            '$in' => 'something')))));
+    }
+
 
 }
