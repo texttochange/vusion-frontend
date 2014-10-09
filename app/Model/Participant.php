@@ -9,11 +9,11 @@ App::uses('VusionValidation', 'Lib');
 
 class Participant extends MongoModel
 {
-    
-    var $specific = true;    
-    var $name     = 'Participant';
-    
+    var $specific     = true;    
+    var $name         = 'Participant';
     var $importErrors = array();
+    var $MAX_JOIN     = 2;
+
     
     function getModelVersion()
     {
@@ -36,6 +36,7 @@ class Participant extends MongoModel
     
     public $findMethods = array(
         'all' => true,
+        'allSafeJoin' => true,
         'first' => true,
         'count' => true);
     
@@ -48,7 +49,8 @@ class Participant extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
-        
+        $this->Behaviors->load('Filter');
+
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
@@ -230,6 +232,7 @@ class Participant extends MongoModel
             return (string) $phone;
         }
     }
+
     
     public function paginateCount($conditions, $recursive, $extra)
     {
@@ -249,6 +252,47 @@ class Participant extends MongoModel
         } catch (MongoCursorTimeoutException $e) {
             return 'many';
         }
+    }
+
+    var $joinCursor = null;
+    
+    protected function _findAllSafeJoin($state, $query, $results=array())
+    {
+        if ($state === 'before') {
+            if (!isset($query['limit'])) {
+                throw new VusionException('FindAllSafe has to be used with limit');
+            }
+            if (isset($query['conditions']['phone']['$join']) || $this->joinCursor != null) {
+                if (isset($query['conditions']['phone']['$join'])) {
+                    $this->joinCursor = $query['conditions']['phone']['$join'];
+                    $this->joinCursor->rewind();    //initialize the cursor
+                    unset($query['conditions']['phone']['$join']);
+                }
+                $query['conditions']['phone']['$in'] = array();
+                $i = 1;
+                while ($this->joinCursor->valid()) {
+                    $phone = $this->joinCursor->current();
+                    $query['conditions']['phone']['$in'][] = $phone['_id'];
+                    if ($i > $this->MAX_JOIN) {
+                        break;
+                    }
+                    $this->joinCursor->next();
+                    $i++;
+                }
+                $this->joinCursor->next();
+                if (!$this->joinCursor->valid()) {
+                    $this->joinCursor = null;
+                }
+            } 
+            return $query;
+        } 
+        if (($state === 'after') && ($this->joinCursor != null)) {
+            if (count($results) < $query['limit']) {
+                $laterResults = $this->find('allSafeJoin', $query);
+                $results = array_merge($results, $laterResults);
+            }
+        }
+        return $results;
     }
     
     
@@ -863,178 +907,107 @@ class Participant extends MongoModel
                     'conditional-action' => true),
                 'not-with' =>  array(
                     'parameter-type' => 'label',
-                    'conditional-action' => true)))
+                    'conditional-action' => true))),
+        'schedule' => array(
+            'label' => 'schedule',
+            'operators' => array(
+                'are-present' => array(
+                    'parameter-type' => 'none',
+                    'join' => array(
+                        'field' => 'phone',
+                        'model' => 'Schedule',
+                        'function' => 'getUniqueParticipantPhone',
+                        'parameters' => array('cursor' => true)))))
         );
     
+
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
     
-    
-    
-    public function getFilters($subset = null) 
+
+    public function fromFilterToQueryCondition($filterParam) 
     {
-        if (!isset($subset)) {
-            return $this->filterFields;
-        }
-        $subsetFilterFields = array();
-        foreach ($this->filterFields as $field => $filterField) {
-            $subsetOperator = array();
-            foreach ($filterField['operators'] as $operator => $details) {
-                if (isset($details[$subset])) {
-                    $subsetOperator[$operator] = $details;
-                }
+        $condition = array();
+
+        if ($filterParam[1] == 'enrolled') {
+            if ($filterParam[2] == 'in') {
+                $condition['enrolled.dialogue-id'] = $filterParam[3];
+            } elseif ($filterParam[2] == 'not-in') {
+                $condition['enrolled.dialogue-id'] = array('$ne'=> $filterParam[3]);
+            } 
+        } elseif ($filterParam[1] == 'optin') {
+            if ($filterParam[2] == 'now') {
+                $condition['session-id'] = array('$ne' => null);
+            } elseif ($filterParam[2] == 'date-from') {
+                $condition['last-optin-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+            } elseif ($filterParam[2] == 'date-to') {
+                $condition['last-optin-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
             }
-            if ($subsetOperator != array()) {
-                $subsetFilterField              = $filterField;
-                $subsetFilterField['operators'] = $subsetOperator;
-                $subsetFilterFields[$field]     = $subsetFilterField;
+        } elseif ($filterParam[1] == 'optout') {
+            if ($filterParam[2] == 'now') { 
+                $condition['session-id'] = null;
+            } elseif ($filterParam[2] =='date-from') {
+                $condition['last-optout-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+            } elseif ($filterParam[2] =='date-to') {
+                $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
             }
-        }
-        return $subsetFilterFields;
-    }
-    
-    
-    public function validateFilter($filterParam)
-    {
-        if (!isset($filterParam[1])) {
-            throw new FilterException("Field is missing.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]])) {
-            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
-        }
-        
-        if (!isset($filterParam[2])) {
-            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
-            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
-            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
-        }
-        
-        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
-            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
-        }
-    }
-    
-    
-    public function fromFilterToQueryConditions($filter) {
-        
-        $conditions = array();
-        
-        foreach ($filter['filter_param'] as $filterParam) {
-            
-            $condition = array();
-            
-            $this->validateFilter($filterParam);
-            
-            if ($filterParam[1] == 'enrolled') {
-                if ($filterParam[2] == 'in') {
-                    $condition['enrolled.dialogue-id'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-in') {
-                    $condition['enrolled.dialogue-id'] = array('$ne'=> $filterParam[3]);
-                } 
-            } elseif ($filterParam[1] == 'optin') {
-                if ($filterParam[2] == 'now') {
-                    $condition['session-id'] = array('$ne' => null);
-                } elseif ($filterParam[2] == 'date-from') {
-                    $condition['last-optin-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                } elseif ($filterParam[2] == 'date-to') {
-                    $condition['last-optin-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                }
-            } elseif ($filterParam[1] == 'optout') {
-                if ($filterParam[2] == 'now') { 
-                    $condition['session-id'] = null;
-                } elseif ($filterParam[2] =='date-from') {
-                    $condition['last-optout-date']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                } elseif ($filterParam[2] =='date-to') {
-                    $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                }
-            } elseif ($filterParam[1] == 'phone') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'start-with-any') {
-                        $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                        if ($phoneNumbers) {
-                            if (count($phoneNumbers) > 1) {
-                                $or = array();
-                                foreach ($phoneNumbers as $phoneNumber) {
-                                    $regex = new MongoRegex("/^\\".$phoneNumber."/");
-                                    $or[] = array('phone' => $regex);
-                                }
-                                $condition['$or'] = $or;
-                            } else {
-                                $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+        } elseif ($filterParam[1] == 'phone') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'start-with-any') {
+                    $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
+                    if ($phoneNumbers) {
+                        if (count($phoneNumbers) > 1) {
+                            $or = array();
+                            foreach ($phoneNumbers as $phoneNumber) {
+                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                                $or[] = array('phone' => $regex);
                             }
-                        } 
-                    } elseif ($filterParam[2] == 'start-with') {
-                        $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
-                    } elseif ($filterParam[2] == 'equal-to') {
-                        $condition['phone'] = $filterParam[3];        
-                    }
-                } else {
-                    $condition['phone'] = '';
+                            $condition['$or'] = $or;
+                        } else {
+                            $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                        }
+                    } 
+                } elseif ($filterParam[2] == 'start-with') {
+                    $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
+                } elseif ($filterParam[2] == 'equal-to') {
+                    $condition['phone'] = $filterParam[3];        
                 }
-            } elseif ($filterParam[1]=='tagged') {
+            } else {
+                $condition['phone'] = '';
+            }
+        } elseif ($filterParam[1]=='tagged') {
+            if ($filterParam[2] == 'with') {
+                $condition['tags'] = $filterParam[3];
+            } elseif ($filterParam[2] == 'not-with') {
+                $condition['tags'] = array('$ne' => $filterParam[3]);
+            }
+        } elseif ($filterParam[1] == 'labelled') {
+            if ($filterParam[3]) {
+                $label = explode(":", $filterParam[3]); 
                 if ($filterParam[2] == 'with') {
-                    $condition['tags'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-with') {
-                    $condition['tags'] = array('$ne' => $filterParam[3]);
-                }
-            } elseif ($filterParam[1] == 'labelled') {
-                if ($filterParam[3]) {
-                    $label = explode(":", $filterParam[3]); 
-                    if ($filterParam[2] == 'with') {
-                        $condition['profile'] = array(
-                            '$elemMatch' => array(
-                                'label' => $label[0],
-                                'value' => $label[1])
-                            );
-                    } elseif (($filterParam[2] == 'not-with')) {
-                        $condition['profile'] = array(
-                            '$elemMatch' => array(
-                                '$or' => array(
-                                    array('label' => array('$ne' => $label[0])),
-                                    array('value' => array('$ne' => $label[1]))
-                                    )
+                    $condition['profile'] = array(
+                        '$elemMatch' => array(
+                            'label' => $label[0],
+                            'value' => $label[1])
+                        );
+                } elseif (($filterParam[2] == 'not-with')) {
+                    $condition['profile'] = array(
+                        '$elemMatch' => array(
+                            '$or' => array(
+                                array('label' => array('$ne' => $label[0])),
+                                array('value' => array('$ne' => $label[1]))
                                 )
-                            );
-                    }
-                } else {
-                    $condition['profile'] = '';
+                            )
+                        );
                 }
+            } else {
+                $condition['profile'] = '';
             }
-            
-            if ($filter['filter_operator'] == "all") {
-                if (count($conditions) == 0) {
-                   $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
-                } elseif (!isset($conditions['$and'])) {
-                    $condition = array_filter($condition);
-                    if (!empty($condition))
-                        $conditions = array('$and' => array($conditions, $condition));
-                } else {
-                    $condition = array_filter($condition);
-                    if (!empty($condition))
-                        array_push($conditions['$and'], $condition);
-                }
-            } elseif ($filter['filter_operator'] == "any") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$or'])) {
-                    $conditions = array('$or' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$or'], $condition);
-                }
-            }
-            
         }
-        return $conditions;
+        return $condition;
     }
-    
+
     
 }
