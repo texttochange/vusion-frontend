@@ -9,6 +9,8 @@ class Dummy extends MongoModel
 	var $specific = true;
    	public function getModelVersion() {}
    	public function getRequiredFields($objectType) {}
+    public $findMethods = array(
+        'allSafeJoin' => true);
 
     var $filterOperatorOptions = array('all', 'any');
 	public $filterFields = array(
@@ -38,7 +40,7 @@ class FilterBehaviorTest extends CakeTestCase
 {
 
 	public function setUp() {
-		$this->Model = $this->getMock('Dummy', array('fromFilterToQueryCondition'));
+		$this->Model = $this->getMock('Dummy', array('fromFilterToQueryCondition', 'aCallback'));
 		$this->Model->Behaviors->load('Filter');
 	}
 
@@ -409,5 +411,94 @@ class FilterBehaviorTest extends CakeTestCase
         $this->assertEqual($expected, $result);
     }
 
+
+    public function testFindAllSafeJoin() 
+    {
+        $expectedQuery_1 = array(
+            'limit' => 10,
+            'conditions' => array(
+                'phone' => array(
+                    '$in' => array(
+                        '+254100000000',
+                        '+254100000001',
+                        '+254100000002'))));
+
+        $expectedQuery_2 = array(
+            'limit' => 10,
+            'conditions' => array(
+                'phone' => array(
+                    '$in' => array(
+                        '+254100000003',
+                        '+254100000004',
+                        '+254100000005'))));
+
+        $this->Model->MAX_JOIN_PHONES = 2;
+        $iter = new ArrayIterator(array(
+                    array("_id" => "+254100000000"),
+                    array("_id" => "+254100000001"),
+                    array("_id" => "+254100000002"),
+                    array("_id" => "+254100000003"),
+                    array("_id" => "+254100000004"),
+                    array("_id" => "+254100000005")));
+        $query = array(
+            'limit' => 10,
+            'conditions' => array(
+                'phone' => array(
+                    '$join' => $iter)));
+
+        $query = $this->Model->findAllSafeJoin('before', $query);
+        $this->assertEqual($expectedQuery_1, $query);
+
+        $query = $this->Model->findAllSafeJoin('before', $query);
+        $this->assertEqual($expectedQuery_2, $query);
+
+        $results = $this->Model->findAllSafeJoin('after', $query, array());
+        $this->assertEqual(array(), $results);
+    }
+    
+
+    public function testCountSafeJoin()
+    {
+        $expectedConditions_1 = array(
+            'phone' => array(
+                '$in' => array(
+                    '+254100000000',
+                    '+254100000001',
+                    '+254100000002')));
+
+        $expectedConditions_2 = array(
+            'phone' => array(
+                '$in' => array(
+                    '+254100000003',
+                    '+254100000004',
+                    '+254100000005')));
+
+        $this->Model->MAX_JOIN_PHONES = 2;
+        $iter = new ArrayIterator(array(
+                    array("_id" => "+254100000000"),
+                    array("_id" => "+254100000001"),
+                    array("_id" => "+254100000002"),
+                    array("_id" => "+254100000003"),
+                    array("_id" => "+254100000004"),
+                    array("_id" => "+254100000005")));
+        $conditions = array(
+            'phone' => array(
+                '$join' => $iter));
+
+        $this->Model
+            ->expects($this->at(0))
+            ->method('aCallback')
+            ->with($expectedConditions_1, null, 30000)
+            ->will($this->returnValue(3));
+        $this->Model
+            ->expects($this->at(1))
+            ->method('aCallback')
+            ->with($expectedConditions_2, null, 30000)
+            ->will($this->returnValue(3));
+
+        $this->assertEqual(
+            6,
+            $this->Model->countSafeJoin('aCallback', $conditions));
+    }
 
 }

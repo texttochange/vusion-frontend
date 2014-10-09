@@ -1,7 +1,11 @@
 <?php
+App::uses('VusionConst', 'Lib');
 
 
 class FilterBehavior extends ModelBehavior {
+
+    var $MAX_JOIN_PHONES = VusionConst::MAX_JOIN_PHONES;
+    var $joinCursor = null;
 
 
 	public function setup($model, $settings = array()) 
@@ -153,6 +157,75 @@ class FilterBehavior extends ModelBehavior {
             }
         }
         return $conditions;
+    }
+
+    //Require to allow allSafeJoin as find function in Model
+    //All make the protected _findAllSafeJoin call this function
+    public function findAllSafeJoin($model, $state, $query, $results=array()) {
+        if ($state === 'before') {
+            if (!isset($query['limit'])) {
+                throw new VusionException('FindAllSafe has to be used with limit');
+            }
+            //TODO: the $join operator can be in different part of the conditions
+            if (isset($query['conditions']['phone']['$join']) || $model->joinCursor != null) {
+                if (isset($query['conditions']['phone']['$join'])) {
+                    $model->joinCursor = $query['conditions']['phone']['$join'];
+                    $model->joinCursor->rewind();    //initialize the cursor
+                    unset($query['conditions']['phone']['$join']);
+                }
+                $query['conditions']['phone']['$in'] = array();
+                $i = 1;
+                while ($model->joinCursor->valid()) {
+                    $phone = $model->joinCursor->current();
+                    $query['conditions']['phone']['$in'][] = $phone['_id'];
+                    if ($i > $model->MAX_JOIN_PHONES) {
+                        break;
+                    }
+                    $model->joinCursor->next();
+                    $i++;
+                }
+                $model->joinCursor->next();
+                if (!$model->joinCursor->valid()) {
+                    $model->joinCursor = null;
+                }
+            } 
+            return $query;
+        } 
+        if (($state === 'after') && ($model->joinCursor != null)) {
+            if (count($results) < $query['limit']) {
+                $laterResults = $model->find('allSafeJoin', $query);
+                $results = array_merge($results, $laterResults);
+            }
+        }
+        return $results;
+    }
+
+    public static function hasJoin($conditions) {
+        return isset($conditions['phone']['$join']);
+    }
+
+
+    public function countSafeJoin($model, $callback, $conditions = true, $limit = null, $timeout = 30000) {
+        $result = 0;
+        $joinCursor = $conditions['phone']['$join'];
+        $joinCursor->rewind();    //initialize the cursor
+        unset($conditions['phone']['$join']);
+        while ($joinCursor->valid()) {
+            $conditions['phone']['$in'] = array();
+            $i = 1;
+            while ($joinCursor->valid()) {
+                $phone = $joinCursor->current();
+                $conditions['phone']['$in'][] = $phone['_id'];
+                if ($i > $model->MAX_JOIN_PHONES) {
+                    break;
+                }
+                $joinCursor->next();
+                $i++;
+            }
+            $joinCursor->next();
+            $result = $result + $model->{$callback}($conditions, $limit, $timeout);
+        }
+        return $result;
     }
 
 }

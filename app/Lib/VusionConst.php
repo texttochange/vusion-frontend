@@ -59,4 +59,6 @@ class VusionConst
 
     const PREFIXED_LOCAL_CODE_REGEX = '/^[0-9]*\-[0-9]*$/';
     const INTERNATIONAL_CODE_REGEX = '/^\+[0-9]*$/';
+
+    const MAX_JOIN_PHONES = 500000;
 }
