@@ -66,7 +66,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
     
     
     public function testLogAction() 
-    { 
+    {
     	$this->UserLogComponent->Session = $this->getMock('Session', array(
     	    'read',
     	    'check',
@@ -87,30 +87,25 @@ class UserLogMonitorComponentTest extends CakeTestCase
 	        'action' => 'add',
 	        'method' => 'POST',
 	        'controller' => 'programs')));
-    	
 	    
-	    $this->UserLogComponent->Session 
+    	$this->UserLogComponent->Session 
     	->expects($this->at(2))
-    	->method('delete')
-    	->with('UserLogMonitor');
-    	//->will($this->returnValue(''));
-    	
-    	/*$this->UserLogComponent->Session 
-    	->expects($this->at(3))
     	->method('read')
     	->with('Auth.User.id')
     	->will($this->returnValue(89));
     	
-        /*$this->UserLogComponent->Session 
-        ->expects($this->at(2))
+        $this->UserLogComponent->Session 
+        ->expects($this->at(3))
         ->method('read')
         ->with('Auth.User.username')
-        ->will($this->returnValue('Tomx'));*/      
+        ->will($this->returnValue('Tomx'));
+        
+        $this->UserLogComponent->Session 
+    	->expects($this->at(4))
+    	->method('delete')
+    	->with('UserLogMonitor');
     	
-    	
-	    
         $this->UserLogComponent->logAction();
-		//$this->assertTrue($this->UserLogComponent->logAction());
 	}
 	
 }

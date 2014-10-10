@@ -36,61 +36,60 @@ class UserLogMonitorComponent extends Component
 	                'delete' => __('Deleted participant(s)'),
 	                'add' => __('Added a new participant'),
 	                'edit' => __('Edited participant'),
-	                'import' => __('Imported new participant(s)')
+	                'import' => __('Imported  participant(s)')
 	                ),
 	            'GET' => array(
-	                'massTag' => __('MassTaged participant(s)'),
-	                'massUntag' => __('MassUntaged participant(s)')
+	                'massTag' => __('Tagged participant(s)'),
+	                'massUntag' => __('Untagged participant(s)')
 	                )
 	            ),
 	        'programs' => array(
 	            'POST' => array(
-	                'add' => __('Added anew program'),
-	                'edit' => __('Edited aprogram'),
-	                'delete' => __('Deleted aprogram'),
-	                'archive' => __('Archived aprogram')
+	                'add' => __('Added a new program'),
+	                'edit' => __('Edited a program'),
+	                'delete' => __('Deleted a program'),
+	                'archive' => __('Archived a program')
 	                )
 	            ),
 	        'programDialogues' => array(
 	            'POST' => array(
-	                'save' => __('Added anew draft dialogue'),
+	                'save' => __('Added a new draft dialogue'),
 	                'delete' => __('Deleted a dialogue'),
 	                'activate' => __('Activated a dialogue')
 	                )
 	            ),
 	        'programUnattachedMessages' => array(
 	            'POST' => array(
-	                'add' => __('Added anew separate message'),
-	                'edit' => __('Edited aseparate message'),
-	                'delete' => __('Deleted aseparate message')
+	                'add' => __('Added a new separate message'),
+	                'edit' => __('Edited a separate message'),
+	                'delete' => __('Deleted a separate message')
 	                )
 	            ),
 	        'programRequests' => array(
 	            'POST' => array (
-	                'save' => __('Added anew request'),
-	                'delete' => __('Deleted arequest')
+	                'save' => __('Added a new request'),
+	                'delete' => __('Deleted a request')
 	                )
 	            ),
 	        'programHistory' => array(
 	            'POST' => array(
-	                'delete' => __('Deleted program History')
+	                'delete' => __('Deleted program history')
 	                )
 	            ),
 	        'programSettings' => array(
 	            'POST' => array(
-	                'edit' => __('Edited program settings')
+	                'edit' => __('Edited a program setting')
 	                )
 	            ),
 	        'users' => array(
 	            'POST' => array(
-	                'add' => __('Added new User'),
-	                'edit' => __('Edited User'),
-	                'delete' => __('Deleted User'),
-	                'changePassword' => __('Changed Password')
+	                'add' => __('Added new a user'),
+	                'edit' => __('Edited a user'),
+	                'delete' => __('Deleted a user'),
+	                'changePassword' => __('Changed password')
 	                )
 	            )
-	        );
-	    
+	        );	    
 	}
 	
 	
@@ -119,7 +118,6 @@ class UserLogMonitorComponent extends Component
 	{
 	    if ($this->Session->check('UserLogMonitor')) {
             $sessionAction = $this->Session->read('UserLogMonitor');
-            print_r($sessionAction);
             $this->_logAction($sessionAction['action'], $sessionAction['method'], $sessionAction['controller']);
             $this->Session->delete('UserLogMonitor');
         }
@@ -157,8 +155,7 @@ class UserLogMonitorComponent extends Component
 		    $userLog['user-name']             = $this->Session->read('Auth.User.username');
 		    $userLog['timestamp']             = $now->format("d/m/Y H:i:s");
 		    $userLog['timezone']              = $programTimezone;
-		    print_r('....................');
-		    print_r($userLog);
+		    
 		    $this->UserLog->create();
 		    $this->UserLog->save($userLog);
 		}
