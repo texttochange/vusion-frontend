@@ -97,9 +97,9 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-                
+        
         $conditions = $this->Filter->getConditions($this->Program);
-
+        
         // TODO move in the Program Paginator
         $this->Program->recursive = -1; 
         $user = $this->Auth->user();  
@@ -116,7 +116,7 @@ class ProgramsController extends AppController
                 'conditions' => $conditions,
                 'order' => array('created' => 'desc'));
         }
-
+        
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
@@ -187,7 +187,8 @@ class ProgramsController extends AppController
         if ($this->request->is('post')) {
             $this->Program->create();
             if ($this->Program->save($this->request->data)) {
-                $this->UserLogMonitor->userLogSessionWrite();
+                $program = $this->request->data['Program'];
+                $this->UserLogMonitor->userLogSessionWrite($program['database'], $program['name']);
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -264,7 +265,8 @@ class ProgramsController extends AppController
         }
         if ($this->request->is('post')) {
             if ($this->Program->save($this->request->data)) {
-                $this->UserLogMonitor->userLogSessionWrite();
+                $program = $this->request->data['Program'];
+                $this->UserLogMonitor->userLogSessionWrite($program['database'], $program['name']);
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -292,7 +294,7 @@ class ProgramsController extends AppController
                 $program['Program']['database']);
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
-            $this->UserLogMonitor->userLogSessionWrite();
+            $this->UserLogMonitor->userLogSessionWrite($program['Program']['database'], $program['Program']['name']);
             $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
                 'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
@@ -300,8 +302,8 @@ class ProgramsController extends AppController
         $this->Session->setFlash(__('Program %s was not deleted.', $program['Program']['name']));
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
     public function archive($id = null)
     {
         $this->Program->id = $id;
@@ -313,7 +315,9 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
-            $this->UserLogMonitor->userLogSessionWrite();
+            
+            $this->UserLogMonitor->userLogSessionWrite($program['Program']['database'], $program['Program']['name']);
+            
             $this->Session->setFlash(__('This program has been archived. All sending and receiving of message have stopped.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
@@ -324,5 +328,5 @@ class ProgramsController extends AppController
         }
     }
     
-
+    
 }

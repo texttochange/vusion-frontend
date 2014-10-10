@@ -93,7 +93,7 @@ class UserLogMonitorComponent extends Component
 	}
 	
 	
-	public function userLogSessionWrite()
+	public function userLogSessionWrite($programDatabaseName = null, $programName = null)
 	{
 	    $controller = 'default';
 		if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
@@ -110,7 +110,9 @@ class UserLogMonitorComponent extends Component
 	    $this->Session->write('UserLogMonitor', array(
 	        'action' => $action,
 	        'method' => $method,
-	        'controller' => $controller));
+	        'controller' => $controller,
+	        'programdatabasename' => $programDatabaseName,
+	        'programname' => $programName));
 	}
 	
 	
@@ -118,22 +120,24 @@ class UserLogMonitorComponent extends Component
 	{
 	    if ($this->Session->check('UserLogMonitor')) {
             $sessionAction = $this->Session->read('UserLogMonitor');
-            $this->_logAction($sessionAction['action'], $sessionAction['method'], $sessionAction['controller']);
+            $this->_logAction($sessionAction['action'],
+                $sessionAction['method'],
+                $sessionAction['controller'],
+                $sessionAction['programdatabasename'],
+                $sessionAction['programname']);
             $this->Session->delete('UserLogMonitor');
         }
 	}
 	
 	
-	protected function _logAction($action, $method, $controller)
+	protected function _logAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
 	{
 	    $now = new DateTime('now');
 	    
-		$programDatabaseName = 'None';
 		if (isset($this->Controller->programDetails['database'])) {
 		    $programDatabaseName = $this->Controller->programDetails['database'];
-		}
+		} 
 		
-		$programName = 'None'; 
 		if (isset($this->Controller->programDetails['name'])) {
 		    $programName = $this->Controller->programDetails['name'];
 		}
