@@ -113,7 +113,7 @@ class FilterComponent extends Component
             $results = call_user_func(
                 array($otherModels[$join['model']], $join['function']),
                 $join['parameters']);
-            $otherModelConditions[] = array(
+            $otherModelConditions = array(
                 $join['field'] => array('$join' => $results));
         }
         return $filterModel->fromFiltersToQueryCondition($checkedFilter['filter'], $otherModelConditions);
