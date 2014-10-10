@@ -121,6 +121,7 @@ class History extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+        $this->Behaviors->load('Filter');
     }
     
     
@@ -355,175 +356,122 @@ class History extends MongoModel
         'received' => 'received',
         'forwarded' => 'forward'
         );
+        
     
-    
-    public function validateFilter($filterParam)
-    {
-        if (!isset($filterParam[1])) {
-            throw new FilterException(__("The filter's field is missing."));
-        }
+    public function fromFilterToQueryCondition($filterParam) {
         
-        if (!isset($this->filterFields[$filterParam[1]])) {
-            throw new FilterException(__("The filter's field '%s' is not supported.", $filterParam[1]));
-        }
+        $condition = array();
         
-        if (!isset($filterParam[2])) {
-            throw new FilterException(__("The filter's operator is missing for field '%s'.", $filterParam[1]));
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
-            throw new FilterException(__("The filter's operator '%s' not supported for field '%s'.", $filterParam[2], $filterParam[1]));
-        }
-        
-        $operator = $this->filterFields[$filterParam[1]]['operators'][$filterParam[2]];
-        
-        if ($operator['parameter-type'] != 'none' && !isset($filterParam[3])) {
-            throw new FilterException(__("The filter's parameter is missing for field '%s'.", $filterParam[1]));
-        }
-        
-        if (isset($operator['parameter-validate'])) {
-            if (!preg_match($operator['parameter-validate'], $filterParam[3])) {
-                throw new FilterException(__("The filter's parameter value '%s' is not valid.", $filterParam[3]));
+        if ($filterParam[1] == 'message-direction' or $filterParam[1] == 'message-status') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition[$filterParam[1]] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
+                }
+            } else {
+                $condition[$filterParam[1]] = '';
+            }
+        } elseif ($filterParam[1] == 'date') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'from') { 
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                } elseif ($filterParam[2] == 'to') {
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                }
+            } else {
+                $condition['timestamp'] = '';
+            }
+        } elseif ($filterParam[1] == 'participant-phone') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['participant-phone'] = $filterParam[3];                   
+                } elseif ($filterParam[2] == 'start-with') {
+                    $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                } elseif ($filterParam[2] == 'start-with-any') {
+                    $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
+                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                }
+            } else {
+                $condition['participant-phone'] = '';
+            }
+        } elseif ($filterParam[1] == 'message-content') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['message-content'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'contain') {
+                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                } elseif ($filterParam[2] == 'has-keyword') {
+                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                } elseif ($filterParam[2] == 'has-keyword-any') {
+                    $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
+                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                }
+            } else {
+                $condition['message-content'] = '';
+            }
+        } elseif ($filterParam[1] == 'separate-message') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['unattach-id'] = $filterParam[3];    
+                } 
+            } else {
+                $condition['unattach-id'] = '';
+            }
+        } elseif ($filterParam[1] == 'dialogue-source') {
+            if ($filterParam[2] == 'is-any') {
+                $condition['dialogue-id'] = array('$exists' => true);    
+            } elseif ($filterParam[2] == 'not-is-any') {
+                $condition['dialogue-id'] = array('$exists' => false);
+            } elseif (isset($filterParam[3]) && $filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition['dialogue-id'] = $filterParam[3];    
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
+                }
+            } else {
+                $condition['dialogue-id'] = '';
+            }
+        } elseif ($filterParam[1] == 'interaction-source') {
+            if ($filterParam[2] == 'is-any') {
+                $condition['interaction-id'] = array('$exists' => true);    
+            } elseif ($filterParam[2] == 'not-is-any') {
+                $condition['interaction-id'] = array('$exists' => false);
+            } elseif (isset($filterParam[3]) && $filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition['interaction-id'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['interaction-id'] = array('$ne' => $filterParam[3]);
+                }
+            } else {
+                $condition['interaction-id'] = '';
+            }
+        } elseif ($filterParam[1] == 'request-source') {
+            if ($filterParam[2] == 'is-any') {
+                $condition['request-id'] = array('$exists' => true);    
+            } elseif ($filterParam[2] == 'not-is-any') {
+                $condition['request-id'] = array('$exists' => false);
+            } elseif (isset($filterParam[3]) && $filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition['request-id'] = new MongoId($filterParam[3]);
+                } elseif ($filterParam[2] == 'not-is') {
+                    $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
+                }
+            } else {
+                $condition['request-id'] = '';
+            }
+        } elseif ($filterParam[1] == 'answer') {
+            if ($filterParam[2] == 'matching') {
+                $condition['message-direction'] =   'incoming';
+                $condition['matching-answer']   =   array('$ne' => null);                    
+            } elseif ($filterParam[2] == 'not-matching') {
+                $condition['message-direction'] = 'incoming';
+                $condition['matching-answer']   = null;                    
             }
         }
-    }
-    
-    
-    public function fromFilterToQueryConditions($filter, $conditions = array()) {
         
-        foreach ($filter['filter_param'] as $filterParam) {
-            
-            $condition = null;
-            
-            $this->validateFilter($filterParam);
-            
-            if ($filterParam[1] == 'message-direction' or $filterParam[1] == 'message-status') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition[$filterParam[1]] = $filterParam[3];
-                    } elseif ($filterParam[2] == 'not-is') {
-                        $condition[$filterParam[1]] = array('$ne' => $filterParam[3]);
-                    }
-                } else {
-                    $condition[$filterParam[1]] = '';
-                }
-            } elseif ($filterParam[1] == 'date') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'from') { 
-                        $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                    } elseif ($filterParam[2] == 'to') {
-                        $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
-                    }
-                } else {
-                    $condition['timestamp'] = '';
-                }
-            } elseif ($filterParam[1] == 'participant-phone') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'equal-to') {
-                        $condition['participant-phone'] = $filterParam[3];                   
-                    } elseif ($filterParam[2] == 'start-with') {
-                        $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
-                    } elseif ($filterParam[2] == 'start-with-any') {
-                        $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                        $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
-                    }
-                } else {
-                    $condition['participant-phone'] = '';
-                }
-            } elseif ($filterParam[1] == 'message-content') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'equal-to') {
-                        $condition['message-content'] = $filterParam[3];
-                    } elseif ($filterParam[2] == 'contain') {
-                        $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
-                    } elseif ($filterParam[2] == 'has-keyword') {
-                        $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
-                    } elseif ($filterParam[2] == 'has-keyword-any') {
-                        $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
-                        $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
-                    }
-                } else {
-                    $condition['message-content'] = '';
-                }
-            } elseif ($filterParam[1] == 'separate-message') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'equal-to') {
-                        $condition['unattach-id'] = $filterParam[3];    
-                    } 
-                } else {
-                    $condition['unattach-id'] = '';
-                }
-            } elseif ($filterParam[1] == 'dialogue-source') {
-                if ($filterParam[2] == 'is-any') {
-                    $condition['dialogue-id'] = array('$exists' => true);    
-                } elseif ($filterParam[2] == 'not-is-any') {
-                    $condition['dialogue-id'] = array('$exists' => false);
-                } elseif (isset($filterParam[3]) && $filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition['dialogue-id'] = $filterParam[3];    
-                    } elseif ($filterParam[2] == 'not-is') {
-                        $condition['dialogue-id'] = array('$ne' => $filterParam[3]);
-                    }
-                } else {
-                    $condition['dialogue-id'] = '';
-                }
-            } elseif ($filterParam[1] == 'interaction-source') {
-                if ($filterParam[2] == 'is-any') {
-                    $condition['interaction-id'] = array('$exists' => true);    
-                } elseif ($filterParam[2] == 'not-is-any') {
-                    $condition['interaction-id'] = array('$exists' => false);
-                } elseif (isset($filterParam[3]) && $filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition['interaction-id'] = $filterParam[3];
-                    } elseif ($filterParam[2] == 'not-is') {
-                        $condition['interaction-id'] = array('$ne' => $filterParam[3]);
-                    }
-                } else {
-                    $condition['interaction-id'] = '';
-                }
-            } elseif ($filterParam[1] == 'request-source') {
-                if ($filterParam[2] == 'is-any') {
-                    $condition['request-id'] = array('$exists' => true);    
-                } elseif ($filterParam[2] == 'not-is-any') {
-                    $condition['request-id'] = array('$exists' => false);
-                } elseif (isset($filterParam[3]) && $filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition['request-id'] = new MongoId($filterParam[3]);
-                    } elseif ($filterParam[2] == 'not-is') {
-                        $condition['request-id'] = array('$ne' => new MongoId($filterParam[3]));
-                    }
-                } else {
-                    $condition['request-id'] = '';
-                }
-            } elseif ($filterParam[1] == 'answer') {
-                if ($filterParam[2] == 'matching') {
-                    $condition['message-direction'] =   'incoming';
-                    $condition['matching-answer']   =   array('$ne' => null);                    
-                } elseif ($filterParam[2] == 'not-matching') {
-                    $condition['message-direction'] = 'incoming';
-                    $condition['matching-answer']   = null;                    
-                }
-            }
-            
-            if ($filter['filter_operator'] == "all") {
-                if (count($conditions) == 0) {
-                    $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
-                } elseif (!isset($conditions['$and'])) {
-                    $conditions = array('$and' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$and'], $condition);
-                }
-            } elseif ($filter['filter_operator'] == "any") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$or'])) {
-                    $conditions = array('$or' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$or'], $condition);
-                }
-            }
-        }
-        return $conditions;
+        
+        return $condition;
     } 
     
     
