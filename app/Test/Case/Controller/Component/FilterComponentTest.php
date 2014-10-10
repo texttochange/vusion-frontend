@@ -239,7 +239,10 @@ class FilterComponentTest extends CakeTestCase
                             1 => array(
                                 1 => "phone", 
                                 2 => "is",
-                                3 => "+06"))),
+                                3 => "+06"),
+                            2 => array(
+                                1 => "schedule", 
+                                2 => "are-present"))),
                     'joins' => array(array(
                         'filter_operator' => 'any',
                         'field' => 'phone',
@@ -264,8 +267,11 @@ class FilterComponentTest extends CakeTestCase
                         1 => array(
                             1 => "phone", 
                             2 => "is",
-                            3 => "+06"))), 
-                array(array('phone' => array('$join' => array('+07')))))
+                            3 => "+06"),
+                         2 => array(
+                            1 => "schedule", 
+                            2 => "are-present"))), 
+                array('phone' => array('$join' => array('+07'))))
             ->will($this->returnValue(
                 array('$or' => array(
                     array('phone' => '+06'),
