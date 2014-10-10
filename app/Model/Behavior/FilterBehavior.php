@@ -93,10 +93,13 @@ class FilterBehavior extends ModelBehavior {
             $valid = $model->validateFilterParam($filterParam);
             if (is_bool($valid) && $valid) {
                 if ($model->isJoin($filterParam)) {
+                    if ($resultFilter['joins'] != array()) {
+                        $resultFilter['errors'][] = __('only one join is allowed');
+                        continue;
+                    }
                     $resultFilter['joins'][] = $model->getJoin($filterParam);
-                } else {
-                    $resultFilter['filter']['filter_param'][] = $filterParam;
                 }
+                $resultFilter['filter']['filter_param'][] = $filterParam;
                 continue;
             } 
             $resultFilter['errors'][] = $valid;
@@ -130,23 +133,23 @@ class FilterBehavior extends ModelBehavior {
     }
 
 
-	public function fromFiltersToQueryCondition($model, $filters, $conditions=array()) {
-        
+	public function fromFiltersToQueryCondition($model, $filters, $conditions=array()) 
+    {
         foreach ($filters['filter_param'] as $filterParam) {
+
             $condition = $model->fromFilterToQueryCondition($filterParam);
-            if ($filters['filter_operator'] == "all") {
+            if ($condition == array()) {
+                continue;
+            }
+            if ($filters['filter_operator'] === "all") {
                 if (count($conditions) == 0) {
                    $conditions = (isset($filterParam[3])) ? array_filter($condition) : $condition;
                 } elseif (!isset($conditions['$and'])) {
-                    $condition = array_filter($condition);
-                    if (!empty($condition))
-                        $conditions = array('$and' => array($conditions, $condition));
+                    $conditions = array('$and' => array($conditions, $condition));
                 } else {
-                    $condition = array_filter($condition);
-                    if (!empty($condition))
-                        array_push($conditions['$and'], $condition);
+                    array_push($conditions['$and'], $condition);
                 }
-            } elseif ($filters['filter_operator'] == "any") {
+            } elseif ($filters['filter_operator'] === "any") {
                 if (count($conditions) == 0) {
                     $conditions = $condition;
                 } elseif (!isset($conditions['$or'])) {
@@ -161,8 +164,8 @@ class FilterBehavior extends ModelBehavior {
 
     //Require to allow allSafeJoin as find function in Model
     //All make the protected _findAllSafeJoin call this function
-    public function findAllSafeJoin($model, $state, $query, $results=array()) {
-        
+    public function findAllSafeJoin($model, $state, $query, $results=array()) 
+    {    
         if ($state === 'before') {
             if (!isset($query['limit'])) {
                 throw new VusionException('FindAllSafe has to be used with limit');
@@ -189,7 +192,7 @@ class FilterBehavior extends ModelBehavior {
                 if (!$model->joinCursor->valid()) {
                     $model->joinCursor = null;
                 }
-            } 
+            }
             return $query;
         } 
         if (($state === 'after') && ($model->joinCursor != null)) {
@@ -201,8 +204,10 @@ class FilterBehavior extends ModelBehavior {
         return $results;
     }
 
+
     //Only works with 1 join only
-    public static function hasJoin($conditions) {
+    public static function hasJoin($conditions) 
+    {
         foreach ($conditions as $key => $value) {
             if ($key === '$join') {
                 return $conditions[$key];
@@ -217,7 +222,8 @@ class FilterBehavior extends ModelBehavior {
     }
 
 
-    public static function replaceJoin($conditions, $replaceWith) {
+    public static function replaceJoin($conditions, $replaceWith) 
+    {
         foreach ($conditions as $key => $value) {
             if ($key === '$join') {
                 unset($conditions['$join']);
@@ -231,7 +237,8 @@ class FilterBehavior extends ModelBehavior {
     }
 
 
-    public function countSafeJoin($model, $callback, $conditions = true, $limit = null, $timeout = 30000) {
+    public function countSafeJoin($model, $callback, $conditions = true, $limit = null, $timeout = 30000) 
+    {
         $result = 0;
         $joinCursor = FilterBehavior::hasJoin($conditions);
         $originalJoinQuery = $conditions;
@@ -254,5 +261,6 @@ class FilterBehavior extends ModelBehavior {
         }
         return $result;
     }
+
 
 }

@@ -61,12 +61,15 @@ class FilterBehaviorTest extends CakeTestCase
     }
 
 
-    public function testValidateFilter_joins()
+    public function testValidateFilter_join()
     {
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
-                'filter_param' => array()),
+                'filter_param' => array(
+                    array(
+                        1 => 'schedule', 
+                        2 => 'are-present'))),
             'joins' => array(array(
                 'field' => 'phone',
                 'model' => 'SecondDummyModel',
@@ -77,6 +80,71 @@ class FilterBehaviorTest extends CakeTestCase
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present')));
+
+        $checkedFilter = $this->Model->validateFilter($filter);
+        $this->assertEqual($expected, $checkedFilter);
+    }
+
+
+    public function testValidateFilter_join_onlyOne()
+    {
+        $expected = array(
+            'filter' => array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    array(
+                        1 => 'schedule', 
+                        2 => 'are-present'))),
+            'joins' => array(array(
+                'field' => 'phone',
+                'model' => 'SecondDummyModel',
+                'function' => 'getUniqueParticipantPhone',
+                'parameters' => array())),
+            'errors' => array('only one join is allowed'));
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present'),
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present')));
+
+        $checkedFilter = $this->Model->validateFilter($filter);
+        $this->assertEqual($expected, $checkedFilter);
+    }
+
+
+    public function testValidateFilter_join_and_other()
+    {
+        $expected = array(
+            'filter' => array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    array(
+                        1 => 'optin',
+                        2 => 'now'),
+                    array(
+                        1 => 'schedule', 
+                        2 => 'are-present'))),
+            'joins' => array(array(
+                'field' => 'phone',
+                'model' => 'SecondDummyModel',
+                'function' => 'getUniqueParticipantPhone',
+                'parameters' => array())),
+            'errors' => array());
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+              array(
+                    1 => 'optin',
+                    2 => 'now'),
                 array(
                     1 => 'schedule', 
                     2 => 'are-present')));
@@ -402,6 +470,43 @@ class FilterBehaviorTest extends CakeTestCase
             ->with($filters['filter_param'][2])
             ->will($this->returnValue(
                 array('phone' => '123456')));
+
+        $otherConditions = array('phone' => array('$in' => array('06', '07')));
+        $result = $this->Model->fromFiltersToQueryCondition($filters, $otherConditions);
+
+        $this->assertEqual($expected, $result);
+    }
+
+
+    public function testFromFiltersToQuery_join() 
+    {
+        $expected = array('$and' => array(
+            array('phone' => array('$in' => array('06', '07'))),
+            array('participant-session-id' => array('$ne' => null))));
+
+        $filters = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'optin', 
+                    2 => 'now'),
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present')));
+
+        $this->Model
+            ->expects($this->at(0))
+            ->method('fromFilterToQueryCondition')
+            ->with($filters['filter_param'][0])
+            ->will($this->returnValue(
+                array('participant-session-id' => array('$ne' => null))));
+
+        $this->Model
+            ->expects($this->at(1))
+            ->method('fromFilterToQueryCondition')
+            ->with($filters['filter_param'][1])
+            ->will($this->returnValue(array()));
+
 
         $otherConditions = array('phone' => array('$in' => array('06', '07')));
         $result = $this->Model->fromFiltersToQueryCondition($filters, $otherConditions);

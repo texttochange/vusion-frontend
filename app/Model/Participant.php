@@ -12,8 +12,6 @@ class Participant extends MongoModel
     var $specific     = true;    
     var $name         = 'Participant';
     var $importErrors = array();
-    var $MAX_JOIN     = 2;
-
     
     function getModelVersion()
     {
@@ -253,46 +251,11 @@ class Participant extends MongoModel
             return 'many';
         }
     }
-
-    var $joinCursor = null;
     
     protected function _findAllSafeJoin($state, $query, $results=array())
     {
-        if ($state === 'before') {
-            if (!isset($query['limit'])) {
-                throw new VusionException('FindAllSafe has to be used with limit');
-            }
-            if (isset($query['conditions']['phone']['$join']) || $this->joinCursor != null) {
-                if (isset($query['conditions']['phone']['$join'])) {
-                    $this->joinCursor = $query['conditions']['phone']['$join'];
-                    $this->joinCursor->rewind();    //initialize the cursor
-                    unset($query['conditions']['phone']['$join']);
-                }
-                $query['conditions']['phone']['$in'] = array();
-                $i = 1;
-                while ($this->joinCursor->valid()) {
-                    $phone = $this->joinCursor->current();
-                    $query['conditions']['phone']['$in'][] = $phone['_id'];
-                    if ($i > $this->MAX_JOIN) {
-                        break;
-                    }
-                    $this->joinCursor->next();
-                    $i++;
-                }
-                $this->joinCursor->next();
-                if (!$this->joinCursor->valid()) {
-                    $this->joinCursor = null;
-                }
-            } 
-            return $query;
-        } 
-        if (($state === 'after') && ($this->joinCursor != null)) {
-            if (count($results) < $query['limit']) {
-                $laterResults = $this->find('allSafeJoin', $query);
-                $results = array_merge($results, $laterResults);
-            }
-        }
-        return $results;
+
+        return $this->findAllSafeJoin($state, $query, $results);
     }
     
     
