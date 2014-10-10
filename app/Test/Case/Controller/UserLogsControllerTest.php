@@ -73,7 +73,7 @@ class UserLogsControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
         $this->mock_program_access();   
-        $userLog2 = array(
+        $userLog_02 = array(
             'timestamp' => '2014-20-10T20:25:00',
             'timezone' => 'Australia/Sydney',
             'user-name' => 'Tom@gmail.com',
@@ -85,7 +85,7 @@ class UserLogsControllerTestCase extends ControllerTestCase
             'parameters' => 'all participant with tag: today'
             );
         $this->UserLog->create();
-        $this->UserLog->save($userLog2);
+        $this->UserLog->save($userLog_02);
         
         $this->testAction("/userLogs/index");
         $this->assertEquals(1, count($this->vars['userLogs']));
