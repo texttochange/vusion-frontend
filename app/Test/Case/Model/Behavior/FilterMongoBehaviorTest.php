@@ -2,7 +2,7 @@
 App::uses('MongoModel', 'Model');
 
 
-class Dummy extends MongoModel 
+class DummyMongo extends MongoModel 
 {
 	var $name = "Dummy";
 	var $specific = true;
@@ -23,156 +23,119 @@ class Dummy extends MongoModel
             'operators' => array(
                 'are-present' => array(
                     'parameter-type' => 'none',
-                    'participant-filter' => 'true'))));
+                    'participant-filter' => 'true',
+                    'unique' => true,
+                    'join' => array(
+                        'field' => 'phone',
+                        'model' => 'SecondDummyModel',
+                        'function' => 'getUniqueParticipantPhone',
+                        'parameters' => array())))));
 }
 
 
-class FilterBehaviorTest extends CakeTestCase
+class FilterMongoBehaviorTest extends CakeTestCase
 {
 
 	public function setUp() {
-		$this->Model = $this->getMock('Dummy', array('fromFilterToQueryCondition', 'aCallback'));
-		$this->Model->Behaviors->load('Filter');
+		$this->Model = $this->getMock('DummyMongo', array('fromFilterToQueryCondition', 'aCallback'));
+		$this->Model->Behaviors->load('FilterMongo');
 	}
 
 
-	public function tearDown()
-    {
-    }
-
-
-    public function testGetFilters() 
-    {
-    	$expected =  array(
-    		'schedule' => array(
-                'operators' => array(
-                    'are-present' => array(
-                        'parameter-type' => 'none'))));
-
-    	$this->assertEqual($expected, $this->Model->getFilters('participant-filter'));
-    	$this->assertEqual(array(), $this->Model->getFilters('something'));
-    }
-    
-
-    public function testValidateFilter_errors()
-    {
-        $expected = array(
-            'filter' => array(
-                'filter_operator' => 'all',
-                'filter_param' => array()),
-            'joins' => array(),
-            'errors' => array(array(
-                'phone', 'is', 'missing parameter')));
-
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'phone', 
-                    2 => 'is',
-                    3 => '')));
-
-        $checkedFilter = $this->Model->validateFilter($filter);
-        $this->assertEqual($expected, $checkedFilter);
-    }
-
-
-    public function testValidateFilter_invalidOperator()
-    {
-        $expected = array(
-            'filter' => array(
-                'filter_operator' => 'all',
-                'filter_param' => array()),
-            'joins' => array(),
-            'errors' => array(array(
-                'schedule', 'something', 'not supported')));
-
-         $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array( 
-                array(
-                    1 => 'schedule', 
-                    2 => 'something')));
-
-        $checkedFilter = $this->Model->validateFilter($filter);    
-        $this->assertEqual(
-            $expected,
-            $checkedFilter);
-    }
-
-
-    public function testValidateFilter_noOperator()
-    {
-        $expected = array(
-            'filter' => array(
-                'filter_operator' => 'all',
-                'filter_param' => array()),
-            'joins' => array(),
-            'errors' => array(array(
-                'schedule', 'operator not defined')));
-        
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array( 
-                array(
-                    1 => 'schedule', 
-                    2 => null)));
-
-        $checkedFilter = $this->Model->validateFilter($filter);
-        $this->assertEqual(
-            $expected,
-            $checkedFilter);
-    }
-
-
-    public function testValidateFilter_noField()
-    {
-        $expected = array(
-            'filter' => array(
-                'filter_operator' => 'all',
-                'filter_param' => array()),
-            'joins' => array(),
-            'errors' => array('condition is missing'));
-
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array( 
-                array(
-                    1 => null, 
-                    2 => null)));
-
-        $checkedFilter = $this->Model->validateFilter($filter);
-        $this->assertEqual(
-            $expected,
-            $checkedFilter);
-    }
-
-
-    public function testValidateFilter_ok()
+    public function testValidateFilter_join()
     {
         $expected = array(
             'filter' => array(
                 'filter_operator' => 'all',
                 'filter_param' => array(
                     array(
-                        1 => 'optin', 
-                        2 => 'now'))),
-            'joins' => array(),
+                        1 => 'schedule', 
+                        2 => 'are-present'))),
+            'joins' => array(array(
+                'field' => 'phone',
+                'model' => 'SecondDummyModel',
+                'function' => 'getUniqueParticipantPhone',
+                'parameters' => array())),
             'errors' => array());
 
         $filter = array(
             'filter_operator' => 'all',
             'filter_param' => array(
                 array(
-                    1 => 'optin', 
-                    2 => 'now')));
+                    1 => 'schedule', 
+                    2 => 'are-present')));
 
         $checkedFilter = $this->Model->validateFilter($filter);
         $this->assertEqual($expected, $checkedFilter);
     }
 
-/*
-    public function testFromFiltersToQueryCondition() 
+
+    public function testValidateFilter_join_onlyOne()
+    {
+        $expected = array(
+            'filter' => array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    array(
+                        1 => 'schedule', 
+                        2 => 'are-present'))),
+            'joins' => array(array(
+                'field' => 'phone',
+                'model' => 'SecondDummyModel',
+                'function' => 'getUniqueParticipantPhone',
+                'parameters' => array())),
+            'errors' => array('only one join is allowed'));
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present'),
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present')));
+
+        $checkedFilter = $this->Model->validateFilter($filter);
+        $this->assertEqual($expected, $checkedFilter);
+    }
+
+
+    public function testValidateFilter_join_and_other()
+    {
+        $expected = array(
+            'filter' => array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    array(
+                        1 => 'optin',
+                        2 => 'now'),
+                    array(
+                        1 => 'schedule', 
+                        2 => 'are-present'))),
+            'joins' => array(array(
+                'field' => 'phone',
+                'model' => 'SecondDummyModel',
+                'function' => 'getUniqueParticipantPhone',
+                'parameters' => array())),
+            'errors' => array());
+
+        $filter = array(
+            'filter_operator' => 'all',
+            'filter_param' => array(
+              array(
+                    1 => 'optin',
+                    2 => 'now'),
+                array(
+                    1 => 'schedule', 
+                    2 => 'are-present')));
+
+        $checkedFilter = $this->Model->validateFilter($filter);
+        $this->assertEqual($expected, $checkedFilter);
+    }
+
+
+	public function testFromFiltersToQueryCondition() 
     {
     	$filters = array(
             'filter_operator' => 'all',
@@ -513,7 +476,7 @@ class FilterBehaviorTest extends CakeTestCase
                 '$join' => 'something'));
         $this->assertEqual(
             'something',
-            FilterBehavior::hasJoin($conditions));
+            FilterMongoBehavior::hasJoin($conditions));
 
         $conditions = array(
             '$and' => array(
@@ -522,7 +485,7 @@ class FilterBehaviorTest extends CakeTestCase
                         '$join' => 'something'))));
         $this->assertEqual(
             'something',
-            FilterBehavior::hasJoin($conditions));
+            FilterMongoBehavior::hasJoin($conditions));
 
         $conditions = array(
             '$or' => array(
@@ -531,7 +494,7 @@ class FilterBehaviorTest extends CakeTestCase
                         '$join' => ''))));
         $this->assertEqual(
             '',
-            FilterBehavior::hasJoin($conditions));
+            FilterMongoBehavior::hasJoin($conditions));
     }
 
 
@@ -540,7 +503,7 @@ class FilterBehaviorTest extends CakeTestCase
         $conditions = array(
             'phone' => array(
                 '$join' => ''));
-        $conditions = FilterBehavior::replaceJoin($conditions, array('$in' => 'something'));
+        $conditions = FilterMongoBehavior::replaceJoin($conditions, array('$in' => 'something'));
         $this->assertEqual(
             $conditions,
             array('phone' => array('$in' => 'something')));
@@ -550,7 +513,7 @@ class FilterBehaviorTest extends CakeTestCase
                 array(
                     'something' => array(
                         '$join' => ''))));
-        $conditions = FilterBehavior::replaceJoin($conditions, array('$in' => 'something'));
+        $conditions = FilterMongoBehavior::replaceJoin($conditions, array('$in' => 'something'));
         $this->assertEqual(
             $conditions,
             array(
@@ -559,6 +522,5 @@ class FilterBehaviorTest extends CakeTestCase
                         'something' => array(
                             '$in' => 'something')))));
     }
-*/
 
 }

@@ -122,8 +122,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
     /**
     * test methods
     *
-    */
-   
+    */   
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();

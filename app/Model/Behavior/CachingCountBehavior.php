@@ -58,7 +58,7 @@ class CachingCountBehavior extends ModelBehavior {
 
     public function count($model, $conditions = true, $limit = null, $timeout = 30000) 
     {
-        if (!FilterBehavior::hasJoin($conditions)) {
+        if ($model->databaseSupportJoin()) {
             return $this->cachedCount($model, $conditions, $limit, $timeout);
         }
         return $model->countSafeJoin('cachedCount', $conditions, $limit, $timeout);

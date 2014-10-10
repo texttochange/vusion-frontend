@@ -9,7 +9,6 @@ App::uses('History', 'Model');
 App::uses('MongoModel', 'Model');
 
 
-
 class TestFilterComponentController extends Controller
 {
     var $components = array('Filter');
@@ -83,13 +82,12 @@ class FilterComponentTest extends CakeTestCase
             'FirstDummyModel',
             array(
                 'validateFilter',
-                'fromFiltersToQueryCondition'));
-        //$this->Controller->FirstDummyModel->Behaviors->load('Filter');
+                'fromFiltersToQueryCondition',
+                'mergeFilterConditions'));
         $this->Controller->SecondDummyModel = $this->getMock(
             'SecondDummyModel',
             array(
                 'getUniqueParticipantPhone'));
-        //$this->Controller->SecondDummyModel->Behaviors->load('Filter');
         $this->FilterComponent->initialize($this->Controller);
     }
     
@@ -136,6 +134,12 @@ class FilterComponentTest extends CakeTestCase
                 array(
                     'filter_operator' => 'all',
                     'filter_param' => array()))
+            ->will($this->returnValue(array()));
+
+        $this->Controller->FirstDummyModel
+            ->expects($this->once())
+            ->method('mergeFilterConditions')
+            ->with(array(), array())
             ->will($this->returnValue(array()));
 
         $dummySession = $this->getMock('Session', array('setFlash'));
@@ -200,6 +204,12 @@ class FilterComponentTest extends CakeTestCase
                             3 => "testop"))))
             ->will($this->returnValue(array('enrolled' => 'testtop')));
 
+        $this->Controller->FirstDummyModel
+            ->expects($this->once())
+            ->method('mergeFilterConditions')
+            ->with(array(), array('enrolled' => 'testtop'))
+            ->will($this->returnValue(array('enrolled' => 'testtop')));
+
         $dummySession = $this->getMock('Session', array('setFlash'));
         $dummySession
             ->expects($this->any())
@@ -257,6 +267,11 @@ class FilterComponentTest extends CakeTestCase
             ->with(array('crusor' => false))
             ->will($this->returnValue(array('+07')));
 
+        $filterConditions = array(
+            '$or' => array(
+                array('phone' => '+06'),
+                array('phone' => array(
+                    '$in' => array('+07')))));
         $this->Controller->FirstDummyModel
             ->expects($this->once())
             ->method('fromFiltersToQueryCondition')
@@ -272,11 +287,13 @@ class FilterComponentTest extends CakeTestCase
                             1 => "schedule", 
                             2 => "are-present"))), 
                 array('phone' => array('$join' => array('+07'))))
-            ->will($this->returnValue(
-                array('$or' => array(
-                    array('phone' => '+06'),
-                    array('phone' => array(
-                        '$in' => array('+07')))))));
+            ->will($this->returnValue($filterConditions));
+
+        $this->Controller->FirstDummyModel
+            ->expects($this->once())
+            ->method('mergeFilterConditions')
+            ->with(array(), $filterConditions)
+            ->will($this->returnValue($filterConditions));
 
         $conditions = $this->FilterComponent->getConditions(
             $this->Controller->FirstDummyModel,
@@ -289,6 +306,76 @@ class FilterComponentTest extends CakeTestCase
                 array('phone' => '+06'),
                 array('phone' => array(
                         '$in' => array('+07'))))));
+    }
+
+
+    public function testGetConditions_defaultConditions() 
+    {
+        $filters = array(
+            'filter_operator' => 'any',
+            'filter_param' => array(
+                1 => array(
+                    1 => "phone", 
+                    2 => "is",
+                    3 => "+06")));
+        $this->Controller->params['url'] = $filters;
+
+        $this->Controller->FirstDummyModel
+            ->expects($this->once())
+            ->method('validateFilter')
+            ->with($this->Controller->params['url'])
+            ->will($this->returnValue(
+                array(
+                    'filter' => array(
+                        'filter_operator' => 'any',
+                        'filter_param' => array(
+                            1 => array(
+                                1 => "phone", 
+                                2 => "is",
+                                3 => "+06"))),
+                    'joins' => array(),
+                    'errors' => array())));
+
+        $this->Controller->SecondDummyModel
+            ->expects($this->never())
+            ->method('getUniqueParticipantPhone');
+
+        $this->Controller->FirstDummyModel
+            ->expects($this->once())
+            ->method('fromFiltersToQueryCondition')
+            ->with(
+                array(
+                    'filter_operator' => 'any',
+                    'filter_param' => array(
+                        1 => array(
+                            1 => "phone", 
+                            2 => "is",
+                            3 => "+06"))))
+            ->will($this->returnValue(
+                array('phone' => '+06')));
+
+        $this->Controller->FirstDummyModel
+            ->expects($this->once())
+            ->method('mergeFilterConditions')
+            ->with(
+                array('session-id' => array('$ne' => null)), 
+                array('phone' => '+06'))
+            ->will($this->returnValue(array(
+                '$and' => array(
+                    array('session-id' => array('$ne' => null)), 
+                    array('phone' => '+06')
+                    ))));
+
+        $conditions = $this->FilterComponent->getConditions(
+            $this->Controller->FirstDummyModel,
+            array('session-id' => array('$ne' => null)),
+            array('SecondDummyModel' => $this->Controller->SecondDummyModel));
+        
+        $this->assertEqual(
+            $conditions,
+            array('$and' => array(
+                array('session-id' => array('$ne' => null)),
+                array('phone' => '+06'))));
     }
 
 

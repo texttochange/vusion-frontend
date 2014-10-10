@@ -47,7 +47,7 @@ class Participant extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
-        $this->Behaviors->load('Filter');
+        $this->Behaviors->load('FilterMongo');
 
         if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);

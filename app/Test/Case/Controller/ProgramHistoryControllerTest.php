@@ -120,7 +120,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         return $histories;
     }
     
-    
+
     public function testPagination() 
     {
         $this->instanciateHistoryModel();
@@ -236,7 +236,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         
     }
-    
+
     
     public function testMassDelete() {
         
@@ -297,9 +297,11 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'dialogue-id' => '1',
             'interaction-id' => '12',
             ));
+        
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=outgoing");
         $this->assertEquals(3, $this->History->find('count'));
+        
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=incoming");
         $this->assertEquals(1, $this->History->find('count'));
@@ -314,11 +316,13 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'message-direction' => 'incoming',
             'matching-answer' => null
             ));
+        
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete");
         $this->assertEquals(1, $this->History->find('count'));
         
     }
+    
     
     public function testMassDelete_failMissingFilterOperator() {
         
@@ -338,7 +342,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             $this->testAction("/testurl/programHistory/delete?filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=outgoing");
             $this->failed('Missing filter operator should rise an exception.');
         } catch (FilterException $e) {
-            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+            $this->assertEqual($e->getMessage(), "Filter operator is missing.");
         }
         $this->assertEquals(
             1,
@@ -396,5 +400,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programHistory/paginationCount.json");
         $this->assertEqual($this->vars['paginationCount'], 0);
     }
+
 
 }

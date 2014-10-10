@@ -40,7 +40,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Dialogue->deleteAll(true, false);
     }
     
-/*
+
     public function testSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1577,7 +1577,7 @@ class ParticipantTestCase extends CakeTestCase
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+9')));
         $this->assertEqual(array('geek', 'another tag'), $participant['Participant']['tags']);
     }
-*/
+
 
     public function testFindAllSafeJoin() 
     {

@@ -72,12 +72,12 @@ class FilterComponent extends Component
     }
     
     
-    public function getConditions($filterModel, $defaultConditions = null, $otherModels = array())
+    public function getConditions($filterModel, $defaultConditions = array(), $otherModels = array())
     {       
         $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));       
-        
+  
         if ($filter == array()) {
-            return array();
+            return $defaultConditions;
         }
 
         $checkedFilter = $filterModel->validateFilter($filter);
@@ -116,8 +116,11 @@ class FilterComponent extends Component
             $otherModelConditions = array(
                 $join['field'] => array('$join' => $results));
         }
-        return $filterModel->fromFiltersToQueryCondition($checkedFilter['filter'], $otherModelConditions);
+        $filterConditions = $filterModel->fromFiltersToQueryCondition($checkedFilter['filter'], $otherModelConditions);
+        $filterConditions = $filterModel->mergeFilterConditions($defaultConditions, $filterConditions);
+        return $filterConditions;
     }
+
     
     //Having a function is better to handle key error.
     public function localize($value) {

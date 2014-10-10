@@ -46,7 +46,6 @@ class UsersController extends AppController
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
-        
         $this->paginate        = $paginate;
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));

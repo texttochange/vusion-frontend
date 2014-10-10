@@ -121,7 +121,7 @@ class History extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
-        $this->Behaviors->load('Filter');
+        $this->Behaviors->load('FilterMongo');
     }
     
     

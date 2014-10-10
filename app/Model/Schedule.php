@@ -67,6 +67,7 @@ class Schedule extends MongoModel
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
+        $this->Behaviors->load('FilterMongo');
 
         $options                 = array('database' => $id['database']);
         $this->UnattachedMessage = new UnattachedMessage($options);
@@ -90,29 +91,30 @@ class Schedule extends MongoModel
         }
         return $results;
     }
-    
-/*
-    public function paginateCount($conditions, $recursive, $extra)
+
+
+    public function getUniqueParticipantPhone($options=array())
     {
-        try{
-            if (isset($extra['maxLimit'])) {
-                $maxPaginationCount = 40;
-            } else {
-                $maxPaginationCount = $extra['maxLimit'];
-            }
-            
-            $result = $this->count($conditions, $maxPaginationCount);
-            if ($result == $maxPaginationCount) {
-                return 'many';
-            } else {
-                return $result; 
-            }            
-        } catch (MongoCursorTimeoutException $e) {
-            return 'many';
+        $cursor = $this->getUniqueParticipantPhoneCursor();
+        if (isset($options['cursor']) && $options['cursor']) {
+            return $cursor;
+        } 
+        $results = array();
+        foreach ($cursor as $item) {
+            $results[] = $item['_id'];
         }
+        return $results;
     }
-*/
-    
+
+
+    public function getUniqueParticipantPhoneCursor()
+    {
+        $pipeline = array(array('$group' => array('_id' => '$participant-phone')));
+        $mongo = $this->getDataSource();
+        return $mongo->aggregateCursor($this, $pipeline);
+    }
+
+
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
         foreach($activeDialogues as $activeDialogue) {
@@ -262,6 +264,7 @@ class Schedule extends MongoModel
         
         return $scheduleCount; 
     }
-    
+
+    public $filterFields = array();
     
 }

@@ -1156,10 +1156,11 @@ class MongodbSource extends DboSource {
 	
 
 	public function aggregateCursor($Model, $pipeline, $params=array()) {
-		$collection = $this->_db->selectCollection($Model->table);
+		$collectionName = $Model->table;
+		$collection = $this->_db->selectCollection($collectionName);
 		$cursor = $collection->aggregateCursor($pipeline, $params);
 		if ($this->fullDebug) {
-			$this->logQuery("db.aggregateCursor( :pipeline , :params )", 	compact('pipeline', 'params'));
+			$this->logQuery("db.:collectionName.aggregateCursor( :pipeline , :params )", 	compact('collectionName','pipeline', 'params'));
 		}
 		return $cursor;
 	}
