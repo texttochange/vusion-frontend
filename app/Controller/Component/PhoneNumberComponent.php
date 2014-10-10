@@ -21,24 +21,9 @@ class PhoneNumberComponent extends Component {
         if ($this->countriesByPrefixes != null) {
             return $this->countriesByPrefixes;
         }
-
-    	$filePath = WWW_ROOT . "files"; 
-        $fileName = "countries and codes.csv";
-        $importedCountries = fopen($filePath . DS . $fileName,"r");
-        $countries=array();
-        $count = 0;
-        $options = array();
-        while(!feof($importedCountries)){
-           $countries[] = fgets($importedCountries);
-           if($count > 0 && $countries[$count]){
-               $countries[$count] = str_replace("\n", "", $countries[$count]);
-               $explodedLine = explode(",", $countries[$count]);
-               $options[trim($explodedLine[1])] = trim($explodedLine[0]);
-           }
-           $count++;           
-        }
-        $this->countriesByPrefixes = $options;
-        return $options;
+        $fileName = WWW_ROOT . Configure::read('vusion.countriesPrefixesFile');
+        $this->countriesByPrefixes = DialogueHelper::loadCountriesByPrefixes($fileName);
+        return $this->countriesByPrefixes;
     }
 
     
@@ -59,9 +44,6 @@ class PhoneNumberComponent extends Component {
         $countriesByPrefixes = $this->getCountriesByPrefixes();
         return DialogueHelper::fromPrefixedCodeToCountry($prefixedCode, $countriesByPrefixes);
     }
-
-
-
     
     
 }
