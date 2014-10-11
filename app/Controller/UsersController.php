@@ -508,9 +508,13 @@ class UsersController extends AppController
 
     public function inviteUser()
     {
-
-        $groups   = $this->User->Group->find('list');
         $user = $this->Auth->user();
+        $andCondition = ($user['group_id'] != 5) ? array(array('id !=' => 1), array('id !=' => 2)) : array(array('id !=' => 1), array('id !=' => 2), array('id !=' => 3));
+
+        $groups   = $this->User->Group->find('list',
+            array('conditions' => array('AND' => $andCondition)
+            ));
+        
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
            $rawPrograms = $this->User->Program->find(
                 'authorized',
@@ -700,6 +704,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->allow($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
