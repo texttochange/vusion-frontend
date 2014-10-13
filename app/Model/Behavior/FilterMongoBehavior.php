@@ -2,25 +2,27 @@
 App::uses('FilterBehavior', 'Model/Behavior');
 
 
-class FilterMongoBehavior extends FilterBehavior {
+class FilterMongoBehavior extends FilterBehavior 
+{
 
-	var $joinCursor = null;
-	var $originalJoinQuery = null;
-	
-	public function setup($model, $settings = array()) 
-	{
-		parent::setup($model, $settings);
+    var $joinCursor = null;
+    var $originalJoinQuery = null;
+    
+    public function setup($model, $settings = array()) 
+    {
+        parent::setup($model, $settings);
         $model->MAX_JOIN_PHONES = VusionConst::MAX_JOIN_PHONES;
         $model->joinCursor = null;
-    	$model->originalJoinQuery = null;
+        $model->originalJoinQuery = null;
     }
 
-    public function databaseSupportJoin(){
+    public function databaseSupportJoin()
+    {
         return false;
     } 
 
 
-	public function fromFiltersToQueryCondition($model, $filters, $conditions=array()) 
+    public function fromFiltersToQueryCondition($model, $filters, $conditions=array()) 
     {
         foreach ($filters['filter_param'] as $filterParam) {
 
@@ -54,7 +56,7 @@ class FilterMongoBehavior extends FilterBehavior {
 
     public function findAllSafeJoin($model, $state, $query, $results=array()) 
     {    
-    	if ($state === 'before') {
+        if ($state === 'before') {
             if (!isset($query['limit'])) {
                 throw new VusionException('FindAllSafe has to be used with limit');
             }
@@ -130,29 +132,29 @@ class FilterMongoBehavior extends FilterBehavior {
 
     public function countSafeJoin($model, $callback, $conditions = true, $limit = null, $timeout = 30000) 
     {
-    	if (!FilterMongoBehavior::hasJoin($conditions)) {
-    		return $model->{$callback}($conditions, $limit, $timeout);
-    	} 
-    	$result = 0;
-	    $joinCursor = FilterMongoBehavior::hasJoin($conditions);
-	    $originalJoinQuery = $conditions;
-	    $joinCursor->rewind();    //initialize the cursor
-	    while ($joinCursor->valid()) {
-	        $join = array('$in' => array());
-	        $i = 1;
-	        while ($joinCursor->valid()) {
-	            $phone = $joinCursor->current();
-	            $join['$in'][] = $phone['_id'];
-	            if ($i > $model->MAX_JOIN_PHONES) {
-	                break;
-	            }
-	            $joinCursor->next();
-	            $i++;
-	        }
-	        $conditions = FilterMongoBehavior::replaceJoin($originalJoinQuery, $join);
-	        $result = $result + $model->{$callback}($conditions, $limit, $timeout);
-	        $joinCursor->next();
-	    }
+        if (!FilterMongoBehavior::hasJoin($conditions)) {
+            return $model->{$callback}($conditions, $limit, $timeout);
+        } 
+        $result = 0;
+        $joinCursor = FilterMongoBehavior::hasJoin($conditions);
+        $originalJoinQuery = $conditions;
+        $joinCursor->rewind();    //initialize the cursor
+        while ($joinCursor->valid()) {
+            $join = array('$in' => array());
+            $i = 1;
+            while ($joinCursor->valid()) {
+                $phone = $joinCursor->current();
+                $join['$in'][] = $phone['_id'];
+                if ($i > $model->MAX_JOIN_PHONES) {
+                    break;
+                }
+                $joinCursor->next();
+                $i++;
+            }
+            $conditions = FilterMongoBehavior::replaceJoin($originalJoinQuery, $join);
+            $result = $result + $model->{$callback}($conditions, $limit, $timeout);
+            $joinCursor->next();
+        }
         return $result;
     }
 
@@ -160,9 +162,9 @@ class FilterMongoBehavior extends FilterBehavior {
     public function mergeFilterConditions($model, $defaultConditions, $filterConditions)
     {
         if ($defaultConditions === array()) {
-        	return $filterConditions;
+            return $filterConditions;
         } elseif ($filterConditions === array()) {
-        	return $defaultConditions;
+            return $defaultConditions;
         } else {
             return array('$and' => array($defaultConditions, $filterConditions));
         }

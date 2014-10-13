@@ -3,14 +3,15 @@ App::uses('VusionConst', 'Lib');
 App::uses('VusionException', 'Lib');
 
 
-class FilterBehavior extends ModelBehavior {
+class FilterBehavior extends ModelBehavior 
+{
 
    
-	public function setup($model, $settings = array()) 
-	{
-		if (!isset($model->filterFields)) {
-			throw new Exception("Model %s is missing filters definition" % $model->name);
-		}
+    public function setup($model, $settings = array()) 
+    {
+        if (!isset($model->filterFields)) {
+            throw new Exception("Model %s is missing filters definition" % $model->name);
+        }
     }
 
 
@@ -19,9 +20,9 @@ class FilterBehavior extends ModelBehavior {
     } 
 
 
-	public function getFilters($model, $subset=null) 
+    public function getFilters($model, $subset=null) 
     {
-		if (!isset($subset)) {
+        if (!isset($subset)) {
             return $model->filterFields;
         }
         $subsetFilterFields = array();
@@ -112,7 +113,7 @@ class FilterBehavior extends ModelBehavior {
 
 
     public function validateFilterParam($model, $filterParam, $subset=null) {
-    	if (!isset($filterParam[1])) {
+        if (!isset($filterParam[1])) {
             return "condition is missing";
         }
 

@@ -16,7 +16,6 @@ class TestProgramHistoryController extends ProgramHistoryController
         $this->redirectUrl = $url;
     }
     
-    
 }
 
 
@@ -148,14 +147,12 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index/sort:participant-phone/direction:asc");
-        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['participant-phone']);
-        
+        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['participant-phone']);   
     }
     
     
     public function testFilter()
-    {
-        
+    {   
         $this->History->create('dialogue-history');
         $this->History->save(array(
             'participant-phone' => '+356774527841',
@@ -232,14 +229,12 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/history/index?filter_operator=any&".
             "filter_param[1][1]=participant-phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B356774527842&".
             "filter_param[2][1]=message-direction&filter_param[2][2]=is&filter_param[2][3]=incoming");
-        $this->assertEquals(3, count($this->vars['statuses']));
-        
-        
+        $this->assertEquals(3, count($this->vars['statuses']));        
     }
 
     
-    public function testMassDelete() {
-        
+    public function testMassDelete() 
+    {    
         $this->History->create('dialogue-history');
         $this->History->save(array(
             'participant-phone' => '356774527841',
@@ -319,13 +314,12 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete");
-        $this->assertEquals(1, $this->History->find('count'));
-        
+        $this->assertEquals(1, $this->History->find('count'));   
     }
     
     
-    public function testMassDelete_failMissingFilterOperator() {
-        
+    public function testMassDelete_failMissingFilterOperator() 
+    {       
         $this->History->create('dialogue-history');
         $this->History->save(array(
             'participant-phone' => '356774527841',
