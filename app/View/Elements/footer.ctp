@@ -5,7 +5,7 @@ echo $this->Html->tag('span', "Vusion $vusionVersion powered by", array('class' 
 echo '<a href= "http://connect4change.nl" target = "_blank">';
 echo '<img src = "/img/connect4change-logo.png"  class = "powered-by-logo">';
 echo '</a>';
-echo '<a href= "http://www.ttcmobile.org/" target = "_blank">';
+echo '<a href= "http://www.ttcmobile.com/" target = "_blank">';
 echo '<img src = "/img/ttc-logo2.png"  class = "ttc-logo">';
 echo '</a>';
 ?>  
