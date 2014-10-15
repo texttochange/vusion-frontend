@@ -133,7 +133,6 @@ class UserLogMonitorComponent extends Component
     protected function _logAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
     {
         $now = new DateTime('now');
-        
         if (isset($this->Controller->programDetails['database'])) {
             $programDatabaseName = $this->Controller->programDetails['database'];
         } 
@@ -157,7 +156,7 @@ class UserLogMonitorComponent extends Component
             $userLog['parameters']            = $this->userLogActions[$controller][$method][$action];
             $userLog['user-id']               = $this->Session->read('Auth.User.id');
             $userLog['user-name']             = $this->Session->read('Auth.User.username');
-            $userLog['timestamp']             = $now->format("d/m/Y H:i:s");
+            $userLog['timestamp']             = $now->format("Y-m-d\TH:i:s");
             $userLog['timezone']              = $programTimezone;
             
             $this->UserLog->create();

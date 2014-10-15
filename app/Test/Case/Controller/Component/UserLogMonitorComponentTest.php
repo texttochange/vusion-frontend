@@ -87,8 +87,8 @@ class UserLogMonitorComponentTest extends CakeTestCase
 	        'action' => 'add',
 	        'method' => 'POST',
 	        'controller' => 'programs',
-	        'programdatabasename' => null,
-	        'programname' => null)));
+	        'programDatabaseName' => null,
+	        'programName' => null)));
 	    
     	$this->UserLogComponent->Session 
     	->expects($this->at(2))
