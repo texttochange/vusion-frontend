@@ -147,7 +147,7 @@ class CreditViewerController extends AppController
                     }
                 } else if ($headerDate == 'Date To') {
                     if ($timeframeParameters['predefined-timeframe'] == 'today' || $timeframeParameters['predefined-timeframe'] == '') {
-                        $value = array($headerDate, $now->format('m/d/Y'));
+                        $value = array($headerDate, $now->format('m/d/Y H:m'));
                         $line1 = $value;
                     } else {
                         $value = array($headerDate, $timeframeParameters['date-to']);
