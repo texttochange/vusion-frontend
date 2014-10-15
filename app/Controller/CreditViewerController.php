@@ -126,7 +126,7 @@ class CreditViewerController extends AppController
             }
             
             $now           = new DateTime('now');
-            $fileName      = $url .'_' . $now->format('Y-m-d_H-i-s') . '.csv';            
+            $fileName      = $url .'_' . $now->format('Y-m-d') . '.csv';            
             $fileFullPath  = $filePath . "/" . $fileName;
             $handle        = fopen($fileFullPath, "w");
             
