@@ -111,8 +111,8 @@ class UserLogMonitorComponent extends Component
             'action' => $action,
             'method' => $method,
             'controller' => $controller,
-            'programdatabasename' => $programDatabaseName,
-            'programname' => $programName));
+            'programDatabaseName' => $programDatabaseName,
+            'programName' => $programName));
     }
     
     
@@ -123,8 +123,8 @@ class UserLogMonitorComponent extends Component
             $this->_logAction($sessionAction['action'],
                 $sessionAction['method'],
                 $sessionAction['controller'],
-                $sessionAction['programdatabasename'],
-                $sessionAction['programname']);
+                $sessionAction['programDatabaseName'],
+                $sessionAction['programName']);
             $this->Session->delete('UserLogMonitor');
         }
     }
