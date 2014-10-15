@@ -25,12 +25,6 @@ class UserLogMonitorComponent extends Component
         $this->UserLog = new UserLog($options);
         
         $this->userLogActions  = array(
-            'default' => array(
-                'POST' => array(
-                    'add' => __('Adding to unlisted action in  program.'),
-                    'edit' => __('Editing to unlisted action in program.'),
-                    'delete' => __('Deleting to unlisted action in program.'))
-                ),
             'programParticipants' => array(
                 'POST' => array(
                     'delete' => __('Deleted participant(s)'),
@@ -95,7 +89,6 @@ class UserLogMonitorComponent extends Component
     
     public function userLogSessionWrite($programDatabaseName = null, $programName = null)
     {
-        $controller = 'default';
         if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
             $controller = $this->Controller->request->params['controller'];
         }
