@@ -76,6 +76,7 @@ class Action extends VirtualModel
                         'reset', 
                         'feedback',
                         'proportional-tagging',
+                        'proportional-labelling',
                         'url-forwarding',
                         'sms-forwarding')),
                 'message' => 'The type-action value is not valid.'
@@ -90,7 +91,8 @@ class Action extends VirtualModel
                         'tagging' => array('tag'),
                         'reset' => array(),
                         'feedback' => array('content'),
-                        'proportional-tagging' => array('proportional-tags'),
+                        'proportional-tagging' => array('set-only-optin-count', 'proportional-tags'),
+                        'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proportional-labels'),
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'))),
                 'message' => 'The action-type required field are not present.'
@@ -148,6 +150,32 @@ class Action extends VirtualModel
             'validProportionalTags' => array(
                 'rule' => 'validProportionalTags',
                 'message' => 'noMessage',
+                ),
+            ),
+        'proportional-labels' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'proportional-labelling'),
+                'message' => 'The proportional-labels field require an proportional-labelling action.',
+                ),
+            'validProportionalLabels' => array(
+                'rule' => 'validProportionalLabels',
+                'message' => 'noMessage',
+                ),
+            ),
+        'set-only-optin-count' => array(
+            'validValue' => array(
+                'rule' => array('inList', array(null, 'only-optin-count')),
+                'message' => 'The field set-only-optin-count doesn\'t have a valide value.'
+                )
+            ),
+        'label-name' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'proportional-labelling'),
+                'message' => 'The label-name is require in proportional-labelling action.',
+                ),
+            'validLabelName' => array(
+                'rule' => array('regex', VusionConst::LABEL_REGEX),
+                'message' => VusionConst::LABEL_FAIL_MESSAGE
                 ),
             ),
         'forward-url' => array(            
@@ -322,6 +350,29 @@ class Action extends VirtualModel
                 ),
             ),
         );
+
+    public $validateProportionalLabel = array(
+        'label-value' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The label value is required.'
+                ),
+            'validValue' => array(
+                'rule' => array('regex', VusionConst::LABEL_VALUE_REGEX),
+                'message' => VusionConst::LABEL_VALUE_FAIL_MESSAGE
+                ),
+            ),
+        'weight' => array(
+            'required' => array(
+                'rule' => 'required',
+                'message' => 'The weight is required.'
+                ),
+            'validValue' => array(
+                'rule' => array('regex', '/^\d+$/'),
+                'message' => 'The weight value can only be a integer.'
+                ),
+            ),
+        );
     
     
     public function trimArray($Input)
@@ -344,6 +395,9 @@ class Action extends VirtualModel
         if ($this->data['type-action'] == 'sms-forwarding') {
             $this->_setDefault('set-forward-message-condition', null);
             $this->_setDefault('forward-to', null);
+        }
+        if (in_array($this->data['type-action'], array('proportional-tagging', 'proportional-labelling'))) {
+            $this->_setDefault('set-only-optin-count', null);
         }
         $this->_setDefault('set-condition', null);
         if ($this->data['set-condition'] == 'condition') {
@@ -414,6 +468,12 @@ class Action extends VirtualModel
     public function validProportionalTags($field, $data)
     {
         return $this->validList($field, $data, $this->validateProportionalTag);
+    }
+
+
+    public function validProportionalLabels($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateProportionalLabel);
     }
     
     

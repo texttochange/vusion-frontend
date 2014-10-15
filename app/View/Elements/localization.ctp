@@ -39,6 +39,7 @@ var localized_messages = {
     select_one: "<?php echo __('Select one...')?>",
     table_saved: "<?php echo __('Table saved.')?>",
     content_variable_table_value: "<?php echo __('This value is editable and can be used in message with: ')?>",
+    sending_report: "<?php echo __('Sending the report by email, it might take a few minutes....')?>",
 };
 
 var localized_actions= {
