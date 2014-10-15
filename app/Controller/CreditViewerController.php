@@ -138,11 +138,21 @@ class CreditViewerController extends AppController
             foreach ($headersDates as $headerDate) {
                 $line1 = array();
                 if ($headerDate == 'Date From') {
-                    $value = array($headerDate, $timeframeParameters['date-from']);
-                    $line1 = $value;
+                    if ($timeframeParameters['predefined-timeframe'] == 'today') {
+                        $value = array($headerDate, $now->format('m/d/Y'));
+                        $line1 = $value;
+                    } else {
+                        $value = array($headerDate, $timeframeParameters['date-from']);
+                        $line1 = $value;
+                    }
                 } else if ($headerDate == 'Date To') {
-                    $value = array($headerDate, $timeframeParameters['date-to']);
-                    $line1 = $value;
+                    if ($timeframeParameters['predefined-timeframe'] == 'today') {
+                        $value = array($headerDate, $now->format('m/d/Y'));
+                        $line1 = $value;
+                    } else {
+                        $value = array($headerDate, $timeframeParameters['date-to']);
+                        $line1 = $value;
+                    }
                 } else {
                     $line1[] = '';
                 }
