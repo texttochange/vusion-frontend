@@ -503,7 +503,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->testAction("/testurl/programParticipants/massDelete?filter_param[1][1]=phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B6");
             $this->failed('Missing filter operator should rise an exception.');
         } catch (FilterException $e) {
-            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+            $this->assertEqual($e->getMessage(), "Filter operator is missing.");
         }
         $this->assertEquals(
             1,
@@ -1336,6 +1336,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
     }
     
+
     public function testMassTagFilteredParticipant_ok()
     {
         $this->mockProgramAccess();

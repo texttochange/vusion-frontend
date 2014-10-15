@@ -60,13 +60,13 @@ class ProgramParticipantsController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $requestSuccess = true;
-        $paginate       = array('all');
+        $paginate       = array('allSafeJoin');
         
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->Filter->getConditions($this->Participant);
+        $conditions = $this->Filter->getConditions($this->Participant, array(), array('Schedule' => $this->Schedule));
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
@@ -79,8 +79,8 @@ class ProgramParticipantsController extends AppController
     
     protected function _getFilterFieldOptions()
     {   
-        return $this->LocalizeUtils->localizeLabelInArray(
-            $this->Participant->filterFields);
+        $filters = $this->Participant->getFilters();
+        return $this->LocalizeUtils->localizeLabelInArray($filters);
     }
     
     
