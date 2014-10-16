@@ -149,15 +149,12 @@ class ProgramParticipantsController extends AppController
             if (!$conditions) {
                 $conditions = array();
             }
-            if ($this->Participant->addMassTags($this->params['url']['tag'], $conditions)) {                
-                $this->Session->setFlash(__('The MassTag has been added successfully.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
+            if ($this->Participant->addMassTags($this->params['url']['tag'], $conditions)) {
+                $this->_notifyBackendMassTag($programUrl, $this->params['url']['tag'], $conditions);
+                $this->Session->setFlash(__('The tag %s has been added successfully.', $this->params['url']['tag']),
+                    'default', array('class'=>'message success'));
             } else {                
-                $this->Session->setFlash(__('The MassTag '.$tag.' could not be added successfully.'), 
-                    'default',
-                    array('class' => 'message failure'));                            
+                $this->Session->setFlash(__('The tag %s could not be added.', $tag));       
             }           
         }
         
@@ -182,15 +179,11 @@ class ProgramParticipantsController extends AppController
                 $conditions = array();
             } 
             if ($this->Participant->deleteMassTags($this->params['url']['tag'], $conditions)) {
-                $this->Session->setFlash(__('The Tag '.$this->params['url']['tag'].' has been removed successfully.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
-            } else {                
-                $this->Session->setFlash(__('The Tag'.$this->params['url']['tag'].' could not be removed successfully.'), 
-                    'default',
-                    array('class' => 'message failure')
-                    );                                
+                $this->_notifyBackendMassUntag($programUrl, $this->params['url']['tag']);
+                $this->Session->setFlash(__('The tag %s has been removed successfully.', $this->params['url']['tag']),
+                    'default', array('class'=>'message success'));
+            } else {
+                $this->Session->setFlash(__('The tag %s could not be removed.', $this->params['url']['tag']));
             }
         } 
         
@@ -302,7 +295,19 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
     
-    
+
+    protected function _notifyBackendMassTag($workerName, $tag, $query)
+    {
+        $this->VumiRabbitMQ->sendMessageMassTag($workerName, $tag, $query);
+    }
+
+
+    protected function _notifyBackendMassUntag($workerName, $tag)
+    {
+        $this->VumiRabbitMQ->sendMessageMassUntag($workerName, $tag);
+    }
+ 
+
     public function add() 
     {
         $programUrl     = $this->params['program'];

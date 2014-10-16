@@ -99,6 +99,24 @@ class WorkerMessageMaker
             'helper_metadata' => ''
             );
     }
+
+    public function massTag($tag, $query)
+    {
+        return array(
+            'action' => 'mass_tag',
+            'tag' => $tag,
+            'selector' => $query
+            );
+    }
+
+
+    public function massUntag($tag)
+    {
+        return array(
+            'action' => 'mass_untag',
+            'tag' => $tag
+            );
+    }
     
     
 }
