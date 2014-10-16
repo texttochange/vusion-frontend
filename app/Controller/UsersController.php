@@ -534,17 +534,32 @@ class UsersController extends AppController
         if (!$this->request->is('post')) {
             return;
         }
-        echo "here";
-        $email = $this->request->data['emailInvitee'];
+        print_r($this->request->data);
+        $email = $this->request->data['User']['emailInvitee'];
+        $group_id = $this->request->data['User']['group_id'];
+        $program_id = $this->request->data['Program']['Program'][0];
+
         if (!$email) {
             $this->Session->setFlash(__('Please Enter Email address'));
             return;
         }
 
+        
+        if (!$disclaimer) {
+            $this->Session->setFlash(__('Please tick the disclaimer'));
+            return;
+        }
+
         $this->Ticket->setTicketPrefix('inviteuser');
+
+        $invite = array(
+            'program_id'=> $program_id,
+            'group_id' => $group_id
+            'invited_by' => $user['id']
+            );
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->Ticket->saveToken($token);
+        $this->Ticket->saveInvitedToken($token, $invite);
 
         $userName = $this->Session->read('Auth.User.username');
         

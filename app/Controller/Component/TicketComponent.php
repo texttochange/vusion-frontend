@@ -65,6 +65,13 @@ class TicketComponent extends Component
         $ticketKey = $this->_getTicketKey($token);
         $this->redis->setex($ticketKey, 86400, $token);
     }
+
+
+    public function saveInvitedToken($token, $invite)
+    {
+        $ticketKey = $this->_getTicketKey($token);
+        $this->redis->setex($ticketKey, 86400, $token);
+    }
     
     
     public function checkTicket($ticketHash)

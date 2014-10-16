@@ -3,11 +3,7 @@
     echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
     echo $this->Html->tag('h2', __('Invite User'));
     echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' =>'inviteUser')));
-    echo $this->Form->input(
-        'text', array(
-            'label' => 'Email',
-            'id' => 'emailofinvitee',
-            'name' => 'emailInvitee'));
+    echo $this->Form->input('emailInvitee', array('label' => __('Email')));
     echo $this->Form->input('group_id', array('label' =>__('Group id')));
     $options = $programs;      
     echo $this->Form->input(
