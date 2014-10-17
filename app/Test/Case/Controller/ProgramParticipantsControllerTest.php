@@ -90,6 +90,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_notifyUpdateBackendWorker',
+                    '_notifyBackendMassTag',
+                    '_notifyBackendMassUntag',
                     'render',
                     )
                 )
@@ -1339,7 +1341,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
 
     public function testMassTagFilteredParticipant_ok()
     {
-        $this->mockProgramAccess();
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyBackendMassTag')
+        ->with('testurl', 'test', array('phone' => '+6'))
+        ->will($this->returnValue(true));
         
         $participant_01 = array(
             'phone' => '+6', 
@@ -1373,7 +1380,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassUntagFilteredParticipant_ok()
     {
-        $this->mockProgramAccess();
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyBackendMassUntag')
+        ->with('testurl', 'test')
+        ->will($this->returnValue(true));
         
         $participant_01 = array(
             'phone' => '+6',
