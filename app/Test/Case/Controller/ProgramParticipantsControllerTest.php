@@ -90,6 +90,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_notifyUpdateBackendWorker',
+                    '_notifyBackendMassTag',
+                    '_notifyBackendMassUntag',
                     'render',
                     )
                 )
@@ -503,7 +505,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->testAction("/testurl/programParticipants/massDelete?filter_param[1][1]=phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B6");
             $this->failed('Missing filter operator should rise an exception.');
         } catch (FilterException $e) {
-            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+            $this->assertEqual($e->getMessage(), "Filter operator is missing.");
         }
         $this->assertEquals(
             1,
@@ -1336,9 +1338,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
     }
     
+
     public function testMassTagFilteredParticipant_ok()
     {
-        $this->mockProgramAccess();
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyBackendMassTag')
+        ->with('testurl', 'test', array('phone' => '+6'))
+        ->will($this->returnValue(true));
         
         $participant_01 = array(
             'phone' => '+6', 
@@ -1372,7 +1380,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testMassUntagFilteredParticipant_ok()
     {
-        $this->mockProgramAccess();
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyBackendMassUntag')
+        ->with('testurl', 'test')
+        ->will($this->returnValue(true));
         
         $participant_01 = array(
             'phone' => '+6',

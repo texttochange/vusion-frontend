@@ -46,8 +46,7 @@ class UnattachedMessage extends MongoModel
         'send-to-phone'
         );
     
-    var $participantPhoneRegex = '/^\+[0-9]*$/';
-    
+
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -197,13 +196,14 @@ class UnattachedMessage extends MongoModel
     
     public function __construct($id = false, $table = null, $ds = null)
     {
+        parent::__construct($id, $table, $ds);
+     
         //Seems to be necessary API loading Vs Web loading
         if (isset($id['id'])) {
             $options = array('database' => $id['id']['database']);
         } else {
             $options = array('database' => $id['database']);
         }
-        parent::__construct($id, $table, $ds);
         $this->ProgramSetting = new ProgramSetting($options);
     }
     
@@ -353,7 +353,7 @@ class UnattachedMessage extends MongoModel
             return false;
         }
         foreach($check['send-to-phone'] as $participantPhone) {
-            if (!preg_match($this->participantPhoneRegex, $participantPhone)) {
+            if (!preg_match(VusionConst::PHONE_REGEX, $participantPhone)) {
                 return false;
             }
         }

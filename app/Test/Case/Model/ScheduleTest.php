@@ -107,5 +107,80 @@ class ScheduleTestCase extends CakeTestCase
         $this->assertEquals(0, $result);
     }
     
+    public function testGetUniqueParticipantPhone()
+    {
+        $schedules = array(
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId',
+                'date-time' => '2013-04-12T12:00',
+                'participant-phone' => '06'
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId',
+                'date-time' => '2013-04-12T12:00',
+                'participant-phone' => '07'
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId2',
+                'date-time' => '2013-04-12T13:00',
+                'participant-phone' => '07'
+                ));
+
+        foreach ($schedules as $schedule) {
+            $this->Schedule->create($schedule['object-type']);
+            $this->Schedule->save($schedule);
+        }
+
+        $results = $this->Schedule->getUniqueParticipantPhone();
+        $this->assertEqual(array('07', '06'), $results);
+    }
+
+    public function testGetUniqueParticipantPhoneCursor()
+    {
+        $schedules = array(
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId',
+                'date-time' => '2013-04-12T12:00',
+                'participant-phone' => '06'
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId',
+                'date-time' => '2013-04-12T12:00',
+                'participant-phone' => '07'
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId2',
+                'date-time' => '2013-04-12T13:00',
+                'participant-phone' => '07'
+                ));
+
+        foreach ($schedules as $schedule) {
+            $this->Schedule->create($schedule['object-type']);
+            $this->Schedule->save($schedule);
+        }
+
+        $cursorResults = $this->Schedule->getUniqueParticipantPhone(array('cursor' => true));
+        $i = 0;
+        foreach ($cursorResults as $item) {
+            if ($i == 0) {
+                $this->assertEqual('07', $item['_id']);
+            } else {
+                $this->assertEqual('06', $item['_id']);    
+            }
+            $i++;
+        }
+    }
     
 }
