@@ -555,7 +555,6 @@ class History extends MongoModel
     public function countUnattachedMessages($unattachId, $messageStatus = null)
     {
         $conditions = array(
-            //'message-direction' => 'outgoing',
             'unattach-id' => $unattachId);
         if ($messageStatus != null) {
             if (is_array($messageStatus)) {
