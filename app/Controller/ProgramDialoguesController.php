@@ -145,6 +145,7 @@ class ProgramDialoguesController extends AppController
         } else {
             if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {                
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
+                $this->UserLogMonitor->userLogSessionWrite();
                 $this->Session->setFlash(__('Dialogue activated.'), 
                     'default', 
                     array('class' => "message success"));
