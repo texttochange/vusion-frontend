@@ -44,8 +44,8 @@ class ProgramRequestsController extends AppController
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-
-
+    
+    
     public function index()
     {
         $this->set('requests', $this->paginate());
@@ -57,7 +57,7 @@ class ProgramRequestsController extends AppController
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
     }
     
-
+    
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
@@ -71,27 +71,29 @@ class ProgramRequestsController extends AppController
             if (!$this->Request->exists()) {
                 throw new NotFoundException(__('Invalide Request') . $id);
             }
+            
             $this->set('request', $this->Request->read(null, $id));
         }
     }
-
-
+    
+    
     public function save()
     {
         $programUrl     = $this->params['program'];
         $programDb      = $this->Session->read($programUrl."_db");
+        $programName    = $this->Session->read($programUrl."_name");
         $requestSuccess = false;
         
         if (!$this->request->is('post') || !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
- 
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             $this->set(compact('requestSuccess')); 
             return;
         }
-
+        
         $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
         $request       = DialogueHelper::objectToArray($this->request->data);
         $id            = Request::getRequestId($request);
@@ -100,7 +102,13 @@ class ProgramRequestsController extends AppController
         if ($savedRequest = $this->Request->saveRequest($request,  $foundKeywords)) {
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $requestSuccess = true;
-            $this->UserLogMonitor->userLogSessionWrite();
+            
+            if (isset($id)) {
+               $this->UserLogMonitor->userLogRequestEditSessionWrite($programDb, $programName);
+            } else {
+                $this->UserLogMonitor->userLogSessionWrite();
+            }
+            
             $this->Session->setFlash(__('Request saved.'));
             $this->set(compact('savedRequest'));
         } else {
@@ -154,11 +162,11 @@ class ProgramRequestsController extends AppController
         $usedKeywords   = $this->request->data['keyword'];
         $requestId      = $this->request->data['object-id'];
         $requestSuccess = true;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             return;
@@ -180,6 +188,6 @@ class ProgramRequestsController extends AppController
     {
         $this->VumiRabbitMQ->sendMessageToReloadRequest($workerName, $requestId);
     }
-
-
+    
+    
 }
