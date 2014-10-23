@@ -82,6 +82,11 @@ class History extends MongoModel
         } elseif ($object['object-type'] == 'request-history') {
             $fields = array_merge($fields, array('request-id'));
         }
+        
+        if ($object['object-type'] == 'datepassed-marker-history') {
+            $fields = array_merge($fields, array('message-status', 'unattach-id'));
+        }
+        
         return $fields;
     }
     
@@ -100,6 +105,10 @@ class History extends MongoModel
                 $object[$field] = null;
             }
         };
+        
+        if ($object['object-type'] == 'datepassed-marker-history') {
+            $object = array_merge($object, array('message-status' => 'datepassed-marker'));
+        }
         
         return $object;
     }
@@ -495,7 +504,6 @@ class History extends MongoModel
     public function countUnattachedMessages($unattachId, $messageStatus = null)
     {
         $conditions = array(
-            'message-direction' => 'outgoing',
             'unattach-id' => $unattachId);
         if ($messageStatus != null) {
             if (is_array($messageStatus)) {
