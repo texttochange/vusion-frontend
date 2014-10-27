@@ -22,7 +22,7 @@ Vagrant::configure("2") do |config|
   config.vm.synced_folder "backend/middlewares", "/var/vusion/backend/middlewares", type:"nfs"
   config.vm.synced_folder "backend/components", "/var/vusion/backend/components", type:"nfs"
   config.vm.synced_folder "backend/tests", "/var/vusion/backend/tests", type:"nfs"
-  config.vm.synced_folder "backend/dispatchers", "/var/vusion/backend/disptachers", type:"nfs"
+  config.vm.synced_folder "backend/dispatchers", "/var/vusion/backend/dispatchers", type:"nfs"
   config.vm.synced_folder "backend/scripts", "/var/vusion/backend/scripts", type:"nfs"
 
 end
