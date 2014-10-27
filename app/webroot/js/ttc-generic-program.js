@@ -227,12 +227,9 @@ function activeForm(){
             $(elt).timepicker({timeFormat: 'hh:mm'}).addClass("activated");
     });
     $("input[name*='date-time']:not(.activated)").each(function (key, elt) {
-            if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
-                $(this).parent().parent().find("input").attr("readonly", true);
-                $(this).parent().parent().find("textarea").attr("readonly", true);
-                $(this).parent().parent().find("input[type='radio']:checked").each(hiddeUndisabled);
-                $(this).parent().parent().find("input[type='checkbox']:checked").each(hiddeUndisabled);
-                $(this).parent().parent().addClass("ttc-interaction-disabled");
+            var interaction = $(elt).closest('[item="interaction"]');
+            if (interaction.find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
+                disableInteraction(interaction);
             } else {
                 $(elt).datetimepicker({
                         timeFormat: 'hh:mm',
@@ -439,6 +436,14 @@ function activeForm(){
     
     addContentFormHelp();
     addCounter();
+}
+
+function disableInteraction(interaction){
+    interaction.find("input").attr("readonly", true);
+    interaction.find("textarea").attr("readonly", true);
+    interaction.find("input[type='radio']:checked").each(hiddeUndisabled);
+    interaction.find("input[type='checkbox']:checked").each(hiddeUndisabled);
+    interaction.addClass("ttc-interaction-disabled");
 }
 
 function expandForm(){
