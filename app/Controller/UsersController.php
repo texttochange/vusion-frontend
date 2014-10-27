@@ -28,7 +28,7 @@ class UsersController extends AppController
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
+        $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword', 'addInvitee');
     }
     
     
@@ -123,13 +123,24 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
+            $canInviteUsers = $this->request->data['User']['can_invite_users'];
+            unset($this->request->data['User']['can_invite_users']);
             if ($user = $this->User->save($this->request->data)) {
+                ##### To Refactor ###############
                 #checkbox is checked => we store it in the ACL
                 if ($umatchableReplyAccess == true) {
                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
                     $this->Acl->deny($user, 'controllers/UnmatchableReply');
                 }
+
+                if ($canInviteUsers == true) {
+                    $this->Acl->allow($user, 'controllers/Users');
+                } else {
+                    $this->Acl->deny($user, 'controllers/Users');
+                }
+                ########################################################
+
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -433,7 +444,7 @@ class UsersController extends AppController
         $userName = $account[0]['User']['username'];
         $userId   = $account[0]['User']['id'];
         $this->Session->write('user_id',$userId);
-        
+
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $this->ResetPasswordTicket->saveToken($token);
         
@@ -449,14 +460,24 @@ class UsersController extends AppController
     
     public function useTicket($ticketHash)
     {
-        $results = $this->ResetPasswordTicket->checkTicket($ticketHash);
+        $results = $this->Ticket->checkTicket($ticketHash);
         if (isset($results)) {
-            $this->Session->setFlash(
-                __('Enter your new password below'),
-                'default',
-                array('class'=>'message success')
-                );
-            $this->render('new_password');
+            if (is_array($results)) {
+                $this->Session->setFlash(
+                    __('Enter your username and password below'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->Session->write('invite',$results);
+                $this->render('add_invitee');
+            } else {
+                $this->Session->setFlash(
+                    __('Enter your new password below'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->render('new_password');
+            }
             return;
         }
         $this->Session->setFlash(__('Your ticket is lost or expired.'));
@@ -534,10 +555,11 @@ class UsersController extends AppController
         if (!$this->request->is('post')) {
             return;
         }
-        print_r($this->request->data);
+        
         $email = $this->request->data['User']['emailInvitee'];
+        $disclaimer = $this->request->data['User']['invite_disclaimer'];
         $group_id = $this->request->data['User']['group_id'];
-        $program_id = $this->request->data['Program']['Program'][0];
+        $programs = $this->request->data['Program'];
 
         if (!$email) {
             $this->Session->setFlash(__('Please Enter Email address'));
@@ -550,11 +572,9 @@ class UsersController extends AppController
             return;
         }
 
-        $this->Ticket->setTicketPrefix('inviteuser');
-
         $invite = array(
-            'program_id'=> $program_id,
-            'group_id' => $group_id
+            'programs'=> $programs,
+            'group_id' => $group_id,
             'invited_by' => $user['id']
             );
         
@@ -570,6 +590,33 @@ class UsersController extends AppController
             array('class'=>'message success')
             );
         //$this->redirect('/');
+    }
+
+    public function addInvitee()
+    {
+        $invite = $this->Session->read('invite');
+
+        if ($this->request->is('post')) {
+            $this->User->create();
+            $invite = $this->Session->read('invite');
+            $this->request->data['User']['group_id'] = $invite['group_id'];
+            $this->request->data['Program'] = $invite['programs'];
+            if ($this->User->save($this->request->data)) {
+                $this->Session->delete('invite');
+                $this->Session->setFlash(__('Your account has been created.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect('/');
+            } else {
+                $this->Session->setFlash(__('Account creation failed.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+        }
+
+
     }
     
     
@@ -615,7 +662,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
-            $this->Acl->allow($Group, 'controllers/Users/inviteUser');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -653,7 +700,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
-            $this->Acl->allow($Group, 'controllers/Users/inviteUser');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -719,7 +766,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
-            $this->Acl->allow($Group, 'controllers/Users/inviteUser');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

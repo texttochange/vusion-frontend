@@ -24,21 +24,15 @@ class TicketComponent extends Component
         if (isset($this->Controller->redisTicketPrefix)) {
             $this->redisTicketPrefix = $this->Controller->redisTicketPrefix;
         } else {
-            //$this->redisTicketPrefix = 'vusion:passwordreset';
-            $this->redisTicketPrefix = $this->setTicketPrefix('vusion');
+            $this->redisTicketPrefix = 'vusion:ticket';
         }
-    }
-
-
-    public function setTicketPrefix($prefix)
-    {
-        return 'vusion:'.$prefix;
     }
     
     
     public function sendEmail($userEmail, $userName, $token)
     {  
-        $linkdomain  = Configure::read('vusion.domain'); 
+        //$linkdomain  = Configure::read('vusion.domain');
+        $linkdomain  = 'localhost:4567'; 
         $email       = new CakeEmail();
         $email->config('default');
         $email->from(array('admin@vusion.texttochange.org' => 'Vusion'));
@@ -70,7 +64,7 @@ class TicketComponent extends Component
     public function saveInvitedToken($token, $invite)
     {
         $ticketKey = $this->_getTicketKey($token);
-        $this->redis->setex($ticketKey, 86400, $token);
+        $this->redis->setex($ticketKey, 604800, json_encode($invite));
     }
     
     
@@ -83,7 +77,12 @@ class TicketComponent extends Component
         if (!empty($ticket)) {
             $result = $ticket;
             $this->redis->delete($ticketKey);
-        } 
+        }
+        
+        if (is_array(json_decode($result, true))) {
+            # adding the option true ensures that an array is returned.
+            return json_decode($result, true);
+        }
         
         return $result;
     }

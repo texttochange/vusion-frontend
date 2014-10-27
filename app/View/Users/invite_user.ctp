@@ -1,5 +1,4 @@
 <?php
-//echo "hello";
     echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
     echo $this->Html->tag('h2', __('Invite User'));
     echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' =>'inviteUser')));
