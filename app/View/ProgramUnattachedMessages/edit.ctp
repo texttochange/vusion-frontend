@@ -28,8 +28,9 @@
     $errorSendTo = "";
     $errorSchedule = "";
     $scheduleOptions = array(
-        'immediately'=>__('Immediately'),
-        'fixed-time'=> __('Fixed Time:'));
+        'none' => __('Draft'),
+        'immediately' => __('Immediately'),
+        'fixed-time' => __('Fixed Time:'));
     $matchSelectDisabled = true;
     $fixedTimeSelectDisabled = true;
     $fileFieldDisabled = true;

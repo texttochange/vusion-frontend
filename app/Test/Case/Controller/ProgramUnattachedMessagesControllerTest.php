@@ -340,6 +340,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             $unattachedMessage['UnattachedMessage']['send-to-phone']);
         $this->assertEquals(2, $this->Participant->find('count'));
     }    
+
     
     public function testEdit()
     { 
@@ -391,8 +392,50 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             $unattachedMessage['UnattachedMessage']['content']
             );            
     }
+
+
+    public function testEdit_typeScheduleToNone()
+    { 
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        
+        $unattachedMessages = $this->mock_program_access();
+
+        $unattachedMessage = array(
+            'UnattachedMessage' => array(
+                'name' => 'test',
+                'send-to-type' => 'all',
+                'content' => 'Hello!!!!',
+                'type-schedule' => 'fixed-time',
+                'fixed-time' => '3013-04-12T11:00:00',
+                'created-by' => 1
+                )
+            );
+        $this->UnattachedMessage->create();
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $schedule =array(
+            'object-type' => 'unattach-schedule',
+            'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id'],
+            'date-time' => '3013-04-12T11:00:00');
+        $this->Schedule->create('unattach-schedule');
+        $this->Schedule->save($schedule);
+
+        $this->testAction("/testurl/programUnattachedMessages/edit/".$savedUnattachedMessage['UnattachedMessage']['_id'],
+            array(
+                'method' => 'POST',
+                'data' => array(
+                    'UnattachedMessage' => array(
+                        'name' => 'test',
+                        'send-to-type' => 'all',
+                        'content' => 'Hello!!!!',
+                        'type-schedule' => 'none'))));
+        $this->assertEquals(
+            $this->Schedule->count(),
+            0);            
+    }
     
-    
+
     public function testDelete()
     {
         $this->mock_program_access();

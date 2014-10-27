@@ -27,7 +27,9 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'template', $("[name*='[template]']").prev(":not(:has(img)):not(div)"));
     addFormHelp(baseUrl, 'keyword', $("[name*='\.keyword']").prev("label").not(":has(img)"));
     addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));
-}
+    addFormHelp(baseUrl, 'proportional-labelling', $("[value='proportional-labelling']:checked").parent().next().children('legend').not(":has(img)"));
+    addFormHelp(baseUrl, 'proportional-tagging', $("[value='proportional-tagging']:checked").parent().next().children('legend').not(":has(img)"));
+}   
 
 
 function addFormHelp(baseUrl, name, selector) {
@@ -195,19 +197,18 @@ function createFilter(minimize, selectedStackOperator, stackRules){
     $(deleteButton).attr('class','ttc-add-icon').attr('src', '/img/delete-icon-16.png').on('click', removeFilter);
     $('#advanced_filter_form').prepend(deleteButton);
     
-    var count = 1;
     $.each(stackRules, function(i, rule) {
+            index = i + 1;
             addStackFilter();
-            $("select[name='filter_param["+count+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").change();
+            $("select[name='filter_param["+index+"][1]']").val(rule[1]).children("option[value="+rule[1]+"]").change();
             if (typeof(rule[2]) === 'undefined') return true;
-            $("[name='filter_param["+count+"][2]']").val(rule[2]).change();
+            $("[name='filter_param["+index+"][2]']").val(rule[2]).change();
             if (typeof(rule[3]) === 'undefined') return true;
             // If the selected element is not loaded, add it to the drop down
-            if ($("[name='filter_param["+count+"][3]']select").size() > 0 && $("[name='filter_param["+count+"][3]'] option").size() == 1) {
-                $("[name='filter_param["+count+"][3]']").prepend(new Option(rule[3],rule[3]))
+            if ($("[name='filter_param["+index+"][3]']select").size() > 0 && $("[name='filter_param["+index+"][3]'] option").size() == 1) {
+                $("[name='filter_param["+index+"][3]']").prepend(new Option(rule[3],rule[3]))
             } 
-            $("[name='filter_param["+count+"][3]']").val(rule[3]);
-            count++;       
+            $("[name='filter_param["+index+"][3]']").val(rule[3]);
     });
     
     if (minimize) {
@@ -774,3 +775,8 @@ function popupNewBrowserTab(obj) {
     newPopupWindow.focus();
 }
 
+function disableSubmit() {
+    $('#close-report').attr('style', 'visibility:hidden');
+    $('#submit-report').attr('style', 'visibility:hidden');
+    $('#sending-email').append(localized_messages['sending_report']);
+}

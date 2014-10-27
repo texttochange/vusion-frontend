@@ -237,7 +237,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         
         //Asserting that programName "creditViewer" is adding to export file
         $this->assertEquals(
-            substr($this->vars['fileName'], 0, -23),
+            substr($this->vars['fileName'], 0, -14),
             'creditViewer_');
     }
     

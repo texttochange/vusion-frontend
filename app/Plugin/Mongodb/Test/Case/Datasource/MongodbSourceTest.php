@@ -188,7 +188,7 @@ class MongodbSourceTest extends CakeTestCase {
 				->connection
 				->selectDB($this->_config['database'])
 				->selectCollection($this->Post->table)
-				->insert($data, true);
+				->insert($data);
 		} catch (MongoException $e) {
 			trigger_error($e->getMessage());
 		}
@@ -680,7 +680,15 @@ class MongodbSourceTest extends CakeTestCase {
 		$conditions = array('title' => 'test');
 
 		$resultUpdateAll = $this->Post->updateAll($updateData, $conditions);
-		$this->assertTrue($resultUpdateAll);
+		$this->assertEqual(
+			array(
+			    'ok' => 1,
+			    'nModified' => 2,
+			    'n' => 2,
+			    'err' => null,
+			    'errmsg' => null,
+			    'updatedExisting' => true),
+			$resultUpdateAll);
 
 		$result = $this->Post->find('all');
 		$this->assertEqual(2, count($result));
@@ -1021,6 +1029,57 @@ class MongodbSourceTest extends CakeTestCase {
 		$this->assertEqual(1, $result['retval'][0]['csum']);
 		$this->assertEqual(2, $result['retval'][1]['csum']);
 		$this->assertEqual(2, $result['retval'][2]['csum']);
+
+}
+
+/**
+ * Tests aggregateCursor
+ *
+ * @return void
+ * @access public
+ */
+	public function testAggregateCursor() {
+		$saveData[1]['Post'] = array(
+				'title' => 'test1',
+				'body' => 'aaaa2',
+				'text' => 'bbbb4',
+				'count' => 1,
+				);
+
+		$saveData[30]['Post'] = array(
+			'title' => 'test1',
+			'body' => 'aaaa1',
+			'text' => 'bbbb1',
+			'count' => 1,
+		);
+		$saveData[31]['Post'] = array(
+			'title' => 'test2',
+			'body' => 'aaaa2',
+			'text' => 'bbbb2',
+			'count' => 2,
+		);
+
+		$this->Post->create();
+		$saveResult = $this->Post->saveAll($saveData);
+
+		$pipeline = array(array('$group' => array('_id' => '$title')));
+
+		$mongo = $this->Post->getDataSource();
+		$result = $mongo->aggregateCursor($this->Post, $pipeline);
+		$count = 0;
+		foreach ($result as $title) {
+			$count++;
+		}
+		$this->assertEqual(2, $count);
+
+
+		$options = array('cursor' => array('batchSize' => 1));
+		$result = $mongo->aggregateCursor($this->Post, $pipeline, $options);
+		$count = 0;
+		foreach ($result as $title) {
+			$count++;
+		}
+		$this->assertEqual(2, $count);
 
 }
 

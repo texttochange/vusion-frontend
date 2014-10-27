@@ -1153,8 +1153,17 @@ class MongodbSource extends DboSource {
 		}
 		return false;
 	}
+	
 
-
+	public function aggregateCursor($Model, $pipeline, $params=array()) {
+		$collectionName = $Model->table;
+		$collection = $this->_db->selectCollection($collectionName);
+		$cursor = $collection->aggregateCursor($pipeline, $params);
+		if ($this->fullDebug) {
+			$this->logQuery("db.:collectionName.aggregateCursor( :pipeline , :params )", 	compact('collectionName','pipeline', 'params'));
+		}
+		return $cursor;
+	}
 
 /**
  * Prepares a value, or an array of values for database queries by quoting and escaping them.

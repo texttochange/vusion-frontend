@@ -2,47 +2,23 @@
 App::uses('AppModel', 'Model');
 App::uses('AuthComponent', 'Controller/Component');
 App::uses('FilterException', 'Lib');
-/**
-*  User Model
-*
-*  @property Group $Group
-*  @property Program $Program
-*/
+
+
 class User extends AppModel
 {
     
     public $name = 'User';
-    
-    /**
-    *  Display field
-    *
-    *  @var string
-    */
     public $displayField = 'username';
-    /**
-    *  Validation rules
-    *
-    *  @var array
-    */
+
     public $validate = array(
         'username' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                //'message' => 'Your custom message here',
-                //'allowEmpty' => false,
-                //'required' => false,
-                //'last' => false, // Stop validation after this rule
-                //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
             ),
         'password' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                //'message' => 'Your custom message here',
-                //'allowEmpty' => false,
-                //'required' => false,
-                //'last' => false, // Stop validation after this rule
-                //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
             'minLength' => array(
                 'rule' => array('minLength', 8),
@@ -57,41 +33,21 @@ class User extends AppModel
             'email' => array(
                 'rule' => 'email',
                 'message' => 'Invalid email address',
-                //'allowEmpty' => false,
-                //'required' => false,
-                //'last' => false, // Stop validation after this rule
-                //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
             ),
         'group_id' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
-                //'message' => 'Your custom message here',
-                //'allowEmpty' => false,
-                //'required' => false,
-                //'last' => false, // Stop validation after this rule
-                //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
             ),
         'limited_program_access' => array(
             'boolean' => array(
                 'rule' => array('boolean'),
-                //'message' => 'Your custom message here',
-                //'allowEmpty' => false,
-                //'required' => false,
-                //'last' => false, // Stop validation after this rule
-                //'on' => 'create', // Limit validation to 'create' or 'update' operations
                 ),
             ),
         );
     
-    //The Associations below have been created with all possible keys, those that are not needed can be removed
-    
-    /**
-    *  belongsTo associations
-    *
-    *  @var array
-    */
+
     public $belongsTo = array(
         'Group' => array(
             'className' => 'Group',
@@ -102,11 +58,6 @@ class User extends AppModel
             )
         );
     
-    /**
-    *  hasAndBelongsToMany associations
-    *
-    *  @var array
-    */
     public $hasAndBelongsToMany = array(
         'Program' => array(
             'className' => 'Program',
@@ -125,6 +76,11 @@ class User extends AppModel
             )
         );
     
+
+    public function __construct($id = false, $table = null, $ds = null) {
+         parent::__construct($id, $table, $ds);
+         $this->Behaviors->load('Filter');
+    }
 	
     public function beforeSave()
     {
@@ -177,82 +133,24 @@ class User extends AppModel
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
-        );
+        );  
     
-    
-    public function validateFilter($filterParam)
-    {
-        if (!isset($filterParam[1])) {
-            throw new FilterException("Field is missing.");
+    public function fromFilterToQueryCondition($filterParam) {
+        $condition = array();
+        if ($filterParam[1] == 'group_id') {
+            if ($filterParam[2] == 'is') {
+                $condition['group_id'] = $filterParam[3];
+            } elseif ($filterParam[2] == 'not-is') {
+                $condition['group_id'] = array('$ne'=> $filterParam[3]);
+            } 
+        } elseif ($filterParam[1] == 'username') {
+            if ($filterParam[2] == 'equal-to') {
+                $condition['username'] = $filterParam[3];
+            } elseif ($filterParam[2] == 'start-with') {
+                $condition['username LIKE'] = $filterParam[3]."%"; 
+            }            
         }
-        
-        if (!isset($this->filterFields[$filterParam[1]])) {
-            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
-        }
-        
-        if (!isset($filterParam[2])) {
-            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
-            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
-            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
-        }
-        
-        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
-            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
-        }
-    }
-    
-    
-    public function fromFilterToQueryConditions($filter) {
-        
-        $conditions = array();
-        
-        foreach($filter['filter_param'] as $filterParam) {
-            
-            $condition = null;
-            
-            $this->validateFilter($filterParam);
-            
-            if ($filterParam[1] == 'group_id') {
-                if ($filterParam[2] == 'is') {
-                    $condition['group_id'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'not-is') {
-                    $condition['group_id'] = array('$ne'=> $filterParam[3]);
-                } 
-            } elseif ($filterParam[1] == 'username') {
-                if ($filterParam[2] == 'equal-to') {
-                    $condition['username'] = $filterParam[3];
-                } elseif ($filterParam[2] == 'start-with') {
-                    $condition['username LIKE'] = $filterParam[3]."%"; 
-                }            
-            }
-            
-            if ($filter['filter_operator'] == "all") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['AND'])) {
-                    $conditions = array('AND' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['AND'], $condition);
-                }
-            }  elseif ($filter['filter_operator'] == "any") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['OR'])) {
-                    $conditions = array('OR' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['OR'], $condition);
-                }
-            }
-            
-        }
-        
-        return $conditions;
+        return $condition;
     }
     
     

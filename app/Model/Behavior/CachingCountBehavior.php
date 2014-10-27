@@ -1,4 +1,5 @@
 <?php
+App::uses('FilterBehavior', 'Model/Behavior');
 
 
 class CachingCountBehavior extends ModelBehavior {
@@ -57,6 +58,15 @@ class CachingCountBehavior extends ModelBehavior {
 
     public function count($model, $conditions = true, $limit = null, $timeout = 30000) 
     {
+        if ($model->databaseSupportJoin()) {
+            return $this->cachedCount($model, $conditions, $limit, $timeout);
+        }
+        return $model->countSafeJoin('cachedCount', $conditions, $limit, $timeout);
+    }
+
+
+    public function cachedCount($model, $conditions = true, $limit = null, $timeout = 30000) 
+    {
         $cachedCountKey = $this->_getCachedCountKey($model, $conditions);
         $cachedCount = $this->redis->get($cachedCountKey);
         if ($cachedCount) {
@@ -84,6 +94,7 @@ class CachingCountBehavior extends ModelBehavior {
         }
         return $result;
     }
+
 
     public function flushCached($model) 
     {

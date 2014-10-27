@@ -183,7 +183,7 @@ function clickBasicButton(){
         "name": listName+"["+id+"]",
         "item": itemToAdd,
         "caption": localize_label(itemToAdd),
-    "elements": []}
+        "elements": []}
     
     configToForm(itemToAdd, newElt, listName+"["+id+"]");
     
@@ -204,16 +204,7 @@ function hiddeUndisabled(key, item){
 
 function activeForm(){
     $.each($('.ui-dform-addElt:not(.activated)'),function(key,elt){
-            $(elt).click(clickBasicButton);
-            $(elt).addClass("activated");    
-    });
-    $.each($("input[name*='type-']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
-    });
-    $.each($("input[name*='auto-enrollment']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
+            $(elt).click(clickBasicButton).addClass("activated");    
     });
     $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
@@ -233,32 +224,19 @@ function activeForm(){
     });
 
     $.each($("input[name*='at-time']:not(.activated)"), function (key,elt){
-            $(elt).timepicker({timeFormat: 'hh:mm'});
-            $(elt).addClass("activated");            
+            $(elt).timepicker({timeFormat: 'hh:mm'}).addClass("activated");
     });
     $.each($("input[name*='reminder']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
-    });
-    $.each($("input[name*='condition-operator']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
-    });
-    $.each($("input[name*='forward-message-condition-type']:not(.activated)"),function (key, elt){
-            $(elt).change(updateRadioButtonSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='condition']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='max-unmatching-answers']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='matching-answer-actions']:not(.activated)"),function (key, elt){
-            $(elt).change(updateCheckboxSubmenu);
-            $(elt).addClass("activated");
+            $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $("input[name*='date-time']:not(.activated)").each(function (key, elt) {
             if ($(this).parent().parent().find("input[type='hidden'][name$='activated'][value='1']").length>0 && !isInFuture($(this).val())) {
@@ -526,6 +504,9 @@ function foldForm(){
     case "proportional-tag":
         summary = $('[name="'+nameToFold+'.tag"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
         break;
+    case "proportional-label":
+        summary = $('[name="'+nameToFold+'.label-value"]').val() +" "+$('[name="'+nameToFold+'.weight"]').val();
+        break;
     case "auto-enrollment-box": 
         summary = localize_label($('[name="Dialogue.auto-enrollment"]:checked').val());
         break;  
@@ -547,7 +528,7 @@ function generateFieldSummary(elt, parentName, field)
 //TODO need to generate a interaction id there.
 function updateOffsetConditions(elt){
     //Get current interaction ID
-    var eltId = $(elt).parent().parent().parent().children('[name$="interaction-id"]').val();
+    var eltId = $(elt).closest('[item="interaction"]').children('[name$="interaction-id"]').val();
     //We obviously need to remove it from the options
     var optionsToBeRemoved = [eltId];
     var optionsBefore = [];
@@ -555,7 +536,7 @@ function updateOffsetConditions(elt){
             optionsBefore.push($(this).val());
         });
     //Adding new interaction that are not yet save on the server
-    localQuestions = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').parent().parent();
+    localQuestions = $('[name$="type-interaction"]:checked[value="question-answer"],[name$="type-interaction"]:checked[value="question-answer-keyword"]').closest("[item='interaction']");
     for (var i = 0; i < localQuestions.length; i++) {
         var localQuestionId = $(localQuestions[i]).children('[name$="interaction-id"]').val();
         if (localQuestionId == "" || eltId == localQuestionId) {
@@ -611,7 +592,7 @@ function formatKeywordValidation(value, element, param) {
         var keywordRegex = XRegExp('^[\\p{L}\\p{N}\\s]+(,(\\s)?[\\p{L}\\p{N}\\s]+)*$');
     }
     
-    if (keywordRegex.test(value)) {    	  
+    if (keywordRegex.test(value)) {
         return true;
     }
     return false;
@@ -867,37 +848,26 @@ function isArray(obj) {
 function updateRadioButtonSubmenu() {
     //var elt = event.currentTarget;
     var elt = this;
-    var item = $(elt).attr('item');
-    var box = $(elt).parent().next("fieldset"); 
-    var name = $(elt).parent().parent().attr("name");
-    if (name == null) {
-        name = $(elt).parent().parent().parent().attr("name");
-        if (name == null) {
-            name = $(elt).parent().parent().parent().parent().attr("name");
-        }
-    }
+    var item = $(elt).attr("item");
+    var radiobuttons = $(elt).closest(".ui-dform-spanradiobuttons")[0];
+    var radiochildren = $(radiobuttons).children("fieldset").remove(); 
+    var name = $(radiobuttons).closest(".ui-dform-fieldset").attr("name");
+    var checked = $(elt).attr("value");
     var label = $(elt).next().text();
-    if (box && $(box).attr('radiochildren')){
-        $(box).remove();
-    } 
     
     var newContent = {
-        "type":"fieldset",
+        "type": "fieldset",
         "caption": label,
-        "radiochildren":"radiochildren",
-        "name":name,
-    "elements":[]};
-    checked = $(elt).attr('value');
+        "radiochildren": "radiochildren",
+        "name": name,
+        "elements": []};
+
     option = dynamicForm[item]['options'].filter(function (option) { return option.value == checked});
     if (option[0]['subfields']) {
         $.each(option[0]['subfields'], function(k, v) {
                 configToForm(v, newContent, name);
-        });    
-        
-        $(elt).parent().formElement(newContent);
-        var newElt = $(elt).nextAll('fieldset');
-        $(elt).parent().after($(newElt).clone());
-        $(newElt).remove();
+        });
+        $(radiobuttons).formElement(newContent);
     }
     
     activeForm();
@@ -1026,49 +996,37 @@ function configToForm(item, elt, id_prefix, configTree){
             "adds": dynamicForm[item]['adds']});
         }
         elt["elements"].push(list);
-    } else if (dynamicForm[item]['type'] == "radiobuttons") {
-        var checkedRadio = {};
-        var checkedItem;
+    } else if ($.inArray(dynamicForm[item]['type'], ["radiobuttons", "spanradiobuttons"]) > -1) {
         //In order to support old model for action that used type-answer-action
         if (item == 'type-action' && configTree && 'type-answer-action' in configTree) {
             configTree['type-action'] = configTree['type-answer-action'];
         }
-        $.each(dynamicForm[item]['options'],function(k,v) {
-                if (configTree && v['value']==configTree[item]) {
-                    checkedRadio[v['value']] = {
-                        "value": v['value'],
-                        "item": item,
-                        "caption": localize_label(v['value']),
-                        "checked":"checked"
-                    }
-                    checkedItem = v;
-                    checkedItemLabel = localize_label(v['value']);
-                } else {
-                    checkedRadio[v['value']] = { 
-                        'value': v['value'],
-                        "item": item,
-                    "caption": localize_label(v['value'])};
-                }     
-        })
-        elt["elements"].push({
-                "name":id_prefix+"."+item,
-                "type": "radiobuttons",
-                "options": checkedRadio,
-                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
+        var radiobuttons = {
+            "name": id_prefix+"."+item,
+            "type": dynamicForm[item]['type'],
+            "options": {},
+            "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: '')};
+        $.each(dynamicForm[item]['options'],function(k, optionDef) {
+            var option = { 
+                "value": optionDef['value'],
+                "item": item,
+                "caption": localize_label(optionDef['value'])};
+            if (configTree && optionDef['value'] == configTree[item]) {
+                option["checked"] = "checked";
+                if (optionDef['subfields']) {
+                    var radiochildren = {
+                        "type": "fieldset",
+                        "caption": localize_label(option['value']),
+                        "radiochildren": "radiochildren",
+                        "elements":[]};
+                    $.each(optionDef['subfields'], function (k,v) {
+                        configToForm(v, radiochildren, id_prefix, configTree);});
+                    radiobuttons["radiochildren"] = radiochildren;
+                }
+            }
+            radiobuttons['options'][option['value']] = option;
         });
-        if (checkedItem && checkedItem['subfields']){
-            var box = {
-                "type":"fieldset",
-                "caption": localize_label(checkedItem['value']),
-                "radiochildren":"radiochildren",
-                "elements":[]
-            };
-            $.each(checkedItem['subfields'], function (k,v) {
-                    configToForm(v, box, id_prefix, configTree);
-            });
-            if (box['type'])
-                elt["elements"].push(box);
-        };
+        elt["elements"].push(radiobuttons);
     } else if (dynamicForm[item]['type'] == "checkboxes") {
         var checkedCheckBox = {};
         var checkedItem;
@@ -1271,15 +1229,55 @@ function isInFuture(dateTime) {
 }
 
 function fromBackendToFrontEnd(type, object, submitCall) {
-    //alert("function called");
     
     $.dform.addType("addElt", function(option) {
-            return $("<button type='button'>").dformAttr(option).html(localize_label("add")+' '+localize_label(option["adds"]))        
+        return $("<button type='button'>").dformAttr(option).html(localize_label("add")+' '+localize_label(option["adds"]))
     });
     $.dform.addType("removeElt", function(option) {
-            return $("<button type='button'>").dformAttr(option).html(localize_label("remove")+' '+localize_label(option["adds"]))        
+        return $("<button type='button'>").dformAttr(option).html(localize_label("remove")+' '+localize_label(option["adds"]))
     });
     
+    //Add type for span rabiobutton
+    $.dform.addType("spanradiobuttons", function(option) {
+        return $("<div>").addClass('ui-form-radiobuttons');
+    });
+    $.dform.subscribe("options", function(options, type) {
+        if (type == "spanradiobuttons") {
+            var scoper = this;
+            $.each(options, function(value, content) {
+                    var radioOption = {
+                        "item": content['item'], 
+                        "type": "spanradio",
+                        "spancaption": content['caption'],
+                        "value": value};
+                    if (content['checked']) { 
+                        radioOption['checked'] = "checked";
+                    }
+                    $(scoper).formElement(radioOption);
+                });
+        }
+    });
+    $.dform.subscribe("radiochildren", function (options, type) {
+        if (type == "spanradiobuttons") {
+            var scoper = this;
+            $(scoper).formElement(options);
+        }
+    });
+    $.dform.addType("spanradio", function(option) {
+        input = $("<input>").addClass('ui-dform-radio').attr('type', 'radio').attr('value', option['value']).attr('item', option['item']);
+        if (option["checked"]) {
+            input.prop("checked", true);
+        }
+        label = $("<label>").addClass('ui-dform-label').append(option['spancaption']);
+        return $("<span/>").append(input, label);
+    });
+    $.dform.subscribe("[post]", function (options, type) {
+        if (type == "spanradiobuttons") {
+            $(this).children('span').children('input').attr('name', options['name']).change(updateRadioButtonSubmenu).addClass("activated");
+            //Workaround to have the span wraping in the div
+            $(this).children('span').after(' ');
+        }
+    })
     
     $.validator.addMethod(
         "isInThePast", 

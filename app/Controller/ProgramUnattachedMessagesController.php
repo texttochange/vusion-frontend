@@ -69,41 +69,57 @@ class ProgramUnattachedMessagesController extends AppController
     
     public function index()
     {
+        $paginate = array();
         if (!isset($this->params['named']['sort'])) {
             $order = array('created' => 'desc');
         } else {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-        $this->paginate = array('order'=>$order);
+        $paginate = array('order' => $order);
+        $findType = 'all';
+        if (isset($this->params['named']['type'])) {
+            if ($this->params['named']['type'] == 'sent') {
+                $findType = 'sent';
+            } else if ($this->params['named']['type'] == 'drafted') {
+                $findType = 'drafted';
+            } else if ($this->params['named']['type'] == 'scheduled') {
+                $findType = 'scheduled';
+            }
+        }
+        $paginate['conditions'] = $this->UnattachedMessage->addFindTypeCondition($findType);
+        $this->set(compact('findType'));
+        $paginate = $paginate;
+
+        $this->paginate = $paginate;
         $unattachedMessages = $this->paginate('UnattachedMessage');
         
         foreach($unattachedMessages as &$unattachedMessage)
         {  
             $unattachId = $unattachedMessage['UnattachedMessage']['_id'];
             $status = array();          
-            
-            if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
-                $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
-                $status['count-schedule'] = $countSchedule;                
-            } else if (0 < ($countNoCredit = $this->History->countUnattachedMessages($unattachId, array('no-credit', 'no-credit-timeframe')))){
-                $status['count-no-credit'] = $countNoCredit;   
-            } else {               
-                $countSent                 = $this->History->countUnattachedMessages($unattachId);
-                $status['count-sent']      = $countSent;            
-                $countDelivered            = $this->History->countUnattachedMessages($unattachId, 'delivered');
-                $status['count-delivered'] = $countDelivered;
-                $countPending              = $this->History->countUnattachedMessages($unattachId, 'pending');
-                $status['count-pending']   = $countPending;
-                $countFailed               = $this->History->countUnattachedMessages($unattachId, array('failed', 'no-credit', 'no-credit-timeframe', 'missing-data'));
-                $status['count-failed']    = $countFailed;
-                $countAck                  = $this->History->countUnattachedMessages($unattachId, 'ack');
-                $status['count-ack']       = $countAck; 
-                $countNack                 = $this->History->countUnattachedMessages($unattachId, 'nack');
-                $status['count-nack']      = $countNack; 
+            if ($unattachedMessage['UnattachedMessage']['type-schedule'] != 'none') {
+                if ($this->UnattachedMessage->isNotPast($unattachedMessage['UnattachedMessage'])) {                 
+                    $countSchedule = $this->Schedule->countScheduleFromUnattachedMessage($unattachId);
+                    $status['count-schedule'] = $countSchedule;                
+                } else if (0 < ($countNoCredit = $this->History->countUnattachedMessages($unattachId, array('no-credit', 'no-credit-timeframe')))){
+                    $status['count-no-credit'] = $countNoCredit;   
+                } else {               
+                    $countSent                 = $this->History->countUnattachedMessages($unattachId);
+                    $status['count-sent']      = $countSent;            
+                    $countDelivered            = $this->History->countUnattachedMessages($unattachId, 'delivered');
+                    $status['count-delivered'] = $countDelivered;
+                    $countPending              = $this->History->countUnattachedMessages($unattachId, 'pending');
+                    $status['count-pending']   = $countPending;
+                    $countFailed               = $this->History->countUnattachedMessages($unattachId, array('failed', 'no-credit', 'no-credit-timeframe', 'missing-data', 'datepassed-marker'));
+                    $status['count-failed']    = $countFailed;
+                    $countAck                  = $this->History->countUnattachedMessages($unattachId, 'ack');
+                    $status['count-ack']       = $countAck; 
+                    $countNack                 = $this->History->countUnattachedMessages($unattachId, 'nack');
+                    $status['count-nack']      = $countNack; 
+                }
+                $unattachedMessage['UnattachedMessage'] = array_merge(
+                    $status, $unattachedMessage['UnattachedMessage']);
             }
-            $unattachedMessage['UnattachedMessage'] = array_merge(
-                $status, $unattachedMessage['UnattachedMessage']);
-            
             if (in_array($unattachedMessage['UnattachedMessage']['model-version'], array('1','2','3'))) {
                 $unattachedMessage['UnattachedMessage']['created-by'] = __("unknown");
             } else {
@@ -150,7 +166,7 @@ class ProgramUnattachedMessagesController extends AppController
     protected function saveUnattachedMessage()
     {
         $programUrl = $this->params['program'];
-        $data = $this->data;
+        $data       = $this->data;
         if (!isset($data['UnattachedMessage'])) {
             $data = array('UnattachedMessage' => $data);
         }
@@ -195,9 +211,12 @@ class ProgramUnattachedMessagesController extends AppController
             $user = $this->Auth->user();
             $data['UnattachedMessage']['created-by'] = $user['id'];
         }
-        $savedUnattached = $this->UnattachedMessage->save($data);
-        if ($savedUnattached) {
-            $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
+        if ($savedUnattached = $this->UnattachedMessage->save($data)) {
+            if ($savedUnattached['UnattachedMessage']['type-schedule'] != 'none') {
+                $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
+            } else if (isset($this->UnattachedMessage->id)) {
+                $this->Schedule->deleteAll(array('unattach-id'=> $this->UnattachedMessage->id), false);
+            }
             if (isset($importReport)) {
                 if ($importReport) {
                     $importMessage = __(' To be send to %s participants, %s have been imported and %s failed to be imported.',
@@ -310,16 +329,18 @@ class ProgramUnattachedMessagesController extends AppController
             $this->set(compact('requestSuccess'));
         } else {
             $this->data = $this->UnattachedMessage->read(null, $id);
-            $now = new DateTime('now');    
-            $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
-            date_timezone_set($now,timezone_open($programTimezone));      
-            $messageDate = new DateTime($this->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
-            if ($now > $messageDate){   
-                throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
+            if ($this->data['UnattachedMessage']['type-schedule'] != 'none') {
+                $now = new DateTime('now');    
+                $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
+                date_timezone_set($now,timezone_open($programTimezone));      
+                $messageDate = new DateTime($this->data['UnattachedMessage']['fixed-time'], new DateTimeZone($programTimezone));
+                if ($now > $messageDate){   
+                    throw new MethodNotAllowedException(__('Cannot edit a passed Separate Message.'));
+                }
+                $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
             }
-            $this->request->data['UnattachedMessage']['fixed-time'] = $messageDate->format('d/m/Y H:i');
             if ($this->data['UnattachedMessage']['model-version'] != $this->UnattachedMessage->getModelVersion()) {
-                $this->Session->setFlash(__('Due to internal Vusion update, please to carefuly update this Separate Message.'), 
+                $this->Session->setFlash(__('Due to internal Vusion update, please save this Separate Message again.'), 
                     'default', array('class' => "message warning"));
             }
         }

@@ -240,6 +240,27 @@ class DialogueHelper
         return null;
     }
 
+    //Funtion that load the country name and international prefix from a file
+    public static function loadCountriesByPrefixes($filePath) {
+        $importedCountries = fopen($filePath,"r");
+        $countries=array();
+        $count = 0;
+        $options = array();
+        while(!feof($importedCountries)){
+           $countries[] = fgets($importedCountries);
+           if($count > 0 && $countries[$count]){
+               $countries[$count] = str_replace("\n", "", $countries[$count]);
+               $explodedLine = explode(",", $countries[$count]);
+               $options[trim($explodedLine[1])] = trim($explodedLine[0]);
+           }
+           $count++;           
+        }
+        return $options;
+    }
+
+    public static function loadPrefixesByCountries($filePath) {
+        return array_flip(DialogueHelper::loadCountriesByPrefixes($filePath));
+    }
 
 
 }

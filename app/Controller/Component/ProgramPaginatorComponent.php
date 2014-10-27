@@ -35,17 +35,17 @@ class ProgramPaginatorComponent extends PaginatorComponent
         $options = $this->Controller->paginate;
 
         if (!isset($options['conditions'])) {
-			$options['conditions'] = array();
-		}
+            $options['conditions'] = array();
+        }
 
-		extract($options);
+        extract($options);
 
-		$extra = array_diff_key($options, compact(
-			'conditions', 'fields', 'order', 'limit', 'page', 'recursive'
-		));
-		if ($type !== 'all') {
-			$extra['type'] = $type;
-		}
+        $extra = array_diff_key($options, compact(
+            'conditions', 'fields', 'order', 'limit', 'page', 'recursive'
+        ));
+        if ($type !== 'all') {
+            $extra['type'] = $type;
+        }
 
         $parameters = compact('conditions', 'fields', 'order', 'limit', 'page');
         ##TODO to be consitent with pagniator need to refactor Program Model
@@ -56,10 +56,7 @@ class ProgramPaginatorComponent extends PaginatorComponent
             $parameters['conditions'] = array();
         }
         $programs =  $this->Program->find($type, $parameters);
-       
-        
         $programs = $this->filterPrograms($programs, $conditions);
-
         return $this->paginatePrograms($programs);
     }
 
@@ -115,10 +112,12 @@ class ProgramPaginatorComponent extends PaginatorComponent
 
     public function filterPrograms($programs, $conditions) 
     {
-        return 
-        array_values(
-            array_filter(
-                array_map(array($this, "filterProgram"), $programs, array_fill(0, count($programs), $conditions))));
+        if ($programs === array()) {
+            return array();
+        }
+        return array_values(
+                array_filter(
+                    array_map(array($this, "filterProgram"), $programs, array_fill(0, count($programs), $conditions))));
     }
 
 
