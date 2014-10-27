@@ -226,7 +226,7 @@ function activeForm(){
     $.each($("input[name*='at-time']:not(.activated)"), function (key,elt){
             $(elt).timepicker({timeFormat: 'hh:mm'}).addClass("activated");
     });
-    $.each($("input[name*='reminder']:not(.activated)"),function (key, elt){
+    $.each($("input[name*='set-reminder']:not(.activated)"),function (key, elt){
             $(elt).change(updateCheckboxSubmenu).addClass("activated");
     });
     $.each($("input[name*='condition']:not(.activated)"),function (key, elt){
@@ -877,6 +877,27 @@ function updateCheckboxSubmenu() {
     //var elt = event.currentTarget;
     var elt = this;
     var item = $(elt).parent().attr('item');
+    var checkbox = $(elt).closest(".ui-dform-checkboxes")[0];
+    var checkboxchildren = $(checkbox).children("fieldset").remove(); 
+    var name = $(checkbox).closest(".ui-dform-fieldset").attr("name");
+    var label = $(elt).next().text();
+    //var checked = $(elt).attr("value");
+    
+    if ($(elt).is(':checked') && "subfields" in dynamicForm[item]) {
+        var newContent = {
+            "type":"fieldset",
+            "caption": label,
+            "radiochildren":"radiochildren",
+            "name":name,
+            "elements":[]};
+        $.each(dynamicForm[item]['subfields'], function(k, v) {
+                configToForm(v, newContent, name);
+        });
+        $(checkbox).formElement(newContent);
+    }
+    
+    /*var elt = this;
+    var item = $(elt).parent().attr('item');
     var box = $(elt).parent().next("fieldset"); 
     var name = $(elt).parent().parent().attr("name");
     if (name == null)
@@ -900,7 +921,7 @@ function updateCheckboxSubmenu() {
         var newElt = $(elt).nextAll('fieldset');
         $(elt).parent().after($(newElt).clone());
         $(newElt).remove();
-    }
+    }*/
     activeForm();
 };
 
