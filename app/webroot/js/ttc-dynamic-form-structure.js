@@ -112,7 +112,7 @@ var dialogue = {
         'value': 'use-template'
     },
     "set-matching-answer-actions": {
-        "type": "checkboxes",
+        "type": "spancheckboxes",
         "value": "matching-answer-actions",
         "subfields": [
             "matching-answer-actions"
@@ -124,7 +124,7 @@ var dialogue = {
         "adds": "action"
     },
     "set-max-unmatching-answers": {
-        'type': "checkboxes",
+        'type': "spancheckboxes",
         "value": "max-unmatching-answers",
         "subfields": [
             "max-unmatching-answer-number",
@@ -253,7 +253,7 @@ $.extend(dynamicForm, basic);
 
 var reminder = {
     "set-reminder": {
-        'type': 'checkboxes',
+        'type': 'spancheckboxes',
         'value': 'reminder',
         'subfields': [
             "reminder-number",
@@ -289,7 +289,7 @@ var action = {
         'skip': true,
     },
     "set-condition": {
-        'type': 'checkboxes',
+        'type': 'spancheckboxes',
         'value': 'condition',
         'subfields': [
             "condition-operator", 
@@ -390,7 +390,7 @@ var action = {
     "label-name": {'type': 'text'},
     "label-value": {'type': 'text'},
     "set-forward-message-condition": {
-        'type': 'checkboxes',
+        'type': 'spancheckboxes',
         'value': 'forward-message-condition',
         'subfields': [
             "forward-message-condition-type",

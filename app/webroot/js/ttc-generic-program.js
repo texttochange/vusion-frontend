@@ -874,14 +874,12 @@ function updateRadioButtonSubmenu() {
 };
 
 function updateCheckboxSubmenu() {
-    //var elt = event.currentTarget;
     var elt = this;
-    var item = $(elt).parent().attr('item');
+    var item = $(elt).attr('item');
     var checkbox = $(elt).closest(".ui-dform-checkboxes")[0];
     var checkboxchildren = $(checkbox).children("fieldset").remove(); 
     var name = $(checkbox).closest(".ui-dform-fieldset").attr("name");
     var label = $(elt).next().text();
-    //var checked = $(elt).attr("value");
     
     if ($(elt).is(':checked') && "subfields" in dynamicForm[item]) {
         var newContent = {
@@ -895,33 +893,6 @@ function updateCheckboxSubmenu() {
         });
         $(checkbox).formElement(newContent);
     }
-    
-    /*var elt = this;
-    var item = $(elt).parent().attr('item');
-    var box = $(elt).parent().next("fieldset"); 
-    var name = $(elt).parent().parent().attr("name");
-    if (name == null)
-        name = $(elt).parent().parent().parent().attr("name");
-    var label = $(elt).next().text();
-    if (box && $(box).attr('radiochildren')){
-        $(box).remove();
-    }
-    
-    if ($(elt).is(':checked') && "subfields" in dynamicForm[item]) {
-        var newContent = {
-            "type":"fieldset",
-            "caption": label,
-            "radiochildren":"radiochildren",
-            "name":name,
-        "elements":[]};
-        $.each(dynamicForm[item]['subfields'], function(k, v) {
-                configToForm(v, newContent, name);
-        });
-        $(elt).parent().formElement(newContent);
-        var newElt = $(elt).nextAll('fieldset');
-        $(elt).parent().after($(newElt).clone());
-        $(newElt).remove();
-    }*/
     activeForm();
 };
 
@@ -1048,40 +1019,43 @@ function configToForm(item, elt, id_prefix, configTree){
             radiobuttons['options'][option['value']] = option;
         });
         elt["elements"].push(radiobuttons);
-    } else if (dynamicForm[item]['type'] == "checkboxes") {
-        var checkedCheckBox = {};
+    } else if ($.inArray(dynamicForm[item]['type'], ["spancheckboxes", "checkboxes"]) > -1) {
+        var options = {};
         var checkedItem;
         var checkedItemLabel;
         if (configTree && dynamicForm[item]['value']==configTree[item]) {
             checkedItem = dynamicForm[item];
             checkedItemLabel = localize_label(checkedItem['value']);
-            checkedCheckBox[checkedItem['value']] = {
+            options[checkedItem['value']] = {
                 "caption": localize_label(item),
-                "checked":"checked"
+                "checked": "checked",
+                "item": item
             }
         } else {
-            checkedCheckBox[dynamicForm[item]['value']] = localize_label(item);
+            options[dynamicForm[item]['value']] = {
+                "caption": localize_label(item),
+                "item": item
+            };
         }
-        elt["elements"].push({
+        var checkbox = {
                 "name": id_prefix+"."+item,
                 "item": item,
-                "type": 'checkboxes',
-                "options": checkedCheckBox,
-                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
-        });
+                "type": 'spancheckboxes',
+                "options": options,
+                "style": (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: '')}
         if (checkedItem && dynamicForm[item]['subfields']){
-            var box = {
-                "type":"fieldset",
+            var checkboxchild = {
+                "type": "fieldset",
                 "caption": localize_label(item),
-                "radiochildren":"radiochildren",
+                "radiochildren": "radiochildren",
                 "elements":[]
             };
             $.each(checkedItem['subfields'], function (k,v) {
-                    configToForm(v, box, id_prefix, configTree);
+                    configToForm(v, checkboxchild, id_prefix, configTree);
             });
-            if (box['type'])
-                elt["elements"].push(box);
+            checkbox['checkboxchild'] = checkboxchild;
         }
+        elt["elements"].push(checkbox);
     } else if (dynamicForm[item]["type"] == "select") {
         options = [{
                 'value': '',
@@ -1299,6 +1273,37 @@ function fromBackendToFrontEnd(type, object, submitCall) {
             $(this).children('span').after(' ');
         }
     })
+    //Required for the checkbox
+    $.dform.addType("spancheckboxes", function(option) {
+        return $("<div>").addClass('ui-dform-checkboxes');
+    });
+    $.dform.subscribe("checkboxchild", function (options, type) {
+        if (type == "spancheckboxes") {
+            var scoper = this;
+            $(scoper).formElement(options);
+        }
+    });
+    $.dform.subscribe("options", function(options, type) {
+        if (type == "spancheckboxes") {
+            var scoper = this;
+            $.each(options, function(value, content) {
+                    var radioOption = {
+                        "item": content['item'], 
+                        "type": "checkbox",
+                        "caption": content['caption'],
+                        "value": value};
+                    if (content['checked']) { 
+                        radioOption['checked'] = "checked";
+                    }
+                    $(scoper).formElement(radioOption);
+                });
+        }
+    });
+    $.dform.subscribe("[post]", function (options, type) {
+        if (type == "spancheckboxes") {
+            $(this).children('input').attr('name', options['name']).change(updateCheckboxSubmenu).addClass("activated");
+        }
+    });
     
     $.validator.addMethod(
         "isInThePast", 
