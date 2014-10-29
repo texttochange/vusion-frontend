@@ -1,0 +1,12 @@
+{
+    "name": "markphilip/vusion-frontend",
+    "require": {
+        "cakephp/cakephp": "2.5"
+    },
+    "authors": [
+        {
+            "name": "markphilip",
+            "email": "markphi119@gmail.com"
+        }
+    ]
+}
