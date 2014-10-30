@@ -17,7 +17,7 @@
 			    'label'=>__('Program'),	                
 			    'style'=>'margin-bottom:0px'
 				));
-	    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');
+	    $this->Js->get('document')->event('ready','//$("#ProgramProgram").chosen();');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
