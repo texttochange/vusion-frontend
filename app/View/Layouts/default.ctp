@@ -52,8 +52,9 @@
 		<script src="/js/require.js"></script>
 		<script>
 		  require(["/js/common"], function() {
-		      require(["vusion", "unattached-message"], function(vusion, unattachedMessage){
+		      require(["vusion"], function(vusion){
 		        vusion.setData({"isProgram": true});
+		        require(["unattached-message"], function(){})
 			});
 		});
 		</script>

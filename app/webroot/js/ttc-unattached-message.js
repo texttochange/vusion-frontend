@@ -1,6 +1,8 @@
 
 	//second level of require to get the dependencies defined in common
-	define(['vusion', 'chosen', 'moment', 'jquery-ui-timepicker'], function() {
+	define(['vusion', 'chosen', 'moment', 'jquery-ui-timepicker'], function(vusion) {
+
+		data = vusion.getData();
 
 		function changeSendToType() {
 			switch ($(this).val()) {
