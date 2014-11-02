@@ -1,4 +1,4 @@
-require.config({
+/*require.config({
     paths : {
         //'jquery': 'jquery-1.10.2.min',
         //'jqueryui': 'jqueryui/js/jquery-ui-1.10.3.custom.min',
@@ -14,7 +14,6 @@ require.config({
         'dform-ext': 'dform/dform.extensions',
         'dform-sub': 'dform/dform.subscribers',
         'dform-conv': 'dform/dform.converters',
-        'unattached-message': 'ttc-unattached-message',
         'vusion': 'ttc-vusion'
     },
     shim:{
@@ -23,30 +22,29 @@ require.config({
 	        exports: 'jQuery.ui'
 	    },
 	    'chosen': 'jquery',
-	    /*'chosen': {
+	    'chosen': {
 	        deps: [ 'jquery' ],
 	        exports: 'jQuery.fn.chosen'
-	    },*/
+	    },
 	    'jquery-ui-timepicker': {
 	        deps: [ 'jquery' ],
 	        //exports: 'jQuery.ui.fn.datetimepicker'
 	    }
     }
-});
+});*/
 
 require(
 	[
 		//'jquery',
 		//'jqueryui',
-		'jqueryui-timepicker',
+		//'jqueryui-timepicker',
 		//'jqueryvalidate',
-		'datejs',
-		'moment',
-		'chosen',
-		'xregexp',
-		'form2js',
-		'form2js-utils',
-		'unattached-message',
+		//'datejs',
+		//'moment',
+		//'chosen',
+		//'xregexp',
+		//'form2js',
+		//'form2js-utils',
 		'vusion',
 		//'dform',
 		//'dform-ext',

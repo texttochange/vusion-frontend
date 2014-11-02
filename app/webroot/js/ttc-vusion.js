@@ -1,4 +1,4 @@
-define(['jquery'], function() {
+define([], function() {
 
 	var vusion = vusion || {};
  
@@ -34,4 +34,5 @@ define(['jquery'], function() {
 
 	//attache our vusion object to the window
 	window.vusion = vusion;
+	return vusion;
 });

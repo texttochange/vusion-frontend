@@ -1,3 +1,6 @@
+<?php
+$this->Html->script("require.js", array("data-main" => "/js/ttc-unattached-message", "inline" => false));
+?>
 <div class="unattached_messages form width-size">
 <ul class="ttc-actions">		
     <li>
