@@ -22,32 +22,42 @@
 		    'jstree/style.min'
 		    ));	
 		//echo $this->Html->script('require.js', array('data-main' => '/js/vusion.js'));	
-		echo $this->Html->script('jquery-1.10.2.min.js');
-		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');
+		/*echo $this->Html->script('jquery-1.10.2.min.js');
+		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');*/
 		//echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
 		## dynamic form
-		echo $this->Html->script('jquery.validate-1.9.0.js');
+		/*echo $this->Html->script('jquery.validate-1.9.0.js');
 		echo $this->Html->script('dform/dform.js');
 		echo $this->Html->script('dform/dform.extensions.js');
 		echo $this->Html->script('dform/dform.subscribers.js');
-		echo $this->Html->script('dform/dform.converters.js');
+		echo $this->Html->script('dform/dform.converters.js');*/
 		//echo $this->Html->script('form2js/form2js.js');
 		//secho $this->Html->script('form2js/js2form.utils.js');
 		## nav menu
-		echo $this->Html->script('superfish-1.7.4/superfish.min.js');
+		/*echo $this->Html->script('superfish-1.7.4/superfish.min.js');
 		echo $this->Html->script('superfish-1.7.4/hoverIntent.js');
-		echo $this->Html->script('superfish-1.7.4/supersubs.js');
+		echo $this->Html->script('superfish-1.7.4/supersubs.js');*/
 		## general
 		//echo $this->Html->script('datejs/date.js');
 		//echo $this->Html->script('xregexp-2.0.0/xregexp-all.js');
 		//echo $this->Html->script('moment.js');
 		//echo $this->Html->script('chosen-1.0.jquery.min.js');
 		## home brewed javascript
-		echo $this->Html->script('ttc-dynamic-form-structure.js');
+		/*echo $this->Html->script('ttc-dynamic-form-structure.js');
 		echo $this->Html->script('ttc-generic-program.js');
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('counter.js');
-		echo $this->Html->script('screen.js');
+		echo $this->Html->script('screen.js');*/
+		?>
+		<script src="/js/require.js"></script>
+		<script>
+		  require(["/js/common"], function() {
+		      require(["vusion", "unattached-message"], function(vusion, unattachedMessage){
+		        vusion.setData({"isProgram": true});
+			});
+		});
+		</script>
+		<?php
 		echo $scripts_for_layout;
     ?><script>
     <?php echo $this->element('localization');?>
@@ -152,7 +162,7 @@
     </div>
 		<?php 
 	    if (isset($this->Js)) {
-	    		echo $this->Js->writeBuffer();
+	    	//echo $this->Js->writeBuffer();
 	    }
 	    ?>
 </body>

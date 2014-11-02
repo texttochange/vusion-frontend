@@ -32,6 +32,14 @@ define([], function() {
 		return parent;
 	};
 
+	vusion.createNS('vusion.data');
+	vusion.getData = function () {
+		return vusion.data;
+	}
+	vusion.setData = function(data) {
+		vusion.data = data;
+	}
+
 	//attache our vusion object to the window
 	window.vusion = vusion;
 	return vusion;

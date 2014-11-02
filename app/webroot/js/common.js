@@ -15,7 +15,7 @@ require.config({
         'dform-ext': 'dform/dform.extensions',
         'dform-sub': 'dform/dform.subscribers',
         'dform-conv': 'dform/dform.converters',
-        //'unattached-message': 'ttc-unattached-message',
+        'unattached-message': 'ttc-unattached-message',
         'vusion': 'ttc-vusion'
     },
     shim: {

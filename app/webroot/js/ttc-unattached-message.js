@@ -1,8 +1,6 @@
-//require common to be loaded before using the moduleID
-require(['common'], function() {
 
 	//second level of require to get the dependencies defined in common
-	require(['vusion', 'chosen', 'moment', 'jquery-ui-timepicker'], function() {
+	define(['vusion', 'chosen', 'moment', 'jquery-ui-timepicker'], function() {
 
 		function changeSendToType() {
 			switch ($(this).val()) {
@@ -38,11 +36,10 @@ require(['common'], function() {
 	        timeOnly: false,
 	        dateFormat:"dd/mm/yy"
 	    });
-	    addContentFormHelp();
-		addCounter();
+	    //addContentFormHelp();
+		//addCounter();
 		$("#UnattachedMessageSend-to-match-conditions").chosen();
 		$("input[name*='send-to-type']").on("change", changeSendToType);
 		$("input[name*='type-schedule']").on("change", changeTypeSchedule);
 
 	});
-});
