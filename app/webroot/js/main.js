@@ -14,7 +14,8 @@ require.config({
         'dform-ext': 'dform/dform.extensions',
         'dform-sub': 'dform/dform.subscribers',
         'dform-conv': 'dform/dform.converters',
-        'initialize': 'ttc-initialize'
+        'unattached-message': 'ttc-unattached-message',
+        'vusion': 'ttc-vusion'
     },
     shim:{
     	'jquery-ui': {
@@ -45,7 +46,8 @@ require(
 		'xregexp',
 		'form2js',
 		'form2js-utils',
-		'initialize',
+		'unattached-message',
+		'vusion',
 		//'dform',
 		//'dform-ext',
 		//'dform-sub',

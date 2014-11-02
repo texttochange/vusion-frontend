@@ -156,15 +156,17 @@
         echo $this->Form->error('fixed-time');
     } 
     echo "</div>";
+    /*
     $this->Js->get('document')->event('ready','
-        /*$("#fixed-time").datetimepicker({
+        $("#fixed-time").datetimepicker({
             timeFormat: "hh:mm",
             timeOnly: false,
             dateFormat:"dd/mm/yy"
-        });*/
+        });
         addContentFormHelp();
         addCounter();
-        //$("#UnattachedMessageSend-to-match-conditions").chosen();');
+        $("#UnattachedMessageSend-to-match-conditions").chosen();');
+        
     $this->Js->get("input[name*='send-to-type']")->event('change','
         switch ($(this).val()) {
         case "match":
@@ -189,6 +191,7 @@
         $("#fixed-time").attr("disabled","disabled");
         $("#fixed-time").val("");
         }');
+    */
     echo $this->Form->end(__('Save'));?>
 	</div>
 </div>
