@@ -48,7 +48,7 @@
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('counter.js');
 		echo $this->Html->script('screen.js');*/
-		?>
+		/*
 		<script src="/js/require.js"></script>
 		<script>
 		  require(["/js/common"], function() {
@@ -58,7 +58,7 @@
 			});
 		});
 		</script>
-		<?php
+		*/
 		echo $scripts_for_layout;
     ?><script>
     <?php echo $this->element('localization');?>

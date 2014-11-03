@@ -19,7 +19,7 @@ class ProgramUnattachedMessagesController extends AppController
         'Message',
         'RequestHandler');
     var $helpers    = array(
-        'Js' => array('Jquery'),
+        //'Js' => array('Jquery'),
         'Time',
         'Session');
     

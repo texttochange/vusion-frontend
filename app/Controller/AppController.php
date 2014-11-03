@@ -61,7 +61,8 @@ class AppController extends Controller
         'Text',
         'BigNumber',
         'CreditManager',
-        'Documentation'
+        'Documentation',
+        'RequireJs',
         );
     
     var $redis              = null;
