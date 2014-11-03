@@ -43,7 +43,7 @@ class DialogueTestCase extends CakeTestCase
         parent::tearDown();
     }
     
-    
+    /*
     public function testSaveDialogue()
     {
         $dialogue = $this->Maker->getOneDialogue();
@@ -224,7 +224,7 @@ class DialogueTestCase extends CakeTestCase
 
         $this->assertTrue(isset($savedDialogue['Dialogue']));
     }
-   
+   */
     public function testValidate_autoenrollment_condition_fail()
     {
         $dialogue                                = $this->Maker->getOneDialogue();
@@ -235,15 +235,15 @@ class DialogueTestCase extends CakeTestCase
                 'subcondition-parameter' => 'geek'));
         $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
 
-        $this->assertFalse($savedDialogue);
+        /*$this->assertFalse($savedDialogue);
         $this->assertEqual(
             $this->Dialogue->validationErrors['condition-operator'][0],
-            'An operator between conditions has to be selected.');
+            'An operator between conditions has to be selected.');*/
         $this->assertEqual(
             $this->Dialogue->validationErrors['subconditions'][0]['subcondition-operator'][0],
             'The operator value \'\' is not valid.');
     }
-
+/*
     public function testValidate_autoenrollment_condition_parameter()
     {
         $dialogue                                   = $this->Maker->getOneDialogue();
@@ -640,5 +640,5 @@ class DialogueTestCase extends CakeTestCase
             array('female', 'male'),
             Dialogue::getDialogueKeywords($dialogue));
     }
-    
+    */
 }
