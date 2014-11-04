@@ -1,5 +1,5 @@
 <?php
-  $this->RequireJs->script("unattached-message");
+  $this->RequireJs->scripts(array("nav-menu", "unattached-message", "responsive-utils"));
 ?>
 <div class="unattached_messages form width-size">
 <ul class="ttc-actions">		

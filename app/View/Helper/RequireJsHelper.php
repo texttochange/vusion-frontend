@@ -12,12 +12,15 @@ class RequireJsHelper extends AppHelper
 		$this->_variables[$key] = $value;
 	}
 
-
 	public function script($moduleId) 
 	{
-		$this->_scripts[] = $moduleId;
+		$this->_scripts[] = $moduleId;		
 	}
 
+	public function scripts($moduleIds) 
+	{
+		$this->_scripts = array_merge($this->_scripts, $moduleIds);
+	}
 
 	public function beforeLayout($layoutFile) {
 		$this->Html->script('require', array('inline' => false));
@@ -28,7 +31,7 @@ class RequireJsHelper extends AppHelper
 		       		require('.json_encode($this->_scripts).', function(){})
 				});
 			});';
-		$this->Html->scriptBlock($scriptBlock, array('inline' => false));
+		$this->Html->scriptBlock($scriptBlock, array('inline'=> false));
 		return $layoutFile;
 	}
 

@@ -137,7 +137,8 @@
         <?php
         if (isset($programDetails['name'])) {
             $this->Js->set('isProgramSpecific', true);
-            echo "<div class='program-left-column'>";			   
+            echo "<div class='program-left-column'>";
+            $this->RequireJs->script("nav-menu");			   
             echo $this->element('navigation_menu');
             if ($programDetails['status'] == 'running') {
 	            if (isset($programDetails['settings']['shortcode']) 
