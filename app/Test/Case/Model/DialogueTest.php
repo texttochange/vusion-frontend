@@ -521,8 +521,6 @@ class DialogueTestCase extends CakeTestCase
         $dialogue_02['Dialogue']['set-prioritized'] = 'prioritized';        
         $this->Dialogue->saveDialogue($dialogue_02);
         
-        $r = $this->Dialogue->find('first');
-         print_r($r);
         $dialog2 = $this->Dialogue->find('first', array(
             'conditions'=>array('set-prioritized'=>'prioritized')));
        
