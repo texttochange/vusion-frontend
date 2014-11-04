@@ -120,9 +120,10 @@ class CakeValidationRule {
  *
  * @return bool
  *
- *Added "is_array()" to check if the error is an error
+ *Added "is_array()" to check if the error is an error 
  */
 	public function isValid() {
+	    //EDITED TO ALLOW ARRAY RETURNED FOR VALIDATION ERRORS
 		if (!$this->_valid || (is_string($this->_valid) && !empty($this->_valid) || is_array($this->_valid))) {
 			return false;
 		}

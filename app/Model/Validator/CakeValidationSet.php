@@ -258,6 +258,7 @@ class CakeValidationSet implements ArrayAccess, IteratorAggregate, Countable {
 		$message = $rule->getValidationResult();
 		if (is_string($message)) {
 			return $message;
+	//EDITED TO ALLOW ARRAY RETURNED FOR VALIDATION ERRORS		
 		} else if (is_array($message)) {
 		    return $message;
 		}
