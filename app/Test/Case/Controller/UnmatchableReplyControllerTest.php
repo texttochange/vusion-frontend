@@ -68,11 +68,11 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         $unmatchableReplies = $this->generate('UnmatchableReply', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
-                'Group' => array()
+                'Group' => array('hasSpecificProgramAccess')
                 ),
             ));
         
@@ -80,7 +80,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
-        
+
     }
     
     public function testFilter()
@@ -156,7 +156,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
             'message-content'=>'FEL weak',
             'timestamp'=>'2012-09-07T12:20:43'
             ));
-        
+        $this->mockProgramAccess();
         $this->testAction("/unmatchableReply/export");
         
         $this->assertTrue(isset($this->vars['fileName']));
