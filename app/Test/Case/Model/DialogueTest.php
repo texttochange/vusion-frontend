@@ -43,7 +43,7 @@ class DialogueTestCase extends CakeTestCase
         parent::tearDown();
     }
     
-    
+    /*
     public function testSaveDialogue()
     {
         $dialogue = $this->Maker->getOneDialogue();
@@ -506,7 +506,7 @@ class DialogueTestCase extends CakeTestCase
         $this->assertEqual($dialogue3['Dialogue']['interactions'][0]['prioritized'], null);
         $this->assertEqual($dialogue3['Dialogue']['interactions'][1]['prioritized'], 'prioritized');
     }
-    
+    */
     
     public function testSaveDialogue_prioritized()
     {
@@ -517,16 +517,19 @@ class DialogueTestCase extends CakeTestCase
         $this->assertTrue(array_key_exists('set-prioritized', $dialog['Dialogue']));
         $this->assertEqual($dialog['Dialogue']['set-prioritized'], null);
         
-        $dialogue2                                = $this->Maker->getOneDialogue();
-        $dialogue2['Dialogue']['set-prioritized'] = 'prioritized';        
-        $this->Dialogue->saveDialogue($dialogue2);
+        $dialogue_02                                = $this->Maker->getOneDialogue();
+        $dialogue_02['Dialogue']['set-prioritized'] = 'prioritized';        
+        $this->Dialogue->saveDialogue($dialogue_02);
         
+        $r = $this->Dialogue->find('first');
+         print_r($r);
         $dialog2 = $this->Dialogue->find('first', array(
             'conditions'=>array('set-prioritized'=>'prioritized')));
-        
+       
         $this->assertEqual(count($dialog2), 1);
     }
     
+    /*
     public function testUniqueDialogueName_dialogueIdSame_pass()
     {
     	$dialogue                             = $this->Maker->getOneDialogue();
@@ -640,5 +643,6 @@ class DialogueTestCase extends CakeTestCase
             array('female', 'male'),
             Dialogue::getDialogueKeywords($dialogue));
     }
+    */
     
 }
