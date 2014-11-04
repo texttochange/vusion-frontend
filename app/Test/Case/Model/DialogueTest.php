@@ -206,7 +206,7 @@ class DialogueTestCase extends CakeTestCase
         $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
         
         $this->assertFalse($savedDialogue);
-        $this->assertEqual(
+        $this->assertEquals(
             $this->Dialogue->validationErrors['auto-enrollment'][0],
             'The auto-enrollment value is not valid.');
     }
@@ -236,7 +236,7 @@ class DialogueTestCase extends CakeTestCase
         $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
 
        $this->assertFalse($savedDialogue);
-        $this->assertEqual(
+        $this->assertEquals(
             $this->Dialogue->validationErrors['condition-operator'][0],
             'An operator between conditions has to be selected.');
         $this->assertEqual(

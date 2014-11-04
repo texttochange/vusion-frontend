@@ -275,7 +275,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessage = $this->UnattachedMessage->find('first');
         $this->assertEquals(
@@ -332,7 +332,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $unattachedMessage = $this->UnattachedMessage->find('first');
         $this->assertEquals(

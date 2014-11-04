@@ -325,7 +325,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
         
-        $this->assertFileExist(
+        $this->assertFileExists(
             WWW_ROOT . 'files/programs/programurl/');
         ////clean up
         rmdir(WWW_ROOT . 'files/programs/programurl');
@@ -415,7 +415,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
         $this->testAction('/programs/delete/1');
         
-        $this->assertFileNotExist(
+        $this->assertFileNotExists(
             WWW_ROOT . 'files/programs/test/');
         $this->assertEqual(
             1, 

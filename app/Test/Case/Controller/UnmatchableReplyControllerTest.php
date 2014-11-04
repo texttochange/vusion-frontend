@@ -19,6 +19,16 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
 {
     var $databaseName = "testdbmongo";
     
+    var $programData = array(
+        0 => array( 
+            'Program' => array(
+                'name' => 'Test Name',
+                'url' => 'testurl',
+                'database' => 'testdbprogram',
+                'status' => 'running'
+                )
+            ));
+    
     public function setup()
     {
         Configure::write("mongo_db",$this->databaseName);
@@ -52,6 +62,26 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
+    
+    protected function mockProgramAccess()
+    {
+        $unmatchableReplies = $this->generate('UnmatchableReply', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read')
+                ),
+            'models' => array(
+                'Program' => array('find', 'count'),
+                'Group' => array()
+                ),
+            ));
+        
+        $unmatchableReplies->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+    }
     
     public function testFilter()
     {        
@@ -94,7 +124,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         $this->assertEquals(2, count($this->vars['unmatchableReplies']));
     }
     
-
+    
     public function testPaginationCount()
     {
         $this->mockProgramAccess();
@@ -134,6 +164,6 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
             TESTS . 'files/exported_unmatchableReply_history.csv',
             WWW_ROOT . 'files/programs/unmatchableReply/' . $this->vars['fileName']);
     }
-
+    
     
 }
