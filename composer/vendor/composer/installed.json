@@ -1,0 +1,47 @@
+[
+    {
+        "name": "cakephp/cakephp",
+        "version": "2.5.5",
+        "version_normalized": "2.5.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cakephp/cakephp.git",
+            "reference": "ce98a1ff5738af6db0f42a3647aaaaa5c3773d24"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cakephp/cakephp/zipball/ce98a1ff5738af6db0f42a3647aaaaa5c3773d24",
+            "reference": "ce98a1ff5738af6db0f42a3647aaaaa5c3773d24",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mcrypt": "*",
+            "php": ">=5.2.8"
+        },
+        "require-dev": {
+            "cakephp/debug_kit": "2.2.*",
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2014-10-05 02:59:03",
+        "bin": [
+            "lib/Cake/Console/cake"
+        ],
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "CakePHP Community",
+                "homepage": "https://github.com/cakephp/cakephp/graphs/contributors"
+            }
+        ],
+        "description": "The CakePHP framework",
+        "homepage": "http://cakephp.org",
+        "keywords": [
+            "framework"
+        ]
+    }
+]
