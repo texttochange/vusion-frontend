@@ -7,7 +7,9 @@ App::uses('History', 'Model');
 class ProgramAjaxController extends AppController
 {
     var $components = array(
-        'RequestHandler',
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
         'Stats');
     
     
@@ -17,12 +19,12 @@ class ProgramAjaxController extends AppController
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $programUrl      = $this->params['program'];
         $programDatabase = $this->Session->read($programUrl."_db");        
         $programStats    = $this->Stats->getProgramStats($programDatabase);
         $this->set(compact('requestSuccess', 'programStats'));
     }
-
-
+    
+    
 }

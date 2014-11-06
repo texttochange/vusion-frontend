@@ -11,7 +11,10 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramSimulatorController extends AppController
 {
     
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')));
     var $uses = array();
     
     

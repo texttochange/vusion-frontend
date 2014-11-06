@@ -6,7 +6,9 @@ class ProgramLogsController extends AppController
 {
 	
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LogManager');
     var $helpers    = array(
         'Js' => array('Jquery'),
@@ -41,7 +43,7 @@ class ProgramLogsController extends AppController
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $programUrl = $this->params['program'];
         $databaseName = $this->Session->read($programUrl."_db");
         $programLogs = $this->LogManager->getLogs($databaseName, 5);
