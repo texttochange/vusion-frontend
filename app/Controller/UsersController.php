@@ -135,7 +135,8 @@ class UsersController extends AppController
                 }
 
                 if ($canInviteUsers == true) {
-                    $this->Acl->allow($user, 'controllers/Users');
+                    $this->Acl->allow($user, 'controllers/Users/index');
+                    $this->Acl->allow($user, 'controllers/Users/delete');
                 } else {
                     $this->Acl->deny($user, 'controllers/Users');
                 }
