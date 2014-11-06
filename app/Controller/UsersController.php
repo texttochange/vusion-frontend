@@ -426,9 +426,9 @@ class UsersController extends AppController
         $this->Session->write('user_id',$userId);
 
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->ResetPasswordTicket->saveToken($token);
+        $this->Ticket->saveToken($token);
         
-        $this->ResetPasswordTicket->sendEmail($email, $userName, $token);
+        $this->Ticket->sendEmail($email, $userName, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
             'default',
