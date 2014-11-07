@@ -109,7 +109,7 @@ class ProgramHomeController extends AppController
     
     protected function _startBackendWorker($workerName, $databaseName)
     {
-        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
+        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);         
     }
     
     

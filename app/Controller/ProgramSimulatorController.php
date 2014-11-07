@@ -66,6 +66,7 @@ class ProgramSimulatorController extends AppController
         
         /**Copy a version of the Dialogue to the database*/
         $dialogue = $this->Dialogue->read();
+        
         $simulatorDialogueModel = new Dialogue($options);
         $simulatorDialogueModel->deleteAll(true, false);
         $simulatorDialogueModel->create();
@@ -73,6 +74,7 @@ class ProgramSimulatorController extends AppController
         $simulatorDialogueModel->makeActive($dialogue['Dialogue']['_id']);
         
         $programSettings = $this->ProgramSetting->find('all');
+        
         $simulatorProgramSettingModel = new ProgramSetting($options);
         $simulatorProgramSettingModel->deleteAll(true, false);
         foreach ($programSettings as $programSetting) {
@@ -81,6 +83,7 @@ class ProgramSimulatorController extends AppController
         }
         
         $participants = $this->Participant->find('all');
+        
         $simulatorParticipantModel = new Participant($options);
         $simulatorParticipantModel->deleteAll(true, false);
         foreach ($participants as $participant) {
