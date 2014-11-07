@@ -29,7 +29,7 @@ class TicketComponent extends Component
     }
     
     
-    public function sendEmail($userEmail, $userName, $token)
+    public function sendEmail($userEmail, $userName, $subject, $template, $token)
     {  
         //$linkdomain  = Configure::read('vusion.domain');
         $linkdomain  = 'localhost:4567'; 
@@ -37,8 +37,8 @@ class TicketComponent extends Component
         $email->config('default');
         $email->from(array('admin@vusion.texttochange.org' => 'Vusion'));
         $email->to($userEmail);
-        $email->subject('Vusion Invitation Request');
-        $email->template('invite_user_template');
+        $email->subject('Vusion '. $subject .' Request');
+        $email->template($template);
         $email->emailFormat('html');
         $email->viewVars(array(
             'token' => $token,
@@ -96,7 +96,7 @@ class TicketComponent extends Component
 
         if ($ticket) {
             $this->redis->delete($email);
-            
+
             $ticketKey = $this->_getTicketKey($ticket);
             $this->redis->delete($ticketKey);
         }

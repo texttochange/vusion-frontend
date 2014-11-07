@@ -164,8 +164,7 @@ class UsersController extends AppController
             $this->request->data = $this->User->read(null, $id);
             ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
-            $this->request->data['User']['can_invite_users'] = $this->Acl->check($this->User, 'controllers/Users/index');
-            print_r($this->request->data);
+            $this->request->data['User']['can_invite_users'] = $this->Acl->check($this->User, 'controllers/Users/inviteUser');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
@@ -432,7 +431,9 @@ class UsersController extends AppController
         $token = md5 (date('mdy').rand(4000000, 4999999));
         $this->Ticket->saveToken($token);
         
-        $this->Ticket->sendEmail($email, $userName, $token);
+        $subject = 'Password Reset';
+        $template = 'reset_password_template';
+        $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
             'default',
@@ -534,7 +535,7 @@ class UsersController extends AppController
             return;
         }
         
-        $email = $this->request->data['User']['emailInvitee'];
+        $email = $this->request->data['User']['email'];
         $disclaimer = $this->request->data['User']['invite_disclaimer'];
         $group_id = $this->request->data['User']['group_id'];
         $programs = $this->request->data['Program'];
@@ -561,9 +562,11 @@ class UsersController extends AppController
 
         $userName = $this->Session->read('Auth.User.username');
         
-        $this->Ticket->sendEmail($email, $userName, $token);
+        $subject = 'Invitation';
+        $template = 'invite_user_template';
+        $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
-            __('An Email has been sent to your email account.'),
+            __('An Email has been sent to the invited email account.'),
             'default',
             array('class'=>'message success')
             );
