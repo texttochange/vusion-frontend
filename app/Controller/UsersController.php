@@ -13,7 +13,6 @@ class UsersController extends AppController
     
     var $components = array(
         'LocalizeUtils', 
-        'ResetPasswordTicket',
         'Captcha',
         'Email',
         'Filter',
@@ -135,10 +134,13 @@ class UsersController extends AppController
                 }
 
                 if ($canInviteUsers == true) {
+                    $this->Acl->allow($user, 'controllers/Users/inviteUser');
                     $this->Acl->allow($user, 'controllers/Users/index');
                     $this->Acl->allow($user, 'controllers/Users/delete');
                 } else {
-                    $this->Acl->deny($user, 'controllers/Users');
+                    $this->Acl->deny($user, 'controllers/Users/index');
+                    $this->Acl->deny($user, 'controllers/Users/delete');
+                    $this->Acl->deny($user, 'controllers/Users/inviteUser');
                 }
                 ########################################################
 
@@ -162,6 +164,8 @@ class UsersController extends AppController
             $this->request->data = $this->User->read(null, $id);
             ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
+            $this->request->data['User']['can_invite_users'] = $this->Acl->check($this->User, 'controllers/Users/index');
+            print_r($this->request->data);
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
@@ -553,7 +557,7 @@ class UsersController extends AppController
             );
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->Ticket->saveInvitedToken($token, $invite);
+        $this->Ticket->saveInvitedToken($email, $token, $invite);
 
         $userName = $this->Session->read('Auth.User.username');
         
@@ -712,6 +716,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
