@@ -154,18 +154,16 @@
  
  <!-- require composer to be install on the machine -->
  <target name="run-composer">
-    <exec executable="composer">
+    <exec dir="composer" executable="composer">
       <arg value="install"/>
     </exec>
  </target>
  
  <target name="caketest" description="Run cake tests with PHPUnit" depends='clear-cache'>
- <exec executable="./lib/Cake/Console/cake" failonerror="true">
+ <exec executable="./app/Console/cake" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="testsuite" />
-         <arg value="--include-path"/>
-         <arg path="${basedir}/lib"/>
-         <arg value="--configuration" />
+     <arg value="--configuration" />
   	 <arg value="phpunit-caketest.xml" />
   	 <arg value="app" />
   	 <arg value="AllTests" />
@@ -262,7 +260,7 @@
 
 <target name="deployTest"
           description="import the necessary data in the database">
-  <exec executable="./lib/Cake/Console/cake" failonerror="true">
+  <exec executable="./app/Console/cake" failonerror="true">
   <arg value="schema"/>
   <arg value="update"/>
   </exec>
