@@ -1,0 +1,12 @@
+{
+    "name": "vusion-frontend/composer",
+    "require": {
+        "cakephp/cakephp": "2.5.5"
+    },
+    "authors": [
+        {
+            "name": "TechTeam",
+            "email": "techteam@texttochange.com"
+        }
+    ]
+}

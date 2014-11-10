@@ -39,7 +39,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         
         $this->Logs = new TestProgramLogsController();
         
-        $this->dropData();
+        //$this->dropData();
     }
     
     // we only mock the data to be used so we dont need a dropData() function;    

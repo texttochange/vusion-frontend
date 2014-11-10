@@ -123,257 +123,131 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
+
     public function testFromFilterToQueryConditions_messageDirection()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-direction', 
-                    2 => 'is', 
-                    3 => 'incoming'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-direction', 
+            2 => 'is', 
+            3 => 'incoming');
+
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-direction' => 'incoming')
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-direction' => 'incoming'));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-direction', 
-                    2 => 'not-is', 
-                    3 => 'incoming'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-direction', 
+            2 => 'not-is', 
+            3 => 'incoming'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-direction' => array('$ne' => 'incoming'))
-            );
-        
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-direction', 
-                    2 => 'not-is', 
-                    3 => ''),
-                )
-            ); 
-        $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array()
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-direction' => array('$ne' => 'incoming')));
     }
    
     
-    public function testFromFilterToQueryConditions_messageStatus()
+    public function testfromFilterToQueryCondition_messageStatus()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-status', 
-                    2 => 'is', 
-                    3 => 'pending'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-status', 
+            2 => 'is', 
+            3 => 'pending'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-status' => 'pending')
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-status' => 'pending'));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-status', 
-                    2 => 'not-is', 
-                    3 => 'pending'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-status', 
+            2 => 'not-is', 
+            3 => 'pending'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-status' => array('$ne' => 'pending'))
-            );
-        
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-status', 
-                    2 => 'is', 
-                    3 => ''),
-                )
-            ); 
-        
-        $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array()
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-status' => array('$ne' => 'pending')));
     }
     
     
+
     public function testFromFilterToQueryConditions_date()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'date', 
-                    2 => 'from', 
-                    3 => '21/01/2012'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'date', 
+            2 => 'from', 
+            3 => '21/01/2012'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('timestamp' => array('$gt' => '2012-01-21T00:00:00'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('timestamp' => array('$gt' => '2012-01-21T00:00:00')));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'date', 
-                    2 => 'to', 
-                    3 => '21/01/2012'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'date', 
+            2 => 'to', 
+            3 => '21/01/2012'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('timestamp' => array('$lt' => '2012-01-21T00:00:00'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('timestamp' => array('$lt' => '2012-01-21T00:00:00')));
     }
     
     
-    public function testFromFilterToQueryConditions_participantPhone()
+    public function testfromFilterToQueryCondition_participantPhone()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'start-with', 
-                    3 => '+255'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'participant-phone', 
+            2 => 'start-with', 
+            3 => '+255'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('participant-phone' => new MongoRegex('/^\\+255/'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('participant-phone' => new MongoRegex('/^\\+255/')));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+255'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'participant-phone', 
+            2 => 'equal-to', 
+            3 => '+255'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('participant-phone' => '+255')
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('participant-phone' => '+255'));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'start-with-any', 
-                    3 => '+255, +256'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'participant-phone', 
+            2 => 'start-with-any', 
+            3 => '+255, +256'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
+            $this->History->fromFilterToQueryCondition($filterParam),
             array('$or' => array(
                 array('participant-phone' => new MongoRegex('/^\\+255/')),
-                array('participant-phone' => new MongoRegex('/^\\+256/'))
-                ))
-            );
+                array('participant-phone' => new MongoRegex('/^\\+256/')))));
     }
+
     
-    
-    public function testFromFilterToQueryConditions_messageContent_validationFail()
+    public function testfromFilterToQueryCondition_messageContent()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-content', 
-                    2 => 'has-keyword-any', 
-                    3 => 'keyword1 keyword2'),
-                )
-            );
-        try {
-            $this->History->fromFilterToQueryConditions($filter);
-            $this->fail();
-        } catch (FilterException $e) {
-            $this->assertTrue(true);
-        } catch (Exception $e) {
-            $this->fail();
-        }
-    }
-    
-    
-    public function testFromFilterToQueryConditions_messageContent()
-    {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-content', 
-                    2 => 'equal-to', 
-                    3 => 'content'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-content', 
+            2 => 'equal-to', 
+            3 => 'content'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-content' => 'content')
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-content' => 'content'));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-content', 
-                    2 => 'contain', 
-                    3 => 'content'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-content', 
+            2 => 'contain', 
+            3 => 'content'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-content' => new MongoRegex('/content/i'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-content' => new MongoRegex('/content/i')));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-content', 
-                    2 => 'has-keyword', 
-                    3 => 'keyword'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-content', 
+            2 => 'has-keyword', 
+            3 => 'keyword'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('message-content' => new MongoRegex('/^keyword($| )/i'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('message-content' => new MongoRegex('/^keyword($| )/i')));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'message-content', 
-                    2 => 'has-keyword-any', 
-                    3 => 'keyword1,keyword2'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'message-content', 
+            2 => 'has-keyword-any', 
+            3 => 'keyword1,keyword2'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
+            $this->History->fromFilterToQueryCondition($filterParam),
             array(
                 '$or' => array(
                     array('message-content' => new MongoRegex('/^keyword1($| )/i')),
@@ -383,277 +257,131 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-    public function testFromFilterToQueryConditions_dialogueSource()
+    public function testfromFilterToQueryCondition_dialogueSource()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'dialogue-source', 
-                    2 => 'is', 
-                    3 => '1'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'dialogue-source', 
+            2 => 'is', 
+            3 => '1'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => '1')
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('dialogue-id' => '1'));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'dialogue-source', 
-                    2 => 'not-is', 
-                    3 => '1'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'dialogue-source', 
+            2 => 'not-is', 
+            3 => '1'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => array('$ne' => '1'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('dialogue-id' => array('$ne' => '1')));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'dialogue-source', 
-                    2 => 'is-any',
-                    ),
-                )
-            );
+        $filterParam = array(
+            1 => 'dialogue-source', 
+            2 => 'is-any');
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => array('$exists' => true))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('dialogue-id' => array('$exists' => true)));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'dialogue-source', 
-                    2 => 'not-is-any',
-                    ),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'dialogue-source', 
+            2 => 'not-is-any'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('dialogue-id' => array('$exists' => false))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('dialogue-id' => array('$exists' => false)));
     }
 
     
-    public function testFromFilterToQueryConditions_interactionSource()
+    public function testfromFilterToQueryCondition_interactionSource()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'interaction-source', 
-                    2 => 'is', 
-                    3 => '1'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'interaction-source', 
+            2 => 'is', 
+            3 => '1'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => '1')
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('interaction-id' => '1'));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'interaction-source', 
-                    2 => 'not-is', 
-                    3 => '1'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'interaction-source', 
+            2 => 'not-is', 
+            3 => '1'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => array('$ne' => '1'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('interaction-id' => array('$ne' => '1')));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'interaction-source', 
-                    2 => 'is-any',
-                    ),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'interaction-source', 
+            2 => 'is-any'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => array('$exists' => true))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('interaction-id' => array('$exists' => true)));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'interaction-source', 
-                    2 => 'not-is-any',
-                    ),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'interaction-source', 
+            2 => 'not-is-any'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('interaction-id' => array('$exists' => false))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('interaction-id' => array('$exists' => false)));
     }
 
 
-    public function testFromFilterToQueryConditions_requestSource()
+    public function testfromFilterToQueryCondition_requestSource()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'request-source', 
-                    2 => 'is', 
-                    3 => '52cd91759fa4da0051000004'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'request-source', 
+            2 => 'is', 
+            3 => '52cd91759fa4da0051000004'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('request-id' => new MongoId('52cd91759fa4da0051000004'))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('request-id' => new MongoId('52cd91759fa4da0051000004')));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'request-source', 
-                    2 => 'not-is', 
-                    3 => '52cd91759fa4da0051000004'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'request-source', 
+            2 => 'not-is', 
+            3 => '52cd91759fa4da0051000004'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('request-id' => array('$ne' => new MongoId('52cd91759fa4da0051000004')))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('request-id' => array('$ne' => new MongoId('52cd91759fa4da0051000004'))));
 
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'request-source', 
-                    2 => 'is-any',
-                    ),
-                )
-            ); 
-        
+        $filterParam = array(
+            1 => 'request-source', 
+            2 => 'is-any');
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('request-id' => array('$exists' => true))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('request-id' => array('$exists' => true)));
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'request-source', 
-                    2 => 'not-is-any',
-                    ),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'request-source', 
+            2 => 'not-is-any'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-           array('request-id' => array('$exists' => false))
-            );
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('request-id' => array('$exists' => false)));
     }
     
   
-    public function testFromFilterToQueryConditions_answer()
+    public function testfromFilterToQueryCondition_answer()
     {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'answer', 
-                    2 => 'matching'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'answer', 
+            2 => 'matching'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
+            $this->History->fromFilterToQueryCondition($filterParam),
             array(
                 'message-direction' => 'incoming',
                 'matching-answer' => array('$ne' => null))
             );
         
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'answer', 
-                    2 => 'not-matching'),
-                )
-            ); 
+        $filterParam = array(
+            1 => 'answer', 
+            2 => 'not-matching'); 
         $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
+            $this->History->fromFilterToQueryCondition($filterParam),
             array(
                 'message-direction' => 'incoming',
                 'matching-answer' => null)
             );
     }
-    
-    
-    public function testFromFilterToQueryConditions_AND()
-    {
-        $filter = array(
-            'filter_operator' => 'all',
-            'filter_param' => array(
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+255'),
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+256'),
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+257'),
-                )); 
-        $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('$and' => array(
-                array('participant-phone' => '+255'),
-                array('participant-phone' => '+256'),
-                array('participant-phone' => '+257'),
-                ))
-            );       
-    }
-    
-    public function testFromFilterToQueryConditions_OR()
-    {
-        $filter = array(
-            'filter_operator' => 'any',
-            'filter_param' => array(
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+255'),
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+256'),
-                array(
-                    1 => 'participant-phone', 
-                    2 => 'equal-to', 
-                    3 => '+257'),
-                )
-            ); 
-        $this->assertEqual(
-            $this->History->fromFilterToQueryConditions($filter),
-            array('$or' => array(
-                array('participant-phone' => '+255'),
-                array('participant-phone' => '+256'),
-                array('participant-phone' => '+257'),
-                ))
-            );       
-    }
+
     
     public function testStatusOfUnattachedMessage()
     {       
@@ -697,6 +425,7 @@ class HistoryTestCase extends CakeTestCase
         
         $output = $this->History->countUnattachedMessages('9', 'datepassed-marker');       
         $this->assertEquals(1, $output);  
-    }            
-  
+    } 
+    
+    
 }

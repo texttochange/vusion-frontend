@@ -46,7 +46,6 @@ class UsersController extends AppController
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
-        
         $this->paginate        = $paginate;
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));
@@ -188,7 +187,7 @@ class UsersController extends AppController
             $this->redirect($this->Auth->redirect());
         }
         
-        if ($this->request->is('ajax')) {
+        if ($this->_isAjax()) {
             if ($this->Auth->login()) {
                 return;
             } else {

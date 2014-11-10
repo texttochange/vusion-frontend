@@ -6,8 +6,8 @@ App::uses('Schedule', 'Model');
 class Program extends AppModel
 {
     
-    public $displayField     = 'name';
-    var $hasAndBelongsToMany = 'User';
+    public $displayField        = 'name';
+    public $hasAndBelongsToMany = 'User';
     
     public $findMethods = array(
         'authorized' => true,
@@ -76,6 +76,11 @@ class Program extends AppModel
             )
         );
     
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        $this->Behaviors->load('FilterMongo');
+    }
     
     #Filter variables and functions
     public $filterFields = array(
@@ -146,96 +151,37 @@ class Program extends AppModel
     }
     
     
-    public function validateFilter($filterParam)
-    {
-        if (!isset($filterParam[1])) {
-            throw new FilterException("Field is missing.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]])) {
-            throw new FilterException("Field '".$filterParam[1]."' is not supported.");
-        }
-        
-        if (!isset($filterParam[2])) {
-            throw new FilterException("Operator is missing for field '".$filterParam[1]."'.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]])) {
-            throw new FilterException("Operator '".$filterParam[2]."' not supported for field '".$filterParam[1]."'.");
-        }
-        
-        if (!isset($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'])) {
-            throw new FilterException("Operator type missing '".$filterParam[2]."'.");
-        }
-        
-        if ($this->filterFields[$filterParam[1]]['operators'][$filterParam[2]]['parameter-type'] != 'none' && !isset($filterParam[3])) {
-            throw new FilterException("Parameter is missing for field '".$filterParam[1]."'.");
-        }
-    }
-    
-    
-    public function fromFilterToQueryConditions($filter)
-    {
-        $conditions = array();
-        if (!isset($filter)) {
-            return $conditions;
-        }
-        
-        foreach ($filter['filter_param'] as $filterParam) {
-            
-            $condition = null;
-            
-            $this->validateFilter($filterParam);
-            
-            if ($filterParam[1] == 'country') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition['country'] = $filterParam[3];
-                    }
-                }
-            } elseif ($filterParam[1] == 'shortcode') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition['shortcode'] = $filterParam[3];
-                    }
-                }
-            } elseif ($filterParam[1] == 'name') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'equal-to') {
-                        $condition['name'] = $filterParam[3];
-                    } elseif ($filterParam[2] == 'start-with') {
-                        $condition['name LIKE'] = $filterParam[3]."%"; 
-                    }
-                }
-            } elseif ($filterParam[1] == 'status') {
-                if ($filterParam[3]) {
-                    if ($filterParam[2] == 'is') {
-                        $condition['status'] = $filterParam[3];
-                    }
-                }
-            } 
-            
-            if ($filter['filter_operator'] == "all") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$and'])) {
-                    if (!empty($condition))
-                        $conditions = array('$and' => array($conditions, $condition));
-                } else {
-                    if (!empty($condition))
-                        array_push($conditions['$and'], $condition);
-                }
-            }  elseif ($filter['filter_operator'] == "any") {
-                if (count($conditions) == 0) {
-                    $conditions = $condition;
-                } elseif (!isset($conditions['$or'])) {
-                    $conditions = array('$or' => array($conditions, $condition));
-                } else {
-                    array_push($conditions['$or'], $condition);
+    public function fromFilterToQueryCondition($filterParam)
+    {     
+        $condition = array();
+        if ($filterParam[1] == 'country') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition['country'] = $filterParam[3];
                 }
             }
-        }
-        return $conditions;
+        } elseif ($filterParam[1] == 'shortcode') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition['shortcode'] = $filterParam[3];
+                }
+            }
+        } elseif ($filterParam[1] == 'name') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'equal-to') {
+                    $condition['name'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'start-with') {
+                    $condition['name LIKE'] = $filterParam[3]."%"; 
+                }
+            }
+        } elseif ($filterParam[1] == 'status') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'is') {
+                    $condition['status'] = $filterParam[3];
+                }
+            }
+        }         
+        return $condition;
     }
     
     

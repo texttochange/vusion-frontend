@@ -55,11 +55,20 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
+        $this->instanciateParticipantModel();
         $this->Participant->deleteAll(true, false);
         $this->Schedule->deleteAll(true,false);
         $this->ProgramSetting->deleteAll(true,false);
         $this->History->deleteAll(true, false);
         $this->Dialogue->deleteAll(true, false);
+    }
+    
+    
+    protected function instanciateParticipantModel() 
+    {
+        $options = array('database' => $this->programData[0]['Program']['database']);
+        
+        $this->Participant = new Participant($options);
     }
     
     
@@ -203,7 +212,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(2, count($this->vars['report']));
     }
     
@@ -244,7 +253,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/well_formatted_participants.csv');
         $this->assertEquals(
             'Insert ok',
             $this->vars['report'][0]['message'][0]
@@ -291,7 +300,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $participants = $this->Participant->find('all');
         $this->assertEquals(0, count($participants));
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/no_label_two_columns.csv');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/no_label_two_columns.csv');
     }
     
     
@@ -332,7 +341,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.xls');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.xls');
         
         $this->assertEquals(
             'Insert ok',
@@ -374,7 +383,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 )
             );
         
-        $this->assertFileNotExist(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.xls');
+        $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.xls');
         $this->assertEquals(2, count($this->vars['report']));
     }
     
@@ -505,7 +514,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             $this->testAction("/testurl/programParticipants/massDelete?filter_param[1][1]=phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B6");
             $this->failed('Missing filter operator should rise an exception.');
         } catch (FilterException $e) {
-            $this->assertEqual($e->getMessage(), "Filter operator is missing or not allowed.");
+            $this->assertEquals($e->getMessage(), "Filter operator is missing.");
         }
         $this->assertEquals(
             1,
@@ -636,9 +645,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['profile'][0]['label'], 'gender');
-        $this->assertEqual($participantFromDb['Participant']['profile'][0]['value'], 'male');
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['profile'][0]['label'], 'gender');
+        $this->assertEquals($participantFromDb['Participant']['profile'][0]['value'], 'male');
     }
 
 
@@ -674,9 +683,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['profile'][0]['label'], 'gender');
-        $this->assertEqual($participantFromDb['Participant']['profile'][0]['value'], 'male');
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['profile'][0]['label'], 'gender');
+        $this->assertEquals($participantFromDb['Participant']['profile'][0]['value'], 'male');
     }
 
     
@@ -707,8 +716,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['profile'], array());
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['profile'], array());
     }
     
     
@@ -739,8 +748,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['profile'], array());
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['profile'], array());
         
         $participants = $this->mockProgramAccess();
         $this->testAction(
@@ -757,8 +766,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['profile'], array());
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['profile'], array());
     }
     
     
@@ -794,10 +803,10 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['tags'][0], 'me');
-        $this->assertEqual($participantFromDb['Participant']['tags'][1], 'you');
-        $this->assertEqual($participantFromDb['Participant']['tags'][2], 'him');
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['tags'][0], 'me');
+        $this->assertEquals($participantFromDb['Participant']['tags'][1], 'you');
+        $this->assertEquals($participantFromDb['Participant']['tags'][2], 'him');
     }
     
    
@@ -828,8 +837,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
-        $this->assertEqual($participantFromDb['Participant']['tags'], array());
+        $this->assertEquals($participantDB['Participant']['_id'],$participantFromDb['Participant']['_id']);
+        $this->assertEquals($participantFromDb['Participant']['tags'], array());
     }
     
     
@@ -853,7 +862,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participant->id = $participantDB['Participant']['_id']."";
         $savedParticipant = $this->Participant->save($participantDB);
         
-        $this->assertEqual(1,count($savedParticipant['Participant']['enrolled']));
+        $this->assertEquals(1,count($savedParticipant['Participant']['enrolled']));
         
         $this->testAction(
             "/testurl/programParticipants/edit/".$participantDB['Participant']['_id'],
@@ -871,7 +880,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual(2,count($participantFromDb['Participant']['enrolled']));
+        $this->assertEquals(2,count($participantFromDb['Participant']['enrolled']));
     }
     
     
@@ -940,7 +949,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual(1,count($participantFromDb['Participant']['enrolled']));
+        $this->assertEquals(1,count($participantFromDb['Participant']['enrolled']));
         $this->assertEquals(0, $this->Schedule->find('count'));
     }
     
@@ -1247,9 +1256,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual(0,count($participantFromDb['Participant']['enrolled']));
+        $this->assertEquals(0,count($participantFromDb['Participant']['enrolled']));
         $this->assertEquals(0, $this->Schedule->find('count'));
-        $this->assertNotEqual($participantFromDb['Participant']['last-optin-date'], '2012-12-02T18:30:10');
+        $this->assertNotEquals($participantFromDb['Participant']['last-optin-date'], '2012-12-02T18:30:10');
     }
     
     
@@ -1285,11 +1294,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertEqual(
+        $this->assertEquals(
             $participantFromDb['Participant']['session-id'],
             null
             );
-        $this->assertRegex(
+        $this->assertRegExp(
             "/^".$programNow->format("Y-m-d\TH:i:")."\d\d$/",
             $participantFromDb['Participant']['last-optout-date']
             );
@@ -1324,20 +1333,21 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $participantFromDb = $this->Participant->find();
-        $this->assertNotEqual(
+        $this->assertNotEquals(
             $participantFromDb['Participant']['session-id'],
             null
             );
-        $this->assertEqual(
+        $this->assertEquals(
             $participantFromDb['Participant']['last-optout-date'],
             null
             );
-        $this->assertEqual(
+        $this->assertEquals(
             $participantFromDb['Participant']['enrolled'][0]['dialogue-id'],
             $savedDialogue['Dialogue']['dialogue-id']
             );
     }
     
+
     public function testMassTagFilteredParticipant_ok()
     {
         $participants = $this->mockProgramAccess();
@@ -1371,8 +1381,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             'conditions' => array(               
                 'tags' => 'test'));        
         $participants = $this->Participant->find('all', $conditions);      
-        $this->assertEqual(1, count($participants));
-        $this->assetEqual('+6', $participants[0]['Participant']['phone']);
+        $this->assertEquals(1, count($participants));
+        $this->assertEquals('+6', $participants[0]['Participant']['phone']);
         
     }
     
@@ -1412,12 +1422,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         	'conditions' => array(
         		'phone' => '+6'));
         $Participant1 = $this->Participant->find('all', $condition1);
-        $this->assetEqual(array('hi'), $Participant1[0]['Participant']['tags']);
+        $this->assertEquals(array('hi'), $Participant1[0]['Participant']['tags']);
         $condition2 = array(
         	'conditions' => array(
         		'phone' => '+7'));
         $Participant2 = $this->Participant->find('all', $condition2);
-        $this->assertEqual(array('test2', 'hi', 'home'), $Participant2[0]['Participant']['tags']);
+        $this->assertEquals(array('test2', 'hi', 'home'), $Participant2[0]['Participant']['tags']);
     }
 
 
@@ -1425,8 +1435,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/paginationCount.json");
-        $this->assertEqual($this->vars['paginationCount'], 0);
-    }
+        $this->assertEquals($this->vars['paginationCount'], 0);
+   }
 
     
 }

@@ -11,7 +11,7 @@
  </condition>
 
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,caketest,webtest,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,run-composer,caketest,webtest,phpcb"/>
 
  <target name="tools-parallel"
          description="Run tools in parallel">
@@ -152,14 +152,18 @@
          
  </target>
  
+ <!-- require composer to be install on the machine -->
+ <target name="run-composer">
+    <exec dir="composer" executable="composer">
+      <arg value="install"/>
+    </exec>
+ </target>
  
  <target name="caketest" description="Run cake tests with PHPUnit" depends='clear-cache'>
- <exec executable="./lib/Cake/Console/cake" failonerror="true">
+ <exec executable="./app/Console/cake" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
   	 <arg value="testsuite" />
-         <arg value="--include-path"/>
-         <arg path="${basedir}/lib"/>
-         <arg value="--configuration" />
+     <arg value="--configuration" />
   	 <arg value="phpunit-caketest.xml" />
   	 <arg value="app" />
   	 <arg value="AllTests" />
@@ -256,7 +260,7 @@
 
 <target name="deployTest"
           description="import the necessary data in the database">
-  <exec executable="./lib/Cake/Console/cake" failonerror="true">
+  <exec executable="./app/Console/cake" failonerror="true">
   <arg value="schema"/>
   <arg value="update"/>
   </exec>

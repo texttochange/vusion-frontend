@@ -15,7 +15,9 @@ class ProgramHomeController extends AppController
 {
     
     var $components = array(
-        'RequestHandler');
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')));
     
     var $helpers    = array(
         'Js' => array('Jquery'),
@@ -93,7 +95,7 @@ class ProgramHomeController extends AppController
         if (!$this->request->is('get') || !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $programUrl   = $this->params['program'];
         $databaseName = $this->Session->read($programUrl.'_db');
         
@@ -107,7 +109,7 @@ class ProgramHomeController extends AppController
     
     protected function _startBackendWorker($workerName, $databaseName)
     {
-        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
+        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);         
     }
     
     

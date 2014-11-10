@@ -81,6 +81,14 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['pageCount'], 12);
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['prevPage'], false);
 		$this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['nextPage'], true);
+
+        # test empty results
+        $results = $Controller->ProgramPaginator->paginatePrograms(array());
+        $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['limit'], 1);
+        $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['page'], 1);
+        $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['pageCount'], 0);
+        $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['prevPage'], false);
+        $this->assertSame($Controller->params['paging']['PaginatorControllerPrograms']['nextPage'], false);        
     }
 
 
@@ -145,7 +153,12 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
         $conditions = array('shortcode' => '8181');        
         $filtered = $this->ProgramPaginator->filterPrograms($programs, $conditions);
         $this->assertEqual(1, count($filtered));
-        $this->assertEqual('tester', $filtered[0]['Program']['database']);        
+        $this->assertEqual('tester', $filtered[0]['Program']['database']);
+
+        #test if there is no programs that match before the filtering
+        $conditions = array('shortcode' => '8181');        
+        $filtered = $this->ProgramPaginator->filterPrograms(array(), $conditions);
+        $this->assertEqual(0, count($filtered));
     }
     
     

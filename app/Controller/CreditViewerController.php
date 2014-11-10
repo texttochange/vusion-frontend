@@ -16,7 +16,9 @@ class CreditViewerController extends AppController
     var $components = array(
         'ProgramPaginator',
         'CreditManager',
-        'RequestHandler',
+        'RequestHandler'=> array(
+            'viewClassMap' => array(
+                'json' => 'View')),
         'LocalizeUtils',
         'PhoneNumber');
     
@@ -126,7 +128,7 @@ class CreditViewerController extends AppController
             }
             
             $now           = new DateTime('now');
-            $fileName      = $url .'_' . $now->format('Y-m-d_H-i-s') . '.csv';            
+            $fileName      = $url .'_' . $now->format('Y-m-d') . '.csv';            
             $fileFullPath  = $filePath . "/" . $fileName;
             $handle        = fopen($fileFullPath, "w");
             
@@ -138,11 +140,24 @@ class CreditViewerController extends AppController
             foreach ($headersDates as $headerDate) {
                 $line1 = array();
                 if ($headerDate == 'Date From') {
-                    $value = array($headerDate, $timeframeParameters['date-from']);
-                    $line1 = $value;
+                    if ($timeframeParameters['predefined-timeframe'] == 'today') {
+                        $value = array($headerDate, $now->format('m/d/Y'));
+                        $line1 = $value;
+                    } else {
+                        $value = array($headerDate, $timeframeParameters['date-from']);
+                        $line1 = $value;
+                    }
                 } else if ($headerDate == 'Date To') {
-                    $value = array($headerDate, $timeframeParameters['date-to']);
-                    $line1 = $value;
+                    if ($timeframeParameters['predefined-timeframe'] == 'today') {
+                        $value = array($headerDate, $now->format('m/d/Y H:m'));
+                        $line1 = $value;
+                    } else if (empty($timeframeParameters['date-to'])) {
+                        $value = array($headerDate, $now->format('m/d/Y H:m'));
+                        $line1 = $value;
+                    } else {
+                        $value = array($headerDate, $timeframeParameters['date-to']);
+                        $line1 = $value;
+                    }
                 } else {
                     $line1[] = '';
                 }
