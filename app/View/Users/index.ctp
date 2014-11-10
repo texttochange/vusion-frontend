@@ -24,6 +24,7 @@
 	        <tr>
 			    <th class="content"><?php echo $this->Paginator->sort('username');?></th>
 			    <th class="content"><?php echo $this->Paginator->sort('group_id');?></th>
+			    <th class="content"><?php echo $this->Paginator->sort('invited_by');?></th>
 			    <th class="action-admin"><?php echo __('Actions');?></th>
 			 </tr>
 	    </thead>
@@ -32,6 +33,7 @@
 	        <tr>
 	            <td class="content"><?php echo h($user['User']['username']); ?></td>
 	            <td class="content"><?php echo h($user['Group']['name']); ?></td>
+	            <td class="content"><?php echo h($user['User']['invited_by']); ?></td>
 	            <td class="action-admin actions">
 	                <?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id'])); ?>
 	                <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id'])); ?>

@@ -37,15 +37,21 @@ class UsersController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $paginate = array('all');
+        $defaultConditions = array();
         
+        if ($this->Auth->user('group_id') != 1) {
+            $defaultConditions = array('invited_by' => $this->Auth->user('id'));
+        }
+
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->Filter->getConditions($this->User);
+        $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
+        
         $this->paginate        = $paginate;
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));
@@ -581,6 +587,7 @@ class UsersController extends AppController
             $this->User->create();
             $invite = $this->Session->read('invite');
             $this->request->data['User']['group_id'] = $invite['group_id'];
+            $this->request->data['User']['invited_by'] = $invite['invited_by'];
             $this->request->data['Program'] = $invite['programs'];
             if ($this->User->save($this->request->data)) {
                 $this->Session->delete('invite');
