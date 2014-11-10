@@ -38,7 +38,6 @@ For more information about *Composer* click here_
 
 You need to add the following folders: persistent & model under dir app/tmp/cache
 ::
-
 	$ mkdir vusion-forntend/app/tmp/cache
 	$ mkdir vusion-forntend/app/tmp/cache/persistent
 	$ mkdir vusion-forntend/app/tmp/cache/model
@@ -46,14 +45,12 @@ You need to add the following folders: persistent & model under dir app/tmp/cach
 You must change the permissions of the cache folder and it's subfolders to use www-data user
 who is the apache user.
 ::
-
 	$ chown -R www-data app/tmp/cache
 	
 	
 Required Tools to Install
 -------------------------
 ::
-
 	$ sudo apt-get install apache2
 	$ sudo apt-get install mongoDB   # (>=2.6)
 	$ sudo apt-get install mysql-server
@@ -69,14 +66,12 @@ Modules need to be install and configure in PHP
     - Download the .tar.gz file of MongoDB PHP Driver **v1.2.9** (https://github.com/mongodb/mongo-php-driver/tags)
     - Open a terminal
     ::
-
         $ pecl install mongo-1.5.6
 
 :Redis PHP:
     - Clone the Git repo git clone git://github.com/nicolasff/phpredis.git
     - Open a terminal
-    ::
-        
+    ::  
         $ phpize && ./configure && make && sudo make install
 
 
@@ -84,8 +79,7 @@ Development PHP Modules
 ----------------------- 
 
 - Pear and PHPUnit Installation
-    ::
-      
+   ::  
     	$ sudo apt-get install php-pear
     	$ sudo pear channel-discover pear.phpunit.de
         $ sudo pear channel-discover components.ez.no
@@ -93,13 +87,14 @@ Development PHP Modules
         $ sudo pear channel-discover pear.symfony.com
         $ sudo pear update-channels
         $ sudo pear install --alldeps phpunit/PHPUnit-3.7.27
-        
  
- **- Note if PHPUnit fails, first upgrade pear with the command below**
- $ pear upgrade pear
+**- Note if PHPUnit fails, first upgrade pear with the command below**
+::
+    $ pear upgrade pear
  
  - try the PHPUnit again
- $ sudo pear install --alldeps phpunit/PHPUnit
+::
+    $ sudo pear install --alldeps phpunit/PHPUnit
  
  
 Jenkins
@@ -108,12 +103,10 @@ To run the different build task from build.xml, you need to install
 
 - Jdk6
 ::
-
     $ sudo apt-get install openjdk-6-jre;
 
 - Ant
 ::
-
     $ sudo apt-get install -u ant; or sudo apt-get install ant;
     
 
@@ -126,14 +119,13 @@ The second one is the Document Database MongoDB  for the business data.
 
 Relational Database Configuration:
 You can create the relational database schema from file **app/Config/Schema/schema.php** with the cake console
-
+::
 	$ ./lib/Cake/Console/cake schema create
 	
 If file schema.php is not found, you can also create the database using Mysql by importing a file **app/Config/Schema/schema.sql** with phpmyadmin tool.
 
 
 ::
-
 	1.On your phpmyadmin home go to more tab and in the drop dpwn select import
 	2.Browse the file you went to import in this case schema.sql 
 	3.Tick the checkbox with donot auto increment and press go
@@ -145,7 +137,6 @@ or in the mysql console type "mysql -u root-p < app/Config/Schema/schema.sql"
 Create a userLogin and password in the Mysql account database which must correspond to ones in the **app/Config/database.php** 
 
 ::
-
 	1. On your phpmyadmin home go to phpmyadmin tab 
 	2. Click on add a new user
 	3. Feelin the infromation but on Host select local and Global privileges check all then press go
@@ -153,12 +144,12 @@ Create a userLogin and password in the Mysql account database which must corresp
 while in the mysql console,navigate to to users table and create two users; "cake" and "cake_test" and grant all privileges to these users by issuing the commands below
 
 ::
-
     1. GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
     2. GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
 
 Run vusion.sql
-        mysql -u root -p < app/Test/data/mySQL/vusion.sql
+::
+    mysql -u root -p < app/Test/data/mySQL/vusion.sql
 
 
 
@@ -172,17 +163,17 @@ Second make app/tmp file writable by the webserver.
 Apache configuration for mod_xsendfile(export)
 -----------------------------------------------
 You need to first install apache2-prefork-dev
-
+::
     $ sudo apt-get install apache2-prefork-dev
 
 Then you clone the mod_xsendfile file from github
-
+::
 	$ git clone http://github.com/nmaier/mod_xsendfile /opt/mod_xsendfile 
 
 **Note /opt/mod_xsendfile is destination whereyou are storing the cloned file**
 
 Compile the file you have cloned. Run this command in the mod_xsednfile directory, in our case */opt/mod_xsendfile* 
-
+::
  	$ apxs2 -cia mod_xsendfile.c
 
 
@@ -199,7 +190,6 @@ Don't forget to change permissions on the */files/programs/ * directory
 
 In the /etc/apach2/port.conf file add this listen port 
 ::
-
 	NameVirtualHost *:81
 	Listen 81
 
