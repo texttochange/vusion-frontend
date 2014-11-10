@@ -31,8 +31,7 @@ class TicketComponent extends Component
     
     public function sendEmail($userEmail, $userName, $subject, $template, $token)
     {  
-        //$linkdomain  = Configure::read('vusion.domain');
-        $linkdomain  = 'localhost:4567'; 
+        $linkdomain  = Configure::read('vusion.domain');
         $email       = new CakeEmail();
         $email->config('default');
         $email->from(array('admin@vusion.texttochange.org' => 'Vusion'));
