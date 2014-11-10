@@ -42,7 +42,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->ShortCode = new ShortCode($options);
         $this->CreditLog = new CreditLog($options);
         $this->dropData();
-
+        
         $this->maker = new ScriptMaker();
     }
     
@@ -74,6 +74,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
+                    'Auth' => array('user'),
                     'Session' => array('read'),
                     'Stats',
                     ),
@@ -87,6 +88,13 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
+        
+        $programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
         
         return $programs;
     }
@@ -137,7 +145,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(4, count($this->vars['programs']));
     }
-  
+    
     
     public function testIndex_hasSpecificProgramAccess_True()
     {
@@ -173,8 +181,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
     }
-
-
+    
+    
     #TODO move some case to the ProgramPaginatorComponentTest
     public function testIndex_filter()
     {
@@ -243,7 +251,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
     }
     
-
+    
     public function testView() 
     {
         $this->mockProgramAccess();
@@ -288,9 +296,19 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_startBackendWorker'
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
                     )
                 )
             );
+        
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
         
         $Programs
         ->expects($this->once())
@@ -307,7 +325,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
         
-        $this->assertFileExist(
+        $this->assertFileExists(
             WWW_ROOT . 'files/programs/programurl/');
         ////clean up
         rmdir(WWW_ROOT . 'files/programs/programurl');
@@ -320,9 +338,19 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_startBackendWorker',
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
                     )
                 )
             );
+        
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
         
         $Programs
         ->expects($this->once())
@@ -377,17 +405,17 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('_stopBackendWorker')
         ->will($this->returnValue(true));
-
+        
         mkdir(WWW_ROOT . 'files/programs/test/');
         
         $creditLog = ScriptMaker::mkCreditLog(
             'program-credit-log', '2014-04-10', 'testdbprogram');
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
-
+        
         $this->testAction('/programs/delete/1');
         
-        $this->assertFileNotExist(
+        $this->assertFileNotExists(
             WWW_ROOT . 'files/programs/test/');
         $this->assertEqual(
             1, 
@@ -396,8 +424,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     'object-type' => 'deleted-program-credit-log', 
                     'program-name' => 'test'))));
     }
-
-
+    
+    
     public function testArchive()
     {
         $Programs = $this->generate(
@@ -414,14 +442,14 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('_stopBackendWorker')
         ->will($this->returnValue(true));
-
+        
         $Programs->Program
         ->expects($this->once())
         ->method('archive')
         ->will($this->returnValue(true));
-
+        
         $this->testAction('/programs/archive/1');
     }
-
+    
     
 }

@@ -8,7 +8,7 @@ class VumiSupervisordComponent extends Component
 
     public function __construct(ComponentCollection $collection, $settings = array()) {
         //$this->_controller = $collection->getController();
-        require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');        
+        //require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');        
         parent::__construct($collection, $settings);
     }
 
@@ -41,7 +41,7 @@ class VumiSupervisordComponent extends Component
 
     function getWorkerInfo($name)
     {
-        require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+        //require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
    
         $val = array(new xmlrpcval('echo_worker:'.$name));     
         $f   = new xmlrpcmsg('supervisor.getProcessInfo', $val);
@@ -66,7 +66,7 @@ class VumiSupervisordComponent extends Component
 
     function startWorker($worker_name)
     {
-        require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+      //  require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
         
         $c = new xmlrpc_client("/RPC2", "localhost",9010);
         
@@ -114,7 +114,7 @@ class VumiSupervisordComponent extends Component
 
     function removeWorker($name)
     {
-        require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+      //  require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
         
         $c=new xmlrpc_client("/RPC2", "localhost",9010);
     

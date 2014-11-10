@@ -9,7 +9,9 @@ class UnmatchableReplyController extends AppController
 {
     
     var $components = array(
-        'RequestHandler',
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
         'LocalizeUtils',
         'PhoneNumber',
         'ProgramPaginator',
@@ -20,7 +22,7 @@ class UnmatchableReplyController extends AppController
         'Time', 
         'PhoneNumber',
         'Paginator' => array('className' => 'BigCountPaginator'));
-  
+    
     
     public function beforeFilter()
     {
@@ -196,5 +198,5 @@ class UnmatchableReplyController extends AppController
         }
     }
     
-
+    
 }
