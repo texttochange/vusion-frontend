@@ -1,5 +1,5 @@
 {
-    "name": "markphilip/composer",
+    "name": "vusion-frontend/composer",
     "require": {
         "cakephp/cakephp": "2.5.5"
     },

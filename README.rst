@@ -7,7 +7,6 @@ Installation
 ------------
 
 ::
-
 	$ mkdir Development
 	$ cd Development
 	$ git clone <this repository>
@@ -25,10 +24,12 @@ Install **Composer** which is a dependency manager for installing  Cakephp packa
 	#After move to the composer folder in vusion-forntend
 	$ cd composer
 	
-	#inside there is afile "composer.json" which has the list of the required package.
-	#When still inside the composer folder run the command below
-	#to install cakephp and other packages
-	$ composer install
+	#In the folder the file "composer.json" contains the list of the required package.
+	# When still inside the composer folder run the command below
+	# to install cakephp and other packages
+	$ composer install   # if installed globaly
+	or
+	$ php composer.phar install
 **NB:**
 For more information about *Composer* click here_
 	 
@@ -44,20 +45,20 @@ You need to add the following folders: persistent & model under dir app/tmp/cach
 
 You must change the permissions of the cache folder and it's subfolders to use www-data user
 who is the apache user.
+::
 
 	$ chown -R www-data app/tmp/cache
 	
 	
 Required Tools to Install
 -------------------------
-    ::
+::
 
 	$ sudo apt-get install apache2
-	$ sudo apt-get install mongoDB
+	$ sudo apt-get install mongoDB   # (>=2.6)
 	$ sudo apt-get install mysql-server
 
 **Note: phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.**
-
 
 
 PHP Modules
@@ -69,13 +70,7 @@ Modules need to be install and configure in PHP
     - Open a terminal
     ::
 
-        $ tar zxvf mongodb-php-driver-1.2.9.tar.gz
-        $ cd mongodb-php-driver-1.2.9
-        $ sudo apt-get install php5-dev
-        $ phpize
-        $ ./configure
-        $ make all
-        $ sudo make install
+        $ pecl install mongo-1.5.6
 
 :Redis PHP:
     - Clone the Git repo git clone git://github.com/nicolasff/phpredis.git
@@ -83,7 +78,6 @@ Modules need to be install and configure in PHP
     ::
         
         $ phpize && ./configure && make && sudo make install
-
 
 
 Development PHP Modules
@@ -115,14 +109,12 @@ To run the different build task from build.xml, you need to install
 - Jdk6
 ::
 
- $ sudo apt-get install openjdk-6-jre;
+    $ sudo apt-get install openjdk-6-jre;
 
 - Ant
 ::
 
-  $ sudo apt-get install -u ant; or sudo apt-get install ant;
-
-
+    $ sudo apt-get install -u ant; or sudo apt-get install ant;
     
 
 Databases
@@ -154,22 +146,21 @@ Create a userLogin and password in the Mysql account database which must corresp
 
 ::
 
-	1.On your phpmyadmin home go to phpmyadmin tab 
-	2.Click on add a new user
-	3.Feelin the infromation but on Host select local and Global privileges check all then press go
+	1. On your phpmyadmin home go to phpmyadmin tab 
+	2. Click on add a new user
+	3. Feelin the infromation but on Host select local and Global privileges check all then press go
 
 while in the mysql console,navigate to to users table and create two users; "cake" and "cake_test" and grant all privileges to these users by issuing the commands below
 
 ::
 
-         1.GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
-         2.GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
+    1. GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
+    2. GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
 
 Run vusion.sql
         mysql -u root -p < app/Test/data/mySQL/vusion.sql
 
- 
-        
+
 
 Web Server Configuration
 ------------------------
@@ -179,10 +170,10 @@ Second make app/tmp file writable by the webserver.
 
 
 Apache configuration for mod_xsendfile(export)
---------------------------------
+-----------------------------------------------
 You need to first install apache2-prefork-dev
 
-  $ sudo apt-get install apache2-prefork-dev
+    $ sudo apt-get install apache2-prefork-dev
 
 Then you clone the mod_xsendfile file from github
 
@@ -192,7 +183,7 @@ Then you clone the mod_xsendfile file from github
 
 Compile the file you have cloned. Run this command in the mod_xsednfile directory, in our case */opt/mod_xsendfile* 
 
- 	$apxs2 -cia mod_xsendfile.c
+ 	$ apxs2 -cia mod_xsendfile.c
 
 
 Add this line **XSendFilePath <documentroot>/files/programs/** inside your apache configuration for virtual hosts
@@ -266,89 +257,94 @@ Only specific source folders are synced in order to avoid conflict on compiled f
 
 
 Steps on a Windows (8.x/7) Host
-------------------------
-        1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
+-------------------------------
+1. Open PowerShell as admin by right clicking on the PowerShell icon and selecting "Run as Admin".
 
-	2. Enter the followig commands in the PowerShell.
-	   ::
-	     $ mkdir c:\Development
-	     $ cd c:\Development
-			
-	3. Now you are in the directory where you are going to work form so do the commands below.
-	   ::
-		$ git clone https://github.com/texttochange/vusion-frontend
-			 Then retrive the Plugins and the Backend
-		$ git submodule init
-		$ git submodule update
-	
-	4. Install **Composer** which is a dependency manager for installing  Cakephp package
-	   ::
-		Install php_
-		Install Composer_
-		**Note** Composer.exe will ask for php.exe please move to programs Files into the php folder 
-			 and select the php.exe.When Composer install is complete, copy the **Composer.phar**
-			 file and paste it into "Development/Vusion-forntend/Composer" folder.
-			
+2. Enter the followig commands in the PowerShell.
+   ::
+
+        $ mkdir c:\Development
+        $ cd c:\Development
+		
+3. Now you are in the directory where you are going to work form so do the commands below.
+   ::
+
+ 	    $ git clone https://github.com/texttochange/vusion-frontend
+		# Then retrive the Plugins and the Backend
+	    $ git submodule init
+	    $ git submodule update
+
+4. Install **Composer** which is a dependency manager for installing  Cakephp package
+   ::
+
+	    Install php_
+	    Install Composer_
+	**Note** Composer.exe will ask for php.exe please move to programs Files into the php folder 
+		 and select the php.exe.When Composer install is complete, copy the **Composer.phar**
+		 file and paste it into "Development/Vusion-forntend/Composer" folder.
 		
 	
-		#After using **GIT BASH** move to the composer folder in vusion-forntend 
-		$ cd vusion-forntend/composer
-	
-		#inside there is afile "composer.json" which has the list of the required package.
-		#When still inside the vusion-frontend/composer folder run the command below
-		#to install cakephp and other packages
-		$ php composer.phar install
-	  **NB:**
-	  For more information about *Composer* click here_
-	 
-	  .. _here: https://getcomposer.org/
-	  .. _php: http://windows.php.net/download/
-	  .. _Composer: https://getcomposer.org/download/
-	
-	5. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
-	6. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
-	   ::
-	    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
-	    to the file location of your development directory.
-	    
-	  
-	    We also have the synced, here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
-	  
-					    	  
-	7. Run this command in the PowerShell to start Vagrant and virtualbox
-	   ::
-		$ vagrant up
+	#After using **GIT BASH** move to the composer folder in vusion-forntend 
+	$ cd vusion-forntend/composer
 
-           Enter the URL: localhost:4567 in your web browser vusion login page will show
+	#inside there is afile "composer.json" which has the list of the required package.
+	#When still inside the vusion-frontend/composer folder run the command below
+	#to install cakephp and other packages
+	$ php composer.phar install
+  **NB:**
+  For more information about *Composer* click here_
+ 
+  .. _here: https://getcomposer.org/
+  .. _php: http://windows.php.net/download/
+  .. _Composer: https://getcomposer.org/download/
 
-	8. Settingup git flow to enable you create feature from branches for easy and organised development 
-        
-           a) Download and install ``getopt.exe`` from the util-linux-package_  
-              into ``C:\Program Files\Git\bin``.
-              (Only ``getopt.exe``, the others util-linux files are not used).
-              Also install ``libintl3.dll`` and ``libiconv2.dll`` from the Dependencies packages (libintl_ and libiconv_), into the same directory
-       
-       
-              .. _util-linux-package: http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm
-       
-              .. _libintl: http://gnuwin32.sourceforge.net/packages/libintl.htm
-       
-              .. _libiconv: http://gnuwin32.sourceforge.net/packages/libiconv.htm
-       
-           b) Open a new Powershell as admin and create a directory.
-              ::
-                $ mkdir c:\Installgitflow
-                $ cd c:\Installgitflow
+5. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
-           c) Clone the gitflow source from GitHub.
-              :: 
-                $ git clone --recursive git://github.com/nvie/gitflow.git
-                $ cd gitflow\contrib
+6. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
+   ::
+    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
+    to the file location of your development directory.
+    
+  
+    We also have the synced, here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
+  
+				    	  
+7. Run this command in the PowerShell to start Vagrant and virtualbox
+   ::
+	    $ vagrant up
 
-	   d) Run the `msysgit-install` script from a command-line prompt 
-	      ::		 
-                $ msysgit-install 
+    Enter the URL: localhost:4567 in your web browser vusion login page will show
+
+8. Settingup git flow to enable you create feature from branches for easy and organised development 
+    
+   a) Download and install ``getopt.exe`` from the util-linux-package_  
+      into ``C:\Program Files\Git\bin``.
+      (Only ``getopt.exe``, the others util-linux files are not used).
+      Also install ``libintl3.dll`` and ``libiconv2.dll`` from the Dependencies packages (libintl_ and libiconv_), into the same directory
+
+
+      .. _util-linux-package: http://gnuwin32.sourceforge.net/packages/util-linux-ng.htm
+
+      .. _libintl: http://gnuwin32.sourceforge.net/packages/libintl.htm
+
+      .. _libiconv: http://gnuwin32.sourceforge.net/packages/libiconv.htm
+
+   b) Open a new Powershell as admin and create a directory.
+       ::
+            $ mkdir c:\Installgitflow
+            $ cd c:\Installgitflow
+
+   c) Clone the gitflow source from GitHub.
+       ::
+
+            $ git clone --recursive git://github.com/nvie/gitflow.git
+            $ cd gitflow\contrib
+
+   d) Run the `msysgit-install` script from a command-line prompt 
+      ::	
+
+           $ msysgit-install 
 	
 
 Installation to run backend development and testing on host
@@ -356,72 +352,71 @@ Installation to run backend development and testing on host
 
 Install Python cause most of the backend development and testing are in pyhton and also install pip cause we need it install/run the virtual environment for backend testing.
 
-	1. Dowload the MSI installer from http://www.python.org/download/   
-	   Select 32/64 bit based on your system setting
+1. Dowload the MSI installer from http://www.python.org/download/   
+   Select 32/64 bit based on your system setting
 
-	2. Run the installer. Be sure to check the option to add Python to your PATH while installing.
+2. Run the installer. Be sure to check the option to add Python to your PATH while installing.
 
-	3. Open PowerShell as admin by right clicking on the PowerShell icon and selecting ‘Run as Admin’.
+3. Open PowerShell as admin by right clicking on the PowerShell icon and selecting ‘Run as Admin’.
 
-	4. To solve permission issues, run the following command.
-	   ::
-	         Set-ExecutionPolicy Unrestricted
+4. To solve permission issues, run the following command.
+   ::
 
-	5. Enter the following commands in PowerShell.
-           ::
-		mkdir c:\envs
-		cd c:\envs
+        Set-ExecutionPolicy Unrestricted
 
-	6. Download the following files into your new folder.
-	
-	    http://python-distribute.org/distribute_setup.py
-	     
-	    https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-	   
-	    so now you have something like : **'c:\\envs\\distribute_setup.py'** and **'c:\\envs\\get-pip.py'**.
+5. Enter the following commands in PowerShell.
+   ::
 
-	7. Run the following commands in you terminal.
-	   ::
-		  python c:\envs\distribute_setup.py
-		  python c:\envs\get-pip.py
+	    mkdir c:\envs
+	    cd c:\envs
 
-           **Note**
-              Once these commands run successfully, you can delete the scripts **get-pip.py** and **distribute_setup.py**.
-	
-	8. Now typing pip should work. If it doesn’t it means the Scripts folder is not in your path. 
-	   Run the next command in that case 
-	   (Note that this command must be run only once or your PATH will get longer and longer).
-	   Make sure to replace c:\Python27\Scripts with the correct location of your Python installation
-	   ::
-	   
-               setx PATH "%PATH%;C:\Python27\Scripts"
+6. Download the following files into your new folder.
 
-           Close and reopen PowerShell after running this command.
-           
-        9. To create a Virtual Environment, use the following commands.
-        
-           ::
-             
-		cd c:\python
-		pip install virtualenv
-		pip install –no-deps -r requirements.pip
-		
-           **Note:** If you have varasall.bat fill missing please install visual studio C+++
-          
-           ::
-		   
-		   If you have Visual Studio 2010 installed, execute
-			SET VS90COMNTOOLS=%VS100COMNTOOLS%
-		   or with Visual Studio 2012 installed (Visual Studio Version 11)
-			SET VS90COMNTOOLS=%VS110COMNTOOLS%
-                   or with Visual Studio 2013 installed (Visual Studio Version 12)
-			SET VS90COMNTOOLS=%VS120COMNTOOLS%
+    http://python-distribute.org/distribute_setup.py
+     
+    https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+   
+    so now you have something like : **'c:\\envs\\distribute_setup.py'** and **'c:\\envs\\get-pip.py'**.
 
-        10. To run the virtual Environment and backend tests.
-	
-	    ::
-	      
-		 virtualenv ve
-		 .\ve\Scripts\activate
-		 python  ve\Scripts\trial.phy  vusion
-		
+7. Run the following commands in you terminal.
+   ::
+
+	    python c:\envs\distribute_setup.py
+	    python c:\envs\get-pip.py
+
+   **Note** Once these commands run successfully, you can delete the scripts **get-pip.py** and **distribute_setup.py**.
+
+8. Now typing pip should work. If it doesn’t it means the Scripts folder is not in your path. 
+   Run the next command in that case 
+   (Note that this command must be run only once or your PATH will get longer and longer).
+   Make sure to replace c:\Python27\Scripts with the correct location of your Python installation
+   ::
+   
+        setx PATH "%PATH%;C:\Python27\Scripts"
+
+    Close and reopen PowerShell after running this command.
+       
+9. To create a Virtual Environment, use the following commands.
+   ::
+ 
+        cd c:\python
+        pip install virtualenv
+        pip install –no-deps -r requirements.pip
+
+**Note:** If you have varasall.bat fill missing please install visual studio C+++
+  
+   ::
+   
+       If you have Visual Studio 2010 installed, execute
+	     SET VS90COMNTOOLS=%VS100COMNTOOLS%
+       or with Visual Studio 2012 installed (Visual Studio Version 11)
+	     SET VS90COMNTOOLS=%VS110COMNTOOLS%
+       or with Visual Studio 2013 installed (Visual Studio Version 12)
+	     SET VS90COMNTOOLS=%VS120COMNTOOLS%
+
+10. To run the virtual Environment and backend tests.
+    ::
+  
+        virtualenv ve
+        .\ve\Scripts\activate
+        python  ve\Scripts\trial.phy  vusion
