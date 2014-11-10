@@ -16,7 +16,9 @@ class CreditViewerController extends AppController
     var $components = array(
         'ProgramPaginator',
         'CreditManager',
-        'RequestHandler',
+        'RequestHandler'=> array(
+            'viewClassMap' => array(
+                'json' => 'View')),
         'LocalizeUtils',
         'PhoneNumber');
     

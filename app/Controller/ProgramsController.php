@@ -13,7 +13,9 @@ class ProgramsController extends AppController
 {
     
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils', 
         'PhoneNumber', 
         'ProgramPaginator', 
@@ -97,9 +99,9 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-                
+        
         $conditions = $this->Filter->getConditions($this->Program);
-
+        
         // TODO move in the Program Paginator
         $this->Program->recursive = -1; 
         $user = $this->Auth->user();  
@@ -116,7 +118,7 @@ class ProgramsController extends AppController
                 'conditions' => $conditions,
                 'order' => array('created' => 'desc'));
         }
-
+        
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
@@ -304,8 +306,8 @@ class ProgramsController extends AppController
             'default', array('class' => "message failure"));
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
     public function archive($id = null)
     {
         $this->Program->id = $id;
@@ -327,5 +329,5 @@ class ProgramsController extends AppController
         }
     }
     
-
+    
 }

@@ -29,13 +29,14 @@ class AppController extends Controller
                 ),
             //'authError' => 'Authentication Failed',
             'authenticate' => array(
+               'Basic' => array(
+                   'fields' => array('username' => 'email')
+                    ),
                 'Form' => array(
                     //'field' => array('username' => 'username'),
                     'fields' => array('username' => 'email')
-                    ),
-                'Basic' => array(
-                    'fields' => array('username' => 'email')
                     )
+                
                 ),
             'authorize' => array(
                 'Actions' => array('actionPath' => 'controllers')
@@ -69,7 +70,7 @@ class AppController extends Controller
     var $programDetails     = array();
     
     function beforeFilter()
-    {    
+    { 
         //Verify the access of user to this program
         if (!empty($this->params['program'])) {
             $this->Program->recursive = -1;
