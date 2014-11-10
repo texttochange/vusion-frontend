@@ -16,7 +16,9 @@ class ProgramParticipantsController extends AppController
     
     var $uses       = array('Participant');
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils',
         'Filter');
     var $helpers    = array(
@@ -38,7 +40,7 @@ class ProgramParticipantsController extends AppController
     function beforeFilter() 
     {
         parent::beforeFilter();
-
+        
         $options = array('database' => ($this->Session->read($this->params['program']."_db"))); 
         $this->Participant       = new Participant($options);
         $this->History           = new History($options);
@@ -70,7 +72,7 @@ class ProgramParticipantsController extends AppController
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
-
+        
         $this->paginate = $paginate;
         $participants   = $this->paginate('Participant');
         $this->set(compact('participants', 'requestSuccess'));
@@ -97,11 +99,11 @@ class ProgramParticipantsController extends AppController
     public function getFilterParameterOptions()
     {
         $requestSuccess = true;
-
+        
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         if (!isset($this->request->query['parameter'])) {
             throw new Exception(__("The required filter parameter option is missing."));
         }
@@ -202,7 +204,7 @@ class ProgramParticipantsController extends AppController
     {
         $programUrl    = $this->params['program'];
         $requestSucces = false;
-
+        
         $this->set('filterFieldOptions', $this->Participant->fieldFilters);
         $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
         $this->set('filterDialogueConditionsOptions', $dialoguesContent);
@@ -295,25 +297,25 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
     
-
+    
     protected function _notifyBackendMassTag($workerName, $tag, $query)
     {
         $this->VumiRabbitMQ->sendMessageMassTag($workerName, $tag, $query);
     }
-
-
+    
+    
     protected function _notifyBackendMassUntag($workerName, $tag)
     {
         $this->VumiRabbitMQ->sendMessageMassUntag($workerName, $tag);
     }
- 
-
+    
+    
     public function add() 
     {
         $programUrl     = $this->params['program'];
         $requestSuccess = false;
         $data           = $this->_ajaxDataPatch();
-
+        
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(__('Please set the program settings then try again.'));
@@ -350,7 +352,7 @@ class ProgramParticipantsController extends AppController
         return $selectOptions;
     }
     
-
+    
     protected function _loadParticipantId($data)
     {
         if ($this->params['id']) { 
@@ -376,7 +378,7 @@ class ProgramParticipantsController extends AppController
         }
         return $participant;
     }
-
+    
     protected function _ajaxDataPatch()
     {
         $data = $this->data;
@@ -393,7 +395,7 @@ class ProgramParticipantsController extends AppController
         $requestSuccess = false;
         $id             = null;
         $data           = $this->_ajaxDataPatch();
-
+        
         //Retrieving the participant to edit
         $participant = $this->_loadParticipantId($data);
         
@@ -515,9 +517,9 @@ class ProgramParticipantsController extends AppController
         }
         $this->Session->setFlash(__('Participant was not deleted.'));
         $this->redirect(array(
-                'program' => $programUrl,
-                'action' => 'index',
-                'page' => $currentPage));
+            'program' => $programUrl,
+            'action' => 'index',
+            'page' => $currentPage));
     }
     
     
@@ -546,7 +548,7 @@ class ProgramParticipantsController extends AppController
         
         $data        = $this->_ajaxDataPatch();
         $participant = $this->_loadParticipantId($data);
-
+        
         if ($this->request->is('post')) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             
@@ -586,11 +588,11 @@ class ProgramParticipantsController extends AppController
         $programUrl     = $this->params['program'];
         $id             = $this->params['id'];
         $requestSuccess = false;
-
+        
         $data = $this->_ajaxDataPatch();
         //Retrieving the participant to edit
         $participant = $this->_loadParticipantId($data);
-       
+        
         if ($this->request->is('post')) {
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),

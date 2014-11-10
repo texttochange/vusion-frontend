@@ -187,7 +187,7 @@ class UsersController extends AppController
             $this->redirect($this->Auth->redirect());
         }
         
-        if ($this->request->is('ajax')) {
+        if ($this->_isAjax()) {
             if ($this->Auth->login()) {
                 return;
             } else {

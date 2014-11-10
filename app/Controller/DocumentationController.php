@@ -5,7 +5,10 @@ App::uses('AppController', 'Controller');
 class DocumentationController extends AppController
 {
     
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')));
     var $helpers    = array(
         'Js' => array('Jquery')
         );

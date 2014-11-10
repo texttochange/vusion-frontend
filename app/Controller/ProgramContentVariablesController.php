@@ -6,7 +6,10 @@ App::uses('ContentVariableTable', 'Model');
 
 class ProgramContentVariablesController extends AppController
 {
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')));
     var $uses = array('ContentVariable', 'ContentVariableTable');
     
     

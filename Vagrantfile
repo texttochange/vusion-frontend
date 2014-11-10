@@ -17,6 +17,8 @@ Vagrant::configure("2") do |config|
 
   config.vm.network "private_network", ip:"10.11.12.13"
   config.vm.synced_folder "app", "/var/vusion/app",  type:"nfs"
+  config.vm.synced_folder "lib", "/var/vusion/lib",  type:"nfs"
+  config.vm.synced_folder "composer", "/var/vusion/composer",  type:"nfs"
   config.vm.synced_folder "backend/vusion", "/var/vusion/backend/vusion", type:"nfs"
   config.vm.synced_folder "backend/transports", "/var/vusion/backend/transports", type:"nfs"
   config.vm.synced_folder "backend/middlewares", "/var/vusion/backend/middlewares", type:"nfs"
