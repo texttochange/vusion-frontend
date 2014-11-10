@@ -9,7 +9,7 @@ Installation
 ::
 
 	$ mkdir Development
-	$ cd Developlment
+	$ cd Development
 	$ git clone <this repository>
 	# Then retrive the Plugins and the Backend
 	$ git submodule init
@@ -23,10 +23,10 @@ Install **Composer** which is a dependency manager for installing  Cakephp packa
 	$ sudo apt-get install curl
 	
 	#After move to the composer folder in vusion-forntend
-	$ cd vusion-forntend/composer
+	$ cd composer
 	
 	#inside there is afile "composer.json" which has the list of the required package.
-	#When still inside the vusion-frontend/composer folder run the command below
+	#When still inside the composer folder run the command below
 	#to install cakephp and other packages
 	$ composer install
 **NB:**
