@@ -16,7 +16,9 @@ class ProgramParticipantsController extends AppController
     
     var $uses       = array('Participant');
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils',
         'Filter',
         'UserLogMonitor');
@@ -296,23 +298,24 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageToUpdateSchedule($workerName, 'participant', $participantPhone);
     }
     
-
+    
     protected function _notifyBackendMassTag($workerName, $tag, $query)
     {
         $this->VumiRabbitMQ->sendMessageMassTag($workerName, $tag, $query);
     }
-
-
+    
+    
     protected function _notifyBackendMassUntag($workerName, $tag)
     {
         $this->VumiRabbitMQ->sendMessageMassUntag($workerName, $tag);
     }
- 
-
+    
+    
     public function add() 
     {
-        $programUrl = $this->params['program'];
-        $data       = $this->_ajaxDataPatch();
+        $programUrl     = $this->params['program'];
+        $requestSuccess = false;
+        $data           = $this->_ajaxDataPatch();
         
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {

@@ -12,7 +12,9 @@ class ProgramRequestsController extends AppController
 {
     
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils', 
         'Utils',
         'Keyword',

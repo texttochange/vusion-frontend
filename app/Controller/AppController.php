@@ -29,13 +29,14 @@ class AppController extends Controller
                 ),
             //'authError' => 'Authentication Failed',
             'authenticate' => array(
+                'Basic' => array(
+                    'fields' => array('username' => 'email')
+                    ),
                 'Form' => array(
                     //'field' => array('username' => 'username'),
                     'fields' => array('username' => 'email')
-                    ),
-                'Basic' => array(
-                    'fields' => array('username' => 'email')
                     )
+                
                 ),
             'authorize' => array(
                 'Actions' => array('actionPath' => 'controllers')
@@ -68,6 +69,7 @@ class AppController extends Controller
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
     var $programDetails     = array();
+    
     
     function beforeFilter()
     {

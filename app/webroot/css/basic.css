@@ -158,12 +158,12 @@
         background-color: lightyellow;
 }
 
-[name*=Dialogue][item=interaction]:nth-child(odd) {
+[name*=Dialogue][item=interaction]:not(.ttc-interaction-disabled):nth-child(odd) {
         /*    background:#E3E4FA;*/
         background: #FFD97B;
 }
 
-[name*=Dialogue][item=interaction]:nth-child(even) {
+[name*=Dialogue][item=interaction]:not(.ttc-interaction-disabled):nth-child(even) {
         /*background:#FDEEF4;*/
         background: #FFCB4B;
 }

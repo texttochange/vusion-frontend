@@ -11,7 +11,10 @@ class ProgramHistoryController extends AppController
 {
     
     var $uses       = array('History');
-    var $components = array('RequestHandler',
+    var $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
         'LocalizeUtils',
         'Filter');
     var $helpers    = array(
@@ -46,9 +49,9 @@ class ProgramHistoryController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
-
+        
         $requestSuccess = true;
-
+        
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
         } else if (isset($this->params['named']['direction'])) {
@@ -121,7 +124,7 @@ class ProgramHistoryController extends AppController
     {
         $programUrl = $this->params['program'];
         $requestSuccess = false;
-
+        
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         

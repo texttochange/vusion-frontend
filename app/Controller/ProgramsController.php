@@ -13,7 +13,9 @@ class ProgramsController extends AppController
 {
     
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils', 
         'PhoneNumber', 
         'ProgramPaginator', 

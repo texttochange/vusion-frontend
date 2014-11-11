@@ -6,7 +6,7 @@ class VumiSupervisord {
 
 	public function getState(){
 	
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$f=new xmlrpcmsg('supervisor.getState');
 		
@@ -35,7 +35,7 @@ class VumiSupervisord {
 	}
 	
 	function getAllProcessInfo() {
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$f=new xmlrpcmsg('supervisor.getAllProcessInfo');
 		
@@ -59,7 +59,7 @@ class VumiSupervisord {
 	}
 	
 	function getWorkerInfo($name) {
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$val = array(new xmlrpcval($this->groupName.':'.$name));
 		
@@ -88,7 +88,7 @@ class VumiSupervisord {
 	
 	
 	function startWorker($worker_name){
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$c=new xmlrpc_client("/RPC2", "localhost",9010);
 		
@@ -140,7 +140,7 @@ class VumiSupervisord {
 	
 	
 	function removeWorker($name){
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$c=new xmlrpc_client("/RPC2", "localhost",9010);
 		
@@ -173,7 +173,7 @@ class VumiSupervisord {
 	}
 	
 	function stopWorker($name){
-		require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
+		//require_once('xmlrpc-3.0.0.beta/xmlrpc.inc');
 		
 		$c=new xmlrpc_client("/RPC2", "localhost",9010);
 		

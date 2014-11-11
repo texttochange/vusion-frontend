@@ -123,7 +123,8 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-    public function testfromFilterToQueryCondition_messageDirection()
+
+    public function testFromFilterToQueryConditions_messageDirection()
     {
         $filterParam = array(
             1 => 'message-direction', 
@@ -164,7 +165,8 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-    public function testfromFilterToQueryCondition_date()
+
+    public function testFromFilterToQueryConditions_date()
     {
         $filterParam = array(
             1 => 'date', 
@@ -395,7 +397,19 @@ class HistoryTestCase extends CakeTestCase
             );        
         
         $this->History->create('unattach-history');
-        $saveHistoryStatus = $this->History->save($history);      
+        $saveHistoryStatus = $this->History->save($history); 
+        
+        
+        $history_01 = array(
+            'object-type' => 'datepassed-marker-history',
+            'participant-phone' => '7886014620',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-direction' => 'outgoing',
+            'unattach-id' =>'9'
+            );        
+        
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history_01);     
         
         $output = $this->History->countUnattachedMessages('5');       
         $this->assertEquals(1, $output);   
@@ -404,7 +418,14 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEquals(1, $output); 
         
         $output = $this->History->countUnattachedMessages('5','delivered');       
-        $this->assertEquals(0, $output); 
-    }            
- 
+        $this->assertEquals(0, $output);
+        
+        $output = $this->History->countUnattachedMessages('9');       
+        $this->assertEquals(1, $output);  
+        
+        $output = $this->History->countUnattachedMessages('9', 'datepassed-marker');       
+        $this->assertEquals(1, $output);  
+    } 
+    
+    
 }

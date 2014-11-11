@@ -55,6 +55,16 @@ class UserAccessComponentTest extends CakeTestCase
     
     public function testGetUnmatchableConditions_allProgramAccess()
     {
+        $authMock = $this->getMock('Auth', array('user'));        
+        $authMock
+        ->expects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '1',
+            'group_id' => '1')));
+        
+        $this->UserAccessComponent->Auth = $authMock;
+        
         $this->AssertEqual(array(), $this->UserAccessComponent->getUnmatchableConditions());
     }
     
