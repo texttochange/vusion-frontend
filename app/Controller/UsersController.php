@@ -13,7 +13,6 @@ class UsersController extends AppController
     
     var $components = array(
         'LocalizeUtils', 
-        'ResetPasswordTicket',
         'Captcha',
         'Email',
         'Filter',
@@ -38,15 +37,21 @@ class UsersController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $paginate = array('all');
+        $defaultConditions = array();
         
+        if ($this->Auth->user('group_id') != 1) {
+            $defaultConditions = array('invited_by' => $this->Auth->user('id'));
+        }
+
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $conditions = $this->Filter->getConditions($this->User);
+        $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
+        
         $this->paginate        = $paginate;
         $this->User->recursive = 0;
         $this->set('users', $this->paginate("User"));
@@ -135,9 +140,13 @@ class UsersController extends AppController
                 }
 
                 if ($canInviteUsers == true) {
-                    $this->Acl->allow($user, 'controllers/Users');
+                    $this->Acl->allow($user, 'controllers/Users/inviteUser');
+                    $this->Acl->allow($user, 'controllers/Users/index');
+                    $this->Acl->allow($user, 'controllers/Users/delete');
                 } else {
-                    $this->Acl->deny($user, 'controllers/Users');
+                    $this->Acl->deny($user, 'controllers/Users/index');
+                    $this->Acl->deny($user, 'controllers/Users/delete');
+                    $this->Acl->deny($user, 'controllers/Users/inviteUser');
                 }
                 ########################################################
 
@@ -161,6 +170,7 @@ class UsersController extends AppController
             $this->request->data = $this->User->read(null, $id);
             ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
+            $this->request->data['User']['can_invite_users'] = $this->Acl->check($this->User, 'controllers/Users/inviteUser');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
@@ -425,9 +435,11 @@ class UsersController extends AppController
         $this->Session->write('user_id',$userId);
 
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->ResetPasswordTicket->saveToken($token);
+        $this->Ticket->saveToken($token);
         
-        $this->ResetPasswordTicket->sendEmail($email, $userName, $token);
+        $subject = 'Password Reset';
+        $template = 'reset_password_template';
+        $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
             'default',
@@ -529,7 +541,7 @@ class UsersController extends AppController
             return;
         }
         
-        $email = $this->request->data['User']['emailInvitee'];
+        $email = $this->request->data['User']['email'];
         $disclaimer = $this->request->data['User']['invite_disclaimer'];
         $group_id = $this->request->data['User']['group_id'];
         $programs = $this->request->data['Program'];
@@ -552,13 +564,15 @@ class UsersController extends AppController
             );
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->Ticket->saveInvitedToken($token, $invite);
+        $this->Ticket->saveInvitedToken($email, $token, $invite);
 
         $userName = $this->Session->read('Auth.User.username');
         
-        $this->Ticket->sendEmail($email, $userName, $token);
+        $subject = 'Invitation';
+        $template = 'invite_user_template';
+        $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
-            __('An Email has been sent to your email account.'),
+            __('An Email has been sent to the invited email account.'),
             'default',
             array('class'=>'message success')
             );
@@ -573,6 +587,7 @@ class UsersController extends AppController
             $this->User->create();
             $invite = $this->Session->read('invite');
             $this->request->data['User']['group_id'] = $invite['group_id'];
+            $this->request->data['User']['invited_by'] = $invite['invited_by'];
             $this->request->data['Program'] = $invite['programs'];
             if ($this->User->save($this->request->data)) {
                 $this->Session->delete('invite');
@@ -711,6 +726,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         

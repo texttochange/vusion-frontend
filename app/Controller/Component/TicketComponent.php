@@ -29,16 +29,15 @@ class TicketComponent extends Component
     }
     
     
-    public function sendEmail($userEmail, $userName, $token)
+    public function sendEmail($userEmail, $userName, $subject, $template, $token)
     {  
-        //$linkdomain  = Configure::read('vusion.domain');
-        $linkdomain  = 'localhost:4567'; 
+        $linkdomain  = Configure::read('vusion.domain');
         $email       = new CakeEmail();
         $email->config('default');
         $email->from(array('admin@vusion.texttochange.org' => 'Vusion'));
         $email->to($userEmail);
-        $email->subject('Vusion Invitation Request');
-        $email->template('invite_user_template');
+        $email->subject('Vusion '. $subject .' Request');
+        $email->template($template);
         $email->emailFormat('html');
         $email->viewVars(array(
             'token' => $token,
@@ -61,8 +60,10 @@ class TicketComponent extends Component
     }
 
 
-    public function saveInvitedToken($token, $invite)
+    public function saveInvitedToken($email, $token, $invite)
     {
+        $this->_checkInvitedEmailUniqueInRedis($email, $token);
+
         $ticketKey = $this->_getTicketKey($token);
         $this->redis->setex($ticketKey, 604800, json_encode($invite));
     }
@@ -73,7 +74,7 @@ class TicketComponent extends Component
         $result    = null;
         $ticketKey = $this->_getTicketKey($ticketHash);
         $ticket    = $this->redis->get($ticketKey);
-        
+
         if (!empty($ticket)) {
             $result = $ticket;
             $this->redis->delete($ticketKey);
@@ -85,6 +86,20 @@ class TicketComponent extends Component
         }
         
         return $result;
+    }
+
+
+    protected function _checkInvitedEmailUniqueInRedis($email, $token)
+    {
+        $ticket = $this->redis->get($email);
+
+        if ($ticket) {
+            $this->redis->delete($email);
+
+            $ticketKey = $this->_getTicketKey($ticket);
+            $this->redis->delete($ticketKey);
+        }
+        $this->redis->setex($email, 604800, $token);
     }
     
     

@@ -52,6 +52,7 @@ class TicketComponentTest extends CakeTestCase
         parent::tearDown();
     }
     
+
     public function testcheckTicket()
     {
         
@@ -62,18 +63,6 @@ class TicketComponentTest extends CakeTestCase
         $this->redis->set($key, $token);
         $ticketTest = $this->TicketComponent->checkTicket($token);
         $this->assertEqual($token, $ticketTest);
-
-        #for invited user
-        $invite = array(
-            'programs' => array('Program' => array(0 => 1)),
-            'group_id' => 3,
-            'invited_by' => 8
-            );
-        $token = 'inviteuser';        
-        $key = $this->redisTicketPrefix.':'. $token;
-        $this->redis->set($key, json_encode($invite));
-        $ticket = $this->TicketComponent->checkTicket($token);
-        $this->assertEqual($invite, $ticket);
     }
     
     
@@ -87,4 +76,43 @@ class TicketComponentTest extends CakeTestCase
         
         $this->assertEqual(null, $ticket);
     }
+
+
+    public function testSaveInvitedToken()
+    {
+        $email = 'jack@vusion.com';
+        $invite = array(
+            'programs' => array('Program' => array(0 => 1)),
+            'group_id' => 3,
+            'invited_by' => 8
+            );
+        $token = 'inviteuser';
+        $savedInvite = $this->TicketComponent->saveInvitedToken($email, $token, $invite);        
+
+        $ticket = $this->TicketComponent->checkTicket($token);
+        $this->assertEqual($invite, $ticket);
+    }
+
+
+    public function testSaveInvitedToken_more_than_once()
+    {
+        $email = 'jack@vusion.com';
+        $invite = array(
+            'programs' => array('Program' => array(0 => 1)),
+            'group_id' => 3,
+            'invited_by' => 8
+            );
+        $token = 'inviteuser';
+        $savedInvite = $this->TicketComponent->saveInvitedToken($email, $token, $invite);
+
+        $token2 = 'inviteuser2';
+        $savedInvite2 = $this->TicketComponent->saveInvitedToken($email, $token2, $invite);        
+
+        $ticket = $this->TicketComponent->checkTicket($token);
+        $this->assertEqual(null, $ticket);
+
+        $ticket2 = $this->TicketComponent->checkTicket($token2);
+        $this->assertEqual($invite, $ticket2);
+    }
+
 }
