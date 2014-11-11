@@ -14,9 +14,10 @@ class UnmatchableReplyController extends AppController
                 'json' => 'View')),
         'LocalizeUtils',
         'PhoneNumber',
-        'ProgramPaginator',
         'UserAccess',
-        'Filter');
+        'Filter',
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 

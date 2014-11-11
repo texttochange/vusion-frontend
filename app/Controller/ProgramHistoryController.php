@@ -16,7 +16,9 @@ class ProgramHistoryController extends AppController
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
-        'Filter');
+        'Filter',
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',

@@ -1,6 +1,7 @@
 <?php 
 App::uses('Model', 'Model');
 App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
+App::uses('MongoModelValidator', 'Model');
 
 
 abstract class MongoModel extends Model
@@ -60,6 +61,7 @@ abstract class MongoModel extends Model
             $this->useDbConfig = $dbName;
         }
         parent::__construct($id, $table, $ds);
+        $this->validator(new MongoModelValidator($this));
     }
     
     
@@ -132,8 +134,8 @@ abstract class MongoModel extends Model
         }
         return $document;
     }
-    
-    
+
+
     public function isVeryUnique($check)
     {
         $key = array_keys($check);
@@ -155,19 +157,7 @@ abstract class MongoModel extends Model
             $this->data[$this->alias][$field] = $default;
         } 
     }
-    
-    
-    # Need to overwrite to avoid validation error message to be written
-    public function invalidate($field, $value = true) 
-    {
-        if ($value == 'noMessage') {
-            return;
-        }
-        if (!is_array($this->validationErrors)) {
-            $this->validationErrors = array();
-        }
-        $this->validationErrors[$field] []= $value;
-    }
+
     
     function beforeSave($option = array())
     {

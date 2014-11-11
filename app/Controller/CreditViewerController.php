@@ -8,23 +8,21 @@ App::uses('Program', 'Model');
 
 class CreditViewerController extends AppController
 {
+    var $uses = array(
+        'Program', 
+        'Group');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
         'PhoneNumber',
         'Number');
     var $components = array(
-        'ProgramPaginator',
         'CreditManager',
         'RequestHandler'=> array(
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
         'PhoneNumber');
-    
-    var $uses = array(
-        'Program', 
-        'Group');
     
     
     public function beforeFilter()
