@@ -22,7 +22,7 @@ class InteractionTestCase extends CakeTestCase
         parent::tearDown();
     }
     
-    
+  
     public function testBeforeValidate()
     {
         $dialogue = $this->Maker->getOneDialogue();
@@ -49,8 +49,23 @@ class InteractionTestCase extends CakeTestCase
         $this->assertEqual($interaction['model-version'], '5');
         $this->assertTrue(isset($interaction['reminder-actions'][0]['model-version']));
     }
+
+
+    public function testvalidate_openQuestion_fail()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        unset($interaction['type-schedule-reminder']);
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $interaction = $this->Interaction->validates();
+        $this->assertEqual(
+            array(
+                'type-schedule-reminder' => array('This field has to be set.'),
+                'reminder-minutes' => array('A reminder-minutes field is required.')), 
+            $this->Interaction->validationErrors);
+    }
     
-    
+  
     public function testBeforeValidate_closedQuestion() 
     {
         $interaction = $this->Maker->getInteractionClosedQuestion();

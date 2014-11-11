@@ -577,6 +577,11 @@ function loadPaginationCount(url) {
             if (data['status'] == 'ok') {
                 $('.ttc-page-count').attr('title', data['pagination-count']);
                 $('#paging-count').text(data['rounded-count']);
+                var paging_end = parseInt($('#paging-end').text());
+                var paging_count = parseInt(data['pagination-count']);
+                if (paging_end >= paging_count) {
+                    $('#data-control-nav .next').addClass('disabled').empty().text('>');
+                }
             }
         },
         timeout: 45000,  //45 sec

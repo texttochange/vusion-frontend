@@ -231,6 +231,15 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldOrValue', 'type-interaction', 'question-answer', 'question-answer-keyword'),
                 'message' => 'A set-reminder field is required.',
                 ),
+            'valueRequireFields' => array(
+                'rule' => array(
+                    'valueRequireFields', array(
+                        'reminder' => array(
+                            'type-schedule-reminder',
+                            'reminder-number',
+                            'reminder-actions'))),
+                'message' => 'A reminder required field.',
+                ),
             ),
         'type-unmatching-feedback' => array(
             'requiredConditional' => array(
@@ -321,14 +330,18 @@ class Interaction extends VirtualModel
             ),
         // Reminder Subtype
         'type-schedule-reminder' => array(
-            'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
-                'message' => 'A type-schedule-reminder field is required.',
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'This field has to be set.',
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('reminder-offset-days', 'reminder-offset-time')),
                 'message' => 'The value of type-schedule-reminder is not valid.',
-                )
+                ),
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
+                'message' => 'A type-schedule-reminder field is required.',
+                ),
             ),
         'reminder-number' => array(
             'requiredConditional' => array(
@@ -685,6 +698,8 @@ class Interaction extends VirtualModel
         
         if ($this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
+            $this->_setDefault('type-schedule-reminder', null);
+            $this->_setDefault('reminder-number', null);
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
         
