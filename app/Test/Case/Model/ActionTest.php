@@ -339,16 +339,6 @@ class ActionTestCase extends CakeTestCase
         $this->assertEqual(
             'The forward url is not valid.',
             $this->Action->validationErrors['forward-url'][0]);
-        
-        $action = array(
-            'type-action' => 'url-forwarding',
-            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
-        $this->Action->set($action);
-        $this->Action->beforeValidate();
-        $this->assertFalse($this->Action->validates());
-        $this->assertEqual(
-            'The forward url is not valid.',
-            $this->Action->validationErrors['forward-url'][0]);
     }
 
 

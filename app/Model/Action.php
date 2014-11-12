@@ -513,7 +513,7 @@ class Action extends VirtualModel
             return true;
         }
         $matches = array();
-        preg_match('/\[[-\+&;%@.\w_]*\]/', $data[$field], $matches);
+        preg_match(VusionConst::FORWARD_URL_REPLACEMENT_REGEX, $data[$field], $matches);
         foreach ($matches as $match) {
             if (!in_array($match, $urlReplacement)) {
                 return "The replacement $match is not allowed.";
