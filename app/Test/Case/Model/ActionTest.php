@@ -308,6 +308,14 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
+
+        $action = array(
+            'type-action' => 'url-forwarding',
+            'forward-url' => "http://partner.com/index.php?script='insert into [PROGRAM] value [MESSAGE]'");
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $result = $this->Action->validates();
+        $this->assertTrue($result);
     }
 
     
