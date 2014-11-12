@@ -107,6 +107,9 @@ function handleResponseValidationErrors(validationErrors){
             case 'type-question':
                 errorClass = "ttc-radio-validation-error";
                 break;
+            case 'type-schedule-reminder':
+                errorClass = "ttc-radio-validation-error";
+                break;
             case 'subcondition-field':
                 style = 'left:-80px';
                 break;
@@ -180,6 +183,7 @@ function clickBasicButton(){
     
     var newElt = {
         "type": "fieldset",
+        "class": "ttc-removable",
         "name": listName+"["+id+"]",
         "item": itemToAdd,
         "caption": localize_label(itemToAdd),
@@ -206,7 +210,7 @@ function activeForm(){
     $.each($('.ui-dform-addElt:not(.activated)'),function(key,elt){
             $(elt).click(clickBasicButton).addClass("activated");    
     });
-    $.each($(".ui-dform-fieldset[name$='\]']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
+    $.each($(".ui-dform-fieldset.ttc-removable").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
                     $(this).parent().remove();
@@ -217,7 +221,7 @@ function activeForm(){
             $(elt).before(deleteButton);
     });
     //For the Auto-enrollment
-    $.each($(".ui-dform-fieldset[item='auto-enrollment-box']:not([radiochildren])").children(".ui-dform-legend:first-child"), function (key, elt){
+    $.each($(".ui-dform-fieldset.ttc-foldable").children(".ui-dform-legend:first-child"), function (key, elt){
             var foldButton = document.createElement('img');
             $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/minimize-icon-16.png').on('click', foldForm);
             $(elt).before(foldButton);
@@ -931,6 +935,9 @@ function configToForm(item, elt, id_prefix, configTree){
                 "name": id_prefix,
                 "elements": []
             }; 
+            if (dynamicForm[item]['class']) {
+                myelt['class'] = dynamicForm[item]['class'];
+            }
             if (dynamicForm[item]['item']) {
                 myelt['item'] = dynamicForm[item]['item'];
             }
@@ -965,6 +972,7 @@ function configToForm(item, elt, id_prefix, configTree){
                     listEltName =  listName + "["+i+"]";
                     var listElt = {
                         "type":"fieldset",
+                        "class": "ttc-removable",
                         "item": dynamicForm[item]['adds'],
                         "caption": localize_label(dynamicForm[item]['adds']),
                         "name": listEltName,
@@ -1001,6 +1009,7 @@ function configToForm(item, elt, id_prefix, configTree){
                 if (optionDef['subfields']) {
                     var radiochildren = {
                         "type": "fieldset",
+                        "name": id_prefix,
                         "caption": localize_label(option['value']),
                         "radiochildren": "radiochildren",
                         "elements":[]};
@@ -1039,6 +1048,7 @@ function configToForm(item, elt, id_prefix, configTree){
         if (checkedItem && dynamicForm[item]['subfields']){
             var checkboxchild = {
                 "type": "fieldset",
+                "name": id_prefix,
                 "caption": localize_label(item),
                 "radiochildren": "radiochildren",
                 "elements":[]

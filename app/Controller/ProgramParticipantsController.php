@@ -21,10 +21,13 @@ class ProgramParticipantsController extends AppController
                 'json' => 'View')), 
         'LocalizeUtils',
         'Filter',
-        'UserLogMonitor');
+        'UserLogMonitor',
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Paginator' => array('className' => 'BigCountPaginator'));
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     
     
     function constructClasses() 

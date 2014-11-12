@@ -11,21 +11,24 @@ App::uses('CreditLog', 'Model');
 
 class ProgramsController extends AppController
 {
-    
+
+    var $uses = array(
+        'Program', 
+        'Group');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')), 
         'LocalizeUtils', 
         'PhoneNumber', 
-        'ProgramPaginator', 
+        'Paginator' => array(
+            'className' => 'ProgramPaginator'), 
         'Stats',
         'UserAccess',
         'Filter');
     var $helpers = array('Time',
         'Js' => array('Jquery'), 
         'PhoneNumber');    
-    var $uses     = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
         'order' => array(
@@ -139,8 +142,9 @@ class ProgramsController extends AppController
                 'order'=> array('timestamp' => 'DESC'))));
         
         // paginate using ProgramPaginator
-        $this->paginate         = $paginate;
-        $programs               = $this->ProgramPaginator->paginate();
+        $this->paginate = $paginate;
+        $programs       = $this->paginate();
+        
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
     }

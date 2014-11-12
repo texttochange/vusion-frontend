@@ -20,6 +20,7 @@ var dialogue = {
     },
     "auto-enrollment-box": {
         'type': 'container',
+        'class': 'ttc-foldable',
         'contains': ['auto-enrollment'],
         'skip': false,
         'item': "auto-enrollment-box",
