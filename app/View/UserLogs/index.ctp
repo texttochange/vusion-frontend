@@ -1,4 +1,4 @@
-<div class="users-index">
+<div class="users-index index">
     <h3><?php echo __('Users Logs');?></h3>
     <div class="ttc-data-control">
 	<div id="data-control-nav" class="ttc-paging paging">
@@ -13,15 +13,15 @@
         ?>
 	</div>
 	</div>    
-    <div class="ttc-table-display-area user-logs-table">
+    <div class="ttc-table-display-area ">
 	<div class="ttc-table-scrolling-area display-height-size">
-	    <table cellpadding="0" cellspacing="0">
+	    <table class="user-logs" cellpadding="0" cellspacing="0">
 	        <thead>
 	            <tr>
 			        <th class="date-time"><?php echo $this->Paginator->sort('timestamp',__('Date'));?></th>
-			        <th ><?php echo $this->Paginator->sort('timezone', __('Timezone'));?></th>
+			        <th class="content"><?php echo $this->Paginator->sort('timezone', __('Timezone'));?></th>
 			        <th class="content"><?php echo $this->Paginator->sort('user-id',__('User'));?></th>
-			        <th ><?php echo $this->Paginator->sort('program-database-name', __('Program'));?></th>
+			        <th class="content"><?php echo $this->Paginator->sort('program-database-name', __('Program'));?></th>
 			        <th class="content"><?php echo __('Event');?></th>
 			    </tr>
 	        </thead>
@@ -29,9 +29,9 @@
 	            <?php foreach ($userLogs as $userLog): ?>
 	            <tr>
                     <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s',$userLog['UserLog']['timestamp']); ?></td>
-                    <td ><?php echo $userLog['UserLog']['timezone']; ?></td>
+                    <td class="content"><?php echo $userLog['UserLog']['timezone']; ?></td>
                     <td class="content"><?php echo $userLog['UserLog']['user-name']; ?></td>
-                    <td ><?php echo $userLog['UserLog']['program-name']; ?></td>
+                    <td class="content"><?php echo $userLog['UserLog']['program-name']; ?></td>
                     <td class="content"><?php echo $userLog['UserLog']['parameters']; ?></td>
 	            </tr>
 	            <?php endforeach; ?>
