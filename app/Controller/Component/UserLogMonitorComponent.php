@@ -138,6 +138,7 @@ class UserLogMonitorComponent extends Component
         
         $programTimezone = 'UTC';        
         if (isset($this->Controller->programDetails['settings']['timezone'])) {
+            //print_r($this->Controller->programDetails);
             $programTimezone = $this->Controller->programDetails['settings']['timezone'];
         }
         
@@ -151,8 +152,14 @@ class UserLogMonitorComponent extends Component
             $userLog['parameters']            = $this->userLogActions[$controller][$method][$action];
             $userLog['user-id']               = $this->Session->read('Auth.User.id');
             $userLog['user-name']             = $this->Session->read('Auth.User.username');
-            $userLog['timestamp']             = $now->format("Y-m-d\TH:i:s");
             $userLog['timezone']              = $programTimezone;
+            
+            if ($userLog['timezone'] == "UTC") {
+                $userLog['timestamp'] = $now->format("Y-m-d\TH:i:s");
+            } else {            
+                date_timezone_set($now,timezone_open($userLog['timezone']));
+                $userLog['timestamp'] = $now->format("Y-m-d\TH:i:s");
+            }    
             
             $this->UserLog->create();
             $this->UserLog->save($userLog);
