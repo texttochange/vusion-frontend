@@ -17,6 +17,7 @@ class CreditViewerController extends AppController
         'PhoneNumber',
         'Number');
     var $components = array(
+        'ProgramPaginator',
         'CreditManager',
         'RequestHandler'=> array(
             'viewClassMap' => array(

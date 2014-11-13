@@ -102,6 +102,9 @@ class WorkerMessageMaker
 
     public function massTag($tag, $query)
     {
+        if ($query === array()) {
+            $query = null;
+        }
         return array(
             'action' => 'mass_tag',
             'tag' => $tag,
