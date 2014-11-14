@@ -1,7 +1,7 @@
 <?php
 App::uses('Component', 'Controller');
 App::uses('UserLog', 'Model');
-
+App::uses('VusionConst', 'Lib');
 
 class UserLogMonitorComponent extends Component
 {
@@ -154,10 +154,10 @@ class UserLogMonitorComponent extends Component
             $userLog['timezone']              = $programTimezone;
             
             if ($userLog['timezone'] == "UTC") {
-                $userLog['timestamp'] = $now->format("Y-m-d\TH:i:s");
+                $userLog['timestamp'] = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
             } else {            
                 date_timezone_set($now,timezone_open($userLog['timezone']));
-                $userLog['timestamp'] = $now->format("Y-m-d\TH:i:s");
+                $userLog['timestamp'] = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
             }    
             
             $this->UserLog->create();
