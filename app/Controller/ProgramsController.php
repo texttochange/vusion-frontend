@@ -86,15 +86,20 @@ class ProgramsController extends AppController
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
-        $user                     = $this->Auth->user();
+        $user = $this->Auth->user();
+        $conditions = array('conditions' => array('id' => $programId));
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-            return  $this->Program->find('authorized', array(
+            $program = $this->Program->find('authorized', array(
                 'specific_program_access' => 'true',
-                'user_id' => $user['id'],
-                'conditions' => array('id' => $programId)));
+                'user_id' => $user['id']),
+                $conditions);
+        } else {
+            $program = $this->Program->find('first', $conditions);
         }
-        $this->Program->id = $programId;
-        return $this->Program->read();
+        if ($program == array()) {
+            return null;
+        }
+        return $program;
     }
     
     
@@ -207,8 +212,7 @@ class ProgramsController extends AppController
                     mkdir($programDirPath);
                     chmod($programDirPath, 0764);
                 }
-                //Importing Dialogue and Request from another Program
-                if (isset($this->request->data['Program']['import-dialogues-requests-from'])) {
+                if (!empty($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);
                     if (isset($importFromProgram)) {
