@@ -138,7 +138,6 @@ class UserLogMonitorComponent extends Component
         
         $programTimezone = 'UTC';        
         if (isset($this->Controller->programDetails['settings']['timezone'])) {
-            //print_r($this->Controller->programDetails);
             $programTimezone = $this->Controller->programDetails['settings']['timezone'];
         }
         
