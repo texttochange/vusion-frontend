@@ -42,7 +42,7 @@ class UserLogTestCase extends CakeTestCase
         $this->UserLog->create();
         $savedUserLog = $this->UserLog->save($userLog);
         
-        $userLog2 = array(
+        $userLog_02 = array(
             'timestamp' => '2014-20-10T20:25:00',
             'timezone' => 'Australia/Sydney',
             'user-name' => 'Tom',
@@ -55,8 +55,60 @@ class UserLogTestCase extends CakeTestCase
             );
         
         $this->UserLog->create();
-        $savedUserLog = $this->UserLog->save($userLog2);
+        $savedUserLog = $this->UserLog->save($userLog_02);
         
         $this->assertEqual(2, $this->UserLog->find('count'));
     }
+    
+    
+    public function testSave_fail_emptyField()
+    {
+       $userLog = array(
+            'timestamp' => '2014-20-10T20:25:00',
+            'timezone' => 'Africa/Kampala',
+            'user-name' => 'maxmass',
+            'user-id' => '',
+            'program-name' => 'm4rh program',
+            'program-database-name' => 'm4rhP',
+            'controller' => 'programParticipant',
+            'action' => 'delete',
+            'parameters' => 'all participant with tag: geek'
+            );
+        
+        $this->UserLog->create();
+        $savedUserLog = $this->UserLog->save($userLog);
+        
+        $this->assertFalse($savedUserLog);        
+        $this->assertEquals(
+            'The user id cannot be empty.',
+            $this->UserLog->validationErrors['user-id'][0]
+            );
+    }
+    
+    
+    public function testSave_fail_dateFormat()
+    {
+       $userLog = array(
+            'timestamp' => '2014-20-10',
+            'timezone' => 'Africa/Kampala',
+            'user-name' => 'maxmass',
+            'user-id' => '45',
+            'program-name' => 'm4rh program',
+            'program-database-name' => 'm4rhP',
+            'controller' => 'programParticipant',
+            'action' => 'delete',
+            'parameters' => 'all participant with tag: geek'
+            );
+        
+        $this->UserLog->create();
+        $savedUserLog = $this->UserLog->save($userLog);
+        
+        $this->assertFalse($savedUserLog);
+        $this->assertEquals(
+            'The date time is not in an ISO format.',
+            $this->UserLog->validationErrors['timestamp'][0]
+            );
+    }
+    
+    
 }
