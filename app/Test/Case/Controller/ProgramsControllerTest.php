@@ -331,6 +331,50 @@ class ProgramsControllerTestCase extends ControllerTestCase
         rmdir(WWW_ROOT . 'files/programs/programurl');
     }
     
+
+    public function testAdd_emptyField()
+    {
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker'
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
+                   )
+                )
+            );
+
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
+
+        $Programs
+        ->expects($this->once())
+        ->method('_startBackendWorker')
+        ->will($this->returnValue(true));
+
+        $data = array(
+            'Program' => array(
+                'name' => 'programName',
+                'url' => 'programurl',
+                'database'=> 'programdatabase',
+                'import-dialogues-requests-from' => false
+                )
+            );
+
+        $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+
+        $this->assertFileExists(
+            WWW_ROOT . 'files/programs/programurl/');
+        rmdir(WWW_ROOT . 'files/programs/programurl');
+    }
+
+
     public function testAdd_import() 
     {
         $Programs = $this->generate(
