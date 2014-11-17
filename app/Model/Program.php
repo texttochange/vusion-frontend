@@ -137,27 +137,18 @@ class Program extends AppModel
     
     public function isNotEditable($check) 
     {
-        if (isset($check['url'])) {
-            $existing = $this->find(
-                'first', 
-                array('id = Program.id' ,
-                    'conditions'=> array('url' => $check['url']))
-                );
+        if ($this->id != null) {
+            $key = key($check);
+            $savedProgram = $this->find(
+                'first',
+                array('conditions' => array('id' => $this->id)));
+            if ($check[$key] != $savedProgram['Program'][$key]) {
+                return false;
+                
+            }
             
-        } else {            
-            $existing = $this->find(
-                'first', 
-                array('id = Program.id' ,
-                    'conditions'=> array('database' => $check['database']))
-                );
         }
-        
-        
-        if($existing){
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
     
     
