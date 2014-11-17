@@ -815,8 +815,43 @@ class Participant extends MongoModel
         }
         return $report;
     }
-    
-    
+
+
+    public $runActionsFields = array(
+        'phone',
+        'dialogue-id',
+        'interaction-id',
+        'answer');
+
+
+    public function validateRunActions($data)
+    {
+        $runActionsErrors = array();
+        foreach ($this->runActionsFields as $mandatoryField) {
+            if (!isset($data[$mandatoryField])) {
+                $runActionsErrors[$mandatoryField] = "This field is missing";
+            }
+        }
+       if ($runActionsErrors != array()) {
+            return $runActionsErrors;
+        }
+        if (!$this->find('count', array('conditions' => array('phone' => $data['phone'])))) {
+            $runActionsErrors['phone'] = __("No participant with phone: %s.", $data['phone']);
+        }
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            $data['dialogue-id'],
+            $data['interaction-id'],
+            $data['answer']);
+        if ($result != true || is_array($result)) {
+            $runActionsErrors += $result;
+        }
+        if ($runActionsErrors === array()) {
+            return true;
+        }
+        return $runActionsErrors;
+    }
+
+
     //Filter variables and functions
     public $filterFields = array(
         'phone' => array(

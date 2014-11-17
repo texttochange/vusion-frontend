@@ -77,15 +77,29 @@ class VumiRabbitMQ {
         return $this->sendMessageTo($to.'.control', $msg);
     }
 
+
     public function sendMessageMassTag($to, $tag, $query)
     {
         $msg = $this->workerMessageMaker->massTag($tag, $query);
         return $this->sendMessageTo($to.'.control', $msg);
     }
 
+
     public function sendMessageMassUntag($to, $tag)
     {
         $msg = $this->workerMessageMaker->massUntag($tag);
+        return $this->sendMessageTo($to.'.control', $msg);
+    }
+
+
+    public function sendMessageRunActions($to, $runActions)
+    {
+        $msg = $this->workerMessageMaker->runActions(
+            $to,
+            $runActions['phone'],
+            $runActions['dialogue-id'],
+            $runActions['interaction-id'],
+            $runActions['answer'])
         return $this->sendMessageTo($to.'.control', $msg);
     }
 

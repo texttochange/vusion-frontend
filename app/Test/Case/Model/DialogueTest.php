@@ -594,11 +594,6 @@ class DialogueTestCase extends CakeTestCase
             array('keyword'),
             Dialogue::hasDialogueKeywords($dialogue, array('keyword')));
         
-        $dialogue = $this->Maker->getOneDialogueWithKeyword();
-        $this->assertEquals(
-            array('feel', 'keyword'),
-            Dialogue::hasDialogueKeywords($dialogue, array('feel', 'keyword')));
-        
         $dialogue = $this->Maker->getOneDialogueWithKeyword('keyword');
         $this->assertEquals(
             array('keyword'),
@@ -642,5 +637,36 @@ class DialogueTestCase extends CakeTestCase
             Dialogue::getDialogueKeywords($dialogue));
     }
     
-    
+    public function testIsInteractionAnswerExists(){
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            $savedDialogue['Dialogue']['dialogue-id'],
+            $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
+            'Good');
+        $this->assertTrue($result);
+
+        //Interaction not existing
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            $savedDialogue['Dialogue']['dialogue-id'],
+            'SomeOtherId',
+            'good');
+        $this->assertEqual(
+            array('interaction-id' => "The dialogue with id ".$savedDialogue['Dialogue']['dialogue-id']." doesn't have an interaction with id SomeOtherId"),
+            $result);
+
+        //Dialogue not existing
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            'SomeRandomId',
+            'SomeOtherId',
+            'good');
+        $this->assertEqual(
+            array('dialogue-id' => "No dialogue with id: SomeRandomId."),
+            $result);
+    }
+
 }

@@ -14,7 +14,7 @@
 			'database',
 		    array(
 		    	'label' => __('Database'),
-		        'readonly' => 'true',
+		        //'readonly' => 'true',
 		        'style' => 'color:#AAAAAA'));
 	?>
 <?php echo $this->Form->end(__('Save'));?>
