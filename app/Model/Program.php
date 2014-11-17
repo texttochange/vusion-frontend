@@ -46,7 +46,7 @@ class Program extends AppModel
                 'message' => 'This url is not allowed to avoid overwriting a static Vusion url, please choose a different one.'
                 ),
             'notEditable' => array(
-                'rule' => array('isNotEditableUrl'),
+                'rule' => array('isNotEditable'),
                 'message' => 'This field is read only.',
                 'on' => 'update'
                 )
@@ -70,7 +70,7 @@ class Program extends AppModel
                 'message' => 'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.'
                 ),
             'notEditable' => array(
-                'rule' => array('isNotEditableDatabase'),
+                'rule' => array('isNotEditable'),
                 'message' => 'This field is read only.',
                 'on' => 'update'
                 )
@@ -135,15 +135,25 @@ class Program extends AppModel
         );
     
     
-    public function isNotEditableDatabase($check) 
+    public function isNotEditable($check) 
     {
-        $existingDatabase = $this->find(
-            'first', 
-            array('id = Program.id' ,
-                'conditions'=> array('database' => $check['database']))
-            );
+        if (isset($check['url'])) {
+            $existing = $this->find(
+                'first', 
+                array('id = Program.id' ,
+                    'conditions'=> array('url' => $check['url']))
+                );
+            
+        } else {            
+            $existing = $this->find(
+                'first', 
+                array('id = Program.id' ,
+                    'conditions'=> array('database' => $check['database']))
+                );
+        }
         
-        if($existingDatabase){
+        
+        if($existing){
             return true;
         } else {
             return false;
@@ -159,22 +169,6 @@ class Program extends AppModel
             return false;
         }
         return true;
-    }
-    
-    
-    public function isNotEditableUrl($check) 
-    {
-        $existingUrl = $this->find(
-            'first', 
-            array('id = Program.id' ,
-                'conditions'=> array('url' => $check['url']))
-            );
-        
-        if($existingUrl){
-            return true;
-        } else {
-            return false;
-        }
     }
     
     
