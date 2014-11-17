@@ -386,4 +386,32 @@ class ProgramTestCase extends CakeTestCase
     }
     
     
+    public function testEditProgram_url_fial()
+    {
+        $program = array(
+            'id' => 6,
+            'name' => 'M7h',
+            'url' => 'm7h',
+            'database' => 'm7h',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->Program->create();
+        $this->Program->save($program);
+        
+        $program_01 = array(
+            'id' => 6,
+            'name' => 'M7h',
+            'url' => 'm7h2014',
+            'database' => 'm7h',            
+            'created' => '2012-01-24 15:29:24',
+            'modified' => '2012-01-24 15:29:24'
+            );
+        $this->assertFalse($this->Program->save($program_01));
+        $this->assertEqual(
+            $this->Program->validationErrors['url'][0], 
+            'This field is read only.');
+    }
+    
+    
 }
