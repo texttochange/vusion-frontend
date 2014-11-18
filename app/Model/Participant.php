@@ -824,7 +824,7 @@ class Participant extends MongoModel
         'answer');
 
 
-    public function validateRunActions($data)
+    public function validateRunActions(&$data)
     {
         $runActionsErrors = array();
         foreach ($this->runActionsFields as $mandatoryField) {
@@ -835,6 +835,7 @@ class Participant extends MongoModel
        if ($runActionsErrors != array()) {
             return $runActionsErrors;
         }
+        $data['phone'] = $this->cleanPhone($data['phone']);
         if (!$this->find('count', array('conditions' => array('phone' => $data['phone'])))) {
             $runActionsErrors['phone'] = __("No participant with phone: %s.", $data['phone']);
         }

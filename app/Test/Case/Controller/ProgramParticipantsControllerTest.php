@@ -986,7 +986,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'post',
                 'data' => array(
-                    'phone' => '+256111111',
+                    'phone' => '0256111111',
                     'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
                     'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
                     'answer' => 'Good',
