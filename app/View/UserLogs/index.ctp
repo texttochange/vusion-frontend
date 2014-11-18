@@ -1,4 +1,4 @@
-<div class="users-index index">
+<div class="users-index index width-size">
     <h3><?php echo __('Users Logs');?></h3>
     <div class="ttc-data-control">
 	<div id="data-control-nav" class="ttc-paging paging">
