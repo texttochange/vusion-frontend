@@ -93,7 +93,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array('loggedIn', 'startup', 'user')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -113,6 +113,11 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $unattachedMessages->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue(true));
+
         $unattachedMessages->Program
         ->expects($this->once())
         ->method('find')

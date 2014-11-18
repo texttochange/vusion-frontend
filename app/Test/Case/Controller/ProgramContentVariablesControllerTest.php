@@ -77,7 +77,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array('loggedIn')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -91,6 +91,11 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $contentVariables->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $contentVariables->Program
         ->expects($this->any())
         ->method('find')

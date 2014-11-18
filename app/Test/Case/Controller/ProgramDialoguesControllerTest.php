@@ -135,7 +135,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array(),
+                    'Auth' => array('loggedIn', 'startup'),
                     'RequestHandler' => array(),
                     'Keyword' => array('areKeywordsUsedByOtherPrograms')
                     ),
@@ -158,6 +158,11 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $dialogues->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue(true));
+
         $dialogues->Session
         ->expects($this->any())
         ->method('read')

@@ -90,7 +90,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth',
+                    'Auth' => array('loggedIn', 'startup'),
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -112,6 +112,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $participants->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $participants->Program
         ->expects($this->once())
         ->method('find')

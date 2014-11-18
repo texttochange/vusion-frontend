@@ -72,7 +72,7 @@ class AppController extends Controller
     function beforeFilter()
     { 
         //Verify the access of user to this program
-        if (!empty($this->params['program'])) {
+        if ($this->Auth->loggedIn() && !empty($this->params['program'])) {
             $this->Program->recursive = -1;
             
             $data = $this->Program->find('authorized', array(
