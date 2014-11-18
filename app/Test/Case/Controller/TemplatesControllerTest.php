@@ -61,7 +61,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $templates = $this->generate('Templates', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
                 ),
             'models' => array(
                 'Group' => array()

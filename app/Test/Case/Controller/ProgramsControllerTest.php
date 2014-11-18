@@ -74,7 +74,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
-                    'Auth' => array('user'),
+                    'Auth' => array('user', 'loggedIn'),
                     'Session' => array('read'),
                     'Stats',
                     ),
@@ -89,6 +89,11 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $programs->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $programs->Auth
         ->staticExpects($this->any())
         ->method('user')

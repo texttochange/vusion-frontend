@@ -73,7 +73,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array('loggedIn')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -87,6 +87,11 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $predefinedMessages->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $predefinedMessages->Program
         ->expects($this->any())
         ->method('find')

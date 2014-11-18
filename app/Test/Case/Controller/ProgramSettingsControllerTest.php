@@ -70,7 +70,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     {
         $programSettings = $this->generate('ProgramSettings', array(
             'components' => array(
-                'Auth' => array(),
+                'Auth' => array('loggedIn', 'startup'),
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash'),
                 'Keyword' => array('areProgramKeywordsUsedByOtherPrograms', 'validationToMessage') 
@@ -90,6 +90,11 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $programSettings->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $programSettings->Program
         ->expects($this->once())
         ->method('find')
