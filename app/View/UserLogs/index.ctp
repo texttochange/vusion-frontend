@@ -19,20 +19,20 @@
 	        <thead>
 	            <tr>
 			        <th class="date-time"><?php echo $this->Paginator->sort('timestamp',__('Date'));?></th>
-			        <th class="content"><?php echo $this->Paginator->sort('timezone', __('Timezone'));?></th>
-			        <th class="content"><?php echo $this->Paginator->sort('user-id',__('User'));?></th>
-			        <th class="content"><?php echo $this->Paginator->sort('program-database-name', __('Program'));?></th>
-			        <th class="content"><?php echo __('Event');?></th>
+			        <th class="user_logs_field"><?php echo $this->Paginator->sort('timezone', __('Timezone'));?></th>
+			        <th class="user_logs_field"><?php echo $this->Paginator->sort('user-id',__('User'));?></th>
+			        <th class="user_logs_field"><?php echo $this->Paginator->sort('program-database-name', __('Program'));?></th>
+			        <th class="user_logs_field"><?php echo __('Event');?></th>
 			    </tr>
 	        </thead>
 	        <tbody>
 	            <?php foreach ($userLogs as $userLog): ?>
 	            <tr>
                     <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s',$userLog['UserLog']['timestamp']); ?></td>
-                    <td class="content"><?php echo $userLog['UserLog']['timezone']; ?></td>
-                    <td class="content"><?php echo $userLog['UserLog']['user-name']; ?></td>
-                    <td class="content"><?php echo $userLog['UserLog']['program-name']; ?></td>
-                    <td class="content"><?php echo $userLog['UserLog']['parameters']; ?></td>
+                    <td class="user_logs_field"><?php echo $userLog['UserLog']['timezone']; ?></td>
+                    <td class="user_logs_field"><?php echo $userLog['UserLog']['user-name']; ?></td>
+                    <td class="user_logs_field"><?php echo $userLog['UserLog']['program-name']; ?></td>
+                    <td class="user_logs_field"><?php echo $userLog['UserLog']['parameters']; ?></td>
 	            </tr>
 	            <?php endforeach; ?>
 	        </tbody>
