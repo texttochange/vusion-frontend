@@ -7,26 +7,26 @@ class ScriptMaker
     public function getOneDialogueWithKeyword($keyword="keyword")
     {
         $dialogue['Dialogue'] = array(
-            'dialogue-id'=> 'script.dialogues[0]',
-            'activated' => 1,
+            'activated' => 0,
             'auto-enrollment' => 'none',
             'interactions'=> array(
                 array(
-                    'type-interaction' => 'annoucement', 
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '20/10/2013 20:20',
+                    'type-interaction' => 'announcement',
                     'content' => 'hello',
-                    'keyword' => 'feel',
-                    'interaction-id' => 'script.dialogues[0].interactions[0]'
                     ),	
                 array(
-                    'type-interaction' => 'question-answer', 
+                    'type-interaction' => 'question-answer',
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '20/10/2013 20:20',
                     'content' => 'how are you', 
                     'keyword' => $keyword,
-                    'type-question'=>'close-question',
+                    'type-question'=>'closed-question',
                     'answers'=> array(
                         0 => array('choice'=>'Good'),
                         1 => array('choice'=>'Bad')
                         ),
-                    'interaction-id' => 'script.dialogues[0].interactions[1]'
                     )
                 )
             );
@@ -38,6 +38,12 @@ class ScriptMaker
     public function getOneDialogueAnwerNoSpaceSupported($keyword="keyword")
     {
         $dialogue = $this->getOneDialogueWithKeyword($keyword);
+        $dialogue['Dialogue']['interactions'][0] = array(
+            'type-schedule' => 'fixed-time',
+            'date-time' => '20/10/2013 20:20',
+            'type-interaction' => 'question-answer',
+            'content' => 'hello this is a question',
+            'keyword' => 'feel');
         $dialogue['Dialogue']['interactions'][1]['set-answer-accept-no-space'] =  'answer-accept-no-space';
         return $dialogue;
 

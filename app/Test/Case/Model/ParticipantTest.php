@@ -26,7 +26,6 @@ class ParticipantTestCase extends CakeTestCase
     
     public function tearDown()
     {
-        
         $this->dropData();
         unset($this->Participant);
         parent::tearDown();
@@ -57,8 +56,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
         $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
     }
-   
-    
+
     
     public function testSave_clearEmpty()
     {
@@ -1608,6 +1606,96 @@ class ParticipantTestCase extends CakeTestCase
             'limit' => 10,
             'conditions' => $query));
         $this->assertEqual(2, count($results));
+    }
+
+
+    public function testValideRunActions()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array('phone' => '+06');
+        $this->Participant->create();
+        $result = $this->Participant->save($participant);
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $runActions = array(
+            'phone'=> '+06',
+            'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
+            'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
+            'answer' => 'bad');
+
+        $result = $this->Participant->validateRunActions($runActions);
+        $this->assertTrue($result);
+    }
+
+
+    public function testValideRunActions_fail_noParticipant()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $runActions = array(
+            'phone'=> '+06',
+            'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
+            'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
+            'answer' => 'bad');
+
+        $result = $this->Participant->validateRunActions($runActions);
+        $this->assertEqual(array('phone' => "No participant with phone: +06."), $result);
+    }
+
+
+    public function testValideRunActions_fail_noDialogue()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array('phone' => '+06');
+        $this->Participant->create();
+        $result = $this->Participant->save($participant);
+
+        $runActions = array(
+            'phone'=> '+06',
+            'dialogue-id' => 'someId',
+            'interaction-id' => 'someOtherId',
+            'answer' => 'bad');
+
+        $result = $this->Participant->validateRunActions($runActions);
+        $this->assertEqual(
+            array('dialogue-id' => "No dialogue with id: someId."),
+            $result);
+    }
+
+    public function testValideRunActions_fail_noInteraction()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array('phone' => '+06');
+        $this->Participant->create();
+        $result = $this->Participant->save($participant);
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $runActions = array(
+            'phone'=> '+06',
+            'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
+            'interaction-id' => 'someOtherId',
+            'answer' => 'bad');
+
+        $result = $this->Participant->validateRunActions($runActions);
+        $this->assertEqual(
+            array('interaction-id' => "The dialogue with id ".$savedDialogue['Dialogue']['dialogue-id']." doesn't have an interaction with id someOtherId"),
+            $result);
     }
     
 }

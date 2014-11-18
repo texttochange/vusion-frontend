@@ -100,6 +100,7 @@ class WorkerMessageMaker
             );
     }
 
+
     public function massTag($tag, $query)
     {
         if ($query === array()) {
@@ -121,5 +122,15 @@ class WorkerMessageMaker
             );
     }
     
+
+    public function runActions($participant_phone, $dialogue_id, $interaction_id, $answer)
+    {
+        return array(
+            'action' => 'run_actions',
+            'participant_phone' => $participant_phone,
+            'dialogue_id' => $dialogue_id,
+            'interaction_id' => $interaction_id,
+            'answer' => $answer);
+    }
     
 }
