@@ -152,13 +152,7 @@ class UserLogMonitorComponent extends Component
             $userLog['user-id']               = $this->Session->read('Auth.User.id');
             $userLog['user-name']             = $this->Session->read('Auth.User.username');
             $userLog['timezone']              = $programTimezone;
-            
-            if ($userLog['timezone'] == "UTC") {
-                $userLog['timestamp'] = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
-            } else {            
-                date_timezone_set($now,timezone_open($userLog['timezone']));
-                $userLog['timestamp'] = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
-            }    
+            $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);            
             
             $this->UserLog->create();
             $this->UserLog->save($userLog);
