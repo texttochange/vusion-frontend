@@ -310,7 +310,7 @@ class ProgramParticipantsController extends AppController
 
     protected function _notifyBackendRunActions($workerName, $runActions)
     {
-        $this->VumiRabbitMQ->sendMessageRunActions($workerName, $runAction);
+        $this->VumiRabbitMQ->sendMessageRunActions($workerName, $runActions);
     }
     
     public function add() 

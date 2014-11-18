@@ -95,11 +95,10 @@ class VumiRabbitMQ {
     public function sendMessageRunActions($to, $runActions)
     {
         $msg = $this->workerMessageMaker->runActions(
-            $to,
             $runActions['phone'],
             $runActions['dialogue-id'],
             $runActions['interaction-id'],
-            $runActions['answer'])
+            $runActions['answer']);
         return $this->sendMessageTo($to.'.control', $msg);
     }
 
