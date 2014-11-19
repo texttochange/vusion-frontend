@@ -231,7 +231,9 @@ class History extends MongoModel
                 continue;
             }   
             if (in_array($history['History']['object-type'], array('oneway-marker-history', 'datepassed-marker-history'))) {
-                if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
+                if (isset($history['History']['unattach-id'])) {
+                    $history['History']['details'] = 'Separate Message';
+                } else if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
                     $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
                 } else {
                     $history['History']['details'] = 'unknown interaction';
