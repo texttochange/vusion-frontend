@@ -274,34 +274,11 @@ Steps on a Windows (8.x/7) Host
 	    $ git submodule init
 	    $ git submodule update
 
-4. Install **Composer** which is a dependency manager for installing  Cakephp package
-   ::
 
-	    Install php_
-	    Install Composer_
-	**Note** Composer.exe will ask for php.exe please move to programs Files into the php folder 
-		 and select the php.exe.When Composer install is complete, copy the **Composer.phar**
-		 file and paste it into "Development/Vusion-forntend/Composer" folder.
-		
-	
 
-	#After using **GIT BASH** move to the composer folder in vusion-forntend 
-	$ cd vusion-forntend/composer
+4. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
-	#inside there is afile "composer.json" which has the list of the required package.
-	#When still inside the vusion-frontend/composer folder run the command below
-	#to install cakephp and other packages
-	$ php composer.phar install
-  **NB:**
-  For more information about *Composer* click here_
- 
-  .. _here: https://getcomposer.org/
-  .. _php: http://windows.php.net/download/
-  .. _Composer: https://getcomposer.org/download/
-
-5. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
-
-6. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
+5. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
    ::
     Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
     to the file location of your development directory.
@@ -310,13 +287,13 @@ Steps on a Windows (8.x/7) Host
     We also have the synced, here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
   
 				    	  
-7. Run this command in the PowerShell to start Vagrant and virtualbox
+6. Run this command in the PowerShell to start Vagrant and virtualbox
    ::
 	    $ vagrant up
 
     Enter the URL: localhost:4567 in your web browser vusion login page will show
 
-8. Settingup git flow to enable you create feature from branches for easy and organised development 
+7. Settingup git flow to enable you create feature from branches for easy and organised development 
     
    a) Download and install ``getopt.exe`` from the util-linux-package_  
       into ``C:\Program Files\Git\bin``.
