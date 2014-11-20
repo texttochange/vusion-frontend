@@ -27,16 +27,13 @@ class AppController extends Controller
                 'controller' => 'users',
                 'action' => 'login'
                 ),
-            //'authError' => 'Authentication Failed',
             'authenticate' => array(
                'Basic' => array(
                    'fields' => array('username' => 'email')
                     ),
                 'Form' => array(
-                    //'field' => array('username' => 'username'),
                     'fields' => array('username' => 'email')
                     )
-                
                 ),
             'authorize' => array(
                 'Actions' => array('actionPath' => 'controllers')
@@ -77,8 +74,8 @@ class AppController extends Controller
             
             $data = $this->Program->find('authorized', array(
                 'specific_program_access' => $this->Group->hasSpecificProgramAccess(
-                    $this->Session->read('Auth.User.group_id')),
-                'user_id' => $this->Session->read('Auth.User.id'),
+                    $this->Auth->user('group_id')),
+                'user_id' => $this->Auth->user('id'),
                 'program_url' => $this->params['program']
                 ));
             if (count($data)==0) {
@@ -89,6 +86,7 @@ class AppController extends Controller
             foreach (array('name', 'url', 'database', 'status') as $key) {
                 $programDetails[$key] = $data[0]['Program'][$key];
             }
+            
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
             $this->Session->write($programDetails['url']."_name", $programDetails['name']);
             
@@ -100,12 +98,12 @@ class AppController extends Controller
             if (!$this->ArchivedProgram->isAllowed()) {
                 $this->_stop();
             }
-            
+
             //In case of a Json request, no need to set up the variables
             if ($this->_isAjax() || $this->params['ext']=='csv') {
                 return;
             }
-            
+
             $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
             $programLogsUpdates = $this->LogManager->getLogs($programDetails['database'], 5);
             $programStats       = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
@@ -156,5 +154,22 @@ class AppController extends Controller
         return ($this->request->is('ajax') ||  $this->request->ext == 'json');
     }
     
+    public function beforeRender(){
+        if ($this->_isAjax() && $this->response->statusCode() == 403) {
+            return false;
+        }
+        if ($this->_isAjax()) {
+            $this->RequestHandler->renderAs($this, 'json');
+            $this->layout = 'default';
+        }
+    }
+
+    public function beforeRedirect($url, $status = null, $exit = true) {
+        // this statement catches not redirect to login for ajax requests
+        if($this->_isAjax() && $url == array('controller' => 'users', 'action' => 'login')) {
+            throw new ForbiddenException();
+        }
+        return true;
+    }
     
 }
