@@ -568,7 +568,7 @@ class UnattachedMessageTestCase extends CakeTestCase
     }
     
     
-    public function testGet_unattachedMessage_by_ID()
+    public function testGet_unattachedMessageNmae_By_ID()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         
@@ -595,7 +595,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $savedUnattachedMessage_02 = $this->UnattachedMessage->save($unattachedMessage);
         
         $output = $this->UnattachedMessage->getNameById(02);
-        $this->assertEquals('hello', $output['name']);
+        $this->assertEquals('hello', $output);
     }
     
 }
