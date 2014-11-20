@@ -69,6 +69,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
+                'Auth' => array('loggedIn')
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -79,7 +80,12 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         $unmatchableReplies->Acl
         ->expects($this->any())
         ->method('check')
-        ->will($this->returnValue('true'));
+        ->will($this->returnValue(true));
+
+        $unmatchableReplies->Auth
+        ->expects($this->any())
+        ->method('loggedInd')
+        ->will($this->returnValue(true));
 
     }
     

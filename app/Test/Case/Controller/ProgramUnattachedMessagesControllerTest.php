@@ -189,7 +189,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $unattachedMessages = $this->mock_program_access();
         $unattachedMessages->Auth
-        ->staticExpects($this->once())
+        ->staticExpects($this->any())
         ->method('user')
         ->will($this->returnValue(array(
             'id' => '2',
@@ -236,7 +236,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $unattachedMessages = $this->mock_program_access();
         $unattachedMessages->Auth
-        ->staticExpects($this->once())
+        ->staticExpects($this->any())
         ->method('user')
         ->will($this->returnValue(array(
             'id' => '2',
@@ -298,7 +298,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         
         $unattachedMessages = $this->mock_program_access();
         $unattachedMessages->Auth
-        ->staticExpects($this->once())
+        ->staticExpects($this->any())
         ->method('user')
         ->will($this->returnValue(array(
             'id' => '2',
