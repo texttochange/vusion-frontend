@@ -177,7 +177,7 @@
 			                 echo __("One way marker on interaction <i>%s</i>", $history['History']['details']);
 			             } elseif ($history['History']['object-type'] == 'datepassed-marker-history') {
 			                 if (isset($history['History']['unattach-id'])) {
-			                     echo __("Date passed marker on separate Message <i>%s</i>", $history['History']['details']);
+			                     echo __("Date passed marker on separate message <i>%s</i>", $history['History']['details']);
 			                 } else {
 			                     echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']);
 			                 }
