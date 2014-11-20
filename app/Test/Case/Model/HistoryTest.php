@@ -2,6 +2,7 @@
 /* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('ProgramSetting', 'Model');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -17,7 +18,7 @@ class HistoryTestCase extends CakeTestCase
         $options                 = array('database' => 'testdbprogram');
         $this->History           = new History($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->History = ClassRegistry::init('History');
+         $this->ProgramSetting    = new ProgramSetting($options);
         $this->dropData();
     }
     
@@ -34,9 +35,10 @@ class HistoryTestCase extends CakeTestCase
     {
         $this->History->deleteAll(true, false);
         $this->UnattachedMessage->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
     }
     
-    
+    /*
     public function testFindScriptFilter()
     {
         $participantsState = array(
@@ -424,6 +426,37 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->countUnattachedMessages('9', 'datepassed-marker');       
         $this->assertEquals(1, $output);  
     } 
+    */
     
+    public function testDatepassed_Marker_History_on_UnattachedMessage()
+    {       
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $unattachedMessage = array(
+            'name'=>'hello2',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            'created-by' => 1,
+            '_id' => 04
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $history_01 = array(
+            'object-type' => 'datepassed-marker-history',
+            'participant-phone' => '7886014620',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-direction' => 'outgoing',
+            'unattach-id' =>'04'
+            );        
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history_01);
+        
+        
+        $output = $this->History->getParticipantHistory('7886014620', '');
+        
+       
+    } 
     
 }
