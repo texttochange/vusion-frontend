@@ -392,6 +392,9 @@ class UnattachedMessage extends MongoModel
     {
         $unattachedMessage = $this->find('first', array(
             'conditions' => array('_id' => $id)));
+        if ($unattachedMessage == null) {
+            return null;
+        }
         return $unattachedMessage['UnattachedMessage']['name'];
     }
     
