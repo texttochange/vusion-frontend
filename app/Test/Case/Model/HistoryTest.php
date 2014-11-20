@@ -438,7 +438,6 @@ class HistoryTestCase extends CakeTestCase
             'content'=>'hello there',
             'type-schedule'=>'immediately',
             'created-by' => 1,
-            'id' => 04
             );
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
