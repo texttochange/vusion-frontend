@@ -3,7 +3,7 @@ App::uses('MongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
 App::uses('VusionConst', 'Lib');
-
+App::uses('UnattachedMessage', 'Model');
 
 class History extends MongoModel
 {
@@ -232,7 +232,8 @@ class History extends MongoModel
             }   
             if (in_array($history['History']['object-type'], array('oneway-marker-history', 'datepassed-marker-history'))) {
                 if (isset($history['History']['unattach-id'])) {
-                    $history['History']['details'] = 'Separate Message';
+                    $separateMessageName = $this->UnattachedMessage->getNameById($history['History']['unattach-id']);
+                    $history['History']['details'] = $separateMessageName;
                 } else if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
                     $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
                 } else {

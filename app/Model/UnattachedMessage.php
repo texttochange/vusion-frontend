@@ -388,4 +388,12 @@ class UnattachedMessage extends MongoModel
     }
     
     
+    public function getNameById($id)
+    {
+        $unattachedMessage = $this->find('first', array(
+            'conditions' => array('_id' => $id)));
+        return $unattachedMessage['UnattachedMessage'];
+    }
+    
+    
 }
