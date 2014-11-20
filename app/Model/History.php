@@ -131,6 +131,9 @@ class History extends MongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
+        
+        $options                 = array('database' => $id['database']);
+        $this->UnattachedMessage = new UnattachedMessage($options);
     }
     
     
