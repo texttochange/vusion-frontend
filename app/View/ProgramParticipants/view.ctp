@@ -176,7 +176,11 @@
 			             <?php if ($history['History']['object-type'] == 'oneway-marker-history') {
 			                 echo __("One way marker on interaction <i>%s</i>", $history['History']['details']);
 			             } elseif ($history['History']['object-type'] == 'datepassed-marker-history') {
-			                 echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']); 
+			                 if (isset($history['History']['unattach-id'])) {
+			                     echo __("Date passed marker on separate message <i>%s</i>", $history['History']['details']);
+			                 } else {
+			                     echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']);
+			                 }
 			             } elseif ($history['History']['object-type'] == 'datepassed-action-marker-history') {
 			                 echo __("Date passed marker on action <i>%s</i> scheduled at %s", 
 			                         $history['History']['action-type'], 
