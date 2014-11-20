@@ -14,21 +14,18 @@ class HistoryTestCase extends CakeTestCase
     {
         parent::setUp();
         
-        $this->History = ClassRegistry::init('History');
-        
         $options                 = array('database' => 'testdbprogram');
-        $this->History = new History($options);
-        
+        $this->History           = new History($options);
+        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->History = ClassRegistry::init('History');
         $this->dropData();
     }
     
     
     public function tearDown()
     {
-        $this->dropData();
-        
-        unset($this->History);
-        
+        $this->dropData();        
+        unset($this->History);        
         parent::tearDown();
     }
     
@@ -36,6 +33,7 @@ class HistoryTestCase extends CakeTestCase
     public function dropData()
     {
         $this->History->deleteAll(true, false);
+        $this->UnattachedMessage->deleteAll(true, false);
     }
     
     
