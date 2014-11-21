@@ -387,5 +387,31 @@ class InteractionTestCase extends CakeTestCase
             Interaction::getInteractionKeywords($interaction));
     }
 
-  
+
+    public function testHasAnswer()
+    {
+        //Open question are always matching except empty string
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $this->assertTrue(
+            Interaction::hasAnswer($interaction, 'Olivier'));
+        $this->assertEqual(
+            Interaction::hasAnswer($interaction, ''),
+            array('answer' => "The interaction doesn't accept empty answer."));
+
+        //Close question are case and accent insensitive
+        $interaction = $this->Maker->getInteractionClosedQuestion();
+        $this->assertTrue(
+            Interaction::hasAnswer($interaction, 'fine'));
+        $this->assertEqual(
+            Interaction::hasAnswer($interaction, 'fin'),
+            array('answer' => 'The interaction has not such answer: fin.'));
+
+        //Answer Multi keywords are case and accent insensitive
+        $interaction = $this->Maker->getInteractionMultiKeywordQuestion();
+        $this->assertTrue(
+            Interaction::hasAnswer($interaction, 'Male'));
+        $this->assertEqual(
+            Interaction::hasAnswer($interaction, 'Mall'),
+            array('answer' => 'The interaction has not such answer: Mall.'));
+    }
 }

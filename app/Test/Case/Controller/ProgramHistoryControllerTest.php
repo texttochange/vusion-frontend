@@ -81,7 +81,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $histories = $this->generate('ProgramHistory', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
+                'Auth' => array('loggedIn')
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -94,6 +95,11 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $histories->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $histories->Program
         ->expects($this->once())
         ->method('find')
@@ -352,8 +358,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('read')
         ->will($this->onConsecutiveCalls(
-            '4', 
-            '2',
             $this->programData[0]['Program']['database'],
             $this->programData[0]['Program']['name'],
             'Africa/Kampala',

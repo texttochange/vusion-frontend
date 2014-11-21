@@ -5,9 +5,9 @@ Vusion Frontend is build with CakePHP2.0.5.
 
 Installation
 ------------
-
 ::
-	$ mkdir Development
+
+        $ mkdir Development
 	$ cd Development
 	$ git clone <this repository>
 	# Then retrive the Plugins and the Backend
@@ -51,9 +51,10 @@ who is the apache user.
 Required Tools to Install
 -------------------------
 ::
-	$ sudo apt-get install apache2
-	$ sudo apt-get install mongoDB   # (>=2.6)
-	$ sudo apt-get install mysql-server
+
+	  $ sudo apt-get install apache2
+	  $ sudo apt-get install mongoDB   # (>=2.6)
+	  $ sudo apt-get install mysql-server
 
 **Note: phpmyadmin to work may require you to configure the apache2.conf file by including this line: include /etc/phpmyadmin/apache.conf at the bottom.**
 
@@ -66,12 +67,14 @@ Modules need to be install and configure in PHP
     - Download the .tar.gz file of MongoDB PHP Driver **v1.2.9** (https://github.com/mongodb/mongo-php-driver/tags)
     - Open a terminal
     ::
+    
         $ pecl install mongo-1.5.6
 
 :Redis PHP:
     - Clone the Git repo git clone git://github.com/nicolasff/phpredis.git
     - Open a terminal
-    ::  
+    :: 
+    
         $ phpize && ./configure && make && sudo make install
 
 
@@ -79,7 +82,8 @@ Development PHP Modules
 ----------------------- 
 
 - Pear and PHPUnit Installation
-   ::  
+   :: 
+   
     	$ sudo apt-get install php-pear
     	$ sudo pear channel-discover pear.phpunit.de
         $ sudo pear channel-discover components.ez.no
@@ -90,10 +94,12 @@ Development PHP Modules
  
 **- Note if PHPUnit fails, first upgrade pear with the command below**
 ::
+
     $ pear upgrade pear
  
  - try the PHPUnit again
 ::
+
     $ sudo pear install --alldeps phpunit/PHPUnit
  
  
@@ -103,10 +109,12 @@ To run the different build task from build.xml, you need to install
 
 - Jdk6
 ::
+
     $ sudo apt-get install openjdk-6-jre;
 
 - Ant
 ::
+
     $ sudo apt-get install -u ant; or sudo apt-get install ant;
     
 
@@ -126,6 +134,7 @@ If file schema.php is not found, you can also create the database using Mysql by
 
 
 ::
+
 	1.On your phpmyadmin home go to more tab and in the drop dpwn select import
 	2.Browse the file you went to import in this case schema.sql 
 	3.Tick the checkbox with donot auto increment and press go
@@ -144,6 +153,7 @@ Create a userLogin and password in the Mysql account database which must corresp
 while in the mysql console,navigate to to users table and create two users; "cake" and "cake_test" and grant all privileges to these users by issuing the commands below
 
 ::
+
     1. GRANT ALL PRIVILEGES ON *.* TO 'cake'@'localhost' IDENTIFIED BY 'password';
     2. GRANT ALL PRIVILEGES ON *.* TO 'cake_test'@'localhost' IDENTIFIED BY 'password';
 
@@ -264,34 +274,11 @@ Steps on a Windows (8.x/7) Host
 	    $ git submodule init
 	    $ git submodule update
 
-4. Install **Composer** which is a dependency manager for installing  Cakephp package
-   ::
 
-	    Install php_
-	    Install Composer_
-	**Note** Composer.exe will ask for php.exe please move to programs Files into the php folder 
-		 and select the php.exe.When Composer install is complete, copy the **Composer.phar**
-		 file and paste it into "Development/Vusion-forntend/Composer" folder.
-		
-	
 
-	#After using **GIT BASH** move to the composer folder in vusion-forntend 
-	$ cd vusion-forntend/composer
+4. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
-	#inside there is afile "composer.json" which has the list of the required package.
-	#When still inside the vusion-frontend/composer folder run the command below
-	#to install cakephp and other packages
-	$ php composer.phar install
-  **NB:**
-  For more information about *Composer* click here_
- 
-  .. _here: https://getcomposer.org/
-  .. _php: http://windows.php.net/download/
-  .. _Composer: https://getcomposer.org/download/
-
-5. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
-
-6. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
+5. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
    ::
     Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
     to the file location of your development directory.
@@ -300,13 +287,13 @@ Steps on a Windows (8.x/7) Host
     We also have the synced, here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
   
 				    	  
-7. Run this command in the PowerShell to start Vagrant and virtualbox
+6. Run this command in the PowerShell to start Vagrant and virtualbox
    ::
 	    $ vagrant up
 
     Enter the URL: localhost:4567 in your web browser vusion login page will show
 
-8. Settingup git flow to enable you create feature from branches for easy and organised development 
+7. Settingup git flow to enable you create feature from branches for easy and organised development 
     
    a) Download and install ``getopt.exe`` from the util-linux-package_  
       into ``C:\Program Files\Git\bin``.

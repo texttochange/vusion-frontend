@@ -4,8 +4,6 @@ App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('Dialogue', 'Model');
-
-App::uses('DialogueHelper', 'Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('VusionException', 'Lib');
 App::uses('FilterException', 'Lib');
@@ -50,13 +48,10 @@ class ProgramParticipantsController extends AppController
         $this->History           = new History($options);
         $this->Schedule          = new Schedule($options);
         $this->Dialogue          = new Dialogue($options);
-        $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting    = new ProgramSetting($options);
         
         $this->_instanciateVumiRabbitMQ();
-        
-        $this->DialogueHelper = new DialogueHelper();
     }
     
     
@@ -313,6 +308,11 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageMassUntag($workerName, $tag);
     }
     
+
+    protected function _notifyBackendRunActions($workerName, $runActions)
+    {
+        $this->VumiRabbitMQ->sendMessageRunActions($workerName, $runActions);
+    }
     
     public function add() 
     {
@@ -386,11 +386,11 @@ class ProgramParticipantsController extends AppController
         return $participant;
     }
     
-    protected function _ajaxDataPatch()
+    protected function _ajaxDataPatch($modelName='Participant')
     {
         $data = $this->data;
-        if (!isset($data['Participant'])) {
-            $data = array('Participant' => $data);
+        if (!isset($data[$modelName])) {
+            $data = array($modelName => $data);
         }
         return $data;
     }
@@ -786,6 +786,29 @@ class ProgramParticipantsController extends AppController
         $defaultConditions = array();
         $paginationCount   = $this->Participant->count($this->Filter->getConditions($this->Participant, $defaultConditions), null, -1);
         $this->set(compact('requestSuccess', 'paginationCount'));
+    }
+
+
+    public function runActions()
+    {
+        $programUrl     = $this->params['program'];
+        $requestSuccess = true;
+        $data           = $this->data;
+
+        if (!$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
+
+        $valid = $this->Participant->validateRunActions($data);
+        if ($valid === true) {
+            $this->Session->setFlash(__('The runActions succeed.'));
+            $this->_notifyBackendRunActions($programUrl, $data);
+        } else {
+            $this->Session->setFlash(__('The runActions failed.'));
+            $requestSuccess = false;
+            $this->set('validationErrors', $valid);
+        }
+        $this->set(compact('requestSuccess'));
     }
     
     

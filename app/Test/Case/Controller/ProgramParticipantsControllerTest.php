@@ -90,7 +90,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth',
+                    'Auth' => array('loggedIn', 'startup'),
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -101,6 +101,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     '_notifyUpdateBackendWorker',
                     '_notifyBackendMassTag',
                     '_notifyBackendMassUntag',
+                    '_notifyBackendRunActions',
                     'render',
                     )
                 )
@@ -111,6 +112,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $participants->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $participants->Program
         ->expects($this->once())
         ->method('find')
@@ -953,6 +959,68 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(0, $this->Schedule->find('count'));
     }
     
+
+    public function testRunActions_ok()
+    {
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyBackendRunActions')
+        ->with('testurl', array(
+            'phone' => '+256111111',
+            'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
+            'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
+            'answer' => 'Good'))
+        ->will($this->returnValue(true));
+
+        $participant = array(
+            'Participant' => array(
+                'phone' => '+256111111',
+                )
+            );
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $this->testAction(
+            "/testurl/programParticipants/runActions.json",
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'phone' => '0256111111',
+                    'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
+                    'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
+                    'answer' => 'Good',
+                    )
+                )
+            );
+
+         $this->assertTrue($this->vars['requestSuccess']);
+    }
+
+    public function testRunActions_fail_validation()
+    {
+        $participants = $this->mockProgramAccess();
+         $this->testAction(
+            "/testurl/programParticipants/runActions.json",
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'phone' => '+256111111',
+                    'dialogue-id' => '1',
+                    'intaction-id' => '1',
+                    'answer' => 'Good',
+                    )
+                )
+            );
+
+         $this->assertFalse($this->vars['requestSuccess']);
+    }
+
     
     public function testView_displayScheduled()
     {
@@ -1154,8 +1222,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('read')
         ->will($this->onConsecutiveCalls(
-            '4', 
-            '2',
             $this->programData[0]['Program']['database'],
             $this->programData[0]['Program']['name'],
             'Africa/Kampala',

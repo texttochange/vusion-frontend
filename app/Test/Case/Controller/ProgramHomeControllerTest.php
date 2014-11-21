@@ -88,7 +88,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'LocalizeUtils' => array('localizeLabelInArray')
+                'LocalizeUtils' => array('localizeLabelInArray'),
+                'Auth' => array('loggedIn')
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -102,7 +103,13 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
-        
+
+        $home->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+               
+
         $home->Program
         ->expects($this->once())
         ->method('find')

@@ -59,7 +59,8 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read'),
-                    'BackendLog' => array('getLogs')
+                    'BackendLog' => array('getLogs'),
+                    'Auth' => array('loggedIn'),
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -73,6 +74,11 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $logs->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $logs->Program
         ->expects($this->once())
         ->method('find')

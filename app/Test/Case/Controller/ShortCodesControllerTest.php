@@ -68,7 +68,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'Auth' => array(),
+                'Auth' => array('loggedIn'),
                 ),
             'models' => array(
                 'Group' => array()
@@ -80,6 +80,11 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $shortCodes->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $shortCodes->Session
         ->expects($this->any())
         ->method('read')

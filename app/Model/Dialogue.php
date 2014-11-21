@@ -9,6 +9,7 @@ App::uses('Interaction', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
 
+
 class Dialogue extends MongoModel
 {
     
@@ -593,6 +594,26 @@ class Dialogue extends MongoModel
         $result     = $this->find('count', array('conditions' => $conditions));
         return $result == 0;        
     }
+
+
+    public function isInteractionAnswerExists($dialogue_id, $interaction_id, $answer)
+    {
+        $dialogue = $this->getActiveDialogue($dialogue_id);
+        if ($dialogue === array()) {
+            return array('dialogue-id' => __("No dialogue with id: %s.", $dialogue_id));
+        }
+        foreach ($dialogue['Dialogue']['interactions'] as $interaction) {
+            if ($interaction['interaction-id'] === $interaction_id) {
+                if ($hasAnswer = Interaction::hasAnswer($interaction, $answer)) {
+                    return true;
+                } else {
+                    return $hasAnswer;
+                }
+            }
+        }
+        return array('interaction-id' => __("The dialogue with id %s doesn't have an interaction with id %s", $dialogue_id, $interaction_id));
+    }
+
 
 }
 

@@ -643,6 +643,35 @@ class Interaction extends VirtualModel
         }
     }
 
+    static public function hasAnswer($interaction, $answering)
+    {
+        if (!in_array($interaction['type-interaction'], array('question-answer', 'question-answer-keyword' ))) {
+            return array('interaction-id' => __("This interaction is not a question."));
+        }
+        if ($interaction['type-interaction'] === 'question-answer') {
+            if ($interaction['type-question'] === 'open-question') {
+                if (in_array($answering, array(null, ''))) {
+                    return array('answer' => __("The interaction doesn't accept empty answer."));
+                }
+                return true;
+            } else if ($interaction['type-question'] === 'closed-question') {
+                foreach ($interaction['answers'] as $answer) {
+                    if (DialogueHelper::keywordCmp($answer['choice'], $answering)) {
+                        return true;
+                    }
+                }
+                return array('answer' => __("The interaction has not such answer: %s.", $answering));
+            }
+        } else if ($interaction['type-interaction'] === 'question-answer-keyword') {
+            foreach ($interaction['answer-keywords'] as $answerKeyword) {
+                if (DialogueHelper::keywordCmp($answerKeyword['keyword'], $answering)) {
+                    return true;
+                }
+            }
+            return array('answer' => __("The interaction has not such answer: %s.", $answering));
+        }
+    }
+
 
     public function beforeValidate()
     {
