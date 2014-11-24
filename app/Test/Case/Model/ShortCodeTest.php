@@ -9,12 +9,6 @@ class ShortCodeTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        /*$option          = array('database'=>'test');
-        $this->ShortCode = new ShortCode($option);    
-        $this->ShortCode->setDataSource('mongo_test');
-
-        $this->ShortCode->deleteAll(true, false);*/
         $this->ShortCode = ClassRegistry::init('ShortCode');
     }
     

@@ -49,22 +49,9 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        //$this->instanciateContentVariableModel();
         $this->ContentVariable->deleteAll(true, false);
         $this->ContentVariableTable->deleteAll(true, false);
     }
-    
-    
-   /* protected function instanciateContentVariableModel() 
-    {
-        //$options = array('database' => $this->programData[0]['Program']['database']);
-        $dbName = $this->programData[0]['Program']['database'];
-
-        $this->ContentVariable = ProgramSpecificMongoModel::init(
-            'ContentVariable', $dbName, true);
-        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
-            'ContentVariableTable', $dbName, true);
-    }*/
     
     
     public function tearDown()

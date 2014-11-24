@@ -20,7 +20,6 @@ class ProgramSettingTestCase extends CakeTestCase
     public function tearDown()
     {
         unset($this->ProgramSetting);
-        
         parent::tearDown();
     }
     

@@ -65,17 +65,11 @@ class Schedule extends ProgramSpecificMongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
-
-        /*
-        $options                 = array('database' => $id['database']);
-        $this->UnattachedMessage = new UnattachedMessage($options);*/
     }
 
     public function initializeDynamicTable($forceNew=false) 
     {
         parent::initializeDynamicTable();
-        /*$options                 = array('database' => $this->databaseName);
-        $this->UnattachedMessage = new UnattachedMessage($options);*/
         $this->UnattachedMessage = ProgramSpecificMongoModel::init(
             'UnattachedMessage', $this->databaseName, $forceNew);
     }

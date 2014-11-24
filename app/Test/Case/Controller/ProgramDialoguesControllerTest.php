@@ -55,7 +55,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Dialogues = new TestProgramDialoguesController();
-        //ClassRegistry::config(array('ds' => 'test'));
         
         $this->externalModels = array();
         
@@ -81,7 +80,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     protected function instanciateModels()
     {
-        //$options = array('database' => $this->programData[0]['Program']['database']);
         $dbName = $this->programData[0]['Program']['database'];
         
         $this->Dialogue = ProgramSpecificMongoModel::init(
@@ -114,9 +112,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     protected function instanciateExternalModels($dbName)
     {
-        /*$this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
-        $this->externalModels['request']        = new Request(array('database' => $databaseName));*/
         $this->externalModels['dialogue'] = ProgramSpecificMongoModel::init(
             'Dialogue', $dbName, true);
         $this->externalModels['programSetting'] = ProgramSpecificMongoModel::init(
@@ -128,11 +123,8 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     public function tearDown()
     {
-        
         $this->dropData();
-        
-        unset($this->Dialogues);
-        
+        unset($this->Dialogues);        
         parent::tearDown();
     }
     

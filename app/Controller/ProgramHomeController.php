@@ -39,15 +39,6 @@ class ProgramHomeController extends BaseProgramSpecificController
     function beforeFilter()
     {
         parent::beforeFilter();
-        
-        //$options = array('database' => ($this->Session->read($this->params['program']."_db")));
-        /*
-        $this->Participant       = new Participant($options);
-        $this->History           = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting   = new ProgramSetting($options);*/        
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -68,7 +59,6 @@ class ProgramHomeController extends BaseProgramSpecificController
             ), 'controllers/ProgramParticipants/add');
         $participantCount = $this->Participant->find('count');
         $statusCount      = $this->History->find('count');
-        //$schedules        = $this->Schedule->find('soon');
         
         $activeInteractions = $this->Dialogue->getActiveInteractions();
         

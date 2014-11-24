@@ -22,10 +22,6 @@ class ProgramPredefinedMessagesController extends ProgramParticipantsController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        /*
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db')));
-        $this->loadModel('PredefinedMessage', $options); */
     }
     
     

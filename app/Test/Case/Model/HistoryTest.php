@@ -21,11 +21,6 @@ class HistoryTestCase extends CakeTestCase
             'UnattachedMessage', $dbName);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName);
-        /*
-        $options                 = array('database' => 'testdbprogram');
-        $this->History           = new History($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);*/
         $this->dropData();
     }
     

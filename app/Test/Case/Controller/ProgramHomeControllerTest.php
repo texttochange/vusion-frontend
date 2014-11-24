@@ -38,7 +38,6 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->ProgramHome = new TestProgramHomeController();
-        //$this->instanciateModels(); 
         
         $dbName = $this->programData[0]['Program']['database'];
         $this->Dialogue = ProgramSpecificMongoModel::init(
@@ -63,25 +62,11 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->deleteAll(true, false);
     }
     
-  /*  
-    protected function instanciateModels() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->Dialogue          = new Dialogue($options);
-        $this->Schedule          = new Schedule($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting          = new ProgramSetting($options);
-    }
-    */
     
     public function tearDown()
     {
-        
         $this->dropData();
-        
-        unset($this->Scripts);
-        
+        unset($this->Scripts);        
         parent::tearDown();
     }
     

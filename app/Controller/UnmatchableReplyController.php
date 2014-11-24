@@ -28,30 +28,9 @@ class UnmatchableReplyController extends AppController
         'Paginator' => array('className' => 'BigCountPaginator'));
     
     
-   /* public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }*/
-    
-    
     function constructClasses()
     {
         parent::constructClasses();
-        /*
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }*/
-        //$this->DialogueHelper->setDatabase()
-        //$this->UnmatchableReply = new UnmatchableReply();
-        //$this->UnmatchableReply->setDatabase('testdbmongo');
-        //$this->UnmatchableReply = ClassRegistry::init('UnmatchableReply');
-        //$this->User             = ClassRegistry::init('User');
     }
     
     

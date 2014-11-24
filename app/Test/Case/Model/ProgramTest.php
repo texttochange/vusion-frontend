@@ -13,9 +13,7 @@ class ProgramTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
         $this->Program = ClassRegistry::init('Program');
-
         $this->maker = new ScriptMaker();
     }
     
@@ -23,7 +21,6 @@ class ProgramTestCase extends CakeTestCase
     public function tearDown()
     {
         unset($this->Program);
-        
         parent::tearDown();
     }
    

@@ -50,29 +50,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     function beforeFilter() 
     {
         parent::beforeFilter();
-     
-        /*$options = array('database' => $this->programDetails['database']); 
-        $this->Participant       = new Participant($options);
-        $this->History           = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        
-        $this->_instanciateVumiRabbitMQ();*/
     }
-/*
-    public function setModels() {
-        $options = array('database' => $this->programDetails['database']); 
-        $this->Participant       = new Participant($options);
-        $this->History           = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        
-    }
-  */  
+
     
     public function index() 
     {      

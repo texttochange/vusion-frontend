@@ -11,7 +11,6 @@ class CreditLogTestCase extends CakeTestCase
     {
         parent::setUp();
         $this->CreditLog = ClassRegistry::init('CreditLog');
-
         $this->dropData();
     }
 

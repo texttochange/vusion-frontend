@@ -111,12 +111,6 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        /*if (isset($id['id']['database'])) {
-            $options = array('database' => $id['id']['database']);
-        } else {
-            $options = array('database' => $id['database']);
-        }*/
-        
         $this->ValidationHelper = new ValidationHelper(&$this);
     }    
 

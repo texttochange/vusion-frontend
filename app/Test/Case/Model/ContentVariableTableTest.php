@@ -11,16 +11,10 @@ class ContentVariableTableTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-
-        /*
-        $option                     = array('database' => 'testdbprogram');
-        $this->ContentVariableTable = new ContentVariableTable($option);
-        $this->ContentVariable      = new ContentVariable($option);*/
         $this->ContentVariableTable = ProgramSpecificMongoModel::init(
             'ContentVariableTable', 'testdbprogram');
         $this->ContentVariable      = ProgramSpecificMongoModel::init(
             'ContentVariable', 'testdbprogram');
-
         $this->clearData();       
     }
 

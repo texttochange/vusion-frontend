@@ -15,7 +15,6 @@ class TestResetPasswordTicketComponentController extends Controller
         $this->redis = new Redis();
         $this->redis->connect('127.0.0.1');
         $this->redisTicketPrefix = 'unittest';
-    
     }
 
 }
@@ -53,8 +52,7 @@ class ResetPasswordTicketComponentTest extends CakeTestCase
     }
     
     public function testcheckTicket()
-    {
-        
+    {   
         $token = '012546333fg5554dr555seaa453355';
         $this->redisTicketPrefix = 'unittest';
         $key = $this->redisTicketPrefix.':'.$token;
@@ -69,8 +67,7 @@ class ResetPasswordTicketComponentTest extends CakeTestCase
     
     
     public function testNoTicket_InRedis()
-    {
-        
+    { 
         $token = '012546333fg5554dr555seaa33364646';
         $this->redisTicketPrefix = 'unittest';
         $key = $this->redisTicketPrefix.':'.$token;        

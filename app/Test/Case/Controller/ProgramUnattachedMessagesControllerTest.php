@@ -36,8 +36,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
     
     public function setUp() 
     {
-        //Configure::write("mongo_db",$this->programData[0]['Program']['database']);
-        //Configure::write("testurl_db",$this->programData[0]['Program']['database']);
         parent::setUp();
         
         $this->ProgramUnattachedMessages = new TestProgramUnattachedMessagesController();
@@ -55,14 +53,6 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
         $this->History = ProgramSpecificMongoModel::init('History', $dbName, true);
         $this->Participant = ProgramSpecificMongoModel::init('Participant', $dbName, true);
         $this->PredefinedMessage = ProgramSpecificMongoModel::init('PredefinedMessage', $dbName, true);
-
-        /*$this->UnattachedMessage = new UnattachedMessage($options);
-        $this->Schedule          = new Schedule($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->History           = new History($options);
-        $this->Participant       = new Participant($options);
-        $this->PredefinedMessage = new PredefinedMessage($options);*/
-
     }	
     
     
@@ -79,10 +69,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
     
     public function tearDown() 
     {
-        $this->dropData();
-        
+        $this->dropData();        
         unset($this->ProgramUnattachedMessages);
-        
         parent::tearDown();
     }
     

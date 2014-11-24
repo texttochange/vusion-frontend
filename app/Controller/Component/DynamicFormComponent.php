@@ -7,7 +7,7 @@ class DynamicFormComponent extends Component
     
     var $localizedValueLabels = array();
     
-    public function __construct(ComponentCollection $collection, $settings = array())
+    public function startup($controller)
     {
         $this->localizedValueLabels = array(
             "name" => __('Name'),
@@ -128,8 +128,6 @@ class DynamicFormComponent extends Component
             "forward-message-no-participant-feedback" => __("Feedback in case no participant is matching"),
             "set-only-optin-count" => __("Set count only optin participant"),
             );
-        $this->Controller = $collection->getController();
-        parent::__construct($collection, $settings);
-        $this->Controller->set('dynamicFormLabels', $this->localizedValueLabels);
+        $controller->set('dynamicFormLabels', $this->localizedValueLabels);
     }
 }

@@ -14,11 +14,6 @@ class ParticipantTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        //$option               = array('database'=>'testdbprogram');
-        /*$this->Participant    = new Participant($option);
-        $this->ProgramSetting = new ProgramSetting($option);
-        $this->Dialogue       = new Dialogue($option);*/
         $dbName = 'testdbprogram';
         $this->Participant = ProgramSpecificMongoModel::init(
             'Participant', $dbName);
@@ -26,6 +21,7 @@ class ParticipantTestCase extends CakeTestCase
             'Dialogue', $dbName);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName);
+
         $this->Maker = new ScriptMaker();
         
         $this->dropData();

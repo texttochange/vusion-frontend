@@ -9,18 +9,16 @@ App::uses('CreditLog', 'Model');
 
 class TestProgramsController extends ProgramsController 
 {
-    
+
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
     
-    protected function _instanciateVumiRabbitMQ() {
-    }
-    
+    protected function _instanciateVumiRabbitMQ() 
+    {}
     
 }
 
@@ -32,15 +30,9 @@ class ProgramsControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        //Configure::write("mongo_db", "testdbmongo");
         parent::setUp();
         
         $this->Programs = new TestProgramsController();
-        //$this->Programs->constructClasses();
-        /*
-        $options = array('database' => "testdbmongo");
-        $this->ShortCode = new ShortCode($options);
-        $this->CreditLog = new CreditLog($options);*/
         $this->ShortCode = ClassRegistry::init('ShortCode');
         $this->CreditLog = ClassRegistry::init('CreditLog');
         
@@ -56,11 +48,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
     {
         $this->ShortCode->deleteAll(true, false);
         $this->CreditLog->deleteAll(true, false);
-        //$this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->deleteAll(true, false);  
-        //$this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->deleteAll(true, false);
-        //$this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->deleteAll(true, false);
     }
     

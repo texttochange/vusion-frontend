@@ -21,21 +21,12 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     
     public function setUp() 
     {
-        //Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->ShortCodes = new TestShortCodesController();
-        //$this->instanciateShortCodesModel();
         $this->ShortCode = ClassRegistry::init('ShortCode');
         $this->dropData();
     }
-    
-    /*
-    protected function instanciateShortCodesModel() 
-    {
-        $options         = array('database' => $this->databaseName);
-        $this->ShortCode = new ShortCode($options);
-    }*/	
     
     
     protected function dropData()
@@ -88,7 +79,6 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
         
-        //$this->instanciateShortCodesModel();
         $this->ShortCode->create();
         $this->ShortCode->save(array(
             'country' => 'uganda',

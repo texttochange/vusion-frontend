@@ -4,66 +4,10 @@ App::uses('Component', 'Controller');
 
 class FilterComponent extends Component 
 {
-    
+
     var $localizedValueLabel = array();
     var $currentQuery = array();
-    /*
-    public function __construct(ComponentCollection $collection, $settings = array())
-    {
-        $this->localizedValueLabel = array(
-            'not-with' => __('not with'),
-            'not-is-any'=>  __('not is any'),
-            'not-is'=>  __('not is'),
-            'now' => __('now'),
-            'name' => __('program name'),
-            'start-with' => __('start with'),
-            'start-with-any' => __('start with any'),
-            'is-not' =>  __('is not'),
-            'is'=>  __('is'),
-            'is-any'=>  __('is any'),
-            'in'=> __('in'),
-            'not-in'=>  __('not in'),
-            'equal-to' => __('equal to'),
-            'enrolled' => __('enrolled'),
-            'date-from'=>  __('date from'),
-            'date-to'=>  __('date to'),
-            'dialogue-source' => __('dialogue source'),
-            'interaction-source' => __('interaction source'),
-            'request-source' => __('request source'),
-            'from'=> __('from'),
-            'from-phone' => __('from number'),
-            'to-phone' => __('to number'),
-            'to'=>  __('to'), 
-            'contain'=>  __('contain'),
-            'country' => __('country'),
-            'has-keyword'=>  __('has keyword'), 
-            'has-keyword-any'=>  __('has keyword any'), 
-            'matching'=>  __('matching'),
-            'not-matching'=>  __('not matching'),
-            'message-direction' => __('message direction'),
-            'message-status' => __('message status'),
-            'message-content' => __('message content'),
-            'separate-message' => __('separate message'),
-            'shortcode' => __('shortcode'),           
-            'not-matching'=> __('not matching'),
-            'date' => __('date'),
-            'many'=>  __('many'),
-            'any'=>  __('any'),
-            'all'=> __('all'),
-            'with' => __('with'),
-            'phone' => __('phone'),
-            'participant-phone' => __('participant phone'),
-            'participant' => __('participant'),
-            'tagged' => __('tagged'),
-            'labelled' => __('labelled'),
-            'optin' => __('optin'),
-            'optout' => __('optout'),
-            'are-present' => __('are present'),
-            ); 
-        $this->Controller = $collection->getController();
-        parent::__construct($collection, $settings);
-    }*/
-    
+
     
     public function startup(Controller $controller)
     {

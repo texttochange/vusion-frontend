@@ -12,16 +12,6 @@ class RequestTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-
-        /*
-        $connections = ConnectionManager::enumConnectionObjects();
-
-        $option        = array('database' => 'testdbprogram');
-        $this->Request = new Request($option);
-
-        $this->Request->setDataSource('mongo_test');
-        $this->Request->deleteAll(true, false);
-        */
         $dbName = 'testdbprogram';
         $this->Request = ProgramSpecificMongoModel::init(
             'Request', $dbName);

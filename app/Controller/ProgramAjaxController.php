@@ -20,9 +20,6 @@ class ProgramAjaxController extends BaseProgramSpecificController
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-        
-        //$programUrl      = $this->params['program'];
-        //$programDatabase = $this->Session->read($programUrl."_db");
         $dbName = $this->programDetails['database'];
         $programStats = $this->Stats->getProgramStats($dbName);
         $this->set(compact('requestSuccess', 'programStats'));

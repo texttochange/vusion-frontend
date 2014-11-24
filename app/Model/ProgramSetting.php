@@ -22,8 +22,7 @@ class ProgramSetting extends ProgramSpecificMongoModel
     {
         return array(
             'key',
-            'value'
-            );
+            'value');
     }
     
     

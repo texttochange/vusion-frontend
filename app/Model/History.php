@@ -11,13 +11,12 @@ class History extends ProgramSpecificMongoModel
     
     var $name     = 'History';  
     var $useTable = 'history';
-    
+
     var $messageType = array(
         'dialogue-history',
         'request-history',
         'unattach-history',
         'unmatching-history');
-    
     var $markerType = array(
         'datepassed-marker-history',
         'datepassed-action-marker-history',
@@ -129,19 +128,13 @@ class History extends ProgramSpecificMongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
-        
-        /*$options                 = array('database' => $id['database']);
-        $this->UnattachedMessage = new UnattachedMessage($options);*/
     }
 
     public function initializeDynamicTable($forceNew=false)
     {
         parent::initializeDynamicTable();
-        /*$options                 = array('database' => $this->databaseName);
-        $this->UnattachedMessage = new UnattachedMessage($options);  */
         $this->UnattachedMessage = ProgramSpecificMongoModel::init(
             'UnattachedMessage', $this->databaseName, $forceNew);
-        //$this->UnattachedMessage->setDatabase($this->databaseName);
     }
     
     

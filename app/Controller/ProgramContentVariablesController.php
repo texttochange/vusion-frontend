@@ -21,14 +21,6 @@ class ProgramContentVariablesController extends BaseProgramSpecificController
     function constructClasses()
     {
         parent::constructClasses();
-        /*
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-        
-        $this->ContentVariable = new ContentVariable($options);
-        $this->ContentVariableTable = new ContentVariableTable($options);
-        */
     }
     
     

@@ -21,18 +21,6 @@ class TemplatesController extends AppController
     public function constructClasses()
     {
         parent::constructClasses();
-        /*
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->Template = new Template($options);
-        */
         $templateTypes = $this->Template->typeTemplates;
         $this->typeTemplateOptions = array();
         foreach ($templateTypes as $key => $label) {

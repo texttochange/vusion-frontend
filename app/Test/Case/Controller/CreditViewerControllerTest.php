@@ -27,7 +27,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        //Configure::write("mongo_db", "testdbmongo");
         parent::setUp();
         
         $this->Viewer = new TestCreditViewerController();
@@ -44,14 +43,7 @@ class CreditViewerControllerTestCase extends ControllerTestCase
             'ProgramSetting', 'trial', true);
         $this->ProgramSettingM9h = ProgramSpecificMongoModel::init(
             'ProgramSetting', 'm9h', true);
-        /*
-        $this->ShortCode           = new ShortCode(array('database' => "testdbmongo"));
-        $this->CreditLog           = new CreditLog(array('database' => "testdbmongo"));
-        $this->ProgramSettingTest  = new ProgramSetting(array('database' => 'testdbprogram'));
-        $this->ProgramSettingM6H   = new ProgramSetting(array('database' => 'm6h'));
-        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
-        $this->ProgramSettingM9h   = new ProgramSetting(array('database' => 'm9h'));*/
-        
+
         $this->dropData();
     }
     
@@ -109,7 +101,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     {
         $this->_saveShortcodesInMongoDatabase();
         
-        //$this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
@@ -125,7 +116,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
         
-        //$this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Daresalaam');
         $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8181');
         
@@ -145,7 +135,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     {
         $this->_saveShortcodesInMongoDatabase();
         
-        //$this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
@@ -161,7 +150,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
         
-        //$this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Daresalaam');
         $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8181');
         
@@ -196,7 +184,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         #One recent creditlog
-        //$this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
@@ -215,7 +202,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($garbageCreditLog);
         
-        //$this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTrial->saveProgramSetting('shortcode','256-8181');
         $creditLog = ScriptMaker::mkCreditLog(
@@ -223,7 +209,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog); 
         
-        //$this->ProgramSettingM9h = new ProgramSetting(array('database' => 'm9h'));
         $this->ProgramSettingM9h->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingM9h->saveProgramSetting('shortcode','254-21222');
         $creditLog = ScriptMaker::mkCreditLog(
@@ -232,7 +217,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->save($creditLog);
         
         #One old creditLog
-       // $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         $creditLog = ScriptMaker::mkCreditLog(
@@ -255,4 +239,3 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     
     
 }
-

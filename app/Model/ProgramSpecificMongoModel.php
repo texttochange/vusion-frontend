@@ -9,6 +9,7 @@ abstract class ProgramSpecificMongoModel extends MongoModel
 	var $useDbConfig = 'mongo_program_specific';
 	var $databaseName = null;
 
+
     public function __construct($id = false, $table = null, $ds = null)
     {
         if (isset($id['ds']) && $id['ds'] == 'test_mongo_program_specific') {

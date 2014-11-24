@@ -49,7 +49,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->ProgramRequests = new TestProgramRequestsController();
-        //ClassRegistry::config(array('ds' => 'test'));
 
         $dbName = $this->programData[0]['Program']['database'];
         $this->Request = ProgramSpecificMongoModel::init(
@@ -58,7 +57,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             'Dialogue', $dbName, true);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName, true);
-        //$this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
 
         $dbName2 = $this->otherProgramData[0]['Program']['database'];
         $this->instanciateExternalModels($dbName2);
@@ -68,12 +66,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     
     
     protected function instanciateExternalModels($dbName)
-    {/*
-        $this->externalModels['request']        = new Request(array('database' => $databaseName)); 
-        $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
-        */
-        $this->externalModels['request'] = ProgramSpecificMongoModel::init(
+    {
+       $this->externalModels['request'] = ProgramSpecificMongoModel::init(
             'Request', $dbName, true);
         $this->externalModels['dialogue'] = ProgramSpecificMongoModel::init(
             'Dialogue', $dbName, true);
@@ -85,7 +79,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     protected function dropData()
     {
         //As this model is created on the fly, need to instantiate again
-        //$this->instanciateModels();
         $this->Request->deleteAll(true, false);
         $this->Dialogue->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
@@ -95,17 +88,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             $model->deleteAll(true, false);
         }
     }
-    
-    /*
-    protected function instanciateModels()
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->Request        = new Request($options);
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-    }*/
-    
+
 
     protected function setupProgramSettings($shortcode, $timezone)
     {
@@ -123,12 +106,9 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     
     
     public function tearDown()
-    {
-        
-        $this->dropData();
-        
-        unset($this->Requests);
-        
+    { 
+        $this->dropData();   
+        unset($this->ProgramRequests);
         parent::tearDown();
     }
     

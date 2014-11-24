@@ -40,13 +40,6 @@ class ProgramHistoryController extends BaseProgramSpecificController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
-        /*$options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->History           = new History($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->Request           = new Request($options);*/
     }
     
     

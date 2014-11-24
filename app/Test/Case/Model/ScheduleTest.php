@@ -10,15 +10,9 @@ class ScheduleTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        /*
-        $options        = array('database' => 'test');
-        $this->Schedule = new Schedule($options);
-        */
         $dbName = 'testdbprogram';
         $this->Schedule = ProgramSpecificMongoModel::init(
             'Schedule', $dbName);
-        //$this->Schedule->setDataSource('mongo_test');
-        
     }
     
     public function tearDown()

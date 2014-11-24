@@ -5,9 +5,8 @@ App::uses('VusionConst', 'Lib');
 
 class ContentVariable extends ProgramSpecificMongoModel
 {
-    //var $specific = true;
     var $name = 'ContentVariable';
-    //var $useDbConfig = 'mongo';
+ 
     
     function getModelVersion()
     {

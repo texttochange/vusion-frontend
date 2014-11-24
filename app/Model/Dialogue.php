@@ -260,11 +260,6 @@ class Dialogue extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        /*
-        $this->Schedule    = new Schedule($id, $table, $ds);
-        $this->Interaction = new Interaction($id['database']);
-        $this->ValidationHelper = new ValidationHelper($this);
-        */
     }
 
     public function initializeDynamicTable($forceNew=false)

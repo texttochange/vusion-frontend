@@ -19,9 +19,7 @@ class PredefinedMessageTestCase extends CakeTestCase
     public function tearDown()
     {
         $this->dropData();
-        
         unset($this->PredefinedMessage);
-        
         parent::tearDown();
     }
     

@@ -10,9 +10,6 @@ class ContentVariableTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        /*$options               = array('database' => 'testdbprogram');
-        $this->ContentVariable = new ContentVariable($options);*/
         $this->ContentVariable      = ProgramSpecificMongoModel::init(
             'ContentVariable', 'testdbprogram');
         $this->dropData();
@@ -22,10 +19,8 @@ class ContentVariableTestCase extends CakeTestCase
     
     public function tearDown()
     {
-        $this->dropData();
-        
+        $this->dropData();        
         unset($this->ContentVariable);
-        
         parent::tearDown();
     }
     

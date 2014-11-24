@@ -20,22 +20,13 @@ Class TemplatesControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        //Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->Templates = new TestTemplatesController();
-        //$this->instanciateTemplateModel();
         $this->Template = ClassRegistry::init('Template');
         $this->dropData();
     }
-    
-    /*
-    protected function instanciateTemplateModel()
-    {
-        $options = array('database'=>$this->databaseName);
-        $this->Templates->Template = new Template($options);
-    }*/
-    
+
     
     protected function dropData()
     {
@@ -84,7 +75,6 @@ Class TemplatesControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
         $templates = $this->mockProgramAccess();
-        //$this->instanciateTemplateModel();
         $this->Template->create();
         $this->Template->save(array(
             'name' => 'example',

@@ -45,18 +45,9 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        //$this->instanciateProgramSettingsModel();
         $this->ProgramSetting->deleteAll(true, false);
     }
-    
-/*    
-    protected function instanciateProgramSettingsModel() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->ProgramSettings->ProgramSetting = new ProgramSetting($options);
-    }
-  */  
+
     
     public function tearDown()
     {
@@ -110,6 +101,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             ); 
         return $programSettings;
     }
+
     
     public function testEdit_ok() 
     {

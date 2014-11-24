@@ -26,9 +26,6 @@ class KewyordComponentTest extends CakeTestCase
         parent::setUp();
         $Collection = new ComponentCollection();
         $this->KeywordComponent = new KeywordComponent($Collection);
-        //$this->KeywordComponent->Program = ClassRegistry::init('Program');
-        //Don't get why the useDbConfig is not properly configure by ClassResigtry
-        //$this->KeywordComponent->Program->useDbConfig = 'test';
         $CakeRequest = new CakeRequest();
         $CakeResponse = new CakeResponse();
         $this->Controller = new TestKeywordComponentController($CakeRequest, $CakeResponse);
@@ -50,11 +47,6 @@ class KewyordComponentTest extends CakeTestCase
 
     protected function instanciateModels()
     {
-        /*$options = array('database' => 'testdbprogram');
-
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Request        = new Request($options);*/
         $dbName = 'testdbprogram';
         $this->Dialogue = ProgramSpecificMongoModel::init(
             'Dialogue', $dbName, true);
@@ -72,9 +64,6 @@ class KewyordComponentTest extends CakeTestCase
             'Request', $dbName, true);
         $this->externalModels['programSetting'] = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName, true);   
-        /*$this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
-        $this->externalModels['request'] = new Request(array('database' => $databaseName));*/
     }
 
     protected function dropData()

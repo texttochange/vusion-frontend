@@ -32,16 +32,6 @@ class ProgramSettingsController extends BaseProgramSpecificController
     public function constructClasses()
     {
         parent::constructClasses();
-        
-        /*$options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-        
-        $this->ProgramSetting = new ProgramSetting($options);
-        
-        $optionVisionDb     = array('database' => 'vusion');
-        $this->ShortCode    = new ShortCode($optionVisionDb);
-        $this->Template     = new Template($optionVisionDb);*/
         $this->_instanciateVumiRabbitMQ();
     }
     

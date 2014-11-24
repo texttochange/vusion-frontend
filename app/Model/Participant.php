@@ -11,7 +11,8 @@ class Participant extends ProgramSpecificMongoModel
 {
     var $name         = 'Participant';
     var $importErrors = array();
-    
+
+
     function getModelVersion()
     {
         return '3';
@@ -30,6 +31,7 @@ class Participant extends ProgramSpecificMongoModel
             'profile',
             );
     }
+
     
     public $findMethods = array(
         'all' => true,
@@ -47,34 +49,15 @@ class Participant extends ProgramSpecificMongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
-
-        /*
-        if (isset($id['id']['database'])) {
-            $options = array('database' => $id['id']['database']);
-        } else {
-            $options = array('database' => $id['database']);
-        }
-        $this->ProgramSetting = new ProgramSetting($options);
-        $tis->Dialogue       = new Dialogue($options);
-        */
     }
     
     public function initializeDynamicTable($forceNew=false) 
     {
         parent::initializeDynamicTable();
-        /*$options = array('database' => $this->databaseName);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->ProgramSetting->initialize();
-        $this->Dialogue       = new Dialogue($options);
-        $this->Dialogue->initialize();*/
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
-            'ProgramSetting', $this->databaseName, $forceNew);
-        //$this->ProgramSetting = ClassRegistry::init(array('class' => 'ProgramSetting', 'id' => array('database' => $this->databaseName)));
-        
+            'ProgramSetting', $this->databaseName, $forceNew);        
         $this->Dialogue = ProgramSpecificMongoModel::init(
             'Dialogue', $this->databaseName, $forceNew);
-        //$this->Dialogue = ClassRegistry::init(array('class' => 'Dialogue', 'id' => array('database' => $this->databaseName)));
-       
     }
 
     //Patch the missing callback for deleteAll in Behavior

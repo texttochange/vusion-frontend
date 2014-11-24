@@ -24,11 +24,6 @@ class DialogueTestCase extends CakeTestCase
             'Participant', $dbName);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName);
-        /*$option               = array('database'=>'testdbprogram');
-        $this->Dialogue       = new Dialogue($option);
-        $this->Schedule       = new Schedule($option);
-        $this->Participant    = new Participant($option);
-        $this->ProgramSetting = new ProgramSetting($option);*/
         
         $this->Maker = new ScriptMaker();
         $this->dropData();

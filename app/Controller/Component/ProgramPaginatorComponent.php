@@ -17,17 +17,8 @@ class ProgramPaginatorComponent extends PaginatorComponent
 
         $this->Program = ClassRegistry::init('Program');
         $this->ShortCode = ClassRegistry::init('ShortCode');
-        /*if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->ShortCode  = new ShortCode($options);*/
     }
+    
     
     public function paginate()
     {

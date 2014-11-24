@@ -24,7 +24,6 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
 
     public function setUp() 
     {
-        //Configure::write("mongo_db", "test_vusion");
         parent::setUp();
         $this->ProgramPaginator = new ProgramPaginatorComponent($this->getMock('ComponentCollection'), array());
         $this->request = new CakeRequest('programs/index');

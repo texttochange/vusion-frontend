@@ -45,17 +45,8 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        //$this->instanciatePredefinedMessageModel();
         $this->PredefinedMessage->deleteAll(true, false);
     }
-    
-    /*
-    protected function instanciatePredefinedMessageModel() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->PredefinedMessage = new PredefinedMessage($options);
-    }*/
     
     
     public function tearDown()

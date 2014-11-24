@@ -16,7 +16,9 @@ class ProgramsController extends AppController
 
     var $uses = array(
         'Program', 
-        'Group');
+        'Group',
+        'ShortCode',
+        'CreditLog');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -41,22 +43,8 @@ class ProgramsController extends AppController
     
     function constructClasses()
     {
-        parent::constructClasses();
-        
+        parent::constructClasses();        
         $this->_instanciateVumiRabbitMQ();
-        /*if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->ShortCode  = new ShortCode($options);
-        $this->CreditLog  = new CreditLog($options);*/
-        $this->ShortCode = ClassRegistry::init('ShortCode');
-        $this->CreditLog = ClassRegistry::init('Creditlog');
     }
     
     
@@ -220,11 +208,9 @@ class ProgramsController extends AppController
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);
                     if (isset($importFromProgram)) {
-                        //$importFromDialogueModel = new Dialogue(array('database' => $importFromProgram['Program']['database']));
                         $importFromDialogueModel = ProgramSpecificMongoModel::init(
                             'Dialogue', $importFromProgram['Program']['database'], true);
                         $dialogues = $importFromDialogueModel->getActiveDialogues();
-                        //$importToDialogueModel   = new Dialogue(array('database' => $this->request->data['Program']['database']));
                         $importToDialogueModel = ProgramSpecificMongoModel::init(
                             'Dialogue', $this->request->data['Program']['database'], true);
                         foreach($dialogues as $dialogue){
@@ -232,7 +218,6 @@ class ProgramsController extends AppController
                             unset($dialogue['Dialogue']['_id']);
                             $importToDialogueModel->save($dialogue['Dialogue']);
                         }
-                        //$importFromRequestModel = new Request(array('database' => $importFromProgram['Program']['database']));
                         $importFromRequestModel = ProgramSpecificMongoModel::init(
                             'Request', $importFromProgram['Program']['database'], true);
                         $requests = $importFromRequestModel->find('all');

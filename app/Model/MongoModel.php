@@ -7,8 +7,6 @@ App::uses('MongoModelValidator', 'Model');
 abstract class MongoModel extends AppModel
 {
     
-    //var $specific     = false;
-    //var $databaseName = null; 
     var $useDbConfig = 'vusion';   
     
     var $mongoFields = array(
@@ -16,7 +14,6 @@ abstract class MongoModel extends AppModel
         'modified',
         'created'
         );
-    
     var $vusionFields = array(
         'model-version',
         'object-type'
@@ -29,95 +26,12 @@ abstract class MongoModel extends AppModel
     abstract function getRequiredFields($objectType);
 
 
-    /*static function initModelDynamicDB($className, $databaseName, $forceNew=false) {
-        if (!$forceNew) {
-            $model = ClassRegistry::init($className);
-        } else {
-            $model = new $className();
-        }
-        $model->setDatabase($databaseName);
-        return $model;
-    }*/
-
-
     public function __construct($id = false, $table = null, $ds = null)
     {
-        /*if (isset($id['ds']) && $id['ds'] == 'test_mongo_program_specific') {
-            throw new Exception("problem");
-        }*/
-        //print_r($table);
-        //print_r($ds);
         $this->defaultFields = array_merge($this->vusionFields, $this->mongoFields);
-        /*
-        if ($this->specific) {
-            // Get saved company/database name
-            if (isset($id['database']) and $id['database']) {
-                $dbName = $id['database'];
-            } else if (isset($id['id']['database'])) {
-                $dbName = $id['id']['database'];
-                unset($id['id']['database']);
-            } 
-            
-            // Get common company-specific config (default settings in database.php)
-            //$mongodb = new MongodbSource();
-            
-            //echo "Mongo Class is Construct ".$dbName;
-            /*
-            $config = ConnectionManager::getDataSource('mongo')->config;
-            
-            // Set correct database name
-            $config['database'] = $dbName;
-            $this->databaseName = $dbName;
-            // Add new config to registry
-            ConnectionManager::create($dbName, $config);
-            // Point model to new config
-            $this->useDbConfig = $dbName;
-            $this->initializeDynamicTable();*/
-          /*  if (isset($dbName)) {
-                echo $this->name." instanciate directly with db $dbName\n";
-                $this->setDatabase($dbName);
-            }*/
-            //$table=false;
-        /*} else {
-            if (Configure::check("test_mongo_db")) {
-                $dbName = Configure::read("test_mongo_db");                
-                echo $this->name." instanciate directly with db $dbName\n";
-                $this->setDatabase($dbName);   
-            } else {
-                echo $this->name." instanciate directly with db vusion\n";
-                $this->setDatabase('vusion');
-            }
-        }*/
         parent::__construct($id, $table, $ds);
         $this->validator(new MongoModelValidator($this));
     }
-
-    /*
-    public function setDatabase($databaseName) 
-    {
-        if ($databaseName == null || $databaseName == "") {
-            throw new Exception("empty databasename");
-        }
-        echo $this->name."->setDatabase($databaseName)\n";
-        if ($this->databaseName == $databaseName) {
-            //echo $this->name." already set abord\n";
-            return;
-        }
-        $this->databaseName = $databaseName;
-        $config = ConnectionManager::getDataSource($this->useDbConfig)->config;
-        // Set correct database name
-        $config['database'] = $databaseName;
-        // Add new config to registry
-        ConnectionManager::create($databaseName, $config);
-        // Point model to new config
-        $this->useDbConfig = $databaseName;
-        $this->initializeDynamicTable();
-    }*/
-
-    /*public function initializeDynamicTable()
-    {
-        echo $this->name."->initializeDynamicTable\n";
-    }*/
 
     
     public function checkFields($object)
@@ -222,4 +136,3 @@ abstract class MongoModel extends AppModel
     
     
 }
-?> 

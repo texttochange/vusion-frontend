@@ -9,8 +9,7 @@ class TestProgramHistoryController extends ProgramHistoryController
 {
     
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
@@ -44,13 +43,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'History', $dbName, true);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName, true);
-
-        //ClassRegistry::config(array('ds' => 'test'));
-        /*$options = array('database' => $this->programData[0]['Program']['database']);
-        $this->ProgramSetting = new ProgramSetting($options);*/
         
         $this->Maker = new ScriptMaker();
-        //$this->dropData();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');      
         
     }
@@ -58,27 +52,15 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        //As this model is created on the fly, need to instantiate again
-        //$this->instanciateHistoryModel();
         $this->History->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
-    }
-    
-    /*
-    protected function instanciateHistoryModel()
-    {
-        //$options       = array('database' => $this->programData[0]['Program']['database']);
-        $this->History = new History($options);
-    }*/
-    
-    
+    }    
+
+
     public function tearDown()
     {
-        
-        $this->dropData();
-        
+        $this->dropData();        
         unset($this->Histories);
-        
         parent::tearDown();
     }
     

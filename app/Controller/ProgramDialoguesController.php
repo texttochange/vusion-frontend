@@ -31,15 +31,9 @@ class ProgramDialoguesController extends BaseProgramSpecificController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
         $this->RequestHandler->accepts('json');
         $this->RequestHandler->addInputType('json', array('json_decode'));
         
-        /*$options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Participant    = new Participant($options);
-        $this->Request        = new Request($options);*/
         $this->_instanciateVumiRabbitMQ();
     }
     

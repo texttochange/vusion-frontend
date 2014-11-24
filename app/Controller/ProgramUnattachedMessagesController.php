@@ -43,17 +43,6 @@ class ProgramUnattachedMessagesController extends BaseProgramSpecificController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        /*$options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-        
-        $this->loadModel('UnattachedMessage', $options);
-        //$this->UnattachedMessage = new UnattachedMessage($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Participant       = new Participant($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->History           = new History($options);
-        $this->PredefinedMessage = new PredefinedMessage($options);*/
         $this->_instanciateVumiRabbitMQ();
     }
     
