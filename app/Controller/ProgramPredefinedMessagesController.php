@@ -1,9 +1,9 @@
 <?php
-App::uses('ProgramParticipantsController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('PredefinedMessage', 'Model');
 
 
-class ProgramPredefinedMessagesController extends ProgramParticipantsController
+class ProgramPredefinedMessagesController extends BaseProgramSpecificController
 {
     var $uses = array(
         'PredefinedMessage');
