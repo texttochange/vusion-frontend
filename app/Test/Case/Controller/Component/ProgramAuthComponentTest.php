@@ -61,7 +61,7 @@ class ProgramAuthComponentTest extends CakeTestCase
     }
 
     private function _initializeRequest($programUrl, $controllerName="someController",
-    									$method='POST', $action='add', $isAjax=false) {
+    	$method='POST', $action='add', $isAjax=false) {
 
     	$CakeRequest = $this->getMock('CakeRequest',
             array('__get', 'method', 'is'));
