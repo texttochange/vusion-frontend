@@ -1,5 +1,5 @@
 <?php
-App::uses('ProgramParticipantsController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
@@ -8,7 +8,7 @@ App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
-class ProgramRequestsController extends ProgramParticipantsController
+class ProgramRequestsController extends BaseProgramSpecificController
 {
     var $uses = array(
         'Request',
