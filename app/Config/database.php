@@ -47,7 +47,6 @@ class DATABASE_CONFIG {
 	public $test_mongo_program_specific = array(
 		'datasource' => 'Mongodb.MongodbSource',
 		'persistent' => false,
-		'database' => 'cake_test',
 		'host' => 'localhost',
 		'port' => '27017'	
 	);
