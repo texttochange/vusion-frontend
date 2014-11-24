@@ -1,13 +1,16 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('User', 'Model');
 
+
 class UnmatchableReplyController extends AppController
 {
-    
+
+    var $uses = array(
+        'UnmatchableReply', 
+        'User');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -25,16 +28,16 @@ class UnmatchableReplyController extends AppController
         'Paginator' => array('className' => 'BigCountPaginator'));
     
     
-    public function beforeFilter()
+   /* public function beforeFilter()
     {
         parent::beforeFilter();
-    }
+    }*/
     
     
-    public function constructClasses()
+    function constructClasses()
     {
         parent::constructClasses();
-        
+        /*
         if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
@@ -43,10 +46,12 @@ class UnmatchableReplyController extends AppController
             $options = array(
                 'database' => Configure::read("mongo_db")
                 );
-        }
-        $this->UnmatchableReply = new UnmatchableReply($options);
-        $this->DialogueHelper   = new DialogueHelper();
-        $this->User             = ClassRegistry::init('User');
+        }*/
+        //$this->DialogueHelper->setDatabase()
+        //$this->UnmatchableReply = new UnmatchableReply();
+        //$this->UnmatchableReply->setDatabase('testdbmongo');
+        //$this->UnmatchableReply = ClassRegistry::init('UnmatchableReply');
+        //$this->User             = ClassRegistry::init('User');
     }
     
     
@@ -72,7 +77,7 @@ class UnmatchableReplyController extends AppController
             'order'=> $order,
             );
         $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
-        $unmatchableReplies = $this->paginate();
+        $unmatchableReplies = $this->paginate('UnmatchableReply');
         $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
     }
     

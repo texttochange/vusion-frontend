@@ -24,8 +24,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Users = new TestUsersController();
-        $this->Users->constructClasses();       
-        
+        $this->Users->constructClasses();
     }
     
     
@@ -36,7 +35,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::tearDown();
     }
     
-/*   
+  
     public function testIndex() 
     {
         
@@ -245,7 +244,7 @@ class UsersControllerTestCase extends ControllerTestCase
         
         $this->assertContains('/users/view/', $this->headers['Location']);
     }
-*/    
+    
     
     public function testFilters()
     {
@@ -303,7 +302,7 @@ class UsersControllerTestCase extends ControllerTestCase
         
     }
     
-/*    
+    
     public function testRequestPasswordReset_fail_invalidEmail()
     {
         $users = $this->generate('Users', array(
@@ -448,7 +447,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash', 'write'),
-                'Auth' => array('user')
+                'Auth' => array('user', 'startup')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
@@ -513,7 +512,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash', 'write'),
-                'Auth' => array('user')
+                'Auth' => array('user', 'startup')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
@@ -571,7 +570,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash', 'write'),
-                'Auth' => array('user')
+                'Auth' => array('user', 'startup')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
@@ -621,6 +620,6 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
     }
-*/    
+    
     
 }

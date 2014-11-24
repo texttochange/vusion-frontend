@@ -42,10 +42,11 @@ class AppController extends Controller
         'Acl',
         'Cookie', 
         'PhoneNumber',
-        'CreditManager',
         'LogManager',
+        //'ProgramAccess',
         'Stats',
-        'ArchivedProgram'
+        //'ArchivedProgram',
+        'CreditManager',
         );
     
     var $helpers = array(
@@ -64,10 +65,16 @@ class AppController extends Controller
     
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
-    var $programDetails     = array();
+    //var $programDetails     = array();
     
     function beforeFilter()
     { 
+        /*if ($this->Auth->user()) {
+            echo "appController->Logged In!!";
+        } else {
+            echo "appControler->Not logged In!!";
+        }
+        //echo("appContoller->beforefilter");
         //Verify the access of user to this program
         if ($this->Auth->loggedIn() && !empty($this->params['program'])) {
             $this->Program->recursive = -1;
@@ -89,7 +96,7 @@ class AppController extends Controller
             
             $this->Session->write($programDetails['url']."_db", $programDetails['database']);
             $this->Session->write($programDetails['url']."_name", $programDetails['name']);
-            
+            echo "set programDetails!!!";
             $programSettingModel = new ProgramSetting(array('database' => $programDetails['database']));
             $programDetails['settings'] = $programSettingModel->getProgramSettings();
             $this->programDetails = $programDetails;
@@ -109,7 +116,8 @@ class AppController extends Controller
             $programStats       = array('programStats' => $this->Stats->getProgramStats($programDetails['database'], true));
             $creditStatus       = $this->CreditManager->getOverview($programDetails['database']);
             $this->set(compact('currentProgramData', 'programLogsUpdates', 'programStats', 'creditStatus')); 
-        }
+        }*/
+        //TODO this hase to move in the relevant contollers
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('countryIndexedByPrefix'));
     }
@@ -130,7 +138,7 @@ class AppController extends Controller
         }
     }
     
-    
+    /*
     protected function _getcurrentProgramData($databaseName)
     {
         $unattachedMessageModel   = new UnattachedMessage(array('database' => $databaseName));
@@ -147,9 +155,9 @@ class AppController extends Controller
             'requests' => $requestModel->find('all'),
             );
         return $currentProgramData;
-    }
+    }*/
 
-    protected function _isAjax() 
+    public function _isAjax() 
     {
         return ($this->request->is('ajax') ||  $this->request->ext == 'json');
     }

@@ -1,28 +1,34 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('ContentVariable', 'Model');
 App::uses('ContentVariableTable', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
-class ProgramContentVariablesController extends AppController
+class ProgramContentVariablesController extends BaseProgramSpecificController
 {
+    var $uses = array(
+        'ContentVariable', 
+        'ContentVariableTable');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
-                'json' => 'View')));
-    var $uses = array('ContentVariable', 'ContentVariableTable');
-    
+                'json' => 'View')),
+        'ProgramAuth',
+        'ArchivedProgram');
+
     
     function constructClasses()
     {
         parent::constructClasses();
-        
+        /*
         $options = array(
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
         
         $this->ContentVariable = new ContentVariable($options);
         $this->ContentVariableTable = new ContentVariableTable($options);
+        */
     }
     
     

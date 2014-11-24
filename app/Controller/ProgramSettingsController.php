@@ -1,16 +1,26 @@
 <?php
-
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('ShortCode', 'Model');
 App::uses('Template', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
-class ProgramSettingsController extends AppController
+
+class ProgramSettingsController extends BaseProgramSpecificController
 {
-    
-    var $helpers = array('Js' => array('Jquery'), 'Time');
-    var $components = array('Keyword');
+
+    var $uses = array(
+        'ProgramSetting',
+        'ShortCode',
+        'Template');
+    var $components = array(
+        'Keyword',
+        'ProgramAuth',
+        'ArchivedProgram');
+    var $helpers = array(
+        'Js' => array(
+            'Jquery'),
+        'Time');
     
     
     public function beforeFilter()
@@ -23,7 +33,7 @@ class ProgramSettingsController extends AppController
     {
         parent::constructClasses();
         
-        $options = array(
+        /*$options = array(
             'database' => ($this->Session->read($this->params['program'].'_db'))
             );
         
@@ -31,7 +41,7 @@ class ProgramSettingsController extends AppController
         
         $optionVisionDb     = array('database' => 'vusion');
         $this->ShortCode    = new ShortCode($optionVisionDb);
-        $this->Template     = new Template($optionVisionDb);
+        $this->Template     = new Template($optionVisionDb);*/
         $this->_instanciateVumiRabbitMQ();
     }
     

@@ -1,18 +1,15 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
 App::uses('VusionValidation', 'Lib');
 
 
-class ProgramSetting extends MongoModel
+class ProgramSetting extends ProgramSpecificMongoModel
 {
-    
-    
-    var $specific    = true;
-    var $name        = 'ProgramSetting';
-    var $useDbConfig = 'mongo';
+
+    var $name = 'ProgramSetting';
     
     
     function getModelVersion()
@@ -156,7 +153,7 @@ class ProgramSetting extends MongoModel
         
         $this->ValidationHelper = new ValidationHelper($this);
     }
-    
+
     
     public function notRegex($check, $regex) 
     {

@@ -10,12 +10,15 @@ class TemplateTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
+        /*
         $option         = array('database'=>'test');
         $this->Template = new Template($option);
         
         $this->Template->setDataSource('mongo_test');
-        $this->Template->deleteAll(true, false);
+        $this->Template->deleteAll(true, false);*/
+        $dbName = 'testdbprogram';
+        $this->Template = ClassRegistry::init(
+            'Template', $dbName);
     }
     
     

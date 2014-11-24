@@ -1,6 +1,7 @@
 <?php
 App::uses('ContentVariableTable', 'Model');
 App::uses('ContentVariable', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class ContentVariableTableTestCase extends CakeTestCase
@@ -11,9 +12,14 @@ class ContentVariableTableTestCase extends CakeTestCase
     {
         parent::setUp();
 
+        /*
         $option                     = array('database' => 'testdbprogram');
         $this->ContentVariableTable = new ContentVariableTable($option);
-        $this->ContentVariable      = new ContentVariable($option);
+        $this->ContentVariable      = new ContentVariable($option);*/
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', 'testdbprogram');
+        $this->ContentVariable      = ProgramSpecificMongoModel::init(
+            'ContentVariable', 'testdbprogram');
 
         $this->clearData();       
     }

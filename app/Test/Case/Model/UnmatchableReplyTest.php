@@ -11,11 +11,12 @@ class UnmatchableReplyTestCase extends CakeTestCase
     {
         parent::setUp();
         
-        $option         = array('database'=>'test');
-        $this->UnmatchableReply = new UnmatchableReply($option);
+        //$option         = array('database'=>'test');
+        //$this->UnmatchableReply = new UnmatchableReply($option);
         
-        $this->UnmatchableReply->setDataSource('mongo_test');
-        $this->UnmatchableReply->deleteAll(true, false);
+        //$this->UnmatchableReply->setDataSource('mongo_test');
+        //$this->UnmatchableReply->deleteAll(true, false);
+        $this->UnmatchableReply = ClassRegistry::init('UnmatchableReply');
     }
     
     

@@ -1,16 +1,20 @@
 <?php
-App::uses('AppController','Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
-App::uses('DialogueHelper', 'Lib');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
 
 
-class ProgramHistoryController extends AppController
+class ProgramHistoryController extends BaseProgramSpecificController
 {
     
-    var $uses       = array('History');
+    var $uses = array(
+        'History',
+        'Dialogue',
+        'UnattachedMessage',
+        'ProgramSetting',
+        'Request');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -18,12 +22,13 @@ class ProgramHistoryController extends AppController
         'LocalizeUtils',
         'Filter',
         'Paginator' => array(
-            'className' => 'BigCountPaginator'));
+            'className' => 'BigCountPaginator'),
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
-        'Paginator' => array('className' => 'BigCountPaginator')
-        );
+        'Paginator' => array('className' => 'BigCountPaginator'));
     
     
     function constructClasses()
@@ -36,13 +41,12 @@ class ProgramHistoryController extends AppController
     {
         parent::beforeFilter();
         //$this->Auth->allow('*');
-        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
+        /*$options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
         $this->History           = new History($options);
         $this->Dialogue          = new Dialogue($options);
-        $this->DialogueHelper    = new DialogueHelper();
         $this->UnattachedMessage = new UnattachedMessage($options);
         $this->ProgramSetting    = new ProgramSetting($options);
-        $this->Request           = new Request($options);
+        $this->Request           = new Request($options);*/
     }
     
     
@@ -75,7 +79,7 @@ class ProgramHistoryController extends AppController
                 'all',
                 'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
                 'order'=> $order);            
-            $statuses = $this->paginate();
+            $statuses = $this->paginate('History');
         }
         $this->set(compact('statuses', 'requestSuccess'));
     }
@@ -180,7 +184,7 @@ class ProgramHistoryController extends AppController
             for($count = 1; $count <= $pageCount; $count++) {
                 $paginate['page'] = $count;
                 $this->paginate = $paginate;
-                $statuses = $this->paginate();
+                $statuses = $this->paginate('History');
                 foreach($statuses as $status) {
                     $line = array();
                     foreach($headers as $header) {

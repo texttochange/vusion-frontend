@@ -10,7 +10,9 @@ class CreditViewerController extends AppController
 {
     var $uses = array(
         'Program', 
-        'Group');
+        'Group',
+        'ShortCode',
+        'CreditLog');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -36,7 +38,7 @@ class CreditViewerController extends AppController
     {
         parent::constructClasses();
         
-        if (!Configure::read("mongo_db")) {
+        /*if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
                 );
@@ -46,7 +48,7 @@ class CreditViewerController extends AppController
                 );
         }
         $this->ShortCode = new ShortCode($options);
-        $this->CreditLog = new CreditLog($options);
+        $this->CreditLog = new CreditLog($options);*/
     }
     
     

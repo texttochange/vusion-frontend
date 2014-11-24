@@ -1,27 +1,23 @@
 <?php
 App::uses('ProgramPredefinedMessagesController', 'Controller');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramPredefinedMessagesController extends ProgramPredefinedMessagesController
 {
-    
+
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
 
 class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
 {
-    /**
-    * Data
-    *
-    */
     
     var $programData = array(
         0 => array( 
@@ -39,23 +35,27 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         $this->ProgramPredefinedMessages = new ProgramPredefinedMessagesController();
+        
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->PredefinedMessage = ProgramSpecificMongoModel::init(
+            'PredefinedMessage', $dbName, true);
         $this->dropData();
     }
     
     
     protected function dropData()
     {
-        $this->instanciatePredefinedMessageModel();
+        //$this->instanciatePredefinedMessageModel();
         $this->PredefinedMessage->deleteAll(true, false);
     }
     
-    
+    /*
     protected function instanciatePredefinedMessageModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
         
         $this->PredefinedMessage = new PredefinedMessage($options);
-    }
+    }*/
     
     
     public function tearDown()

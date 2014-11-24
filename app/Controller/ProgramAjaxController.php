@@ -1,15 +1,16 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('Participant', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('History', 'Model');
 
-class ProgramAjaxController extends AppController
+class ProgramAjaxController extends BaseProgramSpecificController
 {
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')),
+        'ProgramAuth',
         'Stats');
     
     
@@ -20,9 +21,10 @@ class ProgramAjaxController extends AppController
             throw new MethodNotAllowedException();
         }
         
-        $programUrl      = $this->params['program'];
-        $programDatabase = $this->Session->read($programUrl."_db");        
-        $programStats    = $this->Stats->getProgramStats($programDatabase);
+        //$programUrl      = $this->params['program'];
+        //$programDatabase = $this->Session->read($programUrl."_db");
+        $dbName = $this->programDetails['database'];
+        $programStats = $this->Stats->getProgramStats($dbName);
         $this->set(compact('requestSuccess', 'programStats'));
     }
     

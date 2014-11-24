@@ -1,13 +1,13 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
 App::uses('ContentVariable', 'Model');
 
 
-class ContentVariableTable extends MongoModel
+class ContentVariableTable extends ProgramSpecificMongoModel
 {
-    var $specific = true;
+
     var $name     = 'ContentVariableTable';
     
     
@@ -111,16 +111,22 @@ class ContentVariableTable extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        if (isset($id['id']['database'])) {
+        /*if (isset($id['id']['database'])) {
             $options = array('database' => $id['id']['database']);
         } else {
             $options = array('database' => $id['database']);
-        }
+        }*/
         
-        $this->ContentVariable = new ContentVariable($options);
         $this->ValidationHelper = new ValidationHelper(&$this);
     }    
 
+
+    public function initializeDynamicTable($forceNew=false) 
+    {
+        parent::initializeDynamicTable();
+        $this->ContentVariable = ProgramSpecificMongoModel::init(
+            'ContentVariable', $this->databaseName);
+    }
 
     function validColumns($check)
     {

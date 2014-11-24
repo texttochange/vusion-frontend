@@ -4,30 +4,36 @@ App::uses('Program', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class KeywordComponent extends Component 
 {
 
-    public $components = array('Session'); 
+    var $components = array(
+        'Session'); 
 
 
     public function __construct($collection, $settings = array())
     {
-        parent::__construct($collection, $settings);
-        
-        $this->Program = new Program();
+        parent::__construct($collection, $settings);    
+        $this->Program = ClassRegistry::init('Program');
     }
 
 
     public function areProgramKeywordsUsedByOtherPrograms($programDb, $shortCode) 
-    {   
+    {   /*
         $options              = array('database' => ($programDb));
         $this->Dialogue       = new Dialogue($options);
-        $this->Request        = new Request($options);
+        $this->Request        = new Request($options);*/
+        $Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $programDb, true);
+        $Request = ProgramSpecificMongoModel::init(
+            'Request', $programDb, true);
 
-        $keywords = $this->Dialogue->getKeywords();
-        $keywordToValidates = array_merge($keywords, $this->Request->getKeywords());
+        $dialogueKeywords = $Dialogue->getKeywords();
+        $requestKeywords  = $Request->getKeywords(); 
+        $keywordToValidates = array_merge($dialogueKeywords, $requestKeywords);
 
         return $this->areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywordToValidates);
     }
@@ -39,14 +45,16 @@ class KeywordComponent extends Component
        $keyphrases = DialogueHelper::cleanKeyphrases($keywords);
        $keywords = DialogueHelper::cleanKeywords($keywords);
        $usedKeywords = array();
-       $dialogueModel = new Dialogue(array('database' => $programDb));
+       $dialogueModel = ProgramSpecificMongoModel::init('Dialogue', $programDb, true);
+       //new Dialogue(array('database' => $programDb));
        if ($excludeType == 'Dialogue') {
            $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, '', $excludeId);
        } else {
            $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords);
        }
        $usedKeywords = $usedKeywords + $foundKeywords;
-       $requestModel = new Request(array('database' => $programDb));
+       //$requestModel = new Request(array('database' => $programDb));
+       $requestModel = ProgramSpecificMongoModel::init('Request', $programDb, true);
        if ($excludeType == 'Request') {
            // In case we compare request, we need to consider the keyphrase and not only the keyword
            $foundKeywords = $this->_getUsedKeyphrases($requestModel, $keyphrases, '', $excludeId);
@@ -110,12 +118,16 @@ class KeywordComponent extends Component
 
     public function areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords)
     {
-        $programSettingModel = new ProgramSetting(array('database' => $program['Program']['database']));
+        //$programSettingModel = new ProgramSetting(array('database' => $program['Program']['database']));
+        $programDb = $program['Program']['database'];
+        $programSettingModel = ProgramSpecificMongoModel::init('ProgramSetting', $programDb, true);
         if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCode))) {
-            $dialogueModel = new Dialogue(array('database' => $program['Program']['database']));
+            //$dialogueModel = new Dialogue(array('database' => $program['Program']['database']));
+            $dialogueModel = ProgramSpecificMongoModel::init('Dialogue', $programDb, true);
             $foundDialogueKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, $program['Program']['name']);
             $usedKeywords = $usedKeywords + $foundDialogueKeywords;
-            $requestModel = new Request(array('database' => $program['Program']['database']));
+            //$requestModel = new Request(array('database' => $program['Program']['database']));
+            $requestModel = ProgramSpecificMongoModel::init('Request', $programDb, true);
             $foundRequestKeywords = $this->_getUsedKeywords($requestModel, $keywords, $program['Program']['name']);
             $usedKeywords = $usedKeywords + $foundRequestKeywords;
         }

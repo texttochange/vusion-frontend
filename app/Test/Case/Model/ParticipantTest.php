@@ -5,6 +5,8 @@ App::uses('Dialogue', 'Model');
 App::uses('ScriptMaker', 'Lib');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 App::uses('FilterException', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class ParticipantTestCase extends CakeTestCase
 {
@@ -13,11 +15,17 @@ class ParticipantTestCase extends CakeTestCase
     {
         parent::setUp();
         
-        $option               = array('database'=>'testdbprogram');
-        $this->Participant    = new Participant($option);
+        //$option               = array('database'=>'testdbprogram');
+        /*$this->Participant    = new Participant($option);
         $this->ProgramSetting = new ProgramSetting($option);
-        $this->Dialogue       = new Dialogue($option);
-        
+        $this->Dialogue       = new Dialogue($option);*/
+        $dbName = 'testdbprogram';
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $dbName);
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
         $this->Maker = new ScriptMaker();
         
         $this->dropData();

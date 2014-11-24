@@ -1,20 +1,18 @@
 <?php
-
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('PredefinedMessage', 'Model');
+
 
 class PredefinedMessageTestCase extends CakeTestCase
 {
-    
-    
+        
     public function setUp()
     {
         parent::setUp();
-        
-        $options                 = array('database' => 'testdbprogram');
-        $this->PredefinedMessage = new PredefinedMessage($options);
-        
-        $this->dropData();
-        
+        $dbName = 'testdbprogram';
+        $this->PredefinedMessage = ProgramSpecificMongoModel::init(
+            'PredefinedMessage', $dbName);
+        $this->dropData();        
     }
     
     

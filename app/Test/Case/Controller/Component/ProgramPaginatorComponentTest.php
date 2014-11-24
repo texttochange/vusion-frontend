@@ -6,6 +6,8 @@ App::uses('ComponentCollection', 'Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('ShortCode', 'Model');
 App::uses('ProgramPaginatorComponent', 'Controller/Component');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramPaginatorComponentController extends Controller
 {
@@ -22,7 +24,7 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
 
     public function setUp() 
     {
-        Configure::write("mongo_db", "test_vusion");
+        //Configure::write("mongo_db", "test_vusion");
         parent::setUp();
         $this->ProgramPaginator = new ProgramPaginatorComponent($this->getMock('ComponentCollection'), array());
         $this->request = new CakeRequest('programs/index');
@@ -102,10 +104,10 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24'),
             );
-        $tempProgramSetting = new ProgramSetting(array('database' => 'm4h'));
+        $tempProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', 'm4h', true);
         $tempProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         $tempProgramSetting->saveProgramSetting('shortcode','256-8282');
-        $tempShortCode = new ShortCode(array('database' => 'test_vusion'));
+        $tempShortCode = ClassRegistry::init('ShortCode');
         $shortcode = array(
             'country' => 'uganda',
             'shortcode' => '8282',
@@ -124,7 +126,7 @@ class ProgramPaginatorComponentTest extends CakeTestCase {
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24')
             );
-        $tempProgramSetting = new ProgramSetting(array('database' => 'tester'));
+        $tempProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', 'tester', true);
         $tempProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         $tempProgramSetting->saveProgramSetting('shortcode','256-8181');        
         $shortcode = array(

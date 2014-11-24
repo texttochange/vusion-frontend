@@ -6,14 +6,19 @@ App::uses('Template', 'Model');
 
 class ShortCodesController extends AppController
 {
-    var $helpers    = array('Js' => array('Jquery'));
-    var $components = array('PhoneNumber'); 
+    var $uses = array(
+        'ShortCode',
+        'Template');
+    var $components = array(
+        'PhoneNumber'); 
+    var $helpers = array(
+        'Js' => array('Jquery'));
     
     
     public function constructClasses()
     {
         parent::constructClasses();
-        
+        /*
         if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
@@ -24,7 +29,8 @@ class ShortCodesController extends AppController
                 );
         }
         $this->ShortCode = new ShortCode($options);
-        $this->Template  = new Template($options);
+        $this->Template  = new Template($options);*/
+
     }
     
     

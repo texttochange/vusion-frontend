@@ -1,5 +1,5 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('Schedule', 'Model');
 App::uses('MissingField', 'Lib');
@@ -10,13 +10,13 @@ App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
 
 
-class Dialogue extends MongoModel
+class Dialogue extends ProgramSpecificMongoModel
 {
     
-    var $specific     = true;
     var $name         = 'Dialogue';
     var $usedKeywords = array();
-    
+
+
     function getModelVersion()
     {
         return '3';
@@ -260,10 +260,20 @@ class Dialogue extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
+        /*
         $this->Schedule    = new Schedule($id, $table, $ds);
         $this->Interaction = new Interaction($id['database']);
         $this->ValidationHelper = new ValidationHelper($this);
+        */
+    }
+
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->Schedule = ProgramSpecificMongoModel::init(
+            'Schedule', $this->databaseName, $forceNew);
+        $this->Interaction = new Interaction($this->databaseName);
+        $this->ValidationHelper = new ValidationHelper($this);   
     }
     
     

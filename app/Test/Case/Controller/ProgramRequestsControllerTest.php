@@ -1,9 +1,10 @@
 <?php
 App::uses('ProgramRequestsController', 'Controller');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('Request', 'Model');
-App::uses('ScriptMaker', 'Lib');
 App::uses('Dialogue', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
 
 class TestProgramRequestsController extends ProgramRequestsController
@@ -47,30 +48,55 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         
-        $this->Requests = new TestProgramRequestsController();
-        ClassRegistry::config(array('ds' => 'test'));               
-        
+        $this->ProgramRequests = new TestProgramRequestsController();
+        //ClassRegistry::config(array('ds' => 'test'));
+
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->Request = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        //$this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
+
+        $dbName2 = $this->otherProgramData[0]['Program']['database'];
+        $this->instanciateExternalModels($dbName2);
+
         $this->Maker = new ScriptMaker();
-        
-        //$this->externalModels = array();
     }
     
     
+    protected function instanciateExternalModels($dbName)
+    {/*
+        $this->externalModels['request']        = new Request(array('database' => $databaseName)); 
+        $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
+        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
+        */
+        $this->externalModels['request'] = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
+        $this->externalModels['dialogue'] = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->externalModels['programSetting'] = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+    }
+
+
     protected function dropData()
     {
         //As this model is created on the fly, need to instantiate again
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->Request->deleteAll(true, false);
         $this->Dialogue->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
         
-        $this->instanciateExternalModels('testdbprogram2');
+        //$this->instanciateExternalModels('testdbprogram2');
         foreach ($this->externalModels as $name=>$model) {
             $model->deleteAll(true, false);
         }
     }
     
-    
+    /*
     protected function instanciateModels()
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
@@ -78,7 +104,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         $this->Request        = new Request($options);
         $this->Dialogue       = new Dialogue($options);
         $this->ProgramSetting = new ProgramSetting($options);
-    }
+    }*/
     
 
     protected function setupProgramSettings($shortcode, $timezone)
@@ -93,14 +119,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
             array(
                 'key' => 'timezone',
                 'value' => $timezone));
-    }
-
- 
-    protected function instanciateExternalModels($databaseName)
-    {
-        $this->externalModels['request']        = new Request(array('database' => $databaseName)); 
-        $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
     }
     
     
@@ -183,7 +201,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('keyword'))
         ->will($this->returnValue(array()));
         
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
   
         $request = $this->Maker->getOneRequest();
@@ -221,7 +239,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('otherkeyword'))
         ->will($this->returnValue(array()));
         
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         $request = $this->Maker->getOneRequest('KEYWORD');
@@ -256,7 +274,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('keyword'))
         ->will($this->returnValue(array()));
         
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         #First request
@@ -288,7 +306,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('11'))
         ->will($this->returnValue(array()));
         
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         #First request
@@ -316,7 +334,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->method('setFlash')
         ->with('The request has been deleted.');
         
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         $request = $this->Maker->getOneRequest();
@@ -342,7 +360,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('keyword'))
         ->will($this->returnValue(array()));
 
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');    
 
         $dialogue = $this->Maker->getOneDialogue();        
@@ -367,7 +385,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('keyword'))
         ->will($this->returnValue(array()));
 
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
 
         $request = $this->Maker->getOneRequest('keyword request');
@@ -396,7 +414,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('11'))
         ->will($this->returnValue(array()));
 
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
 
         $request = $this->Maker->getOneRequest('11');
@@ -425,7 +443,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('otherkeyword'))
         ->will($this->returnValue(array()));
 
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');     
 
         $request = $this->Maker->getOneRequest('otherkeyword request');
@@ -453,7 +471,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
         ->with('testdbprogram', '256-8282', array('otherkeyword'))
         ->will($this->returnValue(array()));
 
-        $this->instanciateModels();
+        //$this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
                 
         $this->testAction(
@@ -479,9 +497,8 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'program-name' => 'other program', 
                 'by-type' => 'Request'))));
         
-        $this->instanciateModels();
-        $this->setupProgramSettings('256-8282', 'Africa/Kampala'); 
-        
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
         $this->testAction(
             "testurl/programRequests/validateKeyword.json",
             array(
@@ -507,7 +524,6 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
                 'program-name' => 'other program', 
                 'by-type' => 'Dialogue'))));
     
-        $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');
 
         $this->testAction(

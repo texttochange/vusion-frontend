@@ -1,17 +1,14 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('UnattachedMessage', 'Model');
 App::uses('DialogueHelper', 'Lib');
-/**
-* Program Model
-*
-*/
-class Schedule extends MongoModel
+
+
+class Schedule extends ProgramSpecificMongoModel
 {
-    
-    var $specific = true;
-    var $useDbConfig = 'mongo';
+
+    var $name = 'Schedule';
     
     
     function getModelVersion()
@@ -69,8 +66,18 @@ class Schedule extends MongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
 
+        /*
         $options                 = array('database' => $id['database']);
-        $this->UnattachedMessage = new UnattachedMessage($options);
+        $this->UnattachedMessage = new UnattachedMessage($options);*/
+    }
+
+    public function initializeDynamicTable($forceNew=false) 
+    {
+        parent::initializeDynamicTable();
+        /*$options                 = array('database' => $this->databaseName);
+        $this->UnattachedMessage = new UnattachedMessage($options);*/
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $this->databaseName, $forceNew);
     }
     
 

@@ -1,18 +1,16 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('UnattachedMessage', 'Model');
 
-class History extends MongoModel
+
+class History extends ProgramSpecificMongoModel
 {
     
-    var $specific = true;
-    
-    //var $name = 'ParticipantStat';
-    var $useDbConfig = 'mongo';    
-    var $useTable    = 'history';
+    var $name     = 'History';  
+    var $useTable = 'history';
     
     var $messageType = array(
         'dialogue-history',
@@ -132,8 +130,18 @@ class History extends MongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
         
-        $options                 = array('database' => $id['database']);
-        $this->UnattachedMessage = new UnattachedMessage($options);
+        /*$options                 = array('database' => $id['database']);
+        $this->UnattachedMessage = new UnattachedMessage($options);*/
+    }
+
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        /*$options                 = array('database' => $this->databaseName);
+        $this->UnattachedMessage = new UnattachedMessage($options);  */
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $this->databaseName, $forceNew);
+        //$this->UnattachedMessage->setDatabase($this->databaseName);
     }
     
     

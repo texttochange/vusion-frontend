@@ -1,27 +1,23 @@
 <?php
 App::uses('ProgramSettingsController', 'Controller');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramSettingsController extends ProgramSettingsController
 {
     
-    public $autoRender = false;
-    
-    
+    public $autoRender = false;    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
-    }
-    
+    }    
     
 }
 
 
 class ProgramSettingsControllerTestCase extends ControllerTestCase
 {
-    /**
-    * Data
-    *
-    */
     
     var $programData = array(
         0 => array( 
@@ -39,24 +35,28 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         $this->ProgramSettings = new TestProgramSettingsController();
+        
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
         $this->dropData();
     }
     
     
     protected function dropData()
     {
-        $this->instanciateProgramSettingsModel();
-        $this->ProgramSettings->ProgramSetting->deleteAll(true, false);
+        //$this->instanciateProgramSettingsModel();
+        $this->ProgramSetting->deleteAll(true, false);
     }
     
-    
+/*    
     protected function instanciateProgramSettingsModel() 
     {
         $options = array('database' => $this->programData[0]['Program']['database']);
         
         $this->ProgramSettings->ProgramSetting = new ProgramSetting($options);
     }
-    
+  */  
     
     public function tearDown()
     {

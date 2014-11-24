@@ -5,28 +5,21 @@ App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
 App::uses('Participant', 'Model');
 App::uses('PredefinedMessage', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
-/**
-* TestProgramUnattachedMessagesController *
-*/
+
 class TestProgramUnattachedMessagesController extends ProgramUnattachedMessagesController
 {
-    
-    public $autoRender = false;
-    
-    
+
+    public $autoRender = false;    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
-/**
-* ProgramUnattachedMessagesController Test Case
-*
-*/
 class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
 {
     var $programData = array(
@@ -43,8 +36,8 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
     
     public function setUp() 
     {
-        Configure::write("mongo_db",$this->programData[0]['Program']['database']);
-        Configure::write("testurl_db",$this->programData[0]['Program']['database']);
+        //Configure::write("mongo_db",$this->programData[0]['Program']['database']);
+        //Configure::write("testurl_db",$this->programData[0]['Program']['database']);
         parent::setUp();
         
         $this->ProgramUnattachedMessages = new TestProgramUnattachedMessagesController();
@@ -55,13 +48,21 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
     
     protected function instanciateModels() 
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);    
-        $this->UnattachedMessage = new UnattachedMessage($options);
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init('UnattachedMessage', $dbName, true);
+        $this->Schedule = ProgramSpecificMongoModel::init('Schedule', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', $dbName, true);
+        $this->History = ProgramSpecificMongoModel::init('History', $dbName, true);
+        $this->Participant = ProgramSpecificMongoModel::init('Participant', $dbName, true);
+        $this->PredefinedMessage = ProgramSpecificMongoModel::init('PredefinedMessage', $dbName, true);
+
+        /*$this->UnattachedMessage = new UnattachedMessage($options);
         $this->Schedule          = new Schedule($options);
         $this->ProgramSetting    = new ProgramSetting($options);
         $this->History           = new History($options);
         $this->Participant       = new Participant($options);
-        $this->PredefinedMessage = new PredefinedMessage($options);
+        $this->PredefinedMessage = new PredefinedMessage($options);*/
+
     }	
     
     

@@ -2,28 +2,24 @@
 App::uses('ProgramContentVariablesController', 'Controller');
 App::uses('ContentVariable', 'Model');
 App::uses('ContentVariableTable', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramContentVariablesController extends ProgramContentVariablesController
 {
     
     public $autoRender = false;
-    
-    
+        
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
     
 }
 
 
 class ProgramContentVariablesControllerTestCase extends ControllerTestCase
 {
-    /**
-    * Data
-    *
-    */
     
     var $programData = array(
         0 => array( 
@@ -41,31 +37,41 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         $this->ProgramContentVariables = new TestProgramContentVariablesController();
+
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->ContentVariable = ProgramSpecificMongoModel::init(
+            'ContentVariable', $dbName, true);
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', $dbName, true);
         $this->dropData();
     }
     
     
     protected function dropData()
     {
-        $this->instanciateContentVariableModel();
+        //$this->instanciateContentVariableModel();
         $this->ContentVariable->deleteAll(true, false);
         $this->ContentVariableTable->deleteAll(true, false);
     }
     
     
-    protected function instanciateContentVariableModel() 
+   /* protected function instanciateContentVariableModel() 
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->ContentVariable = new ContentVariable($options);
-        $this->ContentVariableTable = new ContentVariableTable($options);
-    }
+        //$options = array('database' => $this->programData[0]['Program']['database']);
+        $dbName = $this->programData[0]['Program']['database'];
+
+        $this->ContentVariable = ProgramSpecificMongoModel::init(
+            'ContentVariable', $dbName, true);
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', $dbName, true);
+    }*/
     
     
     public function tearDown()
     {
         $this->dropData();
         unset($this->ContentVariable);
+        unset($this->ContentVariableTable);
         parent::tearDown();
     }
     

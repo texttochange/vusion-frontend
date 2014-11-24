@@ -9,7 +9,7 @@ class ProgramTestCase extends CakeTestCase
     
     public $fixtures = array('app.program', 'app.user', 'app.programsUser');
     
-    
+  
     public function setUp()
     {
         parent::setUp();

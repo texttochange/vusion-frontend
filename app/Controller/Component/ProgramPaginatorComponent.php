@@ -3,7 +3,7 @@ App::uses('Component', 'Controller');
 App::uses('PaginatorComponent', 'Controller/Component');
 App::uses('ShortCode', 'Model');
 App::uses('Program', 'Model');
-App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 class ProgramPaginatorComponent extends PaginatorComponent 
 {  
@@ -16,8 +16,8 @@ class ProgramPaginatorComponent extends PaginatorComponent
         parent::__construct($collection, $settings);
 
         $this->Program = ClassRegistry::init('Program');
-
-        if (!Configure::read("mongo_db")) {
+        $this->ShortCode = ClassRegistry::init('ShortCode');
+        /*if (!Configure::read("mongo_db")) {
             $options = array(
                 'database' => 'vusion'
                 );
@@ -26,7 +26,7 @@ class ProgramPaginatorComponent extends PaginatorComponent
                 'database' => Configure::read("mongo_db")
                 );
         }
-        $this->ShortCode  = new ShortCode($options);
+        $this->ShortCode  = new ShortCode($options);*/
     }
     
     public function paginate()
@@ -134,7 +134,7 @@ class ProgramPaginatorComponent extends PaginatorComponent
     public function getProgramDetails($program)
     {
         $database           = $program['Program']['database'];
-        $tempProgramSetting = new ProgramSetting(array('database' => $database));
+        $tempProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', $database, true);
         $shortcode          = $tempProgramSetting->getProgramSetting('shortcode');
 
         if (isset($shortcode)) {

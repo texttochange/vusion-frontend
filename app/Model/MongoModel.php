@@ -1,15 +1,15 @@
 <?php 
-App::uses('Model', 'Model');
+App::uses('AppModel', 'Model');
 App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
 App::uses('MongoModelValidator', 'Model');
 
 
-abstract class MongoModel extends Model
+abstract class MongoModel extends AppModel
 {
     
-    var $specific     = false;
-    var $databaseName = null; 
-    var $useDbConfig = 'mongo';   
+    //var $specific     = false;
+    //var $databaseName = null; 
+    var $useDbConfig = 'vusion';   
     
     var $mongoFields = array(
         '_id',
@@ -27,13 +27,28 @@ abstract class MongoModel extends Model
     
     
     abstract function getRequiredFields($objectType);
-    
-    
+
+
+    /*static function initModelDynamicDB($className, $databaseName, $forceNew=false) {
+        if (!$forceNew) {
+            $model = ClassRegistry::init($className);
+        } else {
+            $model = new $className();
+        }
+        $model->setDatabase($databaseName);
+        return $model;
+    }*/
+
+
     public function __construct($id = false, $table = null, $ds = null)
     {
-        
+        /*if (isset($id['ds']) && $id['ds'] == 'test_mongo_program_specific') {
+            throw new Exception("problem");
+        }*/
+        //print_r($table);
+        //print_r($ds);
         $this->defaultFields = array_merge($this->vusionFields, $this->mongoFields);
-        
+        /*
         if ($this->specific) {
             // Get saved company/database name
             if (isset($id['database']) and $id['database']) {
@@ -41,15 +56,13 @@ abstract class MongoModel extends Model
             } else if (isset($id['id']['database'])) {
                 $dbName = $id['id']['database'];
                 unset($id['id']['database']);
-            } else {
-                $dbName = 'mongo-test';
-            }
+            } 
             
             // Get common company-specific config (default settings in database.php)
             //$mongodb = new MongodbSource();
             
             //echo "Mongo Class is Construct ".$dbName;
-            
+            /*
             $config = ConnectionManager::getDataSource('mongo')->config;
             
             // Set correct database name
@@ -59,11 +72,53 @@ abstract class MongoModel extends Model
             ConnectionManager::create($dbName, $config);
             // Point model to new config
             $this->useDbConfig = $dbName;
-        }
+            $this->initializeDynamicTable();*/
+          /*  if (isset($dbName)) {
+                echo $this->name." instanciate directly with db $dbName\n";
+                $this->setDatabase($dbName);
+            }*/
+            //$table=false;
+        /*} else {
+            if (Configure::check("test_mongo_db")) {
+                $dbName = Configure::read("test_mongo_db");                
+                echo $this->name." instanciate directly with db $dbName\n";
+                $this->setDatabase($dbName);   
+            } else {
+                echo $this->name." instanciate directly with db vusion\n";
+                $this->setDatabase('vusion');
+            }
+        }*/
         parent::__construct($id, $table, $ds);
         $this->validator(new MongoModelValidator($this));
     }
-    
+
+    /*
+    public function setDatabase($databaseName) 
+    {
+        if ($databaseName == null || $databaseName == "") {
+            throw new Exception("empty databasename");
+        }
+        echo $this->name."->setDatabase($databaseName)\n";
+        if ($this->databaseName == $databaseName) {
+            //echo $this->name." already set abord\n";
+            return;
+        }
+        $this->databaseName = $databaseName;
+        $config = ConnectionManager::getDataSource($this->useDbConfig)->config;
+        // Set correct database name
+        $config['database'] = $databaseName;
+        // Add new config to registry
+        ConnectionManager::create($databaseName, $config);
+        // Point model to new config
+        $this->useDbConfig = $databaseName;
+        $this->initializeDynamicTable();
+    }*/
+
+    /*public function initializeDynamicTable()
+    {
+        echo $this->name."->initializeDynamicTable\n";
+    }*/
+
     
     public function checkFields($object)
     {        

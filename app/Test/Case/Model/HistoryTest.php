@@ -1,8 +1,8 @@
 <?php
-/* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -14,11 +14,18 @@ class HistoryTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
+        $dbName = 'testdbprogram';
+        $this->History = ProgramSpecificMongoModel::init(
+            'History', $dbName);
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
+        /*
         $options                 = array('database' => 'testdbprogram');
         $this->History           = new History($options);
         $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
+        $this->ProgramSetting    = new ProgramSetting($options);*/
         $this->dropData();
     }
     

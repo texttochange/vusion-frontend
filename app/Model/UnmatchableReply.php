@@ -6,10 +6,7 @@ App::uses('FilterException', 'Lib');
 
 class UnmatchableReply extends MongoModel
 {
-    
-    var $specific    = true;
     var $name        = 'UnmatchableReply';
-    var $useDbConfig = 'mongo';
     var $useTable    = 'unmatchable_reply';
 
     var $countriesByPrefixes = null;
