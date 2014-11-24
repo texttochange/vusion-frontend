@@ -292,7 +292,7 @@ class Program extends AppModel
         if (!$this->delete()) {
             return false;
         }
-        $mongoDbSource = ConnectionManager::getDataSource('mongo');
+        $mongoDbSource = ConnectionManager::getDataSource('mongo_program_specific');
         $config = $mongoDbSource->config;
         $host = "mongodb://";
         $hostname = $config['host'] . ':' . $config['port'];
@@ -302,7 +302,7 @@ class Program extends AppModel
         } else {
             $host .= $hostname;
         }
-        $con = new Mongo($host);
+        $con = new MongoClient($host);
         $db = $con->selectDB($program['Program']['database']);
         $db->drop();
         return true;

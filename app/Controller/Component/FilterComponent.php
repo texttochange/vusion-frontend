@@ -1,14 +1,18 @@
 <?php
 App::uses('Component', 'Controller');
 
+
 class FilterComponent extends Component 
 {
-    
+
     var $localizedValueLabel = array();
     var $currentQuery = array();
+
     
-    public function __construct(ComponentCollection $collection, $settings = array())
+    public function startup(Controller $controller)
     {
+        parent::startup($controller);
+        $this->Controller = $controller;
         $this->localizedValueLabel = array(
             'not-with' => __('not with'),
             'not-is-any'=>  __('not is any'),
@@ -58,16 +62,7 @@ class FilterComponent extends Component
             'optin' => __('optin'),
             'optout' => __('optout'),
             'are-present' => __('are present'),
-            ); 
-        $this->Controller = $collection->getController();
-        parent::__construct($collection, $settings);
-    }
-    
-    
-    public function initialize(Controller $controller)
-    {
-        parent::startup($controller);
-        $this->Controller = $controller;
+            );
         $this->Controller->set('filterLabels', $this->localizedValueLabel);
     }
     

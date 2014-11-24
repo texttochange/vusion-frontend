@@ -27,7 +27,7 @@ class ArchivedProgramComponentTest extends CakeTestCase
     public function setUp() 
     {
         parent::setUp();
-        $Collection            = new ComponentCollection();
+        $Collection             = new ComponentCollection();
         $this->ArchiveComponent = new ArchivedProgramComponent($Collection);
     }   
     
@@ -41,7 +41,7 @@ class ArchivedProgramComponentTest extends CakeTestCase
     
     private function _initializeRequest($controllerName, $method='POST', $action='add', $isAjax=false) {
 
-    	$CakeRequest           = $this->getMock('CakeRequest',
+    	$CakeRequest = $this->getMock('CakeRequest',
             array('__get', 'method', 'is'));
 
     	$CakeRequest->action = $action;
@@ -78,7 +78,7 @@ class ArchivedProgramComponentTest extends CakeTestCase
 			->expects($this->once())
 			->method('setFlash')
 			->with('Adding this is not allowed within an archived program.');
-		$this->assertFalse($this->ArchiveComponent->isAllowed());
+		$this->assertFalse($this->ArchiveComponent->isAllowed($this->Controller));
 
         $this->_initializeRequest("programHome", 'GET', 'restartWorker');
         $this->ArchiveComponent->Session = $this->getMock('Session', array('setFlash'));
@@ -86,7 +86,7 @@ class ArchivedProgramComponentTest extends CakeTestCase
             ->expects($this->once())
             ->method('setFlash')
             ->with('Restart worker is not allowed in archived program.');
-        $this->assertFalse($this->ArchiveComponent->isAllowed());
+        $this->assertFalse($this->ArchiveComponent->isAllowed($this->Controller));
 
         $this->_initializeRequest("programHome", 'GET', 'restartWorker', true);
         $this->ArchiveComponent->Session = $this->getMock('Session', array('setFlash'));
@@ -94,7 +94,7 @@ class ArchivedProgramComponentTest extends CakeTestCase
             ->expects($this->once())
             ->method('setFlash')
             ->with('Restart worker is not allowed in archived program.');
-        $this->assertFalse($this->ArchiveComponent->isAllowed());
+        $this->assertFalse($this->ArchiveComponent->isAllowed($this->Controller));
 	}
 
 

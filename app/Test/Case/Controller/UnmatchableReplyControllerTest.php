@@ -1,6 +1,7 @@
 <?php
-
+App::Uses('MongoModel', 'Model');
 App::uses('UnmatchableReplyController', 'Controller');
+App::uses('UnmatchableReply', 'Model');
 
 
 class TestUnmatchableReplyController extends UnmatchableReplyController
@@ -10,40 +11,27 @@ class TestUnmatchableReplyController extends UnmatchableReplyController
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
-    }
-    
-    
+    }   
+
 }
+
 
 Class UnmatchableReplyControllerTestCase extends ControllerTestCase
 {
-    var $databaseName = "testdbmongo";
-    
-    var $programData = array(
-        0 => array( 
-            'Program' => array(
-                'name' => 'Test Name',
-                'url' => 'testurl',
-                'database' => 'testdbprogram',
-                'status' => 'running'
-                )
-            ));
-    
+
     public function setup()
     {
-        Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->UnmatchableReplies = new TestUnmatchableReplyController();
         $this->instanciateUnmatchableReplyModel();
-        $this->dropData();
     }
     
     
     protected function instanciateUnmatchableReplyModel()
     {
-        $options = array('database'=>$this->databaseName);
-        $this->UnmatchableReply = new UnmatchableReply($options);
+        $this->UnmatchableReply = ClassRegistry::init(array(
+            'class' => 'UnmatchableReply'));
     }
     
     
@@ -56,9 +44,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
     public function tearDown()
     {
         $this->dropData();
-        
         unset($this->UnmatchableReplies);
-        
         parent::tearDown();
     }
     
@@ -84,9 +70,8 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
 
         $unmatchableReplies->Auth
         ->expects($this->any())
-        ->method('loggedInd')
+        ->method('loggedIn')
         ->will($this->returnValue(true));
-
     }
     
     public function testFilter()

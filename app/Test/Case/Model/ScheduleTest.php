@@ -1,6 +1,6 @@
 <?php
-
 App::uses('Schedule', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class ScheduleTestCase extends CakeTestCase
@@ -10,12 +10,9 @@ class ScheduleTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $options        = array('database' => 'test');
-        $this->Schedule = new Schedule($options);
-        
-        $this->Schedule->setDataSource('mongo_test');
-        
+        $dbName = 'testdbprogram';
+        $this->Schedule = ProgramSpecificMongoModel::init(
+            'Schedule', $dbName);
     }
     
     public function tearDown()

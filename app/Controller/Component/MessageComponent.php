@@ -7,7 +7,7 @@ class MessageComponent extends Component
     
     var $localizedValueLabels = array();
     
-    public function __construct(ComponentCollection $collection, $settings = array())
+    public function startup($controller)
     {
         $this->localizedValueLabels = array(
             "name" => __('Name'),
@@ -19,8 +19,8 @@ class MessageComponent extends Component
             "any"=> __('any'),
             "all"=> __('all'),
             );
-        $this->Controller = $collection->getController();
-        parent::__construct($collection, $settings);
-        $this->Controller->set('messageLabels', $this->localizedValueLabels);
+        $controller->set(
+            'messageLabels',
+            $this->localizedValueLabels);
     }
 }

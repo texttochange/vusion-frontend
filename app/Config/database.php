@@ -21,17 +21,32 @@ class DATABASE_CONFIG {
 		'encoding' => 'utf8'
 	);
 	
-	var $mongo = array(
+	public $vusion = array(
+		'datasource' => 'Mongodb.MongodbSource',
+		'persistent' => false,
+		'host' => 'localhost',
+		'database' => 'vusion',
+		'port' => '27017',
+	);
+
+	public $test_vusion = array(
+		'datasource' => 'Mongodb.MongodbSource',
+		'persistent' => false,
+		'host' => 'localhost',
+		'database' => 'test_vusion',
+		'port' => '27017',
+	);
+
+	public $mongo_program_specific = array(
 		'datasource' => 'Mongodb.MongodbSource',
 		'persistent' => false,
 		'host' => 'localhost',
 		'port' => '27017'
 	);
 	
-	var $mongo_test = array(
+	public $test_mongo_program_specific = array(
 		'datasource' => 'Mongodb.MongodbSource',
 		'persistent' => false,
-		'database' => 'cake_test',
 		'host' => 'localhost',
 		'port' => '27017'	
 	);
