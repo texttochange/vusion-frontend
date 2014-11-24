@@ -6,6 +6,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class ResetPasswordTicketComponent extends Component
 {
+
     var $components = array('Email');    
     
     

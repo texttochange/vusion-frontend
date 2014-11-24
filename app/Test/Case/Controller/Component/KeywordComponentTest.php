@@ -5,6 +5,8 @@ App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
 App::uses('KeywordComponent', 'Controller/Component');
 App::uses('ScriptMaker', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestKeywordComponentController extends Controller
 {
@@ -24,9 +26,6 @@ class KewyordComponentTest extends CakeTestCase
         parent::setUp();
         $Collection = new ComponentCollection();
         $this->KeywordComponent = new KeywordComponent($Collection);
-        $this->KeywordComponent->Program = ClassRegistry::init('Program');
-        //Don't get why the useDbConfig is not properly configure by ClassResigtry
-        $this->KeywordComponent->Program->useDbConfig = 'test';
         $CakeRequest = new CakeRequest();
         $CakeResponse = new CakeResponse();
         $this->Controller = new TestKeywordComponentController($CakeRequest, $CakeResponse);
@@ -48,18 +47,23 @@ class KewyordComponentTest extends CakeTestCase
 
     protected function instanciateModels()
     {
-        $options = array('database' => 'testdbprogram');
-
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Request        = new Request($options);
+        $dbName = 'testdbprogram';
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->Request = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
     }
 
-    protected function instanciateExternalModels($databaseName)
+    protected function instanciateExternalModels($dbName)
     {
-        $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
-        $this->externalModels['request'] = new Request(array('database' => $databaseName));
+        $this->externalModels['dialogue'] = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->externalModels['request'] = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
+        $this->externalModels['programSetting'] = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);   
     }
 
     protected function dropData()

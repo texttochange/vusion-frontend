@@ -3,10 +3,8 @@ App::uses('MongoModel', 'Model');
 
 class ShortCode extends MongoModel
 {
-    
-    var $specific    = true;
+
     var $name        = 'ShortCode';
-    var $useDbConfig = 'mongo';
     var $useTable    = 'shortcodes';
     
     var $localPrefixedShortCodePattern = '/^[ 0-9]+-[0-9]+/';

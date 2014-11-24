@@ -1,22 +1,19 @@
 <?php 
-App::uses('Model', 'Model');
+App::uses('AppModel', 'Model');
 App::uses('MongoDbSource', 'MongoDb.Model/Datasource');
 App::uses('MongoModelValidator', 'Model');
 
 
-abstract class MongoModel extends Model
+abstract class MongoModel extends AppModel
 {
     
-    var $specific     = false;
-    var $databaseName = null; 
-    var $useDbConfig = 'mongo';   
+    var $useDbConfig = 'vusion';   
     
     var $mongoFields = array(
         '_id',
         'modified',
         'created'
         );
-    
     var $vusionFields = array(
         'model-version',
         'object-type'
@@ -27,43 +24,15 @@ abstract class MongoModel extends Model
     
     
     abstract function getRequiredFields($objectType);
-    
-    
+
+
     public function __construct($id = false, $table = null, $ds = null)
     {
-        
         $this->defaultFields = array_merge($this->vusionFields, $this->mongoFields);
-        
-        if ($this->specific) {
-            // Get saved company/database name
-            if (isset($id['database']) and $id['database']) {
-                $dbName = $id['database'];
-            } else if (isset($id['id']['database'])) {
-                $dbName = $id['id']['database'];
-                unset($id['id']['database']);
-            } else {
-                $dbName = 'mongo-test';
-            }
-            
-            // Get common company-specific config (default settings in database.php)
-            //$mongodb = new MongodbSource();
-            
-            //echo "Mongo Class is Construct ".$dbName;
-            
-            $config = ConnectionManager::getDataSource('mongo')->config;
-            
-            // Set correct database name
-            $config['database'] = $dbName;
-            $this->databaseName = $dbName;
-            // Add new config to registry
-            ConnectionManager::create($dbName, $config);
-            // Point model to new config
-            $this->useDbConfig = $dbName;
-        }
         parent::__construct($id, $table, $ds);
         $this->validator(new MongoModelValidator($this));
     }
-    
+
     
     public function checkFields($object)
     {        
@@ -167,4 +136,3 @@ abstract class MongoModel extends Model
     
     
 }
-?> 

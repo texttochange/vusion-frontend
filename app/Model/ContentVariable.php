@@ -1,13 +1,12 @@
 <?php
-
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('VusionConst', 'Lib');
 
-class ContentVariable extends MongoModel
+
+class ContentVariable extends ProgramSpecificMongoModel
 {
-    var $specific = true;
     var $name = 'ContentVariable';
-    var $useDbConfig = 'mongo';
+ 
     
     function getModelVersion()
     {

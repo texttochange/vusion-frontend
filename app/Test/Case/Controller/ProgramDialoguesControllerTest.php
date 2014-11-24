@@ -11,14 +11,12 @@ class TestProgramDialoguesController extends ProgramDialoguesController
 {
     
     public $autoRender = false;
-    
-    
+     
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
 
@@ -57,7 +55,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Dialogues = new TestProgramDialoguesController();
-        ClassRegistry::config(array('ds' => 'test'));
         
         $this->externalModels = array();
         
@@ -83,12 +80,16 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     protected function instanciateModels()
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);
+        $dbName = $this->programData[0]['Program']['database'];
         
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Request        = new Request($options);
-        $this->Participant    = new Participant($options);
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        $this->Request = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
+        $this->Participant    = ProgramSpecificMongoModel::init(
+            'Participant', $dbName, true);
     }
     
     protected function setupProgramSettings($shortcode, $timezone)
@@ -109,21 +110,21 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
     }
     
-    protected function instanciateExternalModels($databaseName)
+    protected function instanciateExternalModels($dbName)
     {
-        $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
-        $this->externalModels['request'] = new Request(array('database' => $databaseName));
+        $this->externalModels['dialogue'] = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->externalModels['programSetting'] = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        $this->externalModels['request'] = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
     }
     
     
     public function tearDown()
     {
-        
         $this->dropData();
-        
-        unset($this->Dialogues);
-        
+        unset($this->Dialogues);        
         parent::tearDown();
     }
     

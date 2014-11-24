@@ -7,8 +7,6 @@ class ArchivedProgramComponent extends Component
 
 	public function initialize($controller)
 	{
-		$this->Controller = $controller;
-		
 		$this->archivedAuthorization = array(
 			'default' => array(
 				'POST' => array(
@@ -38,35 +36,43 @@ class ArchivedProgramComponent extends Component
 	}
 
 
-	public function isAllowed()
+	public function startup($controller) 
 	{
-		if (!isset($this->Controller->params['program'])) {
+		if (!$this->isAllowed($controller)) {
+        	$controller->_stop();
+        }
+	}
+
+
+	public function isAllowed($controller)
+	{
+		if (!isset($controller->params['program'])) {
 			return true;
 		}
-		if ($this->Controller->programDetails['status'] != 'archived'){
+		if ($controller->programDetails['status'] != 'archived'){
 			return true;
 		}
-		$controller = 'default';
-		if (isset($this->archivedAuthorization[$this->Controller->request->params['controller']])){
-			$controller = $this->Controller->request->params['controller'];
+		$controllerName = 'default';
+		if (isset($this->archivedAuthorization[$controller->request->params['controller']])){
+			$controllerName = $controller->request->params['controller'];
 		} 
-		$method = $this->Controller->request->method();
+		$method = $controller->request->method();
 
 		$action = 'index';
-		if (isset($this->Controller->request->action)) {
-			$action = $this->Controller->request->action;
+		if (isset($controller->request->action)) {
+			$action = $controller->request->action;
 		}
-		if (!isset($this->archivedAuthorization[$controller][$method][$action])){
+		if (!isset($this->archivedAuthorization[$controllerName][$method][$action])){
 			return true;
 		} else {
-			$this->Session->setFlash($this->archivedAuthorization[$controller][$method][$action]);
-			if ($this->Controller->request->is('ajax')) {
-				$this->Controller->set('requestSuccess', false);
-				$this->Controller->render('/Elements/ajax_return', 'ajax');
-				$this->Controller->response->send();
+			$this->Session->setFlash($this->archivedAuthorization[$controllerName][$method][$action]);
+			if ($controller->request->is('ajax')) {
+				$controller->set('requestSuccess', false);
+				$controller->render('/Elements/ajax_return', 'ajax');
+				$controller->response->send();
 			} else {
-				$this->Controller->redirect(array(
-					'program' => $this->Controller->params['program'],
+				$controller->redirect(array(
+					'program' => $controller->params['program'],
 					'action' => 'index'));
 			}
 			return false;

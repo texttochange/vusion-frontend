@@ -1,5 +1,5 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('Dialogue', 'Model');
 App::uses('Program', 'Model');
 App::uses('Request', 'Model');
@@ -9,9 +9,13 @@ App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 
 
-class ProgramDialoguesController extends AppController
+class ProgramDialoguesController extends BaseProgramSpecificController
 {
-    
+    var $uses = array(
+        'Dialogue',
+        'ProgramSetting',
+        'Participant',
+        'Request');
     var $components = array(
         'RequestHandler'=> array(
             'viewClassMap' => array(
@@ -19,21 +23,17 @@ class ProgramDialoguesController extends AppController
         'LocalizeUtils', 
         'Utils',
         'Keyword',
-        'DynamicForm');
+        'DynamicForm',
+        'ProgramAuth',
+        'ArchivedProgram');
     
     
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
         $this->RequestHandler->accepts('json');
         $this->RequestHandler->addInputType('json', array('json_decode'));
         
-        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Participant    = new Participant($options);
-        $this->Request        = new Request($options);
         $this->_instanciateVumiRabbitMQ();
     }
     

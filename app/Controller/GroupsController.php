@@ -1,17 +1,13 @@
 <?php
 App::uses('AppController', 'Controller');
-/**
-* Groups Controller
-*
-* @property Group $Group
-*/
+
+
 class GroupsController extends AppController
 { 
     
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allowedActions = array('*');
     }
     
     

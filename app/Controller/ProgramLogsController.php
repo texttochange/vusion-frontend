@@ -1,15 +1,17 @@
 <?php
+App::uses('BaseProgramSpecificController','Controller');
 
-App::uses('AppController','Controller');
 
-class ProgramLogsController extends AppController
+class ProgramLogsController extends BaseProgramSpecificController
 {
     
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')), 
-        'LogManager');
+        'LogManager',
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time');

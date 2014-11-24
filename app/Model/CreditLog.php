@@ -7,9 +7,7 @@ App::uses('VusionException', 'Lib');
 class CreditLog extends MongoModel
 {
 
-    var $specific    = true;
     var $name        = 'CreditLog';
-    var $useDBConfig = 'mongo';
     var $useTable    = 'credit_logs';
 
 
