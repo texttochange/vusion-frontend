@@ -1,7 +1,6 @@
 var conn = new Mongo("localhost:27017");
-db       = conn.getDB('vusion');
-
-db.getSiblingDB('vusion');
+//This works as "use " command in mongo shell
+db = db.getSiblingDB('vusion');
 
 var userLog = db.getCollection('user_logs').exists();
 if (!this.userLog) {
