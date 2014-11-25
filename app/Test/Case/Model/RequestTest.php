@@ -2,6 +2,7 @@
 App::uses('Request', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
 App::uses('ScriptMaker', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class RequestTestCase extends CakeTestCase
@@ -11,14 +12,9 @@ class RequestTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-
-        $connections = ConnectionManager::enumConnectionObjects();
-
-        $option        = array('database' => 'testdbprogram');
-        $this->Request = new Request($option);
-
-        $this->Request->setDataSource('mongo_test');
-        $this->Request->deleteAll(true, false);
+        $dbName = 'testdbprogram';
+        $this->Request = ProgramSpecificMongoModel::init(
+            'Request', $dbName);
 
         $this->Maker = new ScriptMaker();
     }

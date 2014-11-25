@@ -1,7 +1,8 @@
 <?php
-
 App::uses('UnattachedMessage', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class UnattachedMessageTestCase extends CakeTestCase
 {
@@ -10,11 +11,11 @@ class UnattachedMessageTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $options                 = array('database' => 'testdbprogram');
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        
+        $dbName = 'testdbprogram';
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
         $this->dropData();
         
     }
@@ -22,10 +23,8 @@ class UnattachedMessageTestCase extends CakeTestCase
     
     public function tearDown()
     {
-        $this->dropData();
-        
+        $this->dropData(); 
         unset($this->UnattachedMessage);
-        
         parent::tearDown();
     }
     

@@ -3,13 +3,16 @@ App::uses('ProgramParticipantsController', 'Controller');
 App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
 App::uses('Dialogue', 'Model');
+App::uses('Participant', 'Model');
+App::uses('History', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramParticipantsController extends ProgramParticipantsController
 {
-    
+  
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
@@ -37,48 +40,39 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         
-        $this->Participants = new TestProgramParticipantsController();
-        
-        $options = array('database' => $this->programData[0]['Program']['database']);   
-        $this->Participant    = new Participant($options);
-        $this->Schedule       = new Schedule($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->History        = new History($options);
-        $this->Dialogue       = new Dialogue($options);
-        
+        $this->ProgramParticipants = new TestProgramParticipantsController();
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->setModel('Participant', $dbName);
+        $this->setModel('Schedule', $dbName);
+        $this->setModel('ProgramSetting', $dbName);
+        $this->setModel('History', $dbName);
+        $this->setModel('Dialogue', $dbName);
+
         $this->dropData();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $this->Maker = new ScriptMaker();
-        
+    }
+
+    protected function setModel($classModel, $dbName) {
+        $this->{$classModel} = ProgramSpecificMongoModel::init(
+            $classModel, $dbName, true);
     }
     
     
     protected function dropData()
     {
-        $this->instanciateParticipantModel();
         $this->Participant->deleteAll(true, false);
         $this->Schedule->deleteAll(true,false);
         $this->ProgramSetting->deleteAll(true,false);
         $this->History->deleteAll(true, false);
         $this->Dialogue->deleteAll(true, false);
     }
-    
-    
-    protected function instanciateParticipantModel() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->Participant = new Participant($options);
-    }
-    
-    
+
+
     public function tearDown()
     {
-        
         $this->dropData();
-        
-        unset($this->Participants);
-        
+        unset($this->ProgramParticipants);
         parent::tearDown();
     }
     
@@ -110,18 +104,18 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participants->Acl
         ->expects($this->any())
         ->method('check')
-        ->will($this->returnValue('true'));
+        ->will($this->returnValue(true));
         
         $participants->Auth
         ->expects($this->any())
         ->method('loggedIn')
-        ->will($this->returnValue('true'));
-
+        ->will($this->returnValue(true));
+        
         $participants->Program
         ->expects($this->once())
         ->method('find')
         ->will($this->returnValue($this->programData));
-        
+  
         return $participants;
         
     }
@@ -234,7 +228,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
         
-        $this->instanciateParticipantModel();
         $this->Participant->create();
         $this->Participant->save(
             array(
@@ -322,7 +315,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         
-        $this->instanciateParticipantModel();
         $this->Participant->create();
         $this->Participant->save(
             array(
@@ -958,7 +950,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals(1,count($participantFromDb['Participant']['enrolled']));
         $this->assertEquals(0, $this->Schedule->find('count'));
     }
-    
+
 
     public function testRunActions_ok()
     {
@@ -998,9 +990,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-
-         $this->assertTrue($this->vars['requestSuccess']);
+        $this->assertTrue($this->vars['requestSuccess']);
     }
+
 
     public function testRunActions_fail_validation()
     {
@@ -1222,7 +1214,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('read')
         ->will($this->onConsecutiveCalls(
-            $this->programData[0]['Program']['database'],
             $this->programData[0]['Program']['name'],
             'Africa/Kampala',
             'testdbprogram',
@@ -1262,11 +1253,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         //Asserting that programName "Test Name" is adding to export file
         $this->assertEquals(
-            substr($this->vars['fileName'], 0, -23),
+            substr($this->vars['fileName'], 0, 23),
             'Test_Name_participants_');
     }
     
-    
+
     public function testReset()
     {
         $participants = $this->mockProgramAccess();

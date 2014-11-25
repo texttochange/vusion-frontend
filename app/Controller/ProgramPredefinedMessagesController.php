@@ -1,13 +1,16 @@
 <?php
-
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('PredefinedMessage', 'Model');
 
 
-class ProgramPredefinedMessagesController extends AppController
+class ProgramPredefinedMessagesController extends BaseProgramSpecificController
 {
-     var $uses        = array('PredefinedMessage');
-     var $components  = array('Message');
+    var $uses = array(
+        'PredefinedMessage');
+    var $components = array(
+        'Message',
+        'ProgramAuth',
+        'ArchivedProgram');
     
     
     function constructClasses()
@@ -19,10 +22,6 @@ class ProgramPredefinedMessagesController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db')));
-        $this->loadModel('PredefinedMessage', $options); 
     }
     
     

@@ -18,7 +18,6 @@ class TestFilterComponentController extends Controller
 class FirstDummyModel extends MongoModel 
 {
     public $name = "FirstDummy";
-    public $specific = true;
     public function getModelVersion() {}
     public function getRequiredFields($objectType) {}
 
@@ -49,7 +48,6 @@ class FirstDummyModel extends MongoModel
 class SecondDummyModel extends MongoModel 
 {
     var $name = "SecondDummy";
-    var $specific = true;
     public function getModelVersion() {}
     public function getRequiredFields($objectType) {}
 
@@ -88,7 +86,7 @@ class FilterComponentTest extends CakeTestCase
             'SecondDummyModel',
             array(
                 'getUniqueParticipantPhone'));
-        $this->FilterComponent->initialize($this->Controller);
+        $this->FilterComponent->startup($this->Controller);
     }
     
     

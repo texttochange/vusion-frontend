@@ -30,7 +30,6 @@ class UserAccessComponentTest extends CakeTestCase
         $this->Controller = new TestUserAccessComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
         $this->UserAccessComponent->initialize($this->Controller);
-        //$this->UserAccessComponent->startup($this->Controller);
     }
     
     

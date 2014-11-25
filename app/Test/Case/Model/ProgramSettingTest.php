@@ -1,54 +1,25 @@
 <?php
 App::uses('ProgramSetting', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class ProgramSettingTestCase extends CakeTestCase
 {
-    
-    protected $_config = array(
-        'datasource' => 'Mongodb.MongodbSource',
-        'host' => 'localhost',
-        'login' => '',
-        'password' => '',
-        'database' => 'test',
-        'port' => 27017,
-        'prefix' => '',
-        'persistent' => true,
-        );
-    
-    
+      
     public function setUp()
     {
         parent::setUp();
-        
-        $connections = ConnectionManager::enumConnectionObjects();
-        
-        if (!empty($connections['test']['classname']) && $connections['test']['classname'] === 'mongodbSource'){
-            $config        = new DATABASE_CONFIG();
-            $this->_config = $config->test;
-        }
-        
-        ConnectionManager::create('mongo_test', $this->_config);
-        $this->Mongo = new MongodbSource($this->_config);
-        
-        $options              = array('database' => 'test');
-        $this->ProgramSetting = new ProgramSetting($options);
-        
-        $this->ProgramSetting->setDataSource('mongo_test');
-        
-        $this->mongodb =& ConnectionManager::getDataSource($this->ProgramSetting->useDbConfig);
-        $this->mongodb->connect();
-        
+        $dbName = 'testdbprogram';
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
         $this->dropData();
-        
     }
     
     
     public function tearDown()
     {
         unset($this->ProgramSetting);
-        
         parent::tearDown();
     }
     

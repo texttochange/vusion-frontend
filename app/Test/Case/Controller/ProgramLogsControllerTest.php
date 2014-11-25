@@ -7,13 +7,11 @@ class TestProgramLogsController extends ProgramLogsController
 {
     
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
     
 }
 
@@ -35,19 +33,15 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        parent::setUp();
-        
+        parent::setUp();        
         $this->Logs = new TestProgramLogsController();
-        
-        //$this->dropData();
     }
     
     // we only mock the data to be used so we dont need a dropData() function;    
     
     public function tearDown()
     {
-        unset($this->Logs);
-        
+        unset($this->Logs);   
         parent::tearDown();
     }
     

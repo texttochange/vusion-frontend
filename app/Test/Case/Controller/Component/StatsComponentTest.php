@@ -11,20 +11,17 @@ App::uses('History', 'Model');
 App::uses('ProgramSetting', 'Model');
 
 
-
 class TestStatsComponentController extends Controller
 {
 
     var $components = array('Stats');
-    
-    
+
     function constructClasses()
     {
         $this->redis = new Redis();
         $this->redis->connect('127.0.0.1');
         $this->redisProgramPrefix = 'unittest';
     }
-
     
 }
 
@@ -47,12 +44,16 @@ class StatsComponentTest extends CakeTestCase
         $this->Controller = new TestStatsComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
         $this->StatsComponent->initialize($this->Controller);
+        $this->StatsComponent->startup($this->Controller);
+  
         $this->redis = $this->Controller->redis;
         
-        $this->Maker = new ScriptMaker();
-        $options = array('database' => 'testdbprogram');
-        $this->instanciateModels($options);
+        $this->instanciateModels(
+            array('Participant', 'Schedule', 'History', 'ProgramSetting'), 
+            'testdbprogram');
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $this->Maker = new ScriptMaker();
     }
     
     
@@ -65,12 +66,11 @@ class StatsComponentTest extends CakeTestCase
     }
     
     
-    protected function instanciateModels($options)
+    protected function instanciateModels($modelNames, $options)
     {
-        $this->Participant = new Participant($options);
-        $this->Schedule = new Schedule($options);
-        $this->History = new History($options);
-        $this->ProgramSetting = new ProgramSetting($options); 
+       foreach ($modelNames as $modelName) {
+            $this->{$modelName} = ProgramSpecificMongoModel::init($modelName, $options, true);
+        }
     }
     
     

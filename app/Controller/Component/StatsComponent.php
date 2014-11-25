@@ -2,12 +2,13 @@
 App::uses('Component', 'Controller');
 App::uses('Program', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class StatsComponent extends Component 
 {
     
     public $Controller = null;
-    
     
     var $localizedValueLabel = array();
     
@@ -39,7 +40,7 @@ class StatsComponent extends Component
     }
     
     
-    public function initialize(Controller $controller)
+    public function startup(Controller $controller)
     {
         parent::startup($controller);
         $this->Controller = $controller;
@@ -93,19 +94,19 @@ class StatsComponent extends Component
             'object-type' => 'program-stats',
             'model-version'=> '1');
         
-        $tempProgramSetting = new ProgramSetting(array('database' => $database));
+        $tempProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', $database, true);
         $programTimeNow = $tempProgramSetting->getProgramTimeNow();            
         if(empty($programTimeNow)){
             return $programStats;
         }
-        $tempParticipant = new Participant(array('database' => $database));
+        $tempParticipant = ProgramSpecificMongoModel::init('Participant', $database, true);
         $programStats['active-participant-count'] = $this->getProgramStat(
             $tempParticipant,
             array('session-id' => array('$ne' => null)));
         
         $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
-        $tempSchedule = new Schedule(array('database' => $database));
+        $tempSchedule = ProgramSpecificMongoModel::init('Schedule', $database, true);
         $programTimeToday = $programTimeNow->modify('+1 day');        
         $programStats['today-schedule-count'] = $this->getProgramStat(
             $tempSchedule, 
@@ -113,7 +114,7 @@ class StatsComponent extends Component
         
         $programStats['schedule-count'] = $this->getProgramStat($tempSchedule);
         
-        $tempHistory     = new History(array('database' => $database));
+        $tempHistory = ProgramSpecificMongoModel::init('History', $database, true);
         $programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");        
         $first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));

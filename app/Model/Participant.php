@@ -1,5 +1,5 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
@@ -7,12 +7,12 @@ App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
 
 
-class Participant extends MongoModel
+class Participant extends ProgramSpecificMongoModel
 {
-    var $specific     = true;    
     var $name         = 'Participant';
     var $importErrors = array();
-    
+
+
     function getModelVersion()
     {
         return '3';
@@ -31,6 +31,7 @@ class Participant extends MongoModel
             'profile',
             );
     }
+
     
     public $findMethods = array(
         'all' => true,
@@ -48,17 +49,17 @@ class Participant extends MongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
-
-        if (isset($id['id']['database'])) {
-            $options = array('database' => $id['id']['database']);
-        } else {
-            $options = array('database' => $id['database']);
-        }
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Dialogue       = new Dialogue($options);
     }
     
-    
+    public function initializeDynamicTable($forceNew=false) 
+    {
+        parent::initializeDynamicTable();
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $this->databaseName, $forceNew);        
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $this->databaseName, $forceNew);
+    }
+
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
     {

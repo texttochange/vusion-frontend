@@ -1,5 +1,5 @@
 <?php
-App::uses('AppController','Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
@@ -9,10 +9,16 @@ App::uses('VusionException', 'Lib');
 App::uses('FilterException', 'Lib');
 
 
-class ProgramParticipantsController extends AppController
+class ProgramParticipantsController extends BaseProgramSpecificController
 {
     
-    var $uses       = array('Participant');
+    var $uses = array(
+        'Participant',
+        'History',
+        'Schedule',
+        'Dialogue',
+        'UnattachedMessage',
+        'ProgramSetting');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -21,16 +27,19 @@ class ProgramParticipantsController extends AppController
         'Filter',
         'UserLogMonitor',
         'Paginator' => array(
-            'className' => 'BigCountPaginator'));
+            'className' => 'BigCountPaginator'),
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array(
             'className' => 'BigCountPaginator'));
     
-    
+
     function constructClasses() 
     {
         parent::constructClasses();
+        $this->_instanciateVumiRabbitMQ();
     }
     
     
@@ -42,18 +51,8 @@ class ProgramParticipantsController extends AppController
     function beforeFilter() 
     {
         parent::beforeFilter();
-        
-        $options = array('database' => ($this->Session->read($this->params['program']."_db"))); 
-        $this->Participant       = new Participant($options);
-        $this->History           = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        
-        $this->_instanciateVumiRabbitMQ();
     }
-    
+
     
     public function index() 
     {      
@@ -233,12 +232,17 @@ class ProgramParticipantsController extends AppController
                 chmod($filePath, 0764);
             }
             
-            $programNow   = $this->ProgramSetting->getProgramTimeNow();
-            $programName  = $this->Session->read($programUrl.'_name');
-            
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $timestamp = $programNow->format("Y-m-d_H-i-s");
+            } else {
+                $timestamp = '';
+            }
+            //$programName  = $this->Session->read($programUrl.'_name');
+            $programName  = $this->programDetails['name'];
             $programNameUnderscore = str_replace(' ', '_', $programName);
             
-            $fileName     = $programNameUnderscore . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
+            $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
             $handle       = fopen($fileFullPath, "w");            
             $headers      = $this->Participant->getExportHeaders($conditions);

@@ -1,16 +1,15 @@
 <?php
-
 App::uses('ProgramHistoryController', 'Controller');
 App::uses('Program', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class TestProgramHistoryController extends ProgramHistoryController
 {
     
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
@@ -21,7 +20,6 @@ class TestProgramHistoryController extends ProgramHistoryController
 
 class ProgramHistoryControllerTestCase extends ControllerTestCase
 {
-    
     
     var $programData = array(
         0 => array( 
@@ -39,12 +37,14 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Histories = new TestProgramHistoryController();
-        //ClassRegistry::config(array('ds' => 'test'));
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Maker = new ScriptMaker();
         
-        $this->dropData();
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->History = ProgramSpecificMongoModel::init(
+            'History', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        
+        $this->Maker = new ScriptMaker();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');      
         
     }
@@ -52,26 +52,15 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        //As this model is created on the fly, need to instantiate again
-        $this->instanciateHistoryModel();
         $this->History->deleteAll(true, false);
-    }
-    
-    
-    protected function instanciateHistoryModel()
-    {
-        $options       = array('database' => $this->programData[0]['Program']['database']);
-        $this->History = new History($options);
-    }
-    
-    
+        $this->ProgramSetting->deleteAll(true, false);
+    }    
+
+
     public function tearDown()
     {
-        
-        $this->dropData();
-        
+        $this->dropData();        
         unset($this->Histories);
-        
         parent::tearDown();
     }
     
@@ -128,7 +117,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     public function testPagination() 
     {
-        $this->instanciateHistoryModel();
         $this->History->create('unattach-history');
         $this->History->save(array(
             'participant-phone' => '256712747841',
@@ -358,7 +346,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('read')
         ->will($this->onConsecutiveCalls(
-            $this->programData[0]['Program']['database'],
             $this->programData[0]['Program']['name'],
             'Africa/Kampala',
             'testdbprogram',

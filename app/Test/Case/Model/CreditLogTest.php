@@ -1,6 +1,7 @@
 <?php
 App::uses('CreditLog', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class CreditLogTestCase extends CakeTestCase
@@ -9,10 +10,7 @@ class CreditLogTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        $options         = array('database'=>'test'); 
-        $this->CreditLog = new CreditLog($options);
-        $this->CreditLog->setDataSource('mongo_test');
-
+        $this->CreditLog = ClassRegistry::init('CreditLog');
         $this->dropData();
     }
 
