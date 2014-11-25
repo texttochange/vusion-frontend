@@ -239,7 +239,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             }
             //$programName  = $this->Session->read($programUrl.'_name');
             $programName  = $this->programDetails['name'];
-            $programNameUnderscore = str_replace(' ', '_', $programName);
+            $search       = array(' ', '/', '?', '|', '"', ']', '[', '{', '}', '\^');
+            
+            $programNameUnderscore = str_replace($search, '_', $programName);
             
             $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;

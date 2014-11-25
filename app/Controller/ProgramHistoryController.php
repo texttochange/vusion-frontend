@@ -159,8 +159,9 @@ class ProgramHistoryController extends BaseProgramSpecificController
             
             $programNow  = $this->ProgramSetting->getProgramTimeNow();
             $programName = $this->Session->read($programUrl.'_name');
+            $search       = array(' ', '/', '?', '|', '"', ']', '[', '{', '}', '\^');
             
-            $programNameUnderscore = str_replace(' ', '_', $programName);
+            $programNameUnderscore = str_replace($search, '_', $programName);
             
             $fileName     = $programNameUnderscore . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
