@@ -540,18 +540,33 @@ class UsersController extends AppController
         if (!$this->request->is('post')) {
             return;
         }
-        
-        $email = $this->request->data['User']['email'];
-        $disclaimer = $this->request->data['User']['invite_disclaimer'];
-        $group_id = $this->request->data['User']['group_id'];
-        $programs = $this->request->data['Program'];
+        # to help in form validation
+        $validationErrors = array('User' => array(), 'Program' => array());
 
-        if (!$email) {
-            $this->Session->setFlash(__('Please Enter Email address'));
+        if (!isset($this->request->data['User']['email']) or
+            $this->request->data['User']['email'] == "" or
+            !preg_match('/^[\w\-\.+]+@([\w+\-]+\.)+[a-zA-Z]{2,5}/', $this->request->data['User']['email'])) {
+            $validationErrors['User']['email'] = "Invalid email.";
+        } else {
+            $email = $this->request->data['User']['email'];
+        }
+
+        if ($this->request->data['Program']['Program'] == "") {
+            $validationErrors['Program']['Program'] = "Please select atleast one program.";
+        } else {
+            $programs = $this->request->data['Program'];
+        }
+        
+        $group_id = $this->request->data['User']['group_id'];
+        $disclaimer = $this->request->data['User']['invite_disclaimer'];
+        
+        #to help in form validation
+        if ($validationErrors['User'] != array() or $validationErrors['Program'] != array()) {
+            $this->Session->setFlash(__("Inite user failed."));
+            $this->set(compact('validationErrors'));
             return;
         }
 
-        
         if (!$disclaimer) {
             $this->Session->setFlash(__('Please tick the disclaimer'));
             return;

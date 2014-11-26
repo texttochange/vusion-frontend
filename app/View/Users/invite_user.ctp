@@ -1,6 +1,10 @@
 <?php
     echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
     echo $this->Html->tag('h3', __('Invite User'));
+    if (isset($validationErrors)) {
+        $this->Form->validationErrors['User'] = $validationErrors['User'];
+        $this->Form->validationErrors['Program'] = $validationErrors['Program'];
+    }
     echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' =>'inviteUser')));
     echo $this->Form->input('email', array('label' => __('Email')));
     echo $this->Form->input('group_id', array('label' =>__('Group id')));
