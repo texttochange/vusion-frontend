@@ -18,7 +18,7 @@
 	    <table class="user-logs" cellpadding="0" cellspacing="0">
 	        <thead>
 	            <tr>
-			        <th class="date-time"><?php echo $this->Paginator->sort('timestamp',__('Date'));?></th>
+			        <th class="date-time"><?php echo $this->Paginator->sort('timestamp',__('Timestamp'));?></th>
 			        <th class="user_logs_field"><?php echo $this->Paginator->sort('timezone', __('Timezone'));?></th>
 			        <th class="user_logs_field"><?php echo $this->Paginator->sort('user-id',__('User'));?></th>
 			        <th class="user_logs_field"><?php echo $this->Paginator->sort('program-database-name', __('Program'));?></th>
