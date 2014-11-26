@@ -4,10 +4,8 @@ App::uses('VusionConst', 'Lib');
 
 class UserLog extends MongoModel
 {
-    
-    var $specific    = true;
+   
     var $name        = 'UserLog';
-    var $useDBConfig = 'mongo';
     var $useTable    = 'user_logs';  
     
     

@@ -23,17 +23,14 @@ class UserLogMonitorComponentTest extends CakeTestCase
 {
 	public $UserLogComponent = null;
     public $Controller       = null;
-    public $databaseName = "testdbmongo";
     
     public function setUp() 
-    {
-        Configure::write("mongo_db",$this->databaseName);
+    {  
         parent::setUp();
         $Collection             = new ComponentCollection();
         $this->UserLogComponent = new UserLogMonitorComponent($Collection);
-        
-        $options = array('database' => $this->databaseName);
-        $this->UserLog = new UserLog($options);
+       
+        $this->UserLog = ClassRegistry::init('UserLog');
         
         $CakeRequest      = new CakeRequest(); 
         $CakeResponse     = new CakeResponse();
