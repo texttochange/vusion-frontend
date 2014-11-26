@@ -66,7 +66,6 @@ class AppController extends Controller
     
     function beforeFilter()
     {
-        $this->UserLogMonitor->logAction();
     }
     
     

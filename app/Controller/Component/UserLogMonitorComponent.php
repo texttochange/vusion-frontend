@@ -9,6 +9,18 @@ class UserLogMonitorComponent extends Component
     var $components = array('Session');
     
     
+    function beforeRender($controller)
+    {
+        $this->logAction();
+    }
+    
+    
+    function beforeRedirect($controller)
+    {
+        $this->logAction();
+    }
+    
+    
     public function initialize($controller)
     {
         $this->Controller = $controller;
