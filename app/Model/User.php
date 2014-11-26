@@ -25,8 +25,8 @@ class User extends AppModel
                 'message' => 'Password must be at least 8 characters long'
                 ),
             'alphaNumeric' => array(
-                'rule' => 'alphaNumeric',
-                'message' => 'Password must contain letters and numbers only'
+                'rule' => '/^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z\d]+$/',
+                'message' => 'Password must be letters and numbers, and contain atleast one number'
                 ),
             ),
         'email' => array(
