@@ -26,7 +26,6 @@ class UserLogsController extends AppController
         }
         
         $this->paginate = $paginate;
-        $userLogs       = $this->UserLog->getUserLogs();
         
         $this->set('userLogs', $this->paginate());
     }

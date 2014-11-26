@@ -96,10 +96,4 @@ class UserLog extends MongoModel
         );
     
     
-    public function getUserLogs()
-    {
-     $userLogs = $this->find('all');
-     return $userLogs;
-    }
-
 }
