@@ -598,6 +598,21 @@ class UsersController extends AppController
     {
         $invite = $this->Session->read('invite');
 
+        $usernameExists = $this->User->find('first', 
+            array('conditions' => array('username' => $this->request->data['User']['username'])));
+        $emailExists    = $this->User->find('first', 
+            array('conditions' => array('email' => $this->request->data['User']['email'])));
+
+        if ($usernameExists) {
+            $this->Session->setFlash(__('This username already exists. Please choose another'));
+            return;
+        }
+
+        if ($emailExists) {
+            $this->Session->setFlash(__('This email already exists. Please choose another'));
+            return;
+        }
+
         if ($this->request->is('post')) {
             $this->User->create();
             $invite = $this->Session->read('invite');
