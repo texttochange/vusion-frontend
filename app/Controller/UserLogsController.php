@@ -4,6 +4,9 @@ App::uses('UserLog','Model');
 
 class UserLogsController extends AppController
 {
+    var $uses = array('UserLog');
+    
+    
     public function beforeFilter()
     {
         parent::beforeFilter();
