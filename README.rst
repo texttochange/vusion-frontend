@@ -144,8 +144,8 @@ or in the mysql console type "mysql -u root-p < app/Config/Schema/schema.sql"
 
 	
 Create a userLogin and password in the Mysql account database which must correspond to ones in the **app/Config/database.php** 
-
 ::
+
 	1. On your phpmyadmin home go to phpmyadmin tab 
 	2. Click on add a new user
 	3. Feelin the infromation but on Host select local and Global privileges check all then press go
@@ -162,6 +162,10 @@ Run vusion.sql
     mysql -u root -p < app/Test/data/mySQL/vusion.sql
 
 
+To add an index on the timestamp in the user_logs collection with mongo, run the command below
+inside the vusion-frontend folder
+::
+   $ mongo app/Config/vusion_mongo_init.js
 
 Web Server Configuration
 ------------------------
@@ -293,6 +297,12 @@ Steps on a Windows (8.x/7) Host
 
     Enter the URL: localhost:4567 in your web browser vusion login page will show
 
+**Note:** To add an index on the timestamp in the user_logs collection with mongo, run the command below
+on the Guest machine inside the /var/vusion/ folder
+    ::
+    
+      $ mongo app/Config/vusion_mongo_init.js
+
 7. Settingup git flow to enable you create feature from branches for easy and organised development 
     
    a) Download and install ``getopt.exe`` from the util-linux-package_  
@@ -309,12 +319,13 @@ Steps on a Windows (8.x/7) Host
 
    b) Open a new Powershell as admin and create a directory.
        ::
+       
             $ mkdir c:\Installgitflow
             $ cd c:\Installgitflow
 
    c) Clone the gitflow source from GitHub.
        ::
-
+       
             $ git clone --recursive git://github.com/nvie/gitflow.git
             $ cd gitflow\contrib
 
@@ -357,9 +368,9 @@ Install Python cause most of the backend development and testing are in pyhton a
 
 7. Run the following commands in you terminal.
    ::
-
-	    python c:\envs\distribute_setup.py
-	    python c:\envs\get-pip.py
+   
+     python c:\envs\distribute_setup.py
+     python c:\envs\get-pip.py
 
    **Note** Once these commands run successfully, you can delete the scripts **get-pip.py** and **distribute_setup.py**.
 
