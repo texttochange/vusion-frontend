@@ -229,12 +229,12 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->assertTrue(isset($this->vars['fileName']));
         $this->assertFileEquals(
             TESTS . 'files/exported_creditViewer.csv',
-            WWW_ROOT . 'files/programs/creditViewer/' . $this->vars['fileName']);
+            WWW_ROOT . 'files/credit-viewer/' . $this->vars['fileName']);
         
         //Asserting that programName "creditViewer" is adding to export file
         $this->assertEquals(
-            substr($this->vars['fileName'], 0, -14),
-            'creditViewer_');
+            substr($this->vars['fileName'], 0, 14),
+            'Credit_Viewer_');
     }
     
     

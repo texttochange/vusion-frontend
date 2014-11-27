@@ -24,7 +24,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     var $programData = array(
         0 => array( 
             'Program' => array(
-                'name' => 'Test Name',
+                'name' => 'Test Name?good/for|testing &me%',
                 'url' => 'testurl',
                 'database' => 'testdbprogram',
                 'status' => 'running'
@@ -372,10 +372,11 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             TESTS . 'files/exported_history.csv',
             WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
         
-        //Asserting that programName "Test Name" is adding to export file
+        //Asserting that programName is added and special characters 
+        //replaced to export file
         $this->assertEquals(
             substr($this->vars['fileName'], 0, -23),
-            'Test_Name_history_');
+            'Test_Name_good_for_testing_me_history_');
     }
 
 

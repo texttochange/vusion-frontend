@@ -104,21 +104,16 @@ class CreditViewerController extends AppController
     
     public function export()
     {
-        $url                 = $this->params['controller'];
         $requestSucces       = false;
         $timeframeParameters = $this->_getTimeframeParameters();
         $conditions          = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
         
         try{
-            $filePath = WWW_ROOT . "files/programs/" . $url;            
-            if (!file_exists($filePath)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
+            $filePath = WWW_ROOT . "files/credit-viewer";
             
             $now           = new DateTime('now');
-            $fileName      = $url .'_' . $now->format('Y-m-d') . '.csv';            
-            $fileFullPath  = $filePath . "/" . $fileName;
+            $fileName      = 'Credit_Viewer_' . $now->format('Y-m-d') . '.csv';            
+            $fileFullPath  = $filePath . DS . $fileName;
             $handle        = fopen($fileFullPath, "w");
             
             $headersDates = array(
@@ -264,10 +259,10 @@ class CreditViewerController extends AppController
     {
         $url          = $this->params['controller'];
         $fileName     = $this->params['url']['file'];        
-        $fileFullPath = WWW_ROOT . "files/programs/" . $url . "/" . $fileName; 
+        $fileFullPath = WWW_ROOT . "files/credit-viewer/" . $fileName; 
         
         if (!file_exists($fileFullPath)) {
-            throw new NotFoundException();
+            throw new NotFoundException(__("This file does not exist: %s", $fileFullPath));
         }
         
         $this->response->header("X-Sendfile: $fileFullPath");
