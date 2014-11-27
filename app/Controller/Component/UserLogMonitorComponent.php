@@ -6,7 +6,9 @@ App::uses('VusionConst', 'Lib');
 class UserLogMonitorComponent extends Component
 {
     
-    var $components = array('Session');
+    var $components = array(
+        'Session',
+        'Auth');
     
     
     function beforeRender($controller)
@@ -151,11 +153,10 @@ class UserLogMonitorComponent extends Component
             $userLog['program-database-name'] = $programDatabaseName;
             $userLog['program-name']          = $programName;
             $userLog['parameters']            = $this->userLogActions[$controller][$method][$action];
-            $userLog['user-id']               = $this->Session->read('Auth.User.id');
-            $userLog['user-name']             = $this->Session->read('Auth.User.username');
+            $userLog['user-id']               = $this->Auth->user('id');
+            $userLog['user-name']             = $this->Auth->user('username');            
             $userLog['timezone']              = $programTimezone;
-            $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);            
-            
+            $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
             $this->UserLog->create();
             $this->UserLog->save($userLog);
         }

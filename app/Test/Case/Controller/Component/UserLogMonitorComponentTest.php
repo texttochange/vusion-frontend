@@ -68,7 +68,9 @@ class UserLogMonitorComponentTest extends CakeTestCase
     	    'read',
     	    'check',
     	    'write',
-    	    'delete'));    	
+    	    'delete'));
+    	$this->UserLogComponent->Auth = $this->getMock('Auth', array(
+    	    'user'));    	    	
     	
     	$this->UserLogComponent->Session 
     	->expects($this->at(0))
@@ -87,20 +89,20 @@ class UserLogMonitorComponentTest extends CakeTestCase
 	        'programDatabaseName' => null,
 	        'programName' => null)));
 	    
-    	$this->UserLogComponent->Session 
-    	->expects($this->at(2))
-    	->method('read')
-    	->with('Auth.User.id')
+    	$this->UserLogComponent->Auth 
+    	->expects($this->at(0))
+    	->method('user')
+    	->with('id')
     	->will($this->returnValue(89));
     	
-        $this->UserLogComponent->Session 
-        ->expects($this->at(3))
-        ->method('read')
-        ->with('Auth.User.username')
+        $this->UserLogComponent->Auth 
+        ->expects($this->at(1))
+        ->method('user')
+        ->with('username')
         ->will($this->returnValue('Tomx'));
         
         $this->UserLogComponent->Session 
-    	->expects($this->at(4))
+    	->expects($this->at(2))
     	->method('delete')
     	->with('UserLogMonitor');
     	
