@@ -279,12 +279,14 @@ Steps on a Windows (8.x/7) Host
 4. Contact "techteam(AT)texttochage(DOT)com", ask for the **Vusion.box** file and add it into **c:\\Development\\vusion-frontend**
 
 5. Using your IDE Open and edit the vagrantfile in **"c:\\Development\\vusion-forntend\\vagrantfile"**
-   ::
-    Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
-    to the file location of your development directory.
+    ::
+   
+     Edit line 5: `config.vm.box_url = "file:///Users/olivier/Development/vusion/vusion2.box"` to
+     to the file location of your development directory.
     
   
     We also have the synced, here the ``type:nfs`` has to change to ``type:smb``, for more information about why the type changes read the link below.
+    https://docs.vagrantup.com/v2/synced-folders/smb.html
   
 				    	  
 6. Run this command in the PowerShell to start Vagrant and virtualbox
@@ -309,6 +311,7 @@ Steps on a Windows (8.x/7) Host
 
    b) Open a new Powershell as admin and create a directory.
        ::
+       
             $ mkdir c:\Installgitflow
             $ cd c:\Installgitflow
 
