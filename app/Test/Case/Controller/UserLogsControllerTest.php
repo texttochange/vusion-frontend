@@ -1,8 +1,5 @@
 <?php
 App::uses('UserLogsController', 'Controller');
-App::uses('Program', 'Model');
-App::uses('UserLog', 'Model');
-App::uses('ScriptMaker', 'Lib');
 
 
 class TestUserLogsController extends UserLogsController
@@ -20,17 +17,16 @@ class TestUserLogsController extends UserLogsController
 class UserLogsControllerTestCase extends ControllerTestCase
 {
     
-    var $databaseName = "testdbmongo";
+   // var $databaseName = "testdbmongo";
     
     public function setUp()
-    {
-        Configure::write("mongo_db",$this->databaseName);
+    {        
         parent::setUp();
         
         $this->UserLogs = new TestUserLogsController();
-        $options        = array('database' => $this->databaseName);
-        $this->UserLog  = new UserLog($options);
-        
+        //$options        = array('database' => $this->databaseName);
+        //$this->UserLog  = new UserLog($options);
+        $this->UserLog = ClassRegistry::init('UserLog');
         $this->dropData();
     }
 
@@ -56,7 +52,10 @@ class UserLogsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth'
+                    'Auth' => array('loggedIn')
+                    ),
+                'models' => array(
+                    'Group' => array()
                     )
                 )
             );
@@ -64,7 +63,12 @@ class UserLogsControllerTestCase extends ControllerTestCase
         $userLogs->Acl
         ->expects($this->any())
         ->method('check')
-        ->will($this->returnValue('true'));        
+        ->will($this->returnValue('true'));
+        
+        $userLogs->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
         
         return $userLogs;
     }
@@ -85,9 +89,10 @@ class UserLogsControllerTestCase extends ControllerTestCase
             'parameters' => 'all participant with tag: today'
             );
         $this->UserLog->create();
-        $this->UserLog->save($userLog);
+        $this->UserLog->save($userLog);     
         
         $this->testAction("/userLogs/index");
+        //print_r($this->vars['userLogs']);
         $this->assertEquals(1, count($this->vars['userLogs']));
     }
 }
