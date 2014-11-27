@@ -540,18 +540,33 @@ class UsersController extends AppController
         if (!$this->request->is('post')) {
             return;
         }
-        
-        $email = $this->request->data['User']['email'];
-        $disclaimer = $this->request->data['User']['invite_disclaimer'];
-        $group_id = $this->request->data['User']['group_id'];
-        $programs = $this->request->data['Program'];
+        # to help in form validation
+        $validationErrors = array('User' => array(), 'Program' => array());
 
-        if (!$email) {
-            $this->Session->setFlash(__('Please Enter Email address'));
+        if (!isset($this->request->data['User']['email']) or
+            $this->request->data['User']['email'] == "" or
+            !preg_match('/^[\w\-\.+]+@([\w+\-]+\.)+[a-zA-Z]{2,5}/', $this->request->data['User']['email'])) {
+            $validationErrors['User']['email'] = "Invalid email.";
+        } else {
+            $email = $this->request->data['User']['email'];
+        }
+
+        if ($this->request->data['Program']['Program'] == "") {
+            $validationErrors['Program']['Program'] = "Please select atleast one program.";
+        } else {
+            $programs = $this->request->data['Program'];
+        }
+        
+        $group_id = $this->request->data['User']['group_id'];
+        $disclaimer = $this->request->data['User']['invite_disclaimer'];
+        
+        #to help in form validation
+        if ($validationErrors['User'] != array() or $validationErrors['Program'] != array()) {
+            $this->Session->setFlash(__("Inite user failed."));
+            $this->set(compact('validationErrors'));
             return;
         }
 
-        
         if (!$disclaimer) {
             $this->Session->setFlash(__('Please tick the disclaimer'));
             return;
@@ -582,6 +597,21 @@ class UsersController extends AppController
     public function addInvitee()
     {
         $invite = $this->Session->read('invite');
+
+        $usernameExists = $this->User->find('first', 
+            array('conditions' => array('username' => $this->request->data['User']['username'])));
+        $emailExists    = $this->User->find('first', 
+            array('conditions' => array('email' => $this->request->data['User']['email'])));
+
+        if ($usernameExists) {
+            $this->Session->setFlash(__('This username already exists. Please choose another'));
+            return;
+        }
+
+        if ($emailExists) {
+            $this->Session->setFlash(__('This email already exists. Please choose another'));
+            return;
+        }
 
         if ($this->request->is('post')) {
             $this->User->create();
