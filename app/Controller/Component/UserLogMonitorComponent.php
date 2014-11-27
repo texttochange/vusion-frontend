@@ -23,18 +23,8 @@ class UserLogMonitorComponent extends Component
     
     public function initialize($controller)
     {
-        $this->Controller = $controller;
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        
-        $this->UserLog = new UserLog($options);
+        $this->Controller = $controller;        
+        $this->UserLog    = ClassRegistry::init('UserLog');
         
         $this->userLogActions  = array(
             'programParticipants' => array(
