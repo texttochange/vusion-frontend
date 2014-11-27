@@ -231,17 +231,24 @@ class ScriptMaker
 
     static public function mkCreditLog($objectType='program-credit-log', $date='2014-04-10',
                                 $programDatabase='mydatabase', $code='256-8181', $incoming=2,
-                                $outgoing=1)
+                                $outgoing=1, $outgoingAcked=0, $outgoingNAcked=0)
     {
         switch($objectType) {
         case 'program-credit-log':
-            return array(
+            $creditLog = array(
                 'object-type' => $objectType,
                 'date' => $date,
                 'code' => $code,
                 'program-database' => $programDatabase,
                 'incoming' => $incoming,
                 'outgoing' => $outgoing);
+            if ($outgoingAcked != 0) {
+                $creditLog['outgoing-acked'] = $outgoingAcked;
+            }
+            if ($outgoingNAcked != 0) {
+                $creditLog['outgoing-nacked'] = $outgoingNAcked;
+            } 
+            return $creditLog;
             break;
         case 'garbage-credit-log':
             return array(
