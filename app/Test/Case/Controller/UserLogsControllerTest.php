@@ -16,17 +16,12 @@ class TestUserLogsController extends UserLogsController
 
 class UserLogsControllerTestCase extends ControllerTestCase
 {
-    
-   // var $databaseName = "testdbmongo";
-    
     public function setUp()
     {        
         parent::setUp();
         
         $this->UserLogs = new TestUserLogsController();
-        //$options        = array('database' => $this->databaseName);
-        //$this->UserLog  = new UserLog($options);
-        $this->UserLog = ClassRegistry::init('UserLog');
+        $this->UserLog  = ClassRegistry::init('UserLog');
         $this->dropData();
     }
 
@@ -92,7 +87,6 @@ class UserLogsControllerTestCase extends ControllerTestCase
         $this->UserLog->save($userLog);     
         
         $this->testAction("/userLogs/index");
-        //print_r($this->vars['userLogs']);
         $this->assertEquals(1, count($this->vars['userLogs']));
     }
 }
