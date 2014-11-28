@@ -119,7 +119,7 @@ class UserLogMonitorComponent extends Component
     {
         if ($this->Session->check('UserLogMonitor')) {
             $sessionAction = $this->Session->read('UserLogMonitor');
-            $this->_logAction($sessionAction['action'],
+            $this->_saveUserAction($sessionAction['action'],
                 $sessionAction['method'],
                 $sessionAction['controller'],
                 $sessionAction['programDatabaseName'],
@@ -129,7 +129,7 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    protected function _logAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
+    protected function _saveUserAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
     {
         $now = new DateTime('now');
         if (isset($this->Controller->programDetails['database'])) {
