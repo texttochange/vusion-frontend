@@ -47,7 +47,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    function beforeFilter() 
+    public function beforeFilter() 
     {
         parent::beforeFilter();
     }
