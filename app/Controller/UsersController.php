@@ -5,6 +5,7 @@ App::uses('User', 'Model');
 App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 App::uses('CakeEmail', 'Network/Email');
+App::uses('VusionConst', 'Lib');
 
 class UsersController extends AppController
 {
@@ -545,7 +546,7 @@ class UsersController extends AppController
 
         if (!isset($this->request->data['User']['email']) or
             $this->request->data['User']['email'] == "" or
-            !preg_match('/^[\w\-\.+]+@([\w+\-]+\.)+[a-zA-Z]{2,5}/', $this->request->data['User']['email'])) {
+            !preg_match(VusionConst::EMAIL_REGEX, $this->request->data['User']['email'])) {
             $validationErrors['User']['email'] = "Invalid email.";
         } else {
             $email = $this->request->data['User']['email'];
