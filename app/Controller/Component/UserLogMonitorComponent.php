@@ -13,17 +13,23 @@ class UserLogMonitorComponent extends Component
     
     function beforeRender($controller)
     {
-        $this->logAction();
+        if ($controller->getViewVar('requestSuccess')) {
+            $this->userLogSessionWrite();
+            $this->logAction();
+        }
     }
     
     
     function beforeRedirect($controller)
-    {
-        $this->logAction();
+    {        
+        if ($controller->getViewVar('requestSuccess')) {
+            $this->userLogSessionWrite();
+            $this->logAction();
+        }
     }
     
     
-    public function initialize($controller)
+    public function startup($controller)
     {
         $this->Controller = $controller;        
         $this->UserLog    = ClassRegistry::init('UserLog');
@@ -105,7 +111,7 @@ class UserLogMonitorComponent extends Component
         }
         
         $method = $this->Controller->request->method();
-        
+        print_r($action);
         $this->Session->write('UserLogMonitor', array(
             'action' => $action,
             'method' => $method,

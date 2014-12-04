@@ -335,9 +335,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             if ($savedParticipant = $this->Participant->save($data)) {
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
                 $requestSuccess = true;
-                
-                $this->UserLogMonitor->userLogSessionWrite();
-                
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
@@ -520,7 +517,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
             }            
-            $this->UserLogMonitor->userLogSessionWrite();            
+            //$this->UserLogMonitor->userLogSessionWrite();            
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
