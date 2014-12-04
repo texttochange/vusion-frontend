@@ -139,7 +139,6 @@ class ProgramRequestsController extends BaseProgramSpecificController
         }
         if ($this->Request->delete()) {
             $this->_notifyReloadRequest($programUrl, $id);
-            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(
                 __('The request has been deleted.'),
                 'default',

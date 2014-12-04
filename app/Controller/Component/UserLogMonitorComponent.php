@@ -11,7 +11,7 @@ class UserLogMonitorComponent extends Component
         'Auth');
     
     
-    function beforeRender($controller)
+    function beforeRender(Controller $controller)
     {
         if ($controller->getViewVar('requestSuccess')) {
             $this->userLogSessionWrite();
@@ -20,12 +20,10 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    function beforeRedirect($controller)
-    {        
-        if ($controller->getViewVar('requestSuccess')) {
+    function beforeRedirect(Controller $controller)
+    {
             $this->userLogSessionWrite();
             $this->logAction();
-        }
     }
     
     
@@ -111,7 +109,6 @@ class UserLogMonitorComponent extends Component
         }
         
         $method = $this->Controller->request->method();
-        print_r($action);
         $this->Session->write('UserLogMonitor', array(
             'action' => $action,
             'method' => $method,

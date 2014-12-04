@@ -84,7 +84,6 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
-                $this->UserLogMonitor->userLogSessionWrite();
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -128,7 +127,6 @@ class UsersController extends AppController
                 } else {
                     $this->Acl->deny($user, 'controllers/UnmatchableReply');
                 }
-                $this->UserLogMonitor->userLogSessionWrite();
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -166,7 +164,6 @@ class UsersController extends AppController
             throw new NotFoundException(__('Invalid user.'));
         }
         if ($this->User->delete()) {
-            $this->UserLogMonitor->userLogSessionWrite();
             $this->Session->setFlash(__('User deleted.'),
                 'default',
                 array('class'=>'message success')
@@ -267,7 +264,6 @@ class UsersController extends AppController
             } else {
                 $user['User']['password'] = $this->request->data['newPassword'];
                 if ($this->User->save($user)) {
-                    $this->UserLogMonitor->userLogSessionWrite();
                     $this->Session->setFlash(__('Password changed successfully.'),
                         'default',
                         array('class'=>'message success')
