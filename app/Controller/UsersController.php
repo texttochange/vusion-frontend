@@ -5,6 +5,7 @@ App::uses('User', 'Model');
 App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 App::uses('CakeEmail', 'Network/Email');
+App::uses('VusionConst', 'Lib');
 
 class UsersController extends AppController
 {
@@ -54,7 +55,16 @@ class UsersController extends AppController
         
         $this->paginate        = $paginate;
         $this->User->recursive = 0;
-        $this->set('users', $this->paginate("User"));
+        $users = $this->paginate("User");
+        # to display a username in invited_by field
+        foreach($users as &$user) {
+            $username = $this->User->find('first', array(
+                'fields' => array('User.username'),
+                'conditions' =>array('User.id' => $user['User']['invited_by'])
+                ));
+            $user['User']['invited_by'] = ($username ? $username['User']['username']: __("admin"));
+        }
+        $this->set(compact('users'));
     }
     
     
@@ -545,7 +555,7 @@ class UsersController extends AppController
 
         if (!isset($this->request->data['User']['email']) or
             $this->request->data['User']['email'] == "" or
-            !preg_match('/^[\w\-\.+]+@([\w+\-]+\.)+[a-zA-Z]{2,5}/', $this->request->data['User']['email'])) {
+            !preg_match(VusionConst::EMAIL_REGEX, $this->request->data['User']['email'])) {
             $validationErrors['User']['email'] = "Invalid email.";
         } else {
             $email = $this->request->data['User']['email'];
