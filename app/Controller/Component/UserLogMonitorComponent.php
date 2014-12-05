@@ -94,28 +94,6 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    /*public function userLogSessionWrite($programDatabaseName = null, $programName = null)
-    {
-    $controller = 'default';
-    if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
-    $controller = $this->Controller->request->params['controller'];
-    }
-    
-    $action = 'index';
-    if (isset($this->Controller->request->action)) {
-    $action = $this->Controller->request->action;
-    }
-    
-    $method = $this->Controller->request->method();
-    $this->Session->write('UserLogMonitor', array(
-    'action' => $action,
-    'method' => $method,
-    'controller' => $controller,
-    'programDatabaseName' => $programDatabaseName,
-    'programName' => $programName));
-    }*/
-    
-    
     public function initUserAction($programDatabaseName = null, $programName = null)
     {
         $this->Session->write('UserLogMonitor', array(            
@@ -154,16 +132,6 @@ class UserLogMonitorComponent extends Component
             $controller,
             $programDatabaseName,
             $programName);
-        
-        /*if ($this->Session->check('UserLogMonitor')) {
-        $sessionAction = $this->Session->read('UserLogMonitor');
-        $this->_saveUserAction($sessionAction['action'],
-        $sessionAction['method'],
-        $sessionAction['controller'],
-        $sessionAction['programDatabaseName'],
-        $sessionAction['programName']);
-        $this->Session->delete('UserLogMonitor');
-        }*/
     }
     
     
@@ -195,8 +163,7 @@ class UserLogMonitorComponent extends Component
             $userLog['user-name']             = $this->Auth->user('username');            
             $userLog['timezone']              = $programTimezone;
             $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
-            
-            print_r($userLog);
+           
             $this->UserLog->create();
             $this->UserLog->save($userLog);
         }
