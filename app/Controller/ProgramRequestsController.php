@@ -105,12 +105,6 @@ class ProgramRequestsController extends BaseProgramSpecificController
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $requestSuccess = true;
             
-           /* if (isset($id)) {
-               //$this->UserLogMonitor->userLogRequestEditSessionWrite($programDb, $programName);
-            } else {
-                //$this->UserLogMonitor->userLogSessionWrite();
-            }*/
-            
             $this->Session->setFlash(__('Request saved.'));
             $this->set(compact('savedRequest'));
         } else {

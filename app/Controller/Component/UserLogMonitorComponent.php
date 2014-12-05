@@ -67,9 +67,8 @@ class UserLogMonitorComponent extends Component
                 ),
             'programRequests' => array(
                 'POST' => array (
-                    'save' => __('Added a new request'),
-                    'delete' => __('Deleted a request'),
-                    'edit' => __('Edited a request')
+                    'save' => __('Saved a new request'),
+                    'delete' => __('Deleted a request')
                     )
                 ),
             'programHistory' => array(
@@ -169,19 +168,6 @@ class UserLogMonitorComponent extends Component
         }
         return true;
         
-    }
-    
-    
-    public function userLogRequestEditSessionWrite($programDatabaseName = null, $programName = null)
-    {        
-        $controller = $this->Controller->request->params['controller'];
-        
-        $this->Session->write('UserLogMonitor', array(
-            'action' => 'edit',
-            'method' => 'POST',
-            'controller' => $controller,
-            'programDatabaseName' => $programDatabaseName,
-            'programName' => $programName));
     }
     
 }
