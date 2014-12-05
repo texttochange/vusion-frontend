@@ -14,7 +14,6 @@ class UserLogMonitorComponent extends Component
     function beforeRender(Controller $controller)
     {
         if ($controller->getViewVar('requestSuccess')) {
-            $this->userLogSessionWrite();
             $this->logAction();
         }
     }
@@ -22,8 +21,7 @@ class UserLogMonitorComponent extends Component
     
     function beforeRedirect(Controller $controller)
     {
-            $this->userLogSessionWrite();
-            $this->logAction();
+        $this->logAction();
     }
     
     
@@ -96,7 +94,38 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    public function userLogSessionWrite($programDatabaseName = null, $programName = null)
+    /*public function userLogSessionWrite($programDatabaseName = null, $programName = null)
+    {
+    $controller = 'default';
+    if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
+    $controller = $this->Controller->request->params['controller'];
+    }
+    
+    $action = 'index';
+    if (isset($this->Controller->request->action)) {
+    $action = $this->Controller->request->action;
+    }
+    
+    $method = $this->Controller->request->method();
+    $this->Session->write('UserLogMonitor', array(
+    'action' => $action,
+    'method' => $method,
+    'controller' => $controller,
+    'programDatabaseName' => $programDatabaseName,
+    'programName' => $programName));
+    }*/
+    
+    
+    public function initUserAction($programDatabaseName = null, $programName = null)
+    {
+        $this->Session->write('UserLogMonitor', array(            
+            'programDatabaseName' => $programDatabaseName,
+            'programName' => $programName));
+    }
+    
+    
+    
+    public function logAction()
     {
         $controller = 'default';
         if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
@@ -109,26 +138,32 @@ class UserLogMonitorComponent extends Component
         }
         
         $method = $this->Controller->request->method();
-        $this->Session->write('UserLogMonitor', array(
-            'action' => $action,
-            'method' => $method,
-            'controller' => $controller,
-            'programDatabaseName' => $programDatabaseName,
-            'programName' => $programName));
-    }
-    
-    
-    public function logAction()
-    {
+        
+        $programDatabaseName = null;
+        $programName         = null;
+        
         if ($this->Session->check('UserLogMonitor')) {
-            $sessionAction = $this->Session->read('UserLogMonitor');
-            $this->_saveUserAction($sessionAction['action'],
-                $sessionAction['method'],
-                $sessionAction['controller'],
-                $sessionAction['programDatabaseName'],
-                $sessionAction['programName']);
+            $sessionAction       = $this->Session->read('UserLogMonitor');
+            $programDatabaseName = $sessionAction['programDatabaseName'];
+            $programName         = $sessionAction['programName'];            
             $this->Session->delete('UserLogMonitor');
-        }
+        }        
+        
+        $this->_saveUserAction($action,
+            $method,
+            $controller,
+            $programDatabaseName,
+            $programName);
+        
+        /*if ($this->Session->check('UserLogMonitor')) {
+        $sessionAction = $this->Session->read('UserLogMonitor');
+        $this->_saveUserAction($sessionAction['action'],
+        $sessionAction['method'],
+        $sessionAction['controller'],
+        $sessionAction['programDatabaseName'],
+        $sessionAction['programName']);
+        $this->Session->delete('UserLogMonitor');
+        }*/
     }
     
     
@@ -160,6 +195,8 @@ class UserLogMonitorComponent extends Component
             $userLog['user-name']             = $this->Auth->user('username');            
             $userLog['timezone']              = $programTimezone;
             $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
+            
+            print_r($userLog);
             $this->UserLog->create();
             $this->UserLog->save($userLog);
         }
