@@ -35,8 +35,31 @@ class UsersControllerTestCase extends ControllerTestCase
         
         parent::tearDown();
     }
+
+
+    protected function _mockUserAccess()
+    {
+        $users = $this->generate('Users', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read'),
+                'Auth' => array('user')
+                )));
+        
+        $users->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $users->Session
+        ->expects($this->any())
+        ->method('read')
+        ->will($this->returnValue('User'));
+
+        return $users;
+    }
     
-   /*
+   
     public function testIndex() 
     {
         
@@ -54,7 +77,7 @@ class UsersControllerTestCase extends ControllerTestCase
         
     }
     
-   */
+   
     public function testEdit_grant_unmatchable_reply_access() 
     {
         $users = $this->generate('Users', array(
@@ -163,7 +186,7 @@ class UsersControllerTestCase extends ControllerTestCase
         ->expects($this->at(1))
         ->method('deny')
         ->with($mockedUser, 
-            "controllers/Users")
+            "controllers/Users/index")
         ->will($this->returnValue('true'));
         
         $users->Acl
@@ -258,28 +281,13 @@ class UsersControllerTestCase extends ControllerTestCase
     
     public function testFilters()
     {
-        $users = $this->generate('Users', array(
-            'components' => array(
-                'Acl' => array('check'),
-                'Session' => array('read')
-                )));
-        
-        $users->Acl
-        ->expects($this->any())
-        ->method('check')
-        ->will($this->returnValue('true'));
-        
-        $users->Session
-        ->expects($this->any())
-        ->method('read')
-        ->will($this->returnValue('User'));
-        
         $expected = array(
             'id' => 2,
             'username' => 'oliv',
             'password' => 'olivpassword',
             'email' => 'oliv@there.com',
             'group_id' => 2,
+            'invited_by' => 'gerald',
             'created' => '2012-01-24 15:34:07',
             'modified' => '2012-01-24 15:34:07'
             );
@@ -290,15 +298,45 @@ class UsersControllerTestCase extends ControllerTestCase
             'password' => 'geraldpassword',
             'email' => 'gerald@here.com',
             'group_id' => 1,
+            'invited_by' => 'admin',
             'created' => '2012-01-24 15:34:07',
             'modified' => '2012-01-24 15:34:07'
             );
         
         // filter by username only
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(0))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(2));
+
+        $users->Auth
+        ->staticExpects($this->at(1))
+        ->method('user')
+        ->with('id')
+        ->will($this->returnValue(2));
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
+        $this->assertEquals($this->vars['users'], array());
+
+        // filter by username only ADMIN access
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(0))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(1));
         $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
         $this->assertEquals($this->vars['users'][0]['User'], $expected);
         
         //filter by group_id only
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(0))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(1));
+
         $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=group_id&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=1");
         $this->assertEquals($this->vars['users'][0]['User'], $expected01);
         
@@ -307,6 +345,12 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->assertEqual(count($this->vars['users']), 0);
         
         // filter by username OR group_id
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(0))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(1));
         $this->testAction("/users/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
         $this->assertEqual(count($this->vars['users']), 2);
         
@@ -678,11 +722,18 @@ class UsersControllerTestCase extends ControllerTestCase
         ->expects($this->at(1))
         ->method('allow')
         ->with($mockedUser, 
-            "controllers/Users/index")
+            "controllers/Users/inviteUser")
         ->will($this->returnValue('true'));
 
         $users->Acl
         ->expects($this->at(2))
+        ->method('allow')
+        ->with($mockedUser, 
+            "controllers/Users/index")
+        ->will($this->returnValue('true'));
+
+        $users->Acl
+        ->expects($this->at(3))
         ->method('allow')
         ->with($mockedUser, 
             "controllers/Users/delete")
@@ -754,7 +805,7 @@ class UsersControllerTestCase extends ControllerTestCase
         ->expects($this->at(1))
         ->method('deny')
         ->with($mockedUser, 
-            "controllers/Users")
+            "controllers/Users/index")
         ->will($this->returnValue('true'));
         
         $users->Acl
@@ -773,4 +824,6 @@ class UsersControllerTestCase extends ControllerTestCase
 
         $this->assertContains('/users/index', $this->headers['Location']);
     }
+
+
 }
