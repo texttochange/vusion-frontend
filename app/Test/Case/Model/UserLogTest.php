@@ -6,7 +6,7 @@ class UserLogTestCase extends CakeTestCase
     public function setup()
     {
         parent::setup();
-        $this->UserLog = new UserLog();
+        $this->UserLog = ClassRegistry::init('UserLog');;
         $this->dropData();
     }
     
@@ -39,7 +39,7 @@ class UserLogTestCase extends CakeTestCase
             'parameters' => 'all participant with tag: geek'
             );
         
-        $this->UserLog->create();
+        $this->UserLog->create('program-user-log');
         $savedUserLog = $this->UserLog->save($userLog);
         
         $userLog_02 = array(
@@ -54,7 +54,7 @@ class UserLogTestCase extends CakeTestCase
             'parameters' => 'all participant with tag: today'
             );
         
-        $this->UserLog->create();
+        $this->UserLog->create('program-user-log');
         $savedUserLog = $this->UserLog->save($userLog_02);
         
         $this->assertEqual(2, $this->UserLog->find('count'));
@@ -75,7 +75,7 @@ class UserLogTestCase extends CakeTestCase
             'parameters' => 'all participant with tag: geek'
             );
         
-        $this->UserLog->create();
+        $this->UserLog->create('program-user-log');
         $savedUserLog = $this->UserLog->save($userLog);
         
         $this->assertFalse($savedUserLog);        
@@ -100,13 +100,51 @@ class UserLogTestCase extends CakeTestCase
             'parameters' => 'all participant with tag: geek'
             );
         
-        $this->UserLog->create();
+        $this->UserLog->create('program-user-log');
         $savedUserLog = $this->UserLog->save($userLog);
         
         $this->assertFalse($savedUserLog);
         $this->assertEquals(
             'The date time is not in an ISO format.',
             $this->UserLog->validationErrors['timestamp'][0]
+            );
+    }
+    
+    
+    public function testSave_fail_obectType()
+    {
+        $userLog = array(
+            'timestamp' => '2014-20-10T20:25:00',
+            'timezone' => 'Africa/Kampala',
+            'user-name' => 'maxmass',
+            'user-id' => '1',
+            'program-name' => 'm4rh program',
+            'program-database-name' => 'm4rhP',
+            'controller' => 'programParticipant',
+            'action' => 'delete',
+            'parameters' => 'all participant with tag: geek'
+            );
+        
+        $this->UserLog->create('program-user-log');
+        $savedUserLog = $this->UserLog->save($userLog);
+        
+        $userLog_02 = array(
+            'timestamp' => '2014-20-10T20:25:00',
+            'timezone' => 'Australia/Sydney',
+            'user-name' => 'Tom',
+            'user-id' => '1',
+            'controller' => 'users',
+            'action' => 'delete',
+            'parameters' => 'Deleted a user'
+            );
+        
+        $this->UserLog->create();
+        $savedUserLog = $this->UserLog->save($userLog_02);
+        
+        $this->assertEqual(1, $this->UserLog->find('count'));
+        $this->assertEquals(
+            'Object type is invalid.',
+            $this->UserLog->validationErrors['object-type'][0]
             );
     }
     

@@ -8,7 +8,7 @@ class UserLog extends MongoModel
     var $name        = 'UserLog';
     var $useTable    = 'user_logs';  
     
-    var $programSpecificType = array('program-specific-log');
+    var $programSpecificType = array('program-user-log');
     
     function getModelVersion()
     {
@@ -32,23 +32,11 @@ class UserLog extends MongoModel
             'program-database-name',            
             );
         
-        if (in_array($object['object-type'], $this->programSpecificType)) {        
+        if (in_array($object, $this->programSpecificType)) {        
             $fields = array_merge($fields, $PROGRAMSPECIFIC_FIELDS);        
         }
         
-        return $fields;
-        
-        /*return array (
-            'timestamp',
-            'timezone',
-            'user-name',
-            'user-id',
-            'program-name',
-            'program-database-name',
-            'controller',
-            'action',
-            'parameters'
-            );*/    
+        return $fields;        
     }
     
     
@@ -82,16 +70,14 @@ class UserLog extends MongoModel
                 'message' => 'The user id cannot be empty.'
                 ),
             ),
-        'program-name' => array(
+        'object-type' => array(
             'notempty' => array(
                 'rule' => 'notempty',
-                'message' => 'The program name cannot be empty.'
+                'message' => 'The Object type cannot be empty.'
                 ),
-            ),
-        'program-database-name' => array(
-            'notempty' => array(
-                'rule' => 'notempty',
-                'message' => 'The database name cannot be empty.'
+            'validateObjectType' => array(
+                'rule' => 'validateObjectType',
+                'message' => 'Object type is invalid.'
                 ),
             ),
         'controller' => array(
@@ -113,6 +99,15 @@ class UserLog extends MongoModel
                 ),
             )        
         );
+    
+    
+    public function validateObjectType($object)
+    {
+        if ($object['object-type'] == 'program-user-log' || $object['object-type'] == 'vusion-user-log') {
+            return true;
+        }
+        return false;
+    }
     
     
 }

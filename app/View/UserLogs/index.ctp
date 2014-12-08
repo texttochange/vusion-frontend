@@ -31,7 +31,15 @@
                     <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s',$userLog['UserLog']['timestamp']); ?></td>
                     <td class="user_logs_field"><?php echo $userLog['UserLog']['timezone']; ?></td>
                     <td class="user_logs_field"><?php echo $userLog['UserLog']['user-name']; ?></td>
-                    <td class="user_logs_field"><?php echo $userLog['UserLog']['program-name']; ?></td>
+                    <td class="user_logs_field">
+                    <?php
+                    if (isset($userLog['UserLog']['program-name'])) {
+                        echo $userLog['UserLog']['program-name'];
+                    } else {
+                        echo ' ';
+                    }                    
+                    ?>
+                    </td>
                     <td class="user_logs_field"><?php echo $userLog['UserLog']['parameters']; ?></td>
 	            </tr>
 	            <?php endforeach; ?>
