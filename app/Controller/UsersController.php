@@ -38,7 +38,7 @@ class UsersController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $paginate = array('all');
-        $defaultConditions = array();
+        $defaultConditions = array();        
         
         if ($this->Auth->user('group_id') != 1) {
             $defaultConditions = array('invited_by' => $this->Auth->user('id'));
