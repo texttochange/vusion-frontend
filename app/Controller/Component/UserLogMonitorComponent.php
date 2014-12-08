@@ -11,7 +11,7 @@ class UserLogMonitorComponent extends Component
         'Auth');
     
     
-    function beforeRender(Controller $controller)
+    function beforeRender($controller)
     {
         if ($controller->getViewVar('requestSuccess')) {
             $this->logAction();
@@ -19,13 +19,13 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    function beforeRedirect(Controller $controller)
+    function beforeRedirect($controller)
     {
-        $this->logAction();
+            $this->logAction();
     }
     
     
-    public function startup($controller)
+    public function initialize($controller)
     {
         $this->Controller = $controller;        
         $this->UserLog    = ClassRegistry::init('UserLog');
@@ -163,7 +163,11 @@ class UserLogMonitorComponent extends Component
             $userLog['timezone']              = $programTimezone;
             $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
            
-            $this->UserLog->create();
+            if ($userLog['program-name']) {
+                $this->UserLog->create('program-user-log');
+            } else {
+                $this->UserLog->create('vusion-user-log');
+            }
             $this->UserLog->save($userLog);
         }
         return true;
