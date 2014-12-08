@@ -83,7 +83,7 @@ class UserLogsControllerTestCase extends ControllerTestCase
             'action' => 'delete',
             'parameters' => 'all participant with tag: today'
             );
-        $this->UserLog->create();
+        $this->UserLog->create('program-user-log');
         $this->UserLog->save($userLog);     
         
         $this->testAction("/userLogs/index");
