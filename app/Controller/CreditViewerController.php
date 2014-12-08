@@ -145,7 +145,7 @@ class CreditViewerController extends AppController
                 } else {
                     $line1[] = '';
                 }
-                fputcsv($handle, $line1,',' , '"' );
+                fputcsv($handle, $line1,',', ' ');
             }
             
             

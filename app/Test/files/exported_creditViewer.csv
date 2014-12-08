@@ -1,5 +1,5 @@
-"Date From",01/03/2014
-"Date To",01/05/2053
+ Date  From ,01/03/2014
+ Date  To ,01/05/2053
 
 country,shortcode,program-name,incoming,outgoing,outgoing-pending,outgoing-acked,outgoing-nacked,outgoing-delivered,outgoing-failed
 Uganda,8282,test,2,1,0,0,0,0,0
