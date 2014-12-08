@@ -8,6 +8,7 @@ class UserLog extends MongoModel
     var $name        = 'UserLog';
     var $useTable    = 'user_logs';  
     
+    var $programSpecificType = array('program-specific-log');
     
     function getModelVersion()
     {
@@ -15,9 +16,29 @@ class UserLog extends MongoModel
     }
 
     
-    function getRequiredFields($objectType = null)
+    function getRequiredFields($object)
     {
-        return array (
+        $fields = array(
+            'timestamp',
+            'timezone',
+            'user-name',
+            'user-id',
+            'controller',
+            'action',
+            'parameters');
+        
+        $PROGRAMSPECIFIC_FIELDS = array(
+            'program-name',
+            'program-database-name',            
+            );
+        
+        if (in_array($object['object-type'], $this->programSpecificType)) {        
+            $fields = array_merge($fields, $PROGRAMSPECIFIC_FIELDS);        
+        }
+        
+        return $fields;
+        
+        /*return array (
             'timestamp',
             'timezone',
             'user-name',
@@ -27,7 +48,7 @@ class UserLog extends MongoModel
             'controller',
             'action',
             'parameters'
-            );    
+            );*/    
     }
     
     
