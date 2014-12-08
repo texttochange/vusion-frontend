@@ -29,19 +29,6 @@ class UserLogMonitorComponentTest extends CakeTestCase
         parent::setUp();
         $Collection             = new ComponentCollection();
         $this->UserLogComponent = new UserLogMonitorComponent($Collection);
-       
-        //$this->UserLog = ClassRegistry::init('UserLog');
-        //$CakeResponse     = new CakeResponse();
-        ///$this->Controller = new TestUserLogMonitorComponentController($CakeRequest, $CakeResponse);
-        //$this->Controller->constructClasses();
-        
-        //$this->Controller->params['program'] = 'something';
-        
-		//$this->Controller->programDetails = array(
-		//    'name' => 'm9rh',
-		//    'database' => 'm9rhDB',
-		//    'settings' => array('timezone' => 'Africa/Kampala'));
-		//$this->UserLogComponent->initialize($this->Controller);
     }
     
     
