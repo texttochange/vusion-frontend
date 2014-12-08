@@ -39,7 +39,8 @@ class ArchivedProgramComponentTest extends CakeTestCase
     }
 
     
-    private function _initializeRequest($controllerName, $method='POST', $action='add', $isAjax=false) {
+    private function _initializeRequest($controllerName, $method='POST', $action='add', $isAjax=false) 
+    {
 
     	$CakeRequest = $this->getMock('CakeRequest',
             array('__get', 'method', 'is'));

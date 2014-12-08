@@ -21,7 +21,7 @@ class ParticipantTestCase extends CakeTestCase
             'Dialogue', $dbName);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName);
-
+        
         $this->Maker = new ScriptMaker();
         
         $this->dropData();
@@ -43,7 +43,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Dialogue->deleteAll(true, false);
     }
     
-
+    
     public function testSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -60,7 +60,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
         $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
     }
-
+    
     
     public function testSave_clearEmpty()
     {
@@ -75,32 +75,32 @@ class ParticipantTestCase extends CakeTestCase
             $savedParticipant['Participant']['tags'],
             array('a tag'));
     }
-
-
+    
+    
     public function testCleanTags() 
     {
         $tags = ' a tag ';
         $this->assertEquals(
             array('a tag'),
             Participant::cleanTags($tags));
-
+        
         $tags = ', a tag ,';
         $this->assertEquals(
             array('a tag'),
             Participant::cleanTags($tags));
-
+        
         $tags = array('', 'a tag ');
         $this->assertEquals(
             array('a tag'),
             Participant::cleanTags($tags));
-
+        
         $tags = 'sometag,a tag ,';
         $this->assertEquals(
             array('sometag', 'a tag'),
             Participant::cleanTags($tags));
     }
-
-
+    
+    
     public function testCleanProfile() 
     {
         $profile = ' group:1 ';
@@ -111,7 +111,7 @@ class ParticipantTestCase extends CakeTestCase
                     'label' => 'group',
                     'value' => '1',
                     'raw' => null)));
-
+        
         $profile = ', group : 1 ,';
         $this->assertEquals(
             Participant::cleanProfile($profile),
@@ -120,7 +120,7 @@ class ParticipantTestCase extends CakeTestCase
                     'label' => 'group',
                     'value' => '1',
                     'raw' => null)));
-
+        
         $profile = array(
             array(),
             array(
@@ -134,10 +134,10 @@ class ParticipantTestCase extends CakeTestCase
                     'label' => 'group',
                     'value' => '1',
                     'raw' => null)));
-
+        
     }
-
-
+    
+    
     public function testSave_tags_labels_as_string()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1116,8 +1116,8 @@ class ParticipantTestCase extends CakeTestCase
                     array("phone" => new MongoRegex("/^\\+256/"))))
             );
     }
-  
-   
+    
+    
     public function testFromFilterToCondition_enrolled()
     {
         $filter = array(
@@ -1137,8 +1137,8 @@ class ParticipantTestCase extends CakeTestCase
             array('enrolled.dialogue-id' => array('$ne' => '1')));
         
     }
-
-
+    
+    
     public function testFromFilterToCondition_optin()
     {
         $filter = array(
@@ -1165,7 +1165,7 @@ class ParticipantTestCase extends CakeTestCase
             array('last-optin-date' => array('$lt' => '2013-01-21T00:00:00')));
     }
     
-
+    
     public function testFromFilterToCondition_optout()
     {
         $filter = array(
@@ -1212,7 +1212,7 @@ class ParticipantTestCase extends CakeTestCase
             array('tags' => array('$ne' => 'geek')));
     }
     
-
+    
     public function testFromFilterToCondition_label()
     {
         $filter = array(
@@ -1240,7 +1240,7 @@ class ParticipantTestCase extends CakeTestCase
                             array('label' => array('$ne' => 'gender')),
                             array('value' => array('$ne' => 'male')))))));
     }
-  
+    
     
     public function testAddMassTags_filter()
     {
@@ -1286,26 +1286,26 @@ class ParticipantTestCase extends CakeTestCase
         
         $participant = $this->Participant->find('first', array('conditions' => $conditions));                 
         $this->assertEqual(array('geek', 'cool', 'hi'), $participant['Participant']['tags']);
-
+        
         //Mass tag all participant with tag geek
         $conditions = array(
             'tags' => 'hi');
         $this->Participant->addMassTags('nerd', $conditions);
         $participant = $this->Participant->find('first', array('conditions' => $conditions));
         $this->assertEqual(array('geek', 'cool', 'hi', 'nerd'), $participant['Participant']['tags']);
-
+        
         //Double mass tag
         $this->Participant->addMassTags('nerd', $conditions);
         $participant = $this->Participant->find('first', array('conditions' => $conditions));
         $this->assertEqual(array('geek', 'cool', 'hi', 'nerd'), $participant['Participant']['tags']);
-
+        
         //Mass tag all particiant that don't have tag
         $conditions = array(
             'tags' => array('$ne' => 'hi'));
         $this->Participant->addMassTags('bye', $conditions);
         $participant = $this->Participant->find('first', array('conditions' => $conditions));
         $this->assertEqual(array('geek', 'another tag', 'bye'), $participant['Participant']['tags']);
-
+        
         //Mass tag all participant that tagged geek and not hi
         $conditions = array(
             '$and' => array(
@@ -1314,7 +1314,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->addMassTags('last tag', $conditions);
         $participant = $this->Participant->find('first', array('conditions' => $conditions));
         $this->assertEqual(array('geek', 'another tag', 'bye', 'last tag'), $participant['Participant']['tags']); 
-
+        
     }
     
     
@@ -1502,7 +1502,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual("+254700866920", Participant::cleanPhone("+254700866920�"));
         $this->assertEqual("+254700866920", Participant::cleanPhone(" +2547OO866920 "));
     }
-
+    
     
     public function testAddMassTags_noduplicate_tags()
     {
@@ -1548,7 +1548,7 @@ class ParticipantTestCase extends CakeTestCase
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+9')));
         $this->assertEqual(array('geek', 'another tag', 'hi'), $participant['Participant']['tags']);
     }
-   
+    
     
     public function testAddMassTags_noduplicate_tags_with_filter()
     {
@@ -1579,127 +1579,129 @@ class ParticipantTestCase extends CakeTestCase
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+9')));
         $this->assertEqual(array('geek', 'another tag'), $participant['Participant']['tags']);
     }
-
-
+    
+    
     public function testFindAllSafeJoin() 
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $this->Participant->MAX_JOIN = 2; //force to split requests for every 2 phones in the cursor
-
+        
         $iter = new ArrayIterator(array(
-                    array("_id" => "+254100000000"),
-                    array("_id" => "+254100000001"),
-                    array("_id" => "+254100000002"),
-                    array("_id" => "+254100000003"),
-                    array("_id" => "+254100000004"),
-                    array("_id" => "+254100000005")));
-
+            array("_id" => "+254100000000"),
+            array("_id" => "+254100000001"),
+            array("_id" => "+254100000002"),
+            array("_id" => "+254100000003"),
+            array("_id" => "+254100000004"),
+            array("_id" => "+254100000005")));
+        
         $query = array(
             'phone' => array(
                 '$join' => $iter));
-
+        
         $participantStart = array('phone' => '+254100000000');
         $this->Participant->create();
         $this->Participant->save($participantStart);
-
+        
         $participantLast = array('phone' => '+254100000003');
         $this->Participant->create();
         $this->Participant->save($participantLast);
-
+        
         $results = $this->Participant->find('allSafeJoin', array(
             'limit' => 10,
             'conditions' => $query));
         $this->assertEqual(2, count($results));
     }
-
-
+    
+    
     public function testValideRunActions()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-
+        
         $participant = array('phone' => '+06');
         $this->Participant->create();
         $result = $this->Participant->save($participant);
-
+        
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
         $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-
+        
         $runActions = array(
             'phone'=> '+06',
             'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
             'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
             'answer' => 'bad');
-
+        
         $result = $this->Participant->validateRunActions($runActions);
         $this->assertTrue($result);
     }
-
-
+    
+    
     public function testValideRunActions_fail_noParticipant()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-
+        
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
         $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-
+        
         $runActions = array(
             'phone'=> '+06',
             'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
             'interaction-id' => $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
             'answer' => 'bad');
-
+        
         $result = $this->Participant->validateRunActions($runActions);
         $this->assertEqual(array('phone' => "No participant with phone: +06."), $result);
     }
-
-
+    
+    
     public function testValideRunActions_fail_noDialogue()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-
+        
         $participant = array('phone' => '+06');
         $this->Participant->create();
         $result = $this->Participant->save($participant);
-
+        
         $runActions = array(
             'phone'=> '+06',
             'dialogue-id' => 'someId',
             'interaction-id' => 'someOtherId',
             'answer' => 'bad');
-
+        
         $result = $this->Participant->validateRunActions($runActions);
         $this->assertEqual(
             array('dialogue-id' => "No dialogue with id: someId."),
             $result);
     }
-
+    
+    
     public function testValideRunActions_fail_noInteraction()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-
+        
         $participant = array('phone' => '+06');
         $this->Participant->create();
         $result = $this->Participant->save($participant);
-
+        
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
         $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-
+        
         $runActions = array(
             'phone'=> '+06',
             'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
             'interaction-id' => 'someOtherId',
             'answer' => 'bad');
-
+        
         $result = $this->Participant->validateRunActions($runActions);
         $this->assertEqual(
             array('interaction-id' => "The dialogue with id ".$savedDialogue['Dialogue']['dialogue-id']." doesn't have an interaction with id someOtherId"),
             $result);
     }
+    
     
 }
