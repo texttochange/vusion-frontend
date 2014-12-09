@@ -29,6 +29,33 @@ class UserLogMonitorComponentTest extends CakeTestCase
         parent::setUp();
         $Collection             = new ComponentCollection();
         $this->UserLogComponent = new UserLogMonitorComponent($Collection);
+        
+        $CakeRequest = $this->getMock('CakeRequest',
+            array('__get', 'method', 'is'));
+
+    	$CakeRequest->action = 'add';
+    	$CakeRequest->params = array(
+            'controller' => 'programs'
+            );
+
+    	$CakeRequest
+            ->expects($this->once())
+            ->method('method')
+            ->will($this->returnValue('POST'));
+        
+        $this->UserLog = ClassRegistry::init('UserLog');
+        $CakeResponse     = new CakeResponse();
+        $this->Controller = new TestUserLogMonitorComponentController($CakeRequest, $CakeResponse);
+        $this->Controller->constructClasses();
+      
+        $this->Controller->params['program'] = 'something';
+        
+		$this->Controller->programDetails = array(
+		    'name' => 'm9rh',
+		    'database' => 'm9rhDB',
+		    'settings' => array('timezone' => 'Africa/Kampala'));
+		
+		$this->UserLogComponent->startup($this->Controller);
     }
     
     
@@ -46,7 +73,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
     }
     
     
-    private function _initializeRequest($controllerName, $method='POST', $action='add', $isAjax=false) 
+    /*private function _initializeRequest($controllerName, $method='POST', $action='add', $isAjax=false) 
     {
 
     	$CakeRequest = $this->getMock('CakeRequest',
@@ -75,12 +102,12 @@ class UserLogMonitorComponentTest extends CakeTestCase
 		    'settings' => array('timezone' => 'Africa/Kampala'));
 		
 		$this->UserLogComponent->startup($this->Controller);
-    }
+    }*/
     
     
     public function testLogAction() 
     {
-        $this->_initializeRequest('programs', 'POST', 'add');
+        //$this->_initializeRequest('programs', 'POST', 'add');
     	$this->UserLogComponent->Session = $this->getMock('Session', array(
     	    'read',
     	    'check',
