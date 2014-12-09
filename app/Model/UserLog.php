@@ -10,6 +10,15 @@ class UserLog extends MongoModel
     
     var $objectTypes = array('program-user-log', 'vusion-user-log');
     
+    var $userLogDefaultFields = array(
+        'timestamp',
+        'timezone',
+        'user-name',
+        'user-id',
+        'controller',
+        'action',
+        'parameters');
+    
     var $programUserLogExtraFields = array(
         'program-name',
         'program-database-name',            
@@ -24,14 +33,7 @@ class UserLog extends MongoModel
     
     function getRequiredFields($object)
     {
-        $fields = array(
-            'timestamp',
-            'timezone',
-            'user-name',
-            'user-id',
-            'controller',
-            'action',
-            'parameters');        
+        $fields = $this->userLogDefaultFields;
         
         if (in_array($object, array('program-user-log'))) {        
             $fields = array_merge($fields, $this->programUserLogExtraFields);        
