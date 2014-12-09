@@ -13,7 +13,7 @@ class ProgramAuthComponent extends Component
             throw new ForbiddenException();
         }
         if (empty($controller->params['program'])) {
-            throw new NotFoundException('Could not find this page.');            
+            throw new NotFoundException(__("Program url is missing."));
         }
         $controller->Program->recursive = -1;
         
@@ -24,7 +24,7 @@ class ProgramAuthComponent extends Component
             'program_url' => $controller->params['program']
             ));
         if (count($data)==0) {
-            throw new NotFoundException('Could not find this page.');
+            throw new NotFoundException( __("Program url not found: %s", $controller->params['program']));
         }
 
         $programDetails = array();

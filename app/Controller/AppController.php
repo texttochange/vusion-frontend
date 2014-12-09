@@ -66,6 +66,9 @@ class AppController extends Controller
     
     function beforeFilter()
     {
+        if ($this->_isAjax()) {
+            $this->Auth->unauthorizedRedirect = false;
+        }
     }
     
     
@@ -91,9 +94,8 @@ class AppController extends Controller
     }
     
     
-    public function beforeRender()
-    {
-        if ($this->_isAjax() && $this->response->statusCode() == 403) {
+    public function beforeRender(){
+        if ($this->_isAjax() && $this->response->statusCode() != 200) {
             return false;
         }
         if ($this->_isAjax()) {
@@ -107,10 +109,10 @@ class AppController extends Controller
     }
     
     
-    public function beforeRedirect($url, $status = null, $exit = true) {
-        // this statement catches not redirect to login for ajax requests
-        if($this->_isAjax() && $url == array('controller' => 'users', 'action' => 'login')) {
-            throw new ForbiddenException();
+    public function beforeRedirect($url, $status = null, $exit = true) 
+    {
+        if($this->_isAjax()) {
+            return false;
         }
         return true;
     }
