@@ -25,7 +25,7 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    public function startup($controller)
+    public function initialize($controller)
     {
         $this->Controller = $controller;        
         $this->UserLog    = ClassRegistry::init('UserLog');

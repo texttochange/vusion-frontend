@@ -55,7 +55,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
 		    'database' => 'm9rhDB',
 		    'settings' => array('timezone' => 'Africa/Kampala'));
 		
-		$this->UserLogComponent->startup($this->Controller);
+		$this->UserLogComponent->initialize($this->Controller);
     }
     
     
