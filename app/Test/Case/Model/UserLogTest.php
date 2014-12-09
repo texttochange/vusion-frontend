@@ -112,8 +112,21 @@ class UserLogTestCase extends CakeTestCase
     
     
     public function testSave_fail_obectType()
-    {
-        $userLog = array(
+    { 
+        $userLog_01 = array(
+            'timestamp' => '2014-20-10T20:25:00',
+            'timezone' => 'Australia/Sydney',
+            'user-name' => 'Tom',
+            'user-id' => '1',
+            'controller' => 'users',
+            'action' => 'delete',
+            'parameters' => 'Deleted a user'
+            );
+        
+        $this->UserLog->create('vusion-user-log');
+        $savedUserLog = $this->UserLog->save($userLog_01);
+        
+         $userLog_02 = array(
             'timestamp' => '2014-20-10T20:25:00',
             'timezone' => 'Africa/Kampala',
             'user-name' => 'maxmass',
@@ -125,21 +138,9 @@ class UserLogTestCase extends CakeTestCase
             'parameters' => 'all participant with tag: geek'
             );
         
-        $this->UserLog->create('program-user-log');
-        $savedUserLog = $this->UserLog->save($userLog);
-        
-        $userLog_02 = array(
-            'timestamp' => '2014-20-10T20:25:00',
-            'timezone' => 'Australia/Sydney',
-            'user-name' => 'Tom',
-            'user-id' => '1',
-            'controller' => 'users',
-            'action' => 'delete',
-            'parameters' => 'Deleted a user'
-            );
-        
         $this->UserLog->create();
         $savedUserLog = $this->UserLog->save($userLog_02);
+        
         
         $this->assertEqual(1, $this->UserLog->find('count'));
         $this->assertEquals(

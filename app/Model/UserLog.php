@@ -4,17 +4,23 @@ App::uses('VusionConst', 'Lib');
 
 class UserLog extends MongoModel
 {
-   
-    var $name        = 'UserLog';
-    var $useTable    = 'user_logs';  
     
-    var $programSpecificType = array('program-user-log');
+    var $name        = 'UserLog';
+    var $useTable    = 'user_logs';
+    
+    var $objectTypes = array('program-user-log', 'vusion-user-log');
+    
+    var $programUserLogExtraFields = array(
+        'program-name',
+        'program-database-name',            
+        );
+    
     
     function getModelVersion()
     {
         return '1';
     }
-
+    
     
     function getRequiredFields($object)
     {
@@ -25,15 +31,10 @@ class UserLog extends MongoModel
             'user-id',
             'controller',
             'action',
-            'parameters');
+            'parameters');        
         
-        $PROGRAMSPECIFIC_FIELDS = array(
-            'program-name',
-            'program-database-name',            
-            );
-        
-        if (in_array($object, $this->programSpecificType)) {        
-            $fields = array_merge($fields, $PROGRAMSPECIFIC_FIELDS);        
+        if (in_array($object, array('program-user-log'))) {        
+            $fields = array_merge($fields, $this->programUserLogExtraFields);        
         }
         
         return $fields;        
@@ -97,13 +98,25 @@ class UserLog extends MongoModel
                 'rule' => 'notempty',
                 'message' => 'The parameters cannot be empty.'
                 ),
-            )        
+            ),
+        'program-name' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The program name cannot be empty.'
+                ),
+            ),
+        'program-database-name' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The program database name cannot be empty.'
+                ),
+            )    
         );
     
     
     public function validateObjectType($object)
     {
-        if ($object['object-type'] == 'program-user-log' || $object['object-type'] == 'vusion-user-log') {
+        if (in_array($object['object-type'], $this->objectTypes)) {
             return true;
         }
         return false;
