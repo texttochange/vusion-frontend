@@ -48,8 +48,6 @@ class UserLogMonitorComponentTest extends CakeTestCase
         $this->Controller = new TestUserLogMonitorComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
         
-        $this->Controller->params['program'] = 'myProgramUrl';
-        
 		$this->Controller->programDetails = array(
 		    'name' => 'm9rh',
 		    'database' => 'm9rhDB',
