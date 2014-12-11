@@ -36,7 +36,8 @@ class UserLogMonitorComponent extends Component
                     'delete' => __('Deleted participant(s)'),
                     'add' => __('Added a new participant'),
                     'edit' => __('Edited participant'),
-                    'import' => __('Imported  participant(s)')
+                    'import' => __('Imported  participant(s)'),
+                    'massDelete' => __('Deleted filtered participant(s)'),
                     ),
                 'GET' => array(
                     'massTag' => __('Tagged participant(s)'),
@@ -55,6 +56,8 @@ class UserLogMonitorComponent extends Component
                 'POST' => array(
                     'save' => __('Added a new draft dialogue'),
                     'delete' => __('Deleted a dialogue'),
+                    ),
+                'GET' => array(
                     'activate' => __('Activated a dialogue')
                     )
                 ),

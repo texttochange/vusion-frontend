@@ -762,6 +762,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                         $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
                     }    
                 }
+                $requestSuccess = true;
             } else {
                 $this->Session->setFlash(
                     $this->Participant->importErrors[0], 
@@ -772,7 +773,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             //Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
-        $this->set(compact('report'));
+        $this->set(compact('report', 'requestSuccess'));
     }
     
     
