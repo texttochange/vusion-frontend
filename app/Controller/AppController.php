@@ -118,7 +118,7 @@ class AppController extends Controller
     }
     
     
-    public function getViewVar($name)
+    public function _getViewVar($name)
     {
         if (isset($this->viewVars[$name])) {
             return $this->viewVars[$name];
