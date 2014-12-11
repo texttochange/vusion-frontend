@@ -13,7 +13,7 @@ class UserLogMonitorComponent extends Component
     
     function beforeRender($controller)
     {
-        if ($controller->getViewVar('requestSuccess')) {
+        if ($controller->_getViewVar('requestSuccess')) {
             $this->logAction();
         }
     }
