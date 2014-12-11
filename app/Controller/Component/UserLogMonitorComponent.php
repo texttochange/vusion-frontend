@@ -21,7 +21,7 @@ class UserLogMonitorComponent extends Component
     
     function beforeRedirect($controller)
     {
-            $this->logAction();
+        $this->logAction();
     }
     
     
@@ -151,26 +151,26 @@ class UserLogMonitorComponent extends Component
         }
         
         if (!isset($this->userLogActions[$controller][$method][$action])){
-            return true;
-        } else {
-            $userLog['controller']            = $controller;
-            $userLog['action']                = $action;
+            return false;
+        } 
+        
+        $userLog['controller'] = $controller;
+        $userLog['action']     = $action;
+        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action];
+        $userLog['user-id']    = $this->Auth->user('id');
+        $userLog['user-name']  = $this->Auth->user('username');            
+        $userLog['timezone']   = $programTimezone;
+        $userLog['timestamp']  = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
+        
+        if ($programName) {
             $userLog['program-database-name'] = $programDatabaseName;
             $userLog['program-name']          = $programName;
-            $userLog['parameters']            = $this->userLogActions[$controller][$method][$action];
-            $userLog['user-id']               = $this->Auth->user('id');
-            $userLog['user-name']             = $this->Auth->user('username');            
-            $userLog['timezone']              = $programTimezone;
-            $userLog['timestamp']             = $now->format(VusionConst::DATE_TIME_ISO_FORMAT);
-           
-            if ($userLog['program-name']) {
-                $this->UserLog->create('program-user-log');
-            } else {
-                $this->UserLog->create('vusion-user-log');
-            }
-            $this->UserLog->save($userLog);
+            $this->UserLog->create('program-user-log');
+        } else {
+            $this->UserLog->create('vusion-user-log');
         }
-        return true;
+        
+        return $this->UserLog->save($userLog);
         
     }
     

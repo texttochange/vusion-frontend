@@ -32,23 +32,23 @@ class UserLogMonitorComponentTest extends CakeTestCase
         
         $CakeRequest = $this->getMock('CakeRequest',
             array('__get', 'method', 'is'));
-
+        
     	$CakeRequest->action = 'add';
     	$CakeRequest->params = array(
             'controller' => 'programs'
             );
-
-    	$CakeRequest
-            ->expects($this->once())
-            ->method('method')
-            ->will($this->returnValue('POST'));
         
-        $this->UserLog = ClassRegistry::init('UserLog');
+    	$CakeRequest
+    	->expects($this->once())
+    	->method('method')
+    	->will($this->returnValue('POST'));
+        
+        $this->UserLog    = ClassRegistry::init('UserLog');
         $CakeResponse     = new CakeResponse();
         $this->Controller = new TestUserLogMonitorComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
-      
-        $this->Controller->params['program'] = 'something';
+        
+        $this->Controller->params['program'] = 'myProgramUrl';
         
 		$this->Controller->programDetails = array(
 		    'name' => 'm9rh',
