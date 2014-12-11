@@ -9,10 +9,10 @@ App::uses('UserLog', 'Model');
 
 class TestUserLogMonitorComponentController extends Controller
 {
-	function redirect($url) {
-		return;
-	}
-	
+    function redirect($url) {
+        return;
+    }
+    
     function render($view) {
         return;
     }
@@ -21,7 +21,7 @@ class TestUserLogMonitorComponentController extends Controller
 
 class UserLogMonitorComponentTest extends CakeTestCase
 {
-	public $UserLogComponent = null;
+    public $UserLogComponent = null;
     public $Controller       = null;
     
     public function setUp() 
@@ -33,27 +33,27 @@ class UserLogMonitorComponentTest extends CakeTestCase
         $CakeRequest = $this->getMock('CakeRequest',
             array('__get', 'method', 'is'));
         
-    	$CakeRequest->action = 'add';
-    	$CakeRequest->params = array(
+        $CakeRequest->action = 'add';
+        $CakeRequest->params = array(
             'controller' => 'programs'
             );
         
-    	$CakeRequest
-    	->expects($this->once())
-    	->method('method')
-    	->will($this->returnValue('POST'));
+        $CakeRequest
+        ->expects($this->once())
+        ->method('method')
+        ->will($this->returnValue('POST'));
         
         $this->UserLog    = ClassRegistry::init('UserLog');
         $CakeResponse     = new CakeResponse();
         $this->Controller = new TestUserLogMonitorComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
         
-		$this->Controller->programDetails = array(
-		    'name' => 'm9rh',
-		    'database' => 'm9rhDB',
-		    'settings' => array('timezone' => 'Africa/Kampala'));
-		
-		$this->UserLogComponent->initialize($this->Controller);
+        $this->Controller->programDetails = array(
+            'name' => 'm9rh',
+            'database' => 'm9rhDB',
+            'settings' => array('timezone' => 'Africa/Kampala'));
+        
+        $this->UserLogComponent->initialize($this->Controller);
     }
     
     
@@ -73,34 +73,34 @@ class UserLogMonitorComponentTest extends CakeTestCase
     
     public function testLogAction() 
     {
-    	$this->UserLogComponent->Session = $this->getMock('Session', array(
-    	    'read',
-    	    'check',
-    	    'write',
-    	    'delete'));
-    	$this->UserLogComponent->Auth = $this->getMock('Auth', array(
-    	    'user'));
-    	
-    	$this->UserLogComponent->Session 
-    	->expects($this->at(0))
-    	->method('check')
-    	->with('UserLogMonitor')
-    	->will($this->returnValue(true));
-    	
-    	$this->UserLogComponent->Session 
-    	->expects($this->at(1))
-    	->method('read')
-    	->with('UserLogMonitor')
-    	->will($this->returnValue(array(
-	        'programDatabaseName' => null,
-	        'programName' => null)));
-	    
-    	$this->UserLogComponent->Auth 
-    	->expects($this->at(0))
-    	->method('user')
-    	->with('id')
-    	->will($this->returnValue(89));
-    	
+        $this->UserLogComponent->Session = $this->getMock('Session', array(
+            'read',
+            'check',
+            'write',
+            'delete'));
+        $this->UserLogComponent->Auth = $this->getMock('Auth', array(
+            'user'));
+        
+        $this->UserLogComponent->Session 
+        ->expects($this->at(0))
+        ->method('check')
+        ->with('UserLogMonitor')
+        ->will($this->returnValue(true));
+        
+        $this->UserLogComponent->Session 
+        ->expects($this->at(1))
+        ->method('read')
+        ->with('UserLogMonitor')
+        ->will($this->returnValue(array(
+            'programDatabaseName' => null,
+            'programName' => null)));
+        
+        $this->UserLogComponent->Auth 
+        ->expects($this->at(0))
+        ->method('user')
+        ->with('id')
+        ->will($this->returnValue(89));
+        
         $this->UserLogComponent->Auth 
         ->expects($this->at(1))
         ->method('user')
@@ -108,11 +108,11 @@ class UserLogMonitorComponentTest extends CakeTestCase
         ->will($this->returnValue('Tomx'));
         
         $this->UserLogComponent->Session 
-    	->expects($this->at(2))
-    	->method('delete')
-    	->with('UserLogMonitor');
-    	
+        ->expects($this->at(2))
+        ->method('delete')
+        ->with('UserLogMonitor');
+        
         $this->UserLogComponent->logAction();
-	}
-	
+    }
+    
 }
