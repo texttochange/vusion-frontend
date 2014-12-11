@@ -1,7 +1,8 @@
 
 <?php
 
-function echoLine($elements) {
+function echoLine($elements) 
+{
     $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
     echo implode(",", $quotedElements) . "\n";
 }
