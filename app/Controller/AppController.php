@@ -64,7 +64,7 @@ class AppController extends Controller
     
     function beforeFilter()
     {
-        if ($this->_isAjax()) {
+        if ($this->_isAjax() || $this->_isCsv()) {
             $this->Auth->unauthorizedRedirect = false;
         }
 
@@ -92,9 +92,15 @@ class AppController extends Controller
         return ($this->request->is('ajax') ||  $this->request->ext == 'json');
     }
 
+
+    public function _isCsv()
+    {
+        return ($this->request->ext === 'csv');
+    }
+
     
     public function beforeRender(){
-        if ($this->_isAjax() && $this->response->statusCode() != 200) {
+        if (($this->_isAjax() ||$this->_isCsv()) && $this->response->statusCode() != 200) {
             return false;
         }
         if ($this->_isAjax()) {
@@ -110,7 +116,7 @@ class AppController extends Controller
 
     public function beforeRedirect($url, $status = null, $exit = true) 
     {
-        if($this->_isAjax()) {
+        if($this->_isAjax() || $this->_isCsv()) {
             return false;
         }
         return true;
