@@ -60,19 +60,31 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $requestSuccess = true;
-        $paginate       = array('allSafeJoin');
         
+        $order = array();
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
-            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-        
         $conditions = $this->Filter->getConditions($this->Participant, array(), array('Schedule' => $this->Schedule));
-        if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
+
+        if ($this->params['ext'] === 'csv') {
+            $participants = $this->Participant->find(
+                'allSafeJoin', 
+                array(
+                    'conditions' => $conditions,
+                    'limit'=> 10000),
+                array('order' => $order));
+        } else {
+            $paginate       = array('allSafeJoin');
+            if (isset($order)) {
+                $paginate['order'] = $order;
+            }
+            if ($conditions != null) {
+                $paginate['conditions'] = $conditions;
+            }
+            $this->paginate = $paginate;
+            $participants   = $this->paginate('Participant');
         }
-        
-        $this->paginate = $paginate;
-        $participants   = $this->paginate('Participant');
         $this->set(compact('participants', 'requestSuccess'));
     }
     

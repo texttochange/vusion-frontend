@@ -55,6 +55,12 @@ class ProgramDialoguesController extends BaseProgramSpecificController
         $this->set('dialogues', $this->Dialogue->getActiveAndDraft());
     }
     
+
+    public function listQuestions()
+    {
+        $this->set('dialogues', $this->Dialogue->getActiveDialogues());
+    }
+
     
     public function save()
     {
