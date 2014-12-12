@@ -33,7 +33,8 @@ class VusionConst
 
     const DATE_REGEX = '/^\d{4}-\d{2}-\d{2}$/';
     const DATE_FAIL_MESSAGE = 'The date is not in an ISO format.';
-
+    
+    const DATE_TIME_ISO_FORMAT = 'Y-m-d\TH:i:s';
     const DATE_TIME_REGEX = '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/';
     const DATE_TIME_FAIL_MESSAGE = 'The date time is not in an ISO format.';
 

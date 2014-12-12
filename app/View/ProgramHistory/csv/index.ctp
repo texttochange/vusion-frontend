@@ -1,31 +1,36 @@
 <?php
 
-    $headers = array();
+function echoLine($elements) 
+{
+    $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
+    echo implode(",", $quotedElements) . "\n";
+}
 
-    foreach ($statuses as $row)
+$headers = array(
+    'object-type',
+    'participant-phone',
+    'participant-session-id',
+    'timestamp',
+    'message-status',
+    'message-content',
+    'message-direction',
+    'dialogue-id',
+    'interaction-id',
+    'request-id',
+    'unattach-id',
+    'matching-answer');
+echoLine($headers);
+
+foreach($histories as $row)
+{
+    $line = array();
+    foreach ($headers as $key)
     {
-        foreach ($row['History'] as $key => $value){
-            if ( !in_array($key, $headers) ) {
-                array_push($headers, $key);
-                    echo "\"".$key."\",";
-            } 
-        } 
-    }
-    
-    echo "\n";
-    foreach ($statuses as $row)
-    {
-        foreach ($headers as $key)
-        {
-            if (isset($row['History'][$key])) {
-                // Apply opening and closing text delimiters to every value
-                if ($key == 'timestamp')
-                    echo "\"".$this->Time->format('d/m/Y H:i:s', $row['History'][$key])."\",";
-                else 
-                    echo "\"".$row['History'][$key]."\",";
-            } else { 
-                echo ",";
-            }
+        if (isset($row['History'][$key])) {
+            $line[] =  $row['History'][$key]."";
+        } else { 
+            $line[] = "";
         }
-        echo "\n";
     }
+    echoLine($line);
+}

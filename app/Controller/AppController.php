@@ -29,8 +29,8 @@ class AppController extends Controller
                 'action' => 'login'
                 ),
             'authenticate' => array(
-               'Basic' => array(
-                   'fields' => array('username' => 'email')
+                'Basic' => array(
+                    'fields' => array('username' => 'email')
                     ),
                 'Form' => array(
                     'fields' => array('username' => 'email')
@@ -43,9 +43,11 @@ class AppController extends Controller
         'Acl',
         'Cookie', 
         'PhoneNumber',
-        'LogManager',
+        'BackendLog',
         'Stats',
-        'CreditManager');
+        'CreditManager',
+        'UserLogMonitor');
+    
     var $helpers = array(
         'PhoneNumber',
         'Html',
@@ -60,14 +62,13 @@ class AppController extends Controller
         'Documentation');
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs"; 
-
+    
     
     function beforeFilter()
     {
-        if ($this->_isAjax()) {
+        if ($this->_isAjax() || $this->_isCsv()) {
             $this->Auth->unauthorizedRedirect = false;
         }
-
     }
     
     
@@ -86,15 +87,22 @@ class AppController extends Controller
         }
     }
     
-
-    public function _isAjax() 
+    
+    public function _isAjax()
     {
         return ($this->request->is('ajax') ||  $this->request->ext == 'json');
     }
-
     
-    public function beforeRender(){
-        if ($this->_isAjax() && $this->response->statusCode() != 200) {
+    
+    public function _isCsv()
+    {
+        return ($this->request->ext === 'csv');
+    }
+    
+    
+    public function beforeRender()
+    {
+        if (($this->_isAjax() ||$this->_isCsv()) && $this->response->statusCode() != 200) {
             return false;
         }
         if ($this->_isAjax()) {
@@ -106,15 +114,23 @@ class AppController extends Controller
             $this->set(compact('countryIndexedByPrefix'));
         }
     }
-
-
+    
+    
     public function beforeRedirect($url, $status = null, $exit = true) 
     {
-        if($this->_isAjax()) {
+        if($this->_isAjax() || $this->_isCsv()) {
             return false;
         }
         return true;
     }
-
+    
+    
+    public function _getViewVar($name)
+    {
+        if (isset($this->viewVars[$name])) {
+            return $this->viewVars[$name];
+        }
+        return;
+    }
     
 }

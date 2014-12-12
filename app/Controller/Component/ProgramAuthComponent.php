@@ -47,7 +47,7 @@ class ProgramAuthComponent extends Component
             return;
         }
         $currentProgramData = $this->_getCurrentProgramData($programDetails['database']);            
-        $programLogsUpdates = $controller->LogManager->getLogs($programDetails['database'], 5);
+        $programLogsUpdates = $controller->BackendLog->getLogs($programDetails['database'], 5);
         $programStats       = array('programStats' => $controller->Stats->getProgramStats($programDetails['database'], true));
         $creditStatus       = $controller->CreditManager->getOverview($programDetails['database']);
         $controller->set(compact(
