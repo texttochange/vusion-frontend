@@ -1,2 +1,2 @@
 <?php
-echo ',"data":' . $this->Js->object($statuses);
+echo ',"data":' . $this->Js->object($histories);

@@ -63,7 +63,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
         
         if ($this->params['ext'] === 'csv' || $this->_isAjax()) {
-            $statuses = $this->History->find(
+            $histories = $this->History->find(
                 'all', 
                 array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
                 array('order' => $order));
@@ -72,9 +72,9 @@ class ProgramHistoryController extends BaseProgramSpecificController
                 'all',
                 'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
                 'order'=> $order);            
-            $statuses = $this->paginate('History');
+            $histories = $this->paginate('History');
         }
-        $this->set(compact('statuses', 'requestSuccess'));
+        $this->set(compact('histories', 'requestSuccess'));
     }
     
     
