@@ -386,7 +386,9 @@ class ProgramUnattachedMessagesController extends BaseProgramSpecificController
         if ($this->UnattachedMessage->delete()) {
             $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
             $this->Session->setFlash(__('Message deleted'),
-                'default', array('class'=>'message success'));
+                'default',
+                array('class'=>'message success')
+                );
             $this->redirect(array(
                 'program' => $programUrl,
                 'controller' => 'programUnattachedMessages',

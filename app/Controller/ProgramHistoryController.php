@@ -212,7 +212,6 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $result     = $this->History->deleteAll(
             $conditions, 
             false);
-        
         $this->Session->setFlash(
             __('Histories have been deleted.'),
             'default',

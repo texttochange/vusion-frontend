@@ -150,10 +150,11 @@ class ProgramDialoguesController extends BaseProgramSpecificController
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
         } else {
-            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
+            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {                
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
-                    'default', array('class' => "message success"));
+                    'default', 
+                    array('class' => "message success"));
             } else {
                 $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
             }
@@ -278,10 +279,7 @@ class ProgramDialoguesController extends BaseProgramSpecificController
                 ));
         }  
         $this->Session->setFlash(
-            __('Delete dialogue failed.'), 
-            'default',
-            array('class' => "message failure")
-            );
+            __('Delete dialogue failed.'));
         $this->redirect(
             array(
                 'program' => $programUrl,

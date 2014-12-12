@@ -1518,3 +1518,8 @@ display: inline;
         
 }
 
+/* USERLOGS SPECIFIC */
+.ttc-table-scrolling-area .user-logs .user_logs_field {
+        width: 207px;
+}
+

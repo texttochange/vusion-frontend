@@ -25,6 +25,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 'json' => 'View')), 
         'LocalizeUtils',
         'Filter',
+        'UserLogMonitor',
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
@@ -165,7 +166,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $this->Session->setFlash(__('The tag %s has been added successfully.', $this->params['url']['tag']),
                     'default', array('class'=>'message success'));
             } else {                
-                $this->Session->setFlash(__('The tag %s could not be added.', $tag));       
+                $this->Session->setFlash(__('The tag %s could not be added.', $tag));
             }           
         }
         
@@ -344,7 +345,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $savedParticipant = null;
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
                 $requestSuccess = true;
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
@@ -353,7 +354,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'index'));
-                } 
+                }
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'));
             }
@@ -426,8 +427,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
-                $participant = $savedParticipant;
-                $requestSuccess = true;
+                $participant    = $savedParticipant;
+                $requestSuccess = true;               
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
@@ -526,7 +527,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $this->History->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
-            }
+            }          
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
@@ -773,6 +774,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                         $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
                     }    
                 }
+                $requestSuccess = true;
             } else {
                 $this->Session->setFlash(
                     $this->Participant->importErrors[0], 
@@ -783,7 +785,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             //Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
-        $this->set(compact('report'));
+        $this->set(compact('report', 'requestSuccess'));
     }
     
     

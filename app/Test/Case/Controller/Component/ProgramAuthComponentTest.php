@@ -14,7 +14,7 @@ class TestProgramAuthComponentController extends Controller
         'Group');
     var $components = array(
         'Stats',
-        'LogManager',
+        'BackendLog',
         'CreditManager',
         'Session');
     var $programDetails = null;
@@ -30,7 +30,7 @@ class TestProgramAuthComponentController extends Controller
     function redirect($url) {
         return;
     }
-
+    
     function render($view) {
         return;
     }
@@ -158,8 +158,8 @@ class ProgramAuthComponentTest extends CakeTestCase
             ->with('id')
             ->will($this->returnValue(2));
 
-        $this->Controller->LogManager = $this->getMock('LogManager', array('getLogs'));
-        $this->Controller->LogManager
+        $this->Controller->BackendLog = $this->getMock('BackendLog', array('getLogs'));
+        $this->Controller->BackendLog
             ->expects($this->once())
             ->method('getLogs')
             ->with('m6h')
