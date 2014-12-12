@@ -136,12 +136,12 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();        
         $this->testAction("/testurl/history/index/sort:participant-phone/direction:desc");
-        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['participant-phone']);
+        $this->assertEquals('356774527841', $this->vars['histories'][0]['History']['participant-phone']);
         
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index/sort:participant-phone/direction:asc");
-        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['participant-phone']);   
+        $this->assertEquals('256712747841', $this->vars['histories'][0]['History']['participant-phone']);   
     }
     
     
@@ -201,29 +201,29 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=interaction-source&filter_param[1][2]=is&filter_param[1][3]=11&filter_param[2][1]=date&filter_param[2][2]=from&filter_param[2][3]=01/01/2012");
-        $this->assertEquals(3, count($this->vars['statuses']));
-        $this->assertEquals('11', $this->vars['statuses'][0]['History']['interaction-id']);
+        $this->assertEquals(3, count($this->vars['histories']));
+        $this->assertEquals('11', $this->vars['histories'][0]['History']['interaction-id']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=participant-phone&filter_param[1][2]=start-with-any&filter_param[1][3]=%2B356774527841, 0777");
-        $this->assertEquals(4, count($this->vars['statuses']));
-        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['participant-phone']);
+        $this->assertEquals(4, count($this->vars['histories']));
+        $this->assertEquals('356774527841', $this->vars['histories'][0]['History']['participant-phone']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=answer&filter_param[1][2]=not-matching");
-        $this->assertEquals(1, count($this->vars['statuses']));
-        $this->assertEquals('name', $this->vars['statuses'][0]['History']['message-content']);
+        $this->assertEquals(1, count($this->vars['histories']));
+        $this->assertEquals('name', $this->vars['histories'][0]['History']['message-content']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=date&filter_param[1][2]=from&filter_param[1][3]=09/02/2013&filter_param[2][1]=date&filter_param[2][2]=to&filter_param[2][3]=10/02/2013");
-        $this->assertEquals(1, count($this->vars['statuses']));
-        $this->assertEquals('what is your name? send NAME <your name>', $this->vars['statuses'][0]['History']['message-content']);
+        $this->assertEquals(1, count($this->vars['histories']));
+        $this->assertEquals('what is your name? send NAME <your name>', $this->vars['histories'][0]['History']['message-content']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=any&".
             "filter_param[1][1]=participant-phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B356774527842&".
             "filter_param[2][1]=message-direction&filter_param[2][2]=is&filter_param[2][3]=incoming");
-        $this->assertEquals(3, count($this->vars['statuses']));        
+        $this->assertEquals(3, count($this->vars['histories']));        
     }
 
     
