@@ -68,6 +68,12 @@ class AppController extends Controller
     {
         if ($this->_isAjax() || $this->_isCsv()) {
             $this->Auth->unauthorizedRedirect = false;
+            //Hack to allow passing the basic authentication as a parameter of the url
+            if (isset($this->request->query['auth'])) {
+                $basicAuth = explode(':', base64_decode($this->request->query['auth']));
+                apache_setenv("PHP_AUTH_USER", $basicAuth[0]);
+                apache_setenv("PHP_AUTH_PW", $basicAuth[1]);
+            }
         }
     }
     
