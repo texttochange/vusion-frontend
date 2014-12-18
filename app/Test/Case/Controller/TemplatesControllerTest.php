@@ -1,6 +1,6 @@
 <?php
-
 App::uses('TemplatesController', 'Controller');
+
 
 class TestTemplatesController extends TemplatesController
 {
@@ -10,48 +10,34 @@ class TestTemplatesController extends TemplatesController
     {
         $this->redirectUrl = $url;
     }
-    
-    
+        
 }
 
-/**
-* TemplatesController Test Case
-*
-*/
+
 Class TemplatesControllerTestCase extends ControllerTestCase
 {
     var $databaseName = "testdbmongo";
     
     public function setUp()
     {
-        Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->Templates = new TestTemplatesController();
-        $this->instanciateTemplateModel();
+        $this->Template = ClassRegistry::init('Template');
         $this->dropData();
     }
-    
-    
-    protected function instanciateTemplateModel()
-    {
-        $options = array('database'=>$this->databaseName);
-        $this->Templates->Template = new Template($options);
-    }
-    
+
     
     protected function dropData()
     {
-        $this->Templates->Template->deleteAll(true,false);
+        $this->Template->deleteAll(true,false);
     }
     
     
     public function tearDown()
     {
         $this->dropData();
-        
-        unset($this->Templates);
-        
+        unset($this->Templates);  
         parent::tearDown();
     }
     
@@ -61,7 +47,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
         $templates = $this->generate('Templates', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
                 ),
             'models' => array(
                 'Group' => array()
@@ -89,9 +75,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
         $templates = $this->mockProgramAccess();
-        $this->instanciateTemplateModel();
-        $this->Templates->Template->create();
-        $this->Templates->Template->save(array(
+        $this->Template->create();
+        $this->Template->save(array(
             'name' => 'example',
             'type-template' => 'open question',
             'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
@@ -117,7 +102,7 @@ Class TemplatesControllerTestCase extends ControllerTestCase
             'method' => 'post',
             'data' => $templates
             ));
-        $this->assertEquals(1, $this->Templates->Template->find('count'));
+        $this->assertEquals(1, $this->Template->find('count'));
     }
     
     
@@ -131,8 +116,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
                 'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                 )
             );
-        $this->Templates->Template->create();
-        $data = $this->Templates->Template->save($newtemplates);
+        $this->Template->create();
+        $data = $this->Template->save($newtemplates);
         
         $this->testAction("templates/edit/".$data['Template']['_id'], array(
             'method'=>'post',
@@ -158,8 +143,8 @@ Class TemplatesControllerTestCase extends ControllerTestCase
                 'template' => 'QUESTION, SHORTCODE, ANSWER, KEYWORD'
                 )
             );
-        $this->Templates->Template->create();
-        $data = $this->Templates->Template->save($templates);
+        $this->Template->create();
+        $data = $this->Template->save($templates);
         
         $this->testAction("templates/delete/".$data['Template']['_id']);
         $this->assertEquals(0, $this->Templates->Template->find('count'));

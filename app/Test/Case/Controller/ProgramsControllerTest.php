@@ -9,18 +9,16 @@ App::uses('CreditLog', 'Model');
 
 class TestProgramsController extends ProgramsController 
 {
-    
+
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
     
-    protected function _instanciateVumiRabbitMQ() {
-    }
-    
+    protected function _instanciateVumiRabbitMQ() 
+    {}
     
 }
 
@@ -32,17 +30,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        Configure::write("mongo_db", "testdbmongo");
         parent::setUp();
         
         $this->Programs = new TestProgramsController();
-        $this->Programs->constructClasses();
+        $this->ShortCode = ClassRegistry::init('ShortCode');
+        $this->CreditLog = ClassRegistry::init('CreditLog');
         
-        $options = array('database' => "testdbmongo");
-        $this->ShortCode = new ShortCode($options);
-        $this->CreditLog = new CreditLog($options);
-        $this->dropData();
-        
+        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'testdbprogram', true);
+        $this->ProgramSettingM6H = ProgramSpecificMongoModel::init('ProgramSetting', 'm6h', true);
+        $this->ProgramSettingTrial = ProgramSpecificMongoModel::init('ProgramSetting', 'trial', true);
+
         $this->maker = new ScriptMaker();
     }
     
@@ -51,19 +48,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
     {
         $this->ShortCode->deleteAll(true, false);
         $this->CreditLog->deleteAll(true, false);
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->deleteAll(true, false);  
-        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->deleteAll(true, false);
-        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->deleteAll(true, false);
     }
     
     
     public function tearDown()
     {
+        $this->dropData();
         unset($this->Programs);
-        
         parent::tearDown();
     }
     
@@ -74,7 +68,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
-                    'Auth' => array('user'),
+                    'Auth' => array('user', 'loggedIn'),
                     'Session' => array('read'),
                     'Stats',
                     ),
@@ -89,6 +83,11 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $programs->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $programs->Auth
         ->staticExpects($this->any())
         ->method('user')
@@ -331,6 +330,50 @@ class ProgramsControllerTestCase extends ControllerTestCase
         rmdir(WWW_ROOT . 'files/programs/programurl');
     }
     
+
+    public function testAdd_emptyField()
+    {
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker'
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
+                   )
+                )
+            );
+
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
+
+        $Programs
+        ->expects($this->once())
+        ->method('_startBackendWorker')
+        ->will($this->returnValue(true));
+
+        $data = array(
+            'Program' => array(
+                'name' => 'programName',
+                'url' => 'programurl',
+                'database'=> 'programdatabase',
+                'import-dialogues-requests-from' => false
+                )
+            );
+
+        $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+
+        $this->assertFileExists(
+            WWW_ROOT . 'files/programs/programurl/');
+        rmdir(WWW_ROOT . 'files/programs/programurl');
+    }
+
+
     public function testAdd_import() 
     {
         $Programs = $this->generate(
@@ -358,21 +401,25 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->will($this->returnValue(true));
         
         $maker = new ScriptMaker();
-        $importFromDialogue = new Dialogue(array('database' => 'testdbprogram'));
+        $importFromDialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', 'testdbprogram', true);
         $importFromDialogue->deleteAll(true, false);
         $importFromDialogue->create();
         $dialogue = $maker->getOneDialogue();
         $dialogue['Dialogue']['activated'] = 1;
         $savedDialogue = $importFromDialogue->save($dialogue['Dialogue']);
         
-        $importFromRequest = new Request(array('database' => 'testdbprogram'));
+        $importFromRequest = ProgramSpecificMongoModel::init(
+            'Request', 'testdbprogram', true);
         $importFromRequest->deleteAll(true, false);
         $importFromRequest->create();
         $importFromRequest->save($maker->getOneRequest());
         
-        $programDialogue = new Dialogue(array('database' => 'programdatabase'));
+        $programDialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', 'programdatabase', true);
         $programDialogue->deleteAll(true, false);
-        $programRequest = new Request(array('database' => 'programdatabase'));
+        $programRequest = ProgramSpecificMongoModel::init(
+            'Request', 'programdatabase', true);
         $programRequest->deleteAll(true, false);
         
         $data = array(
@@ -406,8 +453,9 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->method('_stopBackendWorker')
         ->will($this->returnValue(true));
         
-        mkdir(WWW_ROOT . 'files/programs/test/');
-        
+        if (!is_dir(WWW_ROOT . 'files/programs/test/')) {
+            mkdir(WWW_ROOT . 'files/programs/test/');
+        }
         $creditLog = ScriptMaker::mkCreditLog(
             'program-credit-log', '2014-04-10', 'testdbprogram');
         $this->CreditLog->create();

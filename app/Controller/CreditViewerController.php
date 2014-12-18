@@ -8,6 +8,11 @@ App::uses('Program', 'Model');
 
 class CreditViewerController extends AppController
 {
+    var $uses = array(
+        'Program', 
+        'Group',
+        'ShortCode',
+        'CreditLog');
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -22,10 +27,6 @@ class CreditViewerController extends AppController
         'LocalizeUtils',
         'PhoneNumber');
     
-    var $uses = array(
-        'Program', 
-        'Group');
-    
     
     public function beforeFilter()
     {    
@@ -36,18 +37,6 @@ class CreditViewerController extends AppController
     public function constructClasses()
     {
         parent::constructClasses();
-        
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->ShortCode = new ShortCode($options);
-        $this->CreditLog = new CreditLog($options);
     }
     
     
@@ -115,21 +104,16 @@ class CreditViewerController extends AppController
     
     public function export()
     {
-        $url                 = $this->params['controller'];
         $requestSucces       = false;
         $timeframeParameters = $this->_getTimeframeParameters();
         $conditions          = CreditLog::fromTimeframeParametersToQueryConditions($timeframeParameters);
         
         try{
-            $filePath = WWW_ROOT . "files/programs/" . $url;            
-            if (!file_exists($filePath)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
+            $filePath = WWW_ROOT . "files/credit-viewer";
             
             $now           = new DateTime('now');
-            $fileName      = $url .'_' . $now->format('Y-m-d') . '.csv';            
-            $fileFullPath  = $filePath . "/" . $fileName;
+            $fileName      = 'Credit_Viewer_' . $now->format('Y-m-d') . '.csv';            
+            $fileFullPath  = $filePath . DS . $fileName;
             $handle        = fopen($fileFullPath, "w");
             
             $headersDates = array(
@@ -161,7 +145,7 @@ class CreditViewerController extends AppController
                 } else {
                     $line1[] = '';
                 }
-                fputcsv($handle, $line1,',' , '"' );
+                fputcsv($handle, $line1,',', ' ');
             }
             
             
@@ -275,10 +259,10 @@ class CreditViewerController extends AppController
     {
         $url          = $this->params['controller'];
         $fileName     = $this->params['url']['file'];        
-        $fileFullPath = WWW_ROOT . "files/programs/" . $url . "/" . $fileName; 
+        $fileFullPath = WWW_ROOT . "files/credit-viewer/" . $fileName; 
         
         if (!file_exists($fileFullPath)) {
-            throw new NotFoundException();
+            throw new NotFoundException(__("This file does not exist: %s", $fileFullPath));
         }
         
         $this->response->header("X-Sendfile: $fileFullPath");

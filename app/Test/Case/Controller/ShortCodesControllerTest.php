@@ -1,49 +1,32 @@
 <?php
-/* ShortCodes Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ShortCodesController', 'Controller');
 
-/**
-* TestShortCodesController *
-*/
+
 class TestShortCodesController extends ShortCodesController
 {
-    
+
     public $autoRender = false;
-    
     
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
-    }
-    
+    }    
     
 }
 
-/**
-* ShortCodesController Test Case
-*
-*/
+
 class ShortCodesControllerTestCase extends ControllerTestCase
 {
     var $databaseName = "testdbmongo";
     
-    
     public function setUp() 
     {
-        Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->ShortCodes = new TestShortCodesController();
-        $this->instanciateShortCodesModel();
+        $this->ShortCode = ClassRegistry::init('ShortCode');
         $this->dropData();
     }
-    
-    
-    protected function instanciateShortCodesModel() 
-    {
-        $options         = array('database' => $this->databaseName);
-        $this->ShortCode = new ShortCode($options);
-    }	
     
     
     protected function dropData()
@@ -54,10 +37,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     
     public function tearDown() 
     {
-        $this->dropData();
-        
+        $this->dropData(); 
         unset($this->ShortCodes);
-        
         parent::tearDown();
     }
     
@@ -68,7 +49,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'Auth' => array(),
+                'Auth' => array('loggedIn'),
                 ),
             'models' => array(
                 'Group' => array()
@@ -80,6 +61,11 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $shortCodes->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $shortCodes->Session
         ->expects($this->any())
         ->method('read')
@@ -91,10 +77,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     
     public function testIndex()
     {
-        
         $this->mockProgramAccess();
         
-        $this->instanciateShortCodesModel();
         $this->ShortCode->create();
         $this->ShortCode->save(array(
             'country' => 'uganda',

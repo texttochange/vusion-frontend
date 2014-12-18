@@ -1,34 +1,45 @@
 <?php
-App::uses('AppController','Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('Participant','Model');
 App::uses('History', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('Dialogue', 'Model');
-
-App::uses('DialogueHelper', 'Lib');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('VusionException', 'Lib');
 App::uses('FilterException', 'Lib');
 
 
-class ProgramParticipantsController extends AppController
+class ProgramParticipantsController extends BaseProgramSpecificController
 {
     
-    var $uses       = array('Participant');
+    var $uses = array(
+        'Participant',
+        'History',
+        'Schedule',
+        'Dialogue',
+        'UnattachedMessage',
+        'ProgramSetting');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')), 
         'LocalizeUtils',
-        'Filter');
+        'Filter',
+        'UserLogMonitor',
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'),
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
-        'Paginator' => array('className' => 'BigCountPaginator'));
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     
-    
+
     function constructClasses() 
     {
         parent::constructClasses();
+        $this->_instanciateVumiRabbitMQ();
     }
     
     
@@ -37,24 +48,11 @@ class ProgramParticipantsController extends AppController
     }
     
     
-    function beforeFilter() 
+    public function beforeFilter() 
     {
         parent::beforeFilter();
-        
-        $options = array('database' => ($this->Session->read($this->params['program']."_db"))); 
-        $this->Participant       = new Participant($options);
-        $this->History           = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->DialogueHelper    = new DialogueHelper();
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        
-        $this->_instanciateVumiRabbitMQ();
-        
-        $this->DialogueHelper = new DialogueHelper();
     }
-    
+
     
     public function index() 
     {      
@@ -62,19 +60,31 @@ class ProgramParticipantsController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $requestSuccess = true;
-        $paginate       = array('allSafeJoin');
         
+        $order = array();
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
-            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-        
         $conditions = $this->Filter->getConditions($this->Participant, array(), array('Schedule' => $this->Schedule));
-        if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
+
+        if ($this->params['ext'] === 'csv') {
+            $participants = $this->Participant->find(
+                'allSafeJoin', 
+                array(
+                    'conditions' => $conditions,
+                    'limit'=> 10000),
+                array('order' => $order));
+        } else {
+            $paginate       = array('allSafeJoin');
+            if (isset($order)) {
+                $paginate['order'] = $order;
+            }
+            if ($conditions != null) {
+                $paginate['conditions'] = $conditions;
+            }
+            $this->paginate = $paginate;
+            $participants   = $this->paginate('Participant');
         }
-        
-        $this->paginate = $paginate;
-        $participants   = $this->paginate('Participant');
         $this->set(compact('participants', 'requestSuccess'));
     }
     
@@ -156,7 +166,7 @@ class ProgramParticipantsController extends AppController
                 $this->Session->setFlash(__('The tag %s has been added successfully.', $this->params['url']['tag']),
                     'default', array('class'=>'message success'));
             } else {                
-                $this->Session->setFlash(__('The tag %s could not be added.', $tag));       
+                $this->Session->setFlash(__('The tag %s could not be added.', $tag));
             }           
         }
         
@@ -234,12 +244,18 @@ class ProgramParticipantsController extends AppController
                 chmod($filePath, 0764);
             }
             
-            $programNow   = $this->ProgramSetting->getProgramTimeNow();
-            $programName  = $this->Session->read($programUrl.'_name');
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $timestamp = $programNow->format("Y-m-d_H-i-s");
+            } else {
+                $timestamp = '';
+            }
+            //$programName  = $this->Session->read($programUrl.'_name');
+            $programName  = $this->programDetails['name'];
             
-            $programNameUnderscore = str_replace(' ', '_', $programName);
+            $programNameUnderscore = inflector::slug($programName, '_');
             
-            $fileName     = $programNameUnderscore . "_participants_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
+            $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
             $handle       = fopen($fileFullPath, "w");            
             $headers      = $this->Participant->getExportHeaders($conditions);
@@ -309,6 +325,11 @@ class ProgramParticipantsController extends AppController
         $this->VumiRabbitMQ->sendMessageMassUntag($workerName, $tag);
     }
     
+
+    protected function _notifyBackendRunActions($workerName, $runActions)
+    {
+        $this->VumiRabbitMQ->sendMessageRunActions($workerName, $runActions);
+    }
     
     public function add() 
     {
@@ -324,7 +345,7 @@ class ProgramParticipantsController extends AppController
             $savedParticipant = null;
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
+                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
                 $requestSuccess = true;
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
@@ -333,7 +354,7 @@ class ProgramParticipantsController extends AppController
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'index'));
-                } 
+                }
             } else {
                 $this->Session->setFlash(__('The participant could not be saved.'));
             }
@@ -379,11 +400,11 @@ class ProgramParticipantsController extends AppController
         return $participant;
     }
     
-    protected function _ajaxDataPatch()
+    protected function _ajaxDataPatch($modelName='Participant')
     {
         $data = $this->data;
-        if (!isset($data['Participant'])) {
-            $data = array('Participant' => $data);
+        if (!isset($data[$modelName])) {
+            $data = array($modelName => $data);
         }
         return $data;
     }
@@ -406,8 +427,8 @@ class ProgramParticipantsController extends AppController
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
                 $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);
-                $participant = $savedParticipant;
-                $requestSuccess = true;
+                $participant    = $savedParticipant;
+                $requestSuccess = true;               
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
@@ -506,7 +527,7 @@ class ProgramParticipantsController extends AppController
                 $this->History->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
-            }
+            }          
             $this->Session->setFlash(__('Participant and related schedule deleted.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
@@ -753,6 +774,7 @@ class ProgramParticipantsController extends AppController
                         $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
                     }    
                 }
+                $requestSuccess = true;
             } else {
                 $this->Session->setFlash(
                     $this->Participant->importErrors[0], 
@@ -763,7 +785,7 @@ class ProgramParticipantsController extends AppController
             //Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
-        $this->set(compact('report'));
+        $this->set(compact('report', 'requestSuccess'));
     }
     
     
@@ -776,6 +798,29 @@ class ProgramParticipantsController extends AppController
         $defaultConditions = array();
         $paginationCount   = $this->Participant->count($this->Filter->getConditions($this->Participant, $defaultConditions), null, -1);
         $this->set(compact('requestSuccess', 'paginationCount'));
+    }
+
+
+    public function runActions()
+    {
+        $programUrl     = $this->params['program'];
+        $requestSuccess = true;
+        $data           = $this->data;
+
+        if (!$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
+
+        $valid = $this->Participant->validateRunActions($data);
+        if ($valid === true) {
+            $this->Session->setFlash(__('The runActions succeed.'));
+            $this->_notifyBackendRunActions($programUrl, $data);
+        } else {
+            $this->Session->setFlash(__('The runActions failed.'));
+            $requestSuccess = false;
+            $this->set('validationErrors', $valid);
+        }
+        $this->set(compact('requestSuccess'));
     }
     
     

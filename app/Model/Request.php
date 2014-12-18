@@ -1,15 +1,13 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('Action', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 
 
-class Request extends MongoModel
+class Request extends ProgramSpecificMongoModel
 {
-    
-    var $specific     = true;
     var $name         = 'Request';
     var $usedKeywords = array();
     
@@ -35,8 +33,7 @@ class Request extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
-        $this->Action         = new Action();
+        $this->Action = new Action();
     }
     
     

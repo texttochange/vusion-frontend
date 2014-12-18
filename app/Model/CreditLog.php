@@ -7,9 +7,7 @@ App::uses('VusionException', 'Lib');
 class CreditLog extends MongoModel
 {
 
-    var $specific    = true;
     var $name        = 'CreditLog';
-    var $useDBConfig = 'mongo';
     var $useTable    = 'credit_logs';
 
 
@@ -51,6 +49,41 @@ class CreditLog extends MongoModel
         return $fields;
     }
 
+    var $optionalFields = array(
+        'outgoing-acked',
+        'outgoing-nacked',
+        'outgoing-pending',
+        'outgoing-delivered',
+        'outgoing-failed');
+
+
+    //Overwrite to allow the optional fields
+    public function checkFields($object)
+    {
+        if (isset($object['object-type'])) {
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
+        } else {
+            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        }
+
+        foreach ($object as $field => $value) {
+            if (!in_array($field, $toCheck)) {
+                if (!in_array($field, $this->optionalFields)) {
+                    unset($object[$field]);
+                }
+            }
+        }
+
+        foreach ($toCheck as $field) {
+            if (!isset($object[$field])) {
+                $object[$field] = null;
+            }
+        };
+
+        return $object;
+    }
+
+
     public function calculateProgramShortcodeCredits($databases, $shortcodes, $conditions=array())
     {
         $conditions += array('$or' => array(
@@ -75,7 +108,7 @@ class CreditLog extends MongoModel
                 if ('outgoing-acked' in obj) {
                     prev['outgoing-acked'] += obj['outgoing-acked']; 
                 }
-                if ('outgoing-nack' in obj) {
+                if ('outgoing-nacked' in obj) {
                     prev['outgoing-nacked'] += obj['outgoing-nacked']; 
                 }
                 if ('outgoing-delivered' in obj) {

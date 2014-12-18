@@ -9,13 +9,18 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('name', array('label' => __('Name')));		
-		echo $this->Form->input('url', array('label' => __('Url')));
+		echo $this->Form->input(
+		    'url',
+		    array(
+		        'label' => __('Url'),
+		        'readonly' => 'true',
+		        'class' => 'readonly-field'));
 		echo $this->Form->input(
 			'database',
 		    array(
 		    	'label' => __('Database'),
 		        'readonly' => 'true',
-		        'style' => 'color:#AAAAAA'));
+		        'class' => 'readonly-field'));
 	?>
 <?php echo $this->Form->end(__('Save'));?>
 </div>

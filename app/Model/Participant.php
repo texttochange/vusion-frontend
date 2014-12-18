@@ -1,5 +1,5 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
@@ -7,12 +7,12 @@ App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
 
 
-class Participant extends MongoModel
+class Participant extends ProgramSpecificMongoModel
 {
-    var $specific     = true;    
     var $name         = 'Participant';
     var $importErrors = array();
-    
+
+
     function getModelVersion()
     {
         return '3';
@@ -31,6 +31,7 @@ class Participant extends MongoModel
             'profile',
             );
     }
+
     
     public $findMethods = array(
         'all' => true,
@@ -48,17 +49,17 @@ class Participant extends MongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
-
-        if (isset($id['id']['database'])) {
-            $options = array('database' => $id['id']['database']);
-        } else {
-            $options = array('database' => $id['database']);
-        }
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Dialogue       = new Dialogue($options);
     }
     
-    
+    public function initializeDynamicTable($forceNew=false) 
+    {
+        parent::initializeDynamicTable();
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $this->databaseName, $forceNew);        
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $this->databaseName, $forceNew);
+    }
+
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
     {
@@ -815,8 +816,44 @@ class Participant extends MongoModel
         }
         return $report;
     }
-    
-    
+
+
+    public $runActionsFields = array(
+        'phone',
+        'dialogue-id',
+        'interaction-id',
+        'answer');
+
+
+    public function validateRunActions(&$data)
+    {
+        $runActionsErrors = array();
+        foreach ($this->runActionsFields as $mandatoryField) {
+            if (!isset($data[$mandatoryField])) {
+                $runActionsErrors[$mandatoryField] = "This field is missing";
+            }
+        }
+       if ($runActionsErrors != array()) {
+            return $runActionsErrors;
+        }
+        $data['phone'] = $this->cleanPhone($data['phone']);
+        if (!$this->find('count', array('conditions' => array('phone' => $data['phone'])))) {
+            $runActionsErrors['phone'] = __("No participant with phone: %s.", $data['phone']);
+        }
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            $data['dialogue-id'],
+            $data['interaction-id'],
+            $data['answer']);
+        if ($result != true || is_array($result)) {
+            $runActionsErrors += $result;
+        }
+        if ($runActionsErrors === array()) {
+            return true;
+        }
+        return $runActionsErrors;
+    }
+
+
     //Filter variables and functions
     public $filterFields = array(
         'phone' => array(

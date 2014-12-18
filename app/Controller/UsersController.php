@@ -11,17 +11,15 @@ class UsersController extends AppController
 {
     public $CakeEmail = null;
     
-    
+    var $uses = array(
+        'User',
+        'Group');
     var $components = array(
         'LocalizeUtils', 
         'Captcha',
         'Email',
         'Filter',
         'Ticket');
-    
-    var $uses = array(
-        'User',
-        'Group');
     
     
     public function beforeFilter()

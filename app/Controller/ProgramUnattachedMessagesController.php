@@ -1,25 +1,33 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
-App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
 App::uses('User', 'Model');
 App::uses('PredefinedMessage', 'Model');
 
-class ProgramUnattachedMessagesController extends AppController
+
+class ProgramUnattachedMessagesController extends BaseProgramSpecificController
 {
     
-    var $uses       = array(
-        'User');
+    var $uses = array(
+        'UnattachedMessage',
+        'User',
+        'Schedule',
+        'Participant',
+        'ProgramSetting',
+        'History',
+        'PredefinedMessage');
     var $components = array(
         'Message',
         'RequestHandler' => array(
             'viewClassMap' => array(
-                'json' => 'View')));
+                'json' => 'View')),
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
@@ -35,18 +43,6 @@ class ProgramUnattachedMessagesController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-        
-        $this->loadModel('UnattachedMessage', $options);
-        //$this->UnattachedMessage = new UnattachedMessage($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Participant       = new Participant($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->History           = new History($options);
-        $this->PredefinedMessage = new PredefinedMessage($options);
-        $this->DialogueHelper    = new DialogueHelper();
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -390,7 +386,9 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->UnattachedMessage->delete()) {
             $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
             $this->Session->setFlash(__('Message deleted'),
-                'default', array('class'=>'message success'));
+                'default',
+                array('class'=>'message success')
+                );
             $this->redirect(array(
                 'program' => $programUrl,
                 'controller' => 'programUnattachedMessages',

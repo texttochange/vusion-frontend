@@ -24,8 +24,7 @@ class UsersControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Users = new TestUsersController();
-        $this->Users->constructClasses();       
-        
+        $this->Users->constructClasses();
     }
     
     
@@ -59,7 +58,7 @@ class UsersControllerTestCase extends ControllerTestCase
         return $users;
     }
     
-   
+
     public function testIndex() 
     {
         
@@ -501,7 +500,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash', 'write'),
-                'Auth' => array('user')
+                'Auth' => array('user', 'startup')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
@@ -566,7 +565,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash', 'write'),
-                'Auth' => array('user')
+                'Auth' => array('user', 'startup')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
@@ -624,7 +623,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read', 'setFlash', 'write'),
-                'Auth' => array('user')
+                'Auth' => array('user', 'startup')
                 ),
             'models' => array(
                 'User' => array('read', 'save')
@@ -674,6 +673,10 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
     }
+<<<<<<< HEAD
+=======
+    
+>>>>>>> develop
     
     
     public function testEdit_grant_can_invite_users() 

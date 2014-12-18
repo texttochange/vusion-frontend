@@ -1,27 +1,34 @@
 <?php
-App::uses('AppController','Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
-App::uses('DialogueHelper', 'Lib');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
 
 
-class ProgramHistoryController extends AppController
+class ProgramHistoryController extends BaseProgramSpecificController
 {
     
-    var $uses       = array('History');
+    var $uses = array(
+        'History',
+        'Dialogue',
+        'UnattachedMessage',
+        'ProgramSetting',
+        'Request');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
-        'Filter');
+        'Filter',
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'),
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
-        'Paginator' => array('className' => 'BigCountPaginator')
-        );
+        'Paginator' => array('className' => 'BigCountPaginator'));
     
     
     function constructClasses()
@@ -33,14 +40,6 @@ class ProgramHistoryController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
-        $options                 = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->History           = new History($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->DialogueHelper    = new DialogueHelper();
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->Request           = new Request($options);
     }
     
     
@@ -64,7 +63,7 @@ class ProgramHistoryController extends AppController
         $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
         
         if ($this->params['ext'] === 'csv' || $this->_isAjax()) {
-            $statuses = $this->History->find(
+            $histories = $this->History->find(
                 'all', 
                 array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
                 array('order' => $order));
@@ -73,9 +72,9 @@ class ProgramHistoryController extends AppController
                 'all',
                 'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
                 'order'=> $order);            
-            $statuses = $this->paginate();
+            $histories = $this->paginate('History');
         }
-        $this->set(compact('statuses', 'requestSuccess'));
+        $this->set(compact('histories', 'requestSuccess'));
     }
     
     
@@ -161,7 +160,7 @@ class ProgramHistoryController extends AppController
             $programNow  = $this->ProgramSetting->getProgramTimeNow();
             $programName = $this->Session->read($programUrl.'_name');
             
-            $programNameUnderscore = str_replace(' ', '_', $programName);
+            $programNameUnderscore = inflector::slug($programName, '_');
             
             $fileName     = $programNameUnderscore . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
@@ -178,7 +177,7 @@ class ProgramHistoryController extends AppController
             for($count = 1; $count <= $pageCount; $count++) {
                 $paginate['page'] = $count;
                 $this->paginate = $paginate;
-                $statuses = $this->paginate();
+                $statuses = $this->paginate('History');
                 foreach($statuses as $status) {
                     $line = array();
                     foreach($headers as $header) {
@@ -213,7 +212,6 @@ class ProgramHistoryController extends AppController
         $result     = $this->History->deleteAll(
             $conditions, 
             false);
-        
         $this->Session->setFlash(
             __('Histories have been deleted.'),
             'default',

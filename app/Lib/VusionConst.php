@@ -33,16 +33,18 @@ class VusionConst
 
     const DATE_REGEX = '/^\d{4}-\d{2}-\d{2}$/';
     const DATE_FAIL_MESSAGE = 'The date is not in an ISO format.';
-
+    
+    const DATE_TIME_ISO_FORMAT = 'Y-m-d\TH:i:s';
     const DATE_TIME_REGEX = '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/';
     const DATE_TIME_FAIL_MESSAGE = 'The date time is not in an ISO format.';
 
     const ATTIME_REGEX = '/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
     const ATTIME_FAIL_MESSAGE = 'The at-time is not valid.';
 
-    const FORWARD_URL_REGEX = '/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))(&[-\+;%@.\w_]*=(\[[-\+;%@.\w_]*\]|[-\+;%@.\w_]*))*)?)?$/';
+    const FORWARD_URL_REGEX = "/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=[\['-\+;%@.\w_\s\]]*)(&[-\+;%@.\w_]*=[\['-\+;%@.\w_\s\]]*)*)?)?$/";
     const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
-    
+    const FORWARD_URL_REPLACEMENT_REGEX = '/\[[-\+&;%@.\w_]*\]/';
+
     const CONTENT_VARIABLE_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]*$/u';
     const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
         

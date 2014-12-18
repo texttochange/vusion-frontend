@@ -4,6 +4,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class TicketComponent extends Component
 {
+
     var $components = array('Email');    
     
     

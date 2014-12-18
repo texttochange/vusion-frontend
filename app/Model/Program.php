@@ -14,6 +14,7 @@ class Program extends AppModel
         'count' => true
         );
     
+    
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -43,6 +44,11 @@ class Program extends AppModel
             'notInList' => array(
                 'rule' => array('notInList', array('test','groups', 'users', 'admin', 'shortcodes', 'templates',  'programs', 'files', 'js', 'css', 'img')),
                 'message' => 'This url is not allowed to avoid overwriting a static Vusion url, please choose a different one.'
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             ),
         'database' => array(
@@ -76,11 +82,14 @@ class Program extends AppModel
             )
         );
     
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
         $this->Behaviors->load('FilterMongo');
     }
+    
     
     #Filter variables and functions
     public $filterFields = array(
@@ -113,10 +122,12 @@ class Program extends AppModel
                     'parameter-type' => 'program-status')))
         );
     
+    
     public $filterProgramStatusOptions = array(
         'running' => 'running',
         'archived' => 'archived'
         );
+    
     
     public $filterOperatorOptions = array(
         'all' => 'all',
@@ -126,17 +137,18 @@ class Program extends AppModel
     
     public function isNotEditable($check) 
     {
-        $existingDatabase = $this->find(
-            'first', 
-            array('id = Program.id' ,
-                'conditions'=> array('database' => $check['database']))
-            );
-        
-        if($existingDatabase){
-            return true;
-        } else {
-            return false;
+        if ($this->id != null) {
+            $key = key($check);
+            $savedProgram = $this->find(
+                'first',
+                array('conditions' => array('id' => $this->id)));
+            if ($check[$key] != $savedProgram['Program'][$key]) {
+                return false;
+                
+            }
+            
         }
+        return true;
     }
     
     
@@ -258,7 +270,7 @@ class Program extends AppModel
         return $query;
     }
     
-
+    
     public function archive() 
     {
         $modifier = $this->saveField('status', 'archived', array('validate' => true));
@@ -272,7 +284,7 @@ class Program extends AppModel
         $schedule->deleteAll(true, false);
         return true;
     }
-
+    
     
     public function deleteProgram()
     {
@@ -280,7 +292,7 @@ class Program extends AppModel
         if (!$this->delete()) {
             return false;
         }
-        $mongoDbSource = ConnectionManager::getDataSource('mongo');
+        $mongoDbSource = ConnectionManager::getDataSource('mongo_program_specific');
         $config = $mongoDbSource->config;
         $host = "mongodb://";
         $hostname = $config['host'] . ':' . $config['port'];
@@ -290,13 +302,13 @@ class Program extends AppModel
         } else {
             $host .= $hostname;
         }
-        $con = new Mongo($host);
+        $con = new MongoClient($host);
         $db = $con->selectDB($program['Program']['database']);
         $db->drop();
         return true;
     }
-
-
+    
+    
     public static function matchProgramConditions($programDetails, $conditions=array())
     {
         if ($conditions == array()) {
@@ -330,13 +342,14 @@ class Program extends AppModel
         return Program::validProgramCondition($programDetails, $key, $conditions[$key]);
     }
     
+    
     public static function startsWith($haystack, $needle)
     {
         $length = strlen($needle);
         return (substr(strtolower($haystack), 0, $length) === strtolower($needle));
     }
-
-
+    
+    
     public static function validProgramCondition($programDetails, $conditionKey, $conditionValue) {
         switch ($conditionKey) {
         case 'name LIKE':
@@ -348,6 +361,6 @@ class Program extends AppModel
             return strcasecmp($programDetails['Program'][$conditionKey], $conditionValue) == 0;
         }
     }
-
+    
     
 }

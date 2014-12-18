@@ -20,7 +20,8 @@
 		    'chosen/chosen-1.0.min',
 		    'handsontable/jquery.handsontable-0.9.18.full',
 		    'jstree/style.min'
-		    ));		
+		    ));	
+		//echo $this->Html->script('require.js', array('data-main' => '/js/main.js'));	
 		echo $this->Html->script('jquery-1.10.2.min.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');
 		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');

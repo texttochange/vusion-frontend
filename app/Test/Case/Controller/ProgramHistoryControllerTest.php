@@ -1,16 +1,15 @@
 <?php
-
 App::uses('ProgramHistoryController', 'Controller');
 App::uses('Program', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class TestProgramHistoryController extends ProgramHistoryController
 {
     
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
@@ -22,11 +21,10 @@ class TestProgramHistoryController extends ProgramHistoryController
 class ProgramHistoryControllerTestCase extends ControllerTestCase
 {
     
-    
     var $programData = array(
         0 => array( 
             'Program' => array(
-                'name' => 'Test Name',
+                'name' => 'Test Name?good/for|testing &me%',
                 'url' => 'testurl',
                 'database' => 'testdbprogram',
                 'status' => 'running'
@@ -39,12 +37,14 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Histories = new TestProgramHistoryController();
-        //ClassRegistry::config(array('ds' => 'test'));
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Maker = new ScriptMaker();
         
-        $this->dropData();
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->History = ProgramSpecificMongoModel::init(
+            'History', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        
+        $this->Maker = new ScriptMaker();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');      
         
     }
@@ -52,26 +52,15 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        //As this model is created on the fly, need to instantiate again
-        $this->instanciateHistoryModel();
         $this->History->deleteAll(true, false);
-    }
-    
-    
-    protected function instanciateHistoryModel()
-    {
-        $options       = array('database' => $this->programData[0]['Program']['database']);
-        $this->History = new History($options);
-    }
-    
-    
+        $this->ProgramSetting->deleteAll(true, false);
+    }    
+
+
     public function tearDown()
     {
-        
-        $this->dropData();
-        
+        $this->dropData();        
         unset($this->Histories);
-        
         parent::tearDown();
     }
     
@@ -81,7 +70,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $histories = $this->generate('ProgramHistory', array(
             'components' => array(
                 'Acl' => array('check'),
-                'Session' => array('read')
+                'Session' => array('read'),
+                'Auth' => array('loggedIn')
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -94,6 +84,11 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $histories->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $histories->Program
         ->expects($this->once())
         ->method('find')
@@ -122,7 +117,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     public function testPagination() 
     {
-        $this->instanciateHistoryModel();
         $this->History->create('unattach-history');
         $this->History->save(array(
             'participant-phone' => '256712747841',
@@ -142,12 +136,12 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();        
         $this->testAction("/testurl/history/index/sort:participant-phone/direction:desc");
-        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['participant-phone']);
+        $this->assertEquals('356774527841', $this->vars['histories'][0]['History']['participant-phone']);
         
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index/sort:participant-phone/direction:asc");
-        $this->assertEquals('256712747841', $this->vars['statuses'][0]['History']['participant-phone']);   
+        $this->assertEquals('256712747841', $this->vars['histories'][0]['History']['participant-phone']);   
     }
     
     
@@ -207,29 +201,29 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=interaction-source&filter_param[1][2]=is&filter_param[1][3]=11&filter_param[2][1]=date&filter_param[2][2]=from&filter_param[2][3]=01/01/2012");
-        $this->assertEquals(3, count($this->vars['statuses']));
-        $this->assertEquals('11', $this->vars['statuses'][0]['History']['interaction-id']);
+        $this->assertEquals(3, count($this->vars['histories']));
+        $this->assertEquals('11', $this->vars['histories'][0]['History']['interaction-id']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=participant-phone&filter_param[1][2]=start-with-any&filter_param[1][3]=%2B356774527841, 0777");
-        $this->assertEquals(4, count($this->vars['statuses']));
-        $this->assertEquals('356774527841', $this->vars['statuses'][0]['History']['participant-phone']);
+        $this->assertEquals(4, count($this->vars['histories']));
+        $this->assertEquals('356774527841', $this->vars['histories'][0]['History']['participant-phone']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=answer&filter_param[1][2]=not-matching");
-        $this->assertEquals(1, count($this->vars['statuses']));
-        $this->assertEquals('name', $this->vars['statuses'][0]['History']['message-content']);
+        $this->assertEquals(1, count($this->vars['histories']));
+        $this->assertEquals('name', $this->vars['histories'][0]['History']['message-content']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=date&filter_param[1][2]=from&filter_param[1][3]=09/02/2013&filter_param[2][1]=date&filter_param[2][2]=to&filter_param[2][3]=10/02/2013");
-        $this->assertEquals(1, count($this->vars['statuses']));
-        $this->assertEquals('what is your name? send NAME <your name>', $this->vars['statuses'][0]['History']['message-content']);
+        $this->assertEquals(1, count($this->vars['histories']));
+        $this->assertEquals('what is your name? send NAME <your name>', $this->vars['histories'][0]['History']['message-content']);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=any&".
             "filter_param[1][1]=participant-phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B356774527842&".
             "filter_param[2][1]=message-direction&filter_param[2][2]=is&filter_param[2][3]=incoming");
-        $this->assertEquals(3, count($this->vars['statuses']));        
+        $this->assertEquals(3, count($this->vars['histories']));        
     }
 
     
@@ -352,9 +346,6 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('read')
         ->will($this->onConsecutiveCalls(
-            '4', 
-            '2',
-            $this->programData[0]['Program']['database'],
             $this->programData[0]['Program']['name'],
             'Africa/Kampala',
             'testdbprogram',
@@ -381,10 +372,11 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             TESTS . 'files/exported_history.csv',
             WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
         
-        //Asserting that programName "Test Name" is adding to export file
+        //Asserting that programName is added and special characters 
+        //replaced to export file
         $this->assertEquals(
             substr($this->vars['fileName'], 0, -23),
-            'Test_Name_history_');
+            'Test_Name_good_for_testing_me_history_');
     }
 
 

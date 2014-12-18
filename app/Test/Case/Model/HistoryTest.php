@@ -1,7 +1,8 @@
 <?php
-/* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -13,22 +14,21 @@ class HistoryTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $this->History = ClassRegistry::init('History');
-        
-        $options                 = array('database' => 'testdbprogram');
-        $this->History = new History($options);
-        
+        $dbName = 'testdbprogram';
+        $this->History = ProgramSpecificMongoModel::init(
+            'History', $dbName);
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
         $this->dropData();
     }
     
     
     public function tearDown()
     {
-        $this->dropData();
-        
-        unset($this->History);
-        
+        $this->dropData();        
+        unset($this->History);        
         parent::tearDown();
     }
     
@@ -36,6 +36,8 @@ class HistoryTestCase extends CakeTestCase
     public function dropData()
     {
         $this->History->deleteAll(true, false);
+        $this->UnattachedMessage->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
     }
     
     
@@ -123,14 +125,14 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-
+    
     public function testFromFilterToQueryConditions_messageDirection()
     {
         $filterParam = array(
             1 => 'message-direction', 
             2 => 'is', 
             3 => 'incoming');
-
+        
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('message-direction' => 'incoming'));
@@ -143,7 +145,7 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array('message-direction' => array('$ne' => 'incoming')));
     }
-   
+    
     
     public function testfromFilterToQueryCondition_messageStatus()
     {
@@ -165,7 +167,7 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-
+    
     public function testFromFilterToQueryConditions_date()
     {
         $filterParam = array(
@@ -214,7 +216,7 @@ class HistoryTestCase extends CakeTestCase
                 array('participant-phone' => new MongoRegex('/^\\+255/')),
                 array('participant-phone' => new MongoRegex('/^\\+256/')))));
     }
-
+    
     
     public function testfromFilterToQueryCondition_messageContent()
     {
@@ -266,7 +268,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => '1'));
-
+        
         $filterParam = array(
             1 => 'dialogue-source', 
             2 => 'not-is', 
@@ -274,14 +276,14 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => array('$ne' => '1')));
-
+        
         $filterParam = array(
             1 => 'dialogue-source', 
             2 => 'is-any');
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => array('$exists' => true)));
-
+        
         $filterParam = array(
             1 => 'dialogue-source', 
             2 => 'not-is-any'); 
@@ -289,7 +291,7 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => array('$exists' => false)));
     }
-
+    
     
     public function testfromFilterToQueryCondition_interactionSource()
     {
@@ -300,7 +302,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => '1'));
-
+        
         $filterParam = array(
             1 => 'interaction-source', 
             2 => 'not-is', 
@@ -308,14 +310,14 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => array('$ne' => '1')));
-
+        
         $filterParam = array(
             1 => 'interaction-source', 
             2 => 'is-any'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => array('$exists' => true)));
-
+        
         $filterParam = array(
             1 => 'interaction-source', 
             2 => 'not-is-any'); 
@@ -323,8 +325,8 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => array('$exists' => false)));
     }
-
-
+    
+    
     public function testfromFilterToQueryCondition_requestSource()
     {
         $filterParam = array(
@@ -334,7 +336,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('request-id' => new MongoId('52cd91759fa4da0051000004')));
-
+        
         $filterParam = array(
             1 => 'request-source', 
             2 => 'not-is', 
@@ -342,7 +344,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('request-id' => array('$ne' => new MongoId('52cd91759fa4da0051000004'))));
-
+        
         $filterParam = array(
             1 => 'request-source', 
             2 => 'is-any');
@@ -358,7 +360,7 @@ class HistoryTestCase extends CakeTestCase
             array('request-id' => array('$exists' => false)));
     }
     
-  
+    
     public function testfromFilterToQueryCondition_answer()
     {
         $filterParam = array(
@@ -381,7 +383,7 @@ class HistoryTestCase extends CakeTestCase
                 'matching-answer' => null)
             );
     }
-
+    
     
     public function testStatusOfUnattachedMessage()
     {       
@@ -427,5 +429,34 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEquals(1, $output);  
     } 
     
+    
+    public function testDatepassed_Marker_History_on_UnattachedMessage()
+    {       
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $unattachedMessage = array(
+            'name'=>'hello2',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            'created-by' => 1,
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $history_01 = array(
+            'object-type' => 'datepassed-marker-history',
+            'participant-phone' => '7886014620',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-direction' => 'outgoing',
+            'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id']
+            );        
+        $this->History->create('unattach-history');
+        $saveHistoryStatus = $this->History->save($history_01);
+        
+        $output = $this->History->getParticipantHistory('7886014620', '');
+        $this->assertEquals('hello2', $output[0]['History']['details']);
+        
+    } 
     
 }

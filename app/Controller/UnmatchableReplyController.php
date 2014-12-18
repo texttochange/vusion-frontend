@@ -1,22 +1,26 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('User', 'Model');
 
+
 class UnmatchableReplyController extends AppController
 {
-    
+
+    var $uses = array(
+        'UnmatchableReply', 
+        'User');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
         'PhoneNumber',
-        'ProgramPaginator',
         'UserAccess',
-        'Filter');
+        'Filter',
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -24,28 +28,9 @@ class UnmatchableReplyController extends AppController
         'Paginator' => array('className' => 'BigCountPaginator'));
     
     
-    public function beforeFilter()
-    {
-        parent::beforeFilter();
-    }
-    
-    
-    public function constructClasses()
+    function constructClasses()
     {
         parent::constructClasses();
-        
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->UnmatchableReply = new UnmatchableReply($options);
-        $this->DialogueHelper   = new DialogueHelper();
-        $this->User             = ClassRegistry::init('User');
     }
     
     
@@ -71,7 +56,7 @@ class UnmatchableReplyController extends AppController
             'order'=> $order,
             );
         $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
-        $unmatchableReplies = $this->paginate();
+        $unmatchableReplies = $this->paginate('UnmatchableReply');
         $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
     }
     

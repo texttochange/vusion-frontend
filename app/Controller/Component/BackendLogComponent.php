@@ -1,7 +1,7 @@
 <?php
 App::uses('Component', 'Controller');
 
-class LogManagerComponent extends Component
+class BackendLogComponent extends Component
 {
 
     public $Controller         = null;
@@ -12,7 +12,7 @@ class LogManagerComponent extends Component
     public function initialize(Controller $controller) {
         $this->Controller = $controller;
         if (!isset($this->Controller->redis) || $this->Controller->redisProgramPrefix == null) {
-            throw new InternalErrorException("The LogManager need a redis instance from his controller.");
+            throw new InternalErrorException("The BackendLog need a redis instance from his controller.");
         }
         $this->redis = $this->Controller->redis;
         $this->redisProgramPrefix = $this->Controller->redisProgramPrefix;

@@ -1,5 +1,5 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('Dialogue', 'Model');
 App::uses('Program', 'Model');
 App::uses('Request', 'Model');
@@ -9,9 +9,13 @@ App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 
 
-class ProgramDialoguesController extends AppController
+class ProgramDialoguesController extends BaseProgramSpecificController
 {
-    
+    var $uses = array(
+        'Dialogue',
+        'ProgramSetting',
+        'Participant',
+        'Request');
     var $components = array(
         'RequestHandler'=> array(
             'viewClassMap' => array(
@@ -19,21 +23,17 @@ class ProgramDialoguesController extends AppController
         'LocalizeUtils', 
         'Utils',
         'Keyword',
-        'DynamicForm');
+        'DynamicForm',
+        'ProgramAuth',
+        'ArchivedProgram');
     
     
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
         $this->RequestHandler->accepts('json');
         $this->RequestHandler->addInputType('json', array('json_decode'));
         
-        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Participant    = new Participant($options);
-        $this->Request        = new Request($options);
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -55,6 +55,12 @@ class ProgramDialoguesController extends AppController
         $this->set('dialogues', $this->Dialogue->getActiveAndDraft());
     }
     
+
+    public function listQuestions()
+    {
+        $this->set('dialogues', $this->Dialogue->getActiveDialogues());
+    }
+
     
     public function save()
     {
@@ -144,10 +150,11 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
         } else {
-            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
+            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {                
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
-                    'default', array('class' => "message success"));
+                    'default', 
+                    array('class' => "message success"));
             } else {
                 $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
             }
@@ -272,10 +279,7 @@ class ProgramDialoguesController extends AppController
                 ));
         }  
         $this->Session->setFlash(
-            __('Delete dialogue failed.'), 
-            'default',
-            array('class' => "message failure")
-            );
+            __('Delete dialogue failed.'));
         $this->redirect(
             array(
                 'program' => $programUrl,

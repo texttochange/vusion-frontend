@@ -308,6 +308,14 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
+
+        $action = array(
+            'type-action' => 'url-forwarding',
+            'forward-url' => "http://partner.com/index.php?script='insert into [PROGRAM] value [MESSAGE]'");
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $result = $this->Action->validates();
+        $this->assertTrue($result);
     }
 
     
@@ -325,16 +333,6 @@ class ActionTestCase extends CakeTestCase
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]?origin=[TO]');
-        $this->Action->set($action);
-        $this->Action->beforeValidate();
-        $this->assertFalse($this->Action->validates());
-        $this->assertEqual(
-            'The forward url is not valid.',
-            $this->Action->validationErrors['forward-url'][0]);
-        
-        $action = array(
-            'type-action' => 'url-forwarding',
-            'forward-url' => 'http://partner.com/receive_mo.php?message=[MESSAGE]&origin=[TO[]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());

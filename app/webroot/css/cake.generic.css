@@ -230,7 +230,7 @@ table td.actions a {
 .paging .disabled,
 .paging a {
 	text-decoration: none;
-	padding: 2px 8px;
+	padding: 3px 8px;
 	display: inline-block
 }
 .paging > span {

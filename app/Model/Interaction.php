@@ -231,6 +231,15 @@ class Interaction extends VirtualModel
                 'rule' => array('requiredConditionalFieldOrValue', 'type-interaction', 'question-answer', 'question-answer-keyword'),
                 'message' => 'A set-reminder field is required.',
                 ),
+            'valueRequireFields' => array(
+                'rule' => array(
+                    'valueRequireFields', array(
+                        'reminder' => array(
+                            'type-schedule-reminder',
+                            'reminder-number',
+                            'reminder-actions'))),
+                'message' => 'A reminder required field.',
+                ),
             ),
         'type-unmatching-feedback' => array(
             'requiredConditional' => array(
@@ -321,14 +330,18 @@ class Interaction extends VirtualModel
             ),
         // Reminder Subtype
         'type-schedule-reminder' => array(
-            'requiredConditional' => array(
-                'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
-                'message' => 'A type-schedule-reminder field is required.',
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'This field has to be set.',
                 ),
             'validValue' => array(
                 'rule' => array('inList', array('reminder-offset-days', 'reminder-offset-time')),
                 'message' => 'The value of type-schedule-reminder is not valid.',
-                )
+                ),
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
+                'message' => 'A type-schedule-reminder field is required.',
+                ),
             ),
         'reminder-number' => array(
             'requiredConditional' => array(
@@ -630,6 +643,35 @@ class Interaction extends VirtualModel
         }
     }
 
+    static public function hasAnswer($interaction, $answering)
+    {
+        if (!in_array($interaction['type-interaction'], array('question-answer', 'question-answer-keyword' ))) {
+            return array('interaction-id' => __("This interaction is not a question."));
+        }
+        if ($interaction['type-interaction'] === 'question-answer') {
+            if ($interaction['type-question'] === 'open-question') {
+                if (in_array($answering, array(null, ''))) {
+                    return array('answer' => __("The interaction doesn't accept empty answer."));
+                }
+                return true;
+            } else if ($interaction['type-question'] === 'closed-question') {
+                foreach ($interaction['answers'] as $answer) {
+                    if (DialogueHelper::keywordCmp($answer['choice'], $answering)) {
+                        return true;
+                    }
+                }
+                return array('answer' => __("The interaction has not such answer: %s.", $answering));
+            }
+        } else if ($interaction['type-interaction'] === 'question-answer-keyword') {
+            foreach ($interaction['answer-keywords'] as $answerKeyword) {
+                if (DialogueHelper::keywordCmp($answerKeyword['keyword'], $answering)) {
+                    return true;
+                }
+            }
+            return array('answer' => __("The interaction has not such answer: %s.", $answering));
+        }
+    }
+
 
     public function beforeValidate()
     {
@@ -685,6 +727,8 @@ class Interaction extends VirtualModel
         
         if ($this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
+            $this->_setDefault('type-schedule-reminder', null);
+            $this->_setDefault('reminder-number', null);
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
         

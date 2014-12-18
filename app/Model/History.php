@@ -1,25 +1,22 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
 App::uses('VusionConst', 'Lib');
+App::uses('UnattachedMessage', 'Model');
 
 
-class History extends MongoModel
+class History extends ProgramSpecificMongoModel
 {
     
-    var $specific = true;
-    
-    //var $name = 'ParticipantStat';
-    var $useDbConfig = 'mongo';    
-    var $useTable    = 'history';
-    
+    var $name     = 'History';  
+    var $useTable = 'history';
+
     var $messageType = array(
         'dialogue-history',
         'request-history',
         'unattach-history',
         'unmatching-history');
-    
     var $markerType = array(
         'datepassed-marker-history',
         'datepassed-action-marker-history',
@@ -132,6 +129,13 @@ class History extends MongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
     }
+
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $this->databaseName, $forceNew);
+    }
     
     
     //Patch the missing callback for deleteAll in Behavior
@@ -231,7 +235,10 @@ class History extends MongoModel
                 continue;
             }   
             if (in_array($history['History']['object-type'], array('oneway-marker-history', 'datepassed-marker-history'))) {
-                if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
+                if (isset($history['History']['unattach-id'])) {
+                    $separateMessageName = $this->UnattachedMessage->getNameById($history['History']['unattach-id']);
+                    $history['History']['details'] = $separateMessageName;
+                } else if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
                     $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
                 } else {
                     $history['History']['details'] = 'unknown interaction';

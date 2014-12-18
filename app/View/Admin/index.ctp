@@ -12,6 +12,7 @@
 		<li><?php echo $this->Html->link(__('Programs Management'), array('controller' => 'programs')); ?> </li>
 		<li><?php echo $this->Html->link(__('Shortcodes Management'), array('controller' => 'shortCodes')); ?> </li>
 		<li><?php echo $this->Html->link(__('Templates Management'), array('controller' => 'templates')); ?> </li>
+		<li><?php echo $this->Html->link(__('User Logs'), array('controller' => 'userLogs', 'action' => 'index')); ?></li>
 	</ul>
 </div>
 </div>

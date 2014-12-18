@@ -1,5 +1,5 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('VirtualModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
@@ -7,12 +7,9 @@ App::uses('VusionConst', 'Lib');
 App::uses('Participant', 'Model');
 
 
-class UnattachedMessage extends MongoModel
+class UnattachedMessage extends ProgramSpecificMongoModel
 {
-    
-    var $specific    = true;
     var $name        = 'UnattachedMessage';
-    var $useDbConfig = 'mongo';
     var $useTable    = 'unattached_messages';
     
     var $mongoNoSetOperator = true;
@@ -198,15 +195,16 @@ class UnattachedMessage extends MongoModel
     {
         parent::__construct($id, $table, $ds);
      
-        //Seems to be necessary API loading Vs Web loading
-        if (isset($id['id'])) {
-            $options = array('database' => $id['id']['database']);
-        } else {
-            $options = array('database' => $id['database']);
-        }
-        $this->ProgramSetting = new ProgramSetting($options);
-    }
+     }
     
+
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $this->databaseName, $forceNew);
+    }
+
     
     public function checkFields($object)
     {
@@ -385,6 +383,17 @@ class UnattachedMessage extends MongoModel
             $nameIds[$unattachedMessage['UnattachedMessage']['_id']] = $unattachedMessage['UnattachedMessage']['name']; 
         }     
         return  $nameIds;        
+    }
+    
+    
+    public function getNameById($id)
+    {
+        $unattachedMessage = $this->find('first', array(
+            'conditions' => array('_id' => $id), 'fields' => array('name')));
+        if ($unattachedMessage == null) {
+            return null;
+        }
+        return $unattachedMessage['UnattachedMessage']['name'];
     }
     
     

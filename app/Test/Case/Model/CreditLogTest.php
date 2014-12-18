@@ -1,6 +1,7 @@
 <?php
 App::uses('CreditLog', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class CreditLogTestCase extends CakeTestCase
@@ -9,10 +10,7 @@ class CreditLogTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        $options         = array('database'=>'test'); 
-        $this->CreditLog = new CreditLog($options);
-        $this->CreditLog->setDataSource('mongo_test');
-
+        $this->CreditLog = ClassRegistry::init('CreditLog');
         $this->dropData();
     }
 
@@ -51,7 +49,9 @@ class CreditLogTestCase extends CakeTestCase
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
-        $creditLog = ScriptMaker::mkCreditLog('program-credit-log', '2014-04-10', 'mydatabase2');
+        $creditLog = ScriptMaker::mkCreditLog(
+            'program-credit-log', '2014-04-10', 'mydatabase2', '256-8181', 
+             2, 1, 3, 2);
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
 
@@ -94,8 +94,8 @@ class CreditLogTestCase extends CakeTestCase
                 'incoming' => 2,
                 'outgoing' => 1,
                 'outgoing-pending' => 0,
-                'outgoing-acked' => 0,
-                'outgoing-nacked' => 0,
+                'outgoing-acked' => 3,
+                'outgoing-nacked' => 2,
                 'outgoing-failed' => 0,
                 'outgoing-delivered' => 0));
         $this->assertEqual(
