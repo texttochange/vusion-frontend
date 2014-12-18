@@ -42,7 +42,7 @@ class UsersControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'Auth' => array('user')
+                'Auth' => array('user'),
                 )));
         
         $users->Acl
@@ -278,7 +278,26 @@ class UsersControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testFilters()
+    public function testFilters_noResults()
+    { 
+        // filter by username only
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(1))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(2));
+
+        $users->Auth
+        ->staticExpects($this->at(2))
+        ->method('user')
+        ->with('id')
+        ->will($this->returnValue(2));
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
+        $this->assertEquals($this->vars['users'], array());
+    }
+
+    public function testFilters_onlyAdminAccess()
     {
         $expected = array(
             'id' => 2,
@@ -286,73 +305,66 @@ class UsersControllerTestCase extends ControllerTestCase
             'password' => 'olivpassword',
             'email' => 'oliv@there.com',
             'group_id' => 2,
-            'invited_by' => 'gerald',
+            'invited_by' => 'gerald', #the id is replace for display
             'created' => '2012-01-24 15:34:07',
-            'modified' => '2012-01-24 15:34:07'
-            );
-        
-        $expected01 = array(
-            'id' => 1,
-            'username' => 'gerald',
-            'password' => 'geraldpassword',
-            'email' => 'gerald@here.com',
-            'group_id' => 1,
-            'invited_by' => 'admin',
-            'created' => '2012-01-24 15:34:07',
-            'modified' => '2012-01-24 15:34:07'
-            );
-        
-        // filter by username only
-        $users = $this->_mockUserAccess();
-        $users->Auth
-        ->staticExpects($this->at(0))
-        ->method('user')
-        ->with('group_id')
-        ->will($this->returnValue(2));
-
-        $users->Auth
-        ->staticExpects($this->at(1))
-        ->method('user')
-        ->with('id')
-        ->will($this->returnValue(2));
-        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
-        $this->assertEquals($this->vars['users'], array());
+            'modified' => '2012-01-24 15:34:07');
 
         // filter by username only ADMIN access
         $users = $this->_mockUserAccess();
         $users->Auth
-        ->staticExpects($this->at(0))
+        ->staticExpects($this->at(1))
         ->method('user')
         ->with('group_id')
         ->will($this->returnValue(1));
         $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o");
         $this->assertEquals($this->vars['users'][0]['User'], $expected);
-        
+    }
+
+
+    public function testFilters_byGroupId()
+    {
+        $expected = array(
+            'id' => 1,
+            'username' => 'gerald',
+            'password' => 'geraldpassword',
+            'email' => 'gerald@here.com',
+            'group_id' => 1,
+            'invited_by' => 'admin',   #the id is replace for display
+            'created' => '2012-01-24 15:34:07',
+            'modified' => '2012-01-24 15:34:07');
+
         //filter by group_id only
         $users = $this->_mockUserAccess();
         $users->Auth
-        ->staticExpects($this->at(0))
+        ->staticExpects($this->at(1))
         ->method('user')
         ->with('group_id')
         ->will($this->returnValue(1));
 
         $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=group_id&filter_param%5B1%5D%5B2%5D=is&filter_param%5B1%5D%5B3%5D=1");
-        $this->assertEquals($this->vars['users'][0]['User'], $expected01);
-        
+        $this->assertEquals($this->vars['users'][0]['User'], $expected);
+    }
+
+
+    public function testFilters_byUserNameAndGroupId()
+    {
         // filter by username AND group_id
         $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
         $this->assertEqual(count($this->vars['users']), 0);
-        
+    }
+
+
+    public function testFilters_byUserNameOrGroupId()
+    {
         // filter by username OR group_id
         $users = $this->_mockUserAccess();
         $users->Auth
-        ->staticExpects($this->at(0))
+        ->staticExpects($this->at(1))
         ->method('user')
         ->with('group_id')
         ->will($this->returnValue(1));
         $this->testAction("/users/index?filter_operator=any&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
-        $this->assertEqual(count($this->vars['users']), 2);
-        
+        $this->assertEqual(count($this->vars['users']), 2);   
     }
     
     
@@ -673,11 +685,7 @@ class UsersControllerTestCase extends ControllerTestCase
                 ))
             ));
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> develop
-    
+
     
     public function testEdit_grant_can_invite_users() 
     {

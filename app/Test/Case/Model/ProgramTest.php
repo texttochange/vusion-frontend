@@ -49,15 +49,16 @@ class ProgramTestCase extends CakeTestCase
                 ),
             'User' => array(
                 0 => array(
-                    'id' => 1,
+                    'id' => '1',
                     'username' => 'gerald',
                     'password' => 'geraldpassword',
                     'email' => 'gerald@here.com',
-                    'group_id' => 1,
+                    'group_id' => '1',
+                    'invited_by' => '0',
                     'created' => '2012-01-24 15:34:07',
                     'modified' => '2012-01-24 15:34:07',
                     'ProgramsUser' => array(
-                        'id' => 1,
+                        'id' => '1',
                         'program_id' => '1',
                         'user_id' => '1',
                         ),
