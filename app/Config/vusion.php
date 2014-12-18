@@ -29,7 +29,8 @@ $config = array(
             10 => 180,      #10sec cache 3min
             30 => 1800,     #30sec cache 30min
             ),
-        'domain' => 'vusion.texttochange.org',
+        'domain' => 'localhost:4567',
+        'email' => 'admin@vusion.texttochange.org',
         'captcha' => array(
             'settings' => array(
                 'font'            => 'BIRTH_OF_A_HERO.ttf', 

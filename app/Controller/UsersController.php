@@ -26,7 +26,14 @@ class UsersController extends AppController
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword', 'addInvitee');
+        $this->Auth->allow(
+            'login',
+            'logout',
+            'requestPasswordReset',
+            'captcha',
+            'useTicket',
+            'newPassword',
+            'addInvitee');
     }
     
     
@@ -450,9 +457,7 @@ class UsersController extends AppController
         $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
-            'default',
-            array('class'=>'message success')
-            );
+            'default', array('class'=>'message success'));
         $this->redirect('/');
     }
     
@@ -464,17 +469,13 @@ class UsersController extends AppController
             if (is_array($results)) {
                 $this->Session->setFlash(
                     __('Enter your username and password below'),
-                    'default',
-                    array('class'=>'message success')
-                    );
+                    'default', array('class'=>'message success'));
                 $this->Session->write('invite',$results);
                 $this->render('add_invitee');
             } else {
                 $this->Session->setFlash(
                     __('Enter your new password below'),
-                    'default',
-                    array('class'=>'message success')
-                    );
+                    'default', array('class'=>'message success'));
                 $this->render('new_password');
             }
             return;
@@ -560,7 +561,7 @@ class UsersController extends AppController
         }
 
         if ($this->request->data['Program']['Program'] == "") {
-            $validationErrors['Program']['Program'] = "Please select atleast one program.";
+            $validationErrors['Program']['Program'] = __("Please select at least one program.");
         } else {
             $programs = $this->request->data['Program'];
         }
@@ -596,9 +597,7 @@ class UsersController extends AppController
         $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
             __('An Email has been sent to the invited email account.'),
-            'default',
-            array('class'=>'message success')
-            );
+            'default', array('class'=>'message success'));
         $this->redirect('/');
     }
 
@@ -641,8 +640,6 @@ class UsersController extends AppController
                     );
             }
         }
-
-
     }
     
     
