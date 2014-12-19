@@ -6,9 +6,9 @@ class TicketComponent extends Component
 {
 
     var $components          = array('Email');    
-    var $REDIS_TICKETS       = 'vusion:ticket';
-    var $EXPIRE_TOKEN        = 86400; #in seconds 24h
-    var $EXPIRE_INVITE_TOKEN = 604800;  #in seconds 7days
+    var $REDIS_TICKETS       = 'vusion:tickets';
+    var $EXPIRE_TICKET        = 86400; #in seconds 24h
+    var $EXPIRE_INVITE_TICKET = 604800;  #in seconds 7days
 
 
     public function initialize(Controller $controller)
@@ -33,7 +33,7 @@ class TicketComponent extends Component
     }
     
     
-    public function sendEmail($userEmail, $userName, $subject, $template, $token)
+    public function sendEmail($userEmail, $userName, $subject, $template, $ticket)
     {  
         $linkdomain  = Configure::read('vusion.domain');
         $email       = new CakeEmail();
@@ -44,39 +44,36 @@ class TicketComponent extends Component
         $email->template($template);
         $email->emailFormat('html');
         $email->viewVars(array(
-            'token' => $token,
+            'ticket' => $ticket,
             'linkdomain' => $linkdomain,
             'userName' => $userName));
         $email->send();
     }
     
     
-    protected function _getTokenKey($hash)
+    protected function _getTicketKey($hash)
     {
         return $this->redisTicketPrefix.':'.$hash;
     }
     
     
-    public function saveToken($token)
+    public function saveTicket($ticket, $email = null, $invite = array())
     {
-        $ticketKey = $this->_getTokenKey($token);
-        $this->redis->setex($ticketKey, $this->EXPIRE_TOKEN, $token);
-    }
+        if ($email)
+            $this->_checkInvitedEmailUniqueInRedis($email, $ticket);
 
-
-    public function saveInvitedToken($email, $token, $invite)
-    {
-        $this->_checkInvitedEmailUniqueInRedis($email, $token);
-
-        $ticketKey = $this->_getTokenKey($token);
-        $this->redis->setex($ticketKey, $this->EXPIRE_INVITE_TOKEN, json_encode($invite));
+        $ticketKey = $this->_getTicketKey($ticket);
+        if ($invite != array())
+            $this->redis->setex($ticketKey, $this->EXPIRE_INVITE_TICKET, json_encode($invite));
+        else
+            $this->redis->setex($ticketKey, $this->EXPIRE_TICKET, $ticket);
     }
     
     
     public function checkTicket($ticketHash)
     {
         $result    = null;
-        $ticketKey = $this->_getTokenKey($ticketHash);
+        $ticketKey = $this->_getTicketKey($ticketHash);
         $ticket    = $this->redis->get($ticketKey);       
 
         if (empty($ticket)) {
@@ -94,17 +91,17 @@ class TicketComponent extends Component
     }
 
 
-    protected function _checkInvitedEmailUniqueInRedis($email, $token)
+    protected function _checkInvitedEmailUniqueInRedis($email, $ticket)
     {
-        $ticket = $this->redis->get($email);
+        $ticketInRedis = $this->redis->get($email);
 
-        if ($ticket) {
+        if ($ticketInRedis) {
             $this->redis->delete($email);
 
-            $ticketKey = $this->_getTokenKey($ticket);
+            $ticketKey = $this->_getTicketKey($ticketInRedis);
             $this->redis->delete($ticketKey);
         }
-        $this->redis->setex($email, $this->EXPIRE_INVITE_TOKEN, $token);
+        $this->redis->setex($email, $this->EXPIRE_INVITE_TICKET, $ticket);
     }
     
     

@@ -46,6 +46,16 @@ class UserFixture extends CakeTestFixture
             'created' => '2012-01-24 15:34:07',
             'modified' => '2012-01-24 15:34:07'
             ),
+        array(
+            'id' => 3,
+            'username' => 'mark',
+            'password' => 'markpassword',
+            'email' => 'mark@there.com',
+            'group_id' => 2,
+            'invited_by' => 1,
+            'created' => '2012-01-24 15:34:07',
+            'modified' => '2012-01-24 15:34:07'
+            ),
         );
     
 }

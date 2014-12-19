@@ -297,6 +297,29 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->assertEquals($this->vars['users'], array());
     }
 
+     public function testFilters_notAdminAccess()
+    {
+        $expected = array(
+            'id' => 3,
+            'username' => 'mark',
+            'password' => 'markpassword',
+            'email' => 'mark@there.com',
+            'group_id' => 2,
+            'invited_by' => 'gerald', #the id is replace for display
+            'created' => '2012-01-24 15:34:07',
+            'modified' => '2012-01-24 15:34:07');
+
+        // filter by username only not ADMIN access
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(1))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(1));
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=m");
+        $this->assertEquals($this->vars['users'][0]['User'], $expected);
+    }
+
     public function testFilters_onlyAdminAccess()
     {
         $expected = array(
@@ -351,6 +374,15 @@ class UsersControllerTestCase extends ControllerTestCase
         // filter by username AND group_id
         $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=1");
         $this->assertEqual(count($this->vars['users']), 0);
+
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(1))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(1));
+        $this->testAction("/users/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=m&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=2");
+        $this->assertEqual(count($this->vars['users']), 1);
     }
 
 

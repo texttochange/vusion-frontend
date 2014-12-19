@@ -60,7 +60,8 @@ class TicketComponentTest extends CakeTestCase
         $this->redisTicketPrefix = 'unittest';
         $key = $this->redisTicketPrefix.':'.$token;
         
-        $this->redis->set($key, $token);
+        //$this->redis->set($key, $token);
+        $this->TicketComponent->saveTicket($token);
         $ticketTest = $this->TicketComponent->checkTicket($token);
         $this->assertEqual($token, $ticketTest);
     }
@@ -78,7 +79,7 @@ class TicketComponentTest extends CakeTestCase
     }
 
 
-    public function testSaveInvitedToken()
+    public function testSaveInvitedTicket()
     {
         $email = 'jack@vusion.com';
         $invite = array(
@@ -87,14 +88,14 @@ class TicketComponentTest extends CakeTestCase
             'invited_by' => 8
             );
         $token = 'inviteuser';
-        $savedInvite = $this->TicketComponent->saveInvitedToken($email, $token, $invite);        
+        $savedInvite = $this->TicketComponent->saveTicket($token, $email, $invite);        
 
         $ticket = $this->TicketComponent->checkTicket($token);
         $this->assertEqual($invite, $ticket);
     }
 
 
-    public function testSaveInvitedToken_more_than_once()
+    public function testSaveInvitedTicket_more_than_once()
     {
         $email = 'jack@vusion.com';
         $invite = array(
@@ -103,10 +104,10 @@ class TicketComponentTest extends CakeTestCase
             'invited_by' => 8
             );
         $token = 'inviteuser';
-        $savedInvite = $this->TicketComponent->saveInvitedToken($email, $token, $invite);
+        $savedInvite = $this->TicketComponent->saveTicket($token, $email, $invite);
 
         $token2 = 'inviteuser2';
-        $savedInvite2 = $this->TicketComponent->saveInvitedToken($email, $token2, $invite);        
+        $savedInvite2 = $this->TicketComponent->saveTicket($token2, $email, $invite);        
 
         $ticket = $this->TicketComponent->checkTicket($token);
         $this->assertEqual(null, $ticket);

@@ -450,7 +450,7 @@ class UsersController extends AppController
         $this->Session->write('user_id',$userId);
 
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->Ticket->saveToken($token);
+        $this->Ticket->saveTicket($token);
         
         $subject = 'Password Reset';
         $template = 'reset_password_template';
@@ -588,7 +588,7 @@ class UsersController extends AppController
             );
         
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->Ticket->saveInvitedToken($email, $token, $invite);
+        $this->Ticket->saveTicket($token, $email, $invite);
 
         $userName = $this->Session->read('Auth.User.username');
         
