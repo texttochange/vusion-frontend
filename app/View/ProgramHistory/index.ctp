@@ -100,7 +100,7 @@
                 }
                 echo '<td class="status" '. (isset($title)? 'title="' . $title . '"' : '') . '>'. $status.'</td>';
                 ?>
-                <td class="details"><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+                <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
                 <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
             </tr>
             <?php endforeach; ?>
