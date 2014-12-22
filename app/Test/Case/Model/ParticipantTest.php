@@ -310,8 +310,7 @@ class ParticipantTestCase extends CakeTestCase
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         
-        $dialogue = $this->Maker->getOneDialogue();
-        
+        $dialogue      = $this->Maker->getOneDialogue();        
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
         
@@ -325,7 +324,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedParticipant['Participant']['enrolled'][0] = $savedDialogue['Dialogue']['dialogue-id'];
         
         $this->Participant->id = $savedParticipant['Participant']['_id']."";
-        $resavedParticipant = $this->Participant->save($savedParticipant);
+        $resavedParticipant    = $this->Participant->save($savedParticipant);
         
         $enrolledParticipant = $this->Participant->find('first', array(
             'conditions' => $participant));
@@ -342,11 +341,11 @@ class ParticipantTestCase extends CakeTestCase
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         
-        $dialogue = $this->Maker->getOneDialogue();        
+        $dialogue      = $this->Maker->getOneDialogue();        
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);        
         
-        $otherDialogue = $this->Maker->getOneDialogue();
+        $otherDialogue      = $this->Maker->getOneDialogue();
         $otherSavedDialogue = $this->Dialogue->saveDialogue($otherDialogue);
         $this->Dialogue->makeActive($otherSavedDialogue['Dialogue']['_id']);
         
@@ -368,7 +367,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedAgainParticipant['Participant']['enrolled'][1] = $otherSavedDialogue['Dialogue']['dialogue-id'];
         
         $this->Participant->id = $savedAgainParticipant['Participant']['_id']."";
-        $resavedParticipant = $this->Participant->save($savedAgainParticipant);
+        $resavedParticipant    = $this->Participant->save($savedAgainParticipant);
         
         $enrolledParticipant = $this->Participant->find('first', array(
             'conditions' => $participant));
@@ -542,8 +541,7 @@ class ParticipantTestCase extends CakeTestCase
                 ));
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
-        
-        $resetParticipant =$this->Participant->reset($savedParticipant['Participant']);
+        $resetParticipant = $this->Participant->reset($savedParticipant['Participant']);
         
         $this->assertNotEqual($resetParticipant['session-id'], null);
         $this->assertEqual($resetParticipant['tags'], array());
@@ -1410,7 +1408,6 @@ class ParticipantTestCase extends CakeTestCase
     public function testUntag_trim()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
-        
         
         $participant_08 = array(
             'phone' => '+8',
