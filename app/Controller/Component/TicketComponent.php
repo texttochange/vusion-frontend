@@ -5,8 +5,7 @@ App::uses('CakeEmail', 'Network/Email');
 class TicketComponent extends Component
 {
 
-    var $components          = array('Email');    
-    var $REDIS_TICKETS       = 'vusion:tickets';
+    var $components          = array('Email');
     var $EXPIRE_TICKET        = 86400; #in seconds 24h
     var $EXPIRE_INVITE_TICKET = 604800;  #in seconds 7days
 
@@ -28,7 +27,7 @@ class TicketComponent extends Component
         if (isset($this->Controller->redisTicketPrefix)) {
             $this->redisTicketPrefix = $this->Controller->redisTicketPrefix;
         } else {
-            $this->redisTicketPrefix = $this->REDIS_TICKETS;
+            throw new InternalErrorException("The Ticket needs a redis instance from his controller.");
         }
     }
     

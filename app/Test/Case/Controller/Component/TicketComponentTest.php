@@ -56,26 +56,25 @@ class TicketComponentTest extends CakeTestCase
     public function testcheckTicket()
     {
         
-        $token = '012546333fg5554dr555seaa453355';
+        $ticket = '012546333fg5554dr555seaa453355';
         $this->redisTicketPrefix = 'unittest';
-        $key = $this->redisTicketPrefix.':'.$token;
+        $key = $this->redisTicketPrefix.':'.$ticket;
         
-        //$this->redis->set($key, $token);
-        $this->TicketComponent->saveTicket($token);
-        $ticketTest = $this->TicketComponent->checkTicket($token);
-        $this->assertEqual($token, $ticketTest);
+        $this->TicketComponent->saveTicket($ticket);
+        $ticketTest = $this->TicketComponent->checkTicket($ticket);
+        $this->assertEqual($ticket, $ticketTest);
     }
     
     
     public function testNoTicket_InRedis()
     {
         
-        $token = '012546333fg5554dr555seaa33364646';
+        $ticket = '012546333fg5554dr555seaa33364646';
         $this->redisTicketPrefix = 'unittest';
-        $key = $this->redisTicketPrefix.':'.$token;        
-        $ticket = $this->redis->get($key);
+        $key = $this->redisTicketPrefix.':'.$ticket;        
+        $savedTicket = $this->redis->get($key);
         
-        $this->assertEqual(null, $ticket);
+        $this->assertEqual(null, $savedTicket);
     }
 
 
@@ -87,11 +86,11 @@ class TicketComponentTest extends CakeTestCase
             'group_id' => 3,
             'invited_by' => 8
             );
-        $token = 'inviteuser';
-        $savedInvite = $this->TicketComponent->saveTicket($token, $email, $invite);        
+        $ticket = 'inviteuser';
+        $savedInvite = $this->TicketComponent->saveTicket($ticket, $email, $invite);        
 
-        $ticket = $this->TicketComponent->checkTicket($token);
-        $this->assertEqual($invite, $ticket);
+        $savedTicket = $this->TicketComponent->checkTicket($ticket);
+        $this->assertEqual($invite, $savedTicket);
     }
 
 
@@ -103,17 +102,17 @@ class TicketComponentTest extends CakeTestCase
             'group_id' => 3,
             'invited_by' => 8
             );
-        $token = 'inviteuser';
-        $savedInvite = $this->TicketComponent->saveTicket($token, $email, $invite);
+        $ticket = 'inviteuser';
+        $savedInvite = $this->TicketComponent->saveTicket($ticket, $email, $invite);
 
-        $token2 = 'inviteuser2';
-        $savedInvite2 = $this->TicketComponent->saveTicket($token2, $email, $invite);        
+        $ticket2 = 'inviteuser2';
+        $savedInvite2 = $this->TicketComponent->saveTicket($ticket2, $email, $invite);        
 
-        $ticket = $this->TicketComponent->checkTicket($token);
-        $this->assertEqual(null, $ticket);
+        $savedTicket = $this->TicketComponent->checkTicket($ticket);
+        $this->assertEqual(null, $savedTicket);
 
-        $ticket2 = $this->TicketComponent->checkTicket($token2);
-        $this->assertEqual($invite, $ticket2);
+        $savedTicket2 = $this->TicketComponent->checkTicket($ticket2);
+        $this->assertEqual($invite, $savedTicket2);
     }
 
 }
