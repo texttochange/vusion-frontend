@@ -11,8 +11,8 @@ class Participant extends ProgramSpecificMongoModel
 {
     var $name         = 'Participant';
     var $importErrors = array();
-
-
+    
+    
     function getModelVersion()
     {
         return '3';
@@ -31,7 +31,7 @@ class Participant extends ProgramSpecificMongoModel
             'profile',
             );
     }
-
+    
     
     public $findMethods = array(
         'all' => true,
@@ -59,7 +59,7 @@ class Participant extends ProgramSpecificMongoModel
         $this->Dialogue = ProgramSpecificMongoModel::init(
             'Dialogue', $this->databaseName, $forceNew);
     }
-
+    
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
     {
@@ -103,7 +103,7 @@ class Participant extends ProgramSpecificMongoModel
                 ),
             )
         );
-
+    
     
     public $validateLabel = array(
         'label' => array(
@@ -231,7 +231,7 @@ class Participant extends ProgramSpecificMongoModel
             return (string) $phone;
         }
     }
-
+    
     
     public function paginateCount($conditions, $recursive, $extra)
     {
@@ -255,7 +255,7 @@ class Participant extends ProgramSpecificMongoModel
     
     protected function _findAllSafeJoin($state, $query, $results=array())
     {
-
+        
         return $this->findAllSafeJoin($state, $query, $results);
     }
     
@@ -305,19 +305,19 @@ class Participant extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-
+        
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set
             return false;
         }
-
+        
         $this->_setDefault('phone', null);
         $this->data['Participant']['phone'] = $this->cleanPhone($this->data['Participant']['phone']);
-                
+        
         $this->_setDefault('tags', array());
         $this->data['Participant']['tags'] = Participant::cleanTags($this->data['Participant']['tags']);
-         
+        
         $this->_setDefault('profile', array());
         $this->data['Participant']['profile'] = Participant::cleanProfile($this->data['Participant']['profile']);
         
@@ -442,15 +442,15 @@ class Participant extends ProgramSpecificMongoModel
         $cleanedTags = array_values(array_filter($cleanedTags));
         return $cleanedTags;
     }
-
-
+    
+    
     public static function cleanProfile($inputProfile) 
     {
         $cleanedProfile = array();
         if ($inputProfile == null) {
             return $cleanedProfile;
         } 
-
+        
         if (!is_array($inputProfile)) {
             $inputProfile = explode(',', $inputProfile);
             foreach ($inputProfile as &$profile) {
@@ -481,7 +481,7 @@ class Participant extends ProgramSpecificMongoModel
         return $cleanedProfile;
     }
     
-
+    
     protected function _editEnrolls()
     {
         $participantUpdateData = $this->data;
@@ -599,8 +599,9 @@ class Participant extends ProgramSpecificMongoModel
                 $tags = array();
             }
             foreach ($tags as $tag) {
-                if (!$this->validateTag($tag)) {
-                    array_push($this->importErrors, __("Error a tag is not valide: %s.", $tag)); 
+                $valid = $this->validateTag($tag);
+                if (!is_bool($valid)) {
+                    array_push($this->importErrors, __("Error a tag is not valid: %s.", $tag)); 
                     return false;
                 }
             }
@@ -816,15 +817,15 @@ class Participant extends ProgramSpecificMongoModel
         }
         return $report;
     }
-
-
+    
+    
     public $runActionsFields = array(
         'phone',
         'dialogue-id',
         'interaction-id',
         'answer');
-
-
+    
+    
     public function validateRunActions(&$data)
     {
         $runActionsErrors = array();
@@ -833,7 +834,7 @@ class Participant extends ProgramSpecificMongoModel
                 $runActionsErrors[$mandatoryField] = "This field is missing";
             }
         }
-       if ($runActionsErrors != array()) {
+        if ($runActionsErrors != array()) {
             return $runActionsErrors;
         }
         $data['phone'] = $this->cleanPhone($data['phone']);
@@ -852,8 +853,8 @@ class Participant extends ProgramSpecificMongoModel
         }
         return $runActionsErrors;
     }
-
-
+    
+    
     //Filter variables and functions
     public $filterFields = array(
         'phone' => array(
@@ -920,17 +921,17 @@ class Participant extends ProgramSpecificMongoModel
                         'parameters' => array('cursor' => true)))))
         );
     
-
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
     
-
+    
     public function fromFilterToQueryCondition($filterParam) 
     {
         $condition = array();
-
+        
         if ($filterParam[1] == 'enrolled') {
             if ($filterParam[2] == 'in') {
                 $condition['enrolled.dialogue-id'] = $filterParam[3];
@@ -1008,6 +1009,6 @@ class Participant extends ProgramSpecificMongoModel
         }
         return $condition;
     }
-
+    
     
 }
