@@ -8,4 +8,4 @@
 <br/>
 <p>Thanks</p>
 <br/>
-<p><b><i>(Please don\'t reply to this email)</i><b/></p>
+<p><i>(Please don't reply to this email)</i></p>

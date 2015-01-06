@@ -20,5 +20,6 @@
     $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');
     echo $this->Form->checkbox('invite_disclaimer', array('class' => 'ttc-checkbox'));
 	echo $this->Html->tag('label',__(' I agree that TTC will not be held accountable for misuse of this feature.'), array('class'=>'danger'));
-    echo $this->Form->end(__('Send', true));
+    echo $this->Form->end(array('label' => __('Send'), 'id' => 'send-invite', 'onclick' => 'disableSend()'));   
+    echo '<div id = "sending-email"></div>';
 ?>

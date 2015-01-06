@@ -886,6 +886,10 @@ display: inline;
         width: 700px;
 }
 
+/* USERS SPECIFI */
+.ttc-table-scrolling-area .users .users-field {
+        width: 230px;
+}
 
 .unmatchable-reply .content {
         width: 593px;

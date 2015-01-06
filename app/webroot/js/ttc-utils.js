@@ -785,3 +785,8 @@ function disableSubmit() {
     $('#submit-report').attr('style', 'visibility:hidden');
     $('#sending-email').append(localized_messages['sending_report']);
 }
+
+function disableSend() {
+    $('#send-invite').attr('style', 'visibility:hidden');
+    $('#sending-email').append(localized_messages['sending_invite']);
+}
