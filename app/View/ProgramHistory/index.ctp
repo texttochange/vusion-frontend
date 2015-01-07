@@ -77,6 +77,9 @@
                     case 'failed':
                         $title = $history['History']['failure-reason'];
                         break;
+                    case 'nack':
+                        $title = $history['History']['failure-reason'];
+                        break;    
                     case 'forwarded':
                         $tmp=array();
                         foreach ($history['History']['forwards'] as $forward) {
