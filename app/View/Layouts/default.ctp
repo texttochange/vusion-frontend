@@ -109,11 +109,9 @@
 			        array('class' => 'ttc-link-header'));			    
 			    
 			}
-			echo $this->AclLink->generateButton(
-			    __('Invite User'), null, 'users', 'inviteUser', array('class'=>'ttc-link-header'));
 			if ($this->Session->read('Auth.User.group_id') != 1) {
 				echo $this->AclLink->generateButton(
-			    	__('View Users'), null, 'users', 'index', array('class'=>'ttc-link-header'));
+			    	__('Users'), null, 'users', 'index', array('class'=>'ttc-link-header'));
 			}
 			echo $this->AclLink->generateButton(
 			    __('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));

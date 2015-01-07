@@ -57,6 +57,12 @@
 		    'add'
 		    ); ?></li>
 		<li><?php echo $this->AclLink->generateButton(
+		    __('Invite User'),
+		    null,
+		    'users',
+		    'inviteUser'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
 		    __('Back to Admin menu'),
 		    null,
 		    'admin',
