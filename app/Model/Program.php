@@ -101,6 +101,9 @@ class Program extends AppModel
                     'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
+                    'parameter-type' => 'text'),
+                'contain' => array(
+                    'label' => 'contain',
                     'parameter-type' => 'text'))),
         'country' => array(
             'label' => 'country',
@@ -184,6 +187,8 @@ class Program extends AppModel
                     $condition['name'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'start-with') {
                     $condition['name LIKE'] = $filterParam[3]."%"; 
+                } elseif ($filterParam[2] == 'contain') {
+                    $condition['name LIKE'] = "%".$filterParam[3]."%";
                 }
             }
         } elseif ($filterParam[1] == 'status') {
