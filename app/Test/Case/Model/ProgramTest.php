@@ -9,7 +9,7 @@ class ProgramTestCase extends CakeTestCase
     
     public $fixtures = array('app.program', 'app.user', 'app.programsUser');
     
-  
+    
     public function setUp()
     {
         parent::setUp();
@@ -23,7 +23,7 @@ class ProgramTestCase extends CakeTestCase
         unset($this->Program);
         parent::tearDown();
     }
-   
+    
     
     public function testFind()
     {
@@ -99,6 +99,7 @@ class ProgramTestCase extends CakeTestCase
             );
         $this->assertEquals(4, $result);
     }
+    
     
     public function testSaveProgram_ok()
     {
@@ -181,14 +182,15 @@ class ProgramTestCase extends CakeTestCase
             $this->Program->validationErrors['database'][0], 
             'This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one.');
     }
-
+    
+    
     public function testArchive()
     {
         $database = array('database' => 'testdbprogram');
         $this->Schedule = new Schedule($database);
         $this->Schedule->create('dialogue-schedule');
         $this->Schedule->save($this->maker->getDialogueSchedule());
-
+        
         $this->Program->id = 1;
         $this->assertTrue($this->Program->archive());
         
@@ -196,7 +198,7 @@ class ProgramTestCase extends CakeTestCase
         $this->assertEqual(
             $archivedProgram['Program']['status'], 
             'archived');
-
+        
         $this->assertEquals(0,
             $this->Schedule->count());
     }
@@ -253,14 +255,14 @@ class ProgramTestCase extends CakeTestCase
                 'timezone' => 'Africa/Kampala',
                 'shortcode' => '256-8181')
             );
-                        
+        
         //Test simple condition        
         $conditions = array('shortcode' => '8282');
         $this->assertTrue(
             Program::matchProgramConditions($programDetailM4H, $conditions));
         $this->assertFalse(
             Program::matchProgramConditions($programDetailTester, $conditions));
-
+        
         //Test OR
         $conditions = array(
             '$or' => array(
@@ -285,7 +287,8 @@ class ProgramTestCase extends CakeTestCase
         $this->assertTrue(
             Program::matchProgramConditions($programDetailTester, $conditions));
     }
-
+    
+    
     public function testValidateProgramCondition()
     {
         $programDetailM4H = array(
@@ -299,28 +302,31 @@ class ProgramTestCase extends CakeTestCase
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24'),
             );
-                        
+        
         $this->assertTrue(
             Program::validProgramCondition($programDetailM4H, 'shortcode', '8282'));
         $this->assertFalse(
             Program::validProgramCondition($programDetailM4H, 'shortcode', '8181'));
-
+        
         $this->assertTrue(
             Program::validProgramCondition($programDetailM4H, 'country', 'Uganda'));
         $this->assertFalse(
             Program::validProgramCondition($programDetailM4H, 'country', 'kenya'));
-
+        
         $this->assertTrue(
             Program::validProgramCondition($programDetailM4H, 'name', 'm4h'));
         $this->assertFalse(
             Program::validProgramCondition($programDetailM4H, 'name', 'm6h'));
-
+        
         $this->assertTrue(
             Program::validProgramCondition($programDetailM4H, 'name LIKE', 'm%'));
         $this->assertFalse(
             Program::validProgramCondition($programDetailM4H, 'name LIKE', 't%'));
+        $this->assertTrue(
+            Program::validProgramCondition($programDetailM4H, 'name LIKE', "%h%"));
     }
-
+    
+    
     public function testValidateProgramCondition_missingShortcodeSettings()
     {
         $programDetails = array(
@@ -332,12 +338,12 @@ class ProgramTestCase extends CakeTestCase
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24'),
             );
-                        
+        
         $this->assertFalse(
             Program::validProgramCondition($programDetails, 'shortcode', '8282'));
         $this->assertFalse(
             Program::validProgramCondition($programDetails, 'country', 'Uganda'));
-
+        
         $programDetails = array(
             'Program' => array(
                 'id' => 3,
@@ -348,14 +354,14 @@ class ProgramTestCase extends CakeTestCase
                 'created' => '2012-01-24 15:29:24',
                 'modified' => '2012-01-24 15:29:24'),
             );
-
+        
         $this->assertTrue(
             Program::validProgramCondition($programDetails, 'country', 'Uganda'));
         $this->assertFalse(
             Program::validProgramCondition($programDetails, 'country', 'kenya'));
     }
     
-
+    
     public function testEditProgram_fail_database_name()
     {
         $program = array(
