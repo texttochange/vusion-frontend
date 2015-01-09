@@ -51,6 +51,6 @@ $config = array(
             'email' => 'vusion-issues@texttochange.com',
             'subjectPrefix' => '[vusion-issues]'
             ),
-        'countriesPrefixesFile' => 'files/countries and codes.csv',
+        'countriesPrefixesFile' => 'files/countries_20150108.csv',
         )
     );   

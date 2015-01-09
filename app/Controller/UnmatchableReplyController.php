@@ -16,7 +16,7 @@ class UnmatchableReplyController extends AppController
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
-        'PhoneNumber',
+        'Country',
         'UserAccess',
         'Filter',
         'Paginator' => array(
@@ -48,14 +48,14 @@ class UnmatchableReplyController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByCountries();
         
         $this->paginate = array(
             'all',
             'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes),
             'order'=> $order,
             );
-        $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
+        $countriesIndexes   = $this->Country->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate('UnmatchableReply');
         $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
     }
@@ -72,7 +72,7 @@ class UnmatchableReplyController extends AppController
     {
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
-            'country' => $this->PhoneNumber->getCountries()
+            'country' => $this->Country->getCountries()
             );
     }
     
@@ -125,7 +125,7 @@ class UnmatchableReplyController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByCountries();
         
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();

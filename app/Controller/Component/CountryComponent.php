@@ -5,7 +5,7 @@ App::uses('VusionConst', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 
 
-class PhoneNumberComponent extends Component {
+class CountryComponent extends Component {
 
 
     public function startup(Controller $controller)

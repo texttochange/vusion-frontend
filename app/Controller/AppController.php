@@ -41,8 +41,7 @@ class AppController extends Controller
                 )
             ),
         'Acl',
-        'Cookie', 
-        'PhoneNumber',
+        'Cookie',
         'BackendLog',
         'Stats',
         'CreditManager',

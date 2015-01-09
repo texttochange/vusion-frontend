@@ -244,18 +244,11 @@ class DialogueHelper
     public static function loadCountriesByPrefixes($filePath) {
         $importedCountries = fopen($filePath,"r");
         $countries=array();
-        $count = 0;
-        $options = array();
         while(!feof($importedCountries)){
-           $countries[] = fgets($importedCountries);
-           if($count > 0 && $countries[$count]){
-               $countries[$count] = str_replace("\n", "", $countries[$count]);
-               $explodedLine = explode(",", $countries[$count]);
-               $options[trim($explodedLine[1])] = trim($explodedLine[0]);
-           }
-           $count++;           
+           $country = fgetcsv($importedCountries);
+           $countries[trim($country[1])] = trim($country[0]);
         }
-        return $options;
+        return $countries;
     }
 
     public static function loadPrefixesByCountries($filePath) {

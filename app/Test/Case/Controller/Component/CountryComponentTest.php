@@ -3,17 +3,17 @@ App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('ComponentCollection', 'Controller');
-App::uses('PhoneNumberComponent', 'Controller/Component');
+App::uses('CountryComponent', 'Controller/Component');
 
 
-class TestPhoneNumberComponentController extends Controller
+class TestCountryComponentController extends Controller
 {
 }
 
 
-class PhoneNumberComponentTest extends CakeTestCase {
+class CountryComponentTest extends CakeTestCase {
 
-    public $PhoneNumberComponent = null;
+    public $CountryComponent = null;
     public $Controller = null;
     
     
@@ -21,51 +21,51 @@ class PhoneNumberComponentTest extends CakeTestCase {
     {
         parent::setUp();
         $Collection = new ComponentCollection();
-        $this->PhoneNumberComponent = new PhoneNumberComponent($Collection);
+        $this->CountryComponent = new CountryComponent($Collection);
         //Don't get why the useDbConfig is not properly configure by ClassResigtry
         $CakeRequest = new CakeRequest();
         $CakeResponse = new CakeResponse();
-        $this->Controller = new TestPhoneNumberComponentController($CakeRequest, $CakeResponse);
-        $this->PhoneNumberComponent->startup($this->Controller);
+        $this->Controller = new TestCountryComponentController($CakeRequest, $CakeResponse);
+        $this->CountryComponent->startup($this->Controller);
     }
 
     
     public function tearDown() 
     {
         parent::tearDown();
-        unset($this->PhoneNumberComponent);
+        unset($this->CountryComponent);
         unset($this->Controller);
     }
 
     
     public function testGetCountriesByPrefixes()
     {
-        $countriesPrefixes = $this->PhoneNumberComponent->getCountriesByPrefixes();
+        $countriesPrefixes = $this->CountryComponent->getCountriesByPrefixes();
         $this->assertEqual($countriesPrefixes['33'], 'France');
-        $this->assertEqual($countriesPrefixes['1 242'], 'Bahamas');
+        $this->assertEqual($countriesPrefixes['1242'], 'Bahamas');
     }
 
     
     public function testGetCountries()
     {
-        $countriesPrefixes = $this->PhoneNumberComponent->getCountries();
+        $countriesPrefixes = $this->CountryComponent->getCountries();
         $this->assertEqual($countriesPrefixes['France'], 'France');
     }
 
 
     public function testGetPrefixesByCountries()
     {
-        $prefixesOfCountries = $this->PhoneNumberComponent->getPrefixesByCountries();
+        $prefixesOfCountries = $this->CountryComponent->getPrefixesByCountries();
         $this->assertEqual($prefixesOfCountries['France'], 33);
     }
     
 
     public function testFromPrefixedCodeToCountry() 
     {
-        $this->assertEqual('France', $this->PhoneNumberComponent->fromPrefixedCodeToCountry('33-8181'));
-        $this->assertEqual('Netherlands', $this->PhoneNumberComponent->fromPrefixedCodeToCountry('+31345433'));
+        $this->assertEqual('France', $this->CountryComponent->fromPrefixedCodeToCountry('33-8181'));
+        $this->assertEqual('Netherlands', $this->CountryComponent->fromPrefixedCodeToCountry('+31345433'));
         try {
-            $this->PhoneNumberComponent->fromPrefixedCodeToCountry('+999999');
+            $this->CountryComponent->fromPrefixedCodeToCountry('+999999');
             $this->fail();
         } catch (VusionException $e){
             $this->assertEqual($e->getMessage(), "Cannot find valid country prefix from +999999.");
