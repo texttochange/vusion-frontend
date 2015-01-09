@@ -701,8 +701,14 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $this->set(compact('participant','histories', 'schedules'));
     }
     
+
+    public function importMash()
+    {
+    }
+
+
     
-    public function import()
+    public function importFile()
     {
         $programName = $this->Session->read($this->params['program'].'_name');
         $programUrl  = $this->params['program'];

@@ -1378,21 +1378,18 @@ display: inline;
 .ttc-page-title {
 }
 
-.ttc-page-title .tabs {
+.tabs {
         display: inline-block;
-        /*border-bottom: 2px solid #19C1FF;*/
-        /*height: 22px;*/
 }
 
-.ttc-page-title .tabs ul {
+.tabs ul {
         list-style-type: none;
         margin: 0px 0px 0px 10px;
 }
 
-.ttc-page-title .tabs li {
+.tabs li {
         float: left;
         margin: 0px 10px 0px 0px;
-        /*border-bottom: 5px solid #81DCFF;*/ 
         color: #81CDFF;
 }
 
@@ -1401,16 +1398,15 @@ display: inline;
         color: #19C1FF;
 }
 
-.ttc-page-title .tabs label {
+.tabs label {
         display: block;
         cursor: pointer;
         font-weight: bold;
 }
 
 .ttc-page-title .tabs li a {
-        /*font-weight: normal;*/
-        text-decoration: none;
-        color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 .ttc-page-title .tabs a:hover {
@@ -1424,6 +1420,42 @@ display: inline;
 
 .ttc-page-title .ttc-action {
         display: inline-block;
+}
+
+.ttc-display-area .tabs li a {
+    text-decoration: none;
+    color: gray;
+}
+
+.ttc-display-area .tabs li.selected a {
+    color: #444;
+}
+
+.ttc-display-area .tab-content div {
+    padding: 5px;
+}
+
+.ttc-display-area .tabs li {
+    background-color: white;
+    margin-right: 5px;
+}
+
+.ttc-display-area .tabs li.selected {
+    margin: 0px;
+    background-color: #73D7FD;
+    border-radius: 2px 2px 0px 0px;
+}
+
+.ttc-display-area .tab-content {
+    background-color: #73D7FD;
+    border-radius: 2px;
+}
+
+.ttc-display-area .tabs label {
+    display: block;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 2px 4px;
 }
 
 /** content Variable table **/

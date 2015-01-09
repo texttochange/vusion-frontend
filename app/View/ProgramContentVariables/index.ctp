@@ -15,7 +15,6 @@
     </li>
     </ul>
     </span>
-	</h3>
 	<ul class="ttc-actions">
 		<li><?php echo $this->Html->link(__('New'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>

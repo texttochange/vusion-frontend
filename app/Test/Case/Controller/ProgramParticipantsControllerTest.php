@@ -158,12 +158,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_csv_no_settings() 
+    public function testImportFile_csv_no_settings() 
     {
         $this->mockProgramAccess();
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -183,7 +183,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_csv() 
+    public function testImportFile_csv() 
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         
@@ -197,7 +197,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -217,7 +217,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_csv_duplicate() 
+    public function testImportFile_csv_duplicate() 
     {
         $participants = $this->mockProgramAccess();
         $participants
@@ -237,7 +237,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -264,7 +264,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_noLabelTwoColumns_fail() 
+    public function testImportFile_noLabelTwoColumns_fail() 
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -282,7 +282,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->with("The file cannot be imported. The first line should be label names, the first label must be 'phone'.");
         
         $this->testAction(
-            "/testUrl/participantsController/import", 
+            "/testUrl/participantsController/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -304,7 +304,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     
     
-    public function testImport_xls_duplicate() 
+    public function testImportFile_xls_duplicate() 
     {
         $participants = $this->mockProgramAccess();
         $participants
@@ -324,7 +324,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -366,7 +366,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
