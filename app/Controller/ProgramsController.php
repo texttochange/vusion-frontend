@@ -181,7 +181,8 @@ class ProgramsController extends AppController
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        $this->set('program', $this->Program->read(null, $id));
+        $program = $this->Program->read(null, $id);
+        $this->set('program', $program);
     }
     
     

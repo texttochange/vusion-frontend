@@ -1,4 +1,4 @@
-<div class="users-index">
+<div class="users-index index width-size">
     <ul class="ttc-actions">
         <li><?php
 		echo $this->Html->tag(
@@ -19,19 +19,21 @@
 	?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table cellpadding="0" cellspacing="0">
+	<table class="users" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th class="content"><?php echo $this->Paginator->sort('username');?></th>
-			    <th class="content"><?php echo $this->Paginator->sort('group_id');?></th>
+			    <th class="users-field"><?php echo $this->Paginator->sort('username');?></th>
+			    <th class="users-field"><?php echo $this->Paginator->sort('group_id');?></th>
+			    <th class="users-field"><?php echo $this->Paginator->sort('invited_by');?></th>
 			    <th class="action-admin"><?php echo __('Actions');?></th>
 			 </tr>
 	    </thead>
 	    <tbody>
 	        <?php foreach ($users as $user): ?>
 	        <tr>
-	            <td class="content"><?php echo h($user['User']['username']); ?></td>
-	            <td class="content"><?php echo h($user['Group']['name']); ?></td>
+	            <td class="users-field"><?php echo h($user['User']['username']); ?></td>
+	            <td class="users-field"><?php echo h($user['Group']['name']); ?></td>
+	            <td class="users-field"><?php echo h($user['User']['invited_by']); ?></td>
 	            <td class="action-admin actions">
 	                <?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id'])); ?>
 	                <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id'])); ?>
@@ -48,8 +50,30 @@
 	<div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New User'), array('action' => 'add')); ?></li>		
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('New User'),
+		    null,
+		    'users',
+		    'add'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('Invite User'),
+		    null,
+		    'users',
+		    'inviteUser'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('Back to Admin menu'),
+		    null,
+		    'admin',
+		    'index'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('Back to Programs'),
+		    null,
+		    'programs',
+		    'index'
+		    ); ?></li>
 	</ul>
 </div>
 </div>	
