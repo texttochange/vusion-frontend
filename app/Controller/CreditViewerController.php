@@ -55,7 +55,7 @@ class CreditViewerController extends AppController
     
     protected function _getAllCredits($conditions)
     {
-        $countriesByPrefixes = $this->Country->getCountriesByPrefixes();
+        $countriesByPrefixes = $this->Country->getNamesByPrefixes();
         $countriesCredits    = $this->CreditLog->calculateCreditPerCountry($conditions, $countriesByPrefixes);
         foreach ($countriesCredits as &$countryCredits) {
             foreach ($countryCredits['codes'] as &$codeCredits) {

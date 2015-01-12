@@ -48,14 +48,14 @@ class UnmatchableReplyController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $countryPrefixes = $this->Country->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByNames();
         
         $this->paginate = array(
             'all',
             'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes),
             'order'=> $order,
             );
-        $countriesIndexes   = $this->Country->getCountriesByPrefixes();
+        $countriesIndexes   = $this->Country->getNamesByPrefixes();
         $unmatchableReplies = $this->paginate('UnmatchableReply');
         $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
     }
@@ -72,7 +72,7 @@ class UnmatchableReplyController extends AppController
     {
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
-            'country' => $this->Country->getCountries()
+            'country' => $this->Country->getNamesByNames()
             );
     }
     
@@ -125,7 +125,7 @@ class UnmatchableReplyController extends AppController
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $countryPrefixes = $this->Country->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByNames();
         
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();

@@ -38,38 +38,44 @@ class CountryComponentTest extends CakeTestCase {
     }
 
     
-    public function testGetCountriesByPrefixes()
+    public function testGetNameByPrefixes()
     {
-        $countriesPrefixes = $this->CountryComponent->getCountriesByPrefixes();
+        $countriesPrefixes = $this->CountryComponent->getNamesByPrefixes();
         $this->assertEqual($countriesPrefixes['33'], 'France');
         $this->assertEqual($countriesPrefixes['1242'], 'Bahamas');
     }
 
     
-    public function testGetCountries()
+    public function testGetNamesByNames()
     {
-        $countriesPrefixes = $this->CountryComponent->getCountries();
+        $countriesPrefixes = $this->CountryComponent->getNamesByNames();
         $this->assertEqual($countriesPrefixes['France'], 'France');
     }
 
 
-    public function testGetPrefixesByCountries()
+    public function testGetPrefixesByNames()
     {
-        $prefixesOfCountries = $this->CountryComponent->getPrefixesByCountries();
+        $prefixesOfCountries = $this->CountryComponent->getPrefixesByNames();
         $this->assertEqual($prefixesOfCountries['France'], 33);
     }
     
 
-    public function testFromPrefixedCodeToCountry() 
+    public function testFromPrefixedCodeToName() 
     {
-        $this->assertEqual('France', $this->CountryComponent->fromPrefixedCodeToCountry('33-8181'));
-        $this->assertEqual('Netherlands', $this->CountryComponent->fromPrefixedCodeToCountry('+31345433'));
+        $this->assertEqual('France', $this->CountryComponent->fromPrefixedCodeToName('33-8181'));
+        $this->assertEqual('Netherlands', $this->CountryComponent->fromPrefixedCodeToName('+31345433'));
         try {
-            $this->CountryComponent->fromPrefixedCodeToCountry('+999999');
+            $this->CountryComponent->fromPrefixedCodeToName('+999999');
             $this->fail();
         } catch (VusionException $e){
             $this->assertEqual($e->getMessage(), "Cannot find valid country prefix from +999999.");
         }
     }   
+
+    public function testFromPrefixToIso() 
+    {
+        $this->assertEqual('FRA', $this->CountryComponent->fromPrefixToIso('33'));
+    }
+
     
 }

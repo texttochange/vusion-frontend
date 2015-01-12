@@ -142,7 +142,7 @@ class ProgramsController extends AppController
         $this->paginate = $paginate;
         $programs       = $this->paginate();
         
-        $countryIndexedByPrefix = $this->Country->getCountriesByPrefixes();
+        $countryIndexedByPrefix = $this->Country->getNamesByPrefixes();
         $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
     }
     
