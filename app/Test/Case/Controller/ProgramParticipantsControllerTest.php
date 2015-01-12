@@ -1163,7 +1163,40 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
-        $this->assertEquals(1, count($this->vars['participants']));        
+        $this->assertEquals(1, count($this->vars['participants']));
+    }
+
+
+    public function testListParticipants()
+    {
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+26',
+            'session-id' => '1',
+            'last-optin-date' => '2012-12-01T18:30:10',
+            'enrolled' => array(),
+            'tags' => array('Geek'),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'male',
+                'raw' => null))
+            ));
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+29',
+            'session-id' => '3',
+            'last-optin-date' => '2012-12-02T18:30:10',
+            'enrolled' => array(),
+            'tags' => array(),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'female',
+                'raw' => null))
+            ));
+
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/programParticipants/listParticipants.json?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
+        $this->assertEquals(1, count($this->vars['participants']));
     }
     
     
