@@ -58,7 +58,10 @@ class ProgramDialoguesController extends BaseProgramSpecificController
 
     public function listQuestions()
     {
-        $this->set('dialogues', $this->Dialogue->getActiveDialogues());
+        $requestSuccess = true;
+        $dialogues = $this->Dialogue->getActiveDialogues();
+        $this->set(compact('dialogues', 'requestSuccess'));
+        $this->render('index');
     }
 
     
