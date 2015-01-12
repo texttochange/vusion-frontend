@@ -21,3 +21,5 @@
 .vagrant
 
 /vendor/
+.*
+app/webroot/files/programs
