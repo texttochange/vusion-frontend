@@ -40,25 +40,35 @@ class CountryComponent extends Component {
             }
             $namesByPrefixes[$country['Prefix']] = $country['Name'];
         }
+        asort($namesByPrefixes);
         return $namesByPrefixes;
     }
 
     
     public function getPrefixesByNames()
     { 
-        return array_flip($this->getNamesByPrefixes());
+        $namesByPrefixes = array_flip($this->getNamesByPrefixes());
+        asort($namesByPrefixes);
+        return $namesByPrefixes;
     }
     
 
-    public function getNamesByIso()
+    public function getNamesByIso($prefix=null)
     {
         $namesByIso = array();
         foreach($this->countries as $country) {
             if ($country['Iso'] === '') {
                 continue;
             }
-            $namesByIso[$country['Iso']] = $country['Name'];
+            if ($prefix == null) {
+                $namesByIso[$country['Iso']] = $country['Name'];
+            } else {
+                if ($prefix === $country['Prefix']) {
+                    $namesByIso[$country['Iso']] = $country['Name'];    
+                }
+            }
         }
+        asort($namesByIso);
         return $namesByIso;
     }
 
@@ -72,6 +82,7 @@ class CountryComponent extends Component {
             }
             $namesByPrefixes[$country['Prefix']] = $country['Iso'];
         }
+        asort($namesByPrefixes);
         return $namesByPrefixes;
     }
 
@@ -85,6 +96,7 @@ class CountryComponent extends Component {
             }
             $namesByNames[$country['Name']] = $country['Name'];
         }
+        asort($namesByNames);
         return $namesByNames;
     }
 
