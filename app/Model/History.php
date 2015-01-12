@@ -51,7 +51,7 @@ class History extends ProgramSpecificMongoModel
             'pending' => array(),
             'delivered' => array(),
             'ack' => array(),
-            'nack' => array(),
+            'nack' => array('failure-reason'),
             'no-credit' => array(),
             'no-credit-timeframe' => array(),
             'missing-data' => array('missing-data'),

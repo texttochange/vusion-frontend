@@ -167,6 +167,7 @@ CREATE TABLE `users` (
   `password` varchar(40) NOT NULL,
   `email` varchar(30) NOT NULL,
   `group_id` int(11) NOT NULL,
+  `invited_by` int(11) NOT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   UNIQUE KEY `users_username_key` (`id`)

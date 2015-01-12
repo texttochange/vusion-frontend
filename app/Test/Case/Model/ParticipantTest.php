@@ -1080,7 +1080,22 @@ class ParticipantTestCase extends CakeTestCase
         
         $this->assertEquals(6, count($participants));
         $this->assertEquals(6, count($report));
-    }   
+    }
+    
+    
+    public function testImport_taging_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $report = $this->Participant->import('testUrl', TESTS.'files/wellformattedparticipants.xlsx', 'max$hi');
+        
+        
+        $this->assertFalse($report);
+        $this->assertEquals(
+            'Error a tag is not valid: max$hi.',
+            $this->Participant->importErrors[0]);
+    }
     
     
     //TEST FILTERS

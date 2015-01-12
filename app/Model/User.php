@@ -20,6 +20,14 @@ class User extends AppModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 ),
+            'minLength' => array(
+                'rule' => array('minLength', 8),
+                'message' => 'Password must be at least 8 characters long'
+                ),
+            'alphaNumeric' => array(
+                'rule' => '/^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z\d]+$/',
+                'message' => 'Password must be letters and numbers, and contain atleast one number'
+                ),
             ),
         'email' => array(
             'email' => array(

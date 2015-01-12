@@ -886,6 +886,10 @@ display: inline;
         width: 700px;
 }
 
+/* USERS SPECIFI */
+.ttc-table-scrolling-area .users .users-field {
+        width: 230px;
+}
 
 .unmatchable-reply .content {
         width: 593px;
@@ -1075,28 +1079,28 @@ display: inline;
 }
 
 .connection-message {
-	clear: both;
-	color: white;
-	position: relative;
-	top: 0px;
-	padding-left: 8px;
-	padding-right: 8px;
-	border: 1.5px solid white;
-	background: black;
-	margin-left: auto;
-	margin-right: auto;
-	display: inline;
-	z-index: 100;
-	white-space: nowrap;
+    clear: both;
+    color: white;
+    position: relative;
+    top: 0px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border: 1.5px solid white;
+    background: black;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline;
+    z-index: 100;
+    white-space: nowrap;
 }
 
 .credit {
-	clear: both;
-	position: relative;
-	top: 20px;
-	z-index: 100;
-	margin-bottom: 0px;
-	white-space: nowrap;
+    clear: both;
+    position: relative;
+    top: 20px;
+    z-index: 100;
+    margin-bottom: 0px;
+    white-space: nowrap;
 }
 
 .credit .warning {
@@ -1235,7 +1239,7 @@ display: inline;
                 color: #333;
                 padding: 10px 20px 20px 20px;
                 overflow: auto;
-                height: 470px;	
+                height: 470px;    
         }         
 
         .ttc-program-stats {
@@ -1364,14 +1368,14 @@ display: inline;
 }
 
 .break ul li a{
-	word-wrap:normal;
-	white-space:normal;
-	width:115px;
-	text-align:center;
+    word-wrap:normal;
+    white-space:normal;
+    width:115px;
+    text-align:center;
 }
 
 #masstag-tags{
-	margin-bottom: 12px;	
+    margin-bottom: 12px;    
 }
 
 /** page title **/
@@ -1455,24 +1459,24 @@ display: inline;
 }
 
 .configure-program-settings {
-	font-size:14px; 
-	color:#C43C35; 
-	padding-top: 20px;
+    font-size:14px; 
+    color:#C43C35; 
+    padding-top: 20px;
 }
 
 .forget-password {
-	float: right;
-	margin-top: -44px;
-	padding-right: 35px;
+    float: right;
+    margin-top: -44px;
+    padding-right: 35px;
 }
 
 .forget-password a {
-	font-weight: normal;
-	font-size: 12px;
+    font-weight: normal;
+    font-size: 12px;
 }
 
 .captcha-reload {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 .timeframe {
@@ -1518,6 +1522,9 @@ display: inline;
         
 }
 
+.ttc-checkbox {
+        margin-left: 10px;
+}
 /* USERLOGS SPECIFIC */
 .ttc-table-scrolling-area .user-logs .user_logs_field {
         width: 207px;

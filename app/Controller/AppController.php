@@ -61,7 +61,8 @@ class AppController extends Controller
         'CreditManager',
         'Documentation');
     var $redis              = null;
-    var $redisProgramPrefix = "vusion:programs"; 
+    var $redisProgramPrefix = "vusion:programs";
+    var $redisTicketPrefix = "vusion:tickets"; 
     
     
     function beforeFilter()
