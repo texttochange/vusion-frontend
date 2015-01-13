@@ -115,7 +115,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     }
     
 
-    public function testPagination() 
+    public function testIndex_order() 
     {
         $this->History->create('unattach-history');
         $this->History->save(array(
@@ -145,7 +145,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testFilter()
+    public function testIndex_filter()
     {   
         $this->History->create('dialogue-history');
         $this->History->save(array(
@@ -226,7 +226,37 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->assertEquals(3, count($this->vars['histories']));        
     }
 
-    
+
+    public function testListHistory()
+    {
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
+            'participant-phone' => '+356774527841',
+            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+            'timestamp' => '2013-02-07T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
+            ));
+        $this->History->create('dialogue-history');
+        $this->History->save(array(
+            'participant-phone' => '+356774527842',
+            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
+            'timestamp' => '2013-02-07T12:20:43',
+            'dialogue-id' => '1',
+            'interaction-id' => '11',
+            'message-direction' => 'outgoing',
+            'message-status' => 'delivered'
+            ));
+
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/history/listHistory.json?filter_operator=all&filter_param[1][1]=participant-phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B356774527841");
+        $this->assertEquals(1, count($this->vars['histories']));
+        $this->assertEquals('+356774527841', $this->vars['histories'][0]['History']['participant-phone']);
+    }
+
+
     public function testMassDelete() 
     {    
         $this->History->create('dialogue-history');

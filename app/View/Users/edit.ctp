@@ -22,7 +22,10 @@
 		        ));
 		    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');
             echo $this->Form->checkbox('unmatchable_reply_access');
-            echo $this->Html->tag('label',__('Access Unmatchable Replies'));		    
+            echo $this->Html->tag('label',__('Access Unmatchable Replies'));
+            echo "<br /><br />";
+            echo $this->Form->checkbox('can_invite_users');
+            echo $this->Html->tag('label',__('Invite new users'));		    
 		}
 	?>
 	</fieldset>

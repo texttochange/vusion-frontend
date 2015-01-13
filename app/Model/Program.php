@@ -101,6 +101,9 @@ class Program extends AppModel
                     'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
+                    'parameter-type' => 'text'),
+                'contain' => array(
+                    'label' => 'contain',
                     'parameter-type' => 'text'))),
         'country' => array(
             'label' => 'country',
@@ -184,6 +187,8 @@ class Program extends AppModel
                     $condition['name'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'start-with') {
                     $condition['name LIKE'] = $filterParam[3]."%"; 
+                } elseif ($filterParam[2] == 'contain') {
+                    $condition['name LIKE'] = "%".$filterParam[3]."%";
                 }
             }
         } elseif ($filterParam[1] == 'status') {
@@ -344,16 +349,23 @@ class Program extends AppModel
     
     
     public static function startsWith($haystack, $needle)
-    {
+    { 
         $length = strlen($needle);
         return (substr(strtolower($haystack), 0, $length) === strtolower($needle));
     }
     
     
-    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue) {
+    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue)
+    {
         switch ($conditionKey) {
         case 'name LIKE':
-            return Program::startsWith($programDetails['Program']['name'],rtrim($conditionValue, '%'));        
+            if (preg_match("/^%.*%$/i", $conditionValue)) {
+                return true;
+            } 
+            
+            if (preg_match("/%+$/i", $conditionValue)) {
+                return Program::startsWith($programDetails['Program']['name'],trim($conditionValue, '%'));        
+            }
         default:
             if (!isset($programDetails['Program'][$conditionKey])) {
                 return false;

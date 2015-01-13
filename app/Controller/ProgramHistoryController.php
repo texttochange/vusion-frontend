@@ -48,33 +48,49 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
-        
+
         $requestSuccess = true;
-        
+        $order          = null;
+        $conditions     = array(
+            'object-type' => array('$in' => $this->History->messageType));
+
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
         } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
-        } else {
-            $order = null;
         }
-        
-        // Only get messages and avoid other stuff like markers
-        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-        
-        if ($this->params['ext'] === 'csv' || $this->_isAjax()) {
-            $histories = $this->History->find(
-                'all', 
-                array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
-                array('order' => $order));
-        } else {   
-            $this->paginate = array(
-                'all',
-                'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
-                'order'=> $order);            
-            $histories = $this->paginate('History');
-        }
+        $conditions = $this->Filter->getConditions($this->History, $conditions);
+        $this->paginate = array(
+            'all',
+            'conditions' => $conditions,
+            'order'=> $order);
+        $histories = $this->paginate('History');
         $this->set(compact('histories', 'requestSuccess'));
+    }
+
+
+    public function listHistory()
+    {
+        $requestSuccess = true;
+        $order          = null;
+        $conditions     = array(
+            'object-type' => array('$in' => $this->History->messageType));
+
+        if (!$this->_isCsv() && !$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
+        
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        }
+
+        $conditions = $this->Filter->getConditions($this->History, $conditions);
+        $histories = $this->History->find(
+            'all',
+            array('conditions' => $conditions,
+            array('order' => $order)));
+        $this->set(compact('histories', 'requestSuccess'));
+        $this->render('index');
     }
     
     

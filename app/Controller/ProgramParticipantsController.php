@@ -60,34 +60,51 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $requestSuccess = true;
-        
-        $order = array();
+        $order          = null;
+        $conditions     = array();
+
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-        $conditions = $this->Filter->getConditions($this->Participant, array(), array('Schedule' => $this->Schedule));
+        $conditions = $this->Filter->getConditions(
+            $this->Participant,
+            array(),
+            array('Schedule' => $this->Schedule));
 
-        if ($this->params['ext'] === 'csv') {
-            $participants = $this->Participant->find(
-                'allSafeJoin', 
-                array(
-                    'conditions' => $conditions,
-                    'limit'=> 10000),
-                array('order' => $order));
-        } else {
-            $paginate       = array('allSafeJoin');
-            if (isset($order)) {
-                $paginate['order'] = $order;
-            }
-            if ($conditions != null) {
-                $paginate['conditions'] = $conditions;
-            }
-            $this->paginate = $paginate;
-            $participants   = $this->paginate('Participant');
-        }
+        $paginate = array(
+            'allSafeJoin',
+            'conditions' => $conditions,
+            'order' => $order);
+        $this->paginate = $paginate;
+        $participants   = $this->paginate('Participant');
+
         $this->set(compact('participants', 'requestSuccess'));
     }
     
+
+    public function listParticipants()
+    {
+        $requestSuccess = true;
+        $conditions     = array();
+
+        if (!$this->_isCsv() && !$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
+
+        $conditions = $this->Filter->getConditions(
+            $this->Participant,
+            array(),
+            array('Schedule' => $this->Schedule));
+
+        $participants = $this->Participant->find(
+            'allSafeJoin',
+            array(
+                'conditions' => $conditions,
+                'limit'=> 10000));
+        $this->set(compact('participants', 'requestSuccess'));
+        $this->render('index');
+    }
+
     
     protected function _getFilterFieldOptions()
     {   

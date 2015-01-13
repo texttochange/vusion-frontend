@@ -18,6 +18,7 @@ class UserFixture extends CakeTestFixture
         'password' => array('type' => 'string', 'null' => false, 'length' => 40),
         'email' => array('type' => 'string', 'null' => false, 'length' => 40),
         'group_id' => array('type' => 'integer', 'null' => false),
+        'invited_by' => array('type' => 'integer', 'null' => false),
         'created' => array('type' => 'datetime', 'null' => true),
         'modified' => array('type' => 'datetime', 'null' => true),
         'indexes' => array('users_username_key' => array('unique' => true, 'column' => 'id')),
@@ -31,6 +32,7 @@ class UserFixture extends CakeTestFixture
             'password' => 'geraldpassword',
             'email' => 'gerald@here.com',
             'group_id' => 1,
+            'invited_by' => 0,
             'created' => '2012-01-24 15:34:07',
             'modified' => '2012-01-24 15:34:07'
             ),
@@ -40,6 +42,17 @@ class UserFixture extends CakeTestFixture
             'password' => 'olivpassword',
             'email' => 'oliv@there.com',
             'group_id' => 2,
+            'invited_by' => 1,
+            'created' => '2012-01-24 15:34:07',
+            'modified' => '2012-01-24 15:34:07'
+            ),
+        array(
+            'id' => 3,
+            'username' => 'mark',
+            'password' => 'markpassword',
+            'email' => 'mark@there.com',
+            'group_id' => 2,
+            'invited_by' => 1,
             'created' => '2012-01-24 15:34:07',
             'modified' => '2012-01-24 15:34:07'
             ),
