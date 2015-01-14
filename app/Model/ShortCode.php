@@ -3,13 +3,13 @@ App::uses('MongoModel', 'Model');
 
 class ShortCode extends MongoModel
 {
-
-    var $name        = 'ShortCode';
-    var $useTable    = 'shortcodes';
+    
+    var $name     = 'ShortCode';
+    var $useTable = 'shortcodes';
     
     var $localPrefixedShortCodePattern = '/^[ 0-9]+-[0-9]+/';
     var $internationalShortCodePattern = '/^\+[0-9]+/';
-    var $maxCharacterPerSmsOptions = array(70, 140, 160);
+    var $maxCharacterPerSmsOptions     = array(70, 140, 160);
     
     
     function getModelVersion()
@@ -179,14 +179,14 @@ class ShortCode extends MongoModel
                 );
         }
         
-         reset($check);
-         $field = key($check);
-         
-         if ($existingShortcode['ShortCode'][$field] != $check[$field]) {
-             return false;         
-         }
+        reset($check);
+        $field = key($check);
         
-         return true;
+        if ($existingShortcode['ShortCode'][$field] != $check[$field]) {
+            return false;         
+        }
+        
+        return true;
     }
     
     

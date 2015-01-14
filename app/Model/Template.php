@@ -4,9 +4,9 @@ App::uses('MongoModel', 'Model');
 
 class Template extends MongoModel
 {
-
-    var $name        = 'Template';
-    var $useTable    = 'templates';
+    
+    var $name     = 'Template';
+    var $useTable = 'templates';
     
     
     function getModelVersion()
@@ -31,6 +31,7 @@ class Template extends MongoModel
         'unmatching-answer' => 'Unmatching Answer',
         'unmatching-keyword' => 'Unmatching Keyword'
         );
+    
     
     public $validate = array(
         'name' => array(
@@ -62,7 +63,8 @@ class Template extends MongoModel
         );
     
     
-    public function isReallyUnique($check) {
+    public function isReallyUnique($check) 
+    {
         if ($this->id) {
             $conditions = array('id'=>array('$ne'=> $this->id),'name' => '/^'.$check['name'].'$/i');
         } else {

@@ -7,7 +7,7 @@ App::uses('DialogueHelper', 'Lib');
 
 class Schedule extends ProgramSpecificMongoModel
 {
-
+    
     var $name = 'Schedule';
     
     
@@ -50,6 +50,7 @@ class Schedule extends ProgramSpecificMongoModel
         
     }
     
+    
     public $findMethods = array(
         'soon' => true,
         'summary' => true,
@@ -66,7 +67,7 @@ class Schedule extends ProgramSpecificMongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
     }
-
+    
     public function initializeDynamicTable($forceNew=false) 
     {
         parent::initializeDynamicTable();
@@ -74,14 +75,14 @@ class Schedule extends ProgramSpecificMongoModel
             'UnattachedMessage', $this->databaseName, $forceNew);
     }
     
-
+    
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
     {
         parent::deleteAll($conditions, $cascade, $callback);
         $this->flushCached();
     }
-
+    
     
     protected function _findSoon($state, $query, $results = array())
     {
@@ -92,8 +93,8 @@ class Schedule extends ProgramSpecificMongoModel
         }
         return $results;
     }
-
-
+    
+    
     public function getUniqueParticipantPhone($options=array())
     {
         $cursor = $this->getUniqueParticipantPhoneCursor();
@@ -106,16 +107,16 @@ class Schedule extends ProgramSpecificMongoModel
         }
         return $results;
     }
-
-
+    
+    
     public function getUniqueParticipantPhoneCursor()
     {
         $pipeline = array(array('$group' => array('_id' => '$participant-phone')));
         $mongo = $this->getDataSource();
         return $mongo->aggregateCursor($this, $pipeline);
     }
-
-
+    
+    
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
         foreach($activeDialogues as $activeDialogue) {
@@ -265,7 +266,7 @@ class Schedule extends ProgramSpecificMongoModel
         
         return $scheduleCount; 
     }
-
+    
     public $filterFields = array();
     
 }

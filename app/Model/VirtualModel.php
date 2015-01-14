@@ -1,10 +1,9 @@
 <?php
-
-
 abstract class VirtualModel
 {
-    var $data = null;
+    var $data   = null;
     var $fields = array();
+    
     var $validationErrors = array();
     
     
@@ -22,13 +21,16 @@ abstract class VirtualModel
     }
     
     
-    protected function _setDefault($field, $default) {
+    protected function _setDefault($field, $default) 
+    {
         if (!isset($this->data[$field])) {
             $this->data[$field] = $default;
         } 
     }
     
-    protected function _setDefaultSubfield(&$data, $field, $default) {
+    
+    protected function _setDefaultSubfield(&$data, $field, $default)
+    {
         if (!isset($data[$field])) {
             $data[$field] = $default;
         }
@@ -164,7 +166,8 @@ abstract class VirtualModel
     }
     
     
-    public function notEmptyArray($field, $data) {
+    public function notEmptyArray($field, $data)
+    {
         if (!array_key_exists($field, $data)) {
             return true;
         }

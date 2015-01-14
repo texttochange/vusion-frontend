@@ -6,35 +6,35 @@ App::uses('VusionException', 'Lib');
 
 class CreditLog extends MongoModel
 {
-
-    var $name        = 'CreditLog';
-    var $useTable    = 'credit_logs';
-
-
+    
+    var $name     = 'CreditLog';
+    var $useTable = 'credit_logs';
+    
+    
     function getModelVersion()
     {
         return '1';
     }
-
-
+    
+    
     function getRequiredFields($objectType) 
     {
         $fields = array();
-
+        
         $creditLogFields = array(
             'date',
             'code',
             'incoming',
             'outgoing');
-
+        
         $programCreditLogFields = array(
             'program-database');
-
+        
         $deletedProgramCreditLogFields = array(
             'program-name');
-
+        
         $garbageCreditLogFields = array();
-
+        
         switch($objectType) {
         case 'program-credit-log':
             $fields = array_merge($creditLogFields, $programCreditLogFields);
@@ -48,15 +48,15 @@ class CreditLog extends MongoModel
         }
         return $fields;
     }
-
+    
     var $optionalFields = array(
         'outgoing-acked',
         'outgoing-nacked',
         'outgoing-pending',
         'outgoing-delivered',
         'outgoing-failed');
-
-
+    
+    
     //Overwrite to allow the optional fields
     public function checkFields($object)
     {
@@ -65,7 +65,7 @@ class CreditLog extends MongoModel
         } else {
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         }
-
+        
         foreach ($object as $field => $value) {
             if (!in_array($field, $toCheck)) {
                 if (!in_array($field, $this->optionalFields)) {
@@ -73,17 +73,17 @@ class CreditLog extends MongoModel
                 }
             }
         }
-
+        
         foreach ($toCheck as $field) {
             if (!isset($object[$field])) {
                 $object[$field] = null;
             }
         };
-
+        
         return $object;
     }
-
-
+    
+    
     public function calculateProgramShortcodeCredits($databases, $shortcodes, $conditions=array())
     {
         $conditions += array('$or' => array(
@@ -91,41 +91,41 @@ class CreditLog extends MongoModel
 		    array(
 		        'object-type' => 'garbage-credit-log',
 		        'code' => array('$in' => $shortcodes))));
-
+		
 		return $this->calculateCredits($conditions);
     }
-
-
+    
+    
     public function calculateCredits($conditions=array())
     {
         $reduce = new MongoCode(
             "function(obj, prev){
-                prev.incoming += obj.incoming;
-                prev.outgoing += obj.outgoing;
-                if ('outgoing-pending' in obj) {
-                    prev['outgoing-pending'] += obj['outgoing-pending']; 
-                }
-                if ('outgoing-acked' in obj) {
-                    prev['outgoing-acked'] += obj['outgoing-acked']; 
-                }
-                if ('outgoing-nacked' in obj) {
-                    prev['outgoing-nacked'] += obj['outgoing-nacked']; 
-                }
-                if ('outgoing-delivered' in obj) {
-                    prev['outgoing-delivered'] += obj['outgoing-delivered']; 
-                }
-                if ('outgoing-failed' in obj) {
-                    prev['outgoing-failed'] += obj['outgoing-failed']; 
-                }
+            prev.incoming += obj.incoming;
+            prev.outgoing += obj.outgoing;
+            if ('outgoing-pending' in obj) {
+            prev['outgoing-pending'] += obj['outgoing-pending']; 
+            }
+            if ('outgoing-acked' in obj) {
+            prev['outgoing-acked'] += obj['outgoing-acked']; 
+            }
+            if ('outgoing-nacked' in obj) {
+            prev['outgoing-nacked'] += obj['outgoing-nacked']; 
+            }
+            if ('outgoing-delivered' in obj) {
+            prev['outgoing-delivered'] += obj['outgoing-delivered']; 
+            }
+            if ('outgoing-failed' in obj) {
+            prev['outgoing-failed'] += obj['outgoing-failed']; 
+            }
 			}");
-
+		
 		$key = array(
 		    'object-type' => true,
 		    'code' => true,
 		    'program-database' => true,
 		    'program-name' => true,
 		    );
-
+		
 		$initial = array(
 		    'incoming' => 0,
 		    'outgoing' => 0,
@@ -134,24 +134,25 @@ class CreditLog extends MongoModel
 		    'outgoing-nacked' => 0,
 		    'outgoing-failed' => 0,
 		    'outgoing-delivered' =>0);
-
+		
         $query = array(
-				'key' => $key,
-				'initial' => $initial,
-				'reduce' => $reduce,
-				'options' => array(
-				    'condition' => $conditions
-				    )
-				);
+            'key' => $key,
+            'initial' => $initial,
+            'reduce' => $reduce,
+            'options' => array(
+                'condition' => $conditions
+                )
+            );
 		$mongo = $this->getDataSource();
 		$groupResults = $mongo->group($this, $query);
 		if (!isset($groupResults['retval'])) {
 		    return null;
 		}
-
+		
 		return array_map("CreditLog::cleanResult", $groupResults['retval']);
     }
-
+    
+    
     public static function cleanResult($result)
     {
         if ($result['object-type'] === 'garbage-credit-log') {
@@ -165,7 +166,7 @@ class CreditLog extends MongoModel
         return $result;
     }
     
-
+    
     public static function searchCreditLog($credits, $field, $value)
     {
         $results = array();
@@ -176,7 +177,7 @@ class CreditLog extends MongoModel
         }
         return $results;
     }
-
+    
     
     public static function filterPrefixedCodeByPrefix($prefixedCodes, $prefix) 
     {
@@ -189,9 +190,10 @@ class CreditLog extends MongoModel
         }
         return $result;
     }
-
-
-    public function calculateCreditPerCountry($conditions, $countriesByPrefixes) {
+    
+    
+    public function calculateCreditPerCountry($conditions, $countriesByPrefixes) 
+    {
         $perCountry = array();
         $credits = $this->calculateCredits($conditions);
         if ($credits == null) {
@@ -239,6 +241,7 @@ class CreditLog extends MongoModel
         return $perCountry;
     }
     
+    
     public function deletingProgram($programName, $programDatabase) 
     {
         $conditions = array('program-database' => $programDatabase);
@@ -250,11 +253,12 @@ class CreditLog extends MongoModel
         $result = $this->updateAll($updateData, $conditions);
     }
     
-
-    public static function fromTimeframeParametersToQueryConditions($timeframeParameters, $conditions = array()) {
+    
+    public static function fromTimeframeParametersToQueryConditions($timeframeParameters, $conditions = array())
+    {
         
         $condition = null;
-  
+        
         if (isset($timeframeParameters['date-from']) && $timeframeParameters['date-from'] != '') {
             $condition['date']['$gte'] = DialogueHelper::ConvertDateFormat($timeframeParameters['date-from']);
         }
@@ -282,7 +286,7 @@ class CreditLog extends MongoModel
                 throw new VusionException(__("Predefined timeframe %s not supported", $timeframeParameters['predefined-timeframe']));
             }
         }
-            
+        
         if (count($conditions) == 0) {
             $conditions = $condition;
         } elseif (!isset($conditions['$and'])) {
@@ -292,5 +296,5 @@ class CreditLog extends MongoModel
         }
         return $conditions;
     } 
-
+    
 } 
