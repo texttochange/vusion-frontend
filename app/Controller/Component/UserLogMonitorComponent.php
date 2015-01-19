@@ -29,6 +29,14 @@ class UserLogMonitorComponent extends Component
     {
         $this->Controller = $controller;        
         $this->UserLog    = ClassRegistry::init('UserLog');
+        $programEventData = null;
+        
+        if ($this->Session->check('UserLogEvent')) {
+            $sessionAction    = $this->Session->read('UserLogEvent');
+            $programEventData = $sessionAction['programEventData'];
+            $this->Session->delete('UserLogEvent');
+        }
+        
         
         $this->userLogActions  = array(
             'programParticipants' => array(
@@ -38,6 +46,7 @@ class UserLogMonitorComponent extends Component
                     'edit' => __('Edited participant'),
                     'import' => __('Imported  participant(s)'),
                     'massDelete' => __('Deleted filtered participant(s)'),
+                    'runActions' => __('Runaction for participant: '.$programEventData),
                     ),
                 'GET' => array(
                     'massTag' => __('Tagged participant(s)'),
@@ -172,9 +181,15 @@ class UserLogMonitorComponent extends Component
         } else {
             $this->UserLog->create('vusion-user-log');
         }
-        
         return $this->UserLog->save($userLog);
-        
     }
+    
+    
+    public function initUserEvent($programEventData = null)
+    {
+        $this->Session->write('UserLogEvent', array(            
+            'programEventData' => $programEventData));
+    }
+    
     
 }
