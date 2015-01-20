@@ -701,7 +701,7 @@ class Participant extends ProgramSpecificMongoModel
                 if (isset($headers['phone'])) {
                     $hasHeaders = true;
                     $count++;
-                    $labels = $this->array_filter_out_not_label($headers);
+                    $labels = $this->arrayFilterOutNotLabel($headers);
                     continue;
                 } else {
                     if (count($headers) > 1) {
@@ -748,7 +748,7 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    private function array_filter_out_not_label($input) 
+    private function arrayFilterOutNotLabel($input) 
     {
         $tmp = array_filter(
             array_keys($input), 
@@ -781,7 +781,7 @@ class Participant extends ProgramSpecificMongoModel
                     'name' => $header, 
                     'index' => $j);
             }
-            $labels = $this->array_filter_out_not_label($headers);
+            $labels = $this->arrayFilterOutNotLabel($headers);
         } else {
             if ($data->val(1, 'B')!=null) {
                 array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'."));
