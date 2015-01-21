@@ -134,7 +134,29 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $this->response->send();
     }
     
-    
+    public function exported()
+    {
+        $programUrl = $this->programDetails['url'];
+        $programDirPath = WWW_ROOT . "files/programs/". $programUrl;
+        $exportedFiles = scandir($programDirPath);
+        $exportedHistoryFiles = array_filter($exportedFiles, function($var) { 
+            return strpos($var, 'history');});
+        $files = array();
+        foreach ($exportedHistoryFiles as $file) {
+            $fileFullName = $programDirPath . DS . $file;
+            $files[] = array(
+                'name' =>  $file,
+                'size' => filesize($fileFullName),
+                'created' => filemtime($fileFullName));
+        }
+        $created = array();
+        foreach ($files as $key => $row) {
+            $created[$key] = $row['created'];
+        }
+        array_multisort($created, SORT_DESC, $files);
+        $this->set(compact('files'));
+    }
+
     public function export()
     {
         $programUrl = $this->params['program'];
