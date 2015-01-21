@@ -86,6 +86,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $requestSuccess = true;
         $conditions     = array();
+        $explodeProfile = array();
 
         if (!$this->_isCsv() && !$this->_isAjax()) {
             throw new MethodNotAllowedException();
@@ -101,7 +102,11 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             array(
                 'conditions' => $conditions,
                 'limit'=> 10000));
-        $this->set(compact('participants', 'requestSuccess'));
+
+        if (isset($this->params['url']['explode_profile'])) {
+            $explodeProfile = explode(',', $this->params['url']['explode_profile']);
+        }
+        $this->set(compact('participants', 'requestSuccess', 'explodeProfile'));
         $this->render('index');
     }
 
