@@ -831,7 +831,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $valid = $this->Participant->validateRunActions($data);
         if ($valid === true) {
             $this->Session->setFlash(__('The runActions succeed.'));
-            $this->UserLogMonitor->initUserEvent($data['phone']);
+            $this->UserLogMonitor->setUserEventData($data['phone']);
             $this->_notifyBackendRunActions($programUrl, $data);
         } else {
             $this->Session->setFlash(__('The runActions failed.'));

@@ -112,7 +112,13 @@ class UserLogMonitorComponentTest extends CakeTestCase
         ->method('delete')
         ->with('UserLogMonitor');
         
+        $this->UserLogComponent->setUserEventData('m9rh');
+        
         $this->UserLogComponent->logAction();
+        
+        $saveUserLog = $this->UserLog->find('all');
+        $this->assertEqual('Added a new program m9rh',
+            $saveUserLog[0]['UserLog']['parameters']);
     }
     
 }

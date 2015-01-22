@@ -49,7 +49,7 @@ class UserLogMonitorComponent extends Component
                 ),
             'programs' => array(
                 'POST' => array(
-                    'add' => __('Added a new program'),
+                    'add' => __('Added a new program '),
                     'edit' => __('Edited a program'),
                     'delete' => __('Deleted a program'),
                     'archive' => __('Archived a program')
@@ -178,11 +178,12 @@ class UserLogMonitorComponent extends Component
         } else {
             $this->UserLog->create('vusion-user-log');
         }
+        
         return $this->UserLog->save($userLog);
     }
     
     
-    public function initUserEvent($actionEventData)
+    public function setUserEventData($actionEventData)
     { 
         $this->eventData = $actionEventData;
     }
