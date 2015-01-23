@@ -393,7 +393,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($otherUnattachedMessage);
         
-        $this->assertEquals(1,$this->UnattachedMessage->find('count'));
+        $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $this->assertEquals('immediately', $savedUnattachedMessage['UnattachedMessage']['type-schedule']);
     }
     
