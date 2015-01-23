@@ -112,7 +112,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
         ->method('delete')
         ->with('UserLogMonitor');
         
-        $this->UserLogComponent->setUserEventData('m9rh');
+        $this->UserLogComponent->setEventData('m9rh');
         
         $this->UserLogComponent->logAction();
         

@@ -132,18 +132,15 @@ class UserLogMonitorComponent extends Component
             $this->Session->delete('UserLogMonitor');
         }        
         
-        $eventData = $this->eventData;
-        
         $this->_saveUserAction($action,
             $method,
             $controller,
             $programDatabaseName,
-            $programName,
-            $eventData);
+            $programName);
     }
     
     
-    protected function _saveUserAction($action, $method, $controller, $programDatabaseName = null, $programName = null, $eventData = null)
+    protected function _saveUserAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
     {
         $now = new DateTime('now');
         if (isset($this->Controller->programDetails['database'])) {
@@ -165,7 +162,7 @@ class UserLogMonitorComponent extends Component
         
         $userLog['controller'] = $controller;
         $userLog['action']     = $action;
-        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$eventData;
+        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$this->eventData;
         $userLog['user-id']    = $this->Auth->user('id');
         $userLog['user-name']  = $this->Auth->user('username');            
         $userLog['timezone']   = $programTimezone;
@@ -183,9 +180,9 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    public function setUserEventData($actionEventData)
+    public function setEventData($eventData)
     { 
-        $this->eventData = $actionEventData;
+        $this->eventData = $eventData;
     }
     
     
