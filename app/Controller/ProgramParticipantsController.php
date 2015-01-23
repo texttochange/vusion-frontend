@@ -86,6 +86,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $requestSuccess = true;
         $conditions     = array();
+        $explodeProfile = array();
 
         if (!$this->_isCsv() && !$this->_isAjax()) {
             throw new MethodNotAllowedException();
@@ -101,7 +102,11 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             array(
                 'conditions' => $conditions,
                 'limit'=> 10000));
-        $this->set(compact('participants', 'requestSuccess'));
+
+        if (isset($this->params['url']['explode_profile'])) {
+            $explodeProfile = explode(',', $this->params['url']['explode_profile']);
+        }
+        $this->set(compact('participants', 'requestSuccess', 'explodeProfile'));
         $this->render('index');
     }
 
@@ -225,7 +230,31 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         $this->redirect($redirectUrl);
     }
-    
+
+
+    public function exported()
+    {
+        $programUrl               = $this->programDetails['url'];
+        $programDirPath           = WWW_ROOT . "files/programs/". $programUrl;
+        $exportedFiles            = scandir($programDirPath);
+        $exportedParticipantFiles = array_filter($exportedFiles, function($var) { 
+            return strpos($var, 'participants');});
+        $files = array();
+        foreach ($exportedParticipantFiles as $file) {
+            $fileFullName = $programDirPath . DS . $file;
+            $files[] = array(
+                'name' =>  $file,
+                'size' => filesize($fileFullName),
+                'created' => filemtime($fileFullName));
+        }
+        $created = array();
+        foreach ($files as $key => $row) {
+            $created[$key] = $row['created'];
+        }
+        array_multisort($created, SORT_DESC, $files);
+        $this->set(compact('files'));
+    }
+
     
     public function export() 
     {
