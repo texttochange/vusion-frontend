@@ -2,6 +2,7 @@
 App::uses('ProgramParticipantsController', 'Controller');
 App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('TestHelper', 'Lib');
 App::uses('Dialogue', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
@@ -66,6 +67,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->deleteAll(true,false);
         $this->History->deleteAll(true, false);
         $this->Dialogue->deleteAll(true, false);
+        TestHelper::deleteAllProgramFiles('testurl');
     }
 
 
@@ -1529,5 +1531,25 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals($this->vars['paginationCount'], 0);
    }
 
+
+     public function testExported()
+    {
+        $this->mockProgramAccess();
+
+        copy(TESTS . 'files/exported_participants.csv', 
+            WWW_ROOT . 'files/programs/testurl/Program_participants_2014-01-01_10-10-10.csv');
+        sleep(1);  // to get a different in the system creating date
+        copy(TESTS . 'files/exported_participants.csv', 
+            WWW_ROOT . 'files/programs/testurl/Program_participants_2014-01-02_10-10-10.csv');
+        copy(TESTS . 'files/exported_history.csv', 
+            WWW_ROOT . 'files/programs/testurl/Program_history_2014-01-02_10-10-10.csv');
+
+
+        $this->testAction("/testurl/programHistory/exported");
+        $files = $this->vars['files'];
+        $this->assertEqual(2, count($files));
+        $this->assertEqual($files[0]['name'], 'Program_participants_2014-01-02_10-10-10.csv');
+        $this->assertEqual($files[1]['name'], 'Program_participants_2014-01-01_10-10-10.csv');
+    }
     
 }
