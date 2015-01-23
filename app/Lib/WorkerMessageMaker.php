@@ -34,26 +34,28 @@ class WorkerMessageMaker
     }
 
 
-    public function exportParticipants($database, $collection, $filter, $fileFullName)
+    public function exportParticipants($database, $collection, $filter, $fileFullName, $redisKey)
     {
         return array(
             'message_type' => 'export_participants',
             'database' => $database,
             'collection' => $collection,
             'conditions' => $filter,
-            'file_full_name' => $fileFullName
+            'file_full_name' => $fileFullName,
+            'redis_key' => $redisKey,
             );
     }
 
 
-    public function exportHistory($database, $collection, $filter, $fileFullName)
+    public function exportHistory($database, $collection, $filter, $fileFullName, $redisKey)
     {
         return array(
             'message_type' => 'export_history',
             'database' => $database,
             'collection' => $collection,
             'conditions' => $filter,
-            'file_full_name' => $fileFullName
+            'file_full_name' => $fileFullName,
+            'redis_key' => $redisKey,
             );
     }
 

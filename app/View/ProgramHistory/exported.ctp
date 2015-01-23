@@ -16,6 +16,11 @@
             </tr>
         </thead>
         <tbody>
+        <?php if ($fileCurrenltyExported) { ?>
+            <tr>
+                <td colspan=3><?php echo __("Vusion is currenlty exporting one or more set of data.") ?></td>
+            </tr>
+        <?php } ?>
         <?php if ($files == array()) { ?>
             <tr>
                 <td colspan=2><?php echo __("No history export file found.") ?></td>

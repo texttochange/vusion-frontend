@@ -16,9 +16,14 @@
             </tr>
         </thead>
         <tbody>
+        <?php if ($fileCurrenltyExported) { ?>
+            <tr>
+                <td colspan=3><?php echo __("Vusion is currenlty exporting one or more set of data.") ?></td>
+            </tr>
+        <?php } ?>
         <?php if ($files == array()) { ?>
             <tr>
-                <td colspan=2><?php echo __("No participant export file found.") ?></td>
+                <td colspan=3><?php echo __("No export file found.") ?></td>
             </tr>
         <?php } else {?>   
         <?php foreach ($files as $file): ?>

@@ -25,7 +25,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
-        'ArchivedProgram');
+        'ArchivedProgram',
+        'Export');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
@@ -44,9 +45,10 @@ class ProgramHistoryController extends BaseProgramSpecificController
     }
 
 
-    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName)
+    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName, $redisKey)
     {
-        $this->VumiRabbitMQ->sendMessageToExportHistory($database, $collection, $filter, $fileFullName);
+        $this->VumiRabbitMQ->sendMessageToExportHistory(
+            $database, $collection, $filter, $fileFullName, $redisKey);
     }
 
 
@@ -150,10 +152,11 @@ class ProgramHistoryController extends BaseProgramSpecificController
 
     public function exported()
     {
-        $programUrl           = $this->programDetails['url'];
-        $programDirPath       = WWW_ROOT . "files/programs/". $programUrl;
-        $exportedFiles        = scandir($programDirPath);
-        $exportedHistoryFiles = array_filter($exportedFiles, function($var) { 
+        $programUrl            = $this->programDetails['url'];
+        $programDirPath        = WWW_ROOT . "files/programs/". $programUrl;
+        $fileCurrenltyExported = $this->Export->hasExports($programUrl, 'history'); 
+        $exportedFiles         = scandir($programDirPath);
+        $exportedHistoryFiles  = array_filter($exportedFiles, function($var) { 
             return strpos($var, 'history');});
         $files = array();
         foreach ($exportedHistoryFiles as $file) {
@@ -168,7 +171,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
             $created[$key] = $row['created'];
         }
         array_multisort($created, SORT_DESC, $files);
-        $this->set(compact('files'));
+        $this->set(compact('files', 'fileCurrenltyExported'));
     }
 
 
@@ -199,11 +202,14 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $fileName     = $programNameUnderscore . "_history_" . $timestamp . ".csv";
         $fileFullName = $filePath . DS . $fileName;
 
+        $redisKey = $this->Export->startAnExport($programUrl, 'history');
+
         $this->_notifyBackendExport(
             $this->programDetails['database'],
             $this->History->table,
             $conditions,
-            $fileFullName);
+            $fileFullName,
+            $redisKey);
 
         $this->Session->setFlash(
             __("Vusion is backing the export file. Your file should appear shortly on this page."),

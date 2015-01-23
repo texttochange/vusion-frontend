@@ -29,7 +29,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
-        'ArchivedProgram');
+        'ArchivedProgram',
+        'Export');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array(
@@ -236,6 +237,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $programUrl               = $this->programDetails['url'];
         $programDirPath           = WWW_ROOT . "files/programs/". $programUrl;
+        $fileCurrenltyExported    = $this->Export->hasExports($programUrl, 'participants');
         $exportedFiles            = scandir($programDirPath);
         $exportedParticipantFiles = array_filter($exportedFiles, function($var) { 
             return strpos($var, 'participants');});
@@ -252,7 +254,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $created[$key] = $row['created'];
         }
         array_multisort($created, SORT_DESC, $files);
-        $this->set(compact('files'));
+        $this->set(compact('files', 'fileCurrenltyExported'));
     }
 
     
@@ -280,11 +282,15 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";
         $fileFullName = $filePath . DS . $fileName;
 
+        $redisKey = $this->Export->startAnExport($programUrl, 'participants');
+
         $this->_notifyBackendExport(
             $this->programDetails['database'],
             $this->Participant->table,
             $conditions,
-            $fileFullName);
+            $fileFullName,
+            $redisKey);
+
         $this->Session->setFlash(
             __("Vusion is backing the export file. Your file should appear shortly on this page."),
             'default', array('class'=>'message success'));
@@ -335,9 +341,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
 
 
-    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName)
+    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName, $redisKey)
     {
-        $this->VumiRabbitMQ->sendMessageToExportParticipants($database, $collection, $filter, $fileFullName);
+        $this->VumiRabbitMQ->sendMessageToExportParticipants(
+            $database, $collection, $filter, $fileFullName, $redisKey);
     }
 
     

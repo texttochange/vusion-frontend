@@ -43,16 +43,18 @@ class VumiRabbitMQ {
     }
 
 
-    public function sendMessageToExportParticipants($database, $collection, $filter, $fileFullName)
+    public function sendMessageToExportParticipants($database, $collection, $filter, $fileFullName, $redisKey)
     {
-        $msg = $this->workerMessageMaker->exportParticipants($database, $collection, $filter, $fileFullName);
+        $msg = $this->workerMessageMaker->exportParticipants(
+            $database, $collection, $filter, $fileFullName, $redisKey);
         return $this->sendMessageTo('export.control', $msg);
     }
 
 
-    public function sendMessageToExportHistory($database, $collection, $filter, $fileFullName)
+    public function sendMessageToExportHistory($database, $collection, $filter, $fileFullName, $redisKey)
     {
-        $msg = $this->workerMessageMaker->exportHistory($database, $collection, $filter, $fileFullName);
+        $msg = $this->workerMessageMaker->exportHistory(
+            $database, $collection, $filter, $fileFullName, $redisKey);
         return $this->sendMessageTo('export.control', $msg);
     }
 
