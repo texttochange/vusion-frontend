@@ -10,8 +10,7 @@ class UserLogMonitorComponent extends Component
         'Session',
         'Auth');
     
-    var $eventData = null;
-    
+    var $eventData = null;    
     
     function beforeRender($controller)
     {
@@ -96,16 +95,7 @@ class UserLogMonitorComponent extends Component
                     )
                 )
             );        
-    }
-    
-    
-    public function initUserAction($programDatabaseName = null, $programName = null)
-    {
-        $this->Session->write('UserLogMonitor', array(            
-            'programDatabaseName' => $programDatabaseName,
-            'programName' => $programName));
-    }
-    
+    }    
     
     
     public function logAction()
@@ -120,36 +110,36 @@ class UserLogMonitorComponent extends Component
             $action = $this->Controller->request->action;
         }
         
-        $method = $this->Controller->request->method();
-        
-        $programDatabaseName = null;
-        $programName         = null;
-        
-        if ($this->Session->check('UserLogMonitor')) {
-            $sessionAction       = $this->Session->read('UserLogMonitor');
-            $programDatabaseName = $sessionAction['programDatabaseName'];
-            $programName         = $sessionAction['programName'];            
-            $this->Session->delete('UserLogMonitor');
-        }        
+        $method = $this->Controller->request->method();        
         
         $this->_saveUserAction($action,
             $method,
-            $controller,
-            $programDatabaseName,
-            $programName);
+            $controller);
     }
     
     
-    protected function _saveUserAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
+    protected function _saveUserAction($action, $method, $controller)
     {
-        $now = new DateTime('now');
+        $programDatabaseName = null;
+        $programName         = null;
+        $parametereventData  = null;
+        
+        $now = new DateTime('now');        
+        if ($programDatabaseName == null){
+            $programDatabaseName = $this->eventData['programDatabaseName'];
+        }
+        
         if (isset($this->Controller->programDetails['database'])) {
             $programDatabaseName = $this->Controller->programDetails['database'];
         } 
+                
+        if ($programName == null) {
+            $programName = $this->eventData['programName'];
+        }
         
         if (isset($this->Controller->programDetails['name'])) {
             $programName = $this->Controller->programDetails['name'];
-        }
+        }  
         
         $programTimezone = 'UTC';        
         if (isset($this->Controller->programDetails['settings']['timezone'])) {
@@ -160,9 +150,11 @@ class UserLogMonitorComponent extends Component
             return false;
         } 
         
+        $parametereventData = is_array($this->eventData) ? ' ' : $this->eventData;
+        
         $userLog['controller'] = $controller;
         $userLog['action']     = $action;
-        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$this->eventData;
+        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$parametereventData;
         $userLog['user-id']    = $this->Auth->user('id');
         $userLog['user-name']  = $this->Auth->user('username');            
         $userLog['timezone']   = $programTimezone;
