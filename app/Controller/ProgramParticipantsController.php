@@ -225,12 +225,13 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         $this->redirect($redirectUrl);
     }
-    
+
+
     public function exported()
     {
-        $programUrl = $this->programDetails['url'];
-        $programDirPath = WWW_ROOT . "files/programs/". $programUrl;
-        $exportedFiles = scandir($programDirPath);
+        $programUrl               = $this->programDetails['url'];
+        $programDirPath           = WWW_ROOT . "files/programs/". $programUrl;
+        $exportedFiles            = scandir($programDirPath);
         $exportedParticipantFiles = array_filter($exportedFiles, function($var) { 
             return strpos($var, 'participants');});
         $files = array();
