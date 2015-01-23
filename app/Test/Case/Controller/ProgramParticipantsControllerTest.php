@@ -1532,7 +1532,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
    }
 
 
-     public function testExported()
+    public function testExported()
     {
         $this->mockProgramAccess();
 
