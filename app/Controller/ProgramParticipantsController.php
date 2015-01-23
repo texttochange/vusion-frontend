@@ -265,79 +265,36 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
         $this->set('filterDialogueConditionsOptions', $dialoguesContent);
         
-        $paginate = array(
-            'all', 
-            'limit' => 500,
-            'maxLimit' => 500);
-        
-        if (isset($this->params['named']['sort'])) {
-            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
-        }
-        
         $conditions = $this->Filter->getConditions($this->Participant);
-        if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
-        }
         
-        try{
-            //First a tmp file is created
-            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
-            
-            //TODO: the folder creation should be managed at program creation
-            if (!file_exists($filePath)) {
-                //echo 'create folder: ' . WWW_ROOT . "files/".$programUrl;
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
-            
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
-            if ($programNow) {
-                $timestamp = $programNow->format("Y-m-d_H-i-s");
-            } else {
-                $timestamp = '';
-            }
-            //$programName  = $this->Session->read($programUrl.'_name');
-            $programName  = $this->programDetails['name'];
-            
-            $programNameUnderscore = inflector::slug($programName, '_');
-            
-            $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";            
-            $fileFullPath = $filePath . "/" . $fileName;
-            $handle       = fopen($fileFullPath, "w");            
-            $headers      = $this->Participant->getExportHeaders($conditions);
-            
-            //Second we write the headers
-            fputcsv($handle, $headers,',' , '"' );
-            
-            //Third we extract the data and copy them in the file            
-            $participantCount = $this->Participant->find('count', array('conditions'=> $conditions));
-            $pageCount        = intval(ceil($participantCount / $paginate['limit']));
-            
-            for ($count = 1; $count <= $pageCount; $count++) {
-                $paginate['page'] = $count;
-                $this->paginate   = $paginate;
-                $participants     = $this->paginate();
-                foreach ($participants as $participant) {
-                    $line = array();
-                    foreach ($headers as $header) {
-                        if (in_array($header, array('phone', 'last-optin-date', 'last-optout-date'))) {
-                            $line[] = $participant['Participant'][$header];
-                        } else if ($header == 'tags') {
-                            $line[] = implode(', ', $participant['Participant'][$header]);         
-                        } else {
-                            $value  = $this->_searchProfile($participant['Participant']['profile'], $header);
-                            $line[] = $value;
-                        }
-                    }
-                    fputcsv($handle, $line,',' , '"');
-                }
-            }
-            $requestSuccess = true;
-            $this->set(compact('requestSuccess', 'fileName'));
-        } catch (Exception $e) {
-            $this->Session->setFlash($e->getMessage());
-            $this->set(compact('requestSuccess'));
+        $filePath = WWW_ROOT . "files/programs/" . $programUrl;
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        if ($programNow) {
+            $timestamp = $programNow->format("Y-m-d_H-i-s");
+        } else {
+            $timestamp = '';
         }
+        $programName  = $this->programDetails['name'];
+        $programNameUnderscore = inflector::slug($programName, '_');
+
+        $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";
+        $fileFullName = $filePath . DS . $fileName;
+
+        $this->_notifyBackendExport(
+            $this->programDetails['database'],
+            $this->Participant->table,
+            $conditions,
+            $fileFullName);
+        $this->Session->setFlash(
+            __("Vusion is backing the export file. Your file should appear shortly on this page."),
+            'default', array('class'=>'message success'));
+
+        $requestSuccess = True;
+        $this->set(compact('requestSuccess'));
+
+        $this->redirect(array(
+            'program' => $programUrl,
+            'action' => 'exported'));
     }
     
     
@@ -376,6 +333,13 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $this->VumiRabbitMQ->sendMessageRunActions($workerName, $runActions);
     }
+
+
+    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName)
+    {
+        $this->VumiRabbitMQ->sendMessageToExportParticipants($database, $collection, $filter, $fileFullName);
+    }
+
     
     public function add() 
     {

@@ -4,6 +4,7 @@ App::uses('History','Model');
 App::uses('Dialogue', 'Model');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 
 
 class ProgramHistoryController extends BaseProgramSpecificController
@@ -34,14 +35,26 @@ class ProgramHistoryController extends BaseProgramSpecificController
     function constructClasses()
     {
         parent::constructClasses();
+        $this->_instanciateVumiRabbitMQ();
     }
-    
-    
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+    }
+
+
+    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName)
+    {
+        $this->VumiRabbitMQ->sendMessageToExportHistory($database, $collection, $filter, $fileFullName);
+    }
+
+
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
-    
+
     
     public function index()
     {
@@ -166,76 +179,42 @@ class ProgramHistoryController extends BaseProgramSpecificController
         
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
-        $paginate = array(
-            'all',
-            'limit' => 500,
-            'maxLimit' => 500);
-        
-        if (!isset($this->params['named']['sort'])) {
-            $paginate['order'] = array('timestamp' => 'desc');
-        } else if (isset($this->params['named']['direction'])) {
-            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
-        }
-        
+
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
-        
         $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
-        if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
+
+        $filePath = WWW_ROOT . "files/programs/" . $programUrl;
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        if ($programNow) {
+            $timestamp = $programNow->format("Y-m-d_H-i-s");
+        } else {
+            $timestamp = '';
         }
+        $programName  = $this->programDetails['name'];
+        $programNameUnderscore = inflector::slug($programName, '_');
         
-        try {
-            //First a tmp file is created
-            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
-            
-            if (!file_exists($filePath)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
-            
-            $programNow  = $this->ProgramSetting->getProgramTimeNow();
-            $programName = $this->Session->read($programUrl.'_name');
-            
-            $programNameUnderscore = inflector::slug($programName, '_');
-            
-            $fileName     = $programNameUnderscore . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
-            $fileFullPath = $filePath . "/" . $fileName;
-            $handle       = fopen($fileFullPath, "w");
-            
-            $headers = array('participant-phone','message-direction','message-status','message-content','timestamp');
-            //write the headers
-            fputcsv($handle, $headers,',','"');
-            
-            //Now extract the data and copy it into the file
-            
-            $historyCount = $this->History->find('count', array('conditions'=> $conditions));
-            $pageCount    = intval(ceil($historyCount / $paginate['limit']));
-            for($count = 1; $count <= $pageCount; $count++) {
-                $paginate['page'] = $count;
-                $this->paginate = $paginate;
-                $statuses = $this->paginate('History');
-                foreach($statuses as $status) {
-                    $line = array();
-                    foreach($headers as $header) {
-                        if (isset($status['History'][$header])) {
-                            $line[] = $status['History'][$header];
-                        } else {
-                            $line[] = "";
-                        }
-                    }
-                    fputcsv($handle, $line,',' , '"' );
-                }
-            }
-            $requestSuccess = true;
-            $this->set(compact('requestSuccess', 'fileName'));
-        } catch (Exception $e) {
-            $this->Session->setFlash($e->getMessage());
-            $this->set(compact('requestSuccess'));
-        }
+        $fileName     = $programNameUnderscore . "_history_" . $timestamp . ".csv";
+        $fileFullName = $filePath . DS . $fileName;
+
+        $this->_notifyBackendExport(
+            $this->programDetails['database'],
+            $this->History->table,
+            $conditions,
+            $fileFullName);
+
+        $this->Session->setFlash(
+            __("Vusion is backing the export file. Your file should appear shortly on this page."),
+            'default', array('class'=>'message success'));
+
+        $requestSuccess = True;
+        $this->set(compact('requestSuccess'));
+
+        $this->redirect(array(
+            'program' => $programUrl,
+            'action' => 'exported'));
     }
     
     

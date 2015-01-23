@@ -79,6 +79,10 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
                 'Program' => array('find', 'count'),
                 'Group' => array()
                 ),
+            'methods' => array(
+                '_instanciateVumiRabbitMQ',
+                '_notifyBackendExport',
+                )
             ));
         
         $histories->Acl
@@ -372,43 +376,22 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     public function testExport()
     {
-        $Status = $this->mockProgramAccess_withoutSession();
-        
-        $Status->Session
-        ->expects($this->any())
-        ->method('read')
-        ->will($this->onConsecutiveCalls(
-            $this->programData[0]['Program']['name'],
-            'Africa/Kampala',
-            'testdbprogram',
-            'name1', //?
-            'name2', //?
-            $this->programData[0]['Program']['name'] //only for export test
-            ));
-        
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
-            'participant-phone' => '356774527841',
-            'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
-            'timestamp' => '2013-02-07T12:20:43',
-            'dialogue-id' => '1',
-            'interaction-id' => '11',
-            'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
-        
+        $historys = $this->mockProgramAccess();
+
+        $expectedConditions = array('$or' => array(
+            array('object-type' => array('$in' => $this->History->messageType)),
+            array('object-type' => array('$exists' => false))));
+
+        $historys
+            ->expects($this->once())
+            ->method('_notifyBackendExport')
+            ->with(
+                'testdbprogram',
+                'history',
+                $expectedConditions,
+                $this->stringContains('Test_Name_good_for_testing_me_history_'))
+            ->will($this->returnValue(true));
         $this->testAction("/testurl/programHistory/export");
-        
-        $this->assertTrue(isset($this->vars['fileName']));
-        $this->assertFileEquals(
-            TESTS . 'files/exported_history.csv',
-            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
-        
-        //Asserting that programName is added and special characters 
-        //replaced to export file
-        $this->assertEquals(
-            substr($this->vars['fileName'], 0, -23),
-            'Test_Name_good_for_testing_me_history_');
     }
 
 
