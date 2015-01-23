@@ -22,7 +22,7 @@
         echo $this->AclLink->generateButton(
             __('Export'),
             $programDetails['url'],
-            'programHistorys',
+            'programHistory',
             'export',
             array('class' => 'ttc-button'),
             null,

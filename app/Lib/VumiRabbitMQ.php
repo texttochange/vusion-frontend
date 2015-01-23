@@ -45,7 +45,7 @@ class VumiRabbitMQ {
 
     public function sendMessageToExportParticipants($database, $collection, $filter, $fileFullName)
     {
-        $msg = $this->workerMessageMaker->exportParticipant($database, $collection, $filter, $fileFullName);
+        $msg = $this->workerMessageMaker->exportParticipants($database, $collection, $filter, $fileFullName);
         return $this->sendMessageTo('export.control', $msg);
     }
 
