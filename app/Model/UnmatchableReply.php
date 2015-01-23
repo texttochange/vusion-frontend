@@ -6,9 +6,9 @@ App::uses('FilterException', 'Lib');
 
 class UnmatchableReply extends MongoModel
 {
-    var $name        = 'UnmatchableReply';
-    var $useTable    = 'unmatchable_reply';
-
+    var $name     = 'UnmatchableReply';
+    var $useTable = 'unmatchable_reply';
+    
     var $countriesByPrefixes = null;
     
     
@@ -16,6 +16,7 @@ class UnmatchableReply extends MongoModel
     {
         return '1';
     }
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -121,11 +122,12 @@ class UnmatchableReply extends MongoModel
                     'parameter-type' => 'text'))), 
         );
     
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
-        
+    
     
     public function fromFilterToQueryCondition($filterParam)
     {
@@ -183,7 +185,7 @@ class UnmatchableReply extends MongoModel
                 $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
             }
         } 
-            
+        
         return $condition;
     }
     

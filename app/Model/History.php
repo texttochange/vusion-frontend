@@ -11,7 +11,7 @@ class History extends ProgramSpecificMongoModel
     
     var $name     = 'History';  
     var $useTable = 'history';
-
+    
     var $messageType = array(
         'dialogue-history',
         'request-history',
@@ -129,7 +129,7 @@ class History extends ProgramSpecificMongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
     }
-
+    
     public function initializeDynamicTable($forceNew=false)
     {
         parent::initializeDynamicTable();
@@ -221,7 +221,8 @@ class History extends ProgramSpecificMongoModel
     }
     
     
-    public function getParticipantHistory($phone, $dialoguesInteractionsContent) {
+    public function getParticipantHistory($phone, $dialoguesInteractionsContent)
+    {
         $histories   = $this->find('participant', array('phone' => $phone));
         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
@@ -353,6 +354,7 @@ class History extends ProgramSpecificMongoModel
         'any' => 'any'
         );
     
+    
     public $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
@@ -372,9 +374,10 @@ class History extends ProgramSpecificMongoModel
         'received' => 'received',
         'forwarded' => 'forward'
         );
-        
     
-    public function fromFilterToQueryCondition($filterParam) {
+    
+    public function fromFilterToQueryCondition($filterParam) 
+    {
         
         $condition = array();
         
@@ -523,6 +526,6 @@ class History extends ProgramSpecificMongoModel
         $historyCount = $this->find('count', array('conditions' => $conditions));
         return $historyCount;
     }
-
+    
     
 }

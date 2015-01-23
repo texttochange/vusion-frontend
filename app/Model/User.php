@@ -8,8 +8,9 @@ class User extends AppModel
 {
     
     public $name = 'User';
+    
     public $displayField = 'username';
-
+    
     public $validate = array(
         'username' => array(
             'notempty' => array(
@@ -47,7 +48,7 @@ class User extends AppModel
             ),
         );
     
-
+    
     public $belongsTo = array(
         'Group' => array(
             'className' => 'Group',
@@ -57,6 +58,7 @@ class User extends AppModel
             'order' => ''
             )
         );
+    
     
     public $hasAndBelongsToMany = array(
         'Program' => array(
@@ -76,12 +78,14 @@ class User extends AppModel
             )
         );
     
-
-    public function __construct($id = false, $table = null, $ds = null) {
-         parent::__construct($id, $table, $ds);
-         $this->Behaviors->load('Filter');
+    
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        $this->Behaviors->load('Filter');
     }
 	
+    
     public function beforeSave()
     {
         if (isset($this->data[$this->alias]['password'])) {
@@ -130,12 +134,15 @@ class User extends AppModel
                     'parameter-type' => 'group'))),
         );
     
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );  
     
-    public function fromFilterToQueryCondition($filterParam) {
+    
+    public function fromFilterToQueryCondition($filterParam) 
+    {
         $condition = array();
         if ($filterParam[1] == 'group_id') {
             if ($filterParam[2] == 'is') {

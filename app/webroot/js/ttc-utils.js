@@ -569,12 +569,14 @@ function loadFilterParameterOptions(parameter, url) {
 
 
 function loadPaginationCount(url) {
+    $('#data-control-nav .next a').addClass('disabled');
     //Dirty: passing of the rule require rencoding the & in the url parameters 
     url = url.replace(/&amp;/g, "&");
     $.ajax({
         url: url,
         success: function(data){
             if (data['status'] == 'ok') {
+                $('#data-control-nav .next a').removeClass('disabled');
                 $('.ttc-page-count').attr('title', data['pagination-count']);
                 $('#paging-count').text(data['rounded-count']);
                 var paging_end = parseInt($('#paging-end').text());
@@ -586,6 +588,7 @@ function loadPaginationCount(url) {
         },
         timeout: 45000,  //45 sec
         error: function(jqXHR, textStatus, errorthrown) {
+            $('#data-control-nav .next a').removeClass('disabled');
             $('#paging-count').text(localized_labels['many']);
         }
     });

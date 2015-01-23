@@ -7,8 +7,8 @@ App::uses('ContentVariable', 'Model');
 
 class ContentVariableTable extends ProgramSpecificMongoModel
 {
-
-    var $name     = 'ContentVariableTable';
+    
+    var $name = 'ContentVariableTable';
     
     
     function getModelVersion()
@@ -113,15 +113,16 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         parent::__construct($id, $table, $ds);
         $this->ValidationHelper = new ValidationHelper(&$this);
     }    
-
-
+    
+    
     public function initializeDynamicTable($forceNew=false) 
     {
         parent::initializeDynamicTable();
         $this->ContentVariable = ProgramSpecificMongoModel::init(
             'ContentVariable', $this->databaseName);
     }
-
+    
+    
     function validColumns($check)
     {
         if (!is_array($check['columns'])) {
@@ -181,7 +182,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         return true;
     }
     
-
+    
     function runColumnValidation($check, $args, $data) 
     {
         if ($data['validation'] == null || !$this->validRegex($data)) {
@@ -196,7 +197,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return true;        
     }
-
+    
     
     function noDuplicateHeader($check)
     {
@@ -209,14 +210,14 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return true;
     }
-
+    
     
     //After reflexion this might not be necessary
     function sameNumberOfValues($check)
     {
         return true;
     }
-
+    
     
     function maxKeys($check)
     {
@@ -228,8 +229,8 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return true;
     }
-
-
+    
+    
     function atLeastOneContentVariableColumn($check) 
     {
         for($i = 0; $i < count($check['columns']); $i++) {
@@ -239,8 +240,8 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return false;
     }
-
-
+    
+    
     function uniqueKeys($check) 
     {
         $data = $this->data['ContentVariableTable'];
@@ -267,7 +268,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return true;
     }
-
+    
     
     function validRegex($check) 
     {
@@ -291,7 +292,8 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return true;
     }
-
+    
+    
     function removeEmptyCells(&$columns)
     {
         $lastUsedRow = 0;
@@ -321,6 +323,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
     }
     
+    
     function selectColumnsForKeys(&$columns) 
     {
         $keys = array();
@@ -346,13 +349,13 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                 }
             }
             if (!$this->hasDupes($keys)) {
-               $hasUniqueKeys = true;
+                $hasUniqueKeys = true;
             }
         }
         return $columns;
     }
     
-
+    
     function getAllKeysValue($columns) 
     {
         foreach ($columns as $column) {
@@ -377,7 +380,8 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return $allKeys;
     }
-
+    
+    
     function updateTableFromKeysValue($contentVariable) 
     {
         if (!isset($contentVariable['ContentVariable']['table'])) {
@@ -415,18 +419,21 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         return false;
     }
-
     
-    function hasDupes($array){
+    
+    function hasDupes($array)
+    {
         return count($array) !== count(array_unique($array));
     }
-
+    
+    
     function beforeSave($option = array())
     {
         $this->data['ContentVariableTable']['modified'] = new MongoDate(strtotime('now'));
         return true;
     }
-
+    
+    
     function afterSave($created, $option = array())
     {
         if (isset($option['skipKeysValues'])) {
@@ -448,7 +455,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
             $saved = $this->ContentVariable->save($contentVariable, false);
             ## save return the id
             if (isset($saved['ContentVariable']['_id'])) {
-                    $currentContentVariable[] = $saved['ContentVariable']['_id'].'';
+                $currentContentVariable[] = $saved['ContentVariable']['_id'].'';
             }
         }
         #remove not current ones
@@ -456,12 +463,13 @@ class ContentVariableTable extends ProgramSpecificMongoModel
             array('table' => $this->id, 'id' => array('$nin' => $currentContentVariable)), false);
         return true;
     }
-
+    
+    
     function deleteTableAndValues($id) 
     {
         $this->ContentVariable->deleteAll(array('table' => $id), false);
         return $this->delete($id);
     }
-
-
+    
+    
 }

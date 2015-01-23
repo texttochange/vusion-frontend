@@ -13,7 +13,7 @@ class Interaction extends VirtualModel
     var $name       = 'interaction';
     var $version    = '5'; 
     var $databaName = null;    
-
+    
     var $payload = array();
     
     var $fields = array(
@@ -426,6 +426,7 @@ class Interaction extends VirtualModel
             )
         );
     
+    
     //TODO: need clever validation over:
     // 1) on numbering of choice
     // 2) notUsedKeyword when ticking allow no space
@@ -545,13 +546,13 @@ class Interaction extends VirtualModel
         return true;
     }
     
-
+    
     public function setUsedKeywords($usedKeywords = array())
     {
         $this->usedKeywords = $usedKeywords;
     }
-
-
+    
+    
     public function notUsedKeyword($field, $data)
     {
         if (!isset($data[$field])) {
@@ -565,8 +566,8 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     public function notUsedKeywordNoSpace($field, $data)
     {
         if (!isset($data[$field]) || !isset($data['set-answer-accept-no-space'])) {
@@ -581,15 +582,15 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     static public function hasInteractionKeywords($interaction, $keywords)
     {
         $interactionKeywords = Interaction::getInteractionKeywords($interaction);
         return array_intersect($keywords, $interactionKeywords);
     }
-
-
+    
+    
     static public function getInteractionKeywords($interaction)
     {
         if (isset($interaction['keyword'])) {
@@ -608,8 +609,8 @@ class Interaction extends VirtualModel
         }
         return array();
     }
-
-
+    
+    
     static public function getInteractionNoSpaceKeywords($interaction, $keywords)
     {
         $usedKeywords = array();
@@ -622,7 +623,8 @@ class Interaction extends VirtualModel
         }
         return $usedKeywords;
     }
-
+    
+    
     static public function replaceLocalIds(&$interactions)
     {
         $localIds = array();
@@ -633,7 +635,7 @@ class Interaction extends VirtualModel
                 $interaction['interaction-id'] = $newId;
             }
         }
-
+        
         foreach ($interactions as &$interaction) {
             if (isset($interaction['offset-condition-interaction-id'])) {
                 if (array_key_exists($interaction['offset-condition-interaction-id'], $localIds)) {
@@ -642,7 +644,8 @@ class Interaction extends VirtualModel
             }
         }
     }
-
+    
+    
     static public function hasAnswer($interaction, $answering)
     {
         if (!in_array($interaction['type-interaction'], array('question-answer', 'question-answer-keyword' ))) {
@@ -671,8 +674,8 @@ class Interaction extends VirtualModel
             return array('answer' => __("The interaction has not such answer: %s.", $answering));
         }
     }
-
-
+    
+    
     public function beforeValidate()
     {
         parent::beforeValidate();

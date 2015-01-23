@@ -15,8 +15,8 @@ class Dialogue extends ProgramSpecificMongoModel
     
     var $name         = 'Dialogue';
     var $usedKeywords = array();
-
-
+    
+    
     function getModelVersion()
     {
         return '3';
@@ -25,7 +25,7 @@ class Dialogue extends ProgramSpecificMongoModel
     
     function getRequiredFields($objectType=null)
     {
-
+        
         return array(
             'name',
             'dialogue-id',
@@ -99,11 +99,11 @@ class Dialogue extends ProgramSpecificMongoModel
                 ), 
             ),
         'name' => array(
-        'uniqueDialogueName' => array(
-            'rule' => 'uniqueDialogueName',
-            'message' => 'This Dialogue Name already exists. Please choose another.'
+            'uniqueDialogueName' => array(
+                'rule' => 'uniqueDialogueName',
+                'message' => 'This Dialogue Name already exists. Please choose another.'
+                ),
             ),
-        ),
         );
     
     
@@ -151,8 +151,8 @@ class Dialogue extends ProgramSpecificMongoModel
                 ),
             )
         );
-
-
+    
+    
     public function validateInteractions($check) 
     {
         $index = 0;
@@ -176,6 +176,7 @@ class Dialogue extends ProgramSpecificMongoModel
         return true;
     }
     
+    
     public function valueRequireFields($check, $requiredFieldsPerValue) 
     {   
         $field = key($check);
@@ -194,7 +195,8 @@ class Dialogue extends ProgramSpecificMongoModel
         }
         return true;
     }
-
+    
+    
     public function validSubconditions($check)
     {
         $field = key($check);
@@ -218,7 +220,8 @@ class Dialogue extends ProgramSpecificMongoModel
         }
         return true;
     }
-
+    
+    
     public function validSubconditionValue($subcondition)
     {
         if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
@@ -241,8 +244,10 @@ class Dialogue extends ProgramSpecificMongoModel
         }
         return true;
     }
-
-    public function notEmptyArray($check) {
+    
+    
+    public function notEmptyArray($check)
+    {
         $field = key($check);
         if (!is_array($check[$field]) || count($check[$field]) < 1) {
             return false;
@@ -261,7 +266,7 @@ class Dialogue extends ProgramSpecificMongoModel
     {
         parent::__construct($id, $table, $ds);
     }
-
+    
     public function initializeDynamicTable($forceNew=false)
     {
         parent::initializeDynamicTable();
@@ -286,7 +291,7 @@ class Dialogue extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-                
+        
         //Need to convert all dates
         $this->data['Dialogue'] = DialogueHelper::objectToArray($this->data['Dialogue']);
         DialogueHelper::recurseScriptDateConverter($this->data['Dialogue']);
@@ -297,14 +302,14 @@ class Dialogue extends ProgramSpecificMongoModel
         $this->_setDefault('interactions', array());
         $this->_setDefault('set-prioritized', null);
         $this->_setDefault('auto-enrollment', 'none');
-
+        
         //cleaning necessary due to the beforeValidate of the MongoModel
         if ($this->data['Dialogue']['auto-enrollment'] != 'match') {
             unset($this->data['Dialogue']['condition-operator']);
             unset($this->data['Dialogue']['subconditions']);
         }
         
-       //Need to make sure the value is an int
+        //Need to make sure the value is an int
         $this->data['Dialogue']['activated'] = intval($this->data['Dialogue']['activated']);
         
         //Run before validate for all interactions
@@ -317,7 +322,7 @@ class Dialogue extends ProgramSpecificMongoModel
     public function _beforeValidateInteractions()
     {
         Interaction::replaceLocalIds($this->data['Dialogue']['interactions']);
-
+        
         foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
             if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
                 $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];
@@ -370,7 +375,8 @@ class Dialogue extends ProgramSpecificMongoModel
         return false;
     }
     
-    public function getActiveDialogue($dialogueId) {
+    public function getActiveDialogue($dialogueId)
+    {
         return $this->find('first', array(
             'conditions'=>array(
                 'activated' => 1,
@@ -458,13 +464,16 @@ class Dialogue extends ProgramSpecificMongoModel
         return ($dialogue['Dialogue']!=0);
     }
     
-    public function save($dialogue){
+    
+    public function save($dialogue)
+    {
         $result = parent::save($dialogue);
         if (!$result && isset($this->validationErrors['subconditions'][0])) {
             $this->validationErrors['subconditions'] = $this->validationErrors['subconditions'][0];
         }
         return $result;
     }
+    
     
     public function saveDialogue($dialogue, $usedKeywords = array())
     {
@@ -599,8 +608,8 @@ class Dialogue extends ProgramSpecificMongoModel
         $result     = $this->find('count', array('conditions' => $conditions));
         return $result == 0;        
     }
-
-
+    
+    
     public function isInteractionAnswerExists($dialogue_id, $interaction_id, $answer)
     {
         $dialogue = $this->getActiveDialogue($dialogue_id);
@@ -618,8 +627,8 @@ class Dialogue extends ProgramSpecificMongoModel
         }
         return array('interaction-id' => __("The dialogue with id %s doesn't have an interaction with id %s", $dialogue_id, $interaction_id));
     }
-
-
+    
+    
 }
 
 

@@ -8,7 +8,7 @@ App::uses('VusionValidation', 'Lib');
 
 class ProgramSetting extends ProgramSpecificMongoModel
 {
-
+    
     var $name = 'ProgramSetting';
     
     
@@ -152,7 +152,7 @@ class ProgramSetting extends ProgramSpecificMongoModel
         
         $this->ValidationHelper = new ValidationHelper($this);
     }
-
+    
     
     public function notRegex($check, $regex) 
     {
@@ -275,8 +275,10 @@ class ProgramSetting extends ProgramSpecificMongoModel
         }
         return $settings;
     }
-
-    public function getProgramSetting($settingKey) {
+    
+    
+    public function getProgramSetting($settingKey)
+    {
         $setting = $this->find('programSetting', array('key' => $settingKey));
         if (isset($setting[0])) {
             return $setting[0]['ProgramSetting']['value'];

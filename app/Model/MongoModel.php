@@ -24,15 +24,15 @@ abstract class MongoModel extends AppModel
     
     
     abstract function getRequiredFields($objectType);
-
-
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         $this->defaultFields = array_merge($this->vusionFields, $this->mongoFields);
         parent::__construct($id, $table, $ds);
         $this->validator(new MongoModelValidator($this));
     }
-
+    
     
     public function checkFields($object)
     {        
@@ -85,12 +85,12 @@ abstract class MongoModel extends AppModel
     {
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         $this->data[$this->alias]['model-version'] = $this->getModelVersion();
-        $this->data = $this->_trim_array($this->data);
+        $this->data = $this->_trimArray($this->data);
         return true;
     }
     
     
-    public function _trim_array($document)
+    public function _trimArray($document)
     {
         if (!is_array($document)) {
             if (is_string($document)) {
@@ -99,12 +99,12 @@ abstract class MongoModel extends AppModel
             return $document;
         }
         foreach ($document as &$element) {
-            $element = $this->_trim_array($element);
+            $element = $this->_trimArray($element);
         }
         return $document;
     }
-
-
+    
+    
     public function isVeryUnique($check)
     {
         $key = array_keys($check);
@@ -126,7 +126,7 @@ abstract class MongoModel extends AppModel
             $this->data[$this->alias][$field] = $default;
         } 
     }
-
+    
     
     function beforeSave($option = array())
     {
