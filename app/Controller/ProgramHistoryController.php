@@ -133,12 +133,13 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
         $this->response->send();
     }
-    
+
+
     public function exported()
     {
-        $programUrl = $this->programDetails['url'];
-        $programDirPath = WWW_ROOT . "files/programs/". $programUrl;
-        $exportedFiles = scandir($programDirPath);
+        $programUrl           = $this->programDetails['url'];
+        $programDirPath       = WWW_ROOT . "files/programs/". $programUrl;
+        $exportedFiles        = scandir($programDirPath);
         $exportedHistoryFiles = array_filter($exportedFiles, function($var) { 
             return strpos($var, 'history');});
         $files = array();
@@ -156,6 +157,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
         array_multisort($created, SORT_DESC, $files);
         $this->set(compact('files'));
     }
+
 
     public function export()
     {
