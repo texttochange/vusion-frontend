@@ -85,12 +85,12 @@ abstract class MongoModel extends AppModel
     {
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         $this->data[$this->alias]['model-version'] = $this->getModelVersion();
-        $this->data = $this->_trim_array($this->data);
+        $this->data = $this->_trimArray($this->data);
         return true;
     }
     
     
-    public function _trim_array($document)
+    public function _trimArray($document)
     {
         if (!is_array($document)) {
             if (is_string($document)) {
@@ -99,7 +99,7 @@ abstract class MongoModel extends AppModel
             return $document;
         }
         foreach ($document as &$element) {
-            $element = $this->_trim_array($element);
+            $element = $this->_trimArray($element);
         }
         return $document;
     }

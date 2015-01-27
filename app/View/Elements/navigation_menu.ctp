@@ -191,7 +191,7 @@
                        array('ellipsis' => '...',
                            'exact' => true
                            ));      
-		
+      
                    
                    echo $this->AclLink->generateLink($predefinedMessageLinkName,
                        $programDetails['url'], 'programPredefinedMessages', 'edit', $predefinedMessage['PredefinedMessage']['_id']);
@@ -225,18 +225,28 @@
         <ul>
             <li>
                 <?php 
-                     echo $this->AclLink->generateLink(__('Add Participants'),$programDetails['url'],'programParticipants','add');
+                     echo $this->AclLink->generateLink(__('Add'),$programDetails['url'],'programParticipants','add');
                 ?>
             </li>
-		    <li>
-		        <?php
-		             echo $this->AclLink->generateLink(__('Import Participants'),$programDetails['url'],'programParticipants','import');
-		        ?>
-		    </li>
+              <li>
+                  <?php
+                      echo $this->AclLink->generateLink(__('Import'),$programDetails['url'],'programParticipants','import');
+                  ?>
+              </li>
+            <li>
+                <?php
+                    echo $this->AclLink->generateLink(__('Exported File(s)'),$programDetails['url'],'programParticipants','exported');
+                ?>
+            </li>
         </ul>
     </li>
     <li>
         <?php echo $this->AclLink->generateLink(__('History'),$programDetails['url'],'programHistory'); ?>        
+        <ul>
+          <li>
+            <?php echo $this->AclLink->generateLink(__('Exported File(s)'),$programDetails['url'],'programHistory','exported'); ?>
+          </li>
+        </ul>
     </li>
     <li>
         <?php

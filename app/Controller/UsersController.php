@@ -239,6 +239,11 @@ class UsersController extends AppController
                 $this->Session->setFlash(__('Login successful.'),
                     'default',
                     array('class'=>'message success'));
+                
+                if ($this->Session->read('Auth.redirect')) {
+                    $this->redirect($this->Session->read('Auth.redirect'));     
+                }
+                
                 if ($this->Session->read('Auth.User.group_id') == 1) {
                     $this->redirect(array('controller' => 'admin'));
                 }
