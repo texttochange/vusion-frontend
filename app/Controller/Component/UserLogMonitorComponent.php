@@ -150,11 +150,11 @@ class UserLogMonitorComponent extends Component
             return false;
         } 
         
-        $parametereventData = is_array($this->eventData) ? ' ' : $this->eventData;
+        $parameterEventData = is_array($this->eventData) ? ' ' : $this->eventData;
         
         $userLog['controller'] = $controller;
         $userLog['action']     = $action;
-        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$parametereventData;
+        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$parameterEventData;
         $userLog['user-id']    = $this->Auth->user('id');
         $userLog['user-name']  = $this->Auth->user('username');            
         $userLog['timezone']   = $programTimezone;
