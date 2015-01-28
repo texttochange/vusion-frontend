@@ -267,7 +267,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
         $this->set('filterDialogueConditionsOptions', $dialoguesContent);
         
-        $conditions = $this->Filter->getConditions($this->Participant);
+        $conditions = $this->Filter->getConditions(
+            $this->Participant,
+            array(),
+            array('Schedule' => $this->Schedule));
         
         $filePath = WWW_ROOT . "files/programs/" . $programUrl;
         $programNow = $this->ProgramSetting->getProgramTimeNow();
@@ -297,7 +300,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
 
         $requestSuccess = True;
         $this->set(compact('requestSuccess'));
-
+        
         $this->redirect(array(
             'program' => $programUrl,
             'action' => 'exported'));
