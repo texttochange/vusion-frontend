@@ -90,7 +90,8 @@ class UserLogMonitorComponent extends Component
                     'add' => __('Added new a user'),
                     'edit' => __('Edited a user'),
                     'delete' => __('Deleted a user'),
-                    'changePassword' => __('Changed password')
+                    'changePassword' => __('Changed password'),
+                    'inviteUser' => __('Invited a new user ')
                     )
                 )
             );        
