@@ -67,7 +67,7 @@ class FilterComponent extends Component
     }
     
     
-    public function getConditions($filterModel, $defaultConditions = array(), $otherModels = array())
+    public function getConditions($filterModel, $defaultConditions = array(), $otherModels = array(), $joinCursor = true)
     {       
         $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));       
   
@@ -105,9 +105,13 @@ class FilterComponent extends Component
         //Run the pre-join request
         $otherModelConditions = array();
         foreach($checkedFilter['joins'] as $join) {
-            $results = call_user_func(
-                array($otherModels[$join['model']], $join['function']),
-                $join['parameters']);
+            if ($joinCursor) {
+                $results = call_user_func(
+                    array($otherModels[$join['model']], $join['function']),
+                    $join['parameters']);
+            } else {
+                $results = $join;
+            }
             $otherModelConditions = array(
                 $join['field'] => array('$join' => $results));
         }

@@ -270,7 +270,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $conditions = $this->Filter->getConditions(
             $this->Participant,
             array(),
-            array('Schedule' => $this->Schedule));
+            array('Schedule' => $this->Schedule),
+            false);
         
         $filePath = WWW_ROOT . "files/programs/" . $programUrl;
         $programNow = $this->ProgramSetting->getProgramTimeNow();
@@ -300,6 +301,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
 
         $requestSuccess = True;
         $this->set(compact('requestSuccess'));
+        
         
         $this->redirect(array(
             'program' => $programUrl,
