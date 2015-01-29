@@ -94,11 +94,39 @@ class UserLogMonitorComponentTest extends CakeTestCase
         
         $saveUserLog = $this->UserLog->find('all');
         
-         $this->assertEqual('m9rhDB',
-             $saveUserLog[0]['UserLog']['program-database-name']);
-         
+        $this->assertEqual('m9rhDB',
+            $saveUserLog[0]['UserLog']['program-database-name']);
+        
         $this->assertEqual('Added a new program m9rh',
             $saveUserLog[0]['UserLog']['parameters']);
     }
+    
+    
+    public function testLogAction_no_eventData() 
+    { 
+        $this->UserLogComponent->Auth = $this->getMock('Auth', array(
+            'user'));
+        
+        $this->UserLogComponent->Auth 
+        ->expects($this->at(0))
+        ->method('user')
+        ->with('id')
+        ->will($this->returnValue(89));
+        
+        $this->UserLogComponent->Auth 
+        ->expects($this->at(1))
+        ->method('user')
+        ->with('username')
+        ->will($this->returnValue('Tomx'));
+        
+        
+        $this->UserLogComponent->logAction();
+        
+        $saveUserLog = $this->UserLog->find('all');
+        
+        $this->assertEqual('Added a new program',
+            $saveUserLog[0]['UserLog']['parameters']);
+    }
+    
     
 }

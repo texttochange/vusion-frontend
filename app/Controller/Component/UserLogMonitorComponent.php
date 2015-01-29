@@ -70,7 +70,7 @@ class UserLogMonitorComponent extends Component
                     )
                 ),
             'programRequests' => array(
-                'POST' => array (
+                'POST' => array(
                     'save' => __('Saved a new request'),
                     'delete' => __('Deleted a request')
                     )
