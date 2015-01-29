@@ -35,7 +35,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
         
         $CakeRequest->action = 'add';
         $CakeRequest->params = array(
-            'controller' => 'programs'
+            'controller' => 'pRograMs'
             );
         
         $CakeRequest

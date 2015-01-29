@@ -31,7 +31,7 @@ class UserLogMonitorComponent extends Component
         $this->UserLog    = ClassRegistry::init('UserLog');
         
         $this->userLogActions  = array(
-            'programParticipants' => array(
+            'programparticipants' => array(
                 'POST' => array(
                     'delete' => __('Deleted participant(s)'),
                     'add' => __('Added a new participant'),
@@ -53,7 +53,7 @@ class UserLogMonitorComponent extends Component
                     'archive' => __('Archived a program')
                     )
                 ),
-            'programDialogues' => array(
+            'programdialogues' => array(
                 'POST' => array(
                     'save' => __('Added a new draft dialogue'),
                     'delete' => __('Deleted a dialogue'),
@@ -62,25 +62,25 @@ class UserLogMonitorComponent extends Component
                     'activate' => __('Activated a dialogue')
                     )
                 ),
-            'programUnattachedMessages' => array(
+            'programunattachedmessages' => array(
                 'POST' => array(
                     'add' => __('Added a new separate message'),
                     'edit' => __('Edited a separate message'),
                     'delete' => __('Deleted a separate message')
                     )
                 ),
-            'programRequests' => array(
+            'programrequests' => array(
                 'POST' => array(
                     'save' => __('Saved a new request'),
                     'delete' => __('Deleted a request')
                     )
                 ),
-            'programHistory' => array(
+            'programhistory' => array(
                 'POST' => array(
                     'delete' => __('Deleted program history')
                     )
                 ),
-            'programSettings' => array(
+            'programsettings' => array(
                 'POST' => array(
                     'edit' => __('Edited a program setting')
                     )
@@ -99,9 +99,10 @@ class UserLogMonitorComponent extends Component
     
     public function logAction()
     {
-        $controller = 'default';
-        if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
-            $controller = $this->Controller->request->params['controller'];
+        $controller        = 'default';
+        $requestController = strtolower($this->Controller->request->params['controller']);
+        if (isset($this->userLogActions[$requestController])) {
+            $controller = $requestController;
         }
         
         $action = 'index';
