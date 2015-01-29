@@ -72,12 +72,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
     
     
     public function testLogAction() 
-    {
-        $this->UserLogComponent->Session = $this->getMock('Session', array(
-            'read',
-            'check',
-            'write',
-            'delete'));
+    { 
         $this->UserLogComponent->Auth = $this->getMock('Auth', array(
             'user'));
         

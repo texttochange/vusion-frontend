@@ -7,7 +7,6 @@ class UserLogMonitorComponent extends Component
 {
     
     var $components = array(
-        'Session',
         'Auth');
     
     var $eventData = null;    
