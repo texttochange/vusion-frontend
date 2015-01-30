@@ -155,7 +155,11 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $programUrl            = $this->programDetails['url'];
         $programDirPath        = WWW_ROOT . "files/programs/". $programUrl;
         $fileCurrenltyExported = $this->Export->hasExports($programUrl, 'history'); 
-        $exportedFiles         = scandir($programDirPath);
+        if (file_exists($programDirPath)) {
+            $exportedFiles = scandir($programDirPath);
+        } else {
+            $exportedFiles = array();
+        }
         $exportedHistoryFiles  = array_filter($exportedFiles, function($var) { 
             return strpos($var, 'history');});
         $files = array();

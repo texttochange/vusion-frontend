@@ -238,7 +238,11 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $programUrl               = $this->programDetails['url'];
         $programDirPath           = WWW_ROOT . "files/programs/". $programUrl;
         $fileCurrenltyExported    = $this->Export->hasExports($programUrl, 'participants');
-        $exportedFiles            = scandir($programDirPath);
+        if (file_exists($programDirPath)) {
+            $exportedFiles = scandir($programDirPath);
+        } else {
+            $exportedFiles = array();
+        }
         $exportedParticipantFiles = array_filter($exportedFiles, function($var) { 
             return strpos($var, 'participants');});
         $files = array();
