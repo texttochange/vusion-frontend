@@ -55,11 +55,11 @@ class UserLogMonitorComponent extends Component
                 ),
             'programdialogues' => array(
                 'POST' => array(
-                    'save' => __('Added a new draft dialogue'),
+                    'save' => __('Added a new draft dialogue ID: '),
                     'delete' => __('Deleted a dialogue'),
                     ),
                 'GET' => array(
-                    'activate' => __('Activated a dialogue')
+                    'activate' => __('Activated a dialogue ID ')
                     )
                 ),
             'programunattachedmessages' => array(
