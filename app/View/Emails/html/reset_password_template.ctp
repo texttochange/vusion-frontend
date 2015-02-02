@@ -5,7 +5,7 @@
 <p>If you did not initiate this request, then ignore this message.</p>
 <p>Otherwise click the link below in order to set up anew password.<p>
 <p><i>(Link expire after 24hrs, can only be used once)</i></p>
-<p>http://<?php echo $linkdomain; ?>/users/useTicket/<?php echo $token; ?></p>
+<p>http://<?php echo $linkdomain; ?>/users/useTicket/<?php echo $ticket; ?></p>
 <br/>
 <p>Thanks</p>
 <br/>
