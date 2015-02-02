@@ -10,8 +10,8 @@ class TestExportComponentController extends Controller
 
     public function constructClasses()
     {
-    	$this->redis = new Redis();
-    	$this->redis->connect('127.0.0.1');
+        $this->redis = new Redis();
+        $this->redis->connect('127.0.0.1');
     }
 }
 
@@ -20,7 +20,7 @@ class ExportComponentTest extends CakeTestCase
 {
 
 
-	public function setup()
+    public function setup()
     {
         parent::setUp();
         $Collection = new ComponentCollection();
@@ -37,7 +37,7 @@ class ExportComponentTest extends CakeTestCase
     }
 
 
-	public function tearDown()
+    public function tearDown()
     {
         $keys = $this->redis->keys('unittest:*');
         foreach ($keys as $key){
@@ -50,13 +50,13 @@ class ExportComponentTest extends CakeTestCase
 
     public function testCounter()
     {
-    	$this->assertFalse(
-    		$this->ExportComponent->hasExports("myprogramUrl", "participants"));
-    	$this->ExportComponent->startAnExport("myprogramUrl", "participants");
-    	$this->assertTrue(
-    		$this->ExportComponent->hasExports("myprogramUrl", "participants"));
-    	$this->assertFalse(
-    		$this->ExportComponent->hasExports("myprogramUrl", "history"));
+        $this->assertFalse(
+            $this->ExportComponent->hasExports("myprogramUrl", "participants"));
+        $this->ExportComponent->startAnExport("myprogramUrl", "participants");
+        $this->assertTrue(
+            $this->ExportComponent->hasExports("myprogramUrl", "participants"));
+        $this->assertFalse(
+            $this->ExportComponent->hasExports("myprogramUrl", "history"));
     }
 
 }
