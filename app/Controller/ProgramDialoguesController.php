@@ -88,6 +88,7 @@ class ProgramDialoguesController extends BaseProgramSpecificController
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
         if ($this->Dialogue->saveDialogue($dialogue, $foundKeywords)) {
             $requestSuccess = true;
+            $this->UserLogMonitor->setEventData($this->Dialogue->id); 
             $this->Session->setFlash(__('Dialogue saved as draft.'));
             $this->set('dialogueObjectId', $this->Dialogue->id);
         } else {
@@ -153,7 +154,8 @@ class ProgramDialoguesController extends BaseProgramSpecificController
             $this->Session->setFlash(__('Please set the program settings then try again.'), 
                 'default',array('class' => "message failure"));
         } else {
-            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {                
+            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
+                $this->UserLogMonitor->setEventData($dialogueId);                
                 $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
                 $this->Session->setFlash(__('Dialogue activated.'), 
                     'default', 

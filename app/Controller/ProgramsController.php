@@ -193,7 +193,10 @@ class ProgramsController extends AppController
             if ($this->Program->save($this->request->data)) {
                 $program = $this->request->data['Program'];
                 $requestSuccess = true;
-                $this->UserLogMonitor->initUserAction($program['database'], $program['name']);
+                $eventData = array(            
+                    'programDatabaseName' => $program['database'],
+                    'programName' => $program['name']);
+                $this->UserLogMonitor->setEventData($eventData);
                 
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
@@ -275,7 +278,10 @@ class ProgramsController extends AppController
         if ($this->request->is('post')) {
             if ($this->Program->save($this->request->data)) {
                 $program = $this->request->data['Program'];
-                $this->UserLogMonitor->initUserAction($program['database'], $program['name']);
+                $eventData = array(            
+                    'programDatabaseName' => $program['database'],
+                    'programName' => $program['name']);
+                $this->UserLogMonitor->setEventData($eventData);
                 
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
@@ -304,8 +310,11 @@ class ProgramsController extends AppController
                 $program['Program']['database']);
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
-            $this->UserLogMonitor->initUserAction($program['Program']['database'], $program['Program']['name']);
-                
+             $eventData = array(            
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+                $this->UserLogMonitor->setEventData($eventData);   
+            
             $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
                 'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
@@ -326,8 +335,11 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
-            $this->UserLogMonitor->initUserAction($program['Program']['database'], $program['Program']['name']);
-            
+            $eventData = array(            
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+                $this->UserLogMonitor->setEventData($eventData);
+                
             $this->Session->setFlash(__('This program has been archived. All sending and receiving of message have stopped.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
