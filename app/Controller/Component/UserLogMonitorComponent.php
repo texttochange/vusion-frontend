@@ -7,9 +7,9 @@ class UserLogMonitorComponent extends Component
 {
     
     var $components = array(
-        'Session',
         'Auth');
     
+    var $eventData = null;    
     
     function beforeRender($controller)
     {
@@ -31,13 +31,14 @@ class UserLogMonitorComponent extends Component
         $this->UserLog    = ClassRegistry::init('UserLog');
         
         $this->userLogActions  = array(
-            'programParticipants' => array(
+            'programparticipants' => array(
                 'POST' => array(
                     'delete' => __('Deleted participant(s)'),
                     'add' => __('Added a new participant'),
                     'edit' => __('Edited participant'),
                     'import' => __('Imported  participant(s)'),
                     'massDelete' => __('Deleted filtered participant(s)'),
+                    'runActions' => __('RunAction for participant: '),
                     ),
                 'GET' => array(
                     'massTag' => __('Tagged participant(s)'),
@@ -46,40 +47,40 @@ class UserLogMonitorComponent extends Component
                 ),
             'programs' => array(
                 'POST' => array(
-                    'add' => __('Added a new program'),
+                    'add' => __('Added a new program '),
                     'edit' => __('Edited a program'),
                     'delete' => __('Deleted a program'),
                     'archive' => __('Archived a program')
                     )
                 ),
-            'programDialogues' => array(
+            'programdialogues' => array(
                 'POST' => array(
-                    'save' => __('Added a new draft dialogue'),
+                    'save' => __('Added a new draft dialogue ID: '),
                     'delete' => __('Deleted a dialogue'),
                     ),
                 'GET' => array(
-                    'activate' => __('Activated a dialogue')
+                    'activate' => __('Activated a dialogue ID ')
                     )
                 ),
-            'programUnattachedMessages' => array(
+            'programunattachedmessages' => array(
                 'POST' => array(
                     'add' => __('Added a new separate message'),
                     'edit' => __('Edited a separate message'),
                     'delete' => __('Deleted a separate message')
                     )
                 ),
-            'programRequests' => array(
-                'POST' => array (
+            'programrequests' => array(
+                'POST' => array(
                     'save' => __('Saved a new request'),
                     'delete' => __('Deleted a request')
                     )
                 ),
-            'programHistory' => array(
+            'programhistory' => array(
                 'POST' => array(
                     'delete' => __('Deleted program history')
                     )
                 ),
-            'programSettings' => array(
+            'programsettings' => array(
                 'POST' => array(
                     'edit' => __('Edited a program setting')
                     )
@@ -89,27 +90,20 @@ class UserLogMonitorComponent extends Component
                     'add' => __('Added new a user'),
                     'edit' => __('Edited a user'),
                     'delete' => __('Deleted a user'),
-                    'changePassword' => __('Changed password')
+                    'changePassword' => __('Changed password'),
+                    'inviteUser' => __('Invited a new user ')
                     )
                 )
             );        
-    }
-    
-    
-    public function initUserAction($programDatabaseName = null, $programName = null)
-    {
-        $this->Session->write('UserLogMonitor', array(            
-            'programDatabaseName' => $programDatabaseName,
-            'programName' => $programName));
-    }
-    
+    }    
     
     
     public function logAction()
     {
-        $controller = 'default';
-        if (isset($this->userLogActions[$this->Controller->request->params['controller']])){
-            $controller = $this->Controller->request->params['controller'];
+        $controller        = 'default';
+        $requestController = strtolower($this->Controller->request->params['controller']);
+        if (isset($this->userLogActions[$requestController])) {
+            $controller = $requestController;
         }
         
         $action = 'index';
@@ -117,36 +111,36 @@ class UserLogMonitorComponent extends Component
             $action = $this->Controller->request->action;
         }
         
-        $method = $this->Controller->request->method();
-        
-        $programDatabaseName = null;
-        $programName         = null;
-        
-        if ($this->Session->check('UserLogMonitor')) {
-            $sessionAction       = $this->Session->read('UserLogMonitor');
-            $programDatabaseName = $sessionAction['programDatabaseName'];
-            $programName         = $sessionAction['programName'];            
-            $this->Session->delete('UserLogMonitor');
-        }        
+        $method = $this->Controller->request->method();        
         
         $this->_saveUserAction($action,
             $method,
-            $controller,
-            $programDatabaseName,
-            $programName);
+            $controller);
     }
     
     
-    protected function _saveUserAction($action, $method, $controller, $programDatabaseName = null, $programName = null)
+    protected function _saveUserAction($action, $method, $controller)
     {
-        $now = new DateTime('now');
+        $programDatabaseName = null;
+        $programName         = null;
+        $parametereventData  = null;
+        
+        $now = new DateTime('now');        
+        if ($programDatabaseName == null){
+            $programDatabaseName = $this->eventData['programDatabaseName'];
+        }
+        
         if (isset($this->Controller->programDetails['database'])) {
             $programDatabaseName = $this->Controller->programDetails['database'];
         } 
+                
+        if ($programName == null) {
+            $programName = $this->eventData['programName'];
+        }
         
         if (isset($this->Controller->programDetails['name'])) {
             $programName = $this->Controller->programDetails['name'];
-        }
+        }  
         
         $programTimezone = 'UTC';        
         if (isset($this->Controller->programDetails['settings']['timezone'])) {
@@ -157,9 +151,11 @@ class UserLogMonitorComponent extends Component
             return false;
         } 
         
+        $parameterEventData = is_array($this->eventData) ? ' ' : $this->eventData;
+        
         $userLog['controller'] = $controller;
         $userLog['action']     = $action;
-        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action];
+        $userLog['parameters'] = $this->userLogActions[$controller][$method][$action].$parameterEventData;
         $userLog['user-id']    = $this->Auth->user('id');
         $userLog['user-name']  = $this->Auth->user('username');            
         $userLog['timezone']   = $programTimezone;
@@ -174,7 +170,13 @@ class UserLogMonitorComponent extends Component
         }
         
         return $this->UserLog->save($userLog);
-        
     }
+    
+    
+    public function setEventData($eventData)
+    { 
+        $this->eventData = $eventData;
+    }
+    
     
 }

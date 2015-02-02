@@ -35,7 +35,7 @@ class UserLogMonitorComponentTest extends CakeTestCase
         
         $CakeRequest->action = 'add';
         $CakeRequest->params = array(
-            'controller' => 'programs'
+            'controller' => 'pRograMs'
             );
         
         $CakeRequest
@@ -72,28 +72,9 @@ class UserLogMonitorComponentTest extends CakeTestCase
     
     
     public function testLogAction() 
-    {
-        $this->UserLogComponent->Session = $this->getMock('Session', array(
-            'read',
-            'check',
-            'write',
-            'delete'));
+    { 
         $this->UserLogComponent->Auth = $this->getMock('Auth', array(
             'user'));
-        
-        $this->UserLogComponent->Session 
-        ->expects($this->at(0))
-        ->method('check')
-        ->with('UserLogMonitor')
-        ->will($this->returnValue(true));
-        
-        $this->UserLogComponent->Session 
-        ->expects($this->at(1))
-        ->method('read')
-        ->with('UserLogMonitor')
-        ->will($this->returnValue(array(
-            'programDatabaseName' => null,
-            'programName' => null)));
         
         $this->UserLogComponent->Auth 
         ->expects($this->at(0))
@@ -107,12 +88,45 @@ class UserLogMonitorComponentTest extends CakeTestCase
         ->with('username')
         ->will($this->returnValue('Tomx'));
         
-        $this->UserLogComponent->Session 
-        ->expects($this->at(2))
-        ->method('delete')
-        ->with('UserLogMonitor');
+        $this->UserLogComponent->setEventData('m9rh');
         
         $this->UserLogComponent->logAction();
+        
+        $saveUserLog = $this->UserLog->find('all');
+        
+        $this->assertEqual('m9rhDB',
+            $saveUserLog[0]['UserLog']['program-database-name']);
+        
+        $this->assertEqual('Added a new program m9rh',
+            $saveUserLog[0]['UserLog']['parameters']);
     }
+    
+    
+    public function testLogAction_no_eventData() 
+    { 
+        $this->UserLogComponent->Auth = $this->getMock('Auth', array(
+            'user'));
+        
+        $this->UserLogComponent->Auth 
+        ->expects($this->at(0))
+        ->method('user')
+        ->with('id')
+        ->will($this->returnValue(89));
+        
+        $this->UserLogComponent->Auth 
+        ->expects($this->at(1))
+        ->method('user')
+        ->with('username')
+        ->will($this->returnValue('Tomx'));
+        
+        
+        $this->UserLogComponent->logAction();
+        
+        $saveUserLog = $this->UserLog->find('all');
+        
+        $this->assertEqual('Added a new program',
+            $saveUserLog[0]['UserLog']['parameters']);
+    }
+    
     
 }
