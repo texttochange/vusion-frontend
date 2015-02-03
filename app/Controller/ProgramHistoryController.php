@@ -194,6 +194,9 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
 
         $filePath = WWW_ROOT . "files/programs/" . $programUrl;
+        if (!file_exists($filePath)) {
+            mkdir($filePath);
+        }
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow) {
             $timestamp = $programNow->format("Y-m-d_H-i-s");
