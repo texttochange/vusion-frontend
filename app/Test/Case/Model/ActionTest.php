@@ -479,4 +479,14 @@ class ActionTestCase extends CakeTestCase
             $this->Action->validationErrors['forward-message-no-participant-feedback'][0]);
     }
 
+    public function testValidateAction_sms_invite_ok_dynamic_content() {
+        $action = array(
+            'type-action' => 'sms-invite',
+            'invite-content'=>'pliz join to have fun',
+            'invitee-tag' => 'invited',
+            'feedback-already-optin' => 'participant already in program');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
 }

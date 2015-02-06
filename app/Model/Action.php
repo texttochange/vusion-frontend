@@ -78,7 +78,8 @@ class Action extends VirtualModel
                         'proportional-tagging',
                         'proportional-labelling',
                         'url-forwarding',
-                        'sms-forwarding')),
+                        'sms-forwarding',
+                        'sms-invite')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -94,7 +95,8 @@ class Action extends VirtualModel
                         'proportional-tagging' => array('set-only-optin-count', 'proportional-tags'),
                         'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proportional-labels'),
                         'url-forwarding' => array('forward-url'),
-                        'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'))),
+                        'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'),
+                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-already-optin'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -245,6 +247,44 @@ class Action extends VirtualModel
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'set-forward-message-condition', 'forward-message-condition'),
                 'message' => 'The content field require an SMS Forward action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => array('validContentVariable', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE),
+                'message' => 'noMessage'
+                ),
+            ),
+        'invite-content' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-invite'),
+                'message' => 'The content field require an SMS Invite action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => array('validContentVariable', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE),
+                'message' => 'noMessage'
+                ),
+            ),
+        'invitee-tag' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-invite'),
+                'message' => 'The Invitee Tagged Condition field is required.',
+                ),
+            'validTag' => array(
+                'rule' => array('regex', VusionConst::TAG_REGEX),
+                'message' => VusionConst::TAG_FAIL_MESSAGE
+                ),
+            ),
+        "feedback-already-optin" => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-invite'),
+                'message' => 'The content field require an SMS Invite action.',
                 ),
             'notForbiddenApostrophe' => array(
                 'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
