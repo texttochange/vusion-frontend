@@ -374,7 +374,7 @@ class UsersController extends AppController
         }
         $this->CakeEmail->config('default');
         $this->CakeEmail->from($userEmail);
-        $this->CakeEmail->to($reportIssueToEmail);
+        $this->CakeEmail->to(array($reportIssueToEmail, $userEmail));
         $this->CakeEmail->subject($reportIssueSubjectPrefix . " " . $subject);
         $this->CakeEmail->template('reportissue_template');
         $this->CakeEmail->emailFormat('html');
