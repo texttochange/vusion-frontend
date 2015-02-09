@@ -347,11 +347,10 @@ class UsersController extends AppController
         } else {
             $message = $this->request->data['ReportIssue']['message'];
         }
-        $attachment               = $this->request->data['ReportIssue']['screenshot'];
+        
+        $attachment = $this->request->data['ReportIssue']['screenshot'];
         if ($attachment['error'] != 0) {
-            if ($attachment['error'] == 4) { 
-                $validationErrors['screenshot'] = array(__("Please take one screenshot and upload it."));
-            } else { 
+            if ($attachment['error'] != 4) {
                 $validationErrors['screenshot'] = array(__('Error while uploading the file: %s.', $attachment['error']));
             }
         } else {
@@ -366,7 +365,9 @@ class UsersController extends AppController
             return;
         }
         
-        copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
+        if ($attachment['name']) {
+            copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
+        }
         
         if (!$this->CakeEmail) {
             $this->CakeEmail = new CakeEmail();
@@ -381,29 +382,34 @@ class UsersController extends AppController
             'subject' => $subject,
             'message' => $message,
             'userName' => $userName));
-        $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
-        
+        if ($attachment['name']) {
+            $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
+        }
         try {
             $this->CakeEmail->send();
         } catch (SocketException $e) {
             $this->Session->setFlash(
                 __('Email server connection is down. Please send report to vusion-issues@texttochange.com'));
-            unlink($filePath . DS . $attachment['name']);
+            if ($attachment['name']) {
+                unlink($filePath . DS . $attachment['name']);
+            }
             return;  
         } catch (Exception $e) {
             $exceptionMessage = $e->getMessage();
             $this->Session->setFlash(
                 __('"%s". Please send report to vusion-issues@texttochange.com', $exceptionMessage));
-            unlink($filePath . DS . $attachment['name']);
+            if ($attachment['name']) {
+                unlink($filePath . DS . $attachment['name']);
+            }
             return;
         }
         
         $this->Session->setFlash(
             __('The tech team will contact you in the next 2 days by Email. Thank you.'),
             'default', array('class'=>'message success'));
-        
-        unlink($filePath . DS . $attachment['name']);
-        
+        if ($attachment['name']) {
+            unlink($filePath . DS . $attachment['name']);
+        }
         return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
