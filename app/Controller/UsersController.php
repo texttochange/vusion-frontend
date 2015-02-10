@@ -337,6 +337,11 @@ class UsersController extends AppController
         $filePath                 = WWW_ROOT . 'files/report-issues';        
         $validationErrors         = array();
         
+        if (!isset($this->request->data['ReportIssue']['issueurl']) || ($this->request->data['ReportIssue']['issueurl'] == "")) {
+            $validationErrors['issueurl'] = array(__('Please copy and paste page url form your Bowser.'));
+        } else {
+            $issueUrl = $this->request->data['ReportIssue']['issueurl'];
+        } 
         if (!isset($this->request->data['ReportIssue']['subject']) || ($this->request->data['ReportIssue']['subject'] == "")) {
             $validationErrors['subject'] = array(__('Please describe the expect vs current behavior.'));
         } else {
@@ -368,7 +373,7 @@ class UsersController extends AppController
         if ($attachment['name']) {
             copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
         }
-        
+       
         if (!$this->CakeEmail) {
             $this->CakeEmail = new CakeEmail();
         }
@@ -379,6 +384,7 @@ class UsersController extends AppController
         $this->CakeEmail->template('reportissue_template');
         $this->CakeEmail->emailFormat('html');
         $this->CakeEmail->viewVars(array(
+            'issueUrl' => $issueUrl,
             'subject' => $subject,
             'message' => $message,
             'userName' => $userName));
