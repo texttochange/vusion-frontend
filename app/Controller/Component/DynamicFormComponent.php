@@ -111,7 +111,7 @@ class DynamicFormComponent extends Component
             "sms-invite"=> __('SMS Invite'),
             "invite-content"=> __('Content'),
             "invitee-tag"=> __('Invitee Tag(s)'),
-            "feedback-already-optin"=> __('Feedback incase already Optin participant'),
+            "feedback-already-optin"=> __('Feedback incase participant is already Optin'),
             "tag"=> __('Tag'),
             "weight"=> __('Weight'),
             "label-name" => __("Label name"),
