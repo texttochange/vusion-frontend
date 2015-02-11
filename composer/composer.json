@@ -1,7 +1,7 @@
 {
     "name": "vusion-frontend/composer",
     "require": {
-        "cakephp/cakephp": "2.5.5"
+        "cakephp/cakephp": "2.6.1"
     },
     "authors": [
         {

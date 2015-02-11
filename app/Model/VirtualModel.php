@@ -1,6 +1,10 @@
 <?php
-abstract class VirtualModel
+App::uses('Model', 'Model');
+
+
+abstract class VirtualModel extends Model
 {
+    var $useTable = false;
     var $data   = null;
     var $fields = array();
     
