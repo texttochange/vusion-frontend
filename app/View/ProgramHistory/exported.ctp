@@ -23,15 +23,16 @@
         <?php } ?>
         <?php if ($files == array()) { ?>
             <tr>
-                <td colspan=2><?php echo __("No history export file found.") ?></td>
+                <td colspan=3><?php echo __("No export file found.") ?></td>
             </tr>
         <?php } else {?>   
         <?php foreach ($files as $file): ?>
             <tr>
                 <td>
                     <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'download', '?' => array('file' => $file['name'])));?>">
-                    <?php echo $file['name']; ?></td>
+                    <?php echo $file['name']; ?>
                     </a>
+                </td>
                 <td><?php echo $this->Number->toReadableSize($file['size']); ?></td>
                 <td><?php 
                 echo $this->Time->niceShort($this->Time->convert($file['created'], $programDetails['settings']['timezone'])); ?></td>

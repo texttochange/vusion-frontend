@@ -47,6 +47,19 @@ class WorkerMessageMaker
     }
 
 
+    public function exportUnmatchableReply($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        return array(
+            'message_type' => 'export_unmatchable_reply',
+            'database' => $database,
+            'collection' => $collection,
+            'conditions' => $filter,
+            'file_full_name' => $fileFullName,
+            'redis_key' => $redisKey,
+            );
+    }
+
+
     public function exportHistory($database, $collection, $filter, $fileFullName, $redisKey)
     {
         return array(

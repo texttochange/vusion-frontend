@@ -59,6 +59,14 @@ class VumiRabbitMQ {
     }
 
 
+    public function sendMessageToExportUnmatchableReply($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        $msg = $this->workerMessageMaker->exportUnmatchableReply(
+            $database, $collection, $filter, $fileFullName, $redisKey);
+        return $this->sendMessageTo('export.control', $msg);
+    }
+
+
     // Program Specific calls
     public function sendMessageToUpdateSchedule($to, $schedule_type, $object_id)
     {
