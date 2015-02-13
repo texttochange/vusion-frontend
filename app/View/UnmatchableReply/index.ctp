@@ -1,14 +1,18 @@
-<div class="unmatchable replies index users-index">
+<div class="unmatchable-replies index users-index">
     <ul class="ttc-actions">
         <li>
         <?php 
-            $exportUrl = $this->Html->url(array('controller' => 'unmatchableReply', 'action'=>'export'));
-            echo $this->Html->tag(
-                'span', 
-                __('Export'), 
-                array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
-            $this->Js->get('[name=export]')->event('click',
-                'generateExportDialogue(this);');
+        if (!isset($urlParams)) {
+            $urlParams = "";
+        }
+        echo $this->AclLink->generateButton(
+            __('Export'),
+            null,
+            'unmatchableReply',
+            'export',
+            array('class' => 'ttc-button'),
+            null,
+            $urlParams);
         ?>
         </li>
         <li>
@@ -75,10 +79,17 @@
 <div class="actions">
     <h3><?php echo __('Actions'); ?></h3>
     <ul>
-        <li><?php echo $this->Html->link(__('Back To Program List'),
+        <li>
+        <?php echo $this->Html->link(__('Program List'),
             array('controller' => 'programs', 
                         'action' => 'index'));
-            ?></li>
+        ?>
+        </li>
+        <li>
+        <?php echo $this->Html->link(__('Exported Files'),
+            array('action' => 'exported'));
+        ?>
+        </li>
     </ul>
 </div>
 </div>
