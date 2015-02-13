@@ -62,9 +62,10 @@ class AppController extends Controller
         'Documentation');
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs";
-    var $redisTicketPrefix = "vusion:tickets"; 
-    
-    
+    var $redisTicketPrefix  = "vusion:tickets"; 
+    var $redisExportPrefix  = "vusion:exports"; 
+
+
     function beforeFilter()
     {
         if ($this->_isAjax() || $this->_isCsv()) {
