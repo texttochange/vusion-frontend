@@ -43,6 +43,31 @@ class VumiRabbitMQ {
     }
 
 
+    public function sendMessageToExportParticipants($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        $msg = $this->workerMessageMaker->exportParticipants(
+            $database, $collection, $filter, $fileFullName, $redisKey);
+        return $this->sendMessageTo('export.control', $msg);
+    }
+
+
+    public function sendMessageToExportHistory($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        $msg = $this->workerMessageMaker->exportHistory(
+            $database, $collection, $filter, $fileFullName, $redisKey);
+        return $this->sendMessageTo('export.control', $msg);
+    }
+
+
+    public function sendMessageToExportUnmatchableReply($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        $msg = $this->workerMessageMaker->exportUnmatchableReply(
+            $database, $collection, $filter, $fileFullName, $redisKey);
+        return $this->sendMessageTo('export.control', $msg);
+    }
+
+
+    // Program Specific calls
     public function sendMessageToUpdateSchedule($to, $schedule_type, $object_id)
     {
         $msg = $this->workerMessageMaker->updateSchedule($schedule_type, $object_id);

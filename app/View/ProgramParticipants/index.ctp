@@ -1,4 +1,4 @@
-    <div class="participants index">
+<div class="participants index">
     <ul class="ttc-actions">
     <li>
     <?php
@@ -42,15 +42,18 @@
         'add',
         array('class' => 'ttc-button')); 
     ?></li>
-    <li><?php 
-    $exportUrl = $this->Html->url(array('program' =>$programDetails['url'], 'controller' => 'programParticipants', 'action'=>'export'));
-    echo $this->Html->tag(
-        'span', 
-        __('Export'), 
-        array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
-    $this->Js->get('[name=export]')->event('click',
-        'generateExportDialogue(this);');
-    ?></li>
+    <li>
+    <?php
+    echo $this->AclLink->generateButton(
+        __('Export'),
+        $programDetails['url'],
+        'programParticipants',
+        'export',
+        array('class' => 'ttc-button'),
+        null,
+        $urlParams);
+    ?>
+	</li>
     <li><?php echo $this->AclLink->generateButton(
         __('Import'), 
         $programDetails['url'],
