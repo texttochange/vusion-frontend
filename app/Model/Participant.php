@@ -962,16 +962,16 @@ class Participant extends ProgramSpecificMongoModel
                         if (count($phoneNumbers) > 1) {
                             $or = array();
                             foreach ($phoneNumbers as $phoneNumber) {
-                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                                $regex = array('$regex' => "^\\".$phoneNumber);
                                 $or[] = array('phone' => $regex);
                             }
                             $condition['$or'] = $or;
                         } else {
-                            $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                            $condition['phone'] = array('$regex' => "^\\".$phoneNumbers[0]);
                         }
                     } 
                 } elseif ($filterParam[2] == 'start-with') {
-                    $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
+                    $condition['phone'] = array('$regex' => "^\\".$filterParam[3]); 
                 } elseif ($filterParam[2] == 'equal-to') {
                     $condition['phone'] = $filterParam[3];        
                 }
