@@ -1115,7 +1115,7 @@ class ParticipantTestCase extends CakeTestCase
             3 => "+255");
         $this->assertEqual(
             $this->Participant->fromFilterToQueryCondition($filter),
-            array("phone" => new MongoRegex("/^\\+255/")));
+            array("phone" => array('$regex' => "^\\+255")));
         
         $filter = array(
             1 => 'phone', 
@@ -1125,8 +1125,8 @@ class ParticipantTestCase extends CakeTestCase
             $this->Participant->fromFilterToQueryCondition($filter),
             array('$or' => 
                 array(
-                    array("phone" => new MongoRegex("/^\\+255/")),
-                    array("phone" => new MongoRegex("/^\\+256/"))))
+                    array("phone" => array('$regex' => "^\\+255")),
+                    array("phone" => array('$regex' => "^\\+256"))))
             );
     }
     

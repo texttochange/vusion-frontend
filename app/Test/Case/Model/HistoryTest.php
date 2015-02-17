@@ -196,7 +196,7 @@ class HistoryTestCase extends CakeTestCase
             3 => '+255'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('participant-phone' => new MongoRegex('/^\\+255/')));
+            array('participant-phone' => array('$regex' => '^\\+255')));
         
         $filterParam = array(
             1 => 'participant-phone', 
@@ -213,8 +213,8 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('$or' => array(
-                array('participant-phone' => new MongoRegex('/^\\+255/')),
-                array('participant-phone' => new MongoRegex('/^\\+256/')))));
+                array('participant-phone' => array('$regex' => '^\\+255', '$options' => 'i')),
+                array('participant-phone' => array('$regex' => '^\\+256', '$options' => 'i')))));
     }
     
     
@@ -234,7 +234,7 @@ class HistoryTestCase extends CakeTestCase
             3 => 'content'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('message-content' => new MongoRegex('/content/i')));
+            array('message-content' => array('$regex' => 'content', '$options' => 'i')));
         
         $filterParam = array(
             1 => 'message-content', 
@@ -242,7 +242,7 @@ class HistoryTestCase extends CakeTestCase
             3 => 'keyword'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('message-content' => new MongoRegex('/^keyword($| )/i')));
+            array('message-content' => array('$regex' => '^keyword($| )', '$options' => 'i')));
         
         $filterParam = array(
             1 => 'message-content', 
@@ -252,8 +252,8 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array(
                 '$or' => array(
-                    array('message-content' => new MongoRegex('/^keyword1($| )/i')),
-                    array('message-content' => new MongoRegex('/^keyword2($| )/i'))
+                    array('message-content' => array('$regex' => '^keyword1($| )', '$options' => 'i')),
+                    array('message-content' => array('$regex' => '^keyword2($| )', '$options' => 'i'))
                     ))
             );
     }

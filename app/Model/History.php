@@ -406,10 +406,10 @@ class History extends ProgramSpecificMongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
                 } elseif ($filterParam[2] == 'start-with') {
-                    $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                    $condition['participant-phone'] = array('$regex' => "^\\".$filterParam[3]);
                 } elseif ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", '', 'i'); 
                 }
             } else {
                 $condition['participant-phone'] = '';
@@ -419,12 +419,12 @@ class History extends ProgramSpecificMongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['message-content'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'contain') {
-                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                    $condition['message-content'] = array('$regex' => $filterParam[3], '$options' => 'i');
                 } elseif ($filterParam[2] == 'has-keyword') {
-                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                    $condition['message-content'] = array('$regex' => "^".$filterParam[3]."($| )", '$options' => 'i');
                 } elseif ($filterParam[2] == 'has-keyword-any') {
                     $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, '($| )', 'i');
                 }
             } else {
                 $condition['message-content'] = '';
@@ -494,18 +494,18 @@ class History extends ProgramSpecificMongoModel
     } 
     
     
-    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null) 
+    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null, $options='') 
     {
         $query = array();
         if (count($choices) > 1) {
             $or = array();
             foreach ($choices as $choice) {
-                $regex = new MongoRegex("/^".$prefix.$choice.$suffix);
+                $regex = array( '$regex' => '^'.$prefix.$choice.$suffix, '$options' => $options);
                 $or[]  = array($field => $regex);
             }
             $query['$or'] = $or;
         } else {
-            $query[$field] = new MongoRegex("/^".$prefix.$choices[0].$suffix);
+            $query[$field] = array( '$regex' => '^'.$prefix.$choices[0].$suffix, '$options' => $options);
         }
         return $query;
     }
