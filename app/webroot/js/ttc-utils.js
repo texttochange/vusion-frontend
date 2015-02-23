@@ -45,10 +45,28 @@ function requestHelp(elt, baseUrl, topic) {
         $(elt).parent().next().remove();
         return;
     }
-    $("<div class='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent()).load('/documentation', 
-        'topic='+topic);
+    $("<div class='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
+    $.ajax({
+        url: '/documentation.json', 
+        type: 'GET',
+        data: 'topic='+topic,
+        dataType: 'json',
+        success: function(response) {
+            if (response['status'] == 'fail') {
+                $(".ttc-help-box").html(response['message']);
+            } else {
+                $(".ttc-help-box").html(response['documentation']);
+            }
+        }
+    }); 
 }
 
+function parseHelp(response, status, xhr) {
+    alert(response);
+    if (response['status'] == 'ok') {
+
+    }
+}
 
 function vusionAjaxError(jqXHR, textStatus, errorThrown){
     if (this.userAction) {
