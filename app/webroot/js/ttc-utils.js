@@ -61,12 +61,6 @@ function requestHelp(elt, baseUrl, topic) {
     }); 
 }
 
-function parseHelp(response, status, xhr) {
-    alert(response);
-    if (response['status'] == 'ok') {
-
-    }
-}
 
 function vusionAjaxError(jqXHR, textStatus, errorThrown){
     if (this.userAction) {
