@@ -18,15 +18,16 @@
         ?>
         </li>
         <li>
-            <?php
-                $exportUrl = $this->Html->url(array('program' =>$programDetails['url'], 'controller' => 'programHistory', 'action'=>'export'));
-                echo $this->Html->tag(
-                    'span', 
-                    __('Export'), 
-                    array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
-                $this->Js->get('[name=export]')->event('click',
-                    'generateExportDialogue(this);');
-            ?>
+        <?php
+        echo $this->AclLink->generateButton(
+            __('Export'),
+            $programDetails['url'],
+            'programHistory',
+            'export',
+            array('class' => 'ttc-button'),
+            null,
+            $urlParams);
+        ?>
         </li>
         <li><?php
         echo $this->Html->tag(

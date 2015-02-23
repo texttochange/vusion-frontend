@@ -54,7 +54,8 @@ class AclLinkHelper extends AppHelper
                 $url = array(
                         'program'=>$url,
                         'controller'=>$controller,
-                        'action'=>$action.($ext ? $ext : ''),
+                        'action'=>$action, 
+                        '?' => $ext
                         );
                 if (isset($id)) {
                     $url['id'] = $id;

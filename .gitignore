@@ -13,11 +13,13 @@
 /app/tmp/session
 /app/tmp/tests/views
 /app/tmp/cache/models
+/app/webroot/files/credit-viewer/
+/app/webroot/files/programs/
 /app/tmp/cache/persistent
 /app/webroot/files/testurl/
 /things to note
 #empty
 /lib/Cake
 .vagrant
-
+.DS_Store
 /vendor/

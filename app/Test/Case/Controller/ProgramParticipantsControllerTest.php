@@ -98,6 +98,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     '_notifyBackendMassTag',
                     '_notifyBackendMassUntag',
                     '_notifyBackendRunActions',
+                    '_notifyBackendExport',
                     'render',
                     )
                 )
@@ -1242,55 +1243,17 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testExport()
     {
-        
-        $participants = $this->mockProgramAccess_withoutSession();
-        
-        $participants->Session
-        ->expects($this->any())
-        ->method('read')
-        ->will($this->onConsecutiveCalls(
-            $this->programData[0]['Program']['name'],
-            'Africa/Kampala',
-            'testdbprogram',
-            'name1', //?
-            'name2', //?
-            $this->programData[0]['Program']['name'] //only for export test to get program name
-            ));
-        
-        
-        $participant = array(
-            'Participant' => array(
-                'phone' => '+256712747841',
-                'tags' => array('geek', 'cool'),
-                )
-            );
-        $this->Participant->create();
-        $participantDB = $this->Participant->save($participant);
-        
-        $participant = array(
-            'Participant' => array(
-                'phone' => '+256788601462',
-                'profile' => array( 
-                    array( 'label' => 'name', 
-                        'value' => 'olivier', 
-                        'raw' => null))
-                )
-            );
-        $this->Participant->create();
-        $participantDB = $this->Participant->save($participant);
-        
+        $participants = $this->mockProgramAccess();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyBackendExport')
+            ->with(
+                'testdbprogram',
+                'participants',
+                array(),
+                $this->stringContains('Test_Name_good_for_testing_me_participants_'))
+            ->will($this->returnValue(true));
         $this->testAction("/testurl/programParticipants/export");
-        
-        $this->assertTrue(isset($this->vars['fileName']));
-        $this->assertFileEquals(
-            TESTS . 'files/exported_participants.csv',
-            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
-        
-        //Asserting that programName is added and special characters 
-        //replaced to export file
-        $this->assertEquals(
-            substr($this->vars['fileName'], 0, 43),
-            'Test_Name_good_for_testing_me_participants_');
     }
     
 
