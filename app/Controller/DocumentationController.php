@@ -22,6 +22,8 @@ class DocumentationController extends AppController
     
     public function view()
     {
+        $requestSuccess = false;
+
         if (isset($this->params['url']['topic'])) {
             $lang = Configure::read('Config.language');
             if ($lang and !is_numeric($lang)) {
@@ -35,9 +37,10 @@ class DocumentationController extends AppController
                 $documentation = "Sorry, no help available for '". $topic."'. Please leave us a comment [help@texttochange.com].";
             } else {
                 $documentation = $this->readfile_chunked($file);
+                $requestSuccess = true;
             }
         }
-        $this->set(compact('topic','documentation'));
+        $this->set(compact('topic','documentation', 'requestSuccess'));
     }
     
     
