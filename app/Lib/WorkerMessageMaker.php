@@ -34,6 +34,45 @@ class WorkerMessageMaker
     }
 
 
+    public function exportParticipants($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        return array(
+            'message_type' => 'export_participants',
+            'database' => $database,
+            'collection' => $collection,
+            'conditions' => $filter,
+            'file_full_name' => $fileFullName,
+            'redis_key' => $redisKey,
+            );
+    }
+
+
+    public function exportUnmatchableReply($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        return array(
+            'message_type' => 'export_unmatchable_reply',
+            'database' => $database,
+            'collection' => $collection,
+            'conditions' => $filter,
+            'file_full_name' => $fileFullName,
+            'redis_key' => $redisKey,
+            );
+    }
+
+
+    public function exportHistory($database, $collection, $filter, $fileFullName, $redisKey)
+    {
+        return array(
+            'message_type' => 'export_history',
+            'database' => $database,
+            'collection' => $collection,
+            'conditions' => $filter,
+            'file_full_name' => $fileFullName,
+            'redis_key' => $redisKey,
+            );
+    }
+
+
     public function updateSchedule($schedule_type, $object_id)
     {
         if (!in_array($schedule_type, array('dialogue', 'unattach', 'participant'))) {

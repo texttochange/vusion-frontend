@@ -12,7 +12,6 @@ class TicketComponent extends Component
 
     public function initialize(Controller $controller)
     {
-        parent::startup($controller);
         CakeEmail::transport();
         $this->Controller = $controller;
         
@@ -58,14 +57,16 @@ class TicketComponent extends Component
     
     public function saveTicket($ticket, $email = null, $invite = array())
     {
-        if ($email)
+        if ($email) {
             $this->_checkInvitedEmailUniqueInRedis($email, $ticket);
+        }
 
         $ticketKey = $this->_getTicketKey($ticket);
-        if ($invite != array())
+        if ($invite != array()) {
             $this->redis->setex($ticketKey, $this->EXPIRE_INVITE_TICKET, json_encode($invite));
-        else
+        } else {
             $this->redis->setex($ticketKey, $this->EXPIRE_TICKET, $ticket);
+        }
     }
     
     
