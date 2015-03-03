@@ -19,14 +19,16 @@
         </li>
         <li>
         <?php
-        echo $this->AclLink->generateButton(
-            __('Export'),
-            $programDetails['url'],
-            'programHistory',
-            'export',
-            array('class' => 'ttc-button'),
-            null,
-            $urlParams);
+        if ($histories != null) {
+            echo $this->AclLink->generateButton(
+                __('Export'),
+                $programDetails['url'],
+                'programHistory',
+                'export',
+                array('class' => 'ttc-button'),
+                null,
+                $urlParams);
+        }
         ?>
         </li>
         <li><?php

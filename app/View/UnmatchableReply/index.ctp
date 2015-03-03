@@ -5,14 +5,16 @@
         if (!isset($urlParams)) {
             $urlParams = "";
         }
-        echo $this->AclLink->generateButton(
-            __('Export'),
-            null,
-            'unmatchableReply',
-            'export',
-            array('class' => 'ttc-button'),
-            null,
-            $urlParams);
+        if ($unmatchableReplies != null) {
+            echo $this->AclLink->generateButton(
+                __('Export'),
+                null,
+                'unmatchableReply',
+                'export',
+                array('class' => 'ttc-button'),
+                null,
+                $urlParams);
+        }
         ?>
         </li>
         <li>
@@ -46,6 +48,7 @@
              </tr>
         </thead>
         <tbody>
+
              <?php
              foreach($unmatchableReplies as $unmatchableReply):
              ?>

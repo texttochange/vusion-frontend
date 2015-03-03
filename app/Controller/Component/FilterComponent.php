@@ -67,9 +67,15 @@ class FilterComponent extends Component
     }
     
     
+    public function getFilters()
+    {
+        return array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator'))); 
+    }
+
+
     public function getConditions($filterModel, $defaultConditions = array(), $otherModels = array(), $joinCursor = true)
     {       
-        $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));       
+        $filter = $this->getFilters();
   
         if ($filter == array()) {
             return $defaultConditions;

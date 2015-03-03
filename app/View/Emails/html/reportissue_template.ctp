@@ -1,4 +1,6 @@
 <h2><?php echo $userName; ?> reported an issue</h2>
+<h3>Issue URL</h3>
+<p><?php echo $issueUrl;?></p>
 <h3>Description</h3>
 <p><?php echo $subject;?></p>
 <h3>How to reproduce</h3>

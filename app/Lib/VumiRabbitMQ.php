@@ -43,26 +43,9 @@ class VumiRabbitMQ {
     }
 
 
-    public function sendMessageToExportParticipants($database, $collection, $filter, $fileFullName, $redisKey)
+    public function sendMessageToExport($export_id)
     {
-        $msg = $this->workerMessageMaker->exportParticipants(
-            $database, $collection, $filter, $fileFullName, $redisKey);
-        return $this->sendMessageTo('export.control', $msg);
-    }
-
-
-    public function sendMessageToExportHistory($database, $collection, $filter, $fileFullName, $redisKey)
-    {
-        $msg = $this->workerMessageMaker->exportHistory(
-            $database, $collection, $filter, $fileFullName, $redisKey);
-        return $this->sendMessageTo('export.control', $msg);
-    }
-
-
-    public function sendMessageToExportUnmatchableReply($database, $collection, $filter, $fileFullName, $redisKey)
-    {
-        $msg = $this->workerMessageMaker->exportUnmatchableReply(
-            $database, $collection, $filter, $fileFullName, $redisKey);
+        $msg = $this->workerMessageMaker->export($export_id);
         return $this->sendMessageTo('export.control', $msg);
     }
 

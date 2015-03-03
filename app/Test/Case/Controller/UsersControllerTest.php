@@ -520,6 +520,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
             'data' => array('ReportIssue' => array(
+                'issueUrl' => '',
                 'subject' => '',
                 'message' => '',
                 'screenshot'=> array(
@@ -592,6 +593,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
             'data' => array('ReportIssue' => array(
+                'issueurl' => 'testing Url',
                 'subject' => 'testing email subject',
                 'message' => 'testing email message',
                 'screenshot'=> array(
@@ -650,6 +652,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
             'data' => array('ReportIssue' => array(
+                'issueurl' => 'testing URL',
                 'subject' => 'testing email subject',
                 'message' => 'testing email message',
                 'screenshot'=> array(
@@ -708,6 +711,7 @@ class UsersControllerTestCase extends ControllerTestCase
         $this->testAction('/users/reportIssue', array(  
             'method' => 'post',
             'data' => array('ReportIssue' => array(
+                'issueurl' => 'testing URL',
                 'subject' => 'testing email subject',
                 'message' => 'testing email message',
                 'screenshot'=> array(

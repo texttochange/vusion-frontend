@@ -44,6 +44,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
             'History', $dbName, true);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName, true);
+        $this->Export = ClassRegistry::init('Export');
         
         $this->Maker = new ScriptMaker();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');      
@@ -55,6 +56,7 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     {
         $this->History->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
+        $this->Export->deleteAll(true, false);
         TestHelper::deleteAllProgramFiles('testurl');
     }    
 
@@ -381,17 +383,23 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $expectedConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
-
         $historys
             ->expects($this->once())
             ->method('_notifyBackendExport')
             ->with(
-                'testdbprogram',
-                'history',
-                $expectedConditions,
-                $this->stringContains('Test_Name_good_for_testing_me_history_'))
+               $this->matchesRegularExpression('/^[a-f0-9]+$/'))
             ->will($this->returnValue(true));
         $this->testAction("/testurl/programHistory/export");
+
+        $this->assertEqual($this->Export->find('count'), 1);
+        $export = $this->Export->find('first');
+        $this->assertTrue(isset($export['Export']));
+        $this->assertContains(
+            'Test_Name_good_for_testing_me_history_', 
+            $export['Export']['file-full-name']);
+        $this->assertEquals(
+            $expectedConditions,
+            $export['Export']['conditions']);
     }
 
 
@@ -407,20 +415,31 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     {
         $this->mockProgramAccess();
 
-        copy(TESTS . 'files/exported_history.csv', 
-            WWW_ROOT . 'files/programs/testurl/Program_history_2014-01-01_10-10-10.csv');
-        sleep(1);  // to get a different in the system creating date
-        copy(TESTS . 'files/exported_history.csv', 
-            WWW_ROOT . 'files/programs/testurl/Program_history_2014-01-02_10-10-10.csv');
-        copy(TESTS . 'files/exported_participants.csv', 
-            WWW_ROOT . 'files/programs/testurl/Program_participants_2014-01-02_10-10-10.csv');
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram',
+            'collection' => 'history',
+            'file-full-name' => '/var/test.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test2.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram2',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test3.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram2',
+            'collection' => 'history',
+            'file-full-name' => '/var/test3.csv'));
 
 
         $this->testAction("/testurl/programHistory/exported");
         $files = $this->vars['files'];
-        $this->assertEqual(2, count($files));
-        $this->assertEqual($files[0]['name'], 'Program_history_2014-01-02_10-10-10.csv');
-        $this->assertEqual($files[1]['name'], 'Program_history_2014-01-01_10-10-10.csv');
+        $this->assertEqual(1, count($files));
     }
 
 }

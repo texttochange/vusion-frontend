@@ -69,6 +69,7 @@ if (!defined('WWW_ROOT')) {
 
 if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 	if (function_exists('ini_set')) {
+		ini_set('include_path', ROOT . DS . 'composer'. DS . 'vendor' . DS . 'phpunit' . DS . 'phpunit' . PATH_SEPARATOR . ini_get('include_path'));
 		ini_set('include_path', ROOT . DS . 'composer' . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
 		ini_set('include_path', ROOT . DS . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
 	}
