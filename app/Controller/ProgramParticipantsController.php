@@ -7,6 +7,7 @@ App::uses('Dialogue', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('VusionException', 'Lib');
 App::uses('FilterException', 'Lib');
+App::uses('Export', 'Model');
 
 
 class ProgramParticipantsController extends BaseProgramSpecificController
@@ -18,7 +19,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         'Schedule',
         'Dialogue',
         'UnattachedMessage',
-        'ProgramSetting');
+        'ProgramSetting',
+        'Export');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -29,8 +31,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
-        'ArchivedProgram',
-        'Export');
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array(
@@ -235,37 +236,24 @@ class ProgramParticipantsController extends BaseProgramSpecificController
 
     public function exported()
     {
-        $programUrl               = $this->programDetails['url'];
-        $programDirPath           = WWW_ROOT . "files/programs/". $programUrl;
-        $fileCurrenltyExported    = $this->Export->hasExports($programUrl, 'participants');
-        if (file_exists($programDirPath)) {
-            $exportedFiles = scandir($programDirPath);
-        } else {
-            $exportedFiles = array();
-        }
-        $exportedParticipantFiles = array_filter($exportedFiles, function($var) { 
-            return strpos($var, 'participants');});
-        $files = array();
-        foreach ($exportedParticipantFiles as $file) {
-            $fileFullName = $programDirPath . DS . $file;
-            $files[] = array(
-                'name' =>  $file,
-                'size' => filesize($fileFullName),
-                'created' => filemtime($fileFullName));
-        }
-        $created = array();
-        foreach ($files as $key => $row) {
-            $created[$key] = $row['created'];
-        }
-        array_multisort($created, SORT_DESC, $files);
-        $this->set(compact('files', 'fileCurrenltyExported'));
+        $programUrl  = $this->programDetails['url'];
+        $paginate = array(
+            'all',
+            'limit' => 100,
+            'conditions' => array(
+                'database' => $this->programDetails['database'],
+                'collection' => 'participants'),
+            'order' => array('timestamp' => '-1'));
+        $this->paginate = $paginate;
+        $files = $this->paginate('Export');
+        $this->set(compact('files'));
     }
 
     
     public function export() 
     {
         $programUrl    = $this->params['program'];
-        $requestSucces = false;
+        $requestSuccess = false;
         
         $this->set('filterFieldOptions', $this->Participant->fieldFilters);
         $dialoguesContent = $this->Dialogue->getDialoguesInteractionsContent();
@@ -293,28 +281,55 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";
         $fileFullName = $filePath . DS . $fileName;
 
-        $redisKey = $this->Export->startAnExport($programUrl, 'participants');
-
-        $this->_notifyBackendExport(
-            $this->programDetails['database'],
-            $this->Participant->table,
-            $conditions,
-            $fileFullName,
-            $redisKey);
-
-        $this->Session->setFlash(
-            __("Vusion is backing the export file. Your file should appear shortly on this page."),
-            'default', array('class'=>'message success'));
-
-        $requestSuccess = True;
+        $export = array(
+            'database' => $this->programDetails['database'],
+            'collection' => $this->Participant->table,
+            'conditions' => $conditions,
+            'filters' => $this->Filter->getFilters(),
+            'order' => array(),
+            'file-full-name' => $fileFullName);
+        if (!$saved_export = $this->Export->save($export)) {
+            print_r($this->Export->validationErrors);
+            $this->Session->setFlash(__("Vusion failed to start the export process."));
+        } else {
+            $this->_notifyBackendExport($saved_export['Export']['_id']);
+            $this->Session->setFlash(
+                __("Vusion is backing the export file. Your file should appear shortly on this page."),
+                'default', array('class'=>'message success'));
+            $requestSuccess = True;
+        }
         $this->set(compact('requestSuccess'));
-        
         
         $this->redirect(array(
             'program' => $programUrl,
             'action' => 'exported'));
     }
     
+
+    public function deleteExport() 
+    {
+        $id = $this->params['id'];
+
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        $this->Export->id = $id;
+        if (!$this->Export->exists()) {
+            throw new NotFoundException(__('Invalid Export: %s', $id));
+        }
+
+        if ($this->Export->delete()) {
+            $this->Session->setFlash(__('Export deleted.'),
+                'default', array('class'=>'message success'));
+        } else {
+            $this->Session->setFlash(__('Export cannot be deleted.'));
+        }
+
+        $this->redirect(array(
+            'program' => $this->programDetails['url'],
+            'action' => 'exported'));
+    }
+
     
     protected function _searchProfile($array, $labelKey)
     {
@@ -353,10 +368,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
 
 
-    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName, $redisKey)
+    protected function _notifyBackendExport($exportId)
     {
-        $this->VumiRabbitMQ->sendMessageToExportParticipants(
-            $database, $collection, $filter, $fileFullName, $redisKey);
+        $this->VumiRabbitMQ->sendMessageToExport($exportId);
     }
 
     
@@ -428,7 +442,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         return $participant;
     }
-    
+
+   
     protected function _ajaxDataPatch($modelName='Participant')
     {
         $data = $this->data;
@@ -437,7 +452,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         return $data;
     }
-    
+
+
     //we should not be able to edit a phone number
     public function edit()   
     {
