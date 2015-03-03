@@ -109,14 +109,14 @@ class Request extends ProgramSpecificMongoModel
         foreach($keyphrases as $keyphrase) {
             if (isset($this->usedKeywords[$keyphrase])) {
                 return DialogueHelper::foundKeywordsToMessage(
-                    $this->databaseName, $keyphrase, $this->usedKeywords[$keyphrase]);
+                    $this->databaseName, $keyphrase, $this->usedKeywords[$keyphrase], $this->contactEmail);
             }
         }
         $keywords = DialogueHelper::cleanKeywords($check['keyword']);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
                 return DialogueHelper::foundKeywordsToMessage(
-                    $this->databaseName, $keyword, $this->usedKeywords[$keyword]);                
+                    $this->databaseName, $keyword, $this->usedKeywords[$keyword], $this->contactEmail);
             }
         }
         return true;

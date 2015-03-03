@@ -86,16 +86,32 @@
             }
             echo "<br />";
             echo $this->Form->select('timezone', $timezone_options);
-            //echo $this->Form->select('timezone', $timezone_identifiers, array('value'=>'412'));
         ?>
-        </div><div>
+        </div>
+        <div>
+        <?php
+            echo $this->Form->label(__('Program Contact Person'));
+            echo "<br>";
+            echo $this->Form->select(
+                'contact',
+                Hash::combine($contactUsers, '{n}.User.id', '{n}.User.username'),
+                array('empty'=> __('Select...')));
+       ?>
+        </div>
+        <?php
+            echo $this->Form->input(
+                'authorized-keywords',
+                array('label' => __('Authorized Keywords (leave blank to allow any), currently used: %s', implode(", ", $currentKeywords))));
+        ?>
+        <div>
         <?php 
             echo $this->Form->label(__('Default template for open questions'));
             echo "<br>";
             echo $this->Form->select('default-template-open-question', $openQuestionTemplateOptions, array(
                 'empty'=> __('Template...')));
        ?>
-        </div><div>
+        </div>
+        <div>
         <?php 
             echo $this->Form->label(__('Default template for closed questions'));
             echo "<br>";

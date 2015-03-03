@@ -190,13 +190,15 @@ class DialogueHelper
     }
     
 
-    static public function foundKeywordsToMessage($programDb, $keyword, $keywordDetails)
+    static public function foundKeywordsToMessage($programDb, $keyword, $keywordDetails, $contact='')
     {
         if ($keywordDetails['program-db'] == $programDb) {
-            if (isset($keywordDetails['dialogue-name'])) {
+            if ($keywordDetails['by-type'] == 'Dialogue') {
                 $message = __("'%s' already used in Dialogue '%s' of the same program.", $keyword, $keywordDetails['dialogue-name']);    
-            } elseif (isset($keywordDetails['request-name'])) {
+            } elseif ($keywordDetails['by-type'] == 'Request') {
                 $message = __("'%s' already used in Request '%s' of the same program.", $keyword, $keywordDetails['request-name']);
+            } elseif ($keywordDetails['by-type'] == 'ProgramSetting') {
+                $message = __("'%s' is not authorized, to authorize please send all required keywords to %s.", $keyword, $contact);
             }
         } else {
             $message = __("'%s' already used by a %s of program '%s'.", $keyword, $keywordDetails['by-type'], $keywordDetails['program-name']);
