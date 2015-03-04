@@ -518,7 +518,7 @@ class ActionTestCase extends CakeTestCase
             'type-action' => 'sms-invite',
             'invite-content'=>'pliz join to have fun',
             'invitee-tag' => 'invited',
-            'feedback-already-optin' => 'participant already in program');
+            'feedback-inviter' => 'participant already in program');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
@@ -530,7 +530,7 @@ class ActionTestCase extends CakeTestCase
         $action = array(
             'type-action' => 'sms-invite',
             'invitee-tag' => 'invited',
-            'feedback-already-optin' => 'participant already in program');
+            'feedback-inviter' => 'participant already in program');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
@@ -548,7 +548,7 @@ class ActionTestCase extends CakeTestCase
             'type-action' => 'sms-invite',
             'invite-content'=>'[participant%.name] says pliz join to have fun',
             'invitee-tag' => 'invited',
-            'feedback-already-optin' => 'participant already in program');
+            'feedback-inviter' => 'participant already in program');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
@@ -571,7 +571,7 @@ class ActionTestCase extends CakeTestCase
         
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
-            'The type-action field with value sms-invite require the field feedback-already-optin.',
+            'The type-action field with value sms-invite require the field feedback-inviter.',
             $this->Action->validationErrors['type-action'][0]);
     }
     

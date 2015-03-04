@@ -1,2 +1,0 @@
-<p> Which is a feedback message return to the sender in case participant is already Optin in the program.</p>
-

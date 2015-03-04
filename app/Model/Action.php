@@ -96,7 +96,7 @@ class Action extends VirtualModel
                         'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proportional-labels'),
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'),
-                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-already-optin'))),
+                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -281,7 +281,7 @@ class Action extends VirtualModel
                 'message' => VusionConst::TAG_FAIL_MESSAGE
                 ),
             ),
-        "feedback-already-optin" => array(
+        'feedback-inviter' => array(
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-invite'),
                 'message' => 'The content field require an SMS Invite action.',

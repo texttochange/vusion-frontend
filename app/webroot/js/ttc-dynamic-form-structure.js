@@ -357,7 +357,7 @@ var action = {
             {'value': 'sms-invite',
             'subfields': ['invite-content',
                           'invitee-tag',
-                          'feedback-already-optin']}               
+                          'feedback-inviter']}               
         ]
     },
     "tag": {'type': 'text'},
@@ -417,7 +417,7 @@ var action = {
     'forward-content': {'type': 'textarea'},
     'invite-content': {'type': 'textarea'},
     'invitee-tag': {'type': 'text'},
-    'feedback-already-optin':{'type': 'textarea'}
+    'feedback-inviter': {'type': 'textarea'}
     
 }
 $.extend(dynamicForm, action);
