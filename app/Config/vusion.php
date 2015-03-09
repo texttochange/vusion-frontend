@@ -53,5 +53,6 @@ $config = array(
             'subjectPrefix' => '[vusion-issues]'
             ),
         'countriesPrefixesFile' => 'files/countries and codes.csv',
+        'backendUser' => 'supervisordUser'
         )
     );   
