@@ -353,7 +353,11 @@ var action = {
             {'value': 'sms-forwarding',
             'subfields': ['forward-to', 
                            'set-forward-message-condition',
-                           'forward-content']}
+                           'forward-content']},
+            {'value': 'sms-invite',
+            'subfields': ['invite-content',
+                          'invitee-tag',
+                          'feedback-inviter']}               
         ]
     },
     "tag": {'type': 'text'},
@@ -410,7 +414,10 @@ var action = {
     "weight": {'type': 'text'},
     'forward-url': {'type': 'text'},
     'forward-to': {'type': 'text'},
-    'forward-content': {'type': 'textarea'}
+    'forward-content': {'type': 'textarea'},
+    'invite-content': {'type': 'textarea'},
+    'invitee-tag': {'type': 'text'},
+    'feedback-inviter': {'type': 'textarea'}
     
 }
 $.extend(dynamicForm, action);

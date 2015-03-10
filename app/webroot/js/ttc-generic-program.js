@@ -125,6 +125,9 @@ function handleResponseValidationErrors(validationErrors){
             case 'forward-content':
                 errorClass = "ttc-textarea-validation-error";
                 break;
+            case 'invite-content':
+                errorClass = "ttc-textarea-validation-error";
+                break;
             case 'forward-message-no-participant-feedback':
                 errorClass = "ttc-textarea-validation-error";
                 break;
