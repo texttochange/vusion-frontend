@@ -11,7 +11,8 @@ class UnmatchableReplyController extends AppController
 
     var $uses = array(
         'UnmatchableReply', 
-        'User');
+        'User',
+        'Export');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -21,8 +22,7 @@ class UnmatchableReplyController extends AppController
         'UserAccess',
         'Filter',
         'Paginator' => array(
-            'className' => 'BigCountPaginator'),
-        'Export');
+            'className' => 'BigCountPaginator'));
     var $helpers = array(
         'Js' => array('Jquery'), 
         'Time', 
@@ -43,10 +43,9 @@ class UnmatchableReplyController extends AppController
     }
 
 
-    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName, $redisKey)
+    protected function _notifyBackendExport($exportId)
     {
-        $this->VumiRabbitMQ->sendMessageToExportUnmatchableReply(
-            $database, $collection, $filter, $fileFullName, $redisKey);
+        $this->VumiRabbitMQ->sendMessageToExport($exportId);
     }
 
 
@@ -145,55 +144,67 @@ class UnmatchableReplyController extends AppController
         $fileName = 'Unmatchable_Reply_' . $now->format("Y-m-d_H-i-s") . ".csv";
         $fileFullName = $filePath . DS . $fileName;
 
-        $redisKey = $this->Export->startAnExport(
-            'vusion', 'unmatchable-reply');
-
-        $this->_notifyBackendExport(
-            'vusion',
-            $this->UnmatchableReply->table,
-            $conditions,
-            $fileFullName,
-            $redisKey);
-
-        $this->Session->setFlash(
-            __("Vusion is backing the export file. Your file should appear shortly on this page."),
-            'default', array('class'=>'message success'));
-
-        $requestSuccess = True;
+        $export = array(
+            'database' => 'vusion',
+            'collection' => $this->UnmatchableReply->table,
+            'conditions' => $conditions,
+            'filters' => $this->Filter->getFilters(),
+            'order' => array(),
+            'file-full-name' => $fileFullName);
+        if (!$saved_export = $this->Export->save($export)) {
+            print_r($this->Export->validationErrors);
+            $this->Session->setFlash(__("Vusion failed to start the export process."));
+        } else {
+            $this->_notifyBackendExport($saved_export['Export']['_id']);
+            $this->Session->setFlash(
+                __("Vusion is backing the export file. Your file should appear shortly on this page."),
+                'default', array('class'=>'message success'));
+            $requestSuccess = True;
+        }
         $this->set(compact('requestSuccess'));
         
-        $this->redirect(array(
-            'action' => 'exported'));
+        $this->redirect(array('action' => 'exported'));
     }
 
 
     public function exported()
     {
-        $unmatchableReplyDirPath  = WWW_ROOT . "files/programs/unmatchableReply/";
-        $fileCurrenltyExported    = $this->Export->hasExports('vusion', 'unmatchableReply');
-        if (file_exists($unmatchableReplyDirPath)) {
-            $exportedFiles = scandir($unmatchableReplyDirPath);
-        } else {
-            $exportedFiles = array();
-        }
-        $exportedUnmatchableReplyFiles = array_filter($exportedFiles, function($var) { 
-            return strpos($var, '.csv');});
-        $files = array();
-        foreach ($exportedUnmatchableReplyFiles as $file) {
-            $fileFullName = $unmatchableReplyDirPath . DS . $file;
-            $files[] = array(
-                'name' =>  $file,
-                'size' => filesize($fileFullName),
-                'created' => filemtime($fileFullName));
-        }
-        $created = array();
-        foreach ($files as $key => $row) {
-            $created[$key] = $row['created'];
-        }
-        array_multisort($created, SORT_DESC, $files);
-        $this->set(compact('files', 'fileCurrenltyExported'));
+        $programUrl  = $this->programDetails['url'];
+        $paginate = array(
+            'all',
+            'limit' => 100,
+            'conditions' => array(
+                'database' => 'vusion',
+                'collection' => 'unmatchable_reply'),
+            'order' => array('timestamp' => '-1'));
+        $this->paginate = $paginate;
+        $files = $this->paginate('Export');
+        $this->set(compact('files'));
     }
 
+
+    public function deleteExport() 
+    {
+        $id = $this->params['named']['id'];
+        $requestSuccess = false;
+
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        $this->Export->id = $id;
+        if (!$this->Export->exists()) {
+            throw new NotFoundException(__('Invalid Export: %s', $id));
+        }
+
+        if ($this->Export->delete()) {
+            $this->Session->setFlash(__('Export deleted.'),
+                'default', array('class'=>'message success'));
+        } else {
+            $this->Session->setFlash(__('Export cannot be deleted.'));
+        }
+
+        $this->redirect(array('action' => 'exported'));
+    }
     
     
 }

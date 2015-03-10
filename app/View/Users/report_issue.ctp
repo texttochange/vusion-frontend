@@ -8,6 +8,14 @@
     }
 	echo $this->Form->create('ReportIssue', array('error'=> true, 'type' => 'file', 'url' => array('controller' => 'users', 'action' =>'reportIssue')));
 	echo $this->Form->input(
+		'issueurl',
+		array(
+			'title' => __('Url to the page with the Issue'),
+			'label' => __('Issue URL'),
+			'placeholder' => __('Url to the page with the Issue'),
+			'class' => 'report-issue-describtion',
+			'div' => true));
+	echo $this->Form->input(
 		'subject',
 		array(
 			'title' => __('Expected and current behavior'),

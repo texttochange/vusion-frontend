@@ -44,14 +44,16 @@
     ?></li>
     <li>
     <?php
-    echo $this->AclLink->generateButton(
-        __('Export'),
-        $programDetails['url'],
-        'programParticipants',
-        'export',
-        array('class' => 'ttc-button'),
-        null,
-        $urlParams);
+    if ($participants != null) {
+	    echo $this->AclLink->generateButton(
+	        __('Export'),
+	        $programDetails['url'],
+	        'programParticipants',
+	        'export',
+	        array('class' => 'ttc-button'),
+	        null,
+	        $urlParams);
+	}
     ?>
 	</li>
     <li><?php echo $this->AclLink->generateButton(

@@ -4,6 +4,7 @@ App::uses('History','Model');
 App::uses('Dialogue', 'Model');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
+App::uses('Export', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
@@ -15,7 +16,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
         'Dialogue',
         'UnattachedMessage',
         'ProgramSetting',
-        'Request');
+        'Request',
+        'Export');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -25,8 +27,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
-        'ArchivedProgram',
-        'Export');
+        'ArchivedProgram');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
@@ -45,10 +46,9 @@ class ProgramHistoryController extends BaseProgramSpecificController
     }
 
 
-    protected function _notifyBackendExport($database, $collection, $filter, $fileFullName, $redisKey)
+    protected function _notifyBackendExport($exportId)
     {
-        $this->VumiRabbitMQ->sendMessageToExportHistory(
-            $database, $collection, $filter, $fileFullName, $redisKey);
+        $this->VumiRabbitMQ->sendMessageToExport($exportId);
     }
 
 
@@ -152,30 +152,17 @@ class ProgramHistoryController extends BaseProgramSpecificController
 
     public function exported()
     {
-        $programUrl            = $this->programDetails['url'];
-        $programDirPath        = WWW_ROOT . "files/programs/". $programUrl;
-        $fileCurrenltyExported = $this->Export->hasExports($programUrl, 'history'); 
-        if (file_exists($programDirPath)) {
-            $exportedFiles = scandir($programDirPath);
-        } else {
-            $exportedFiles = array();
-        }
-        $exportedHistoryFiles  = array_filter($exportedFiles, function($var) { 
-            return strpos($var, 'history');});
-        $files = array();
-        foreach ($exportedHistoryFiles as $file) {
-            $fileFullName = $programDirPath . DS . $file;
-            $files[] = array(
-                'name' =>  $file,
-                'size' => filesize($fileFullName),
-                'created' => filemtime($fileFullName));
-        }
-        $created = array();
-        foreach ($files as $key => $row) {
-            $created[$key] = $row['created'];
-        }
-        array_multisort($created, SORT_DESC, $files);
-        $this->set(compact('files', 'fileCurrenltyExported'));
+        $programUrl  = $this->programDetails['url'];
+        $paginate = array(
+            'all',
+            'limit' => 100,
+            'conditions' => array(
+                'database' => $this->programDetails['database'],
+                'collection' => 'history'),
+            'order' => array('timestamp' => '-1'));
+        $this->paginate = $paginate;
+        $files = $this->paginate('Export');
+        $this->set(compact('files'));
     }
 
 
@@ -209,24 +196,52 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $fileName     = $programNameUnderscore . "_history_" . $timestamp . ".csv";
         $fileFullName = $filePath . DS . $fileName;
 
-        $redisKey = $this->Export->startAnExport($programUrl, 'history');
-
-        $this->_notifyBackendExport(
-            $this->programDetails['database'],
-            $this->History->table,
-            $conditions,
-            $fileFullName,
-            $redisKey);
-
-        $this->Session->setFlash(
-            __("Vusion is backing the export file. Your file should appear shortly on this page."),
-            'default', array('class'=>'message success'));
-
-        $requestSuccess = True;
+        $export = array(
+            'database' => $this->programDetails['database'],
+            'collection' => $this->History->table,
+            'conditions' => $conditions,
+            'filters' => $this->Filter->getFilters(),
+            'order' => array(),
+            'file-full-name' => $fileFullName);
+        if (!$saved_export = $this->Export->save($export)) {
+            $this->Session->setFlash(__("Vusion failed to start the export process."));
+        } else {
+            $this->_notifyBackendExport($saved_export['Export']['_id']);
+            $this->Session->setFlash(
+                __("Vusion is backing the export file. Your file should appear shortly on this page."),
+                'default', array('class'=>'message success'));
+            $requestSuccess = True;
+        }
         $this->set(compact('requestSuccess'));
 
         $this->redirect(array(
             'program' => $programUrl,
+            'action' => 'exported'));
+    }
+
+
+    public function deleteExport() 
+    {
+        $id = $this->params['id'];
+        $requestSuccess = false;
+
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        $this->Export->id = $id;
+        if (!$this->Export->exists()) {
+            throw new NotFoundException(__('Invalid Export: %s', $id));
+        }
+
+        if ($this->Export->delete()) {
+            $this->Session->setFlash(__('Export deleted.'),
+                'default', array('class'=>'message success'));
+        } else {
+            $this->Session->setFlash(__('Export cannot be deleted.'));
+        }
+
+        $this->redirect(array(
+            'program' => $this->programDetails['url'],
             'action' => 'exported'));
     }
     

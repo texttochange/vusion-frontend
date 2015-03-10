@@ -2,6 +2,7 @@
 App::Uses('MongoModel', 'Model');
 App::uses('UnmatchableReplyController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
+App::uses('Export', 'Model');
 
 
 class TestUnmatchableReplyController extends UnmatchableReplyController
@@ -30,14 +31,15 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
     
     protected function instanciateUnmatchableReplyModel()
     {
-        $this->UnmatchableReply = ClassRegistry::init(array(
-            'class' => 'UnmatchableReply'));
+        $this->UnmatchableReply = ClassRegistry::init('UnmatchableReply');
+        $this->Export = ClassRegistry::init('Export');
     }
     
     
     protected function dropData()
     {
         $this->UnmatchableReply->deleteAll(true,false);
+        $this->Export->deleteAll(true, false);
     }
     
     
@@ -137,14 +139,47 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
             ->expects($this->once())
             ->method('_notifyBackendExport')
             ->with(
-                'vusion',
-                'unmatchable_reply',
-                array(),
-                $this->stringContains('unmatchable_reply_'),
-                'vusion:exports:vusion:unmatchable-reply')
+                  $this->matchesRegularExpression('/^[a-f0-9]+$/'))
             ->will($this->returnValue(true));
 
         $this->testAction("/unmatchableReply/export");
+
+        $this->assertEqual($this->Export->find('count'), 1);
+        $export = $this->Export->find('first');
+        $this->assertTrue(isset($export['Export']));
+        $this->assertContains(
+            'Unmatchable_Reply_', 
+            $export['Export']['file-full-name']);
+    }
+
+
+    public function testExported()
+    {
+        $this->mockProgramAccess();
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'vusion',
+            'collection' => 'unmatchable_reply',
+            'file-full-name' => '/var/test.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test2.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'vusion',
+            'collection' => 'unmatchable_reply',
+            'file-full-name' => '/var/test3.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram2',
+            'collection' => 'history',
+            'file-full-name' => '/var/test3.csv'));
+
+        $this->testAction("/testurl/programHistory/exported");
+        $files = $this->vars['files'];
+        $this->assertEqual(2, count($files));
     }
     
     
