@@ -185,7 +185,18 @@ class ProgramsController extends AppController
         $this->set('program', $program);
     }
     
-    
+
+    public function _ensureProgramDir($programDirPath)
+    {
+        if (!file_exists($programDirPath)) {
+            mkdir($programDirPath); 
+            chgrp($programDirPath, Configure::read('vusion.backendUser'));
+            chmod($programDirPath, 0774);
+        }
+        return true;
+    }
+
+
     public function add()
     {
         if ($this->request->is('post')) {
@@ -209,10 +220,7 @@ class ProgramsController extends AppController
                     );
                 //Create necessary folders
                 $programDirPath = WWW_ROOT . "files/programs/". $this->request->data['Program']['url'];
-                if (!file_exists($programDirPath)) {
-                    mkdir($programDirPath);
-                    chmod($programDirPath, 0764);
-                }
+                $this->_ensureProgramDir($programDirPath);
                 if (!empty($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);

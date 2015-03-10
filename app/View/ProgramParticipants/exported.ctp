@@ -11,7 +11,7 @@
         <thead>
             <tr>
                 <th class="file"><?php echo __('Export'); ?></th>
-                <th class="size"><?php echo __('Size'); ?></th>
+                <th class="size"><?php echo __('Status'); ?></th>
                 <th class="date"><?php echo __('Created'); ?></th>
                 <th class="actions"><?php echo __('Actions'); ?></th>
 
@@ -28,14 +28,12 @@
                 <td>
                     <?php
                     if ($file['Export']['filters'] == array()) {
-                        echo __("All participants");
+                        echo __("All Participants");
                     } else {
-                        if (count($file['Export']['filters']['filter_param']) > 1) {
-                            if ($file['Export']['filters']['filter_operator'] == 'all') {
-                                echo "<div>" . __("All participants with:") ."</div>";
-                            } else {
-                                echo "<div>" . __("Participants with either:") ."</div>";
-                            }
+                        if ($file['Export']['filters']['filter_operator'] == 'all') {
+                            echo "<div>" . __("All Participants with:") ."</div>";
+                        } else {
+                            echo "<div>" . __("Participants with either:") ."</div>";
                         }
                         foreach ($file['Export']['filters']['filter_param'] as $filterParam) {
                             echo "<div>- " . $filterParam[1] . " " . $filterParam[2] . " " . (isset($filterParam[3]) ? $filterParam[3]:'') ."</div>";
@@ -43,15 +41,26 @@
                     }
                     ?>
                 </td>
-                <td><?php
-                if ($file['Export']['status'] == 'success') {
-                    echo $this->Number->toReadableSize($file['Export']['size']);
-                } else {
-                    if ($file['Export']['status'] == 'failed') {
-                        echo "<i title='". $file['Export']['failure-reason'] ."'>" . $file['Export']['status'] . '</i>';
-                    } else {
-                        echo "<i>" . $file['Export']['status'] . '</i>';
-                    }
+                <td>
+                <?php
+                switch ($file['Export']['status']) {
+                    case 'success':
+                        echo __("done, size: %s", $this->Number->toReadableSize($file['Export']['size']));
+                        break;
+                    case 'failed':
+                        echo "<i title='". $file['Export']['failure-reason'] ."'>" . __("failed, contact support") . '</i>';
+                        break;
+                    case 'queued':
+                        echo "<i>" . __("queued") . '</i>';
+                        break;
+                    case 'processing':
+                        echo "<i>" . __("processing") . '</i>';
+                        break;
+                    case 'no-space':
+                        echo "<i>" . __("no space, contact support") . '</i>';
+                        break;
+                    default:
+                        echo "<i>" . __("error, contact support") . '</i>';
                 }
                 ?>
                 </td>
@@ -66,14 +75,16 @@
                 <td>
                 <?php
                 if (!in_array($file['Export']['status'], array('queued', 'processing'))) {
-                    echo $this->AclLink->generateButton(
-                        __('Download'),
-                        $programDetails['url'],
-                        'ProgramParticipants',
-                        'download',
-                        array('class'=>'ttc-button'),
-                        null,
-                        array('file' => basename($file['Export']['file-full-name'])));
+                    if ($file['Export']['status'] == 'success') {
+                        echo $this->AclLink->generateButton(
+                            __('Download'),
+                            $programDetails['url'],
+                            'ProgramParticipants',
+                            'download',
+                            array('class'=>'ttc-button'),
+                            null,
+                            array('file' => basename($file['Export']['file-full-name'])));
+                    }
                     echo $this->AclLink->generatePostLink(
                         __('Delete'),
                         $programDetails['url'],
