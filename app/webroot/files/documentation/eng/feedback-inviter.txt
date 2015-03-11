@@ -1,0 +1,5 @@
+Which is a feedback message return to the sender in case:
+<li>Participant is already Optin in the program.</li>
+<li>Sender sends an empty phone number.</li>
+<b>Example:</b>
+<i>Please check the phone number.Participant may already Optin or empty phone number was entered</i>

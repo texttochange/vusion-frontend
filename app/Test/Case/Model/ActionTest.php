@@ -9,13 +9,16 @@ class ActionTestCase extends CakeTestCase
         parent::setUp();
         $this->Action = new Action();
     }
-
+    
+    
     public function tearDown()
     {
         unset($this->Action);
     }
-
-    public function testValidateAction_fail_feedback_contentNotAllow() {
+    
+    
+    public function testValidateAction_fail_feedback_contentNotAllow()
+    {
         $action = array(
             'type-action' => 'feedback',
             'content' => 'What’up');
@@ -29,9 +32,10 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['content']));
     }
-
-
-    public function testValidateAction_fail_feedback_fieldMissing() {
+    
+    
+    public function testValidateAction_fail_feedback_fieldMissing()
+    {
         $action = array(
             'type-action' => 'feedback');
         $this->Action->set($action);
@@ -46,7 +50,8 @@ class ActionTestCase extends CakeTestCase
     }
     
     
-    public function testValidateAction_ok_feedback_dynamic_content() {
+    public function testValidateAction_ok_feedback_dynamic_content()
+    {
         $action = array(
             'type-action' => 'feedback',
             'content' => 'Hello [contentVariable.mombasa.chicken.price]');
@@ -54,9 +59,10 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
     }
-
-
-    public function testValidateAction_fail_feedback_dynamic_content() {
+    
+    
+    public function testValidateAction_fail_feedback_dynamic_content()
+    {
         $action = array(
             'type-action' => 'feedback',
             'content' => 'Hello [shoe.box]');
@@ -92,9 +98,10 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['content']));
     }
-
-   
-    public function testValidateAction_fail_delayedEnrolling() {
+    
+    
+    public function testValidateAction_fail_delayedEnrolling()
+    {
         $action = array(
             'type-action' => 'delayed-enrolling',
             'enroll' => '233445',
@@ -112,9 +119,10 @@ class ActionTestCase extends CakeTestCase
             2,
             count($this->Action->validationErrors['offset-days']));
     }
-
-
-    public function testValidateAction_fail_delayedEnrolling_value() {
+    
+    
+    public function testValidateAction_fail_delayedEnrolling_value()
+    {
         $action = array(
             'type-action' => 'delayed-enrolling',
             'enroll' => '233445',
@@ -131,9 +139,10 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['offset-days']));
     }
-
-
-    public function testValidateAction_fail_other_action() {
+    
+    
+    public function testValidateAction_fail_other_action()
+    {
         $action = array(
             'type-action' => 'some-new-action');
         $this->Action->set($action);
@@ -147,9 +156,10 @@ class ActionTestCase extends CakeTestCase
             1,
             count($this->Action->validationErrors));
     }
-
-
-    public function testValidateAction_fail_tagging() {
+    
+    
+    public function testValidateAction_fail_tagging()
+    {
         $action = array(
             'type-action' => 'tagging',
             'tag' => 'a tag$');
@@ -162,18 +172,20 @@ class ActionTestCase extends CakeTestCase
         $this->assertEqual(
             1, count($this->Action->validationErrors['tag']));
     }
-
-
-    public function testValidateAction_optin() {
+    
+    
+    public function testValidateAction_optin()
+    {
         $action = array(
             'type-action' => 'optin');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
     }
-
-
-    public function testValidateAction_condition_fail_conditionOperator_value() {
+    
+    
+    public function testValidateAction_condition_fail_conditionOperator_value()
+    {
         $action = array(
             'type-action' => 'optin',
             'set-condition' => 'condition',
@@ -186,9 +198,10 @@ class ActionTestCase extends CakeTestCase
             'The condition-operator value is not valid.',
             $this->Action->validationErrors['condition-operator'][0]);
     }
-
-
-    public function testValidateAction_condition_fail_conditionOperator_required() {
+    
+    
+    public function testValidateAction_condition_fail_conditionOperator_required()
+    {
         $action = array(
             'type-action' => 'optin',
             'set-condition' => 'condition');
@@ -202,9 +215,10 @@ class ActionTestCase extends CakeTestCase
             'At least one subconditions has to be set.',
             $this->Action->validationErrors['subconditions'][0]);
     }
-
-
-    public function testValidateAction_condition_fail_subcondition_value() {
+    
+    
+    public function testValidateAction_condition_fail_subcondition_value()
+    {
         $action = array(
             'type-action' => 'optin',
             'set-condition' => 'condition',
@@ -220,9 +234,10 @@ class ActionTestCase extends CakeTestCase
             "Use only space, letters and numbers for tag, e.g 'group 1'.",
             $this->Action->validationErrors['subconditions'][0]['subcondition-parameter'][0]);
     }
-
-
-    public function testValidateAction_fail_proportionalTagging() {
+    
+    
+    public function testValidateAction_fail_proportionalTagging()
+    {
         $action = array(
             'type-action' => 'proportional-tagging',
             'set-only-optin-count' => 'something',
@@ -233,7 +248,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
-         $this->assertEqual(
+        $this->assertEqual(
             "The field set-only-optin-count doesn't have a valide value.",
             $this->Action->validationErrors['set-only-optin-count'][0]);
         $this->assertEqual(
@@ -243,9 +258,10 @@ class ActionTestCase extends CakeTestCase
             'The weight value can only be a integer.',
             $this->Action->validationErrors['proportional-tags'][0]['weight'][0]);
     }
-
-
-    public function testValidateAction_fail_proportionalLabelling() {
+    
+    
+    public function testValidateAction_fail_proportionalLabelling()
+    {
         $action = array(
             'type-action' => 'proportional-labelling',
             'label-name' => '',
@@ -270,9 +286,10 @@ class ActionTestCase extends CakeTestCase
             'The weight value can only be a integer.',
             $this->Action->validationErrors['proportional-labels'][0]['weight'][0]);
     }
-
-
-    public function testValidateAction_url_forwarding_ok() {
+    
+    
+    public function testValidateAction_url_forwarding_ok()
+    {
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php');
@@ -294,21 +311,21 @@ class ActionTestCase extends CakeTestCase
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
-
-         $action = array(
+        
+        $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/index.php?login=login&message=[MESSAGE]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
-
+        
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/index.php?login=login&password=password&message=[MESSAGE]&other=other');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
-
+        
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => "http://partner.com/index.php?script='insert into [PROGRAM] value [MESSAGE]'");
@@ -317,9 +334,10 @@ class ActionTestCase extends CakeTestCase
         $result = $this->Action->validates();
         $this->assertTrue($result);
     }
-
     
-    public function testValidateAction_url_forwarding_fail_format() {
+    
+    public function testValidateAction_url_forwarding_fail_format()
+    {
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'partner.com/receive_mo.php');
@@ -340,9 +358,10 @@ class ActionTestCase extends CakeTestCase
             'The forward url is not valid.',
             $this->Action->validationErrors['forward-url'][0]);
     }
-
-
-    public function testValidateAction_url_forwarding_fail_replace() {        
+    
+    
+    public function testValidateAction_url_forwarding_fail_replace()
+    {        
         $action = array(
             'type-action' => 'url-forwarding',
             'forward-url' => 'http://partner.com/receive_mo.php?message=[Message]');
@@ -365,18 +384,21 @@ class ActionTestCase extends CakeTestCase
     }
     
     
-    public function testValidateAction_sms_forwarding_ok_dynamic_content() {
+    public function testValidateAction_sms_forwarding_ok_dynamic_content()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag, mylabel:[participant.mylabel]',
             'forward-content' => 'Hello [participant.name]([participant.phone]) from 
-                                  [participant.address] says [context.message] at [time.H]:[time.M]');
+            [participant.address] says [context.message] at [time.H]:[time.M]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
     }
-
-    public function testValidateAction_sms_forwarding_ok_missing_field() {
+    
+    
+    public function testValidateAction_sms_forwarding_ok_missing_field()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-content' => 'Hello');
@@ -384,8 +406,10 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
     }
-
-    public function testValidateAction_sms_forwarding_fail_multi_selector() {
+    
+    
+    public function testValidateAction_sms_forwarding_fail_multi_selector()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'mylabel:[contentVariable:something]',
@@ -397,14 +421,15 @@ class ActionTestCase extends CakeTestCase
             "The selector mylabel:[contentVariable:something] should be a tags or a labels. For labels, their value could be matching the sender by using content variable notation.",
             $this->Action->validationErrors['forward-to'][0]);
     }
-
     
-    public function testValidateAction_sms_forwarding_fail_wrong_customized_content() {
+    
+    public function testValidateAction_sms_forwarding_fail_wrong_customized_content()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
             'forward-content' => 'Hello [participant.name]([participant.phone]) from 
-                                  [participant.address] says [context.message] at [times.H]');
+            [participant.address] says [context.message] at [times.H]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
@@ -417,12 +442,13 @@ class ActionTestCase extends CakeTestCase
     }
     
     
-    public function testValidateAction_sms_forwarding_fail_wrong_fieldmissing() {
+    public function testValidateAction_sms_forwarding_fail_wrong_fieldmissing()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
             'forward-content' => 'Hello [participant%.name]([participant.phone]) from 
-                                  [participant.address] says [context.message] at [time.H]');
+            [participant.address] says [context.message] at [time.H]');
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
@@ -433,8 +459,10 @@ class ActionTestCase extends CakeTestCase
             1, 
             count($this->Action->validationErrors['forward-content']));
     }
-
-    public function testValidateAction_sms_forwarding_message_condition_ok() {
+    
+    
+    public function testValidateAction_sms_forwarding_message_condition_ok()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
@@ -446,8 +474,10 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->assertTrue($this->Action->validates());
     }
-     
-    public function testValidateAction_sms_forwarding_message_condition_fail() {
+    
+    
+    public function testValidateAction_sms_forwarding_message_condition_fail()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
@@ -462,8 +492,10 @@ class ActionTestCase extends CakeTestCase
             'The field value is not valid.',
             $this->Action->validationErrors['forward-message-condition-type'][0]);
     }
-
-    public function testValidateAction_sms_forwarding_no_participant_feedback_fail() {
+    
+    
+    public function testValidateAction_sms_forwarding_no_participant_feedback_fail()
+    {
         $action = array(
             'type-action' => 'sms-forwarding',
             'forward-to'=>'my tag',
@@ -478,5 +510,70 @@ class ActionTestCase extends CakeTestCase
             'To be used as customized content, \'contet\' can only be either: participant, contentVariable, time or context.',
             $this->Action->validationErrors['forward-message-no-participant-feedback'][0]);
     }
-
+    
+    
+    public function testValidateAction_sms_invite_ok_dynamic_content()
+    {
+        $action = array(
+            'type-action' => 'sms-invite',
+            'invite-content'=>'pliz join to have fun',
+            'invitee-tag' => 'invited',
+            'feedback-inviter' => 'participant already in program');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertTrue($this->Action->validates());
+    }
+    
+    
+    public function testValidateAction_sms_invite_no_invite_content_fail()
+    {
+        $action = array(
+            'type-action' => 'sms-invite',
+            'invitee-tag' => 'invited',
+            'feedback-inviter' => 'participant already in program');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The type-action field with value sms-invite require the field invite-content.',
+            $this->Action->validationErrors['type-action'][0]);
+    }
+    
+    
+    public function testValidateAction_sms_invite_no_invite_content_wrong_customized_content_fail()
+    {
+        $action = array(
+            'type-action' => 'sms-invite',
+            'invite-content'=>'[participant%.name] says pliz join to have fun',
+            'invitee-tag' => 'invited',
+            'feedback-inviter' => 'participant already in program');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'To be used as customized content, \'participant%\' can only be composed of letter(s), digit(s) and/or space(s).',
+            $this->Action->validationErrors['invite-content'][0]);
+    }
+    
+    
+    public function testValidateAction_sms_invite_no_feedback_already_optin_fail()
+    {
+        $action = array(
+            'type-action' => 'sms-invite',
+            'invite-content'=>'[participant.name] says pliz join to have fun',
+            'invitee-tag' => 'invited');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            'The type-action field with value sms-invite require the field feedback-inviter.',
+            $this->Action->validationErrors['type-action'][0]);
+    }
+    
+    
 }
