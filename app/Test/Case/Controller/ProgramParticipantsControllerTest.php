@@ -147,13 +147,39 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->method('_notifyUpdateBackendWorker')
         ->with('testurl', '+256788601462')
         ->will($this->returnValue(true));
-        
-        
+           
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
         
         $participant = $this->Maker->getParticipant();
         $this->testAction(
             "/testurl/participants/add", 
+            array(
+                'method' => 'post',
+                'data' => $participant
+                )
+            );   
+    }
+
+
+    public function testAdd_forceOptin()
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorker')
+        ->with('testurl', '+256788601462')
+        ->will($this->returnValue(true));
+        
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
+        
+        $participant = array(
+            'phone' => '256788601462',
+            'last-optout-date' => '2015-01-01T10:10:00');
+        $this->Participant->create();
+        $this->Participant->save($participant);
+        
+        $this->testAction(
+            "/testurl/participants/add?force_optin", 
             array(
                 'method' => 'post',
                 'data' => $participant

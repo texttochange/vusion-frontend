@@ -216,6 +216,7 @@ class Participant extends ProgramSpecificMongoModel
         return $result < 1;            
     }
     
+
     
     public static function cleanPhone($phone) 
     {
@@ -305,7 +306,7 @@ class Participant extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-        
+
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set
@@ -564,21 +565,36 @@ class Participant extends ProgramSpecificMongoModel
         return false;
     }
     
-    
-    public function reset($check)
+
+    public function save($data, $forceOptin=false)
     {
-        $check['enrolled'] = null;
-        $this->save($check);
-        
-        $programNow = $this->ProgramSetting->getProgramTimeNow();
-        
-        $check['session-id']       = $this->gen_uuid();
-        $check['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
-        $check['last-optout-date'] = null;
-        $check['tags']             = array();
-        $check['profile']          = array();
-        
-        return $check;
+        if ($forceOptin) {
+            if (isset($data['Participant']['phone'])) {
+                $participant = $this->find('first', array(
+                    'conditions' => array('phone' => $this->cleanPhone($data['Participant']['phone']))));
+                if (isset($participant['Participant'])) {
+                    ## if optout, force optin by changing the create in an update
+                    if ($participant['Participant']['last-optout-date'] != null) {
+                        $this->id = $participant['Participant']['_id'];
+                    }
+                }
+            }
+        }
+        return parent::save($data);
+    }
+
+    
+    public function reset()
+    {
+        if (empty($this->id)) {
+            throw new Exception("Reset needs id to be set.");
+        }
+        $participant = $this->read(null, $this->id);
+        $resetedParticipant = array('Participant' => array(
+            'phone' => $participant['Participant']['phone']));
+        $this->create(); ##reinitialize the model
+        $this->id = $participant['Participant']['_id'];
+        return $this->save($resetedParticipant);
     }
     
     
