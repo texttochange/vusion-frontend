@@ -1,5 +1,5 @@
 <div class="programsettings form width-size">
-    <ul class="ttc-actions">		
+    <ul class="ttc-actions">        
         <li>
         <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save', 'onclick' => 'document.forms[0].submit()')); ?>
         <span class="actions">
@@ -8,13 +8,13 @@
             array(
                 'program' => $programDetails['url'],
                 'controller' => 'programHome',
-                'action' => 'index'	           
+                'action' => 'index'               
                 ));
         ?>
         </span>
         </li>
         <?php $this->Js->get('#button-save')->event('click', '$("#ProgramSettingsEditForm").submit()' , true);?>
-	</ul>
+    </ul>
 <H3><?php echo __('Edit Program Settings'); ?></H3>
   <div class="ttc-display-area display-height-size">
   <?php 
@@ -47,21 +47,21 @@
         //pack the shortcodes info to be easy to read in JS
         $this->Js->set('shortcodes', $shortcodeCompact);
         $this->Js->get('#shortcode')->event('change','
-        			var countryShortcode = $("#shortcode option:selected").val();
-        			var countryInternationalPrefix = countryShortcode.slice(0, countryShortcode.lastIndexOf("-"));
+                    var countryShortcode = $("#shortcode option:selected").val();
+                    var countryInternationalPrefix = countryShortcode.slice(0, countryShortcode.lastIndexOf("-"));
                     var prefixShortcode = $("#shortcode").val();
-        			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
+                    if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
                         $("#international-prefix").val(countryInternationalPrefix);
                     } else {
                         $("#international-prefix").val("all");
                     }
-        			if (window.app.shortcodes[prefixShortcode]["support-customized-id"]==1) {
-        			    $("#customized-id").prop("disabled", false);
-        			} else {
-        			    $("#customized-id").prop("disabled", true);
-        			    $("#customized-id").val("");
-        			}
-        			');
+                    if (window.app.shortcodes[prefixShortcode]["support-customized-id"]==1) {
+                        $("#customized-id").prop("disabled", false);
+                    } else {
+                        $("#customized-id").prop("disabled", true);
+                        $("#customized-id").val("");
+                    }
+                    ');
         if ($this->Form->isFieldError('shortcode')){
             echo $this->Form->error('shortcode');
         }
@@ -69,11 +69,11 @@
         ?>
         <?php
             echo $this->Form->input('international-prefix',
-            		array('id' => 'international-prefix',
-            		      'label' => __('Supported International Prefix(es)'),
-            		      'readonly' => 'true',
-            		      'style' => 'color:#AAAAAA')
-            		);
+                    array('id' => 'international-prefix',
+                          'label' => __('Supported International Prefix(es)'),
+                          'readonly' => 'true',
+                          'style' => 'color:#AAAAAA')
+                    );
         ?>
         <div>
         <?php
@@ -126,23 +126,23 @@
         ?>
         </div><div>
         <?php
-	        echo $this->Html->tag('label',__('Default template for unmatching answers'));
-	        echo "<br />";
-	        echo $this->Form->select('default-template-unmatching-answer', $unmatchingAnswerTemplateOptions,
-	            array('empty'=> __('Template...')));
-	    ?>
-	    </div>
-	    <?php
-	        if (isset($this->data["ProgramSetting"]["shortcode"]) && isset($shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]])) {
-	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]]["support-customized-id"] ? false : true;
-	        } else {
-    	        $customizedIdDisabled = true;
-    	    }
+            echo $this->Html->tag('label',__('Default template for unmatching answers'));
+            echo "<br />";
+            echo $this->Form->select('default-template-unmatching-answer', $unmatchingAnswerTemplateOptions,
+                array('empty'=> __('Template...')));
+        ?>
+        </div>
+        <?php
+            if (isset($this->data["ProgramSetting"]["shortcode"]) && isset($shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]])) {
+                $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]]["support-customized-id"] ? false : true;
+            } else {
+                $customizedIdDisabled = true;
+            }
             echo $this->Form->input(
                 'customized-id',
-        		array('id' => 'customized-id',
-        		      'label' => __('Customized Id'),
-        		      'disabled' => $customizedIdDisabled));
+                array('id' => 'customized-id',
+                      'label' => __('Customized Id'),
+                      'disabled' => $customizedIdDisabled));
         ?>
         <div>
         <?php
