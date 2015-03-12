@@ -25,49 +25,48 @@
     echo $this->Form->create('ProgramSetting'); ?>
     <fieldset>
     <?php
-         $errorShortcode = "";
+        $errorShortcode = "";
         if ($this->Form->isFieldError('shortcode')){ 
             $errorShortcode = "error";
         }
         echo "<div class='input text $errorShortcode'>";
-            echo $this->Html->tag('label',__('Shortcode'));    
-            foreach($shortcodes as $shortcode) {
-                if ($shortcode['ShortCode']['supported-internationally']==0) {
-                    $countyShortCode = trim($shortcode['ShortCode']['country'])."-".$shortcode['ShortCode']['shortcode'];
-                    $prefixShortCode = $shortcode['ShortCode']['international-prefix']."-".$shortcode['ShortCode']['shortcode'];
-                } else {
-                    $countyShortCode = $shortcode['ShortCode']['shortcode'];
-                    $prefixShortCode = $shortcode['ShortCode']['shortcode'];     
-                }
-                $shortcodeOptions[$prefixShortCode] = $countyShortCode;
-                $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
-                
+        echo $this->Html->tag('label',__('Shortcode'));
+        foreach($shortcodes as $shortcode) {
+            if ($shortcode['ShortCode']['supported-internationally']==0) {
+                $countyShortCode = trim($shortcode['ShortCode']['country'])."-".$shortcode['ShortCode']['shortcode'];
+                $prefixShortCode = $shortcode['ShortCode']['international-prefix']."-".$shortcode['ShortCode']['shortcode'];
+            } else {
+                $countyShortCode = $shortcode['ShortCode']['shortcode'];
+                $prefixShortCode = $shortcode['ShortCode']['shortcode'];
             }
-            echo "<br />";
-            echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
-            //pack the shortcodes info to be easy to read in JS
-            $this->Js->set('shortcodes', $shortcodeCompact);
-            $this->Js->get('#shortcode')->event('change','
-            			var countryShortcode = $("#shortcode option:selected").val();
-            			var countryInternationalPrefix = countryShortcode.slice(0, countryShortcode.lastIndexOf("-"));
-                        var prefixShortcode = $("#shortcode").val();	            			
-            			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
-                            $("#international-prefix").val(countryInternationalPrefix);
-                        } else {
-                            $("#international-prefix").val("all");
-                        }
-            			if (window.app.shortcodes[prefixShortcode]["support-customized-id"]==1) {
-            			    $("#customized-id").prop("disabled", false);
-            			} else {
-            			    $("#customized-id").prop("disabled", true);
-            			    $("#customized-id").val("");
-            			}
-            			');
-            if ($this->Form->isFieldError('shortcode')){ 
-                echo $this->Form->error('shortcode'); 
-            }
+            $shortcodeOptions[$prefixShortCode] = $countyShortCode;
+            $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
+        }
+        echo "<br />";
+        echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
+        //pack the shortcodes info to be easy to read in JS
+        $this->Js->set('shortcodes', $shortcodeCompact);
+        $this->Js->get('#shortcode')->event('change','
+        			var countryShortcode = $("#shortcode option:selected").val();
+        			var countryInternationalPrefix = countryShortcode.slice(0, countryShortcode.lastIndexOf("-"));
+                    var prefixShortcode = $("#shortcode").val();
+        			if (window.app.shortcodes[prefixShortcode]["supported-internationally"]==0) {
+                        $("#international-prefix").val(countryInternationalPrefix);
+                    } else {
+                        $("#international-prefix").val("all");
+                    }
+        			if (window.app.shortcodes[prefixShortcode]["support-customized-id"]==1) {
+        			    $("#customized-id").prop("disabled", false);
+        			} else {
+        			    $("#customized-id").prop("disabled", true);
+        			    $("#customized-id").val("");
+        			}
+        			');
+        if ($this->Form->isFieldError('shortcode')){
+            echo $this->Form->error('shortcode');
+        }
+        echo "</div>";
         ?>
-        </div>
         <?php
             echo $this->Form->input('international-prefix',
             		array('id' => 'international-prefix',
@@ -82,22 +81,29 @@
             $timezone_identifiers = DateTimeZone::listIdentifiers();
             $timezone_options = array();
             foreach($timezone_identifiers as $timezone_identifier) {
-            $timezone_options[$timezone_identifier] = $timezone_identifier; 
+                $timezone_options[$timezone_identifier] = $timezone_identifier; 
             }
             echo "<br />";
             echo $this->Form->select('timezone', $timezone_options);
         ?>
         </div>
-        <div>
         <?php
+            $errorContat = "";
+            if ($this->Form->isFieldError('contact')){
+                $errorContact = "error";
+            }
+            echo "<div class='input text $errorContact'>";
             echo $this->Form->label(__('Program Contact Person'));
             echo "<br>";
             echo $this->Form->select(
                 'contact',
                 Hash::combine($contactUsers, '{n}.User.id', '{n}.User.username'),
                 array('empty'=> __('Select...')));
-       ?>
-        </div>
+            if ($this->Form->isFieldError('contact')){
+                echo $this->Form->error('contact');
+            }
+            echo "</div>";
+        ?>
         <?php
             echo $this->Form->input(
                 'authorized-keywords',
@@ -127,16 +133,16 @@
 	    ?>
 	    </div>
 	    <?php
-	        if (isset($this->data["ProgramSetting"]["shortcode"])) {
+	        if (isset($this->data["ProgramSetting"]["shortcode"]) && isset($shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]])) {
 	            $customizedIdDisabled = $shortcodeCompact[$this->data["ProgramSetting"]["shortcode"]]["support-customized-id"] ? false : true;
 	        } else {
     	        $customizedIdDisabled = true;
     	    }
-            echo $this->Form->input('customized-id',
-            		array('id' => 'customized-id',
-            		      'label' => __('Customized Id'),
-            		      'disabled' => $customizedIdDisabled)
-            		);
+            echo $this->Form->input(
+                'customized-id',
+        		array('id' => 'customized-id',
+        		      'label' => __('Customized Id'),
+        		      'disabled' => $customizedIdDisabled));
         ?>
         <div>
         <?php
