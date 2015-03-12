@@ -88,7 +88,7 @@
         ?>
         </div>
         <?php
-            $errorContat = "";
+            $errorContact = "";
             if ($this->Form->isFieldError('contact')){
                 $errorContact = "error";
             }
