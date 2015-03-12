@@ -81,7 +81,9 @@ class ProgramDialoguesController extends BaseProgramSpecificController
             return;
         }
         
-        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Dialogue->setContactEmail($contactEmail);
         $dialogue      = DialogueHelper::objectToArray($this->request->data);
         $id            = Dialogue::getDialogueId($dialogue);
         $keywords      = Dialogue::getDialogueKeywords($dialogue);
@@ -210,10 +212,11 @@ class ProgramDialoguesController extends BaseProgramSpecificController
         }
         
         /**Is the keyword used by another program*/
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $shortCode    = $this->ProgramSetting->getProgramSetting('shortcode');
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Dialogue', $dialogueId);
         if ($foundKeywords) {
-            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $contactEmail = $this->ProgramSetting->getContactEmail();
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords, $contactEmail);
         } else {
             $requestSuccess = true;
         } 

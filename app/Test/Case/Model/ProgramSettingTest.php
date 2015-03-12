@@ -6,6 +6,7 @@ App::uses('ProgramSpecificMongoModel', 'Model');
 
 class ProgramSettingTestCase extends CakeTestCase
 {
+    public $fixtures = array('app.user', 'app.group', 'app.program', 'app.programs_user');
       
     public function setUp()
     {
@@ -145,9 +146,10 @@ class ProgramSettingTestCase extends CakeTestCase
             'credit-number' => '2000',
             'credit-from-date' => '02/12/2013',
             'credit-to-date' => '03/12/2013',
+            'contact' => '1'
             );
-        
-        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
+        $result = $this->ProgramSetting->saveProgramSettings($settings);
+        $this->assertTrue($result);
         $this->assertEqual('outgoing-only', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-type')));
         $this->assertEqual(2000, $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-number')));
         $this->assertEqual('2013-12-02T00:00:00', $this->ProgramSetting->find('getProgramSetting', array('key' => 'credit-from-date')));
@@ -177,6 +179,7 @@ class ProgramSettingTestCase extends CakeTestCase
         $settings = array(
             'shortcode' => '256-8181',
             'credit-type' => 'none',
+            'contact' => '1',
             );
         
         $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
@@ -242,10 +245,12 @@ class ProgramSettingTestCase extends CakeTestCase
     {
         $settings = array(
             'shortcode' => '256-8181',
-            'sms-forwarding-allowed' => 'none'
+            'sms-forwarding-allowed' => 'none',
+            'contact' => '1'
             );
         
-        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
+        $result = $this->ProgramSetting->saveProgramSettings($settings);
+        $this->assertTrue($result);
     }
     
     
@@ -261,6 +266,65 @@ class ProgramSettingTestCase extends CakeTestCase
             'The sms forwarding value is not valid.',
             $this->ProgramSetting->validationErrors['sms-forwarding-allowed'][0]);
     }
+
+
+    public function testAuthorizedKeywords()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'contact' => 1
+            );
+
+        $this->ProgramSetting->saveProgramSettings($settings);
+        $this->assertEqual(
+            $this->ProgramSetting->authorizedKeywords(array('keyword')),
+            array());
+    }
+
+    public function testAuthorizedKeywords_emptyString()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'authorized-keywords' => '',
+            'contact' => 1
+            );
+
+        $this->assertTrue($this->ProgramSetting->saveProgramSettings($settings));
+        $this->assertEqual(
+            $this->ProgramSetting->authorizedKeywords(array('keyword')),
+            array());
+    }
+
+
+    public function testAuthorizedKeywords_fail()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'authorized-keywords' => 'keyword2, keyword',
+            'contact' => 1
+            );
+
+        $this->ProgramSetting->saveProgramSettings($settings);
+        $this->assertEqual(
+            $this->ProgramSetting->authorizedKeywords(array('keyword', 'keyword3')),
+            array('keyword3' => array()));
+    }
+
+
+    public function testGetContactEmail()
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'authorized-keywords' => 'keyword2, keyword',
+            'contact' => 1
+            );
+
+        $this->ProgramSetting->saveProgramSettings($settings);
+        $this->assertEqual(
+            $this->ProgramSetting->getContactEmail(),
+            'gerald@here.com');
+    }
+
 
 }
 
