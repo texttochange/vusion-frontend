@@ -140,7 +140,9 @@ class Interaction extends VirtualModel
             'valueRequireFields' => array(
                 'rule' => array(
                     'valueRequireFields', array(
-                        'announcement' => array('content'),
+                        'announcement' => array(
+                            'content',
+                            'announcement-actions'),
                         'question-answer' => array(
                             'content', 
                             'keyword', 
@@ -355,6 +357,16 @@ class Interaction extends VirtualModel
             'requiredConditional' => array(
                 'rule' => array('requiredConditionalFieldValue', 'set-reminder', 'reminder'),
                 'message' => 'A reminder-actions field is required.',
+                ),
+            'validValue' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
+            ),
+        'announcement-actions' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'announcement'),
+                'message' => 'Only available for announcement type of interaction.',
                 ),
             'validValue' => array(
                 'rule' => 'validateActions',
@@ -691,9 +703,9 @@ class Interaction extends VirtualModel
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
-        
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
+        
         if ($this->data['type-schedule'] == 'offset-condition') {
             $this->_setDefault('offset-condition-delay', '0');
         }
@@ -701,9 +713,6 @@ class Interaction extends VirtualModel
         if (isset($this->data['date-time'])) {
             $this->data['date-time'] = DialogueHelper::convertDateFormat($this->data['date-time']);
         }
-        //Exit the function in case of announcement
-        if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
-            return true;
         
         if ($this->data['type-interaction'] == 'question-answer') {
             $this->_setDefault('type-question', null);
@@ -728,21 +737,21 @@ class Interaction extends VirtualModel
                 $this->_setDefault('answer-label', null);
                 $this->_setDefault('feedbacks', array());
             }
-        }
-        
-        if ($this->data['type-interaction'] == 'question-answer-keyword') {
+        } elseif ($this->data['type-interaction'] == 'announcement') {
+            $this->_setDefault('announcement-actions', array());
+            $this->_beforeValidateActions(&$this->data['announcement-actions']);
+        } elseif ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
             $this->_beforeValidateAnswerKeywords();
         }
         
-        if ($this->data['set-reminder'] == 'reminder') {
+        if (isset($this->data['set-reminder']) && $this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
             $this->_setDefault('type-schedule-reminder', null);
             $this->_setDefault('reminder-number', null);
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
-        
         return true;
     }
     

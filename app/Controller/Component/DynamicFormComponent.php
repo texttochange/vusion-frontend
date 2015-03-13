@@ -131,6 +131,7 @@ class DynamicFormComponent extends Component
             "set-forward-message-condition" => __("Retrive a condition in the message"),
             "forward-message-no-participant-feedback" => __("Feedback in case no participant is matching"),
             "set-only-optin-count" => __("Set count only optin participant"),
+            "announcement-actions" => __("Action at sending time")
             );
         $controller->set('dynamicFormLabels', $this->localizedValueLabels);
     }
