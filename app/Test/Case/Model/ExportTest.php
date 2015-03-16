@@ -84,6 +84,27 @@ class ExportTestCase extends CakeTestCase
 		$this->assertTrue(isset($savedExport['Export']));
 	}
 
+    public function testSave_ok_regex()
+	{
+		$export = array(
+			'timestamp' => '2014-12-12T10:10:00',
+			'database' => 'something',
+			'collection' => 'history',
+			'filters' => '',
+			'order' => '',
+			'conditions' => array("participant-phone" => array(
+				'$regex' => "^\+25676", '$options' => "i")), 
+			'status' => 'queued',
+			'size' => 0,
+			'file-full-name' => '/var/vusion/app/webroot/files/programs/myprogram/Export_2014-12-12_10_10.csv'
+			);
+
+		$savedExport = $this->Export->save($export);
+		$this->assertTrue(isset($savedExport['Export']));
+
+		$this->assertEqual($export['conditions'], $savedExport['Export']['conditions']);
+	}
+
 
 	public function testDelete_ok()
 	{
