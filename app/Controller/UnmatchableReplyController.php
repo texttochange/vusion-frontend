@@ -152,7 +152,6 @@ class UnmatchableReplyController extends AppController
             'order' => array(),
             'file-full-name' => $fileFullName);
         if (!$saved_export = $this->Export->save($export)) {
-            print_r($this->Export->validationErrors);
             $this->Session->setFlash(__("Vusion failed to start the export process."));
         } else {
             $this->_notifyBackendExport($saved_export['Export']['_id']);
