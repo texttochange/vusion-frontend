@@ -147,8 +147,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->method('_notifyUpdateBackendWorker')
         ->with('testurl', '+256788601462')
         ->will($this->returnValue(true));
-        
-        
+           
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
         
         $participant = $this->Maker->getParticipant();
@@ -157,6 +156,35 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'post',
                 'data' => $participant
+                )
+            );   
+    }
+
+
+    public function testAdd_forceOptin()
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorker')
+        ->with('testurl', '+256788601462')
+        ->will($this->returnValue(true));
+        
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
+        
+        $participant = array('Participant' => array(
+            'phone' => '256788601462',
+            'last-optout-date' => '2015-01-01T10:10:00'));
+        $this->Participant->create();
+        $this->Participant->save($participant);
+        
+        //Add the force_input parameter
+        $participant['Participant']['force-optin'] = 'true';
+        $this->testAction(
+            "/testurl/participants/add", 
+            array(
+                'method' => 'post',
+                'data' => $participant,
                 )
             );
         
