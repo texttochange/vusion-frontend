@@ -18,7 +18,6 @@ class TestProgramSettingsController extends ProgramSettingsController
 
 class ProgramSettingsControllerTestCase extends ControllerTestCase
 {
-    
     var $programData = array(
         0 => array( 
             'Program' => array(
@@ -68,7 +67,8 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
-                'Group' => array()
+                'Group' => array(),
+                'User' => array('find'),
                 ),
             'methods' => array(
                 '_instanciateVumiRabbitMQ',
@@ -102,7 +102,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         return $programSettings;
     }
 
-    
+
     public function testEdit_ok() 
     {
         $programSettingsController = $this->mockProgramAccess();
@@ -116,13 +116,20 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('areProgramKeywordsUsedByOtherPrograms')
         ->will($this->returnValue(array()));
-        
+
+        $programSettingsController->User
+        ->expects($this->once())
+        ->method('find')
+        ->will($this->returnValue(array()));
+
+
         $programSettings = array(
             'ProgramSetting' => array(
                 'shortcode'=>'8282',
                 'international-prefix'=>'256',
                 'timezone'=> 'EAT',
-                'credit-type' => 'none'
+                'credit-type' => 'none',
+                'contact' => 1
                 )
             );
         
@@ -135,7 +142,7 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testEdit_fail() 
+    public function testEdit_fail_keyword_used()
     {
         $programSettingsController = $this->mockProgramAccess();
         
@@ -158,9 +165,9 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
                 'shortcode'=>'8282',
                 'international-prefix'=>'256',
                 'timezone'=> 'EAT',
-                'credit-type' => 'none'
-                )
-            );
+                'credit-type' => 'none',
+                'contact' => 1
+                ));
         
         $this->testAction("/testurl/programSettings/edit", array(
             'method' => 'post',
@@ -168,8 +175,41 @@ class ProgramSettingsControllerTestCase extends ControllerTestCase
             ));
         
         $this->assertEquals($programSettings, $programSettingsController->data);
+        $this->assertEquals(
+            $this->vars['validationErrorsArray'],
+            array('shortcode' => array("'KEYWORD' already used by a request of program 'my Program'.")));
     }
- 
+
+
+    public function testView_ok()
+    {
+        $programSettingsController = $this->mockProgramAccess();
+
+        $programSettingsController->User
+        ->expects($this->once())
+        ->method('find')
+        ->will($this->returnValue(array('User' => array('username' => 'oliv', 'email' => 'email@somedomain.org'))));
+
+        $programSettings = array(
+            'shortcode' => '256-8282',
+            'contact' => 1
+            );
+
+        $expectedProgramSettings = array(
+            'shortcode' => '256-8282',
+            'contact' => array('User' => array('username' => 'oliv', 'email' => 'email@somedomain.org')),
+            'authorized-keywords' => array(),
+            'credit-type' => 'none',
+            'sms-forwarding-allowed' => 'full');
+
+        $this->ProgramSetting->saveProgramSettings($programSettings);
+
+        $this->testAction("/testurl/programSettings/view");
+
+        $this->assertEquals(
+            $expectedProgramSettings,
+            $this->vars['programSettings']);
+    }
 
 }
 

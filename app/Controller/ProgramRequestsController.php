@@ -96,7 +96,9 @@ class ProgramRequestsController extends BaseProgramSpecificController
             return;
         }
         
-        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Request->setContactEmail($contactEmail);
         $request       = DialogueHelper::objectToArray($this->request->data);
         $id            = Request::getRequestId($request);
         $keywords      = Request::getRequestKeyphrases($request);
@@ -153,7 +155,7 @@ class ProgramRequestsController extends BaseProgramSpecificController
     public function validateKeyword()
     {
         $programUrl     = $this->params['program'];
-        $programDb      = $this->Session->read($programUrl."_db");
+        $programDb      = $this->programDetails['database'];
         $usedKeywords   = $this->request->data['keyword'];
         $requestId      = $this->request->data['object-id'];
         $requestSuccess = true;
@@ -166,11 +168,12 @@ class ProgramRequestsController extends BaseProgramSpecificController
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             return;
         }
-        
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+
+        $shortCode = $this->ProgramSetting->getProgramSetting('shortcode');
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Request', $requestId); 
         if ($foundKeywords) {
-            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $contactEmail = $this->ProgramSetting->getContactEmail();
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords, $contactEmail);
             $requestSuccess = false;
             $this->set(compact('requestSuccess', 'foundMessage'));
             return;

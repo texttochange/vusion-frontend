@@ -15,6 +15,8 @@ class Interaction extends VirtualModel
     var $databaName = null;    
     
     var $payload = array();
+
+    var $contactEmail = null;
     
     var $fields = array(
         'interaction-id',
@@ -183,8 +185,8 @@ class Interaction extends VirtualModel
                 'message' => 'Question Answer required a keyword.',
                 ),
             'validValue' => array(
-                'rule' => array('regex', VusionConst::KEYWORD_REGEX),
-                'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                'rule' => array('regex', VusionConst::KEYWORDS_REGEX),
+                'message' => VusionConst::KEYWORDS_FAIL_MESSAGE
                 ),
             'notUsedKeyword' => array(
                 'rule' => 'notUsedKeyword',
@@ -463,8 +465,8 @@ class Interaction extends VirtualModel
                 'message' => 'keyword field cannot be empty.'
                 ),  
             'validValue' => array(
-                'rule' => array('regex', VusionConst::KEYWORD_REGEX),
-                'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                'rule' => array('regex', VusionConst::KEYWORDS_REGEX),
+                'message' => VusionConst::KEYWORDS_FAIL_MESSAGE
                 ),
             'notUsedKeyword' => array(
                 'rule' => 'notUsedKeyword',
@@ -552,6 +554,11 @@ class Interaction extends VirtualModel
         $this->usedKeywords = $usedKeywords;
     }
     
+
+    public function setContactEmail($contactEmail)
+    {
+        $this->contactEmail = $contactEmail;
+    }
     
     public function notUsedKeyword($field, $data)
     {
@@ -561,7 +568,8 @@ class Interaction extends VirtualModel
         $keywords = DialogueHelper::cleanKeywords($data[$field]);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
-                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+                return DialogueHelper::foundKeywordsToMessage(
+                    $this->databaseName, $keyword, $this->usedKeywords[$keyword], $this->contactEmail);
             }
         }
         return true;

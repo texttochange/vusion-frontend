@@ -276,6 +276,13 @@ class Dialogue extends ProgramSpecificMongoModel
         $this->ValidationHelper = new ValidationHelper($this);   
     }
     
+
+    public function setContactEmail($contactEmail)
+    {
+        parent::setContactEmail($contactEmail);
+        $this->Interaction->setContactEmail($contactEmail);
+    }
+
     
     protected function _findDraft($state, $query, $results = array())
     {
