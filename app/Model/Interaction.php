@@ -15,6 +15,8 @@ class Interaction extends VirtualModel
     var $databaName = null;    
     
     var $payload = array();
+
+    var $contactEmail = null;
     
     var $fields = array(
         'interaction-id',
@@ -138,7 +140,9 @@ class Interaction extends VirtualModel
             'valueRequireFields' => array(
                 'rule' => array(
                     'valueRequireFields', array(
-                        'announcement' => array('content'),
+                        'announcement' => array(
+                            'content',
+                            'announcement-actions'),
                         'question-answer' => array(
                             'content', 
                             'keyword', 
@@ -183,8 +187,8 @@ class Interaction extends VirtualModel
                 'message' => 'Question Answer required a keyword.',
                 ),
             'validValue' => array(
-                'rule' => array('regex', VusionConst::KEYWORD_REGEX),
-                'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                'rule' => array('regex', VusionConst::KEYWORDS_REGEX),
+                'message' => VusionConst::KEYWORDS_FAIL_MESSAGE
                 ),
             'notUsedKeyword' => array(
                 'rule' => 'notUsedKeyword',
@@ -359,6 +363,16 @@ class Interaction extends VirtualModel
                 'message' => null
                 ),
             ),
+        'announcement-actions' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'announcement'),
+                'message' => 'Only available for announcement type of interaction.',
+                ),
+            'validValue' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
+            ),
         // Reminder Schedule Subtype
         'reminder-days' => array(
             'requiredConditional' => array(
@@ -463,8 +477,8 @@ class Interaction extends VirtualModel
                 'message' => 'keyword field cannot be empty.'
                 ),  
             'validValue' => array(
-                'rule' => array('regex', VusionConst::KEYWORD_REGEX),
-                'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                'rule' => array('regex', VusionConst::KEYWORDS_REGEX),
+                'message' => VusionConst::KEYWORDS_FAIL_MESSAGE
                 ),
             'notUsedKeyword' => array(
                 'rule' => 'notUsedKeyword',
@@ -552,6 +566,11 @@ class Interaction extends VirtualModel
         $this->usedKeywords = $usedKeywords;
     }
     
+
+    public function setContactEmail($contactEmail)
+    {
+        $this->contactEmail = $contactEmail;
+    }
     
     public function notUsedKeyword($field, $data)
     {
@@ -561,7 +580,8 @@ class Interaction extends VirtualModel
         $keywords = DialogueHelper::cleanKeywords($data[$field]);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
-                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+                return DialogueHelper::foundKeywordsToMessage(
+                    $this->databaseName, $keyword, $this->usedKeywords[$keyword], $this->contactEmail);
             }
         }
         return true;
@@ -683,9 +703,9 @@ class Interaction extends VirtualModel
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
-        
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
+        
         if ($this->data['type-schedule'] == 'offset-condition') {
             $this->_setDefault('offset-condition-delay', '0');
         }
@@ -693,9 +713,6 @@ class Interaction extends VirtualModel
         if (isset($this->data['date-time'])) {
             $this->data['date-time'] = DialogueHelper::convertDateFormat($this->data['date-time']);
         }
-        //Exit the function in case of announcement
-        if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
-            return true;
         
         if ($this->data['type-interaction'] == 'question-answer') {
             $this->_setDefault('type-question', null);
@@ -720,21 +737,21 @@ class Interaction extends VirtualModel
                 $this->_setDefault('answer-label', null);
                 $this->_setDefault('feedbacks', array());
             }
-        }
-        
-        if ($this->data['type-interaction'] == 'question-answer-keyword') {
+        } elseif ($this->data['type-interaction'] == 'announcement') {
+            $this->_setDefault('announcement-actions', array());
+            $this->_beforeValidateActions(&$this->data['announcement-actions']);
+        } elseif ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
             $this->_beforeValidateAnswerKeywords();
         }
         
-        if ($this->data['set-reminder'] == 'reminder') {
+        if (isset($this->data['set-reminder']) && $this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
             $this->_setDefault('type-schedule-reminder', null);
             $this->_setDefault('reminder-number', null);
             $this->_beforeValidateActions(&$this->data['reminder-actions']);
         }
-        
         return true;
     }
     

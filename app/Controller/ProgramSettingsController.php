@@ -12,7 +12,9 @@ class ProgramSettingsController extends BaseProgramSpecificController
     var $uses = array(
         'ProgramSetting',
         'ShortCode',
-        'Template');
+        'Template',
+        'User',
+        'Group');
     var $components = array(
         'Keyword',
         'ProgramAuth',
@@ -60,7 +62,6 @@ class ProgramSettingsController extends BaseProgramSpecificController
     
     public function view()
     {
-        
         $programSettings = $this->ProgramSetting->getProgramSettings();
         if (isset($programSettings['default-template-open-question'])) {
             $template = $this->Template->read(null, $programSettings['default-template-open-question']);
@@ -74,6 +75,11 @@ class ProgramSettingsController extends BaseProgramSpecificController
             $template = $this->Template->read(null, $programSettings['default-template-unmatching-answer']);
             $programSettings['default-template-unmatching-answer'] = $template['Template']['name'];
         }
+        if (isset($programSettings['contact'])) {
+            $user = $this->User->find('first', array('conditions' => array('User.id' => $programSettings['contact'])));
+            $programSettings['contact'] = $user;
+        }
+
         $this->set(compact('programSettings'));
     }
     
@@ -93,7 +99,7 @@ class ProgramSettingsController extends BaseProgramSpecificController
         if ($this->request->is('post')) {
             
             $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
-                $this->Session->read($programUrl.'_db'), 
+                $this->programDetails['database'],
                 $this->request->data['ProgramSetting']['shortcode']);
             
             if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'], $keywordValidation)) {
@@ -118,11 +124,17 @@ class ProgramSettingsController extends BaseProgramSpecificController
         $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
         $closedQuestionTemplateOptions   = $this->Template->getTemplateOptions('closed-question');
         $unmatchingAnswerTemplateOptions = $this->Template->getTemplateOptions('unmatching-answer');
+        $contactUsers = $this->User->find('all', array(
+            'conditions' => array('Group.name' => array('administrator', 'manager', 'program manager')),
+            'fields' => array('id', 'username', 'group_id')));
+        $currentKeywords = $this->Keyword->getCurrentKeywords($this->programDetails['database']);
         $this->set(compact(
             'openQuestionTemplateOptions',
             'closedQuestionTemplateOptions',
             'unmatchingAnswerTemplateOptions',
-            'shortcodes'));
+            'shortcodes',
+            'contactUsers',
+            'currentKeywords'));
         
         ## in case it's not an edit, the setting need to be retrieved from the database
         if (!isset($this->request->data['ProgramSetting'])) {
@@ -134,6 +146,7 @@ class ProgramSettingsController extends BaseProgramSpecificController
                 }
                 $this->request->data = $programSettings;
             }
+            ## formating the data, should he done in the view one cannot edit the $this->data fields
             ## set a user friendly format
             if (isset($this->request->data['ProgramSetting']['credit-from-date'])) {
                 $fromDate = new DateTime($this->request->data['ProgramSetting']['credit-from-date']);
@@ -142,6 +155,11 @@ class ProgramSettingsController extends BaseProgramSpecificController
             if (isset($this->request->data['ProgramSetting']['credit-to-date'])) {
                 $toDate = new DateTime($this->request->data['ProgramSetting']['credit-to-date']);
                 $this->request->data['ProgramSetting']['credit-to-date'] = $toDate->format('d/m/Y');
+            }
+            if (isset($this->request->data['ProgramSetting']['authorized-keywords'])) {
+                if (is_array($this->request->data['ProgramSetting']['authorized-keywords'])) {
+                    $this->request->data['ProgramSetting']['authorized-keywords'] = implode(', ', $this->request->data['ProgramSetting']['authorized-keywords']);
+                }
             }
         }
     }

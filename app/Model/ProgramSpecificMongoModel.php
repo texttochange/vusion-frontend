@@ -8,6 +8,7 @@ abstract class ProgramSpecificMongoModel extends MongoModel
 	var $specific = true;
 	var $useDbConfig = 'mongo_program_specific';
 	var $databaseName = null;
+    var $contactEmail = null;
 
 
     public function __construct($id = false, $table = null, $ds = null)
@@ -58,6 +59,12 @@ abstract class ProgramSpecificMongoModel extends MongoModel
         // Point model to new config
         $this->useDbConfig = $databaseName;
         $this->initializeDynamicTable($forceNew);
+    }
+
+
+    public function setContactEmail($contactEmail)
+    {
+        $this->contactEmail = $contactEmail;
     }
 
 

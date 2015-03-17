@@ -21,8 +21,10 @@ class KeywordComponent extends Component
     }
 
 
-    public function areProgramKeywordsUsedByOtherPrograms($programDb, $shortCode) 
-    {   
+    //Function to be used by the ProgramSettingsController to make sure authorized-keyword are not conflicting
+    //with currently used keywords
+    public function getCurrentKeywords($programDb)
+    {
         $Dialogue = ProgramSpecificMongoModel::init(
             'Dialogue', $programDb, true);
         $Request = ProgramSpecificMongoModel::init(
@@ -30,35 +32,32 @@ class KeywordComponent extends Component
 
         $dialogueKeywords = $Dialogue->getKeywords();
         $requestKeywords  = $Request->getKeywords(); 
-        $keywordToValidates = array_merge($dialogueKeywords, $requestKeywords);
+        return array_merge($dialogueKeywords, $requestKeywords);
+    }
+
+
+    //Function to be used by the ProgramSettingsController at shortcode change for keyword validation
+    public function areProgramKeywordsUsedByOtherPrograms($programDb, $shortCode)
+    {
+        $keywordToValidates = $this->getCurrentKeywords($programDb);
 
         return $this->areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywordToValidates);
     }
 
-
+    //Funciton to be used by the Dialogues/RequestsController for keyword validation
     //TODO Clarify $keyword Parameter, it can be keyphrases or keywords
     public function areUsedKeywords($programDb, $shortcode, $keywords, $excludeType=null, $excludeId=null)
     {
-       $keyphrases = DialogueHelper::cleanKeyphrases($keywords);
-       $keywords = DialogueHelper::cleanKeywords($keywords);
-       $usedKeywords = array();
-       $dialogueModel = ProgramSpecificMongoModel::init('Dialogue', $programDb, true);
-       if ($excludeType == 'Dialogue') {
-           $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, '', $excludeId);
-       } else {
-           $foundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords);
-       }
-       $usedKeywords = $usedKeywords + $foundKeywords;
-       $requestModel = ProgramSpecificMongoModel::init('Request', $programDb, true);
-       if ($excludeType == 'Request') {
-           // In case we compare request, we need to consider the keyphrase and not only the keyword
-           $foundKeywords = $this->_getUsedKeyphrases($requestModel, $keyphrases, '', $excludeId);
-       } else {
-           $foundKeywords = $this->_getUsedKeywords($requestModel, $keywords);
-       }
-       $usedKeywords = $usedKeywords + $foundKeywords;
-       $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms($programDb, $shortcode, $keywords);       
-       return $usedKeywords + $otherProgramFoundKeywords;
+        $keyphrases = DialogueHelper::cleanKeyphrases($keywords);
+        $keywords = DialogueHelper::cleanKeywords($keywords);
+        $usedKeywords = array();
+        $programUnauthorizedKeywords = $this->areKeywordsAuthorized(
+            $programDb, $keywords);
+        $programUsedKeywords = $this->areKeywordsUsedByProgram(
+            $programDb, $shortcode, $keywords, $keyphrases, $excludeType, $excludeId);
+        $otherProgramFoundKeywords = $this->areKeywordsUsedByOtherPrograms(
+            $programDb, $shortcode, $keywords);
+        return $programUnauthorizedKeywords + $programUsedKeywords + $otherProgramFoundKeywords;
     }
 
 
@@ -97,6 +96,38 @@ class KeywordComponent extends Component
         return $usedKeyphrases;
     }
 
+    public function areKeywordsAuthorized($programDb, $keywords)
+    {
+        $usedKeywords = array();
+        $programSettingModel = ProgramSpecificMongoModel::init('ProgramSetting', $programDb, true);
+        $unauthorizedKeywords = $programSettingModel->authorizedKeywords($keywords);
+        foreach ($unauthorizedKeywords as $keyword => $details) {
+            $usedKeywords[$keyword] = array(
+                'program-db' => $programDb,
+                'program-name' => '',
+                'by-type'=> $programSettingModel->alias);
+        }
+        return $usedKeywords;
+    }
+
+
+    public function areKeywordsUsedByProgram($programDb, $shortcode, $keywords, $keyphrases, $excludeType, $excludeId)
+    {
+        $dialogueModel = ProgramSpecificMongoModel::init('Dialogue', $programDb, true);
+        if ($excludeType == 'Dialogue') {
+            $dialogueFoundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords, '', $excludeId);
+        } else {
+            $dialogueFoundKeywords = $this->_getUsedKeywords($dialogueModel, $keywords);
+        }
+        $requestModel = ProgramSpecificMongoModel::init('Request', $programDb, true);
+        if ($excludeType == 'Request') {
+            // In case we compare request, we need to consider the keyphrase and not only the keyword
+            $requestFoundKeywords = $this->_getUsedKeyphrases($requestModel, $keyphrases, '', $excludeId);
+        } else {
+            $requestFoundKeywords = $this->_getUsedKeywords($requestModel, $keywords);
+        }
+        return $dialogueFoundKeywords + $requestFoundKeywords;
+    }
 
     public function areKeywordsUsedByOtherPrograms($programDb, $shortCode, $keywords)
     {
@@ -106,12 +137,12 @@ class KeywordComponent extends Component
                 'Program.database !=' => $programDb,
                 'Program.status != "archived"')));
         foreach ($programs as $program) {
-            $usedKeywords = $this->areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords);
+            $usedKeywords = $this->_areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords);
         }
         return $usedKeywords;
     }
 
-    public function areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords)
+    public function _areKeywordsUsedByOtherProgram($program, $shortCode, $keywords, $usedKeywords)
     {
         $programDb = $program['Program']['database'];
         $programSettingModel = ProgramSpecificMongoModel::init('ProgramSetting', $programDb, true);
@@ -128,13 +159,13 @@ class KeywordComponent extends Component
 
     
     //For now only display the first validation error
-    public function foundKeywordsToMessage($programDb, $foundKeywords)
+    public function foundKeywordsToMessage($programDb, $foundKeywords, $contact='')
     {
         if ($foundKeywords === array()) {
             return null;
         }
         $keyword = key($foundKeywords);
-        return DialogueHelper::foundKeywordsToMessage($programDb, $keyword, $foundKeywords[$keyword]);
+        return DialogueHelper::foundKeywordsToMessage($programDb, $keyword, $foundKeywords[$keyword], $contact);
     }
 
 
