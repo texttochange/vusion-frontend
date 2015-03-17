@@ -379,8 +379,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $programUrl     = $this->params['program'];
         $requestSuccess = false;
         $data           = $this->_ajaxDataPatch();
-        $forceOptin     = (isset($this->params['?']['force_optin']) ? true: false); 
-        
+        $forceOptin     = ($this->request->query('force_optin') === 'true' ? true: false); 
+
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(__('Please set the program settings then try again.'));

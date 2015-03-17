@@ -179,7 +179,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->Participant->save($participant);
         
         $this->testAction(
-            "/testurl/participants/add?force_optin", 
+            "/testurl/participants/add?force_optin=true", 
             array(
                 'method' => 'post',
                 'data' => $participant
