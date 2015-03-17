@@ -86,12 +86,20 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $this->Participant->save($participant);
 
+        $participant = array('Participant' => array(
+            'phone' => '+788601461',
+            'last-optout-date' => '2014-01-01T10:10:00',
+            'force-optin' => 'false'));
         $this->Participant->create();
-        $savedParticipant = $this->Participant->save($participant, false);
+        $savedParticipant = $this->Participant->save($participant);
         $this->assertFalse($savedParticipant);
 
+        $participant = array('Participant' => array(
+            'phone' => '+788601461',
+            'last-optout-date' => '2014-01-01T10:10:00',
+            'force-optin' => 'true'));
         $this->Participant->create();
-        $savedParticipant = $this->Participant->save($participant, true);
+        $savedParticipant = $this->Participant->save($participant);
         $this->assertTrue(isset($savedParticipant['Participant']));
     }
     

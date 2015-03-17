@@ -172,17 +172,19 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
         
-        $participant = array(
+        $participant = array('Participant' => array(
             'phone' => '256788601462',
-            'last-optout-date' => '2015-01-01T10:10:00');
+            'last-optout-date' => '2015-01-01T10:10:00'));
         $this->Participant->create();
         $this->Participant->save($participant);
         
+        //Add the force_input parameter
+        $participant['Participant']['force-optin'] = 'true';
         $this->testAction(
-            "/testurl/participants/add?force_optin=true", 
+            "/testurl/participants/add", 
             array(
                 'method' => 'post',
-                'data' => $participant
+                'data' => $participant,
                 )
             );
         

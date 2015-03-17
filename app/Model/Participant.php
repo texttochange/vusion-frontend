@@ -566,10 +566,12 @@ class Participant extends ProgramSpecificMongoModel
     }
     
 
-    public function save($data, $forceOptin=false)
+    public function save($data)
     {
-        if ($forceOptin) {
-            if (isset($data['Participant']['phone'])) {
+        if (isset($data['Participant']['force-optin'])) { 
+            $forceOptin = $data['Participant']['force-optin'];
+            unset($data['Participant']['force-optin']);
+            if ($forceOptin === 'true' && isset($data['Participant']['phone'])) {
                 $participant = $this->find('first', array(
                     'conditions' => array('phone' => $this->cleanPhone($data['Participant']['phone']))));
                 if (isset($participant['Participant'])) {

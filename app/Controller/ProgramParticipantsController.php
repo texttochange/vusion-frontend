@@ -379,8 +379,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $programUrl     = $this->params['program'];
         $requestSuccess = false;
         $data           = $this->_ajaxDataPatch();
-        $forceOptin     = ($this->request->query('force_optin') === 'true' ? true: false); 
-
+        
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
                 $this->Session->setFlash(__('Please set the program settings then try again.'));
@@ -388,7 +387,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             }
             $savedParticipant = null;
             $this->Participant->create();
-            if ($savedParticipant = $this->Participant->save($data, $forceOptin)) {
+            if ($savedParticipant = $this->Participant->save($data)) {
                 $this->_notifyUpdateBackendWorker(
                     $programUrl,
                     $savedParticipant['Participant']['phone']);
