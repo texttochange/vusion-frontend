@@ -289,7 +289,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             'order' => array(),
             'file-full-name' => $fileFullName);
         if (!$saved_export = $this->Export->save($export)) {
-            print_r($this->Export->validationErrors);
             $this->Session->setFlash(__("Vusion failed to start the export process."));
         } else {
             $this->_notifyBackendExport($saved_export['Export']['_id']);
@@ -388,7 +387,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $savedParticipant = null;
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $savedParticipant['Participant']['phone']);                
+                $this->_notifyUpdateBackendWorker(
+                    $programUrl,
+                    $savedParticipant['Participant']['phone']);
                 $requestSuccess = true;
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
@@ -697,17 +698,13 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
         }
-        $participant = $this->Participant->read(null, $id);
         if ($this->request->is('post')) {
+            $participant = $this->Participant->read(null, $id);
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
-            $programNow = $this->ProgramSetting->getProgramTimeNow();            
-            
-            $resetParticipant             = $this->Participant->reset($participant['Participant']);            
-            $resetParticipant['enrolled'] = $this->_getAutoEnrollments($programNow);
-            if ($participant = $this->Participant->save($resetParticipant)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $resetParticipant['phone']);
+            if ($participant = $this->Participant->reset()) {
+                $this->_notifyUpdateBackendWorker($programUrl, $participant['Participant']['phone']);
                 $requestSuccess = true;
                 $this->Session->setFlash(__('The participant has been reset.'),
                     'default', array('class'=>'message success'));

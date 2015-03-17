@@ -99,6 +99,7 @@ class Export extends MongoModel
     	$this->_setDefault('timestamp', $now->format("Y-m-d\TH:i:s"));
     	$this->_setDefault('filters', '');
     	$this->_setDefault('conditions', '');
+        $this->data['Export']['conditions'] = $this->_addSlashRegex('conditions', $this->data['Export']['conditions']);
     	$this->_setDefault('order', '');
     	$this->_setDefault('size', 0);
     	$this->_setDefault('status', 'queued');
@@ -112,6 +113,22 @@ class Export extends MongoModel
         $file = new File($export['Export']['file-full-name']);
         $file->delete();
         return true;
+    }
+
+
+    ## the \ on mongo regex are disappearing when saving in mongo
+    public function _addSlashRegex($key, $conditions) 
+    {
+        if (is_string($conditions) && $key === '$regex') {
+            return addcslashes($conditions, '+');
+        }
+        if (is_array($conditions)) {
+            foreach($conditions as $key => $value) {
+                $conditions[$key] = $this->_addSlashRegex($key, $value);
+            }
+            return $conditions;
+        }
+        return $conditions;
     }
 
 
