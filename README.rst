@@ -225,6 +225,14 @@ This works on all Operating Systems:
 
 	Install Github
 		http://git-scm.com/downloads
+		
+	Install rubygems
+		https://rubygems.org/pages/download
+		sudo apt-get install rubygems-integration
+		
+	Install ffi
+	        https://rubygems.org/gems/ffi
+	        sudo gem install ffi
 
 
 Now you have all the installation for the vusion frontend. You need now to setup where the work project 
