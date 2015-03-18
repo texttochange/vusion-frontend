@@ -17,8 +17,11 @@ class VusionConst
     const TAG_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+$/u';
     const TAG_FAIL_MESSAGE = "Use only space, letters and numbers for tag, e.g 'group 1'.";
 
-    const TAG_LIST_REGEX = null;
+    const TAG_LIST_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+(,(\s)?[\p{L}\p{Mn}\p{N}\p{Zs}]+)*$/u';
     const TAG_LIST_FAIL_MESSAGE = 'Only space letters and numbers separate by coma. Must be tag1, tag2, ... e.g cool, nice, ...';
+
+    const LABEL_NAMES_LIST_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+(,(\s)?[\p{L}\p{Mn}\p{N}\p{Zs}]+)*$/u';
+    const LABEL_NAMES_LIST_FAIL_MESSAGE = 'Only space letters and numbers separate by coma. Must be label1, label2, ... e.g age, name, ...';
 
     const LABEL_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+$/u';
     const LABEL_FAIL_MESSAGE = 'Use only space, letters and numbers for the label name.';

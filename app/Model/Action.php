@@ -295,6 +295,18 @@ class Action extends VirtualModel
                 'message' => 'noMessage'
                 ),
             ),
+        'keep-tags' => array(
+            'validTag' => array(
+                'rule' => array('regex', VusionConst::TAG_LIST_REGEX),
+                'message' => VusionConst::TAG_LIST_FAIL_MESSAGE
+                ),
+            ),
+        'keep-labels' => array(
+            'validLabelName' => array(
+                'rule' => array('regex', VusionConst::LABEL_NAMES_LIST_REGEX),
+                'message' => VusionConst::LABEL_NAMES_LIST_FAIL_MESSAGE
+                ),
+            ),
         );
     
     public $validateOffsetDays = array(
