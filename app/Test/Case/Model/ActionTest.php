@@ -574,6 +574,38 @@ class ActionTestCase extends CakeTestCase
             'The type-action field with value sms-invite require the field feedback-inviter.',
             $this->Action->validationErrors['type-action'][0]);
     }
+
+
+    public function testValidateAction_fail_reset_keep_tags()
+    {
+        $action = array(
+            'type-action' => 'reset',
+            'keep-tags' => 'a tag$');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "Only space letters and numbers separate by coma. Must be tag1, tag2, ... e.g cool, nice, ...",
+            $this->Action->validationErrors['keep-tags'][0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors['keep-tags']));
+    }
+
+
+    public function testValidateAction_fail_reset_keep_labels()
+    {
+        $action = array(
+            'type-action' => 'reset',
+            'keep-labels' => 'label"$');
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $this->assertEqual(
+            "Only space letters and numbers separate by coma. Must be label1, label2, ... e.g age, name, ...",
+            $this->Action->validationErrors['keep-labels'][0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors['keep-labels']));
+    }
     
     
 }
