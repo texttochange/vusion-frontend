@@ -67,6 +67,16 @@ class AclLinkHelper extends AppHelper
             } 
             return;
     }
+
+
+    function generateButtonFromUrl($label, $url, $options=null)
+    {
+        $aclUrl = 'controllers/'.ucfirst($url['controller']).($url['action'] ? '/'.$url['action'] : '');
+        if (!$this->_allow($aclUrl)) {
+            return;
+        }
+        return $this->Html->link($label, $url, $options);
+    }
  
 
     function generatePostLink($label, $url, $controller, $action, $confirmation, $options=null, $id=null, $params=null, $ext = null)

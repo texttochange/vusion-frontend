@@ -80,7 +80,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $this->paginate = $paginate;
         $participants   = $this->paginate('Participant');
 
-        $this->set(compact('participants', 'requestSuccess'));
+        $this->set(compact('participants', 'requestSuccess', 'order'));
     }
     
 
@@ -252,6 +252,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function export() 
     {
+        $order         = null;
         $programUrl    = $this->params['program'];
         $requestSuccess = false;
         
@@ -265,6 +266,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             array('Schedule' => $this->Schedule),
             false);
         
+        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        } 
+
         $filePath = WWW_ROOT . "files/programs/" . $programUrl;
         if (!file_exists($filePath)) {
             mkdir($filePath);
@@ -286,7 +291,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             'collection' => $this->Participant->table,
             'conditions' => $conditions,
             'filters' => $this->Filter->getFilters(),
-            'order' => array(),
+            'order' => $order,
             'file-full-name' => $fileFullName);
         if (!$saved_export = $this->Export->save($export)) {
             $this->Session->setFlash(__("Vusion failed to start the export process."));

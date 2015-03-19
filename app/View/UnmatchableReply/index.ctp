@@ -6,14 +6,16 @@
             $urlParams = "";
         }
         if ($unmatchableReplies != null) {
-            echo $this->AclLink->generateButton(
-                __('Export'),
-                null,
-                'unmatchableReply',
-                'export',
-                array('class' => 'ttc-button'),
-                null,
-                $urlParams);
+            $exportUrl = array(
+                'controller' => 'unmatchableReply',
+                'action' => 'export',
+                '?' => $urlParams);
+            if ($order != null) {
+                $exportUrl['sort'] = key($order);
+                $exportUrl['direction'] = $order[key($order)];
+            }
+            echo $this->AclLink->generateButtonFromUrl(
+                __('Export'), $exportUrl, array('class' => 'ttc-button'));
         }
         ?>
         </li>

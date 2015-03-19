@@ -133,6 +133,31 @@ abstract class MongoModel extends AppModel
         $this->data[$this->alias]['modified'] = new MongoDate(strtotime('now'));
         return true;
     }
+
+
+    public function requiredConditionalFieldValue($check, $cField, $cValue)
+    {
+        $key = key($check);
+        if (!array_key_exists($key, $this->data)) {
+            return true;
+        }
+        if (!array_key_exists($cField, $this->data)) {
+            return false;
+        }
+        if ($this->data[$cField] != $cValue) {
+            return false;
+        }
+        return true;
+    }
+
+    public function isArray($check)
+    {
+        $key = key($check);
+        if (!is_array($check[$key])) {
+            return false;
+        }
+        return true;
+    }
     
     
 }
