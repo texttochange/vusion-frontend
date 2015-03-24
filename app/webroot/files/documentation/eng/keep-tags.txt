@@ -1,0 +1,5 @@
+<p>Keep Tags is a feature that enables participants to keep some of the tags they originally had as the reset action takes place.</p>
+
+<p>Tags should be written in a comma separated list like tag1, tag2...</b>
+
+<p>Leave this field blank if you do not wish to retain any tags</p>
