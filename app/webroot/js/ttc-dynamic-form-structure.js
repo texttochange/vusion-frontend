@@ -79,7 +79,9 @@ var dialogue = {
         "type": "spanradiobuttons",
         "options": [
             {"value": "announcement",
-            "subfields": ["content"]},
+            "subfields": [
+                "content",
+                "announcement-actions"]},
             {"value": "question-answer",
             'subfields': [
                 "content",
@@ -179,6 +181,17 @@ var dialogue = {
         'skip': true
     },
     "answer-actions": {
+        "type": "list",
+        "add-button": true,
+        "adds": "action"
+    },
+    /*
+    "announcement-actions-container": {
+        'type': 'container',
+        'contains': ['announcement-actions'],
+        'skip': true,
+    },*/
+    "announcement-actions": {
         "type": "list",
         "add-button": true,
         "adds": "action"

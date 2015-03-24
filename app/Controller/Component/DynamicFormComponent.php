@@ -133,6 +133,7 @@ class DynamicFormComponent extends Component
             "set-only-optin-count" => __("Set count only optin participant"),
             'keep-tags' => __('Keep these tags'),
             'keep-labels' => __('Keep these labels'),
+            "announcement-actions" => __("Action at sending time")
             );
         $controller->set('dynamicFormLabels', $this->localizedValueLabels);
     }
