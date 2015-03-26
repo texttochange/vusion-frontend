@@ -20,14 +20,17 @@
         <li>
         <?php
         if ($histories != null) {
-            echo $this->AclLink->generateButton(
-                __('Export'),
-                $programDetails['url'],
-                'programHistory',
-                'export',
-                array('class' => 'ttc-button'),
-                null,
-                $urlParams);
+            $exportUrl = array(
+                'program' => $programDetails['url'],
+                'controller' => 'programHistory',
+                'action' => 'export',
+                '?' => $urlParams);
+            if ($order != null) {
+                $exportUrl['sort'] = key($order);
+                $exportUrl['direction'] = $order[key($order)];
+            }
+            echo $this->AclLink->generateButtonFromUrl(
+                __('Export'), $exportUrl, array('class' => 'ttc-button'));
         }
         ?>
         </li>

@@ -58,6 +58,7 @@ class VusionValidation extends Validation {
         return true;
     }
 
+
     private static function validCustomizeContentContext($match) 
     {
         if (isset($match['otherkey'])) {

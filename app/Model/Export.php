@@ -52,9 +52,9 @@ class Export extends MongoModel
                 'message' => 'Export of this collection is not supported.',
                 ),
             ),
-        /*'filters' => array(),
+        'filters' => array(),
         'order' => array(),
-        'conditions' => array(),*/
+        'conditions' => array(),
         'status' => array(
         	'validValue' => array(
         		'rule' => array('inList', array(
@@ -66,12 +66,12 @@ class Export extends MongoModel
         		'message' => 'The status is not valid.',
        			),
         	),
-        /*'failure-reason' => array(
+        'failure-reason' => array(
         	'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'status', 'failed'),
                 'message' => 'Status failed required this field.',
                 )
-        	),*/
+            ),
         'size' => array(
         	'isLong' => array(
                 'rule' => array('numeric'),
@@ -100,7 +100,10 @@ class Export extends MongoModel
     	$this->_setDefault('filters', '');
     	$this->_setDefault('conditions', '');
         $this->data['Export']['conditions'] = $this->_addSlashRegex('conditions', $this->data['Export']['conditions']);
-    	$this->_setDefault('order', '');
+        $this->_setDefault('order', null);
+        if ($this->data['Export']['order'] == array()) {
+            $this->data['Export']['order'] = null;
+        }
     	$this->_setDefault('size', 0);
     	$this->_setDefault('status', 'queued');
     	return true;
