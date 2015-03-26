@@ -31,6 +31,8 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'proportional-tagging', $("[value='proportional-tagging']:checked").parent().next().children('legend').not(":has(img)"));
     addFormHelp(baseUrl, 'content', $("[name*='.invite-content']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'feedback-inviter', $("[name*='.feedback-inviter']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'keep-tags', $("[name*='.keep-tags']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'keep-labels', $("[name*='.keep-labels']").prev(":not(:has(img)):not(div):not(span)"));
 }   
 
 
