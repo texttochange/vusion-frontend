@@ -134,6 +134,12 @@ function handleResponseValidationErrors(validationErrors){
             case 'unmatching-feedback-content':
                 errorClass = "ttc-textarea-validation-error";
                 break;
+            case 'keep-tags':
+                errorClass = "ttc-textarea-validation-error";
+                break;
+            case 'keep-labels':
+                errorClass = "ttc-textarea-validation-error";
+                break;
             default:
                 if (dynamicForm[item]['type'] == 'list') {
                     style = 'left:20px;top:-76px';

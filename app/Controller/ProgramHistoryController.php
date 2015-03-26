@@ -80,7 +80,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
             'conditions' => $conditions,
             'order'=> $order);
         $histories = $this->paginate('History');
-        $this->set(compact('histories', 'requestSuccess'));
+        $this->set(compact('histories', 'requestSuccess', 'order'));
     }
 
 
@@ -180,6 +180,13 @@ class ProgramHistoryController extends BaseProgramSpecificController
             array('object-type' => array('$exists' => false))));
         $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
 
+        $order = array();
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        } else if (isset($this->params['named']['direction'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
         $filePath = WWW_ROOT . "files/programs/" . $programUrl;
         if (!file_exists($filePath)) {
             mkdir($filePath);
@@ -201,7 +208,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
             'collection' => $this->History->table,
             'conditions' => $conditions,
             'filters' => $this->Filter->getFilters(),
-            'order' => array(),
+            'order' => $order,
             'file-full-name' => $fileFullName);
         if (!$saved_export = $this->Export->save($export)) {
             $this->Session->setFlash(__("Vusion failed to start the export process."));

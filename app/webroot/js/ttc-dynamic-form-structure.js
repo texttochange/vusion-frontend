@@ -354,7 +354,9 @@ var action = {
             'subfields': ['enroll', 'offset-days']}, 
             {'value': "tagging",
             'subfields': ['tag']},
-            {'value': "reset"},
+            {'value': "reset",
+            'subfields': ['keep-tags',
+                          'keep-labels']},
             {'value': "feedback",
             'subfields': ['content']},
             {'value': 'proportional-tagging',
@@ -430,7 +432,9 @@ var action = {
     'forward-content': {'type': 'textarea'},
     'invite-content': {'type': 'textarea'},
     'invitee-tag': {'type': 'text'},
-    'feedback-inviter': {'type': 'textarea'}
+    'feedback-inviter': {'type': 'textarea'},
+    'keep-tags': {'type': 'text'},
+    'keep-labels': {'type': 'text'}
     
 }
 $.extend(dynamicForm, action);

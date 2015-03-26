@@ -51,6 +51,7 @@ class UnmatchableReplyController extends AppController
 
     public function index()
     {
+        $order          = null;
         $requestSuccess = true;
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
@@ -72,7 +73,7 @@ class UnmatchableReplyController extends AppController
             );
         $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
         $unmatchableReplies = $this->paginate('UnmatchableReply');
-        $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
+        $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes', 'order'));
     }
 
     
@@ -123,17 +124,20 @@ class UnmatchableReplyController extends AppController
     
     public function export()
     {
+        $order          = null;
         $url            = $this->params['controller'];
         $requestSuccess = false;
         
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
 
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
         
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();
-        
+        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
         $conditions = $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes);
 
         $filePath = WWW_ROOT . "files/programs/unmatchableReply" ;
@@ -149,7 +153,7 @@ class UnmatchableReplyController extends AppController
             'collection' => $this->UnmatchableReply->table,
             'conditions' => $conditions,
             'filters' => $this->Filter->getFilters(),
-            'order' => array(),
+            'order' => $order,
             'file-full-name' => $fileFullName);
         if (!$saved_export = $this->Export->save($export)) {
             $this->Session->setFlash(__("Vusion failed to start the export process."));
