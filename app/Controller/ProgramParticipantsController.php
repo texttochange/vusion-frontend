@@ -751,88 +751,91 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function import()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl  = $this->params['program'];
-        
-        if ($this->request->is('post')) {
-            if (!$this->ProgramSetting->hasRequired()) {
-                $this->Session->setFlash(
-                    __('Please set the program settings then try again.'), 
-                    'default', array('class' => "message failure")
-                    );
-                return;
-            }
-            
-            if ($this->request->data['Import']['file']['error'] != 0) {
-                if ($this->request->data['Import']['file']['error'] == 4) { 
-                    $message = __("Please select a file.");
-                } else { 
-                    $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
-                }
-                $this->Session->setFlash($message, 
-                    'default', array('class' => "message failure")
-                    );
-                return;
-            }
-            
-            $tags = null;
-            if (isset($this->request->data['Import']['tags'])) {
-                $tags = $this->request->data['Import']['tags'];
-            }
-            
-            $replaceTagsAndLabels = false;
-            if (isset($this->request->data['Import']['replace-tags-and-labels'])) {
-                $replaceTagsAndLabels = true;
-            }
-            
-            $fileName = $this->request->data['Import']['file']['name'];
-            
-            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
-            
-            if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
-            
-            /** in case the file has already been created, 
-            * the chmod function should not be called.
-            */
-            $wasFileAlreadyThere = false;
-            if (file_exists($filePath . DS . $fileName)) {
-                $wasFileAlreadyThere = true;
-            }
-            
-            copy($this->request->data['Import']['file']['tmp_name'],
-                $filePath . DS . $fileName);
-            
-            if (!$wasFileAlreadyThere) {
-                chmod($filePath . DS . $fileName, 0664);
-            }
-            
-            $report = $this->Participant->import(
-                $programUrl, 
-                $filePath . DS . $fileName, 
-                $tags,
-                $replaceTagsAndLabels
-                );
-            if ($report) {
-                foreach ($report as $participantReport) {
-                    if ($participantReport['saved']) {
-                        $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
-                    }    
-                }
-                $requestSuccess = true;
-            } else {
-                $this->Session->setFlash(
-                    $this->Participant->importErrors[0], 
-                    'default', array('class' => "message failure")
-                    );
-            }
-            
-            //Remove file at the end of the import
-            unlink($filePath . DS . $fileName);
-        }
-        $this->set(compact('report', 'requestSuccess'));
+    	    $programName = $this->Session->read($this->params['program'].'_name');
+    	    $programUrl  = $this->params['program'];
+    	    
+    	    if ($this->request->is('post')) {
+    	    	    if (!$this->ProgramSetting->hasRequired()) {
+    	    	    	    $this->Session->setFlash(
+    	    	    	    	    __('Please set the program settings then try again.'), 
+    	    	    	    	    'default', array('class' => "message failure")
+    	    	    	    	    );
+    	    	    	    return;
+    	    	    }
+    	    	    
+    	    	    if ($this->request->data['Import']['file']['error'] != 0) {
+    	    	    	    if ($this->request->data['Import']['file']['error'] == 4) { 
+    	    	    	    	    $message = __("Please select a file.");
+    	    	    	    } else if ($this->request->data['Import']['file']['error'] == 1) {
+    	    	    	    	    $message = __("Selected file is too large to import please divide it into 15,000 participants.");
+    	    	    	    } else { 
+    	    	    	    	    $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
+    	    	    	    }
+    	    	    	    $this->Session->setFlash($message, 
+    	    	    	    	    'default', array('class' => "message failure")
+    	    	    	    	    );
+    	    	    	    return;
+    	    	    }
+    	    	    
+    	    	    
+    	    	    $tags = null;
+    	    	    if (isset($this->request->data['Import']['tags'])) {
+    	    	    	    $tags = $this->request->data['Import']['tags'];
+    	    	    }
+    	    	    
+    	    	    $replaceTagsAndLabels = false;
+    	    	    if (isset($this->request->data['Import']['replace-tags-and-labels'])) {
+    	    	    	    $replaceTagsAndLabels = true;
+    	    	    }
+    	    	    
+    	    	    $fileName = $this->request->data['Import']['file']['name'];
+    	    	    
+    	    	    $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
+    	    	    
+    	    	    if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
+    	    	    	    mkdir($filePath);
+    	    	    	    chmod($filePath, 0764);
+    	    	    }
+    	    	    
+    	    	    /** in case the file has already been created, 
+    	    	    * the chmod function should not be called.
+    	    	    */
+    	    	    $wasFileAlreadyThere = false;
+    	    	    if (file_exists($filePath . DS . $fileName)) {
+    	    	    	    $wasFileAlreadyThere = true;
+    	    	    }
+    	    	    
+    	    	    copy($this->request->data['Import']['file']['tmp_name'],
+    	    	    	    $filePath . DS . $fileName);
+    	    	    
+    	    	    if (!$wasFileAlreadyThere) {
+    	    	    	    chmod($filePath . DS . $fileName, 0664);
+    	    	    }
+    	    	    
+    	    	    $report = $this->Participant->import(
+    	    	    	    $programUrl, 
+    	    	    	    $filePath . DS . $fileName, 
+    	    	    	    $tags,
+    	    	    	    $replaceTagsAndLabels
+    	    	    	    );
+    	    	    if ($report) {
+    	    	    	    foreach ($report as $participantReport) {
+    	    	    	    	    if ($participantReport['saved']) {
+    	    	    	    	    	    $this->_notifyUpdateBackendWorker($programUrl, $participantReport['phone']);
+    	    	    	    	    }    
+    	    	    	    }
+    	    	    	    $requestSuccess = true;
+    	    	    } else {
+    	    	    	    $this->Session->setFlash(
+    	    	    	    	    $this->Participant->importErrors[0], 
+    	    	    	    	    'default', array('class' => "message failure")
+    	    	    	    	    );
+    	    	    }
+    	    	    throw new Exception();
+    	    	    //Remove file at the end of the import
+    	    	    unlink($filePath . DS . $fileName);
+    	    }
+    	    $this->set(compact('report', 'requestSuccess'));
     }
     
     
