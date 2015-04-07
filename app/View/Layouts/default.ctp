@@ -53,111 +53,110 @@
     <?php echo $this->element('localization');?>
     </script>
     <?php
-    if (isset($this->Js)) {
-    		//disappear success flash messages
-    		$this->Js->get('document')->event('ready', '
-    				$("[class*=success]").delay(5000).fadeOut(1000);
-    				');
-    }
-	?>
-	<?php
-	echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex'));
-	?>	
+	    if (isset($this->Js)) {
+		    //disappear success flash messages
+		    $this->Js->get('document')->event('ready', '
+			    $("[class*=success]").delay(5000).fadeOut(1000);
+			    ');
+	    }
+    ?>
+    <?php  echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex')); ?>	
 </head>
 <body>
-	<div id="container">
-	    <div class="status-message">
-		    <?php echo $this->element('status_message'); ?>
-		</div>
-		<div id="header">
-			<div class="ttc-left-header">
-		        <?php 
-		        echo $this->Html->image('vusion-logo-wide.png', array(
-		        		'url' => array('controller'=> 'programs', 'action'=>'index')
-		        		));
-			    ?> 
-			</div>			
-			<div class="ttc-right-header"> 
-			<?php
-			if ($this->Session->read('Auth.User.id')) {	
-					echo $this->Html->tag(
-							'span', 
-							__('log as %s', $this->Session->read('Auth.User.username'))
-							);
-			}
-			?> 
-			</div>
-            <div class="ttc-central-header">
-			<?php
-			if ($this->Session->read('Auth.User.id')) {	
-			    echo $this->Html->link(
-			        __('Logout'),
-			        array('controller'=> 'users', 'action'=>'logout'),
-			        array('class' => 'ttc-link-header'));
-			    
-			    $reportIssueUrl = $this->Html->url(array('controller' => 'users', 'action' => 'reportIssue'));			    
-			    echo $this->Html->link(
-			        __('Report Issue'),
-			        array(), 
-			        array('class' => 'ttc-link-header', 'url' => $reportIssueUrl, 'onclick'=> 'popupBrowser(this)'));
-			    
-			    echo $this->Documentation->link();        
-			    
-			    echo $this->Html->link(
-			        __('My Account'),
-			        array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
-			        array('class' => 'ttc-link-header'));			    
-			    
-			}
-			if ($this->Session->read('Auth.User.group_id') != 1) {
-				echo $this->AclLink->generateButton(
-			    	__('Users'), null, 'users', 'index', array('class'=>'ttc-link-header'));
-			}
-			echo $this->AclLink->generateButton(
-			    __('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
-			echo $this->AclLink->generateButton(
-			    __('Admin'), null, 'admin', null, array('class'=>'ttc-link-header'));
-			?>
-			</div> 
-		 </div>    
-			<!-- To be refact with all the Controllers and views -->
+<div id="container">
+	<div class="status-message">
+		<?php echo $this->element('status_message'); ?>
+	</div>
+	<div id="header">
+		<div class="ttc-left-header">
 			<?php 
-			if (isset($programDetails['name'])) { 
-					 echo $this->element('program_specific_header');					
-			} 
+				echo $this->Html->image('vusion-logo-wide.png', array(
+					'url' => array('controller'=> 'programs', 'action'=>'index')
+					));
+			?> 
+		</div>			
+		<div class="ttc-right-header"> 
+			<?php
+				if ($this->Session->read('Auth.User.id')) {	
+					echo $this->Html->tag(
+						'span', 
+						__('log as %s', $this->Session->read('Auth.User.username'))
+						);
+				}
+			?> 
+		</div>
+		<div class="ttc-central-header">
+			<?php
+				if ($this->Session->read('Auth.User.id')) {	
+					echo $this->Html->link(
+						__('Logout'),
+						array('controller'=> 'users', 'action'=>'logout'),
+						array('class' => 'ttc-link-header'));
+					
+					$reportIssueUrl = $this->Html->url(array('controller' => 'users', 'action' => 'reportIssue'));			    
+					echo $this->Html->link(
+						__('Report Issue'),
+						array(), 
+						array('class' => 'ttc-link-header', 'url' => $reportIssueUrl, 'onclick'=> 'popupBrowser(this)'));
+					
+					echo $this->Documentation->link();        
+					
+					echo $this->Html->link(
+						__('My Account'),
+						array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
+						array('class' => 'ttc-link-header'));			    
+					
+				}
+				if ($this->Session->read('Auth.User.group_id') != 1) {
+					echo $this->AclLink->generateButton(
+						__('Users'), null, 'users', 'index', array('class'=>'ttc-link-header'));
+				}
+				echo $this->AclLink->generateButton(
+					__('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
+				echo $this->AclLink->generateButton(
+					__('Admin'), null, 'admin', null, array('class'=>'ttc-link-header'));
 			?>
-		<div id="content" class="height-size">
-        <?php
-        if (isset($programDetails['name'])) {
-            $this->Js->set('isProgramSpecific', true);
-            echo "<div class='program-left-column'>";			   
-            echo $this->element('navigation_menu');
-            if ($programDetails['status'] == 'running') {
-	            if (isset($programDetails['settings']['shortcode']) 
-            		&& isset($programDetails['settings']['timezone'])) {
-               	    echo $this->element('program_statistics');
-            	}
-            	echo $this->element('backend_notifications');
-	        } else {  //archived program
-	        	echo $this->element('program_statistics');
-	        }
-            echo "</div>";
-            echo "<div class='program-body'>";
-			echo $content_for_layout;
-			echo "</div>";   
-		} else {		    
-		    echo $content_for_layout;
-		}
-		?>   
-		</div>		   
-     </div>
-	<div id="footer">
-		    <?php echo $this->element('footer'); ?>
-    </div>
-		<?php 
-	    if (isset($this->Js)) {
-	    		echo $this->Js->writeBuffer();
-	    }
-	    ?>
+		</div> 
+	</div>    
+	<!-- To be refact with all the Controllers and views -->
+	<?php 
+		if (isset($programDetails['name'])) { 
+			echo $this->element('program_specific_header');					
+		} 
+	?>
+	<div id="content" class="height-size">
+		<?php
+			if (isset($programDetails['name'])) {
+				$this->Js->set('isProgramSpecific', true);
+				echo "<div class='program-left-column'>";			   
+				echo $this->element('navigation_menu');
+				if ($programDetails['status'] == 'running') {
+					if (isset($programDetails['settings']['shortcode']) 
+						&& isset($programDetails['settings']['timezone'])) {
+					echo $this->element('program_statistics');
+						}
+						echo $this->element('backend_notifications');
+				} else {  //archived program
+					echo $this->element('program_statistics');
+				}
+				echo "</div>";
+				echo "<div class='program-body'>";
+				echo $content_for_layout;
+				echo "</div>";   
+			} else {		    
+				echo $content_for_layout;
+			}
+		?>
+		<div id="footer">
+			<?php echo $this->element('footer'); ?>
+		</div>
+	</div>
+</div>
+
+<?php 
+if (isset($this->Js)) {
+	echo $this->Js->writeBuffer();
+}
+?>
 </body>
 </html>

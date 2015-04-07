@@ -1218,7 +1218,7 @@ display: inline;
                 min-width: 800px;
                 position: relative;
                 overflow-x: hidden;
-                height: 483px;
+                /*height: 483px;*/
         } 
         
         #content-popup { 
@@ -1296,8 +1296,11 @@ display: inline;
 }
 
 .admin-action {
-        position: absolute; 
-        padding-left: 13px;
+    padding-bottom: 465px;
+    padding-left: 13px;
+    float: left;
+    /*position: absolute; 
+    padding-left: 13px;*/
 }
 
 .users-index {
@@ -1341,6 +1344,7 @@ display: inline;
         height: 30px;
         display: table;
         width: 100%;
+        padding-top: 20px;
 }
 
 .powered-by-text {
@@ -1524,8 +1528,12 @@ display: inline;
 .ttc-checkbox {
         margin-left: 10px;
 }
+
 /* USERLOGS SPECIFIC */
 .ttc-table-scrolling-area .user-logs .user_logs_field {
-        width: 207px;
+        width: 214px;
 }
 
+.height-size {
+    height: 603% !important;
+}
