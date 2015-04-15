@@ -7,7 +7,7 @@ $this->Html->script("ttc-table.js", array("inline" => false))
         <h3><?php echo __('Content Variables');?></h3>
 	
         <ul class="ttc-actions">
-		    <li><?php echo $this->Html->link(__('New'), array('program'=>$programDetails['url'], 'action' => 'addTable'), array('class' => 'ttc-button')); ?></li>
+		    <li><?php echo $this->Html->link(__('+ New'), array('program'=>$programDetails['url'], 'action' => 'addTable'), array('class' => 'ttc-button')); ?></li>
 		</ul>	
 	</div>	    
     <div class="ttc-data-control">
