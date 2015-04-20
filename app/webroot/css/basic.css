@@ -1385,42 +1385,42 @@ display: inline;
 .ttc-page-title {
 }
 
-.ttc-page-title .tabs {
+.ttc-data-control .tabs {
         display: inline-block;
         /*border-bottom: 2px solid #19C1FF;*/
         /*height: 22px;*/
 }
 
-.ttc-page-title .tabs ul {
+.ttc-data-control .tabs ul {
         list-style-type: none;
         margin: 0px 0px 0px 10px;
 }
 
-.ttc-page-title .tabs li {
+.ttc-data-control .tabs li {
         float: left;
         margin: 0px 10px 0px 0px;
         /*border-bottom: 5px solid #81DCFF;*/ 
         color: #81CDFF;
 }
 
-.ttc-page-title .tabs li.selected {
+.ttc-data-control .tabs li.selected {
         border-bottom: 5px solid #19C1FF;
         color: #19C1FF;
 }
 
-.ttc-page-title .tabs label {
+.ttc-data-control .tabs label {
         display: block;
         cursor: pointer;
         font-weight: bold;
 }
 
-.ttc-page-title .tabs li a {
+.ttc-data-control .tabs li a {
         /*font-weight: normal;*/
         text-decoration: none;
         color: inherit;
 }
 
-.ttc-page-title .tabs a:hover {
+.ttc-data-control .tabs a:hover {
         text-decoration: none;
         background: rgba(255,255,255,0.5);
 }
