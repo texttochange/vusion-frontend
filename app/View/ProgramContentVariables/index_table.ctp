@@ -115,7 +115,16 @@ $this->Html->script("ttc-table.js", array("inline" => false))
                  );
 		        ?></td>
 		        <td class="actions action">
-		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'action' => 'editTable', $contentVariableTable['ContentVariableTable']['_id'])); ?>
+		            <?php echo $this->Html->link(__('Edit'), array(
+		                'program' => $programDetails['url'],
+		                'action' => 'editTable', $contentVariableTable['ContentVariableTable']['_id'])); ?>
+		            <?php echo $this->Html->link(__('Export'), array(
+		                'program' => $programDetails['url'],
+		                'action' => 'export',
+		                'name' => 'export'));
+		            $this->Js->get('[name=export]')->event('click',
+		                'generateExportDialogue(this);');
+		            ?>
 		            <?php echo $this->Form->postLink(
 		                __('Delete'),
 		                array('program' => $programDetails['url'],
