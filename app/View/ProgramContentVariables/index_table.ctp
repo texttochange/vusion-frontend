@@ -118,11 +118,20 @@ $this->Html->script("ttc-table.js", array("inline" => false))
 		            <?php echo $this->Html->link(__('Edit'), array(
 		                'program' => $programDetails['url'],
 		                'action' => 'editTable', $contentVariableTable['ContentVariableTable']['_id'])); ?>
-		            <?php echo $this->Html->link(__('Export'), array(
+		            <?php 
+		            $exportUrl = $this->Html->url(array(
 		                'program' => $programDetails['url'],
-		                'action' => 'export',
-		                'name' => 'export'));
-		            $this->Js->get('[name=export]')->event('click',
+		                'controller' => 'programContentVariables',
+		                'id' =>  $contentVariableTable['ContentVariableTable']['_id'],
+		                'action'=>'export'));
+		            
+		            echo $this->Html->tag(
+		                'span',
+		                __('Export'), array(
+		                    'class' => 'ttc-button',
+		                    'url' => $exportUrl,
+		                    'name' => $contentVariableTable['ContentVariableTable']['_id']));
+		            $this->Js->get('[name='.$contentVariableTable['ContentVariableTable']['_id'].']')->event('click',
 		                'generateExportDialogue(this);');
 		            ?>
 		            <?php echo $this->Form->postLink(
