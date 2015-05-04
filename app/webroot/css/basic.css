@@ -522,12 +522,6 @@
 .report-message-footer {
         width: 560px;
 }
-/*
-.ttc-display-area .required:after {
-color: #E32;
-content: '*';
-display: inline;
-}*/
 
 .ttc-navigation-menu {
         float: left;
@@ -670,10 +664,9 @@ display: inline;
        /* height: 340px;
         min-height: 250px;*/
         overflow: auto;
-        width: 100%;
         border: 2px solid lightgrey;
         margin-bottom: 10px;
-        padding: 1%;    
+        padding-bottom: 1em;
         max-width:1071px;
 }
 
@@ -1566,7 +1559,8 @@ display: inline;
     top: 3.5em;
     z-index: 998;
     left: 17.05em;
-    background: gainsboro;
+    background: white;
+    border-bottom: 1px lightgrey solid;
 }
 
 .fix-navigation-menu {
