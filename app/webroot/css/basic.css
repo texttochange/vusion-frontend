@@ -528,7 +528,7 @@
         /*width: 16%;*/
         /*width: 100%;
         min-width: 127px;*/
-        padding-top: 10px;
+        /*padding-top: 10px;*/
         /*padding-left: 12px;*/
 }
 
@@ -1558,14 +1558,14 @@
     position: fixed;
     top: 3.5em;
     z-index: 998;
-    left: 17.05em;
+    left: 17.1em;
     background: white;
     border-bottom: 1px lightgrey solid;
 }
 
 .fix-navigation-menu {
     position: fixed;
-    top: 2.8em;
+    top: 3.5em;
     z-index: 999;
     left: 1.55em;
     width: 14em;

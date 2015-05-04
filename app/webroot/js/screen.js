@@ -10,7 +10,7 @@ function layoutHandler() {
 		$("#header-program").removeClass("fix-program-header");
 	}
 
-	if ($(window).scrollTop() > 70) {
+	if ($(window).scrollTop() > 60) {
 		$("#header-content").addClass("fix-content-header");
 		$("#navigation-menu").addClass("fix-navigation-menu");
 	} else {
