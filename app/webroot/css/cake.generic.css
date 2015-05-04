@@ -71,7 +71,7 @@ h4 {
 	font-weight: normal;
 }
 ul, li {
-	margin: 0 12px;
+	/* margin: 0 12px;*/
 }
 p {
 	margin: 0 0 1em 0;
@@ -171,9 +171,9 @@ table {
 }
 th {
 	border:0;
-	border-bottom:2px solid #555;
+	/*border-bottom:2px solid #555;*/
 	text-align: left;
-	padding:4px;
+	/*padding:4px;*/
 }
 th a {
 	display: block;

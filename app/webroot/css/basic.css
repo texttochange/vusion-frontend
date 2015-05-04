@@ -184,6 +184,16 @@
         background: #FFCB4B;
 }
 
+.ttc-content-header {
+    float: left;
+    width: 100%;
+}
+
+.ttc-content-header li{
+    list-style-type: none;        
+}
+
+
 .ttc-actions {
         float: right;
         padding: 7px 0px 3px 3px;
@@ -1551,9 +1561,18 @@ display: inline;
     padding-right: 10px;
 }
 
-.fix-action-button {
+.fix-content-header {
     position: fixed;
-    top: 70px;
-    z-index: 999;
-    right: 55px;
+    top: 3.5em;
+    z-index: 998;
+    left: 17.05em;
+    background: gainsboro;
 }
+
+.fix-navigation-menu {
+    position: fixed;
+    top: 2.8em;
+    z-index: 999;
+    left: 1.55em;
+    width: 14em;
+ }

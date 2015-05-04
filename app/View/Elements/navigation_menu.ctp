@@ -1,4 +1,5 @@
-<div class='ttc-navigation-menu'>
+<div style="height:25em">
+<div id="navigation-menu" class='ttc-navigation-menu'>
 <?php
 
     echo $this->Js->get('document')->event(
@@ -265,4 +266,5 @@
     </li>
 </ul>  
 
+</div>
 </div>
