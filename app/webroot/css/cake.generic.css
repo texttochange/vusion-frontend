@@ -121,7 +121,6 @@ p {
 	clear: both;
 	padding: 6px 10px;    
 	background: white;
-	cursor: pointer;
 }
 
 /** containers **/
@@ -136,7 +135,7 @@ div.view {
 	min-width: 719px;
 	/*width:79%;*/
 	/*padding-right: 11px;*/
-	position: absolute;
+/*	position: absolute;*/
 	max-width: 1071px;
 }
 div.form2,
@@ -191,7 +190,7 @@ table tr td {
 	/*padding: 6px;
 	text-align: left;*/
 	vertical-align: top;
-	border-bottom:1px solid #ddd;
+	/*border-bottom:1px solid #ddd;*/
 }
 table tr:nth-child(even) {
 	background: #f9f9f9;

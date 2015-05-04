@@ -285,12 +285,12 @@
         padding-bottom: 10px;
 }
 
+
 .ttc-program-header {
-        height: 50px;
+        height: 50px;   
         background: #19C1FF;
         padding-left: 20px;
         padding-right: 20px;
-        min-width: 800px;    
 }
 
 .ttc-program-title{
@@ -657,8 +657,8 @@ display: inline;
 }
 
 .ttc-display-area {
-        height: 340px;
-        min-height: 250px;
+       /* height: 340px;
+        min-height: 250px;*/
         overflow: auto;
         width: 100%;
         border: 2px solid lightgrey;
@@ -1536,4 +1536,24 @@ display: inline;
 
 .height-size {
     height: 603% !important;
+}
+
+.fix-program-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    height: 50px;   
+    background: #19C1FF;
+    left: 0;
+    right: 20;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.fix-action-button {
+    position: fixed;
+    top: 70px;
+    z-index: 999;
+    right: 55px;
 }

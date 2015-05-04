@@ -67,58 +67,22 @@
 	<div class="status-message">
 		<?php echo $this->element('status_message'); ?>
 	</div>
-	<div id="header">
-		<div class="ttc-left-header">
-			<?php 
-				echo $this->Html->image('vusion-logo-wide.png', array(
-					'url' => array('controller'=> 'programs', 'action'=>'index')
-					));
-			?> 
-		</div>			
-		<div class="ttc-right-header"> 
-			<?php
-			if ($this->Session->read('Auth.User.id')) {
-				echo $this->Html->link(
-					__('Logout'),
-					array('controller'=> 'users', 'action'=>'logout'),
-					array('class' => 'ttc-link-header'));
-				
-				echo $this->Html->link(
-					__('Hi %s', $this->Session->read('Auth.User.username')),
-					array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')),
-					array('class' => 'ttc-link-header'));
-			}
-			?> 
-		</div>
-		<div class="ttc-central-header">
-		<?php
-			if ($this->Session->read('Auth.User.id')) {
-				$reportIssueUrl = $this->Html->url(array('controller' => 'users', 'action' => 'reportIssue'));			    
-				echo $this->Html->link(
-					__('Report Issue'),
-					array(), 
-					array('class' => 'ttc-link-header', 'url' => $reportIssueUrl, 'onclick'=> 'popupBrowser(this)'));
-				
-				echo $this->Documentation->link(); 
-			}
-			echo $this->AclLink->generateButton(
-				__('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
-			echo $this->AclLink->generateButton(
-				__('Admin'), null, 'admin', null, array('class'=>'ttc-link-header'));
-		?>
-		</div> 
-	</div>    
 	<!-- To be refact with all the Controllers and views -->
-	<?php 
-		if (isset($programDetails['name'])) { 
-			echo $this->element('program_specific_header');					
-		} 
-	?>
+	<div id="header">
+	<?php echo $this->element('header_vusion'); ?>
+	</div>
+	<?php if (isset($programDetails['name'])) : ?>
+	<div class='ttc-program-header <?php if ($programDetails['status']==='archived') { echo "archived";} ?>'>
+		<?php echo $this->element('header_program_specific');?>
+	</div> 
+	<?php endif; ?>
 	<div id="content" class="height-size">
 		<?php
 			if (isset($programDetails['name'])) {
 				$this->Js->set('isProgramSpecific', true);
-				echo "<div class='program-left-column'>";			   
+				echo "<table><thead><tr>";
+				echo "<td>";
+				echo "<div class='program-left-column'>";
 				echo $this->element('navigation_menu');
 				if ($programDetails['status'] == 'running') {
 					if (isset($programDetails['settings']['shortcode']) 
@@ -130,16 +94,21 @@
 					echo $this->element('program_statistics');
 				}
 				echo "</div>";
+				echo "</td>";
+				echo "<td>";
 				echo "<div class='program-body'>";
 				echo $content_for_layout;
-				echo "</div>";   
+				echo "</div>";
+				echo "</td>";   
+				echo "</table></thead></tr>";
+				
 			} else {		    
 				echo $content_for_layout;
 			}
 		?>
-		<div id="footer">
-			<?php echo $this->element('footer'); ?>
-		</div>
+	</div>
+	<div id="footer">
+		<?php echo $this->element('footer'); ?>
 	</div>
 </div>
 
