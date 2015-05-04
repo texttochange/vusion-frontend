@@ -5,35 +5,37 @@ $this->Html->script("ttc-table.js", array("inline" => false));
 <div class="content_variables form width-size">
     <div class="ttc-page-title">
         <h3><?php echo __('Edit Content Variable'); ?></h3>
-        <div class="tabs">
-    	    <ul>
-    	    <li>
-                 <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
-                     <label><?php echo __("Keys/Value") ?></label>
-                 </a>
-            </li>
-    	    <li class="selected">
-    	         <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
-    	             <label><?php echo __("Table") ?></label>
-                 </a>
-            </li>
-    	    </ul>
-    	</div>
-        <ul class="ttc-actions">
-            <li>
-            <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
-            <span class="actions">
-            <?php
-            echo $this->Html->link( __('Cancel'), 
-                array(
-                    'program' => $programDetails['url'],
-                    'action' => 'indexTable'	           
-                    ));
-            ?>
+            <div class="ttc-data-control">
+            <span class="tabs">
+                    <ul>
+                    <li>
+                    <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
+                        <label><?php echo __("Keys/Value") ?></label>
+                    </a>
+                    </li>
+                    <li class="selected">
+                    <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
+                        <label><?php echo __("Table") ?></label>
+                    </a>
+                    </li>
+                    </ul>
             </span>
-            </li>
-            <?php $this->Js->get('#button-save')->event('click', '$("#content-variable-table").submit()' , true);?>
-        </ul>
+            <ul class="ttc-actions">
+                <li>
+                <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+                <span class="actions">
+                <?php
+                echo $this->Html->link( __('Cancel'), 
+                    array(
+                        'program' => $programDetails['url'],
+                        'action' => 'indexTable'	           
+                        ));
+                ?>
+                </span>
+                </li>
+                <?php $this->Js->get('#button-save')->event('click', '$("#content-variable-table").submit()' , true);?>
+            </ul>
+        </div>
 	</div>
     <div class="ttc-display-area">
         <form id="content-variable-table" action="javascript:saveTable()">

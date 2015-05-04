@@ -1,7 +1,13 @@
 <div class="unattached_messages index">
 <div class="ttc-page-title">
 <h3><?php echo __('Separate Messages');?></h3>
-    <span class="tabs">
+    <ul class="ttc-actions">
+    <li></li>
+    <li><?php echo $this->Html->link(__('+ New Separate Message'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
+</ul>
+</div>
+<div class="ttc-data-control">
+<span class="tabs">
     <ul>
     <li <?php echo ($findType === 'all'? 'class="selected"' : ""); ?>>
         <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
@@ -25,12 +31,6 @@
     </li>
     </ul>
     </span>
-    <ul class="ttc-actions">
-    <li></li>
-    <li><?php echo $this->Html->link(__('New Separate Message'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
-</ul>
-</div>
-<div class="ttc-data-control">
 <div id="data-control-nav" class="ttc-paging paging">
 <?php
 echo "<span class='ttc-page-count'>";
