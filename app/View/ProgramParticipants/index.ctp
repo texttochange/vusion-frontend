@@ -36,7 +36,7 @@
         'generateMassTagDialogue(this);');    
     ?></li>
     <li><?php echo $this->AclLink->generateButton(
-        __('Add'), 
+        __('+ Add'), 
         $programDetails['url'],
         'programParticipants',
         'add',

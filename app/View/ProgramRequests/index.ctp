@@ -1,6 +1,6 @@
 <div class='Program Requests index'>
 	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Request'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
+		<li><?php echo $this->Html->link(__('+ New Request'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
 	</ul>	
 	<h3><?php echo __('Requests');?></h3>
 	<div class="ttc-data-control">

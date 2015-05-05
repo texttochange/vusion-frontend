@@ -19,7 +19,7 @@
         <ul>
             <li>
             <?php 
-            echo $this->AclLink->generateLink(__('New Request'),$programDetails['url'],'programRequests','add');
+            echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programRequests','add');
             ?>
             </li>
             <?php 
@@ -48,7 +48,7 @@
         <ul>
             <li>
             <?php 
-            echo $this->AclLink->generateLink(__('New Dialogue'),$programDetails['url'],'programDialogues','edit');    
+            echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programDialogues','edit');    
             ?>
             </li>
             <?php foreach ($currentProgramData['dialogues'] as $dialogue) { 
@@ -112,7 +112,7 @@
        <ul>
            <li>
            <?php
-           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programUnattachedMessages','add');
+           echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programUnattachedMessages','add');
            ?>
            </li>
            <li>
@@ -178,7 +178,7 @@
          <ul>
            <li>
            <?php
-           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programPredefinedMessages','add');
+           echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programPredefinedMessages','add');
            ?>
            </li>
            <?php 
@@ -225,7 +225,7 @@
         <ul>
             <li>
                 <?php 
-                     echo $this->AclLink->generateLink(__('Add'),$programDetails['url'],'programParticipants','add');
+                     echo $this->AclLink->generateLink(__('+ Add'),$programDetails['url'],'programParticipants','add');
                 ?>
             </li>
               <li>
