@@ -1536,6 +1536,10 @@
     height: 603% !important;
 }
 
+.content-header table{
+    width:100%;
+}
+
 .fix-program-header {
     position: fixed;
     top: 0;

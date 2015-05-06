@@ -96,7 +96,7 @@
 				echo "</div>";
 				echo "</td>";
 				echo "<td>";
-				echo "<div class='program-body'>";
+				echo "<div class='program-body '>";
 				echo $content_for_layout;
 				echo "</div>";
 				echo "</td>";   

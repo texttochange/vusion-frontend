@@ -1,29 +1,29 @@
 <div class="index width-size">
 	<?php 
-    $content_title = null;
+    $contentTitle = null;
     if (isset($dialogue)) {
-        $content_title = __('Edit Dialogue'); 
+        $contentTitle = __('Edit Dialogue'); 
         if (!$dialogue['Dialogue']['activated'])  {
-            $content_title = $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
+            $contentTitle = $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
         }
     } else {
-        $content_title = __('Create Dialogue');
+        $contentTitle = __('Create Dialogue');
     }
 
-    $content_actions = array();
-    $content_actions[] = $this->Html->link( __('Cancel'), 
+    $contentActions = array();
+    $contentActions[] = $this->Html->link( __('Cancel'), 
         array(
           'program' => $programDetails['url'],
           'controller' => 'programHome',
           'action' => 'index'),
         array('class' => 'ttc-button'));
 
-    $content_actions[] = $this->Html->tag('div', __('Save'), 
+    $contentActions[] = $this->Html->tag('div', __('Save'), 
         array('class'=>'ttc-button dynamic-form-save'));
     $this->Js->get('.dynamic-form-save')->event('click', 'formSubmit();', true);
 
     if (isset($dialogue)) {
-        $content_actions[] = $this->Html->link(__('Activate'), 
+        $contentActions[] = $this->Html->link(__('Activate'), 
             array(
                 'program' => $programDetails['url'],
                 'action' => 'activate', 
@@ -31,14 +31,14 @@
         array('class'=>'ttc-button'));
     }
 
-    $content_actions[] = $this->Html->link(__('Test send all messages'), 
+    $contentActions[] = $this->Html->link(__('Test send all messages'), 
         array(
             'program'=>$programDetails['url'],
             'action'=>'testSendAllMessages', 
             'id'=>$dialogue['Dialogue']['_id']), 
         array('class'=>'ttc-button'));
 
-    echo $this->element('header_content', compact('content_title', 'content_actions'));
+    echo $this->element('header_content', compact('contentTitle', 'contentActions'));
 
     ?>
     <div class="ttc-display-area display-height-size">
