@@ -87,7 +87,7 @@ p {
 
 #header{
 	padding: 5px 20px;
-	height: 40px;
+	height: 2.8em;
 	background: black;
 	min-width: 800px;
 }
@@ -177,7 +177,6 @@ th {
 }
 th a {
 	display: block;
-	padding: 2px 4px;
 	text-decoration: none;
 }
 th a.asc:after {

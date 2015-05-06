@@ -80,7 +80,7 @@
 		<?php
 			if (isset($programDetails['name'])) {
 				$this->Js->set('isProgramSpecific', true);
-				echo "<table><thead><tr>";
+				echo "<table><thead><tr style='border-spacing:0px'>";
 				echo "<td>";
 				echo "<div class='program-left-column'>";
 				echo $this->element('navigation_menu');

@@ -1,67 +1,46 @@
 <div class="index width-size">
-	<div style="height:4em">
-    <div id="header-content">
-    <table class="width-size">
-        <thead>
-            <tr>
-                <th>
-                    <h3>
-                    <?php 
-                    if (isset($dialogue)) 
-                        echo __('Edit Dialogue'); 
-                    else
-                        echo __('Create Dialogue');
-                    ?>
-                    <?php
-                    if (isset($dialogue) && !$dialogue['Dialogue']['activated'])  
-                                echo $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
-                    ?>
-                    </h3>
-                </th> 
-                <th>
-                    <ul class="ttc-actions">
-	                  <li>
-	                  <?php echo $this->Html->tag('div', __('Save'), array('class'=>'ttc-button dynamic-form-save')); ?>
-	              	  </li>
-	              	  <li>
-	                  <?php
-	                  echo $this->Html->link( __('Cancel'), 
-	                      array(
-	                          'program' => $programDetails['url'],
-	                          'controller' => 'programHome',
-	                          'action' => 'index'),
-	                      array('class' => 'ttc-button'));
-	                  ?>
-	                  </li>
-	                  <?php 
-	                  $this->Js->get('.dynamic-form-save')->event('click', 'formSubmit();', true);
-	                  ?>
-	                    <?php 
-	                    if (isset($dialogue)) {
-	                        if (!$dialogue['Dialogue']['activated']) {
-	                            echo "<li>";
-	                            echo $this->Html->link(__('Activate'), array(
-	                            	'program' => $programDetails['url'],
-	                            	'action' => 'activate', 
-	                            	'id' => $dialogue['Dialogue']['_id']), 
-	                            	array('class'=>'ttc-button'));
-	                            echo "</li>";
-	                        } 
-	                        ## Remove simulate button as long as it's not properly working in the backend
-	                        /*echo "<li>";
-	                        echo $this->Html->link(__('Simulate'), array('program'=>$programDetails['url'], 'controller' => 'programSimulator', 'action'=>'simulate', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
-	                        echo "</li>";*/
-	                        echo "<li>";
-	                        echo $this->Html->link(__('Test send all messages'), array('program'=>$programDetails['url'],'action'=>'testSendAllMessages', 'id'=>$dialogue['Dialogue']['_id']), array('class'=>'ttc-button'));
-	                        echo "</li>"; 
-	                    }?>
-	               </ul>
-                </th>
-            </tr>
-        </thead>
-    </table>
-    </div>
-	</div>
+	<?php 
+    $content_title = null;
+    if (isset($dialogue)) {
+        $content_title = __('Edit Dialogue'); 
+        if (!$dialogue['Dialogue']['activated'])  {
+            $content_title = $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
+        }
+    } else {
+        $content_title = __('Create Dialogue');
+    }
+
+    $content_actions = array();
+    $content_actions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'controller' => 'programHome',
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+
+    $content_actions[] = $this->Html->tag('div', __('Save'), 
+        array('class'=>'ttc-button dynamic-form-save'));
+    $this->Js->get('.dynamic-form-save')->event('click', 'formSubmit();', true);
+
+    if (isset($dialogue)) {
+        $content_actions[] = $this->Html->link(__('Activate'), 
+            array(
+                'program' => $programDetails['url'],
+                'action' => 'activate', 
+                'id' => $dialogue['Dialogue']['_id']), 
+        array('class'=>'ttc-button'));
+    }
+
+    $content_actions[] = $this->Html->link(__('Test send all messages'), 
+        array(
+            'program'=>$programDetails['url'],
+            'action'=>'testSendAllMessages', 
+            'id'=>$dialogue['Dialogue']['_id']), 
+        array('class'=>'ttc-button'));
+
+    echo $this->element('header_content', compact('content_title', 'content_actions'));
+
+    ?>
     <div class="ttc-display-area display-height-size">
     <?php 
     echo $this->Html->tag('form', null, array('id'=> 'dynamic-generic-program-form')); 
