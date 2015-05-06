@@ -88,7 +88,9 @@
 	<table class="participants" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >
-	            <th class="phone"><?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
+	            <th class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout-phone' : 'phone');?>">
+	            <?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?>
+	            </th>
 	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
 	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optout-date', __('Last Optout Date'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>
 	            <th class="enrolled"><?php echo $this->Paginator->sort('enrolled', __('Enrolled'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th> 
@@ -104,8 +106,12 @@
 	          </tr>
 	      <?php } else {?>   
 	      <?php foreach ($participants as $participant): ?>
-	      <tr class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>">
-	              <td><?php echo $participant['Participant']['phone']; ?></td>
+	      <tr class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>"
+	      title="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>"
+	      >
+	              <td><?php 
+	              echo ((!isset($participant['Participant']['session-id'])) ? '<img src = "/img/stop.png"  class = "optout-logo">' : '');
+	              echo $participant['Participant']['phone']; ?></td>
 	              <td><?php 
 	                  if ($participant['Participant']['last-optin-date']) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 

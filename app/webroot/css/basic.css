@@ -1524,8 +1524,18 @@ display: inline;
 .ttc-checkbox {
         margin-left: 10px;
 }
+
 /* USERLOGS SPECIFIC */
 .ttc-table-scrolling-area .user-logs .user_logs_field {
         width: 207px;
 }
 
+.optout-phone {
+    width: 143px;
+}
+
+.optout-logo {
+        height: 20px;
+        margin-right: 7px;
+        vertical-align: middle;
+}
