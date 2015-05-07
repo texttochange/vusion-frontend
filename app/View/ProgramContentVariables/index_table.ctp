@@ -128,7 +128,7 @@ $this->Html->script("ttc-table.js", array("inline" => false))
 		            echo $this->Html->tag(
 		                'span',
 		                __('Export'), array(
-		                    'class' => 'ttc-button',
+		                    'class' => 'ttc-button ttc-button-export',
 		                    'url' => $exportUrl,
 		                    'name' => $contentVariableTable['ContentVariableTable']['_id']));
 		            $this->Js->get('[name='.$contentVariableTable['ContentVariableTable']['_id'].']')->event('click',
