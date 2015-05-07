@@ -278,7 +278,6 @@ class ProgramContentVariablesController extends BaseProgramSpecificController
             $fileFullPath = $filePath . "/" . $fileName;
             $handle       = fopen($fileFullPath, "w");
             
-            $contentVariableTable        = $this->ContentVariableTable->find('first', array('conditions' => array('_id' => $id)));
             $contentVariableTableColumns = $contentVariableTable['ContentVariableTable']['columns'];
             
             foreach ($contentVariableTableColumns as $contentVariableTableColumn) {
