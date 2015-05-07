@@ -18,7 +18,8 @@ class DocumentationHelper extends AppHelper
         if (isset($this->convertLanguageNotation[$userLanguage])) {
             $lang = $this->convertLanguageNotation[$userLanguage];
         }
-        $documentationUrl = 'http://vusion-doc.texttochange.org/' . $lang;
+       // $documentationUrl = 'http://vusion-doc.texttochange.org/' . $lang;
+       $documentationUrl = 'http://vusion-doc.texttochange.org';
         echo $this->Html->link(
             __('Help'),
             array(),
