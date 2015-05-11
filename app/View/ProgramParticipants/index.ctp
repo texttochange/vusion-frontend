@@ -88,6 +88,7 @@
 	<table class="participants" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >
+	            <th></th>
 	            <th class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout-phone' : 'phone');?>">
 	            <?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?>
 	            </th>
@@ -111,7 +112,10 @@
 	      >
 	              <td><?php 
 	              echo ((!isset($participant['Participant']['session-id'])) ? '<img src = "/img/stop.png"  class = "optout-logo">' : '');
-	              echo $participant['Participant']['phone']; ?></td>
+	              ?>
+	              </td>
+	              <td><?php echo $participant['Participant']['phone']; 
+	              ?></td>
 	              <td><?php 
 	                  if ($participant['Participant']['last-optin-date']) {
 	                      echo $this->Time->format('d/m/Y H:i:s', $participant['Participant']['last-optin-date']); 
