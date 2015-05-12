@@ -472,17 +472,20 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     }
     
     
-    function exportFileGenerator($contentVariableTable, $handle)
+    function exportFileGenerator($id, $fileFullPath)
     {  
+        $handle = fopen($fileFullPath, "w");
+        
+        $contentVariableTable        = $this->read('columns', $id);
         $contentVariableTableColumns = $contentVariableTable['ContentVariableTable']['columns'];
         
         foreach ($contentVariableTableColumns as $contentVariableTableColumn) {
             $headers[]      = $contentVariableTableColumn['header'];
             $columnValues[] = $contentVariableTableColumn['values'];
         }
-        fputcsv($handle, $headers, ',','"');
+        fputcsv($handle, $headers, ',', '"');
         
-        # model deosnt allow for null values, so each data set has equal number of elements
+        //model deosnt allow for null values, so each data set has equal number of elements
         $countCols = count($columnValues[0]);
         
         for ($x =0; $x < $countCols; $x++) {
@@ -493,7 +496,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                 $columnIndex++;
             }
             
-            fputcsv($handle, $line,',' , '"');
+            fputcsv($handle, $line, ',' , '"');
         }
     }
     

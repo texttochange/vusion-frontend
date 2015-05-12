@@ -267,8 +267,8 @@ class ProgramContentVariablesController extends BaseProgramSpecificController
                 $timestamp = '';
             }
             
-            $contentVariableTable = $this->ContentVariableTable->find('first', array('conditions' => array('_id' => $id)));
-           
+            $contentVariableTable = $this->ContentVariableTable->read('name', $id);
+            
             $tableName   = inflector::slug($contentVariableTable['ContentVariableTable']['name'], '_');
             $programName = $this->Session->read($programUrl.'_name');
             
@@ -276,9 +276,8 @@ class ProgramContentVariablesController extends BaseProgramSpecificController
             
             $fileName     = $programNameUnderscore . "_" .$tableName. "_table_".$timestamp.".csv";            
             $fileFullPath = $filePath . "/" . $fileName;
-            $handle       = fopen($fileFullPath, "w");
             
-            $this->ContentVariableTable->exportFileGenerator($contentVariableTable, $handle);
+            $this->ContentVariableTable->exportFileGenerator($id, $fileFullPath);
             
             $requestSuccess = true;
             $this->set(compact('requestSuccess', 'fileName'));    

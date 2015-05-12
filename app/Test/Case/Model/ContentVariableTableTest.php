@@ -777,4 +777,37 @@ class ContentVariableTableTestCase extends CakeTestCase
     }
 
 
+    public function testExportFileGenerator()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table2',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'nairobi')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh', '400 Ksh')
+                    ),  
+                array(
+                    'header' => 'piece',
+                    'values' => array('1', '1')
+                    )
+                )
+            );
+        
+        $this->ContentVariableTable->create();
+        $savedTable = $this->ContentVariableTable->save($contentVariableTable);
+        
+        $id           = $this->ContentVariableTable->id;
+        $fileFullPath = TESTS . 'files/testdbprogram_my_table2_table.csv';
+        
+        $this->ContentVariableTable->exportFileGenerator($id,  $fileFullPath);
+        
+        $this->assertFileExists($fileFullPath);        
+        
+    }    
+    
+    
 }
