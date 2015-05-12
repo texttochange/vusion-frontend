@@ -480,7 +480,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
             $headers[]      = $contentVariableTableColumn['header'];
             $columnValues[] = $contentVariableTableColumn['values'];
         }
-        fputcsv($handle, $headers,',','"');
+        fputcsv($handle, $headers, ',','"');
         
         # model deosnt allow for null values, so each data set has equal number of elements
         $countCols = count($columnValues[0]);
