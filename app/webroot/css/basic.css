@@ -97,7 +97,10 @@
         text-decoration: none;
         cursor: pointer;
 }
+.ttc-button-export {
 
+        padding: 3px 7px;
+}
 
 .ui-dform-legend {
         color : gray;
