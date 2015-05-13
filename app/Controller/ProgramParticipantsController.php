@@ -768,7 +768,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 if ($this->request->data['Import']['file']['error'] == 4) { 
                     $message = __("Please select a file.");
                 } else if ($this->request->data['Import']['file']['error'] == 1) {
-                    $message = __("Selected file is too large to import please divide it into 15,000 participants.");
+                    $message = __("Selected file is too large to import please divide it into 10,000 participants.");
                 } else { 
                     $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
                 }
