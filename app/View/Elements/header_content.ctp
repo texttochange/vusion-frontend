@@ -2,8 +2,8 @@
 $containsFilter = (isset($containsFilter) ? $containsFilter : false);
 ?>
 <div>
-	<div id="header-content" class="content-header" style="width:100%">
-		<table>
+	<div id="header-content" class="content-header">
+		<table class="width-size">
 			<thead>
 		        <tr>
 		            <th>
