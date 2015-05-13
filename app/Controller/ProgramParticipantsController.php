@@ -37,7 +37,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'));
     
-
+    
     function constructClasses() 
     {
         parent::constructClasses();
@@ -54,7 +54,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         parent::beforeFilter();
     }
-
+    
     
     public function index() 
     {      
@@ -64,7 +64,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $requestSuccess = true;
         $order          = null;
         $conditions     = array();
-
+        
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
@@ -72,46 +72,46 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $this->Participant,
             array(),
             array('Schedule' => $this->Schedule));
-
+        
         $paginate = array(
             'allSafeJoin',
             'conditions' => $conditions,
             'order' => $order);
         $this->paginate = $paginate;
         $participants   = $this->paginate('Participant');
-
+        
         $this->set(compact('participants', 'requestSuccess', 'order'));
     }
     
-
+    
     public function listParticipants()
     {
         $requestSuccess = true;
         $conditions     = array();
         $explodeProfile = array();
-
+        
         if (!$this->_isCsv() && !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $conditions = $this->Filter->getConditions(
             $this->Participant,
             array(),
             array('Schedule' => $this->Schedule));
-
+        
         $participants = $this->Participant->find(
             'allSafeJoin',
             array(
                 'conditions' => $conditions,
                 'limit'=> 10000));
-
+        
         if (isset($this->params['url']['explode_profile'])) {
             $explodeProfile = explode(',', $this->params['url']['explode_profile']);
         }
         $this->set(compact('participants', 'requestSuccess', 'explodeProfile'));
         $this->render('index');
     }
-
+    
     
     protected function _getFilterFieldOptions()
     {   
@@ -232,8 +232,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         $this->redirect($redirectUrl);
     }
-
-
+    
+    
     public function exported()
     {
         $programUrl  = $this->programDetails['url'];
@@ -248,7 +248,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $files = $this->paginate('Export');
         $this->set(compact('files'));
     }
-
+    
     
     public function export() 
     {
@@ -269,7 +269,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         } 
-
+        
         $filePath = WWW_ROOT . "files/programs/" . $programUrl;
         if (!file_exists($filePath)) {
             mkdir($filePath);
@@ -282,10 +282,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         $programName  = $this->programDetails['name'];
         $programNameUnderscore = inflector::slug($programName, '_');
-
+        
         $fileName     = $programNameUnderscore . "_participants_" . $timestamp . ".csv";
         $fileFullName = $filePath . DS . $fileName;
-
+        
         $export = array(
             'database' => $this->programDetails['database'],
             'collection' => $this->Participant->table,
@@ -309,11 +309,11 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             'action' => 'exported'));
     }
     
-
+    
     public function deleteExport() 
     {
         $id = $this->params['id'];
-
+        
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
@@ -321,19 +321,19 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         if (!$this->Export->exists()) {
             throw new NotFoundException(__('Invalid Export: %s', $id));
         }
-
+        
         if ($this->Export->delete()) {
             $this->Session->setFlash(__('Export deleted.'),
                 'default', array('class'=>'message success'));
         } else {
             $this->Session->setFlash(__('Export cannot be deleted.'));
         }
-
+        
         $this->redirect(array(
             'program' => $this->programDetails['url'],
             'action' => 'exported'));
     }
-
+    
     
     protected function _searchProfile($array, $labelKey)
     {
@@ -365,18 +365,18 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $this->VumiRabbitMQ->sendMessageMassUntag($workerName, $tag);
     }
     
-
+    
     protected function _notifyBackendRunActions($workerName, $runActions)
     {
         $this->VumiRabbitMQ->sendMessageRunActions($workerName, $runActions);
     }
-
-
+    
+    
     protected function _notifyBackendExport($exportId)
     {
         $this->VumiRabbitMQ->sendMessageToExport($exportId);
     }
-
+    
     
     public function add() 
     {
@@ -448,8 +448,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         return $participant;
     }
-
-   
+    
+    
     protected function _ajaxDataPatch($modelName='Participant')
     {
         $data = $this->data;
@@ -458,8 +458,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         return $data;
     }
-
-
+    
+    
     //we should not be able to edit a phone number
     public function edit()   
     {
@@ -763,13 +763,32 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 return;
             }
             
+            
             if ($this->request->data['Import']['file']['error'] != 0) {
                 if ($this->request->data['Import']['file']['error'] == 4) { 
                     $message = __("Please select a file.");
+                } else if ($this->request->data['Import']['file']['error'] == 1) {
+                    $message = __("Selected file is too large to import please divide it into 10,000 participants.");
                 } else { 
                     $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
                 }
                 $this->Session->setFlash($message, 
+                    'default', array('class' => "message failure")
+                    );
+                return;
+            }
+            
+            $file      = $this->request->data['Import']['file']['tmp_name'];
+            $linecount = 0;
+            $handle    = fopen($file, "r");
+            while(!feof($handle)){
+                $line = fgets($handle);
+                $linecount++;
+            }
+            fclose($handle);
+            
+            if ($linecount > 10001) {
+                $this->Session->setFlash(__('Max limit of 10,000 participants exceeded, please break file into smaller parts'), 
                     'default', array('class' => "message failure")
                     );
                 return;
@@ -828,7 +847,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     'default', array('class' => "message failure")
                     );
             }
-            
+            // throw new Exception();
             //Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
@@ -846,18 +865,18 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $paginationCount   = $this->Participant->count($this->Filter->getConditions($this->Participant, $defaultConditions), null, -1);
         $this->set(compact('requestSuccess', 'paginationCount'));
     }
-
-
+    
+    
     public function runActions()
     {
         $programUrl     = $this->params['program'];
         $requestSuccess = true;
         $data           = $this->data;
-
+        
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $valid = $this->Participant->validateRunActions($data);
         if ($valid === true) {
             $this->Session->setFlash(__('The runActions succeed.'));
