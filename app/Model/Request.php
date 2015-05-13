@@ -33,9 +33,13 @@ class Request extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        $this->Action = new Action();
     }
     
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->Action = new Action($this->databaseName);
+    }
     
     // Validate
     public $validate = array(

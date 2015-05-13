@@ -372,7 +372,12 @@ var action = {
             {'value': 'sms-invite',
             'subfields': ['invite-content',
                           'invitee-tag',
-                          'feedback-inviter']}               
+                          'feedback-inviter']},
+            {'value': 'save-content-variable',
+            'subfields': ['scv-attached-table', 
+                            'scv-row-keys',
+                            'scv-col-key',
+                            'scv-extra-cvs']}
         ]
     },
     "tag": {'type': 'text'},
@@ -423,10 +428,10 @@ var action = {
             {'value': "phone-number"}],
         'style': 'padding-top:0px',
     },
-    "forward-message-no-participant-feedback": {
+    'forward-message-no-participant-feedback': {
         'type': 'textarea',
     },
-    "weight": {'type': 'text'},
+    'weight': {'type': 'text'},
     'forward-url': {'type': 'text'},
     'forward-to': {'type': 'text'},
     'forward-content': {'type': 'textarea'},
@@ -434,7 +439,33 @@ var action = {
     'invitee-tag': {'type': 'text'},
     'feedback-inviter': {'type': 'textarea'},
     'keep-tags': {'type': 'text'},
-    'keep-labels': {'type': 'text'}
-    
+    'keep-labels': {'type': 'text'},
+    'scv-row-keys': {
+        'type': 'list',
+        'add-button': true,
+        'adds': 'scv-row-key'
+    },
+    'scv-row-key': {
+        'type': 'container', 
+        'contains': ['name', 'value'],
+        'skip': true,
+    },
+    'scv-extra-cvs': {
+        'type': 'list',
+        'add-button': true,
+        'adds': 'scv-extra-cv'
+    },
+    'scv-extra-cv': {
+        'type': 'container', 
+        'contains': ['name', 'value'],
+        'skip': true,
+    },
+    'scv-col-key': {'type': 'text'},
+    'name': {'type': 'text'},
+    'value': {'type': 'text'},
+    'scv-attached-table': {
+        'type': 'select',
+        'data': 'server-dynamic',
+        'fieldset': true}
 }
 $.extend(dynamicForm, action);

@@ -2,6 +2,8 @@
 App::uses('VirtualModel', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
+App::uses('ContentVariableTable', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class Action extends VirtualModel
@@ -79,7 +81,8 @@ class Action extends VirtualModel
                         'proportional-labelling',
                         'url-forwarding',
                         'sms-forwarding',
-                        'sms-invite')),
+                        'sms-invite',
+                        'save-content-variable')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -96,7 +99,12 @@ class Action extends VirtualModel
                         'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proportional-labels'),
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'),
-                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'))),
+                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'),
+                        'save-content-variable' => array(
+                            'scv-attached-table', 
+                            'scv-row-keys',
+                            'scv-col-key',
+                            'scv-extra-cvs'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -307,6 +315,34 @@ class Action extends VirtualModel
                 'message' => VusionConst::LABEL_NAMES_LIST_FAIL_MESSAGE
                 ),
             ),
+        'scv-attached-table' => array(
+            'validateTableId' => array(
+                'rule' => array('validTableId'),
+                'message' => 'Must reference an existing table id.'
+                ),
+            ),
+        'scv-row-keys' => array(
+            'validateRowKeys' => array(
+                'rule' => array('validScvRowKeys'),
+                'message' => 'noMessage'
+                ),
+            ),
+        'scv-col-key' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter header name for this column',
+                ),
+            'validHeader' => array(
+                'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE,
+                )
+            ),
+        'scv-extra-cvs' => array(
+            'validExtraCvs' => array(
+                'rule' => array('validScvExtraCvs'),
+                'message' => 'noMessage'
+                ),
+            ),
         );
     
     public $validateOffsetDays = array(
@@ -378,8 +414,7 @@ class Action extends VirtualModel
             )
         );
     
-    
-    
+
     public $validateProportionalTag = array(
         'tag' => array(
             'required' => array(
@@ -402,7 +437,8 @@ class Action extends VirtualModel
                 ),
             ),
         );
-    
+
+
     public $validateProportionalLabel = array(
         'label-value' => array(
             'required' => array(
@@ -425,8 +461,51 @@ class Action extends VirtualModel
                 ),
             ),
         );
+
+    public $validateScvRowKeys = array(
+        'name' => array( 
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter header name for this column',
+                ),
+            'validHeader' => array(
+                'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE
+                ),
+            'validScvRowKey' => array(
+                'rule' => array('validScvRowKey'),
+                'message' => 'The header has to be present as key in the table.'
+                )
+            ),
+        'value' => array()
+        );
+
+    public $validateScvExtraCv = array(
+        'name' => array( 
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter header name for this column',
+                ),
+            'validHeader' => array(
+                'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE
+                ),
+            'validScvExtraCvNotKey' => array(
+                'rule' => array('validScvExtraCvNotKey'),
+                'message' => 'The header cannot be a key in the table.'
+                )
+            ),
+        'value' => array()
+        );
     
-    
+
+    public function __construct($databaseName) 
+    {
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', $databaseName, true);
+    }
+
+
     public function trimArray($Input)
     {
         if (!is_array($Input))
@@ -447,6 +526,10 @@ class Action extends VirtualModel
         if ($this->data['type-action'] == 'sms-forwarding') {
             $this->_setDefault('set-forward-message-condition', null);
             $this->_setDefault('forward-to', null);
+        }
+        if ($this->data['type-action'] == 'save-content-variable') {
+            $this->_setDefault('scv-row-keys', null);
+            $this->_setDefault('scv-extra-cvs', null);    
         }
         if (in_array($this->data['type-action'], array('proportional-tagging', 'proportional-labelling'))) {
             $this->_setDefault('set-only-optin-count', null);
@@ -590,8 +673,54 @@ class Action extends VirtualModel
             }
         }
         return true;
-        
     }
-    
-    
+
+
+    public function validTableId($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        if ($this->ContentVariableTable->exists($data[$field])) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public function validScvRowKey($field, $data)
+    {
+        if (!isset($data[$field]) || !isset($this->data['scv-attached-table'])) {
+            return true;
+        }
+        if (!$this->ContentVariableTable->hasHeader($this->data['scv-attached-table'], $data[$field], true)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function validScvRowKeys($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateScvRowKeys);
+    }
+
+
+    public function validScvExtraCvNotKey($field, $data)
+    {
+        if (!isset($data[$field]) || !isset($this->data['scv-attached-table'])) {
+            return true;
+        }
+        if ($this->ContentVariableTable->hasHeader($this->data['scv-attached-table'], $data[$field], true)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function validScvExtraCvs($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateScvExtraCv);
+    }
+
 }

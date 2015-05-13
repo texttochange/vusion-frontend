@@ -36,6 +36,13 @@
         }
         $this->Js->set('enrollOptions', $dialogueOptions);
         $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+        $attachedTableOptions = array();
+        foreach($contentVariableTableOptions as $contentVariableTableOption) {
+            $attachedTableOptions[] = array(
+                'value' => $contentVariableTableOption['ContentVariableTable']['_id']."",
+                'html' => $contentVariableTableOption['ContentVariableTable']['name']);
+        }
+        $this->Js->set('scv-attached-tableOptions', $attachedTableOptions);
         $this->Js->get('document')->event('ready','addCounter(); ');
 	?>
 	<br/>

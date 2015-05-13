@@ -355,7 +355,32 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         return $columns;
     }
     
-    
+
+    function hasHeader($id, $header, $hasKey=True)
+    {
+        $keyHeaders = array();
+        $cvt = $this->read(Null, $id);
+        if (!isset($cvt['ContentVariableTable'])) {
+            return false;
+        }
+        foreach ($cvt['ContentVariableTable']['columns'] as $column) {
+            if ($column['header'] == $header) {
+                if ($hasKey) {
+                    if ($column['type'] == 'key') {
+                        return true;
+                    } 
+                } else {
+                    if ($column['type'] == 'contentvariable') {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false; 
+    }
+
+
     function getAllKeysValue($columns) 
     {
         foreach ($columns as $column) {
@@ -445,7 +470,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
             $this->ContentVariable->create();
             $previousContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => $contentVariable['keys'])));
             if (isset($previousContentVariable[0]['ContentVariable'])) {
-                #it's an update
+                ## it's an update
                 $this->ContentVariable->id = $previousContentVariable[0]['ContentVariable']['_id'].'';
                 ## Update don't return the id
                 $currentContentVariable[] = $previousContentVariable[0]['ContentVariable']['_id'];
@@ -471,5 +496,5 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         return $this->delete($id);
     }
     
-    
+
 }
