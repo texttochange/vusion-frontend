@@ -28,9 +28,6 @@ $containsFilter = (isset($containsFilter) ? $containsFilter : false);
 		<table>
 			<thead>
 		        <tr>
-		        	<th>
-		        		<div id="advanced_filter_form"/>
-		        	</th>
 					<th>
 					<div class="ttc-data-control">
 			        <div id="data-control-nav" class="ttc-paging paging">
