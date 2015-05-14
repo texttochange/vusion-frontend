@@ -13,7 +13,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     
     function getModelVersion()
     {
-        return '1';
+        return '2';
     }
     
     
@@ -21,7 +21,8 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     {
         return array(
             'name',
-            'columns'
+            'columns',
+            'column-key-selection',
             );
     }
     
@@ -50,9 +51,9 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                 'rule' => array('sameNumberOfValues'),
                 'message' => 'All column should have the same number of values'
                 ),
-            'atLeastOneContentVariableColumn' => array(
-                'rule' => 'atLeastOneContentVariableColumn',
-                'message' => 'Not able to identify unique set of keys.'
+            'atLeastOneColumn' => array(
+                'rule' => 'atLeastOneColumn',
+                'message' => 'The table should at least have a first column.'
                 ),
             'uniqueKeys' => array(
                 'rule' => 'uniqueKeys',
@@ -62,7 +63,17 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                 'rule' => 'maxKeys',
                 'message' => 'There are too many keys.',
                 )
-            )
+            ),
+        'column-key-selection' => array(
+            'validValue' => array(
+                'rule' => array('inList', array('auto', 'first', 'first-two')),
+                'message' => null
+                ),
+            'enoughColumns' => array(
+                'rule' => array('enoughColumns'),
+                'message' => 'The table should have at least the 2 first columns.'
+                ),
+            ),
         );
     
     
@@ -128,9 +139,6 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         if (!is_array($check['columns'])) {
             return false;
         }
-        if (count($check['columns']) < 2) {
-            return __('A table must have at least 2 columns.');
-        }
         $valueValidationErrors = array();
         for($i = 0; $i < count($check['columns']); $i++) {
             $valueValidationErrors[$i] = $this->ValidationHelper->runValidationRules($check['columns'][$i], $this->validateColumn);
@@ -142,6 +150,16 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         return true;
     }
     
+    function enoughColumns($check)
+    {
+        if ($check['column-key-selection'] == 'first-two') {
+            if (count($this->data['ContentVariableTable']['columns']) == 1) {
+                return __('The table should have at least the 2 first columns.');
+            }
+        } 
+        return true;
+    }
+
     
     function arrayDelete($array, $element) {
         return array_diff($array, array($element));
@@ -231,14 +249,12 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     }
     
     
-    function atLeastOneContentVariableColumn($check) 
+    function atLeastOneColumn($check) 
     {
-        for($i = 0; $i < count($check['columns']); $i++) {
-            if ($check['columns'][$i]['type'] == 'contentvariable') {
-                return true;
-            }
+        if (count($check['columns']) == 0) {
+            return false;
         }
-        return false;
+        return true;
     }
     
     
@@ -285,15 +301,28 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-        
-        if (isset($this->data['ContentVariableTable']['columns'])) {
-            $this->removeEmptyCells($this->data['ContentVariableTable']['columns']);
-            $this->selectColumnsForKeys($this->data['ContentVariableTable']['columns']);
-        }
+
+        $this->_setDefault('name', null);
+        $this->_setDefault('columns', array());
+        $this->_setDefault('column-key-selection', 'auto');
+
+        $this->removeEmptyCells($this->data['ContentVariableTable']['columns']);
+        $this->setKeyColumns();
+        $this->setDefaultColumnValidation();
         return true;
     }
+
     
-    
+    function setDefaultColumnValidation($defaultValue=null)
+    {
+        foreach($this->data['ContentVariableTable']['columns'] as &$column) {
+            if (!isset($column['validation'])) {
+                $column['validation'] = null;
+            }
+        }
+    }
+
+
     function removeEmptyCells(&$columns)
     {
         $lastUsedRow = 0;
@@ -315,20 +344,52 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         for ($i=$lastUsedCol+1; $i<=$totalCol; $i++) {
             unset($columns[$i]);
         }
-        for ($i=0; $i<=$lastUsedCol; $i++) {
-            $totalRow = count($columns[$i]['values']);
-            for ($j=$lastUsedRow+1; $j<=$totalRow; $j++) {
-                unset($columns[$i]['values'][$j]);
+        if (isset($columns[0])) {
+            for ($i=0; $i<=$lastUsedCol; $i++) {
+                $totalRow = count($columns[$i]['values']);
+                for ($j=$lastUsedRow+1; $j<=$totalRow; $j++) {
+                    unset($columns[$i]['values'][$j]);
+                }
             }
         }
     }
     
+
+    function setKeyColumns()
+    {
+        switch ($this->data['ContentVariableTable']['column-key-selection']){
+            case 'first':
+                $this->setTypeColumns(0);
+            break;
+            case 'first-two':
+                $this->setTypeColumns(1);
+            break;
+            default:
+                $this->autoSelectKeyColumns();
+            break;
+        }
+    }
+
+
+    function setTypeColumns($lastKeyIndex) 
+    {
+        $counter = 0;
+        foreach ($this->data['ContentVariableTable']['columns'] as &$column) {
+            if ($counter <= $lastKeyIndex) {
+                $column['type'] = 'key';
+            } else {
+                $column['type'] = 'contentvariable';
+            }
+            $counter++;
+        }
+    }
+
     
-    function selectColumnsForKeys(&$columns) 
+    function autoSelectKeyColumns() 
     {
         $keys = array();
         $hasUniqueKeys = false; 
-        foreach ($columns as &$column) {
+        foreach ($this->data['ContentVariableTable']['columns'] as &$column) {
             if (!isset($column['validation'])) {
                 $column['validation'] = null;
             }
@@ -352,11 +413,10 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                 $hasUniqueKeys = true;
             }
         }
-        return $columns;
     }
     
 
-    function hasHeader($id, $header, $hasKey=True)
+    function hasKeyHeader($id, $header)
     {
         $keyHeaders = array();
         $cvt = $this->read(Null, $id);
@@ -364,17 +424,8 @@ class ContentVariableTable extends ProgramSpecificMongoModel
             return false;
         }
         foreach ($cvt['ContentVariableTable']['columns'] as $column) {
-            if ($column['header'] == $header) {
-                if ($hasKey) {
-                    if ($column['type'] == 'key') {
-                        return true;
-                    } 
-                } else {
-                    if ($column['type'] == 'contentvariable') {
-                        return false;
-                    }
-                }
-                return true;
+            if ($column['header'] == $header && $column['type'] == 'key') {
+                    return true;
             }
         }
         return false; 
@@ -383,10 +434,13 @@ class ContentVariableTable extends ProgramSpecificMongoModel
 
     function getAllKeysValue($columns) 
     {
+        $allKeys = array();
         foreach ($columns as $column) {
             if (!isset($rowKeys)) {
+                if (count($column['values']) == 0) {
+                    continue;
+                }
                 $rowKeys = array_fill(0, count($column['values']), array());
-                $allKeys = array();
             }
             if ($column['type'] == 'key') {
                 for ($i = 0; $i < count($column['values']); $i++) {
@@ -473,19 +527,19 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                 ## it's an update
                 $this->ContentVariable->id = $previousContentVariable[0]['ContentVariable']['_id'].'';
                 ## Update don't return the id
-                $currentContentVariable[] = $previousContentVariable[0]['ContentVariable']['_id'];
+                $currentContentVariables[] = $previousContentVariable[0]['ContentVariable']['_id'];
             } 
             $contentVariable['keys'] = $this->ContentVariable->setListKeys($contentVariable['keys']);
             $contentVariable['table'] = $this->id;
             $saved = $this->ContentVariable->save($contentVariable, false);
             ## save return the id
             if (isset($saved['ContentVariable']['_id'])) {
-                $currentContentVariable[] = $saved['ContentVariable']['_id'].'';
+                $currentContentVariables[] = $saved['ContentVariable']['_id'].'';
             }
         }
         #remove not current ones
         $this->ContentVariable->deleteAll(
-            array('table' => $this->id, 'id' => array('$nin' => $currentContentVariable)), false);
+            array('table' => $this->id, 'id' => array('$nin' => $currentContentVariables)), false);
         return true;
     }
     

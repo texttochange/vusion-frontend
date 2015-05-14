@@ -693,7 +693,7 @@ class Action extends VirtualModel
         if (!isset($data[$field]) || !isset($this->data['scv-attached-table'])) {
             return true;
         }
-        if (!$this->ContentVariableTable->hasHeader($this->data['scv-attached-table'], $data[$field], true)) {
+        if (!$this->ContentVariableTable->hasKeyHeader($this->data['scv-attached-table'], $data[$field])) {
             return false;
         }
         return true;
@@ -711,7 +711,7 @@ class Action extends VirtualModel
         if (!isset($data[$field]) || !isset($this->data['scv-attached-table'])) {
             return true;
         }
-        if ($this->ContentVariableTable->hasHeader($this->data['scv-attached-table'], $data[$field], true)) {
+        if ($this->ContentVariableTable->hasKeyHeader($this->data['scv-attached-table'], $data[$field])) {
             return false;
         }
         return true;
