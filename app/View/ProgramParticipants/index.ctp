@@ -2,6 +2,7 @@
 	<?php
 	$contentTitle = __('Participants');
 	$contentActions = array();
+	$containsDataControlNav = true;
 	$containsFilter = true;
 	$controller = 'programParticipants';
 	$urlParams = (isset($urlParams) ? $urlParams : "");
@@ -28,13 +29,7 @@
         '',
         array('class' => 'ttc-button',
             'name' => 'unTag', 
-        	'url' => $massUntagUrl)); 
-   /* $contentActions[] = $this->Html->tag(
-        'div', 
-        __('Untag'), 
-        array('class' => 'ttc-button', 
-        	'name' => 'unTag', 
-        	'url' => $massUntagUrl)); */
+        	'url' => $massUntagUrl));
     $this->Js->get('[name=unTag]')->event('click',
         'generateMassUntagDialogue(this);');
 
@@ -74,10 +69,6 @@
         'programParticipants',
         '',
         array('class' => 'ttc-button', 'name' => 'add-filter'));
-	/*$contentActions[] = $this->Html->tag(
-        'div', 
-        __('Filter'), 
-        array('class' => 'ttc-button', 'name' => 'add-filter'));*/ 
     $this->Js->get('[name=add-filter]')->event(
         'click',
         '$("#advanced_filter_form").show();
@@ -85,7 +76,7 @@
          addStackFilter();');
 
 	echo $this->element('header_content', 
-		compact('contentTitle', 'contentActions', 'containsFilter', 'controller'));
+		compact('contentTitle', 'contentActions', 'containsFilter','containsDataControlNav', 'controller'));
 
     /*echo $this->element('filter_box', array(
         'controller' => 'programParticipants'));*/
