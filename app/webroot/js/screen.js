@@ -6,15 +6,15 @@ function layoutHandler() {
 
 	if ($(window).scrollTop() > 50) {
 		$("#header-program").addClass("fix-program-header");
+		$("#header-content").addClass("fix-content-header");
 	} else {
 		$("#header-program").removeClass("fix-program-header");
+		$("#header-content").removeClass("fix-content-header");
 	}
 
 	if ($(window).scrollTop() > 60) {
-		$("#header-content").addClass("fix-content-header");
 		$("#navigation-menu").addClass("fix-navigation-menu");
 	} else {
-		$("#header-content").removeClass("fix-content-header");
 		$("#navigation-menu").removeClass("fix-navigation-menu");
 	}
 

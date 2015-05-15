@@ -1560,12 +1560,12 @@
 
 .fix-content-header {
     position: fixed;
-    top: 3.5em;
+    top: 50px;
     z-index: 998;
-    left: 17.1em;
+    left: 242px;
+    right: 19px;
     background: white;
     border-bottom: 1px lightgrey solid;
-    width:77%;
     padding-top: 8px;
 }
 
