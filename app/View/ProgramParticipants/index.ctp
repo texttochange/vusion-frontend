@@ -21,12 +21,20 @@
     	'program' => $programDetails['url'],
     	'controller' => 'programParticipants',
     	'action' => 'massUntag'));
-    $contentActions[] = $this->Html->tag(
+    $contentActions[] = $this->AclLink->generateButton(
+        __('Untag'), 
+        $programDetails['url'],
+        'programParticipants',
+        '',
+        array('class' => 'ttc-button',
+            'name' => 'unTag', 
+        	'url' => $massUntagUrl)); 
+   /* $contentActions[] = $this->Html->tag(
         'div', 
         __('Untag'), 
         array('class' => 'ttc-button', 
         	'name' => 'unTag', 
-        	'url' => $massUntagUrl)); 
+        	'url' => $massUntagUrl)); */
     $this->Js->get('[name=unTag]')->event('click',
         'generateMassUntagDialogue(this);');
 
@@ -60,10 +68,16 @@
         'import',
         array('class' => 'ttc-button'));
 
-	$contentActions[] = $this->Html->tag(
+    $contentActions[] = $this->AclLink->generateButton(
+        __('Filter'), 
+        $programDetails['url'],
+        'programParticipants',
+        '',
+        array('class' => 'ttc-button', 'name' => 'add-filter'));
+	/*$contentActions[] = $this->Html->tag(
         'div', 
         __('Filter'), 
-        array('class' => 'ttc-button', 'name' => 'add-filter')); 
+        array('class' => 'ttc-button', 'name' => 'add-filter'));*/ 
     $this->Js->get('[name=add-filter]')->event(
         'click',
         '$("#advanced_filter_form").show();

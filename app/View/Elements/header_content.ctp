@@ -3,33 +3,29 @@ $containsFilter = (isset($containsFilter) ? $containsFilter : false);
 ?>
 <div>
 	<div id="header-content" class="content-header">
-		<table class="width-size">
-			<thead>
-		        <tr>
-		            <th>
-		                <h3>
-		           		<?php echo $contentTitle; ?>
-		                </h3>
-		            </th> 
-		            <th>
-		                <ul class="ttc-actions">
-		                    <?php foreach($contentActions as $contentAction) : ?>
-		                  	<li>
-		                  	<?php echo $contentAction; ?> 
-		              	  	</li>
-		              	  	<?php endforeach; ?>
-		              	  	<li>
-		               </ul>
-		            </th>
-		        </tr>
-		    </thead>
-		</table>
+	<div class="table" style="width:100%">
+             <div class="heading">
+                 <div class="cell">
+                     <h3>
+                         <?php echo $contentTitle; ?>
+                     </h3>
+		         </div>
+		         <div class="cell">
+                     <ul class="ttc-actions">
+                         <?php foreach($contentActions as $contentAction) : ?>
+                         <li>
+                            <?php echo $contentAction; ?> 
+                         </li>
+                         <?php endforeach; ?>
+                     </ul>
+		         </div>
+             </div>
+	    </div>
 	    <?php if ($containsFilter): ?>
-		<table>
-			<thead>
-		        <tr>
-					<th>
-					<div class="ttc-data-control">
+	    <div class="table" style="width:100%">
+            <div class="row">
+                <div class="ttc-data-control">
+                   <div class="ttc-data-control">
 			        <div id="data-control-nav" class="ttc-paging paging">
 					    <?php
 					    if (isset($this->Paginator)) {
@@ -115,11 +111,10 @@ $containsFilter = (isset($containsFilter) ? $containsFilter : false);
 					        '$(":input[value=\"\"]").attr("disabled", true);
 					        return true;');
 					    ?>
-						</div>
-			            </th> 
-		        </tr>
-			</thead>
-		</table>
+						</div> 
+                </div>
+            </div>
+	    </div>
 		<?php endif;?>
 	</div>
 </div>

@@ -18,7 +18,11 @@
           'action' => 'index'),
         array('class' => 'ttc-button'));
 
-    $contentActions[] = $this->Html->tag('div', __('Save'), 
+    $contentActions[] = $this->Html->link( __('Save'),
+        array(
+          'program' => $programDetails['url'],
+          'controller' => 'programHome',
+          'action' => ''),
         array('class'=>'ttc-button dynamic-form-save'));
     $this->Js->get('.dynamic-form-save')->event('click', 'formSubmit();', true);
 
@@ -29,15 +33,15 @@
                 'action' => 'activate', 
                 'id' => $dialogue['Dialogue']['_id']), 
         array('class'=>'ttc-button'));
-    }
-
-    $contentActions[] = $this->Html->link(__('Test send all messages'), 
+        
+        $contentActions[] = $this->Html->link(__('Test send all messages'), 
         array(
             'program'=>$programDetails['url'],
             'action'=>'testSendAllMessages', 
             'id'=>$dialogue['Dialogue']['_id']), 
         array('class'=>'ttc-button'));
-
+    }
+   
     echo $this->element('header_content', compact('contentTitle', 'contentActions'));
 
     ?>

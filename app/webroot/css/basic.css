@@ -229,8 +229,15 @@
 }
 
 .ttc-actions li div{
-        color: #003D4C;
+        /*color: #003D4C;*/
         padding: 4px 5px;
+         border: 1px solid #BBBBBB;
+        /* border-radius: 4px 4px 4px 4px; */    
+        /*  padding: 4px 8px; */
+        /*  display: block; */
+        background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+        text-decoration: none;
+        font-weight: normal;
 }
 
 .ttc-actions li div:hover{
@@ -1558,6 +1565,8 @@
     left: 17.1em;
     background: white;
     border-bottom: 1px lightgrey solid;
+    width:77%;
+    padding-top: 8px;
 }
 
 .fix-navigation-menu {
@@ -1566,4 +1575,29 @@
     z-index: 999;
     left: 1.5em;
     width: 14.05em;
+ }
+ 
+ 
+ .table
+ {
+     display: table;
+ }
+ .title
+ {
+     display: table-caption;
+ }
+ .heading
+ {
+     display: table-row;
+ }
+ .row
+ {
+     display: table-row;
+ }
+ .cell
+ {
+     display: table-cell;
+     /*border: solid;
+     border-width: thin;*/
+     vertical-align: top;
  }
