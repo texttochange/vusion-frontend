@@ -14,7 +14,7 @@
                         ?>
                     </span>
                     <?php if ($programDetails['status']==='running') : ?>
-                    <span class = "code">
+                    <span class = "cell code">
                         <?php
                         echo  '<l class = "blackets"> (</l>';
                         if (isset($programDetails['settings']['shortcode'])) {
@@ -35,25 +35,6 @@
                         ?>
                     </span>
                     <?php endif; ?>
-                    <span class="cell ttc-program-link">
-                        <?php
-                        echo $this->Html->link($this->params['controller'], 
-                            array('program' => $programDetails['url'],
-                                'controller' => $this->params['controller'],
-                                'action' => 'index'
-                                ),
-                            array('style'=>'text-decoration:none;font-weight:normal; font-size:12px'));
-                        if(isset($this->params['action']) &&  $this->params['action'] != 'index') {
-                            echo " > ";
-                            echo $this->Html->link($this->params['action'], 
-                                array('program' => $programDetails['url'],
-                                    'controller' => $this->params['controller'],
-                                    'action' => $this->params['action']
-                                    ),
-                                array('style'=>'text-decoration:none;font-weight:normal; font-size:12px'));
-                        }				    
-                        ?>
-                    </span>
 				</div>
                 <div class="cell ttc-program-time">
                     <?php

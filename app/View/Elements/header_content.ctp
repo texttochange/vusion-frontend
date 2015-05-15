@@ -1,5 +1,6 @@
 <?php
-$containsFilter = (isset($containsFilter) ? $containsFilter : false);
+$containsFilter         = (isset($containsFilter) ? $containsFilter : false);
+$containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControlNav : false);
 ?>
 <div style="min-height:70px">
 	<div id="header-content" class="content-header">
@@ -21,12 +22,11 @@ $containsFilter = (isset($containsFilter) ? $containsFilter : false);
 		         </div>
              </div>
 	    </div>
-	    <?php if ($containsFilter): ?>
+	    <?php if ($containsDataControlNav): ?>
 	    <div class="table" style="width:100%">
             <div class="row">
                 <div class="ttc-data-control">
-                   <div class="ttc-data-control">
-			        <div id="data-control-nav" class="ttc-paging paging">
+                <div id="data-control-nav" class="ttc-paging paging">
 					    <?php
 					    if (isset($this->Paginator)) {
 					    	$count = $this->Paginator->counter('{:count}');
@@ -69,52 +69,53 @@ $containsFilter = (isset($containsFilter) ? $containsFilter : false);
 					                    array('class' => 'next disabled'));
 					    }
 					    ?>
-					    </div>
-					    <?php
-					    $this->Js->set('filterFieldOptions', $filterFieldOptions);
-					    foreach ($filterParameterOptions as $parameter => &$options) {
-					        if (isset($options['_ajax'])) {
-					            $urlParameters = $this->params['url'];
-					            $urlParameters['parameter'] = $parameter;
-					            $ajaxUrl = $this->Html->url(array(
-					                'program' => $programDetails['url'], 
-					                'action' => 'getFilterParameterOptions',
-					                'ext' => 'json',
-					                '?' => $urlParameters));
-					            $this->Js->get('document')->event(
-					                $options['_ajax'],
-					                'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
-					            );
-					            $filterParameterOptions[$parameter] = array("Loading...");
-					        }
-					    }
-					    $this->Js->set('filterParameterOptions', $filterParameterOptions);
-					    
-					    echo $this->Form->create(null, array(
-					        'type'=>'get', 
-					        'url'=>array(
-					            'program' => (isset($programDetails['url']) ? $programDetails['url'] : null),
-					            'controller' => $controller,
-					            'action'=>'index'), 
-					        'id' => 'advanced_filter_form', 
-					        'class' => 'ttc-advanced-filter'));
-					    if (isset($filterParams)) {
-					        $this->Js->get('document')->event(
-					            'ready',
-					            '$("#advanced_filter_form").show();
-					            createFilter(true, "'.$filterParams['filter_operator'].'",'.$this->Js->object($filterParams['filter_param']).');
-					            ');
-					    }
-					    echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       
-					    $this->Js->get('#advanced_filter_form')->event(
-					        'submit',
-					        '$(":input[value=\"\"]").attr("disabled", true);
-					        return true;');
-					    ?>
-						</div> 
                 </div>
+                <?php
+                if ($containsFilter) {
+                    $this->Js->set('filterFieldOptions', $filterFieldOptions);
+                    foreach ($filterParameterOptions as $parameter => &$options) {
+                        if (isset($options['_ajax'])) {
+                            $urlParameters = $this->params['url'];
+                            $urlParameters['parameter'] = $parameter;
+                            $ajaxUrl = $this->Html->url(array(
+                                'program' => $programDetails['url'], 
+                                'action' => 'getFilterParameterOptions',
+                                'ext' => 'json',
+                                '?' => $urlParameters));
+                            $this->Js->get('document')->event(
+                                $options['_ajax'],
+                                'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
+                                );
+                            $filterParameterOptions[$parameter] = array("Loading...");
+                        }
+                    }
+                    $this->Js->set('filterParameterOptions', $filterParameterOptions);
+                    
+                    echo $this->Form->create(null, array(
+                        'type'=>'get', 
+                        'url'=>array(
+                            'program' => (isset($programDetails['url']) ? $programDetails['url'] : null),
+                            'controller' => $controller,
+                            'action'=>'index'), 
+                        'id' => 'advanced_filter_form', 
+                        'class' => 'ttc-advanced-filter'));
+                    if (isset($filterParams)) {
+                        $this->Js->get('document')->event(
+                            'ready',
+                            '$("#advanced_filter_form").show();
+                            createFilter(true, "'.$filterParams['filter_operator'].'",'.$this->Js->object($filterParams['filter_param']).');
+                            ');
+                    }
+                    echo $this->Form->end(array('label' => 'Filter', 'class' => 'ttc-filter-submit'));       
+                    $this->Js->get('#advanced_filter_form')->event(
+                        'submit',
+                        '$(":input[value=\"\"]").attr("disabled", true);
+                        return true;');
+                }
+			 ?>
             </div>
 	    </div>
-		<?php endif;?>
+	    <?php endif;?>
+	    
 	</div>
 </div>
