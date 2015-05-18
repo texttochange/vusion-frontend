@@ -26,6 +26,33 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
 	    <div class="table" style="width:100%">
             <div class="row">
                 <div class="ttc-data-control">
+                <?php if (isset($findType)):?>
+                    <div class="cell tabs">
+                    <ul>
+                        <li <?php echo ($findType === 'all'? 'class="selected"' : ""); ?>>
+                            <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
+                            <label><?php echo __("All") ?></label>
+                            </a>
+                        </li>
+                        <li <?php echo ($findType === 'scheduled'? 'class="selected"' : ""); ?>>
+                            <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index', 'type' => 'scheduled')) ?>" >
+                            <label><?php echo __("Scheduled") ?></label>
+                            </a>
+                        </li>
+                        <li <?php echo ($findType === 'drafted'? 'class="selected"' : ""); ?>>
+                            <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index', 'type' => 'drafted')) ?>" >
+                            <label><?php echo __("Drafted") ?></label>
+                            </a>
+                        </li>
+                        <li <?php echo ($findType === 'sent'? 'class="selected"' : ""); ?>>
+                            <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index', 'type' => 'sent')) ?>" >
+                            <label><?php echo __("Sent") ?></label>
+                            </a>
+                        </li>
+                    </ul>
+                    </div>
+                <?php endif;?>
+                
                 <div id="data-control-nav" class="ttc-paging paging">
 					    <?php
 					    if (isset($this->Paginator)) {
