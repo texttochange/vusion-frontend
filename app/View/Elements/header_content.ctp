@@ -52,7 +52,22 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
                     </ul>
                     </div>
                 <?php endif;?>
-                
+                <?php if (isset($containsSpan)):?>
+                <div class="cell tabs">
+                    <ul>
+                        <li <?php echo ($containsSpan === 'keys'? 'class="selected"' : ""); ?>>
+                            <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
+                            <label><?php echo __("Keys/Values") ?></label>
+                            </a>
+                        </li>
+                        <li <?php echo ($containsSpan === 'tables'? 'class="selected"' : ""); ?>>
+                            <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
+                            <label><?php echo __("Tables") ?></label>
+                            </a>
+                        </li>
+                    </ul>
+                </div>                
+                <?php endif;?>
                 <div id="data-control-nav" class="ttc-paging paging">
 					    <?php
 					    if (isset($this->Paginator)) {
