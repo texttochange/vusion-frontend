@@ -1,55 +1,53 @@
-<div class="status index">    
-    <ul class="ttc-actions">
-        <li>
-        <?php
-        if (!isset($urlParams)) {
-            $urlParams = "";
-        }
-        echo $this->AclLink->generatePostLink(
-                __('Delete'),
-                $programDetails['url'], 
-                'programHistory',
-                'delete', 
-                __('Are you sure you want to delete %s histories?', $this->Paginator->counter(array(
-                    'format' => __('{:count}')))),
-                array('class' => 'ttc-button'),
-                null,
-                $urlParams); 
-        ?>
-        </li>
-        <li>
-        <?php
-        if ($histories != null) {
-            $exportUrl = array(
-                'program' => $programDetails['url'],
-                'controller' => 'programHistory',
-                'action' => 'export',
-                '?' => $urlParams);
-            if ($order != null) {
-                $exportUrl['sort'] = key($order);
-                $exportUrl['direction'] = $order[key($order)];
-            }
-            echo $this->AclLink->generateButtonFromUrl(
-                __('Export'), $exportUrl, array('class' => 'ttc-button'));
-        }
-        ?>
-        </li>
-        <li><?php
-        echo $this->Html->tag(
-            'span', 
-            __('Filter'), 
-            array('class' => 'ttc-button', 'name' => 'add-filter')); 
-        $this->Js->get('[name=add-filter]')->event(
-            'click',
-            '$("#advanced_filter_form").show();
-            createFilter();
-            addStackFilter();');
-        ?></li>
-    </ul>
-    <h3><?php echo __('Program History'); ?></h3>
+<div class="status index">
     <?php
-    echo $this->element('filter_box', array(
-        'controller' => 'programHistory'));
+    $contentTitle = __('Program History');
+    $contentActions = array();
+    $containsDataControlNav = true;
+    $containsFilter = true;
+    $controller = 'programHistory';
+    $urlParams = (isset($urlParams) ? $urlParams : "");
+    
+    $contentActions[] = $this->AclLink->generatePostLink(
+        __('Delete'),
+        $programDetails['url'], 
+        $controller,
+        'delete', 
+        __('Are you sure you want to delete %s histories?', $this->Paginator->counter(array(
+            'format' => __('{:count}')))),
+        array('class' => 'ttc-button'),
+        null,
+        $urlParams); 
+    
+    if ($histories != null) {
+        $exportUrl = array(
+            'program' => $programDetails['url'],
+            'controller' => $controller,
+            'action' => 'export',
+            '?' => $urlParams);
+        if ($order != null) {
+            $exportUrl['sort'] = key($order);
+            $exportUrl['direction'] = $order[key($order)];
+        }
+        $contentActions[] = $this->AclLink->generateButtonFromUrl(
+            __('Export'),
+            $exportUrl,
+            array('class' => 'ttc-button'));
+    }
+    
+    $contentActions[] = $this->AclLink->generateButton(
+        __('Filter'), 
+        $programDetails['url'],
+        $controller,
+        '',
+        array('class' => 'ttc-button', 'name' => 'add-filter'));
+    $this->Js->get('[name=add-filter]')->event(
+        'click',
+        '$("#advanced_filter_form").show();
+        createFilter();
+        addStackFilter();');
+    
+    echo $this->element('header_content', 
+        compact('contentTitle', 'contentActions', 'containsFilter','containsDataControlNav', 'controller'));
     ?>
     <div class="ttc-table-display-area">
     <div  class="ttc-table-scrolling-area display-height-size">

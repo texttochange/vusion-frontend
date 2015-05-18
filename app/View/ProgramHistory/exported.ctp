@@ -1,11 +1,11 @@
 <div class="history index width-size">
-    <div>
-        <h3><?php echo __('History Exports'); ?></h3>
-        <ul class="ttc-actions">
-        <li></li>
-        </ul>
-    </div>
-    <div class="ttc-table-display-area" style="width:100%">
+    <?php
+        $contentTitle   = __('History Exports');
+        $contentActions = array();
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
+    <div class="ttc-table-display-area" style="width:97%">
     <div class="ttc-table-scrolling-area display-height-size">
     <table class="participants" cellpadding="0" cellspacing="0">
         <thead>
