@@ -1,9 +1,9 @@
 <div class='Program Requests index'>
    <?php
-       $contentTitle   = __('Requests'); 
-       $contentActions = array();
+       $contentTitle           = __('Requests'); 
+       $contentActions         = array();
        $containsDataControlNav = true;
-       $controller = 'programRequests';
+       $controller             = 'programRequests';
        
        $contentActions[] = $this->Html->link(__('+ New Request'),
            array('program'=>$programDetails['url'],

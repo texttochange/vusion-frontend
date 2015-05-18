@@ -1,9 +1,9 @@
 <div class="unattached_messages index">
-  <?php
-       $contentTitle   = __('Separate Messages'); 
-       $contentActions = array();
+   <?php
+       $contentTitle           = __('Separate Messages'); 
+       $contentActions         = array();
        $containsDataControlNav = true;
-       $controller = 'programUnattachedMessages';
+       $controller             = 'programUnattachedMessages';
        
        $contentActions[] = $this->Html->link(__('+ New Separate Message'),
            array('program'=>$programDetails['url'],
@@ -12,7 +12,7 @@
            array('class' => 'ttc-button'));
        
        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'controller'));
-   ?>
+    ?>
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="unattached-messages" cellpadding="0" cellspacing="0">
