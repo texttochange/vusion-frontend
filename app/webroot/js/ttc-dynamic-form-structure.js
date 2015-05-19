@@ -373,11 +373,10 @@ var action = {
             'subfields': ['invite-content',
                           'invitee-tag',
                           'feedback-inviter']},
-            {'value': 'save-content-variable',
-            'subfields': ['scv-attached-table', 
-                            'scv-row-keys',
-                            'scv-col-key',
-                            'scv-extra-cvs']}
+            {'value': 'save-content-variable-table',
+            'subfields': ['scvt-attached-table', 
+                          'scvt-col-key-header',
+                          'scvt-col-extras']}
         ]
     },
     "tag": {'type': 'text'},
@@ -440,32 +439,42 @@ var action = {
     'feedback-inviter': {'type': 'textarea'},
     'keep-tags': {'type': 'text'},
     'keep-labels': {'type': 'text'},
-    'scv-row-keys': {
-        'type': 'list',
-        'add-button': true,
-        'adds': 'scv-row-key'
-    },
-    'scv-row-key': {
-        'type': 'container', 
-        'contains': ['name', 'value'],
-        'skip': true,
-    },
-    'scv-extra-cvs': {
-        'type': 'list',
-        'add-button': true,
-        'adds': 'scv-extra-cv'
-    },
-    'scv-extra-cv': {
-        'type': 'container', 
-        'contains': ['name', 'value'],
-        'skip': true,
-    },
-    'scv-col-key': {'type': 'text'},
-    'name': {'type': 'text'},
-    'value': {'type': 'text'},
-    'scv-attached-table': {
-        'type': 'select',
-        'data': 'server-dynamic',
-        'fieldset': true}
 }
 $.extend(dynamicForm, action);
+
+var saveContentVariableTableAction = {
+    'scvt-attached-table': {
+        'type': 'select',
+        'data': 'server-dynamic',
+        'fieldset': true, 
+        'subfields': 'scvt-row-keys',
+        'onchange': 'supplyScvRowKeyOptions(this)'
+    },
+    'scvt-row-keys': {
+        'type': 'list',
+        'adds': 'scvt-row-key'
+    },
+    'scvt-row-key': {
+        'type': 'container', 
+        'contains': ['scvt-row-header', 'scvt-row-value'],
+        'skip': true,
+    },
+    'scvt-row-header': {'type': 'text', 'style': 'background-color:lightgrey'},
+    'scvt-row-value': {'type': 'text'},
+    'scvt-col-key-header': {
+        'type': 'text',
+        'fieldset': true},
+    'scvt-col-extras': {
+        'type': 'list',
+        'add-button': true,
+        'adds': 'scvt-col-extra'
+    },
+    'scvt-col-extra': {
+        'type': 'container', 
+        'contains': ['scvt-col-extra-header', 'scvt-col-extra-value'],
+        'skip': true,
+    },
+    'scvt-col-extra-header': {'type': 'text'},
+    'scvt-col-extra-value': {'type': 'text'},
+}
+$.extend(dynamicForm, saveContentVariableTableAction);

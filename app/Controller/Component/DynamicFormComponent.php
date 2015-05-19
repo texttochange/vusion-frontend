@@ -134,14 +134,17 @@ class DynamicFormComponent extends Component
             'keep-tags' => __('Keep these tags'),
             'keep-labels' => __('Keep these labels'),
             "announcement-actions" => __("Action at sending time"),
-            'save-content-variable' => __("Save Content Variable"),
-            'scv-row-keys' => __("Content Variable Keys"),
-            'scv-row-key' => __("Content Variable Key"),
-            'scv-col-key' => __("Column header"),
-            'scv-extra-cvs' => __("Extra Content Variables"),
-            'scv-extra-cv' => __("Extra Content Variable"),
-            'scv-attached-table' => __("Attached Table"),
-            'value' => __('Value')
+            'save-content-variable-table' => __("Save Content Variable Table"),
+            'scvt-row-keys' => __("Row Keys"),
+            'scvt-row-key' => __("Row Key"),
+            'scvt-row-header' => __('Header'),
+            'scvt-row-value' => __('Row Value'),
+            'scvt-col-key-header' => __("Column Key Header"),
+            'scvt-col-extras' => __("Extra Columns"),
+            'scvt-col-extra' => __("Extra Column"),
+            'scvt-attached-table' => __("Attached Table"),
+            'scvt-col-extra-header' => __('Header'),
+            'scvt-col-extra-value' => __('Row Value'),
             );
         $controller->set('dynamicFormLabels', $this->localizedValueLabels);
     }

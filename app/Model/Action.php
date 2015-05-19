@@ -82,7 +82,7 @@ class Action extends VirtualModel
                         'url-forwarding',
                         'sms-forwarding',
                         'sms-invite',
-                        'save-content-variable')),
+                        'save-content-variable-table')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -100,11 +100,11 @@ class Action extends VirtualModel
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'),
                         'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'),
-                        'save-content-variable' => array(
-                            'scv-attached-table', 
-                            'scv-row-keys',
-                            'scv-col-key',
-                            'scv-extra-cvs'))),
+                        'save-content-variable-table' => array(
+                            'scvt-attached-table', 
+                            'scvt-row-keys',
+                            'scvt-col-key-header',
+                            'scvt-col-extras'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -315,19 +315,19 @@ class Action extends VirtualModel
                 'message' => VusionConst::LABEL_NAMES_LIST_FAIL_MESSAGE
                 ),
             ),
-        'scv-attached-table' => array(
+        'scvt-attached-table' => array(
             'validateTableId' => array(
                 'rule' => array('validTableId'),
                 'message' => 'Must reference an existing table id.'
                 ),
             ),
-        'scv-row-keys' => array(
+        'scvt-row-keys' => array(
             'validateRowKeys' => array(
-                'rule' => array('validScvRowKeys'),
+                'rule' => array('validScvtRowKeys'),
                 'message' => 'noMessage'
                 ),
             ),
-        'scv-col-key' => array(
+        'scvt-col-key-header' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter header name for this column',
@@ -337,9 +337,9 @@ class Action extends VirtualModel
                 'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE,
                 )
             ),
-        'scv-extra-cvs' => array(
+        'scvt-col-extras' => array(
             'validExtraCvs' => array(
-                'rule' => array('validScvExtraCvs'),
+                'rule' => array('validScvtColExtras'),
                 'message' => 'noMessage'
                 ),
             ),
@@ -462,8 +462,8 @@ class Action extends VirtualModel
             ),
         );
 
-    public $validateScvRowKeys = array(
-        'name' => array( 
+    public $validateScvtRowKey = array(
+        'scvt-row-header' => array( 
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter header name for this column',
@@ -472,16 +472,16 @@ class Action extends VirtualModel
                 'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
                 'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE
                 ),
-            'validScvRowKey' => array(
-                'rule' => array('validScvRowKey'),
+            'validScvtRowKey' => array(
+                'rule' => array('validScvtRowKey'),
                 'message' => 'The header has to be present as key in the table.'
                 )
             ),
-        'value' => array()
+        'scvt-row-value' => array()
         );
 
-    public $validateScvExtraCv = array(
-        'name' => array( 
+    public $validateScvtColExtra = array(
+        'scvt-col-extra-header' => array( 
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter header name for this column',
@@ -490,12 +490,12 @@ class Action extends VirtualModel
                 'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
                 'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE
                 ),
-            'validScvExtraCvNotKey' => array(
-                'rule' => array('validScvExtraCvNotKey'),
+            'validScvtColExtraNotKey' => array(
+                'rule' => array('validScvtColExtraNotKey'),
                 'message' => 'The header cannot be a key in the table.'
                 )
             ),
-        'value' => array()
+        'scvt-col-extra-value' => array()
         );
     
 
@@ -527,9 +527,10 @@ class Action extends VirtualModel
             $this->_setDefault('set-forward-message-condition', null);
             $this->_setDefault('forward-to', null);
         }
-        if ($this->data['type-action'] == 'save-content-variable') {
-            $this->_setDefault('scv-row-keys', null);
-            $this->_setDefault('scv-extra-cvs', null);    
+        if ($this->data['type-action'] == 'save-content-variable-table') {
+            $this->_setDefault('scvt-row-keys', null);
+            $this->_setDefaultScvtRowKeyHeader();
+            $this->_setDefault('scvt-col-extras', null);
         }
         if (in_array($this->data['type-action'], array('proportional-tagging', 'proportional-labelling'))) {
             $this->_setDefault('set-only-optin-count', null);
@@ -546,7 +547,7 @@ class Action extends VirtualModel
         }
         return true;
     }
-    
+
     
     public function validOffsetDays($field, $data)
     {
@@ -688,39 +689,61 @@ class Action extends VirtualModel
     }
 
 
-    public function validScvRowKey($field, $data)
+    public function validScvtRowKey($field, $data)
     {
-        if (!isset($data[$field]) || !isset($this->data['scv-attached-table'])) {
+        if (!isset($data[$field]) || !isset($this->data['scvt-attached-table'])) {
             return true;
         }
-        if (!$this->ContentVariableTable->hasKeyHeader($this->data['scv-attached-table'], $data[$field])) {
+        if (!$this->ContentVariableTable->hasKeyHeader($this->data['scvt-attached-table'], $data[$field])) {
             return false;
         }
         return true;
     }
 
 
-    public function validScvRowKeys($field, $data)
+    public function validScvtRowKeys($field, $data)
     {
-        return $this->validList($field, $data, $this->validateScvRowKeys);
+        return $this->validList($field, $data, $this->validateScvtRowKey);
     }
 
 
-    public function validScvExtraCvNotKey($field, $data)
+    public function validScvtColExtraNotKey($field, $data)
     {
-        if (!isset($data[$field]) || !isset($this->data['scv-attached-table'])) {
+        if (!isset($data[$field]) || !isset($this->data['scvt-attached-table'])) {
             return true;
         }
-        if ($this->ContentVariableTable->hasKeyHeader($this->data['scv-attached-table'], $data[$field])) {
+        if ($this->ContentVariableTable->hasKeyHeader($this->data['scvt-attached-table'], $data[$field])) {
             return false;
         }
         return true;
     }
 
 
-    public function validScvExtraCvs($field, $data)
+    public function validScvtColExtras($field, $data)
     {
-        return $this->validList($field, $data, $this->validateScvExtraCv);
+        return $this->validList($field, $data, $this->validateScvtColExtra);
+    }
+
+
+    public function _setDefaultScvtRowKeyHeader()
+    {
+        if (!isset($this->data['scvt-attached-table'])) {
+            return false;
+        }
+        $keyHeaders = $this->ContentVariableTable->getKeyHeaders($this->data['scvt-attached-table']);
+        if ($keyHeaders == null) {
+            return false;
+        }
+        $counter = 0;
+        foreach ($keyHeaders as $keyHeader) {
+            if (!isset($this->data['scvt-row-keys'][$counter])) {
+                $this->data['scvt-row-keys'][$counter] = array(
+                    'scvt-row-header' => null,
+                    'scvt-row-value' => null);
+            }
+            $this->data['scvt-row-keys'][$counter]['scvt-row-header'] = $keyHeader;
+        }
+        return true;
     }
 
 }

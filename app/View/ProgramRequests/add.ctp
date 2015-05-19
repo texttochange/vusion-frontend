@@ -26,17 +26,8 @@
 	    echo "</form>";
 	    $this->Js->get("#dynamic-generic-program-form");
 	    $this->Js->each('$(this).buildTtcForm("Request", null, "javascript:saveFormOnServer()")', true);
-	    $dialogueOptions = array();
-	    foreach($currentProgramData['dialogues'] as $dialogue) {
-            if ($dialogue['Active']) {
-                $dialogueOptions[] = array(
-                    'value' => $dialogue['Active']['dialogue-id'],
-                    'html' => $dialogue['Active']['name']
-                    );
-            }
-        }
-        $this->Js->set('enrollOptions', $dialogueOptions);
-        $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
+        $this->DynamicOptions->setOptions(
+            $currentProgramData, $conditionalActionOptions, $contentVariableTableOptions);
         $this->Js->get('document')->event('ready','addCounter(); ');
 	    ?>
 	    <br/>

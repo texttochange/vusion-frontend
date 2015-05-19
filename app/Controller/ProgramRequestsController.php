@@ -27,6 +27,8 @@ class ProgramRequestsController extends BaseProgramSpecificController
         'DynamicForm',
         'ProgramAuth',
         'ArchivedProgram');
+    var $helpers = array(
+        'DynamicOptions');
     
     
     function constructClasses()
@@ -59,6 +61,7 @@ class ProgramRequestsController extends BaseProgramSpecificController
     public function add()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
     }
     
     
@@ -129,7 +132,8 @@ class ProgramRequestsController extends BaseProgramSpecificController
 
     protected function _getContentVariableTableOptions()
     {
-        return $this->ContentVariableTable->find('all', array('fields' => array('name')));
+        return $this->ContentVariableTable->find('all', array(
+            'fields' => array('name', 'columns.header', 'columns.type')));
     }
     
     

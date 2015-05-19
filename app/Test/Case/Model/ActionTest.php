@@ -615,7 +615,7 @@ class ActionTestCase extends CakeTestCase
     }
 
 
-    public function testValidateAction_saveContentVariable_ok()
+    public function testValidateAction_saveContentVariableTable_ok()
     {
         $contentVariableTable = array(
             'name' => 'my table',
@@ -634,48 +634,48 @@ class ActionTestCase extends CakeTestCase
         $cvt = $this->ContentVariableTable->save($contentVariableTable);
 
         $action = array(
-            'type-action' => 'save-content-variable',
-            'scv-attached-table' => $cvt['ContentVariableTable']['_id'],
-            'scv-row-keys' => array(array(
-                'name' => 'Town',
-                'value' => '[participant.city')),
-            'scv-col-key' => 'Chicken price',
-            'scv-extra-cvs' => array(array(
-                'name' => 'phone',
-                'value' => '[participant.phone]')));
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' => $cvt['ContentVariableTable']['_id'],
+            'scvt-row-keys' => array(array(
+                'scvt-row-value' => '[participant.city')),
+            'scvt-col-key-header' => 'Chicken price',
+            'scvt-col-extras' => array(array(
+                'scvt-col-extra-header' => 'phone',
+                'scvt-col-extra-value' => '[participant.phone]')));
 
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->Action->validates();
-        $this->assertTrue($this->Action->validates());
+        $result = $this->Action->validates();
+        $this->assertTrue($result);
     }
 
 
-    public function testValidateAction_saveContentVariable_fail_noTable()
+    public function testValidateAction_saveContentVariableTable_fail_noTable()
     {
         $action = array(
-            'type-action' => 'save-content-variable',
-            'scv-attached-table' => '1',
-            'scv-row-keys' => array(array(
-                'name' => 'Town',
-                'value' => '[participant.city')),
-            'scv-col-key' => 'Chicken price',
-            'scv-extra-cvs' => array(array(
-                'name' => 'phone',
-                'value' => '[participant.phone]')));
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' => '1',
+            'scvt-row-keys' => array(array(
+                'scvt-row-header' => 'Town',
+                'scvt-row-value' => '[participant.city')),
+            'scvt-col-key-header' => 'Chicken price',
+            'scvt-col-extras' => array(array(
+                'scvt-col-extra-header' => 'phone',
+                'scvt-col-extra-value' => '[participant.phone]')));
 
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
             "Must reference an existing table id.",
-            $this->Action->validationErrors['scv-attached-table'][0]);
+            $this->Action->validationErrors['scvt-attached-table'][0]);
         $this->assertEqual(
-            1, count($this->Action->validationErrors['scv-attached-table']));
+            1, count($this->Action->validationErrors['scvt-attached-table']));
     }
 
 
-    public function testValidateAction_saveContentVariable_fail_noHeader()
+    public function testValidateAction_saveContentVariableTable_fail_noHeader()
     {
         $contentVariableTable = array(
             'name' => 'my table',
@@ -694,37 +694,34 @@ class ActionTestCase extends CakeTestCase
         $cvt = $this->ContentVariableTable->save($contentVariableTable);
 
         $action = array(
-            'type-action' => 'save-content-variable',
-            'scv-attached-table' =>  $cvt['ContentVariableTable']['_id']."",
-            'scv-row-keys' => array(array(
-                'name' => 'City',
-                'value' => '[participant.city]')),
-            'scv-col-key' => 'fish.price',
-            'scv-extra-cvs' => array(
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' =>  $cvt['ContentVariableTable']['_id']."",
+            'scvt-row-keys' => array(array(
+                'scvt-row-header' => 'Town',
+                'scvt-row-value' => '[participant.city]')),
+            'scvt-col-key-header' => 'fish.price',
+            'scvt-col-extras' => array(
                 array(
-                    'name' => 'phone.',
-                    'value' => '[participant.phone]'),
+                    'scvt-col-extra-header' => 'phone.',
+                    'scvt-col-extra-value' => '[participant.phone]'),
                 array(
-                   'name' => 'Town',
-                    'value' => '[participant.city]')));
+                    'scvt-col-extra-header' => 'Town',
+                    'scvt-col-extra-value' => '[participant.city]')));
 
         $this->Action->set($action);
         $this->Action->beforeValidate();
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
-            "The header has to be present as key in the table.",
-            $this->Action->validationErrors['scv-row-keys'][0]['name'][0]);
+            "Use only space, letters and numbers for a key, e.g 'uganda 1'.",
+            $this->Action->validationErrors['scvt-col-key-header'][0]);
         $this->assertEqual(
             "Use only space, letters and numbers for a key, e.g 'uganda 1'.",
-            $this->Action->validationErrors['scv-col-key'][0]);
-        $this->assertEqual(
-            "Use only space, letters and numbers for a key, e.g 'uganda 1'.",
-            $this->Action->validationErrors['scv-extra-cvs'][0]['name'][0]);
+            $this->Action->validationErrors['scvt-col-extras'][0]['scvt-col-extra-header'][0]);
         $this->assertEqual(
             "The header cannot be a key in the table.",
-            $this->Action->validationErrors['scv-extra-cvs'][1]['name'][0]);
+            $this->Action->validationErrors['scvt-col-extras'][1]['scvt-col-extra-header'][0]);
         $this->assertEqual(
-            3, count($this->Action->validationErrors));
+            2, count($this->Action->validationErrors));
     }
 
 }

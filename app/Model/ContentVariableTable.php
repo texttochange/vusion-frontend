@@ -418,7 +418,6 @@ class ContentVariableTable extends ProgramSpecificMongoModel
 
     function hasKeyHeader($id, $header)
     {
-        $keyHeaders = array();
         $cvt = $this->read(Null, $id);
         if (!isset($cvt['ContentVariableTable'])) {
             return false;
@@ -428,7 +427,24 @@ class ContentVariableTable extends ProgramSpecificMongoModel
                     return true;
             }
         }
-        return false; 
+        return false;
+    }
+
+
+    function getKeyHeaders($id)
+    {
+        $cvt = $this->read(Null, $id);
+        if (!isset($cvt['ContentVariableTable'])) {
+            return null;
+        }
+        $keyHeaders = array();
+        foreach ($cvt['ContentVariableTable']['columns'] as $column) {
+            if ($column['type'] != 'key') {
+                continue;
+            }
+            $keyHeaders[] = $column['header'];
+        }
+        return $keyHeaders; 
     }
 
 
