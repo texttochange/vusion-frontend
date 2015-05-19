@@ -158,6 +158,6 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
             </div>
 	    </div>
 	    <?php endif;?>
-	    
+	</div>
 	</div>
 </div>
