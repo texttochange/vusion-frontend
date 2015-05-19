@@ -1,3 +1,27 @@
+<?php $isAdmin = $this->AclLink->_allow('controllers/Admin');?>
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
+		</li>
+		<li><?php
+		if ($isAdmin) {
+		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
+		}
+		?> 
+		</li>
+		<li><?php
+		if ($isAdmin) {
+		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
+		}else{
+		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
+		}
+		?></li>
+	</ul>
+</div>
+</div>
+
 <div class="users view users-index program-body">
    <h3><?php  echo __('User');?></h3>
 	<dl>
@@ -18,7 +42,7 @@
 		<dt><?php echo __('Group'); ?></dt>
 		<dd>
 			<?php
-			$isAdmin = $this->AclLink->_allow('controllers/Admin');
+			//$isAdmin = $this->AclLink->_allow('controllers/Admin');
 			if ($isAdmin) {
 			echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); 
 			}else{
@@ -65,25 +89,4 @@
 	<?php endif; ?>
   </div>
 </div>
-<div class="admin-action">
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
-		</li>
-		<li><?php
-		if ($isAdmin) {
-		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
-		}
-		?> 
-		</li>
-		<li><?php
-		if ($isAdmin) {
-		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
-		}else{
-		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
-		}
-		?></li>
-	</ul>
-</div>
-</div>
+
