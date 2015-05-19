@@ -79,35 +79,29 @@
 			</div>			
 			<div class="ttc-right-header"> 
 			<?php
-			if ($this->Session->read('Auth.User.id')) {	
-					echo $this->Html->tag(
-							'span', 
-							__('log as %s', $this->Session->read('Auth.User.username'))
-							);
+			if ($this->Session->read('Auth.User.id')) {
+				echo $this->Html->link(
+					__('Logout'),
+					array('controller'=> 'users', 'action'=>'logout'),
+					array('class' => 'ttc-link-header'));
+				
+				echo $this->Html->link(
+					__('Hi %s', $this->Session->read('Auth.User.username')),
+					array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')),
+					array('class' => 'ttc-link-header'));
 			}
 			?> 
 			</div>
             <div class="ttc-central-header">
 			<?php
-			if ($this->Session->read('Auth.User.id')) {	
-			    echo $this->Html->link(
-			        __('Logout'),
-			        array('controller'=> 'users', 'action'=>'logout'),
-			        array('class' => 'ttc-link-header'));
-			    
+			if ($this->Session->read('Auth.User.id')) {
 			    $reportIssueUrl = $this->Html->url(array('controller' => 'users', 'action' => 'reportIssue'));			    
 			    echo $this->Html->link(
 			        __('Report Issue'),
 			        array(), 
 			        array('class' => 'ttc-link-header', 'url' => $reportIssueUrl, 'onclick'=> 'popupBrowser(this)'));
 			    
-			    echo $this->Documentation->link();        
-			    
-			    echo $this->Html->link(
-			        __('My Account'),
-			        array('controller'=> 'users', 'action'=>'view', $this->Session->read('Auth.User.id')), 
-			        array('class' => 'ttc-link-header'));			    
-			    
+			    echo $this->Documentation->link(); 
 			}
 			if ($this->Session->read('Auth.User.group_id') != 1) {
 				echo $this->AclLink->generateButton(
