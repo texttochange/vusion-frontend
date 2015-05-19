@@ -25,6 +25,14 @@ class VusionValidationTest extends CakeTestCase
 	}
 
 
+	public function testValidCustomizeContant_participant()
+	{
+		$data = array('content' => 'Hello [participant.name_raw]');
+		$result = VusionValidation::validCustomizeContent('content', $data, VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE);
+		$this->assertTrue($result);
+	}
+
+
 	public function testValidCustomizeContent_context_fail_x_is_0()
 	{
 		$data = array('content' => 'Hello [context.message.0]');
