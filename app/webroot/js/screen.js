@@ -1,7 +1,7 @@
 function layoutHandler() {
 	if (window.innerWidth > 1080) {
-	    var variableWidth = window.innerWidth - 300; 
-	    $(".width-size").attr("style","width:"+variableWidth+"px");		
+	    //var variableWidth = window.innerWidth - 300; 
+	    //$(".width-size").attr("style","width:"+variableWidth+"px");		
 	}
 
 	if ($(window).scrollTop() > 50) {

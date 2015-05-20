@@ -80,10 +80,10 @@
            <?php
                 if (isset($programDetails['name'])) {
                     $this->Js->set('isProgramSpecific', true);?>
-                    <div class="table">
+                    <div class="table" style="width:100%">
                         <div class="heading">
                             <div class="row" style='border-spacing:0px'>
-                              <div class="cell">
+                              <div class="cell" style="width:200px">
                                   <div class='program-left-column'>
                                   <?php
                                         echo $this->element('navigation_menu');
@@ -99,7 +99,7 @@
                                     ?>
                                     </div>
                                 </div>
-                                <div class="cell">
+                                <div class="cell" style="width:100%">
                                     <div class='program-body '>
                                     <?php echo $content_for_layout; ?>
                                     </div>

@@ -664,28 +664,22 @@
 }
 
 .ttc-display-area {
-       /* height: 340px;
-        min-height: 250px;*/
-        overflow: auto;
-        border: 2px solid lightgrey;
-        margin-bottom: 10px;
-        padding-bottom: 1em;
-        max-width:1071px;
+    overflow: auto;
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .ttc-table-display-area {
-        /*height: 340px;*/
         min-height: 250px;
         padding: 10px 10px;
         overflow: hidden;    
         border: 2px solid lightgrey;
         margin-bottom: 10px;   
         background: none repeat scroll 0 0 ;
-        /*position: relative;*/
         padding-bottom: 10px; 
-        float: left;
-        min-width: 728px;    
-        max-width:1071px;
+        min-width: 728px;
+        right: 20px;
 }
 .ttc-table-display-area-shortcode {
         height: 340px;
@@ -715,8 +709,6 @@
 .ttc-table-scrolling-area thead tr{
         left: 0; 
         top: 0;
-        /*position: absolute;*/
-        /*padding: 0px 10px 0px;*/   
 }
 
 .ttc-table-scrolling-area .phone {
@@ -786,7 +778,7 @@
 }
 
 .ttc-table-scrolling-area .histories .status {
-        min-width: 96px;
+        width: 100px;
 }
 
 .ttc-table-scrolling-area .histories .details {
@@ -1284,8 +1276,7 @@
 
 .program-left-column {
         float: left;
-        width: 14em;
-        /*position: absolute;*/
+        width: 200px;
         z-index: 99;
 }
 
@@ -1295,9 +1286,9 @@
 }
 
 .program-body {
-        min-width : 550px;    
-        margin-left: 20px;
-        float: left;
+    min-width : 550px;    
+    margin-left: 20px;
+    left: 20px;
 }
 
 .admin-action {
@@ -1562,8 +1553,8 @@
     position: fixed;
     top: 50px;
     z-index: 998;
-    left: 242px;
-    right: 19px;
+    left: 240px;
+    right: 20px;
     background: white;
     border-bottom: 1px lightgrey solid;
     padding-top: 8px;
@@ -1571,10 +1562,9 @@
 
 .fix-navigation-menu {
     position: fixed;
-    top: 3.5em;
+    top: 50px;
     z-index: 999;
-    left: 1.5em;
-    width: 14.05em;
+    width: 200px;
  }
  
  
