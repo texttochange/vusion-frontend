@@ -1302,7 +1302,7 @@
 .users-index {
         min-width: 547px;    
         padding:10px 20px 10px 0px;    
-        position: absolute;    
+        /*position: absolute;*/   
         margin-left: 235px;
 }
 
@@ -1310,7 +1310,7 @@
         min-width: 819px;    
         padding:10px 20px 10px 0px;    
         position: absolute;    
-        margin-left: 202px;
+        margin-left: 222px;
 }
 
 #header-program .code {

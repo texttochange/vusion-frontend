@@ -6,14 +6,14 @@
 		<li>
 		<?php
             if ($isAdmin) {
-                echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete the user "%s" ?', $this->Form->value('User.username'))); 
+                echo $this->Html->link(__('List Users'), array('action' => 'index'));
             }
 		?>
 		</li>
 		<li>
 		<?php
             if ($isAdmin) {
-                echo $this->Html->link(__('List Users'), array('action' => 'index'));
+                echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete the user "%s" ?', $this->Form->value('User.username'))); 
             }
 		?>
 		</li>
