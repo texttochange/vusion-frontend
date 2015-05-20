@@ -237,6 +237,9 @@ function createFilter(minimize, selectedStackOperator, stackRules){
 function minimizeFilter() {
     $(this).parent().children(":not(img):not([class='ttc-filter-title'])").slideUp('fast');
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', expandFilter);
+    setTimeout(function() {
+        $('#header-content').trigger('heightChange')},
+        190);
 }
 
 
@@ -245,14 +248,19 @@ function expandFilter() {
             if ($(this).attr('type')=='text')
                 $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
     $(this).slideDown('fast')});
-    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', minimizeFilter);    
+    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', minimizeFilter);
+    setTimeout(function() {
+        $('#header-content').trigger('heightChange')},
+        190);
 }
 
 
 function removeFilter() {
     $(this).parent().hide().children(':not(.submit)').remove();
-    if (window.location.search != "")
+    if (window.location.search != "") {
         window.location.replace(window.location.href.split("?")[0])
+    }
+    $('#header-content').trigger('heightChange');
 }
 
 
@@ -285,7 +293,7 @@ function addStackFilter(){
      
     $(stackFilter).append(filterFieldDropDown);
     $(filterFieldDropDown).change();
-    $('#header-content').trigger('headerContentHeightChange');
+    $('#header-content').trigger('heightChange');
 }
 
 
@@ -297,7 +305,7 @@ function removeStackFilter(){
         if (window.search != "")
             window.location.replace("index")
     }
-    $('#header-content').trigger('headerContentHeightChange');
+    $('#header-content').trigger('heightChange');
 }
 
 
