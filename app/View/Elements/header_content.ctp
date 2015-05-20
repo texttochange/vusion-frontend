@@ -2,7 +2,7 @@
 $containsFilter         = (isset($containsFilter) ? $containsFilter : false);
 $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControlNav : false);
 ?>
-<div style="min-height:70px">
+<div id="header-content-box">
 	<div id="header-content" class="content-header">
 	<div class="table" style="width:100%">
              <div class="heading">

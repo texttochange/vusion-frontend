@@ -29,6 +29,11 @@ function layoutHandler() {
 	}*/
 }
 
+function headerContentHeightAdjust() {
+	var height = $('#header-content').height()
+	$('#header-content-box').attr('style', 'min-height:' + height + 'px');
+}
+
 $(function(){
 
 	$(window).load(function() {
@@ -40,4 +45,7 @@ $(function(){
 	$(window).resize(function(){
 		layoutHandler();
 	});
+
+	headerContentHeightAdjust();
+	$('#header-content').bind('headerContentHeightChange', headerContentHeightAdjust);
 });

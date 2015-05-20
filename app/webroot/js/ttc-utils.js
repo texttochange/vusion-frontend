@@ -285,6 +285,7 @@ function addStackFilter(){
      
     $(stackFilter).append(filterFieldDropDown);
     $(filterFieldDropDown).change();
+    $('#header-content').trigger('headerContentHeightChange');
 }
 
 
@@ -296,6 +297,7 @@ function removeStackFilter(){
         if (window.search != "")
             window.location.replace("index")
     }
+    $('#header-content').trigger('headerContentHeightChange');
 }
 
 
