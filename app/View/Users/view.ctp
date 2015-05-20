@@ -3,21 +3,25 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
-		</li>
-		<li><?php
+	    <li>
+		<?php
 		if ($isAdmin) {
 		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
 		}
 		?> 
 		</li>
-		<li><?php
+		<li>
+		<?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
+		</li>
+		<li>
+		<?php
 		if ($isAdmin) {
 		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
 		}else{
 		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
 		}
-		?></li>
+		?>
+		</li>
 	</ul>
 </div>
 </div>
