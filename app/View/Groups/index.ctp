@@ -1,19 +1,22 @@
+<div class="admin-action">
+<div class="actions">
+<h3><?php echo __('Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('New Group'), array('action' => 'add')); ?></li>
+        <li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+    </ul>
+</div>
+</div>
+
 <div class="groups index users-index">
-	<h3><?php echo __('Groups');?></h3>
-	<div class="ttc-data-control">
-	<div id="data-control-nav" class="ttc-paging paging">
-	<?php
-	echo "<span class='ttc-page-count'>";
-	echo $this->Paginator->counter(array(
-	    'format' => __('{:start} - {:end} of {:count}')
-	    ));
-	echo "</span>";
-	echo $this->Paginator->prev('<', array(), null, array('class' => 'prev disabled'));
-	//echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-	</div>
+    <?php
+        $contentTitle           = __('Groups'); 
+        $contentActions         = array();
+        $containsDataControlNav = true;
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav'));
+    ?>
+	
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
@@ -40,13 +43,6 @@
 	</table>
 	</div>
 	</div>	
-  </div>
-    <div class="admin-action">
-    <div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Group'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-	</ul>
+</div>
 </div>
 </div>
