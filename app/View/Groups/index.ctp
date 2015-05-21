@@ -22,8 +22,8 @@
 	<table cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr>
-			    <th class="content"><?php echo $this->Paginator->sort('name');?></th>
-			    <th class="content"><?php echo $this->Paginator->sort('specific_program_access');?></th>
+			    <th ><?php echo $this->Paginator->sort('name');?></th>
+			    <th ><?php echo $this->Paginator->sort('specific_program_access');?></th>
 			    <th class="action-admin"><?php echo __('Actions');?></th>
 			</tr>
 	    </thead>

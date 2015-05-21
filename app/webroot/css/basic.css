@@ -1306,14 +1306,6 @@
         margin-left: 235px;
 }
 
-.users-logs-index {
-        min-width: 547px;    
-        padding:10px 20px 10px 0px;    
-        /*position: absolute;*/   
-        margin-left: 235px;
-}
-
-
 .shortcode-index {
         min-width: 819px;    
         padding:10px 20px 10px 0px;    
@@ -1589,18 +1581,6 @@
     border-bottom: 1px lightgrey solid;
     padding-top: 8px;
 }
-
-.users-logs-index .fix-content-header {
-    position: fixed;
-    top: -1px;
-    z-index: 998;
-    left: 255px;
-    right: 195px;
-    background: white;
-    border-bottom: 1px lightgrey solid;
-    padding-top: 8px;
-}
-
 
 .fix-navigation-menu {
     position: fixed;
