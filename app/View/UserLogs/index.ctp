@@ -8,19 +8,19 @@
 </div>
 </div>
 
-<div class="users-index index width-size">
+<div class="users-logs-index index width-size">
 <div class="table">
 <div class="row">
 <div class="cell">
-        <?php
+    <?php
         $contentTitle           = __('Users Logs'); 
         $contentActions         = array();
         $containsDataControlNav = true;
         
         echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav'));
-        ?>
-        <div class="ttc-table-display-area ">
-        <div class="ttc-table-scrolling-area display-height-size">
+    ?>
+    <div class="ttc-table-display-area">
+    <div class="ttc-table-scrolling-area display-height-size">
         <table class="user-logs" cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
@@ -51,8 +51,8 @@
                 <?php endforeach; ?>
             </tbody>
         </table>	
-        </div>
-        </div>
+    </div>
+    </div>
 </div>
 </div>
 </div>

@@ -38,12 +38,14 @@
     $contentTitle           = __('Users'); 
     $contentActions         = array();
     $containsDataControlNav = true;
-    $containsFilter = true;
-    $controller = 'users';
+    $containsFilter         = true;
+    $controller             = 'users';
+    
     $contentActions[] = $this->Html->tag(
         'span', 
         __('Filter'), 
-        array('class' => 'ttc-button', 'name' => 'add-filter')); 
+        array('class' => 'ttc-button', 'name' => 'add-filter'));
+    
     $this->Js->get('[name=add-filter]')->event(
         'click',
         '$("#advanced_filter_form").show();
