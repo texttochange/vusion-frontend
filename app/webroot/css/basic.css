@@ -1611,7 +1611,7 @@
  .cell
  {
      display: table-cell;
-     border: solid;
-     border-width: thin;
+     /*border: solid;
+     border-width: thin;*/
      vertical-align: top;
  }
