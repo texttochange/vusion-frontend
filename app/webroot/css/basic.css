@@ -668,10 +668,11 @@
     border: 2px solid lightgrey;
     margin-bottom: 10px;
     padding-bottom: 10px;
+    min-height: 430px;
 }
 
 .ttc-table-display-area {
-        min-height: 470px;
+        min-height: 380px;
         padding: 10px 10px;
         overflow: hidden;    
         border: 2px solid lightgrey;
@@ -683,7 +684,7 @@
 }
 .ttc-table-display-area-shortcode {
         height: 340px;
-        min-height: 250px;
+        min-height: 380px;
         padding: 52px 10px 18px;
         overflow: hidden;    
         border: 2px solid lightgrey;
