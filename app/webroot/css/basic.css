@@ -1305,10 +1305,7 @@
 }
 
 .shortcode-index {
-        min-width: 819px;    
-        padding:10px 20px 10px 0px;    
-        position: absolute;    
-        margin-left: 222px;
+    margin-left: 222px;
 }
 
 #header-program .code {
