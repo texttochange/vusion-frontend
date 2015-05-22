@@ -1559,25 +1559,15 @@
 }
 
 .users-index .fix-content-header {
-    position: fixed;
     top: -1px;
-    z-index: 998;
     left: 254px;
     right: 20px;
-    background: white;
-    border-bottom: 1px lightgrey solid;
-    padding-top: 8px;
 }
 
 .shortcode-index .fix-content-header {
-    position: fixed;
     top: -1px;
-    z-index: 998;
     left: 242px;
     right: 20px;
-    background: white;
-    border-bottom: 1px lightgrey solid;
-    padding-top: 8px;
 }
 
 .fix-navigation-menu {
