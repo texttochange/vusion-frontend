@@ -8,8 +8,8 @@
 </div>
 </div>
 
-<div class="users-index index width-size">
-<div class="table">
+<div class="admin-index index width-size">
+<div class="table" style="width:100%">
 <div class="row">
 <div class="cell">
     <?php
