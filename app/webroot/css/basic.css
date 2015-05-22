@@ -912,7 +912,7 @@
 }
 
 .ttc-table-scrolling-area .support {
-        width: 336px;
+        width: 500px;
         text-align: center;
 }
 .ttc-table-scrolling-area .shortcodes {
@@ -1297,15 +1297,11 @@
     padding-bottom: 465px;
     padding-left: 13px;
     float: left;
-    /*position: absolute; 
-    padding-left: 13px;*/
 }
 
 .users-index {
-        min-width: 547px;    
-        padding:10px 20px 10px 0px;    
-        /*position: absolute;*/   
-        margin-left: 235px;
+    min-width: 547px;    
+    margin-left: 235px;
 }
 
 .shortcode-index {
@@ -1567,7 +1563,7 @@
     top: -1px;
     z-index: 998;
     left: 254px;
-    right: 38px;
+    right: 20px;
     background: white;
     border-bottom: 1px lightgrey solid;
     padding-top: 8px;
