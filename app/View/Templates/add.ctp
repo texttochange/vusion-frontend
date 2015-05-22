@@ -8,7 +8,7 @@
 </div>
 </div>
 
-<div class="templates form program-body users-index">
+<div class="templates form admin-index">
 <div class="table">
 <div class="row">
 <div class="cell">

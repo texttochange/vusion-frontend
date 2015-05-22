@@ -29,7 +29,7 @@
 	</ul>
 </div>
 </div>
-<div class="users form users-index program-body">
+<div class="users form admin-index">
 <div class="table">
 <div class="row">
 <div class="cell">

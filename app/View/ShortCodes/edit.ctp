@@ -8,7 +8,7 @@
 </div>
 </div>
 
-<div class="shortcodes form users-index program-body">
+<div class="shortcodes form admin-index">
 <div class="table">
 <div class="row">
 <div class="cell">

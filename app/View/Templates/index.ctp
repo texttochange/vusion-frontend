@@ -7,7 +7,7 @@
     </ul>
 </div>
 </div>
-<div class="users-index index width-size">
+<div class="admin-index index">
 <div class="table" style="width:100%">
 <div class="row">
 <div class="cell">

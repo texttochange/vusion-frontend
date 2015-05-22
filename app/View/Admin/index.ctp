@@ -11,7 +11,7 @@
 	</ul>
 </div>
 </div>
-<div class="users-index program-body">
+<div class="admin-index">
 <div class="table">
 <div class="row">
 <div class="cell">

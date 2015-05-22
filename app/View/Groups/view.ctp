@@ -10,7 +10,7 @@
 </div>
 </div>
 
-<div class="groups view users-index program-body">
+<div class="groups view admin-index">
 <h3><?php  echo __('Group');?></h3>
 	<dl>
 		<dt><?php echo __('Id'); ?></dt>

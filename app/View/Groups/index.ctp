@@ -8,7 +8,7 @@
 </div>
 </div>
 
-<div class="groups index users-index">
+<div class="groups index admin-index">
     <?php
         $contentTitle           = __('Groups'); 
         $contentActions         = array();

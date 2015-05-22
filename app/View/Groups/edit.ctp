@@ -9,7 +9,7 @@
 </div>
 </div>
 
-<div class="groups form users-index program-body">
+<div class="groups form admin-index">
 <div class="table">
 <div class="row">
 <div class="cell">

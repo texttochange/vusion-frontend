@@ -26,7 +26,7 @@
 </div>
 </div>
 
-<div class="users view users-index program-body">
+<div class="users view admin-index">
    <h3><?php  echo __('User');?></h3>
 	<dl>
 		<dt><?php echo __('Username'); ?></dt>
