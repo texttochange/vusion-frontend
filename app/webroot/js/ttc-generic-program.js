@@ -495,9 +495,7 @@ function foldForm(){
         break;
     case "action":
         summary = $('[name="'+nameToFold+'.type-action"]:checked').val();
-        if (summary == null) {
-            summary = '';
-        }
+        summary = localize_label(summary)
         break;
     case "subcondition":
         summary = $('[name="'+nameToFold+'.subcondition-field"]').val();
@@ -1468,13 +1466,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     };
     
     configToForm(type, myform, type, object);
-    
-    /*myform["elements"].push({
-            "type": "submit",
-            "class": "hidden",
-            "value": localize_label("save")
-    })*/
-    
+     
     return myform;
 }
 
