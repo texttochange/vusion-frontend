@@ -1,23 +1,38 @@
 <div class="content_variables form width-size">
-    <?php
-        $contentTitle   = __('Edit Content Variable'); 
-        $contentActions = array();
-        
-        $contentActions[] = $this->Html->link( __('Cancel'), 
-        array(
-          'program' => $programDetails['url'],
-          'action' => 'index'),
-        array('class' => 'ttc-button'));
-        
-        $contentActions[] = $this->Html->link(__('Save'),
-            array(),
-            array('class'=>'ttc-button',
-                'id' => 'button-save'));
-        $this->Js->get('#button-save')->event('click',
-            '$("#ContentVariableEditForm").submit()' , true);
-		
-		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
-    ?>
+    <div class="ttc-page-title">
+        <h3><?php echo __('Edit Content Variable'); ?></h3>
+        <div class="ttc-data-control">
+            <span class="tabs">
+                <ul>
+                <li class="selected">
+                <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
+                    <label><?php echo __("Keys/Value") ?></label>
+                </a>
+                </li>
+                <li>
+                <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
+                    <label><?php echo __("Table") ?></label>
+                </a>
+                </li>
+                </ul>
+            </span>
+            <ul class="ttc-actions">
+                <li>
+                <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
+                <span class="actions">
+                <?php
+                echo $this->Html->link( __('Cancel'), 
+                    array(
+                        'program' => $programDetails['url'],
+                        'action' => 'index'	           
+                        ));
+                ?>
+                </span>
+                </li>
+                <?php $this->Js->get('#button-save')->event('click', '$("#ContentVariableEditForm").submit()' , true);?>
+            </ul>
+        </div>
+	</div>
     <div class="ttc-display-area">
     <?php echo $this->Form->create('ContentVariable'); ?>
     <fieldset>

@@ -73,7 +73,10 @@
 	            <td class="users-field"><?php echo h($user['User']['invited_by']); ?></td>
 	            <td class="action-admin actions">
 	                <?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id'])); ?>
-	                <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id'])); ?>
+	                <?php $isAdmin = $this->AclLink->_allow('controllers/Admin');
+	                    if ($isAdmin) {
+	                        echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id']));
+	                    } ?>
 	                <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $user['User']['id']), null, __('Are you sure you want to delete the user "%s" ?', $user['User']['username'])); ?>
 	             </td>
 	             </tr>

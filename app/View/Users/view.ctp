@@ -11,14 +11,18 @@
 		?> 
 		</li>
 		<li>
-		<?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
+		<?php
+		if ($isAdmin) {
+		    echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id']));
+		}
+		?> 
 		</li>
 		<li>
 		<?php
 		if ($isAdmin) {
-		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
+			echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
 		}else{
-		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
+			echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
 		}
 		?>
 		</li>
@@ -93,4 +97,3 @@
 	<?php endif; ?>
   </div>
 </div>
-

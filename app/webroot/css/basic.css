@@ -95,7 +95,10 @@
         text-decoration: none;
         cursor: pointer;
 }
+.ttc-button-export {
 
+        padding: 3px 7px;
+}
 
 .ui-dform-legend {
         color : gray;
@@ -697,6 +700,10 @@
 
 .ttc-table-scrolling-area .phone {
         width: 118px;
+}
+
+.ttc-table-scrolling-area .optout-indicator {
+    width: 30px;
 }
 
 .ttc-table-scrolling-area .action {
@@ -1489,6 +1496,7 @@
 
 /* USERLOGS SPECIFIC */
 .ttc-table-scrolling-area .user-logs .user_logs_field {
+<<<<<<< HEAD
         width: 214px;
 }
 
@@ -1539,20 +1547,33 @@
  {
      display: table;
  }
+
  .title
+
  {
      display: table-caption;
  }
+
  .heading
  {
      display: table-row;
  }
+
  .row
  {
      display: table-row;
  }
+
  .cell
  {
      display: table-cell;
      vertical-align: top;
  }
+
+
+
+.optout-logo {
+        height: 29px;
+        margin-right: -4px;
+        vertical-align: middle;
+}

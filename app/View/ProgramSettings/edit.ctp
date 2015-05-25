@@ -46,6 +46,7 @@
             $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
         }
         echo "<br />";
+        asort($shortcodeOptions);
         echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
         //pack the shortcodes info to be easy to read in JS
         $this->Js->set('shortcodes', $shortcodeCompact);
