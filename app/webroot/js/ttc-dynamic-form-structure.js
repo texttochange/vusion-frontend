@@ -459,7 +459,10 @@ var saveContentVariableTableAction = {
         'contains': ['scvt-row-header', 'scvt-row-value'],
         'skip': true,
     },
-    'scvt-row-header': {'type': 'text', 'style': 'background-color:lightgrey'},
+    'scvt-row-header': {
+        'type': 'text', 
+        'style': 'background-color:lightgrey',
+        'disabled': true},
     'scvt-row-value': {'type': 'text'},
     'scvt-col-key-header': {
         'type': 'text',
