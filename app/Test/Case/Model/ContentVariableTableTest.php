@@ -102,8 +102,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertTrue(isset($result));
         $this->assertEqual(
             2,
-            count($result['ContentVariableTable']['columns'])
-            );
+            count($result['ContentVariableTable']['columns']));
 
         $mombasaContentVariable = $this->ContentVariable->find('fromKeys', array('conditions' => array('keys' => array('mombasa', 'Chicken price'))));
         $this->assertEqual(
@@ -647,6 +646,39 @@ class ContentVariableTableTestCase extends CakeTestCase
         $this->assertEqual(count($columns), 4);
         for ($i=0; $i<4; $i++) {
             $this->assertEqual(count($columns[$i]['values']), 4);
+        }
+    }
+
+
+    public function testRemoveEmptyCell_emptyTable()
+    {
+        $columns = array(   
+            array(  
+                'header' => 'Date',
+                'values' => array(null, null)
+                ),
+            array(
+                'header' => 'Phone',
+                'values' => array(null, null)
+                ),
+            array(
+                'header' => 'Report',
+                'values' => array(null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null)
+                ),
+            array(
+                'header' => null,
+                'values' => array(null, null)
+                )
+            );
+
+        $result = $this->ContentVariableTable->removeEmptyCells($columns);
+        $this->assertEqual(count($columns), 3);
+        for ($i=0; $i<3; $i++) {
+            $this->assertEqual(count($columns[$i]['values']), 0);
         }
     }
 

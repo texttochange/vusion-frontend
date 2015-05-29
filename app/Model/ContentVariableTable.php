@@ -325,14 +325,14 @@ class ContentVariableTable extends ProgramSpecificMongoModel
 
     function removeEmptyCells(&$columns)
     {
-        $lastUsedRow = 0;
-        $lastUsedCol = 0;
+        $lastUsedRow = -1;
+        $lastUsedCol = -1;
         //First scan the all object
-        for ($i=0; $i<count($columns); $i++) {
+        for ($i = 0; $i < count($columns); $i++) {
             if ($columns[$i]['header'] != null) {
                 $lastUsedCol = $i;
             }
-            for ($j=0; $j<count($columns[$i]['values']); $j++) {
+            for ($j = 0; $j < count($columns[$i]['values']); $j++) {
                 if ($columns[$i]['values'][$j] != null) {
                     $lastUsedCol = ($lastUsedCol < $i ? $i : $lastUsedCol);
                     $lastUsedRow = ($lastUsedRow < $j ? $j : $lastUsedRow);
@@ -341,13 +341,17 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         }
         //Second remove what is out
         $totalCol = count($columns);
-        for ($i=$lastUsedCol+1; $i<=$totalCol; $i++) {
+        for ($i = $lastUsedCol+1; $i <= $totalCol; $i++) {
             unset($columns[$i]);
         }
         if (isset($columns[0])) {
-            for ($i=0; $i<=$lastUsedCol; $i++) {
+            for ($i = 0; $i <= $lastUsedCol; $i++) {
+                if ($lastUsedRow == -1) {
+                    $columns[$i]['values'] = array();
+                    continue;
+                }
                 $totalRow = count($columns[$i]['values']);
-                for ($j=$lastUsedRow+1; $j<=$totalRow; $j++) {
+                for ($j = $lastUsedRow + 1; $j <= $totalRow; $j++) {
                     unset($columns[$i]['values'][$j]);
                 }
             }

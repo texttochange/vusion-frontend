@@ -60,7 +60,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
            </div>
            <div call="input text required">
            <label><?php echo __('Table'); ?></label>
-           <div id="columns" style="padding-left:0px; margin-bottom:0px"/>
+           <div id="columns" style="margin-left:2px; padding-left:0px; margin-bottom:0px"/>
            <?php 
            $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);     
            $this->Js->get('document')->event('ready',
