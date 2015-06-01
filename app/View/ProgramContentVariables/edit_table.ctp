@@ -2,7 +2,7 @@
 $this->Html->script("jquery.handsontable-0.9.18.full.js", array("inline" => false));
 $this->Html->script("ttc-table.js", array("inline" => false));
 ?>
-<div class="content_variables form width-size">
+<div class="content_variables form">
     <div class="ttc-page-title">
         <h3><?php echo __('Edit Content Variable'); ?></h3>
             <div class="ttc-data-control">
@@ -37,6 +37,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
             </ul>
         </div>
 	</div>
+>>>>>>> develop
     <div class="ttc-display-area">
         <form id="content-variable-table" action="javascript:saveTable()">
         <fieldset>

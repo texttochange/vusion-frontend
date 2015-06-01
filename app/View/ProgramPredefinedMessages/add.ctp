@@ -1,21 +1,24 @@
 <div class="predefined_messages form width-size">
-    <ul class="ttc-actions">
-        <li>
-        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
-        <span class="actions">
-        <?php
-        echo $this->Html->link( __('Cancel'), 
-            array(
-                'program' => $programDetails['url'],
-                'controller' => 'programHome',
-                'action' => 'index'	           
-                ));
-        ?>
-        </span>
-        </li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#PredefinedMessageAddForm").submit()' , true);?>
-	</ul>
-    <h3><?php echo __('Add Predefined Message'); ?></h3>
+   <?php
+        $contentTitle   = __('Add Predefined Message'); 
+        $contentActions = array();
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'controller' => 'programHome',
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->link(__('Save'),
+            array(),
+            array('class'=>'ttc-button',
+                'id' => 'button-save'));
+        $this->Js->get('#button-save')->event('click',
+            '$("#PredefinedMessageAddForm").submit()' , true);
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
     <div class="ttc-display-area">
     <?php echo $this->Form->create('PredefinedMessage'); ?>
     <fieldset>

@@ -1,11 +1,13 @@
 <div class="participants index">
-    <ul class="ttc-actions">
-    <li>
-    <?php
-    if (!isset($urlParams)) {
-        $urlParams = "";
-    }
-    echo $this->AclLink->generatePostLink(
+	<?php
+	$contentTitle = __('Participants');
+	$contentActions = array();
+	$containsDataControlNav = true;
+	$containsFilter = true;
+	$controller = 'programParticipants';
+	$urlParams = (isset($urlParams) ? $urlParams : "");
+
+	$contentActions[] = $this->AclLink->generatePostLink(
         __('Delete'),
         $programDetails['url'], 
         'programParticipants',
@@ -15,81 +17,78 @@
         array('class' => 'ttc-button'),
         null,
         $urlParams);
-    ?>
-    </li>
-    <li><?php 
-    $massUntagUrl = $this->Html->url(array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'massUntag'));
-    echo $this->Html->tag(
-        'span', 
+
+    $massUntagUrl = $this->Html->url(array(
+    	'program' => $programDetails['url'],
+    	'controller' => 'programParticipants',
+    	'action' => 'massUntag'));
+    $contentActions[] = $this->AclLink->generateButton(
         __('Untag'), 
-        array('class' => 'ttc-button', 'name' => 'unTag', 'url' => $massUntagUrl)); 
+        $programDetails['url'],
+        'programParticipants',
+        '',
+        array('class' => 'ttc-button',
+            'name' => 'unTag', 
+        	'url' => $massUntagUrl));
     $this->Js->get('[name=unTag]')->event('click',
-        'generateMassUntagDialogue(this);');    
-    ?></li>
-    <li><?php 
-    $massTagUrl = $this->Html->url(array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'massTag'));
-    echo $this->Html->tag(
-        'span', 
-        __('Tag'), 
-        array('class' => 'ttc-button', 'name' => 'massTag', 'url' => $massTagUrl)); 
-    $this->Js->get('[name=massTag]')->event('click',
-        'generateMassTagDialogue(this);');    
-    ?></li>
-    <li><?php echo $this->AclLink->generateButton(
+        'generateMassUntagDialogue(this);');
+
+    $contentActions[] = $this->AclLink->generateButton(
         __('+ Add'), 
         $programDetails['url'],
         'programParticipants',
         'add',
         array('class' => 'ttc-button')); 
-    ?></li>
-    <li>
-    <?php
+
     if ($participants != null) {
         $exportUrl = array(
                 'program' => $programDetails['url'],
                 'controller' => 'programParticipants',
                 'action' => 'export',
                 '?' => $urlParams);
-            if ($order != null) {
-                $exportUrl['sort'] = key($order);
-                $exportUrl['direction'] = $order[key($order)];
-            }
-            echo $this->AclLink->generateButtonFromUrl(
-                __('Export'), $exportUrl, array('class' => 'ttc-button'));
+        if ($order != null) {
+            $exportUrl['sort'] = key($order);
+            $exportUrl['direction'] = $order[key($order)];
+        }
+        $contentActions[] = $this->AclLink->generateButtonFromUrl(
+            __('Export'),
+            $exportUrl,
+            array('class' => 'ttc-button'));
 	}
-    ?>
-	</li>
-    <li><?php echo $this->AclLink->generateButton(
+
+	$contentActions[] = $this->AclLink->generateButton(
         __('Import'), 
         $programDetails['url'],
         'programParticipants',
         'import',
-        array('class' => 'ttc-button')); 
-    ?></li>
-    <li><?php 
-    echo $this->Html->tag(
-        'span', 
+        array('class' => 'ttc-button'));
+
+    $contentActions[] = $this->AclLink->generateButton(
         __('Filter'), 
-        array('class' => 'ttc-button', 'name' => 'add-filter')); 
+        $programDetails['url'],
+        'programParticipants',
+        '',
+        array('class' => 'ttc-button', 'name' => 'add-filter'));
     $this->Js->get('[name=add-filter]')->event(
         'click',
         '$("#advanced_filter_form").show();
          createFilter();
          addStackFilter();');
-    ?> </li> 
-	</ul>
-	<h3><?php echo __('Participants'); ?></h3>
-	<?php
-    echo $this->element('filter_box', array(
-        'controller' => 'programParticipants'));
-	?>	
+
+	echo $this->element('header_content', 
+		compact('contentTitle', 'contentActions', 'containsFilter','containsDataControlNav', 'controller'));
+
+    /*echo $this->element('filter_box', array(
+        'controller' => 'programParticipants'));*/
+	
+	?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="participants" cellpadding="0" cellspacing="0">
 	    <thead>
 	        <tr >
-	            <th></th>
-	            <th class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout-phone' : 'phone');?>">
+	            <th class="optout-indicator"></th>
+	            <th class="phone">
 	            <?php echo $this->Paginator->sort('phone', null, array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?>
 	            </th>
 	            <th class="opt-date"><?php echo $this->Paginator->sort('last-optin-date', __('Last Optin Date'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url']))); ?></th>

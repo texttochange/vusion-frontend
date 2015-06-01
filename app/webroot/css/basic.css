@@ -34,7 +34,6 @@
 }
 
 #header .ttc-title {
-        /*    background : url("../img/vusion-logo-wide.png") no-repeat scroll 0 0 transparent;*/
         height: 30px;
         font-size : 30px;
         font-weight : bold;    
@@ -53,7 +52,6 @@
 }
 
 .status-message {
-        /* width: 100%;*/
         height: 0px;
 }
 
@@ -121,8 +119,6 @@
 }    
 
 .ui-dform-label {
-        /*    float : left;*/
-        /*    margin-top : 5px;*/
         margin-right : 10px;
         margin-left: 5px;
 }
@@ -187,13 +183,22 @@
         background: #FFCB4B;
 }
 
+.ttc-content-header {
+    float: left;
+    width: 100%;
+}
+
+.ttc-content-header li{
+    list-style-type: none;        
+}
+
+
 .ttc-actions {
         float: right;
         padding: 7px 0px 3px 3px;
         margin-top: -8px;
         margin-left: 0;
         margin-right: 0px;
-        /*width: 77%;*/
 }   
 
 .ttc-actions li{
@@ -205,9 +210,6 @@
 
 .ttc-actions li a{
         border: 1px solid #BBBBBB;
-        /* border-radius: 4px 4px 4px 4px; */    
-        /*  padding: 4px 8px; */
-        /*  display: block; */
         background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
         text-decoration: none;
         font-weight: normal;
@@ -222,17 +224,14 @@
 }
 
 .ttc-actions li div{
-        color: #003D4C;
-        /*background: #62af56;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#76BF6B), to(#3B8230));
-        background-image: -webkit-linear-gradient(top, #76BF6B, #3B8230);
-        background-image: -moz-linear-gradient(top, #76BF6B, #3B8230);*/
-        border-color: #2d6324;
         padding: 4px 5px;
+        border: 1px solid #BBBBBB;
+        background: -moz-linear-gradient(center top , #FEFEFE, #DCDCDC) repeat scroll 0 0 #DCDCDC;
+        text-decoration: none;
+        font-weight: normal;
 }
 
 .ttc-actions li div:hover{
-        /*background:#5BA150;*/
         color: #367889;
 }
 
@@ -288,12 +287,12 @@
         padding-bottom: 10px;
 }
 
+
 .ttc-program-header {
-        height: 50px;
+        height: 50px;   
         background: #19C1FF;
-        padding-left: 20px;
-        padding-right: 20px;
-        min-width: 800px;    
+ /*       padding-left: 20px;
+        padding-right: 20px;*/
 }
 
 .ttc-program-title{
@@ -308,6 +307,7 @@
         float:right;
         margin-top: 15px;
         color: #003D4C;
+        font-weight: normal;
 }
 
 /* css for timepicker */
@@ -466,6 +466,7 @@
         width: 40%;
         left: 30%;
         top: 60px;
+        min-height: 417px;
 }
 
 .ttc-login-input {
@@ -515,20 +516,9 @@
 .report-message-footer {
         width: 560px;
 }
-/*
-.ttc-display-area .required:after {
-color: #E32;
-content: '*';
-display: inline;
-}*/
 
 .ttc-navigation-menu {
         float: left;
-        /*width: 16%;*/
-        /*width: 100%;
-        min-width: 127px;*/
-        padding-top: 10px;
-        /*padding-left: 12px;*/
 }
 
 .ttc-navigation-menu a {
@@ -660,33 +650,27 @@ display: inline;
 }
 
 .ttc-display-area {
-        height: 340px;
-        min-height: 250px;
-        overflow: auto;
-        width: 100%;
-        border: 2px solid lightgrey;
-        margin-bottom: 10px;
-        padding: 1%;    
-        max-width:1071px;
+    overflow: auto;
+    border: 2px solid lightgrey;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    min-height: 430px;
 }
 
 .ttc-table-display-area {
-        /*height: 340px;*/
-        min-height: 250px;
+        min-height: 380px;
         padding: 10px 10px;
         overflow: hidden;    
         border: 2px solid lightgrey;
         margin-bottom: 10px;   
         background: none repeat scroll 0 0 ;
-        /*position: relative;*/
         padding-bottom: 10px; 
-        float: left;
-        min-width: 728px;    
-        max-width:1071px;
+        min-width: 728px;
+        right: 20px;
 }
 .ttc-table-display-area-shortcode {
         height: 340px;
-        min-height: 250px;
+        min-height: 380px;
         padding: 52px 10px 18px;
         overflow: hidden;    
         border: 2px solid lightgrey;
@@ -712,12 +696,14 @@ display: inline;
 .ttc-table-scrolling-area thead tr{
         left: 0; 
         top: 0;
-        /*position: absolute;*/
-        /*padding: 0px 10px 0px;*/   
 }
 
 .ttc-table-scrolling-area .phone {
         width: 118px;
+}
+
+.ttc-table-scrolling-area .optout-indicator {
+    width: 30px;
 }
 
 .ttc-table-scrolling-area .action {
@@ -783,7 +769,7 @@ display: inline;
 }
 
 .ttc-table-scrolling-area .histories .status {
-        min-width: 96px;
+        width: 100px;
 }
 
 .ttc-table-scrolling-area .histories .details {
@@ -915,7 +901,7 @@ display: inline;
 }
 
 .ttc-table-scrolling-area .support {
-        width: 336px;
+        width: 500px;
         text-align: center;
 }
 .ttc-table-scrolling-area .shortcodes {
@@ -1214,25 +1200,17 @@ display: inline;
                 min-width: 1061px;
         } 
         #content { 
-                padding-top: 10px;
-                padding-left: 20px;
-                padding-right: 20px;
                 padding-bottom: 20px;
                 min-width: 800px;
-                position: relative;
                 overflow-x: hidden;
-                height: 483px;
         } 
         
         #content-popup { 
-                /*padding: 10px 3px 20px 1px;*/
-                /*min-width: 550px;*/
                 padding-top: 10px;
-                padding-left: 20px;
-                padding-right: 20px;
+                padding-left: 1.5em;
+                padding-right: 1.5em;
                 padding-bottom: 20px;
                 min-width: 560px;
-                /*max-width: 1366px;*/
                 position: relative;
                 overflow-x: hidden;
                 height: 483px;
@@ -1282,8 +1260,7 @@ display: inline;
 
 .program-left-column {
         float: left;
-        width: 202px;
-        /*position: absolute;*/
+        width: 200px;
         z-index: 99;
 }
 
@@ -1293,33 +1270,24 @@ display: inline;
 }
 
 .program-body {
-        min-width : 550px;    
-        margin-left: 20px;
-        float: left;
+    min-width : 550px;    
+    margin-left: 20px;
+    left: 20px;
 }
 
 .admin-action {
-        position: absolute; 
-        padding-left: 13px;
+    padding-bottom: 465px;
+    float: left;
 }
 
-.users-index {
-        min-width: 547px;    
-        padding:10px 20px 10px 0px;    
-        position: absolute;    
-        margin-left: 235px;
+.admin-index {
+    min-width: 547px;    
+    margin-left: 235px;
 }
 
-.shortcode-index {
-        min-width: 819px;    
-        padding:10px 20px 10px 0px;    
-        position: absolute;    
-        margin-left: 202px;
-}
-
-.blackets {
-        font-size: 14px;
-        color: #003D4C;
+#header-program .code {
+    font-size: 14px;
+    font-weight: normal
 }
 
 .program-edit {
@@ -1344,6 +1312,7 @@ display: inline;
         height: 30px;
         display: table;
         width: 100%;
+        padding-top: 20px;
 }
 
 .powered-by-text {
@@ -1386,8 +1355,6 @@ display: inline;
 
 .ttc-data-control .tabs {
         display: inline-block;
-        /*border-bottom: 2px solid #19C1FF;*/
-        /*height: 22px;*/
 }
 
 .ttc-data-control .tabs ul {
@@ -1398,7 +1365,6 @@ display: inline;
 .ttc-data-control .tabs li {
         float: left;
         margin: 0px 10px 0px 0px;
-        /*border-bottom: 5px solid #81DCFF;*/ 
         color: #81CDFF;
 }
 
@@ -1530,12 +1496,81 @@ display: inline;
 
 /* USERLOGS SPECIFIC */
 .ttc-table-scrolling-area .user-logs .user_logs_field {
-        width: 207px;
+<<<<<<< HEAD
+        width: 214px;
 }
 
-.optout-phone {
-    width: 143px;
+.height-size {
+    height: 603% !important;
 }
+
+.content-header table{
+    width:100%;
+}
+
+.fix-program-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    height: 50px;   
+    background: #19C1FF;
+    left: 0;
+    right: 20;
+}
+
+.fix-content-header {
+    position: fixed;
+    top: 50px;
+    z-index: 998;
+    left: 240px;
+    right: 20px;
+    background: white;
+    border-bottom: 1px lightgrey solid;
+    padding-top: 8px;
+}
+
+.admin-index .fix-content-header {
+    top: -1px;
+    left: 254px;
+    right: 20px;
+}
+
+.fix-navigation-menu {
+    position: fixed;
+    top: 50px;
+    z-index: 999;
+    width: 200px;
+ }
+  
+ .table
+ {
+     display: table;
+ }
+
+ .title
+
+ {
+     display: table-caption;
+ }
+
+ .heading
+ {
+     display: table-row;
+ }
+
+ .row
+ {
+     display: table-row;
+ }
+
+ .cell
+ {
+     display: table-cell;
+     vertical-align: top;
+ }
+
+
 
 .optout-logo {
         height: 29px;

@@ -1,21 +1,23 @@
 <div class="participants form width-size">
-    <ul class="ttc-actions">		
-        <li>
-        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
-        <span class="actions">
-        <?php
-        echo $this->Html->link( __('Cancel'), 
-            array(
-                'program' => $programDetails['url'],
-                'controller' => 'programHome',
-                'action' => 'index'	           
-                ));
-        ?>
-        </span>
-        </li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#ParticipantEditForm").submit()' , true);?>
-	</ul>
-	<h3><?php echo __('Edit Participant'); ?></h3>
+    <?php
+        $contentTitle   = __('Edit Participant'); 
+        $contentActions = array();
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->link(__('Save'),
+            array(),
+            array('class'=>'ttc-button',
+                'id' => 'button-save'));
+       $this->Js->get('#button-save')->event('click',
+           '$("#ParticipantEditForm").submit()' , true);
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
 	<div class="ttc-display-area display-height-size">
 	<?php echo $this->Form->create('Participant');?>
 	    <fieldset>
@@ -31,7 +33,7 @@
 	            } else {
 	                $profileData = $profiles;
 	            }
-	            echo $this->Form->input('profile', array('label' => __('Profile'), 'rows'=>5, 'value'=>$profileData));
+	            echo $this->Form->input('profile', array('label' => __('Profile'), 'rows'=>4, 'value'=>$profileData));
 	            $tags = $this->data['Participant']['tags'];
 	            if (is_array($tags)) {
 	                $tagsArray = explode(",",implode(",", $tags));
@@ -39,7 +41,7 @@
 	            } else {
 	                $tagsString = $tags;
 	            }
-	            echo $this->Form->input('tags', array('label' => __('Tags'), 'rows'=>5, 'value'=>$tagsString));
+	            echo $this->Form->input('tags', array('label' => __('Tags'), 'rows'=>4, 'value'=>$tagsString));
 	            $options = $selectOptions;
 	            $selected = $oldEnrolls;
 	            echo $this->Form->input('enrolled', array('options'=>$options,
