@@ -62,7 +62,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
            <label><?php echo __('Table'); ?></label>
            <div id="columns" style="margin-left:2px; padding-left:0px; margin-bottom:0px"/>
            <?php 
-           $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);     
+           $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);
            $this->Js->get('document')->event('ready',
                'createTable(
                      "#columns", 
@@ -71,7 +71,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                       minSpareRows: 1,
                       minSpareCols: 1,
                       width: 700,
-                      height: '.($numberOfRows*40+30).',
+                      height: '.($numberOfRows == 0 ? 70 : $numberOfRows*40+30).',
                       strechH: \'all\',
                       contextMenu: [\'row_above\', \'row_below\', \'remove_row\', \'col_left\', \'col_right\', \'remove_col\'],
                       data: fromVusionToHandsontableData(\''.json_encode($contentVariableTable['ContentVariableTable']['columns']).'\'),

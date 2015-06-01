@@ -466,7 +466,7 @@ class Action extends VirtualModel
         'scvt-row-header' => array( 
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please enter header name for this column',
+                'message' => 'Please enter header name.',
                 ),
             'validHeader' => array(
                 'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
@@ -477,14 +477,19 @@ class Action extends VirtualModel
                 'message' => 'The header has to be present as key in the table.'
                 )
             ),
-        'scvt-row-value' => array()
+        'scvt-row-value' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a value.',
+                )
+            ),
         );
 
     public $validateScvtColExtra = array(
         'scvt-col-extra-header' => array( 
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please enter header name for this column',
+                'message' => 'Please enter header name.',
                 ),
             'validHeader' => array(
                 'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
@@ -495,7 +500,12 @@ class Action extends VirtualModel
                 'message' => 'The header cannot be a key in the table.'
                 )
             ),
-        'scvt-col-extra-value' => array()
+        'scvt-col-extra-value' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a value.',
+                )
+            ),
         );
     
 
@@ -742,6 +752,7 @@ class Action extends VirtualModel
                     'scvt-row-value' => null);
             }
             $this->data['scvt-row-keys'][$counter]['scvt-row-header'] = $keyHeader;
+            $counter++;
         }
         return true;
     }
