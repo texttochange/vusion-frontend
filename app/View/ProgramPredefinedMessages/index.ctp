@@ -1,22 +1,18 @@
 <div class="predefined_messages index">
-	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('+ New Predefined Message'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
-	</ul>	
-	<h3><?php echo __('Predefined Messages');?></h3>
-  <div class="ttc-data-control">
-	<div id="data-control-nav" class="ttc-paging paging">
-	<?php
-	echo "<span class='ttc-page-count'>";
-	echo $this->Paginator->counter(array(
-	    'format' => __('{:start} - {:end} of {:count}')
-	    ));
-	echo "</span>";
-	echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
-	//echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
-	?>
-	</div>
-  </div>
+    <?php
+       $contentTitle           = __('Predefined Messages'); 
+       $contentActions         = array();
+       $containsDataControlNav = true;
+       $controller             = 'programPredefinedMessages';
+       
+       $contentActions[] = $this->Html->link(__('+ New Predefined Message'),
+           array('program'=>$programDetails['url'],
+               'controller' => $controller,
+               'action' => 'add'),
+           array('class' => 'ttc-button'));
+       
+       echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'controller'));
+    ?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="predefined-messages" cellpadding="0" cellspacing="0">

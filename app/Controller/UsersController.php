@@ -217,6 +217,8 @@ class UsersController extends AppController
     
     public function login()
     {
+        //$this->layout = 'default2';
+        
         if ($this->Auth->user()) {
             $this->Session->setFlash(
                 __('Already logged in...'),
@@ -541,6 +543,8 @@ class UsersController extends AppController
 
     public function inviteUser()
     {
+        //$this->layout = 'default2';
+        
         $user = $this->Auth->user();
         $andCondition = ($user['group_id'] != 5) ? array(array('id !=' => 1), array('id !=' => 2)) : array(array('id !=' => 1), array('id !=' => 2), array('id !=' => 3));
 

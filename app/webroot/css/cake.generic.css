@@ -71,7 +71,7 @@ h4 {
 	font-weight: normal;
 }
 ul, li {
-	margin: 0 12px;
+	/* margin: 0 12px;*/
 }
 p {
 	margin: 0 0 1em 0;
@@ -87,7 +87,7 @@ p {
 
 #header{
 	padding: 5px 20px;
-	height: 40px;
+	height: 2.8em;
 	background: black;
 	min-width: 800px;
 }
@@ -121,23 +121,14 @@ p {
 	clear: both;
 	padding: 6px 10px;    
 	background: white;
-	cursor: pointer;
 }
 
 /** containers **/
 div.form,
 div.index,
 div.view {
-	/*float: right;*/
-	/*min-width: 547px;*/
-	/*border-left:1px solid #666;*/
-	padding:10px 20px 10px 0px;
-	/*height: 372px;*/
 	min-width: 719px;
-	/*width:79%;*/
-	/*padding-right: 11px;*/
-	position: absolute;
-	max-width: 1071px;
+
 }
 div.form2,
 {
@@ -178,7 +169,6 @@ th {
 }
 th a {
 	display: block;
-	padding: 2px 4px;
 	text-decoration: none;
 }
 th a.asc:after {

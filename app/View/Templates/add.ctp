@@ -1,4 +1,17 @@
-<div class="templates form program-body users-index">
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('Templates List'), array('action' => 'index')); ?></li>
+		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+	</ul>	
+</div>
+</div>
+
+<div class="templates form admin-index">
+<div class="table">
+<div class="row">
+<div class="cell">
     <h3><?php echo __('Add Template'); ?></h3>
     <?php echo $this->Form->create('Template'); ?>
     <fieldset>
@@ -19,12 +32,6 @@
    </fieldset>
        <?php echo $this->Form->end(__('Submit')); ?>
 </div>
-<div class="admin-action">
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('View Templates'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-	</ul>	
+</div>
 </div>
 </div>
