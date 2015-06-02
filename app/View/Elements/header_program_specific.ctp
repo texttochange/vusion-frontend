@@ -1,5 +1,5 @@
 <div id="header-program">
-	<div class="table" style="width:98%;padding-left:1.5em;padding-right:1.5em">
+	<div class="table" style="width:100%;">
         <div class="heading">
                 <div class="cell">
                     <span class='ttc-program-title'>

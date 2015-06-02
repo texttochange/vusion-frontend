@@ -251,8 +251,7 @@
 
 .ttc-left-header {
         float: left;
-        width : 30%;
-}
+ }
 
 .ttc-central-header {
         float: right;
@@ -291,8 +290,8 @@
 .ttc-program-header {
         height: 50px;   
         background: #19C1FF;
- /*       padding-left: 20px;
-        padding-right: 20px;*/
+        padding-left: 20px;
+        padding-right: 20px;
 }
 
 .ttc-program-title{
@@ -1496,8 +1495,7 @@
 
 /* USERLOGS SPECIFIC */
 .ttc-table-scrolling-area .user-logs .user_logs_field {
-<<<<<<< HEAD
-        width: 214px;
+    width: 214px;
 }
 
 .height-size {
@@ -1511,12 +1509,13 @@
 .fix-program-header {
     position: fixed;
     top: 0;
-    width: 100%;
     z-index: 999;
     height: 50px;   
     background: #19C1FF;
-    left: 0;
-    right: 20;
+    left: 0px;
+    right: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .fix-content-header {
