@@ -77,9 +77,6 @@
 
 	echo $this->element('header_content', 
 		compact('contentTitle', 'contentActions', 'containsFilter','containsDataControlNav', 'controller'));
-
-    /*echo $this->element('filter_box', array(
-        'controller' => 'programParticipants'));*/
 	
 	?>
 	<div class="ttc-table-display-area">
