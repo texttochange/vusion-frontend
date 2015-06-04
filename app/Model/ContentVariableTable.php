@@ -111,7 +111,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        $this->ValidationHelper = new ValidationHelper(&$this);
+        $this->ValidationHelper = new ValidationHelper($this);
     }    
     
     
@@ -282,9 +282,9 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         
         if (isset($this->data['ContentVariableTable']['columns'])) {
             $this->removeEmptyCells($this->data['ContentVariableTable']['columns']);
