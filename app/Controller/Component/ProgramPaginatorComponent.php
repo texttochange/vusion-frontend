@@ -20,7 +20,7 @@ class ProgramPaginatorComponent extends PaginatorComponent
     }
     
     
-    public function paginate()
+    public function paginate($object = null, $scope = array(), $whitelist = array())
     {
         $type = 'all';
         $options = $this->Controller->paginate;

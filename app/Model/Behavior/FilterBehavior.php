@@ -7,7 +7,7 @@ class FilterBehavior extends ModelBehavior
 {
 
    
-    public function setup($model, $settings = array()) 
+    public function setup(Model $model, $config = array()) 
     {
         if (!isset($model->filterFields)) {
             throw new Exception("Model %s is missing filters definition" % $model->name);

@@ -1,7 +1,34 @@
-<div class="unmatchable-replies index width-size users-index">
-    <ul class="ttc-actions"></ul>
-    <h3><?php echo __('Unmatchabel Reply Exports'); ?></h3>
-    <div class="ttc-table-display-area" style="width:100%">
+<div class="admin-action">
+<div class="actions">
+    <h3><?php echo __('Actions'); ?></h3>
+    <ul>
+        <li>
+        <?php echo $this->Html->link(__('Program List'),
+            array('controller' => 'programs', 'action' => 'index'));
+        ?>
+        </li>
+        <li>
+        <?php echo $this->Html->link(__('Unmatchable Reply'),
+            array('action' => 'index'));
+        ?>
+        </li>
+    </ul>
+</div>
+</div>
+
+<div class="admin-index unmatchable-replies index">
+    <?php
+    $contentTitle = __('Unmatchable Reply Exports');
+    $contentActions = array();
+    $containsDataControlNav = false;
+    $containsFilter = false;
+    $controller = 'unmatchableReply';
+    $urlParams = (isset($urlParams) ? $urlParams : "");
+
+    echo $this->element('header_content', 
+        compact('contentTitle', 'contentActions', 'containsFilter','containsDataControlNav', 'controller'));
+    ?>
+    <div class="ttc-table-display-area">
     <div class="ttc-table-scrolling-area display-height-size">
     <table class="unmatchable-reply" cellpadding="0" cellspacing="0">
         <thead>
@@ -94,22 +121,5 @@
         </tbody>
     </table>
     </div>
-    </div>
-</div>
-<div class="admin-action">
-    <div class="actions">
-        <h3><?php echo __('Actions'); ?></h3>
-        <ul>
-        <li>
-        <?php echo $this->Html->link(__('Program List'),
-            array('controller' => 'programs', 'action' => 'index'));
-        ?>
-        </li>
-        <li>
-        <?php echo $this->Html->link(__('Unmatchable Reply'),
-            array('action' => 'index'));
-        ?>
-        </li>
-        </ul>
     </div>
 </div>
