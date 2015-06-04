@@ -12,9 +12,7 @@ class TicketComponent extends Component
 
     public function initialize(Controller $controller)
     {
-        CakeEmail::transport();
         $this->Controller = $controller;
-        
         
         if (isset($this->Controller->redis)) {
             $this->redis = $this->Controller->redis;
