@@ -2,6 +2,8 @@
 App::uses('VirtualModel', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
+App::uses('ContentVariableTable', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class Action extends VirtualModel
@@ -79,7 +81,8 @@ class Action extends VirtualModel
                         'proportional-labelling',
                         'url-forwarding',
                         'sms-forwarding',
-                        'sms-invite')),
+                        'sms-invite',
+                        'save-content-variable-table')),
                 'message' => 'The type-action value is not valid.'
                 ),
             'valueRequireFields' => array(
@@ -96,7 +99,12 @@ class Action extends VirtualModel
                         'proportional-labelling' => array('set-only-optin-count', 'label-name', 'proportional-labels'),
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'),
-                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'))),
+                        'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'),
+                        'save-content-variable-table' => array(
+                            'scvt-attached-table', 
+                            'scvt-row-keys',
+                            'scvt-col-key-header',
+                            'scvt-col-extras'))),
                 'message' => 'The action-type required field are not present.'
                 )
             ),
@@ -307,6 +315,34 @@ class Action extends VirtualModel
                 'message' => VusionConst::LABEL_NAMES_LIST_FAIL_MESSAGE
                 ),
             ),
+        'scvt-attached-table' => array(
+            'validateTableId' => array(
+                'rule' => array('validTableId'),
+                'message' => 'Must reference an existing table id.'
+                ),
+            ),
+        'scvt-row-keys' => array(
+            'validateRowKeys' => array(
+                'rule' => array('validScvtRowKeys'),
+                'message' => 'noMessage'
+                ),
+            ),
+        'scvt-col-key-header' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter header name for this column',
+                ),
+            'validHeader' => array(
+                'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE,
+                )
+            ),
+        'scvt-col-extras' => array(
+            'validExtraCvs' => array(
+                'rule' => array('validScvtColExtras'),
+                'message' => 'noMessage'
+                ),
+            ),
         );
     
     public $validateOffsetDays = array(
@@ -378,8 +414,7 @@ class Action extends VirtualModel
             )
         );
     
-    
-    
+
     public $validateProportionalTag = array(
         'tag' => array(
             'required' => array(
@@ -402,7 +437,8 @@ class Action extends VirtualModel
                 ),
             ),
         );
-    
+
+
     public $validateProportionalLabel = array(
         'label-value' => array(
             'required' => array(
@@ -425,8 +461,61 @@ class Action extends VirtualModel
                 ),
             ),
         );
+
+    public $validateScvtRowKey = array(
+        'scvt-row-header' => array( 
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter header name.',
+                ),
+            'validHeader' => array(
+                'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE
+                ),
+            'validScvtRowKey' => array(
+                'rule' => array('validScvtRowKey'),
+                'message' => 'The header has to be present as key in the table.'
+                )
+            ),
+        'scvt-row-value' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a value.',
+                )
+            ),
+        );
+
+    public $validateScvtColExtra = array(
+        'scvt-col-extra-header' => array( 
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter header name.',
+                ),
+            'validHeader' => array(
+                'rule' => array('regex', VusionConst::CONTENT_VARIABLE_KEY_REGEX),
+                'message' => VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE
+                ),
+            'validScvtColExtraNotKey' => array(
+                'rule' => array('validScvtColExtraNotKey'),
+                'message' => 'The header cannot be a key in the table.'
+                )
+            ),
+        'scvt-col-extra-value' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please enter a value.',
+                )
+            ),
+        );
     
-    
+
+    public function __construct($databaseName) 
+    {
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', $databaseName, true);
+    }
+
+
     public function trimArray($Input)
     {
         if (!is_array($Input))
@@ -436,9 +525,9 @@ class Action extends VirtualModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         if (isset($this->data['type-answer-action'])) {
             $this->data['type-action'] = $this->data['type-answer-action'];
             unset($this->data['type-answer-action']);
@@ -447,6 +536,11 @@ class Action extends VirtualModel
         if ($this->data['type-action'] == 'sms-forwarding') {
             $this->_setDefault('set-forward-message-condition', null);
             $this->_setDefault('forward-to', null);
+        }
+        if ($this->data['type-action'] == 'save-content-variable-table') {
+            $this->_setDefault('scvt-row-keys', null);
+            $this->_setDefaultScvtRowKeyHeader();
+            $this->_setDefault('scvt-col-extras', null);
         }
         if (in_array($this->data['type-action'], array('proportional-tagging', 'proportional-labelling'))) {
             $this->_setDefault('set-only-optin-count', null);
@@ -463,7 +557,7 @@ class Action extends VirtualModel
         }
         return true;
     }
-    
+
     
     public function validOffsetDays($field, $data)
     {
@@ -590,8 +684,77 @@ class Action extends VirtualModel
             }
         }
         return true;
-        
     }
-    
-    
+
+
+    public function validTableId($field, $data)
+    {
+        if (!isset($data[$field])) {
+            return true;
+        }
+        if ($this->ContentVariableTable->exists($data[$field])) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public function validScvtRowKey($field, $data)
+    {
+        if (!isset($data[$field]) || !isset($this->data['scvt-attached-table'])) {
+            return true;
+        }
+        if (!$this->ContentVariableTable->hasKeyHeader($this->data['scvt-attached-table'], $data[$field])) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function validScvtRowKeys($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateScvtRowKey);
+    }
+
+
+    public function validScvtColExtraNotKey($field, $data)
+    {
+        if (!isset($data[$field]) || !isset($this->data['scvt-attached-table'])) {
+            return true;
+        }
+        if ($this->ContentVariableTable->hasKeyHeader($this->data['scvt-attached-table'], $data[$field])) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public function validScvtColExtras($field, $data)
+    {
+        return $this->validList($field, $data, $this->validateScvtColExtra);
+    }
+
+
+    public function _setDefaultScvtRowKeyHeader()
+    {
+        if (!isset($this->data['scvt-attached-table'])) {
+            return false;
+        }
+        $keyHeaders = $this->ContentVariableTable->getKeyHeaders($this->data['scvt-attached-table']);
+        if ($keyHeaders == null) {
+            return false;
+        }
+        $counter = 0;
+        foreach ($keyHeaders as $keyHeader) {
+            if (!isset($this->data['scvt-row-keys'][$counter])) {
+                $this->data['scvt-row-keys'][$counter] = array(
+                    'scvt-row-header' => null,
+                    'scvt-row-value' => null);
+            }
+            $this->data['scvt-row-keys'][$counter]['scvt-row-header'] = $keyHeader;
+            $counter++;
+        }
+        return true;
+    }
+
 }

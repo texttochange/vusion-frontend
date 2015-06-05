@@ -295,9 +295,9 @@ class Dialogue extends ProgramSpecificMongoModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         
         //Need to convert all dates
         $this->data['Dialogue'] = DialogueHelper::objectToArray($this->data['Dialogue']);

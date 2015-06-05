@@ -13,7 +13,7 @@ class TestKeywordComponentController extends Controller
 }
 
 
-class KewyordComponentTest extends CakeTestCase
+class KeywordComponentTest extends CakeTestCase
 {
 
     public $KeywordComponent = null;

@@ -1,19 +1,26 @@
 <?php
 App::uses('Action', 'Model');
-
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 class ActionTestCase extends CakeTestCase
 {
     public function setUp()
     {
         parent::setUp();
-        $this->Action = new Action();
+        $dbName = 'testdbprogram';
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', $dbName);
+        $this->ContentVariable = ProgramSpecificMongoModel::init(
+            'ContentVariable', $dbName);
+        $this->Action = new Action($dbName);
     }
     
     
     public function tearDown()
     {
         unset($this->Action);
+        $this->ContentVariableTable->deleteAll(true, false);
+        $this->ContentVariable->deleteAll(true, false);
     }
     
     
@@ -606,6 +613,171 @@ class ActionTestCase extends CakeTestCase
         $this->assertEqual(
             1, count($this->Action->validationErrors['keep-labels']));
     }
-    
-    
+
+
+    public function testValidateAction_saveContentVariableTable_ok()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'nairobi')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh', null)
+                    ),
+                )
+            );
+        $this->ContentVariableTable->create();
+        $cvt = $this->ContentVariableTable->save($contentVariableTable);
+
+        $action = array(
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' => $cvt['ContentVariableTable']['_id'],
+            'scvt-row-keys' => array(array(
+                'scvt-row-value' => '[participant.city')),
+            'scvt-col-key-header' => 'Chicken price',
+            'scvt-col-extras' => array(array(
+                'scvt-col-extra-header' => 'phone',
+                'scvt-col-extra-value' => '[participant.phone]')));
+
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->Action->validates();
+        $result = $this->Action->validates();
+        $this->assertTrue($result);
+    }
+
+
+    public function testValidateAction_saveContentVariableTable_missingHeaders_ok()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array(null)
+                    ),
+                array(
+                    'header' => 'Date',
+                    'values' => array(null)
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array(null)
+                    ),
+                ),
+            'column-key-selection' => 'first-two'
+            );
+        $this->ContentVariableTable->create();
+        $cvt = $this->ContentVariableTable->save($contentVariableTable);
+
+        $action = array(
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' => $cvt['ContentVariableTable']['_id'],
+            'scvt-row-keys' => array(
+                array(
+                    'scvt-row-value' => '[participant.city]'),
+                array(
+                    'scvt-row-value' => '[time.d]')),
+            'scvt-col-key-header' => 'Chicken price',
+            'scvt-col-extras' => array(array(
+                'scvt-col-extra-header' => 'phone',
+                'scvt-col-extra-value' => '[participant.phone]')));
+
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertEqual(
+            $this->Action->data['scvt-row-keys'],
+            array(
+                array(
+                    'scvt-row-header' => 'Town',
+                    'scvt-row-value' => '[participant.city]'),
+                array(
+                    'scvt-row-header' => 'Date',
+                    'scvt-row-value' => '[time.d]')));
+        $this->Action->validates();
+        $result = $this->Action->validates();
+        $this->assertTrue($result);
+
+    }
+
+    public function testValidateAction_saveContentVariableTable_fail_noTable()
+    {
+        $action = array(
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' => '1',
+            'scvt-row-keys' => array(array(
+                'scvt-row-header' => 'Town',
+                'scvt-row-value' => '[participant.city')),
+            'scvt-col-key-header' => 'Chicken price',
+            'scvt-col-extras' => array(array(
+                'scvt-col-extra-header' => 'phone',
+                'scvt-col-extra-value' => '[participant.phone]')));
+
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            "Must reference an existing table id.",
+            $this->Action->validationErrors['scvt-attached-table'][0]);
+        $this->assertEqual(
+            1, count($this->Action->validationErrors['scvt-attached-table']));
+    }
+
+
+    public function testValidateAction_saveContentVariableTable_fail_noHeader()
+    {
+        $contentVariableTable = array(
+            'name' => 'my table',
+            'columns' => array(
+                array(
+                    'header' => 'Town',
+                    'values' => array('mombasa', 'nairobi')
+                    ),
+                array(
+                    'header' => 'Chicken price',
+                    'values' => array('300 Ksh', null)
+                    ),
+                )
+            );
+        $this->ContentVariableTable->create();
+        $cvt = $this->ContentVariableTable->save($contentVariableTable);
+
+        $action = array(
+            'type-action' => 'save-content-variable-table',
+            'scvt-attached-table' =>  $cvt['ContentVariableTable']['_id']."",
+            'scvt-row-keys' => array(array(
+                'scvt-row-header' => 'Town',
+                'scvt-row-value' => '')),
+            'scvt-col-key-header' => 'fish.price',
+            'scvt-col-extras' => array(
+                array(
+                    'scvt-col-extra-header' => 'phone.',
+                    'scvt-col-extra-value' => '[participant.phone]'),
+                array(
+                    'scvt-col-extra-header' => 'Town',
+                    'scvt-col-extra-value' => '[participant.city]')));
+
+        $this->Action->set($action);
+        $this->Action->beforeValidate();
+        $this->assertFalse($this->Action->validates());
+        $this->assertEqual(
+            "Please enter a value.",
+            $this->Action->validationErrors['scvt-row-keys'][0]['scvt-row-value'][0]); 
+        $this->assertEqual(
+            "Use only space, letters, numbers or the characters ,+/-: for a key, e.g 'uganda 1'.",
+            $this->Action->validationErrors['scvt-col-key-header'][0]);
+        $this->assertEqual(
+            "Use only space, letters, numbers or the characters ,+/-: for a key, e.g 'uganda 1'.",
+            $this->Action->validationErrors['scvt-col-extras'][0]['scvt-col-extra-header'][0]);
+        $this->assertEqual(
+            "The header cannot be a key in the table.",
+            $this->Action->validationErrors['scvt-col-extras'][1]['scvt-col-extra-header'][0]);
+        $this->assertEqual(
+            3, count($this->Action->validationErrors));
+    }
+
 }
