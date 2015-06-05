@@ -1,25 +1,23 @@
-
-<div class="request form width-size"  >
-    <ul class="ttc-actions">
-        <li>
-        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button dynamic-form-save')); ?>
-        <span class="actions">
-        <?php
-        echo $this->Html->link( __('Cancel'), 
-            array(
-                'program' => $programDetails['url'],
-                'controller' => 'programHome',
-                'action' => 'index'	           
-                ));
-        ?>
-        </span>
-        </li>
-        <?php 
+<div class="request form width-size">
+    <?php
+        $contentTitle   = __('Add Request'); 
+        $contentActions = array();
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'controller' => 'programHome',
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->link(__('Save'),
+            array(),
+            array('class'=>'ttc-button dynamic-form-save'));
         $this->Js->get('.dynamic-form-save')->event('click',
 		    'formSubmit()' , true); 
-		?>
-    </ul>
-    <h3><?php echo __('Add Request'); ?></h3>
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
     <div class="ttc-display-area display-height-size">
 	    <?php 
 	    echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form'));

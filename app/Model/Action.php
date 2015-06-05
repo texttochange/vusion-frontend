@@ -525,9 +525,9 @@ class Action extends VirtualModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         if (isset($this->data['type-answer-action'])) {
             $this->data['type-action'] = $this->data['type-answer-action'];
             unset($this->data['type-answer-action']);

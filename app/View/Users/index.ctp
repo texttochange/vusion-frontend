@@ -1,22 +1,59 @@
-<div class="users-index index width-size">
-    <ul class="ttc-actions">
-        <li><?php
-		echo $this->Html->tag(
-		    'span', 
-		    __('Filter'), 
-		    array('class' => 'ttc-button', 'name' => 'add-filter')); 
-		$this->Js->get('[name=add-filter]')->event(
-		    'click',
-		    '$("#advanced_filter_form").show();
-		    createFilter();
-		    addStackFilter();');
-		?></li>
-    </ul>
-	<h3><?php echo __('Users');?></h3>
-	<?php	
-    echo $this->element('filter_box', array(
-        'controller' => 'users'));
-	?>
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('New User'),
+		    null,
+		    'users',
+		    'add'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('Invite User'),
+		    null,
+		    'users',
+		    'inviteUser'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('Back to Admin menu'),
+		    null,
+		    'admin',
+		    'index'
+		    ); ?></li>
+		<li><?php echo $this->AclLink->generateButton(
+		    __('Back to Programs'),
+		    null,
+		    'programs',
+		    'index'
+		    ); ?></li>
+	</ul>
+</div>
+</div>
+
+<div class="admin-index index">
+<div class="table" style="width:100%">
+<div class="row">
+<div class="cell">
+    <?php
+    $contentTitle           = __('Users'); 
+    $contentActions         = array();
+    $containsDataControlNav = true;
+    $containsFilter         = true;
+    $controller             = 'users';
+    
+    $contentActions[] = $this->Html->tag(
+        'span', 
+        __('Filter'), 
+        array('class' => 'ttc-button', 'name' => 'add-filter'));
+    
+    $this->Js->get('[name=add-filter]')->event(
+        'click',
+        '$("#advanced_filter_form").show();
+        createFilter();
+        addStackFilter();');
+    
+    echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'containsFilter', 'controller'));
+    ?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="users" cellpadding="0" cellspacing="0">
@@ -48,35 +85,7 @@
 	</table>
 	</div>
 	</div>
-	</div> 
-	<div class="admin-action">
-	<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->AclLink->generateButton(
-		    __('New User'),
-		    null,
-		    'users',
-		    'add'
-		    ); ?></li>
-		<li><?php echo $this->AclLink->generateButton(
-		    __('Invite User'),
-		    null,
-		    'users',
-		    'inviteUser'
-		    ); ?></li>
-		<li><?php echo $this->AclLink->generateButton(
-		    __('Back to Admin menu'),
-		    null,
-		    'admin',
-		    'index'
-		    ); ?></li>
-		<li><?php echo $this->AclLink->generateButton(
-		    __('Back to Programs'),
-		    null,
-		    'programs',
-		    'index'
-		    ); ?></li>
-	</ul>
 </div>
-</div>	
+</div>
+</div>
+</div>

@@ -88,7 +88,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            "To be used as customized content, '$%name' can only be composed of letter(s), digit(s) and/or space(s).",
+            "To be used as participant customized content, '$%name' can only be composed of letter(s), digit(s) and/or space(s). The '_raw' suffix is allowed.",
             $this->Action->validationErrors['content'][0]);
         $this->assertEqual(
             1, 
@@ -460,7 +460,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->beforeValidate();
         $this->Action->validates();
         $this->assertEqual(
-            'To be used as customized content, \'participant%\' can only be composed of letter(s), digit(s) and/or space(s).',
+            "To be used as customized content, 'participant%' can only be either: participant, contentVariable, time or context.",
             $this->Action->validationErrors['forward-content'][0]);
         $this->assertEqual(
             1, 
@@ -561,7 +561,7 @@ class ActionTestCase extends CakeTestCase
         $this->Action->validates();
         $this->assertFalse($this->Action->validates());
         $this->assertEqual(
-            'To be used as customized content, \'participant%\' can only be composed of letter(s), digit(s) and/or space(s).',
+            "To be used as customized content, 'participant%' can only be either: participant, contentVariable, time or context.",
             $this->Action->validationErrors['invite-content'][0]);
     }
     

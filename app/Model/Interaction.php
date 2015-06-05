@@ -696,9 +696,9 @@ class Interaction extends VirtualModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         $this->_setDefault('interaction-id', uniqid());
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
@@ -722,7 +722,7 @@ class Interaction extends VirtualModel
             $this->_setDefault('set-matching-answer-actions', null);
             if ($this->data['set-matching-answer-actions'] == 'matching-answer-actions') {
                 $this->_setDefault('matching-answer-actions', array());
-                $this->_beforeValidateActions(&$this->data['matching-answer-actions']);
+                $this->_beforeValidateActions($this->data['matching-answer-actions']);
             }
             $this->_setDefault('set-max-unmatching-answers', null);
             if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {
@@ -739,7 +739,7 @@ class Interaction extends VirtualModel
             }
         } elseif ($this->data['type-interaction'] == 'announcement') {
             $this->_setDefault('announcement-actions', array());
-            $this->_beforeValidateActions(&$this->data['announcement-actions']);
+            $this->_beforeValidateActions($this->data['announcement-actions']);
         } elseif ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
@@ -750,13 +750,13 @@ class Interaction extends VirtualModel
             $this->_setDefault('reminder-actions', array());
             $this->_setDefault('type-schedule-reminder', null);
             $this->_setDefault('reminder-number', null);
-            $this->_beforeValidateActions(&$this->data['reminder-actions']);
+            $this->_beforeValidateActions($this->data['reminder-actions']);
         }
         return true;
     }
     
     
-    protected function _beforeValidateActions($actions)
+    protected function _beforeValidateActions(&$actions)
     {
         foreach ($actions as &$action) {
             $this->Action->set($action);
@@ -773,7 +773,7 @@ class Interaction extends VirtualModel
                 $answer['feedbacks'] = array();
             if (!isset($answer['answer-actions']))
                 $answer['answer-actions'] = array();
-            $this->_beforeValidateActions(&$answer['answer-actions']);
+            $this->_beforeValidateActions($answer['answer-actions']);
         }
     }
     
@@ -785,7 +785,7 @@ class Interaction extends VirtualModel
                 $answer['feedbacks'] = array();
             if (!isset($answer['answer-actions']))
                 $answer['answer-actions'] = array();
-            $this->_beforeValidateActions(&$answer['answer-actions']);
+            $this->_beforeValidateActions($answer['answer-actions']);
         }
     }
     

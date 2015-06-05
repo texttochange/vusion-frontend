@@ -3,40 +3,20 @@ $this->Html->script("jquery.handsontable-0.9.18.full.js", array("inline" => fals
 $this->Html->script("ttc-table.js", array("inline" => false))
 ?>
 <div class='content_variables index'>
-    <div class="ttc-page-title">
-        <h3><?php echo __('Content Variables');?></h3>
-	
-        <ul class="ttc-actions">
-		    <li><?php echo $this->Html->link(__('+ New'), array('program'=>$programDetails['url'], 'action' => 'addTable'), array('class' => 'ttc-button')); ?></li>
-		</ul>	
-	</div>	    
-    <div class="ttc-data-control">
-        <span class="tabs">
-	<ul>
-        <li>
-        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
-            <label><?php echo __("Keys/Values") ?></label>
-        </a>
-        </li>
-        <li class="selected">
-        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
-            <label><?php echo __("Tables") ?></label>
-        </a>
-        </li>
-        </ul>
-        </span>
-	<div id="data-control-nav" class="ttc-paging paging">
-	<?php
-	echo "<span class='ttc-page-count'>";
-	echo $this->Paginator->counter(array(
-	    'format' => __('{:start} - {:end} of {:count}')
-	    ));
-	echo "</span>";
-	echo $this->Paginator->prev('<', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->next(' >', array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])), null, array('class' => 'next disabled'));
-	?>
-	</div>
-  </div>
+   <?php
+       $contentTitle           = __('Content Variables'); 
+       $contentActions         = array();
+       $containsDataControlNav = true;
+       $containsSpan           = 'tables';
+       $controller             = 'programContentVariables';
+       
+       $contentActions[] = $this->Html->link(__('+ New'),
+           array('program'=>$programDetails['url'],
+               'action' => 'addTable'),
+           array('class' => 'ttc-button'));
+       
+       echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'controller', 'containsSpan'));
+    ?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="content-variable-tables" cellpadding="0" cellspacing="0">
@@ -115,7 +95,25 @@ $this->Html->script("ttc-table.js", array("inline" => false))
                  );
 		        ?></td>
 		        <td class="actions action">
-		            <?php echo $this->Html->link(__('Edit'), array('program' => $programDetails['url'], 'action' => 'editTable', $contentVariableTable['ContentVariableTable']['_id'])); ?>
+		            <?php echo $this->Html->link(__('Edit'), array(
+		                'program' => $programDetails['url'],
+		                'action' => 'editTable', $contentVariableTable['ContentVariableTable']['_id'])); ?>
+		            <?php 
+		            $exportUrl = $this->Html->url(array(
+		                'program' => $programDetails['url'],
+		                'controller' => 'programContentVariables',
+		                'id' =>  $contentVariableTable['ContentVariableTable']['_id'],
+		                'action'=>'export'));
+		            
+		            echo $this->Html->tag(
+		                'span',
+		                __('Export'), array(
+		                    'class' => 'ttc-button ttc-button-export',
+		                    'url' => $exportUrl,
+		                    'name' => $contentVariableTable['ContentVariableTable']['_id']));
+		            $this->Js->get('[name='.$contentVariableTable['ContentVariableTable']['_id'].']')->event('click',
+		                'generateExportDialogue(this);');
+		            ?>
 		            <?php echo $this->Form->postLink(
 		                __('Delete'),
 		                array('program' => $programDetails['url'],

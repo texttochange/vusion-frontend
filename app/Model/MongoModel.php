@@ -81,7 +81,7 @@ abstract class MongoModel extends AppModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
         $this->data[$this->alias] = $this->checkFields($this->data[$this->alias]);
         $this->data[$this->alias]['model-version'] = $this->getModelVersion();

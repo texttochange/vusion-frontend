@@ -11,7 +11,7 @@ class UserLogMonitorComponent extends Component
     
     var $eventData = null;    
     
-    function beforeRender($controller)
+    public function beforeRender(Controller $controller)
     {
         if ($controller->_getViewVar('requestSuccess')) {
             $this->logAction();
@@ -19,13 +19,13 @@ class UserLogMonitorComponent extends Component
     }
     
     
-    function beforeRedirect($controller)
+    public function beforeRedirect(Controller $controller, $url, $status = NULL, $exit = true)
     {
         $this->logAction();
     }
     
     
-    public function initialize($controller)
+    public function initialize(Controller $controller)
     {
         $this->Controller = $controller;        
         $this->UserLog    = ClassRegistry::init('UserLog');

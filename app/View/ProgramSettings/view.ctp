@@ -1,5 +1,10 @@
 <div class="programsettings form width-size">
-<H3><?php echo __('View Program Settings'); ?></H3>
+    <?php
+        $contentTitle   = __('View Program Settings');
+        $contentActions = array();
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
     <dl>
         <?php echo $this->Html->tag('dt',__('Shortcode')); ?>
         <dd><b><?php

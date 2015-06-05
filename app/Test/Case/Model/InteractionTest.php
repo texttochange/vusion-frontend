@@ -141,7 +141,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as customized content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s)."
+            "To be used as participant customized content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s). The '_raw' suffix is allowed."
             );
         
         $interaction = $this->Maker->getInteractionOpenQuestion();

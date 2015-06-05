@@ -3,42 +3,25 @@ $this->Html->script("jquery.handsontable-0.9.18.full.js", array("inline" => fals
 $this->Html->script("ttc-table.js", array("inline" => false));
 ?>
 <div class="content_variables form width-size">
-    <div class="ttc-page-title">
-        <h3><?php echo __('Add Content Variable'); ?></h3>
-        <ul class="ttc-actions">
-        <li>
-        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
-        <span class="actions">
-        <?php
-        echo $this->Html->link( __('Cancel'),
-            array(
+<?php
+        $contentTitle   = __('Add Content Variable Table'); 
+        $contentActions = array();
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
           'program' => $programDetails['url'],
-          'action' => 'indexTable'  
-          )
-            );
-        ?>
-        </span>
-        </li>
-        <li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#content-variable-table").submit()' , true);?>
-        </li>
-        </ul>
-        <div class="ttc-data-control">
-		    <span class="tabs">
-		    <ul>
-		    <li>
-			  <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'add')) ?>" >
-			     <label><?php echo __("Keys/Value") ?></label>
-			  </a>
-		    </li>
-		    <li class="selected">
-			  <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'indexTable')) ?>" >
-			     <label><?php echo __("Table") ?></label>
-			  </a>
-		    </li>
-		    </ul>
-		    </span>
-    </div>
+          'action' => 'indexTable'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->link(__('Save'),
+            array(),
+            array('class'=>'ttc-button',
+                'id' => 'button-save'));
+        $this->Js->get('#button-save')->event('click',
+            '$("#content-variable-table").submit()' , true);
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
     <div class="ttc-display-area">
         <form id="content-variable-table" action="javascript:saveTable()">
         <fieldset>

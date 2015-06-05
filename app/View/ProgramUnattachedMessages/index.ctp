@@ -1,56 +1,18 @@
 <div class="unattached_messages index">
-<div class="ttc-page-title">
-<h3><?php echo __('Separate Messages');?></h3>
-    <ul class="ttc-actions">
-    <li></li>
-    <li><?php echo $this->Html->link(__('+ New Separate Message'), array('program'=>$programDetails['url'], 'action' => 'add'), array('class' => 'ttc-button')); ?></li>
-</ul>
-</div>
-<div class="ttc-data-control">
-<span class="tabs">
-    <ul>
-    <li <?php echo ($findType === 'all'? 'class="selected"' : ""); ?>>
-        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index')) ?>" >
-            <label><?php echo __("All") ?></label>
-        </a>
-    </li>
-    <li <?php echo ($findType === 'scheduled'? 'class="selected"' : ""); ?>>
-        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index', 'type' => 'scheduled')) ?>" >
-            <label><?php echo __("Scheduled") ?></label>
-        </a>
-    </li>
-    <li <?php echo ($findType === 'drafted'? 'class="selected"' : ""); ?>>
-        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index', 'type' => 'drafted')) ?>" >
-            <label><?php echo __("Drafted") ?></label>
-        </a>
-    </li>
-    <li <?php echo ($findType === 'sent'? 'class="selected"' : ""); ?>>
-        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'index', 'type' => 'sent')) ?>" >
-            <label><?php echo __("Sent") ?></label>
-        </a>
-    </li>
-    </ul>
-    </span>
-<div id="data-control-nav" class="ttc-paging paging">
-<?php
-echo "<span class='ttc-page-count'>";
-echo $this->Paginator->counter(array(
-    'format' => __('{:start} - {:end} of {:count}')
-    ));
-echo "</span>";
-echo $this->Paginator->prev(
-    '<',
-    array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])),
-    null,
-    array('class' => 'prev disabled'));
-echo $this->Paginator->next(
-    ' >',
-    array('url'=> array('program' => $programDetails['url'], '?' => $this->params['url'])),
-    null,
-    array('class' => 'next disabled'));
-?>
-</div>
-</div>
+   <?php
+       $contentTitle           = __('Separate Messages'); 
+       $contentActions         = array();
+       $containsDataControlNav = true;
+       $controller             = 'programUnattachedMessages';
+       
+       $contentActions[] = $this->Html->link(__('+ New Separate Message'),
+           array('program'=>$programDetails['url'],
+               'controller' => $controller,
+               'action' => 'add'),
+           array('class' => 'ttc-button'));
+       
+       echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'controller'));
+    ?>
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table class="unattached-messages" cellpadding="0" cellspacing="0">

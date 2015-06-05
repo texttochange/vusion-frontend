@@ -1,10 +1,29 @@
-
-<div class="participants index width-size"">
-    <ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('Add Participant'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'add'), array('class'=>'ttc-button')); ?></li>
-		<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'index'), array('class'=>'ttc-button'));?></li>
-	</ul>
-    <h3>Import Participants</h3>
+<div class="participants index width-size">
+    <?php
+        $contentTitle   = __('Import Participants'); 
+        $contentActions = array();
+        $controller     = 'programParticipants';
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->link(__('Add Participant'),
+		    array('program' => $programDetails['url'],
+		        'controller' => $controller,
+		        'action' => 'add'),
+		    array('class'=>'ttc-button'));
+		
+		$contentActions[] = $this->Html->link(__('View Participant(s)'),
+		    array('program' => $programDetails['url'],
+		        'controller' => $controller,
+		        'action' => 'index'),
+		    array('class'=>'ttc-button'));
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller'));
+    ?>
     <div class="ttc-display-area display-height-size">
 	<?php
 	    echo $this->Form->create('Import', array('type' => 'file'));

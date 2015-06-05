@@ -91,9 +91,9 @@ class Export extends MongoModel
         );
 
 
-	public function beforeValidate()
+	public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
     	
     	$now = new DateTime('now');
     	$this->_setDefault('timestamp', $now->format("Y-m-d\TH:i:s"));

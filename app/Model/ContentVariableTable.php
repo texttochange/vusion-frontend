@@ -122,7 +122,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        $this->ValidationHelper = new ValidationHelper(&$this);
+        $this->ValidationHelper = new ValidationHelper($this);
     }    
     
     
@@ -298,7 +298,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
         parent::beforeValidate();
 
@@ -571,4 +571,33 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     }
     
 
+    function exportFileGenerator($id, $fileFullPath)
+    {  
+        $handle = fopen($fileFullPath, "w");
+        
+        $contentVariableTable        = $this->read('columns', $id);
+        $contentVariableTableColumns = $contentVariableTable['ContentVariableTable']['columns'];
+        
+        foreach ($contentVariableTableColumns as $contentVariableTableColumn) {
+            $headers[]      = $contentVariableTableColumn['header'];
+            $columnValues[] = $contentVariableTableColumn['values'];
+        }
+        fputcsv($handle, $headers, ',', '"');
+        
+        //model deosnt allow for null values, so each data set has equal number of elements
+        $countCols = count($columnValues[0]);
+        
+        for ($x =0; $x < $countCols; $x++) {
+            $line= array();
+            $columnIndex = 0;
+            foreach ($columnValues as $columnValue) {
+                $line[] = $columnValues[$columnIndex][$x];
+                $columnIndex++;
+            }
+            
+            fputcsv($handle, $line, ',' , '"');
+        }
+    }
+    
+    
 }

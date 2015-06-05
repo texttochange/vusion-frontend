@@ -1,21 +1,24 @@
 <div class="programsettings form width-size">
-    <ul class="ttc-actions">        
-        <li>
-        <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save', 'onclick' => 'document.forms[0].submit()')); ?>
-        <span class="actions">
-        <?php
-        echo $this->Html->link( __('Cancel'), 
-            array(
-                'program' => $programDetails['url'],
-                'controller' => 'programHome',
-                'action' => 'index'               
-                ));
-        ?>
-        </span>
-        </li>
-        <?php $this->Js->get('#button-save')->event('click', '$("#ProgramSettingsEditForm").submit()' , true);?>
-    </ul>
-<H3><?php echo __('Edit Program Settings'); ?></H3>
+   <?php
+        $contentTitle   = __('Edit Program Settings'); 
+        $contentActions = array();
+        $controller     = 'programParticipants';
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->tag('span', __('Save'),
+            array('class'=>'ttc-button', 
+                'id' => 'button-save',
+                'onclick' => 'document.forms[0].submit()'));
+        $this->Js->get('#button-save')->event('click',
+            '$("#ProgramSettingsEditForm").submit()' , true);
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller'));
+  ?>
   <div class="ttc-display-area display-height-size">
   <?php 
     ## Hack to manully set the validationErrors due to our bad model key/value
@@ -43,6 +46,7 @@
             $shortcodeCompact[$prefixShortCode] = $shortcode['ShortCode'];
         }
         echo "<br />";
+        asort($shortcodeOptions);
         echo $this->Form->select('shortcode', $shortcodeOptions, array('id' => 'shortcode'));
         //pack the shortcodes info to be easy to read in JS
         $this->Js->set('shortcodes', $shortcodeCompact);
