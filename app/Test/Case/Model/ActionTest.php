@@ -768,10 +768,10 @@ class ActionTestCase extends CakeTestCase
             "Please enter a value.",
             $this->Action->validationErrors['scvt-row-keys'][0]['scvt-row-value'][0]); 
         $this->assertEqual(
-            "Use only space, letters and numbers for a key, e.g 'uganda 1'.",
+            "Use only space, letters, numbers or the characters ,+/-: for a key, e.g 'uganda 1'.",
             $this->Action->validationErrors['scvt-col-key-header'][0]);
         $this->assertEqual(
-            "Use only space, letters and numbers for a key, e.g 'uganda 1'.",
+            "Use only space, letters, numbers or the characters ,+/-: for a key, e.g 'uganda 1'.",
             $this->Action->validationErrors['scvt-col-extras'][0]['scvt-col-extra-header'][0]);
         $this->assertEqual(
             "The header cannot be a key in the table.",

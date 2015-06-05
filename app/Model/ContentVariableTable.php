@@ -184,9 +184,9 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         foreach ($values as $element) {
             if (!preg_match($regex[0][$type], $element)) {
                 if ($type == 'key') {
-                    $valueValidationErrors[$index] = __("The key %s can only be made of letter, digit and space.", $element);
+                    $valueValidationErrors[$index] = VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE;
                 } else if ($type == 'contentvariable') {
-                    $valueValidationErrors[$index] = __("The variable %s can only be made of letter, digit, space, dot and comma.", $element);
+                    $valueValidationErrors[$index] = VusionConst::CONTENT_VARIABLE_VALUE_FAIL_MESSAGE;
                 } else {
                     return false;
                 }

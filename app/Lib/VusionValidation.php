@@ -27,11 +27,6 @@ class VusionValidation extends Validation {
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
             foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
-                /*foreach ($match as $key=>$value) {
-                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
-                        return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
-                    }
-                }*/
                 $allowedDomainsRegex = '/^('.$allowedDomains.')$/';
                 if (!preg_match($allowedDomainsRegex, $match['domain'])) {
                     return __("To be used as customized content, '%s' can only be either: %s or %s.", 
