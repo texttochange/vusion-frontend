@@ -29,6 +29,16 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                <label for="ContentVariableTableName"><?php echo __('Name'); ?> </label>
                <input name="ContentVariableTable.name" type="text" id="ContentVariableTableName"/>
            </div>
+           <div class="input select">
+              <label for="ContentVariableTableColumn-key-selection">
+                <?php echo __("Column Key Selection") ?>
+              </label>
+              <select name="ContentVariableTable.column-key-selection" id="column-key-selection">
+                 <option value="auto"> <?php echo __("Automactic") ?></option>
+                 <option value="first"> <?php echo __("First column") ?> </option>
+                 <option value="first-two"> <?php echo __("First two columns")?> </option>
+              </select>  
+           </div>
            <div class="input">
            <label><?php echo __('Table'); ?></label>
            <div id="columns" style="padding-left:0px; margin-bottom:0px"/>
@@ -41,18 +51,11 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                       width: 700,
                       height: 120,
                       strechH: \'all\',
-                      contextMenu: [\'row_above\', \'row_below\', \'remove_row\', \'col_left\', \'col_right\', \'remove_col\'],
-                      /*cells: function(row, col, prop) {
-                          var cellProperties ={};
-                          cellProperties.renderer = tableRenderer;
-                          return cellProperties;
-                      }*/
+                      contextMenu: [\'row_above\', \'row_below\', \'remove_row\', \'col_left\', \'col_right\', \'remove_col\']
                       }
                      )');
            ?>
-           </div>
         </fieldset>
-        <?php echo $this->Form->end(__('Save')); ?>
-        </form>
+      </form>
    </div>
 </div>

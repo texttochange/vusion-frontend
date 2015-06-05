@@ -37,7 +37,6 @@ $this->Html->script("ttc-table.js", array("inline" => false));
             </ul>
         </div>
 	</div>
->>>>>>> develop
     <div class="ttc-display-area">
         <form id="content-variable-table" action="javascript:saveTable()">
         <fieldset>
@@ -46,11 +45,22 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                <label for="ContentVariableTableName"><?php echo __('Name'); ?> <label/>
                <input name="ContentVariableTable.name" type="text" id="ContentVariableTableName" value="<?php echo $contentVariableTable['ContentVariableTable']['name']?>"/>
            </div>
+            <div class="input select">
+              <label for="ContentVariableTableColumn-key-selection">
+                <?php echo __("Column Key Selection") ?>
+              </label>
+              <select name="ContentVariableTable.column-key-selection" id="column-key-selection">
+                <?php $columnKeySelection = $contentVariableTable['ContentVariableTable']['column-key-selection'] ?>
+                 <option value="auto" <?php echo ($columnKeySelection=='auto' ? 'selected': ''); ?>> <?php echo __("Automactic") ?></option>
+                 <option value="first" <?php echo ($columnKeySelection=='first' ? 'selected': ''); ?>> <?php echo __("First column") ?> </option>
+                 <option value="first-two" <?php echo ($columnKeySelection=='first-two' ? 'selected': ''); ?>> <?php echo __("First two columns")?> </option>
+              </select>  
+           </div>
            <div call="input text required">
            <label><?php echo __('Table'); ?></label>
-           <div id="columns" style="padding-left:0px; margin-bottom:0px"/>
+           <div id="columns" style="margin-left:2px; padding-left:0px; margin-bottom:0px"/>
            <?php 
-           $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);     
+           $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);
            $this->Js->get('document')->event('ready',
                'createTable(
                      "#columns", 
@@ -59,7 +69,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                       minSpareRows: 1,
                       minSpareCols: 1,
                       width: 700,
-                      height: '.($numberOfRows*40+30).',
+                      height: '.($numberOfRows == 0 ? 70 : $numberOfRows*40+30).',
                       strechH: \'all\',
                       contextMenu: [\'row_above\', \'row_below\', \'remove_row\', \'col_left\', \'col_right\', \'remove_col\'],
                       data: fromVusionToHandsontableData(\''.json_encode($contentVariableTable['ContentVariableTable']['columns']).'\'),
@@ -68,7 +78,6 @@ $this->Html->script("ttc-table.js", array("inline" => false));
            ?>
            </div>
         </fieldset>
-        <?php echo $this->Form->end(__('Save')); ?>
         </form>
    </div>
 </div>

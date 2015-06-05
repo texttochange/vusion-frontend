@@ -12,8 +12,7 @@ abstract class VirtualModel extends Model
     
     
     public function __construct() 
-    {
-    }
+    {}
     
     
     public function beforeValidate()

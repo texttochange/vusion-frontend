@@ -30,8 +30,8 @@ class Interaction extends VirtualModel
     public function __construct($databaseName)
     {     
         parent::__construct();
-        $this->Action = new Action();
         $this->databaseName = $databaseName;
+        $this->Action = new Action($databaseName);
     }
     
     

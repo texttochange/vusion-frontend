@@ -6,6 +6,7 @@ App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Helper');
 App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('ContentVariableTable', 'Model');
 
 
 class ProgramRequestsController extends BaseProgramSpecificController
@@ -14,7 +15,8 @@ class ProgramRequestsController extends BaseProgramSpecificController
         'Request',
         'Dialogue',
         'ProgramSetting',
-        'Participant');
+        'Participant',
+        'ContentVariableTable');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -25,6 +27,8 @@ class ProgramRequestsController extends BaseProgramSpecificController
         'DynamicForm',
         'ProgramAuth',
         'ArchivedProgram');
+    var $helpers = array(
+        'DynamicOptions');
     
     
     function constructClasses()
@@ -57,12 +61,14 @@ class ProgramRequestsController extends BaseProgramSpecificController
     public function add()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
     }
     
     
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
         
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($programUrl."_db");
@@ -121,6 +127,13 @@ class ProgramRequestsController extends BaseProgramSpecificController
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->Participant->getFilters('conditional-action'));
+    }
+
+
+    protected function _getContentVariableTableOptions()
+    {
+        return $this->ContentVariableTable->find('all', array(
+            'fields' => array('name', 'columns.header', 'columns.type')));
     }
     
     

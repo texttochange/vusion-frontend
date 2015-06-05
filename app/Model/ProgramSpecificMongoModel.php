@@ -45,7 +45,7 @@ abstract class ProgramSpecificMongoModel extends MongoModel
 	public function setDatabase($databaseName, $forceNew=false) 
     {
         if ($databaseName == null || $databaseName == "") {
-            throw new Exception("empty databasename");
+            throw new Exception("Empty databaseName");
         }
         if ($this->databaseName == $databaseName) {
             return;

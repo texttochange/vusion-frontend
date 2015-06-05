@@ -59,32 +59,10 @@
    else
    $this->Js->each('$(this).buildTtcForm("Dialogue", null, "javascript:saveFormOnServer()")', true);
    ?>
-    </div>    
-    <?php
-    $offsetConditionOptions = array(); //array('value'=> null, 'html' => __('Choose one question...'));
-    if (isset($dialogue['Dialogue']['interactions'])) {
-        foreach($dialogue['Dialogue']['interactions'] as $interaction) {
-            if ($interaction['type-interaction']!='question-answer' and $interaction['type-interaction']!='question-answer-keyword')
-                continue;
-            $offsetConditionOptions[] = array(
-                'value' => $interaction['interaction-id'],
-                'html' => (isset($interaction['content']) ? $interaction['content'] : "")
-                );
-        }
-    }
-    $this->Js->set('offset-condition-interaction-idOptions', $offsetConditionOptions);
-    
-    $dialogueOptions = array();
-    foreach($currentProgramData['dialogues'] as $dialogue) {
-        if ($dialogue['Active']) {
-            $dialogueOptions[] = array(
-                'value' => $dialogue['Active']['dialogue-id'],
-                'html' => $dialogue['Active']['name']
-                );
-        }
-    }
-    $this->Js->set('enrollOptions', $dialogueOptions);
-    $this->Js->set('subcondition-fieldOptions', $conditionalActionOptions);
-    $this->Js->set('dymanicOptions', $dynamicOptions);
-    ?>
+	</div>	
+	<?php
+	$this->DynamicOptions->setOptions(
+        $currentProgramData, $conditionalActionOptions, $contentVariableTableOptions, 
+        $dialogue, $dynamicOptions);
+	?>
 </div>

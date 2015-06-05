@@ -133,7 +133,18 @@ class DynamicFormComponent extends Component
             "set-only-optin-count" => __("Set count only optin participant"),
             'keep-tags' => __('Keep these tags'),
             'keep-labels' => __('Keep these labels'),
-            "announcement-actions" => __("Action at sending time")
+            "announcement-actions" => __("Action at sending time"),
+            'save-content-variable-table' => __("Save Content Variable Table"),
+            'scvt-row-keys' => __("Row Keys"),
+            'scvt-row-key' => __("Row Key"),
+            'scvt-row-header' => __('Header'),
+            'scvt-row-value' => __('Row Value'),
+            'scvt-col-key-header' => __("Column Key Header"),
+            'scvt-col-extras' => __("Extra Columns"),
+            'scvt-col-extra' => __("Extra Column"),
+            'scvt-attached-table' => __("Attached Table"),
+            'scvt-col-extra-header' => __('Header'),
+            'scvt-col-extra-value' => __('Row Value'),
             );
         $controller->set('dynamicFormLabels', $this->localizedValueLabels);
     }

@@ -51,10 +51,9 @@ class VusionConst
     const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
     const FORWARD_URL_REPLACEMENT_REGEX = '/\[[-\+&;%@.\w_]*\]/';
 
-    const CONTENT_VARIABLE_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]*$/u';
+    const CONTENT_VARIABLE_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\,\+\/-\:]*$/u';
     const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters and numbers for a key, e.g 'uganda 1'.";
-
-    const CONTENT_VARIABLE_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\.\,]*$/u';
+    const CONTENT_VARIABLE_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\.\,\+\/-\:]*$/u';
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.";
 
     # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
