@@ -1,6 +1,6 @@
 function addCounter(){		
     $.each(
-        $("[name='content']"),        
+        $("[name*='content']"),        
         function (key, elt){
             if ($(elt).prev('span').length>0) {
                 return;
