@@ -1569,10 +1569,12 @@
      vertical-align: top;
  }
 
-
-
 .optout-logo {
         height: 29px;
         margin-right: -4px;
         vertical-align: middle;
+}
+
+.ui-dform-select {
+    width: 96%;
 }
