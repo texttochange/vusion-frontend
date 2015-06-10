@@ -53,10 +53,7 @@
 
 .status-message {
         height: 0px;
-        position: fixed;
-        z-index: 1000;
-        left: 0px;
-        right: 0px;
+        z-index: 0;
 }
 
 .status-table {
@@ -1066,7 +1063,7 @@
 }
 
 .flash-box {
-        height: 30px;
+    height: 30px;
 }
 
 .connection-message {

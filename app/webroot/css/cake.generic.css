@@ -90,6 +90,8 @@ p {
 	height: 40px;
 	background: black;
 	min-width: 800px;
+	z-index: 1;
+	position: relative;
 }
 
 #header h1 {
