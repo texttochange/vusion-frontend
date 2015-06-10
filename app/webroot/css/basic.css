@@ -53,6 +53,10 @@
 
 .status-message {
         height: 0px;
+        position: fixed;
+        z-index: 1000;
+        left: 0px;
+        right: 0px;
 }
 
 .status-table {
@@ -1072,12 +1076,9 @@
     top: 0px;
     padding-left: 8px;
     padding-right: 8px;
-    border: 1.5px solid white;
-    background: black;
     margin-left: auto;
     margin-right: auto;
     display: inline;
-    z-index: 100;
     white-space: nowrap;
 }
 
@@ -1085,7 +1086,6 @@
     clear: both;
     position: relative;
     top: 20px;
-    z-index: 100;
     margin-bottom: 0px;
     white-space: nowrap;
 }
