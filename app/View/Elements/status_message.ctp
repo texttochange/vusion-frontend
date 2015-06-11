@@ -3,7 +3,7 @@
     <?php
     echo $this->Html->tag('div', '', array(
         'id' => 'connectionState',
-        'class' => 'connection-message cell',
+        'class' => 'connection-message',
         'style' => 'display: none'));
     ?>
     </div>
@@ -13,7 +13,7 @@
     if (!$this->Session->flash()) {
         echo $this->Html->tag('div', '', array(
             'id' => 'flashMessage', 
-            'class' => 'message cell', 
+            'class' => 'message', 
             'style' => 'display: none'));
     }
     ?>
