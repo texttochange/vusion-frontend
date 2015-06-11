@@ -52,13 +52,12 @@
 }
 
 .status-message {
-        height: 0px;
+    height: 0px;
+    text-align: center;
 }
 
 .status-table {
         text-align: center;
-        border-spacing: 0px;
-        border-collapse: collapse;
         width: 100%;
 }
 
@@ -1062,7 +1061,9 @@
 }
 
 .flash-box {
-        height: 30px;
+    position: fixed;
+    width: 100%;
+    height: 0px;
 }
 
 .connection-message {
@@ -1070,22 +1071,15 @@
     color: white;
     position: relative;
     top: 0px;
-    padding-left: 8px;
-    padding-right: 8px;
-    border: 1.5px solid white;
-    background: black;
-    margin-left: auto;
-    margin-right: auto;
     display: inline;
-    z-index: 100;
     white-space: nowrap;
+    z-index: 1000;
 }
 
 .credit {
     clear: both;
     position: relative;
     top: 20px;
-    z-index: 100;
     margin-bottom: 0px;
     white-space: nowrap;
 }
@@ -1509,7 +1503,7 @@
 .fix-program-header {
     position: fixed;
     top: 0;
-    z-index: 999;
+    z-index: 1;
     height: 50px;   
     background: #19C1FF;
     left: 0px;
@@ -1521,7 +1515,7 @@
 .fix-content-header {
     position: fixed;
     top: 50px;
-    z-index: 998;
+    z-index: 1;
     left: 240px;
     right: 20px;
     background: white;
@@ -1569,10 +1563,12 @@
      vertical-align: top;
  }
 
-
-
 .optout-logo {
         height: 29px;
         margin-right: -4px;
         vertical-align: middle;
+}
+
+.ui-dform-select {
+    width: 96%;
 }
