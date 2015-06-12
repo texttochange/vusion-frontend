@@ -27,7 +27,8 @@ class ShortCode extends MongoModel
             'error-template',
             'support-customized-id',
             'supported-internationally',
-            'max-character-per-sms');
+            'max-character-per-sms',
+            'status');
     }
     
     var $findMethods = array(
@@ -116,6 +117,11 @@ class ShortCode extends MongoModel
                 'message' => 'This field is read only.',
                 'on' => 'update'
                 )
+            ),
+        'status' => array(
+            'validValue' => array(
+                'rule' => array('inList', array('running', 'archived')),
+                'message' => 'The status can only be running or archived.'),
             )
         );
     
@@ -156,6 +162,11 @@ class ShortCode extends MongoModel
             $this->data['ShortCode']['max-character-per-sms'] = intval($this->data['ShortCode']['max-character-per-sms']);
         }
         $this->_setDefault('max-character-per-sms', 160);
+        
+        if (!isset($this->data['ShortCode']['status'])) {
+            $this->_setDefault('status', 'running');
+        }
+        
         return true;
     }
     
@@ -235,6 +246,16 @@ class ShortCode extends MongoModel
             $countries[] = $result['ShortCode']['country'];
         }
         return $countries;
+    }
+    
+    
+    public function archive() 
+    {
+       $modifier  = $this->saveField('status', 'archived', array('validate' => true));
+       if ($modifier['ShortCode']['id'] === '0') {
+            return false;
+        }
+        return true;
     }
     
     

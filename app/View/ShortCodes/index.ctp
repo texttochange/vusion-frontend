@@ -48,8 +48,8 @@
 			echo $maxCharacterPerSms; ?>&nbsp;</td>
 			<td class="actions action">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $shortcode['ShortCode']['_id'])); ?>
-			<?php 
-			echo $this->Form->postLink(__('Archive'), array('action' => 'archive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to archive the shortcode "%s"?', $shortcode['ShortCode']['shortcode'])); 
+			<?php
+			echo ($shortcode['ShortCode']['status']  == 'archived') ? '' : $this->Form->postLink(__('Archive'), array('action' => 'archive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to archive the shortcode "%s"?', $shortcode['ShortCode']['shortcode']));
 			?>
 			</td>
 			</tr>

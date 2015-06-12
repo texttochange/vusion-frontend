@@ -123,14 +123,43 @@ class ShortCodesController extends AppController
                 'action' => 'index'
                 ));
         }
-        $this->Session->setFlash(__('ShortCode was not deleted.'), 
-            'default',
-            array('class' => "message failure")
-            );
+         $this->Session->setFlash(__('ShortCode deleted.'),
+                'default',
+                array('class'=>'message success')
+                );
         $this->redirect(array('controller' => 'shortCodes',
             'action' => 'index'
             ));
         
+    }
+    
+    
+    public function archive()
+    {
+        $id = $this->params['id'];
+        
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        $this->ShortCode->id = $id;
+        if (!$this->ShortCode->exists()) {
+            throw new NotFoundException(__('Invalid shortcode.') . $id);
+        }
+        
+        if ($this->ShortCode->archive()) {
+            $this->Session->setFlash(__('This ShortCode has been archived. All programs using it have been archived or deleted'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        }    
+        $this->Session->setFlash(__('ShortCode couldn\'t be archived.'));
+        $this->redirect(array('controller' => 'shortCodes',
+            'action' => 'index'
+            ));
     }
     
     
