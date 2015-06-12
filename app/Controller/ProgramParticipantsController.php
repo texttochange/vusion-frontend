@@ -787,7 +787,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             }
             fclose($handle);
             
-            if ($linecount > $importMaxParticipants) {
+            if ($linecount >= $importMaxParticipants) {
                 $this->Session->setFlash(__('Max limit of 10,000 participants exceeded, please break file into smaller parts'), 
                     'default', array('class' => "message failure")
                     );

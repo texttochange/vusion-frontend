@@ -54,6 +54,6 @@ $config = array(
             ),
         'countriesPrefixesFile' => 'files/countries and codes.csv',
         'backendUser' => 'supervisordUser',
-        'importMaxParticipants' => 10001
+        'importMaxParticipants' => 10000
         )
     );   
