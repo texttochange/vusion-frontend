@@ -1,5 +1,8 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 class ShortCode extends MongoModel
 {
@@ -12,9 +15,16 @@ class ShortCode extends MongoModel
     var $maxCharacterPerSmsOptions     = array(70, 140, 160);
     
     
+    public function __construct($collection, $settings = array())
+    {
+        parent::__construct($collection, $settings);    
+        $this->Program = ClassRegistry::init('Program');
+    }
+    
+    
     function getModelVersion()
     {
-        return '2';
+        return '3';
     }
     
     
@@ -249,10 +259,29 @@ class ShortCode extends MongoModel
     }
     
     
-    public function archive() 
+    public function archive($id) 
     {
-       $modifier  = $this->saveField('status', 'archived', array('validate' => true));
-       if ($modifier['ShortCode']['id'] === '0') {
+        $shortCode = $this->find(
+            'first', 
+            array('conditions'=> array('_id' => $id))
+            );
+        
+        $shortCodePrefix = $shortCode['ShortCode']['international-prefix'].'-'.$shortCode['ShortCode']['shortcode'];
+        
+        $programs = $this->Program->find(
+            'all',
+            array('conditions' => array('Program.status != "archived"')));
+        
+        foreach ($programs as $program) {
+            $programDb = $program['Program']['database'];
+            $programSettingModel = ProgramSpecificMongoModel::init('ProgramSetting', $programDb, true);
+            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCodePrefix))) {
+                return false;
+            }
+        }
+        
+        $modifier = $this->saveField('status', 'archived', array('validate' => true));
+        if ($modifier['ShortCode']['_id'] === '0') {
             return false;
         }
         return true;
