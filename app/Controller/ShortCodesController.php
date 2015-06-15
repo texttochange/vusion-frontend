@@ -156,7 +156,7 @@ class ShortCodesController extends AppController
                 'action' => 'index'
                 ));
         } else {    
-            $this->Session->setFlash(__('ShortCode couldn\'t be archived.'));
+            $this->Session->setFlash(__('ShortCode couldn\'t be archived. Please filter with Shortcode to archive any Running program(s)'));
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
