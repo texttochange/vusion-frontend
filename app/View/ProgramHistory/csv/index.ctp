@@ -1,11 +1,4 @@
 <?php
-
-function echoLine($elements) 
-{
-    $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
-    echo implode(",", $quotedElements) . "\n";
-}
-
 $headers = array(
     'object-type',
     'participant-phone',
@@ -19,7 +12,7 @@ $headers = array(
     'request-id',
     'unattach-id',
     'matching-answer');
-echoLine($headers);
+echo $this->Csv->arrayToLine($headers);
 
 foreach($histories as $row)
 {
@@ -32,5 +25,5 @@ foreach($histories as $row)
             $line[] = "";
         }
     }
-    echoLine($line);
+    echo $this->Csv->arrayToLine($line);
 }
