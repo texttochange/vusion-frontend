@@ -35,7 +35,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array(
-            'className' => 'BigCountPaginator'));
+            'className' => 'BigCountPaginator'),
+        'Csv');
     
     
     function constructClasses() 

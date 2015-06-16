@@ -11,7 +11,7 @@ class CsvHelper extends AppHelper
 
    function dictToLine($elements, $orderedKey)
    {
-   		$line = null;
+   		$line = '';
         $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
         $first = true;
         foreach ($orderedKey as $key) {
@@ -19,7 +19,7 @@ class CsvHelper extends AppHelper
                 $line = $quotedElements[$key];
                 $first = false;
             } else {
-                $line += "," . $quotedElements[$key];
+                $line .= "," . $quotedElements[$key];
             }
         }
        return $line . "\n";
