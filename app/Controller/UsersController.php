@@ -19,7 +19,10 @@ class UsersController extends AppController
         'Captcha',
         'Email',
         'Filter',
-        'Ticket');
+        'Ticket',
+        'RequestHandler');
+    var $helpers = array(
+        'Csv');
     
     
     public function beforeFilter()
@@ -72,6 +75,37 @@ class UsersController extends AppController
         $this->set(compact('users'));
     }
     
+
+    public function export()
+    {
+        $defaultConditions = array();
+        $order = array();
+
+        if ($this->Auth->user('group_id') != 1) {
+            $defaultConditions = array('User.invited_by' => $this->Auth->user('id'));
+        }
+
+        if (isset($this->params['named']['sort'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
+        $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
+
+        $this->User->recursive = 0;
+        $users = $this->User->find('all', array(
+            'conditions' => $conditions,
+            'order' => $order,
+            'fields' => array('username', 'email', 'Group.name', 'InvitedBy.username'),
+            'joins' => array(
+                array(
+                    'table' => 'users',
+                    'alias' => 'InvitedBy',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'InvitedBy.id = User.invited_by'))
+                    )));
+        $this->set(compact('users'));
+    }
     
     protected function _getFilterFieldOptions()
     {   
