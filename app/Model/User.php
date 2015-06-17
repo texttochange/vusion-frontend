@@ -156,8 +156,13 @@ class User extends AppModel
                 $condition['username LIKE'] = $filterParam[3]."%"; 
             }            
         }
+        $key = key($condition);
+        if (isset($key)) {
+            $newKey = "User.".$key;
+            $condition = array($newKey => $condition[$key]);
+        }
         return $condition;
     }
-    
+
     
 }

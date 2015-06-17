@@ -64,10 +64,6 @@
 </head>
 <body>
 <div id="container">
-	<div class="status-message">
-		<?php echo $this->element('status_message'); ?>
-	</div>
-	<!-- To be refact with all the Controllers and views -->
 	<div id="header">
 	<?php echo $this->element('header_vusion'); ?>
 	</div>
