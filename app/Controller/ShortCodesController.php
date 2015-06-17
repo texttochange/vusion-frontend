@@ -155,8 +155,15 @@ class ShortCodesController extends AppController
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
-        } else {    
-            $this->Session->setFlash(__('ShortCode couldn\'t be archived. Please filter with Shortcode to archive any Running program(s)'));
+        } else {
+            $linkdomain = Configure::read('vusion.domain');
+            
+            $shortCode = $this->ShortCode->find(
+                'first', 
+                array('conditions'=> array('_id' => $id), 'fields' => 'shortcode')
+                );
+            $url = 'http://'.$linkdomain.'/programs/index?filter_operator=all&filter_param[1][1]=status&filter_param[1][2]=is&filter_param[1][3]=running&filter_param[2][1]=shortcode&filter_param[2][2]=is&filter_param[2][3]='.$shortCode['ShortCode']['shortcode'];
+            $this->Session->setFlash(__("<a href=".$url.">ShortCode couldn't be archived. Please click Here to see any Running program(s) on this Shortcode and archive them</a>"));
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
