@@ -752,8 +752,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function import()
     {
-        $programName = $this->Session->read($this->params['program'].'_name');
-        $programUrl  = $this->params['program'];
+        $programName           = $this->Session->read($this->params['program'].'_name');
+        $programUrl            = $this->params['program'];
+        $importMaxParticipants = Configure::read('vusion.importMaxParticipants');
         
         if ($this->request->is('post')) {
             if (!$this->ProgramSetting->hasRequired()) {
@@ -763,7 +764,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     );
                 return;
             }
-            
             
             if ($this->request->data['Import']['file']['error'] != 0) {
                 if ($this->request->data['Import']['file']['error'] == 4) { 
@@ -788,7 +788,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             }
             fclose($handle);
             
-            if ($linecount > 10001) {
+            if ($linecount >= $importMaxParticipants) {
                 $this->Session->setFlash(__('Max limit of 10,000 participants exceeded, please break file into smaller parts'), 
                     'default', array('class' => "message failure")
                     );
