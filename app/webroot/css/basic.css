@@ -808,6 +808,10 @@
         color: #CE3F3F;
 }
 
+.ttc-table-scrolling-area .archive {
+        color: #CE3F3F;
+}
+
 /* REQUEST SPECIFIC */
 .ttc-table-scrolling-area .requests .keywords {
         width: 140px;
@@ -1572,3 +1576,4 @@
 .ui-dform-select {
     width: 96%;
 }
+

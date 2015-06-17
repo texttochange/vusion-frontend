@@ -37,7 +37,7 @@
 		</thead>
 		<tbody>	
 			<?php foreach ($shortcodes as $shortcode): ?>
-			<tr>		
+			<tr class="<?php echo ($shortcode['ShortCode']['status']  == 'archived') ? 'archive' : '';?>">		
 			<td class="phone"><?php echo $shortcode['ShortCode']['shortcode']; ?>&nbsp;</td>
 			<td class="country"><?php echo $shortcode['ShortCode']['country']; ?>&nbsp;</td>
 			<td class="prefix"><?php echo $shortcode['ShortCode']['international-prefix']; ?>&nbsp;</td>
