@@ -41,8 +41,15 @@ class UserLog extends MongoModel
         
         return $fields;        
     }
-    
-    
+
+
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        $this->Behaviors->load('FilterMongo');
+    }
+
+
     public $validate = array(
         'timestamp' => array(
             'notempty' => array(
@@ -123,6 +130,73 @@ class UserLog extends MongoModel
         }
         return false;
     }
-    
-    
+
+    public $filterOperatorOptions = array(
+        'all' => 'all',
+        'any' => 'any'
+        );
+
+    public $filterFields = array(
+        'timestamp' =>  array(
+            'label' => 'timestamp',
+            'operators' => array(
+                'from' => array(
+                    'parameter-type' => 'date'),
+                'to' => array(
+                    'parameter-type' => 'date')),
+            ),
+        'user-id' => array(
+            'label' => 'user name',
+            'operators' => array(
+                'is' => array(
+                    'parameter-type' => 'user'),
+                'not-is' => array(
+                    'parameter-type' => 'user')),
+            ),
+        'program' => array(
+            'label' => 'program',
+            'operators' => array(
+                'is' => array(
+                    'parameter-type' => 'program'))
+            ),
+        );
+
+    public function fromFilterToQueryCondition($filterParam) 
+    {
+        $condition = array();
+      
+        if ($filterParam[1] == 'timestamp') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'from') { 
+                    $condition['timestamp']['$gt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                } elseif ($filterParam[2] == 'to') {
+                    $condition['timestamp']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
+                }
+            } else {
+                $condition['timestamp'] = '';
+            }
+        } elseif ($filterParam[1] == 'user-id') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'is') { 
+                    $condition['user-id'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'to') {
+                    $condition['user-id'] = $filterParam[3];
+                }
+            } else {
+                $condition['user-id'] = '';
+            }
+        } elseif ($filterParam[1] == 'program') {
+            if ($filterParam[3]) {
+                if ($filterParam[2] == 'is') { 
+                    $condition['program-database-name'] = $filterParam[3];
+                } elseif ($filterParam[2] == 'to') {
+                    $condition['program-database-name'] = $filterParam[3];
+                }
+            } else {
+                $condition['program-database-name'] = '';
+            }
+        }
+
+        return $condition;
+    }
 }
