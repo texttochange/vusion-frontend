@@ -288,4 +288,14 @@ class ShortCode extends MongoModel
     }
     
     
+    public function unarchive() 
+    {  
+        $modifier = $this->saveField('status', 'running', array('validate' => true));
+        if ($modifier['ShortCode']['_id'] === '0') {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

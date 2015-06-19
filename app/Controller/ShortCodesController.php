@@ -163,7 +163,37 @@ class ShortCodesController extends AppController
                 array('conditions'=> array('_id' => $id), 'fields' => 'shortcode')
                 );
             $url = 'http://'.$linkdomain.'/programs/index?filter_operator=all&filter_param[1][1]=status&filter_param[1][2]=is&filter_param[1][3]=running&filter_param[2][1]=shortcode&filter_param[2][2]=is&filter_param[2][3]='.$shortCode['ShortCode']['shortcode'];
-            $this->Session->setFlash(__("<a href=".$url.">ShortCode couldn't be archived. Please click Here to see any Running program(s) on this Shortcode and archive them</a>"));
+            $this->Session->setFlash(__("<a href=".$url.">ShortCode couldn't be disabled. Please click Here to see any Running program(s) on this Shortcode and archive them</a>"));
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        }
+    }
+    
+    
+    public function unarchive()
+    {
+        $id = $this->params['id'];
+        
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        $this->ShortCode->id = $id;
+        if (!$this->ShortCode->exists()) {
+            throw new NotFoundException(__('Invalid shortcode.') . $id);
+        }
+        
+        if ($this->ShortCode->unarchive()) {
+            $this->Session->setFlash(__('This ShortCode has been enabled.'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        } else {
+            $this->Session->setFlash(__("ShortCode couldn't be enabled"));
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
