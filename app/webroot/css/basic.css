@@ -340,6 +340,10 @@
         background: #EDEDED;
 }
 
+.ttc-help-box li{
+    white-space: normal;
+}
+
 .ttc-notification {
         border: 2px solid #d3d3d3;
         float: left;
