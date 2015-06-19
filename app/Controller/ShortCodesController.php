@@ -148,7 +148,7 @@ class ShortCodesController extends AppController
         }
         
         if ($this->ShortCode->archive($id)) {
-            $this->Session->setFlash(__('This ShortCode has been archived. All programs using it have been archived or deleted'),
+            $this->Session->setFlash(__('This ShortCode has been disabled. All programs using it have been archived or deleted'),
                 'default',
                 array('class'=>'message success')
                 );
