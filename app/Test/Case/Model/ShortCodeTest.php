@@ -182,4 +182,22 @@ class ShortCodeTestCase extends CakeTestCase
     }
     
     
+    public function testUnarchive()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $shortCode = array(
+            'country' => 'Cayman Islands',
+            'shortcode' => '8282',
+            'international-prefix' => '256',
+            'max-character-per-sms' => '140',
+            'status' => 'archived'
+            );
+        
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($shortCode);
+        
+        $this->assertTrue($this->ShortCode->unarchive());
+    }
+    
+    
 }

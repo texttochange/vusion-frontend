@@ -205,4 +205,39 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     }
     
     
+    public function testUnarchive()
+    {
+        $this->mockProgramAccess();
+        $this->ProgramSettingTest->saveProgramSetting('shortcode', '343');
+        $this->ProgramSettingM6H->saveProgramSetting('shortcode', '8282');
+        $shortcodes = array(
+            'ShortCode' => array(
+                'country' => 'uganda',
+                'shortcode' =>343,
+                'international-prefix' => 256,
+                'status' => 'archived'
+                )
+            );
+        $this->ShortCode->create();
+        $data = $this->ShortCode->save($shortcodes);
+        
+        $shortcodeRun = array(
+            'ShortCode' => array(
+                'country' => 'uganda',
+                'shortcode' =>8282,
+                'international-prefix' => 256,
+                'status' => 'running'
+                )
+            );
+        $this->ShortCode->create();
+        $this->ShortCode->save($shortcodeRun);
+        
+        $this->testAction("/shortCodes/unarchive/".$data['ShortCode']['_id']);
+        
+        $this->assertEquals(2, $this->ShortCode->find('count'));
+        $this->assertEquals(0, $this->ShortCode->find('count', array('conditions'=> array('status'=>'archived'))));
+        $this->assertEquals(2, $this->ShortCode->find('count', array('conditions'=> array('status'=>'running'))));
+    }
+    
+    
 }
