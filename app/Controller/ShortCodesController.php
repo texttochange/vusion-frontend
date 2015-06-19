@@ -148,7 +148,7 @@ class ShortCodesController extends AppController
         }
         
         if ($this->ShortCode->archive($id)) {
-            $this->Session->setFlash(__('This ShortCode has been disabled. All programs using it have been archived or deleted'),
+            $this->Session->setFlash(__('This ShortCode has been disabled because the programs were ALREADY archived or deleted before we could disable this shortcode.'),
                 'default',
                 array('class'=>'message success')
                 );
@@ -160,10 +160,12 @@ class ShortCodesController extends AppController
             
             $shortCode = $this->ShortCode->find(
                 'first', 
-                array('conditions'=> array('_id' => $id), 'fields' => 'shortcode')
+                array('conditions'=> array('_id' => $id), 'fields' => array('shortcode', 'country'))
                 );
-            $url = 'http://'.$linkdomain.'/programs/index?filter_operator=all&filter_param[1][1]=status&filter_param[1][2]=is&filter_param[1][3]=running&filter_param[2][1]=shortcode&filter_param[2][2]=is&filter_param[2][3]='.$shortCode['ShortCode']['shortcode'];
-            $this->Session->setFlash(__("<a href=".$url.">ShortCode couldn't be disabled. Please click Here to see any Running program(s) on this Shortcode and archive them</a>"));
+            $url = 'http://localhost:4567/programs/index?filter_operator=all&filter_param[1][1]=status&filter_param[1][2]=is&filter_param[1][3]=running&filter_param[2][1]=shortcode&filter_param[2][2]=is&filter_param[2][3]='.
+                    $shortCode['ShortCode']['shortcode'].'&filter_param[3][1]=country&filter_param[3][2]=is&filter_param[3][3]='.$shortCode['ShortCode']['country'];
+            
+            $this->Session->setFlash(__("ShortCode couldn't be disabled. First archive or change code of <a href=".$url." class = 'flash-message-link'>the programs which are using it</a>"));
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));

@@ -1577,3 +1577,6 @@
     width: 96%;
 }
 
+.flash-message-link {
+    text-decoration: underline !important;
+}
