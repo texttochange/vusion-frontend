@@ -1,41 +1,33 @@
-<ul>
-<li>
+<p>
 You can use dynamic content to adapt to the context of this action:
-</li>
-<li>
+</p>
+<p>
 <b>Participant's data such as phone or any label</b><br/>
 By writing [participant.xxx], with xxx either a participant label or his 'phone', the participant's data will be used.
 For example, <i>[participant.name]</i> will be replace by the participant's name. Another example, <i>[participant.phone]</i> will be replaced by the participant's phone.
-</li>
-<li>
+</p>
+<p>
 <b>Program's Content Variables</b><br/>
 By using [contentVariale.xxxx], with xxxx a key of a content variable. For example, <i>[contentVariable.temperature.mombasa]</i> will be replace by the value of the content variable with keys "temperature.mombasa".
-</li>
-<li>
+</p>
+<p style='margin:0px'>
 <b>Message Context</b><br/>
 By using [context.message.xxx], with xxx as number, the content (or part) of the received message will be used.
-<ul>
-<li>- <i>[context.message]</i> will be replace by the message that have trigger this action.</li>
-<li>- <i>[context.message.2]</i> will be replace by 2nd word of the message that have trigger this action.</li>
-<ul>
-</li>
-<li>
+<li><i>[context.message]</i> will be replace by the message that have trigger this action.</li>
+<li><i>[context.message.2]</i> will be replace by 2nd word of the message that have trigger this action.</li>
+</p>
+<p style='margin:0px'>
 <b>Time</b><br/>
 By using [time.xxx], with xxx as time reference: H, M, d, m or Y.
-<ul>
-<li>- <i>[time.H]</i> will show the current hour.</li>
-<li>- <i>[time.M]</i> will show the current minutes.</li>
-<li>- <i>[time.d]</i> will show the current day of the month.</li>
-<li>- <i>[time.m]</i> will show the current month.</li>
-<li>- <i>[time.y]</i> will show the current year without century.</li>
-</ul>
-</li>
-<li>
+<li><i>[time.H]</i> will show the current hour.</li>
+<li><i>[time.M]</i> will show the current minutes.</li>
+<li><i>[time.d]</i> will show the current day of the month.</li>
+<li><i>[time.m]</i> will show the current month.</li>
+<li><i>[time.y]</i> will show the current year without century.</li>
+</p>
+<p style='margin:0px'>
 <b>Compose Dynamic Contents</b><br/>
 One can compose multiple dynamic content, for now this is mostly useful to express time/date such as:
-<ul>
-<li>- <i>[time.d]/[time.m]/[time.y]</i> will give <i>12/02/15</i></li>
-<li>- <i>[time.d]/[time.m]/[time.y] [time.H]:[time.M]</i> will give <i>12/02/15 10:45</i></li>
-</ul>
-</li>
-</ul>
+<li><i>[time.d]/[time.m]/[time.y]</i> will give <i>12/02/15</i></li>
+<li><i>[time.d]/[time.m]/[time.y] [time.H]:[time.M]</i> will give <i>12/02/15 10:45</i></li>
+</p>

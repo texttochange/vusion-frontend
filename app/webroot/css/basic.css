@@ -340,8 +340,15 @@
         background: #EDEDED;
 }
 
+.ttc-help-box ul {
+    list-style-position: inside;
+    list-style-type: none;
+}
+
 .ttc-help-box li{
     white-space: normal;
+    margin-bottom: 0px;
+    list-style-type: circle;
 }
 
 .ttc-notification {
