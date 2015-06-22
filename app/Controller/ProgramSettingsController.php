@@ -122,7 +122,7 @@ class ProgramSettingsController extends BaseProgramSpecificController
         ## Set all the form options
         $shortcodes = $this->ShortCode->find(
             'all', 
-            array('conditions'=> array('ShortCode.status' => array( '$ne'=> 'archived'))));
+            array('conditions'=> array('status' => array( '$ne'=> 'archived'))));
         
         $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
         $closedQuestionTemplateOptions   = $this->Template->getTemplateOptions('closed-question');
