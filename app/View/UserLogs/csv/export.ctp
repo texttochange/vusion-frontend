@@ -8,7 +8,7 @@ foreach ($userLogs as $userLog) {
 		'user' => $userLog['UserLog']['user-name'],
 		'event' => $userLog['UserLog']['parameters']);
 	if (isset($userLog['UserLog']['program-name'])) {
-		$data['program-name'] = $userLog['UserLog']['program-name'];
+		$data['program'] = $userLog['UserLog']['program-name'];
 	}
 	echo $this->Csv->dictToLine($data, $headers);
 }
