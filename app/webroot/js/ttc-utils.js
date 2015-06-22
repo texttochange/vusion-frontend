@@ -33,7 +33,7 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'feedback-inviter', $("[name*='.feedback-inviter']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'keep-tags', $("[name*='.keep-tags']").prev(":not(:has(img)):not(div):not(span)"));
     addFormHelp(baseUrl, 'keep-labels', $("[name*='.keep-labels']").prev(":not(:has(img)):not(div):not(span)"));
-    addFormHelp(baseUrl, 'dynamic-content', $("[name*='scvt-row-value'],[name*='scvt-col-extra-value']").prev());
+    addFormHelp(baseUrl, 'dynamic-content', $("[name*='scvt-row-value'],[name*='scvt-col-extra-value']").prev(":not(:has(img)):not(div):not(span)"));
 }   
 
 
