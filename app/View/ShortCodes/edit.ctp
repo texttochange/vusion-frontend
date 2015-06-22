@@ -2,6 +2,11 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
+	    <li>
+	    <?php
+	    echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->params['id']), null, __('Are you sure you want to delete the shortcode "%s"?', $this->params['data']['ShortCode']['shortcode'])); 
+	     ?>
+	    </li>
 		<li><?php echo $this->Html->link(__('ShortCodes List'), array('action' => 'index')); ?></li>
 		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
 	</ul>	

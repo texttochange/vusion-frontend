@@ -37,7 +37,7 @@
 		</thead>
 		<tbody>	
 			<?php foreach ($shortcodes as $shortcode): ?>
-			<tr>		
+			<tr class="<?php echo ($shortcode['ShortCode']['status']  == 'archived') ? 'archive' : '';?>">		
 			<td class="phone"><?php echo $shortcode['ShortCode']['shortcode']; ?>&nbsp;</td>
 			<td class="country"><?php echo $shortcode['ShortCode']['country']; ?>&nbsp;</td>
 			<td class="prefix"><?php echo $shortcode['ShortCode']['international-prefix']; ?>&nbsp;</td>
@@ -48,14 +48,21 @@
 			echo $maxCharacterPerSms; ?>&nbsp;</td>
 			<td class="actions action">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $shortcode['ShortCode']['_id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to delete the shortcode "%s"?', $shortcode['ShortCode']['shortcode'])); ?>
+			<?php
+			if ($shortcode['ShortCode']['status']  == 'archived') {
+			    echo $this->Form->postLink(__('Enable'), array('action' => 'unarchive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to enable the shortcode "%s"?', $shortcode['ShortCode']['shortcode']));
+			    
+			} else {
+			    echo $this->Form->postLink(__('Disable'), array('action' => 'archive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to disable the shortcode "%s"?', $shortcode['ShortCode']['shortcode']));
+			}
+			?>
 			</td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
 		</table>
 	</div>
-	</div>
+	</div
 </div>
 </div>
 </div>
