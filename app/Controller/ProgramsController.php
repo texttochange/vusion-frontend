@@ -101,7 +101,9 @@ class ProgramsController extends AppController
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
         $conditions = $this->Filter->getConditions($this->Program);
-        
+        if (!array_key_exists('status',$conditions)) {
+            $conditions = array_merge($conditions, array('status' => 'running'));
+        }
         // TODO move in the Program Paginator
         $this->Program->recursive = -1; 
         $user = $this->Auth->user();  
