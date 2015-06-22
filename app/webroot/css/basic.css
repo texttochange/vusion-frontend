@@ -349,6 +349,7 @@
     white-space: normal;
     margin-bottom: 0px;
     list-style-type: circle;
+    list-style-position: inside;
 }
 
 .ttc-notification {
