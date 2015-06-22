@@ -165,7 +165,7 @@ class ShortCodesController extends AppController
             $url = 'http://localhost:4567/programs/index?filter_operator=all&filter_param[1][1]=status&filter_param[1][2]=is&filter_param[1][3]=running&filter_param[2][1]=shortcode&filter_param[2][2]=is&filter_param[2][3]='.
                     $shortCode['ShortCode']['shortcode'].'&filter_param[3][1]=country&filter_param[3][2]=is&filter_param[3][3]='.$shortCode['ShortCode']['country'];
             
-            $this->Session->setFlash(__("ShortCode couldn't be disabled. First archive or change code of <a href=".$url." class = 'flash-message-link'>the programs which are using it</a>"));
+            $this->Session->setFlash(__("ShortCode couldn't be disabled. First archive or change the shortcode of <a href=".$url." class = 'flash-message-link'>the programs which are using it</a>."));
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
@@ -195,7 +195,7 @@ class ShortCodesController extends AppController
                 'action' => 'index'
                 ));
         } else {
-            $this->Session->setFlash(__("ShortCode couldn't be enabled"));
+            $this->Session->setFlash(__("ShortCode couldn't be enabled."));
             $this->redirect(array('controller' => 'shortCodes',
                 'action' => 'index'
                 ));
