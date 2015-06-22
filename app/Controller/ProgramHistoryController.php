@@ -31,7 +31,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
-        'Paginator' => array('className' => 'BigCountPaginator'));
+        'Paginator' => array('className' => 'BigCountPaginator'),
+        'Csv');
     
     
     function constructClasses()

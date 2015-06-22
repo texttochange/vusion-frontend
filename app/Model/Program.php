@@ -253,9 +253,10 @@ class Program extends AppModel
                         )
                     )
                 );
-            if (empty($query['conditions']))
+            if (empty($query['conditions'])) {
                 # make conditions an array
-            $query['conditions'] = array();
+                $query['conditions'] = array();
+            }
             # append user_id to conditions array
             $query['conditions'] = array_merge(
                 $query['conditions'],array(

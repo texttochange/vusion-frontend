@@ -52,6 +52,22 @@
         createFilter();
         addStackFilter();');
     
+    if ($users != null) {
+        $exportUrl = array(
+                'controller' => 'users',
+                'action' => 'export',
+                'ext' => 'csv',
+                '?' => $urlParams);
+        if ($order != null) {
+            $exportUrl['sort'] = key($order);
+            $exportUrl['direction'] = $order[key($order)];
+        }
+        $contentActions[] = $this->AclLink->generateButtonFromUrl(
+            __('Export'),
+            $exportUrl,
+            array('class' => 'ttc-button'));
+	}
+
     echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'containsFilter', 'controller'));
     ?>
 	<div class="ttc-table-display-area">

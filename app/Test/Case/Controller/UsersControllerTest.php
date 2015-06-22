@@ -75,6 +75,56 @@ class UsersControllerTestCase extends ControllerTestCase
     {
         
     }
+
+
+    public function testExport()
+    {
+        $expects = array(
+            array(
+                'User' => array(
+                    'username' => 'oliv',
+                    'email' => 'oliv@there.com'
+                    ),
+                'Group' => array(
+                    'name' => 'Program Manager Group'
+                    ),
+                'InvitedBy' => array(
+                    'username' => 'gerald'
+                    )
+                ),
+            array(
+                'User' => array(
+                    'username' => 'mark',
+                    'email' => 'mark@there.com'
+                    ),
+                'Group' => array(
+                    'name' => 'Program Manager Group'
+                    ),
+                'InvitedBy' => array(
+                    'username' => 'gerald'
+                    )
+                )
+            );
+
+        $users = $this->_mockUserAccess();
+        $users->Auth
+        ->staticExpects($this->at(1))
+        ->method('user')
+        ->with('group_id')
+        ->will($this->returnValue(2));
+
+        $users->Auth
+        ->staticExpects($this->at(2))
+        ->method('user')
+        ->with('id')
+        ->will($this->returnValue(1));
+        $this->testAction("/users/export?filter_operator=any&filter_param%5B1%5D%5B1%5D=username&filter_param%5B1%5D%5B2%5D=start-with&filter_param%5B1%5D%5B3%5D=o&filter_param%5B2%5D%5B1%5D=group_id&filter_param%5B2%5D%5B2%5D=is&filter_param%5B2%5D%5B3%5D=2");
+
+        $this->vars['users'];
+
+        $this->assertEqual(count($this->vars['users']), 2);
+        $this->assertEqual($this->vars['users'], $expects);
+    }
     
    
     public function testEdit_grant_unmatchable_reply_access() 

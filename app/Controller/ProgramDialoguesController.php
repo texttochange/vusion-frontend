@@ -27,6 +27,8 @@ class ProgramDialoguesController extends BaseProgramSpecificController
         'DynamicForm',
         'ProgramAuth',
         'ArchivedProgram');
+    var $helpers = array(
+        'Csv');
     
     
     public function beforeFilter()
