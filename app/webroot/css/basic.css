@@ -348,7 +348,8 @@
 .ttc-help-box li{
     white-space: normal;
     margin-bottom: 0px;
-    list-style-type: circle;
+    margin: 0 12px;
+    list-style-type: square;
     list-style-position: inside;
 }
 
