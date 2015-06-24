@@ -948,6 +948,7 @@ function supplyScvRowKeyOptions(elt) {
         "elements": []};
     configToForm('scvt-row-keys', newContent, name, configTree);
     $(subfield).formElement(newContent['elements'][0]);
+    activeForm();
 }
 
 
