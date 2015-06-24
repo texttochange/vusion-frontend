@@ -366,6 +366,7 @@ class History extends ProgramSpecificMongoModel
         'delivered'=>'delivered',
         'pending'=>'pending',
         'ack' => 'ack',
+        'nack' => 'nack',
         'forwarded' => 'forwarded',
         'received' => 'received',
         'no-credit' => 'no-credit',
