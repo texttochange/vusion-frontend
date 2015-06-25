@@ -416,6 +416,20 @@ class ProgramTestCase extends CakeTestCase
             $this->Program->validationErrors['url'][0], 
             'This field is read only.');
     }
+
+
+    public function testFindListByDatabase()
+    {
+        $expects = array(
+            'testdbprogram' => 'test',
+            'm6h' => 'm6h',
+            'trial' => 'trial',
+            'm9h' => 'm9h');
+
+        $this->assertEqual(
+            $expects,
+            $this->Program->find('listByDatabase'));
+    }
     
     
 }

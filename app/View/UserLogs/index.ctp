@@ -8,7 +8,7 @@
 </div>
 </div>
 
-<div class="admin-index index width-size">
+<div class="admin-index index">
 <div class="table" style="width:100%">
 <div class="row">
 <div class="cell">
@@ -16,8 +16,35 @@
         $contentTitle           = __('Users Logs'); 
         $contentActions         = array();
         $containsDataControlNav = true;
+        $containsFilter = true;
+        $controller = 'userLogs';
+        $urlParams = (isset($urlParams) ? $urlParams : "");
         
-        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav'));
+        $contentActions[] = $this->Html->tag(
+        'span', 
+        __('Filter'), 
+        array('class' => 'ttc-button', 'name' => 'add-filter'));
+    
+        $this->Js->get('[name=add-filter]')->event(
+            'click',
+            '$("#advanced_filter_form").show();
+            createFilter();
+            addStackFilter();');
+
+        if ($userLogs != null) {
+            $exportUrl = array(
+                    'controller' => 'userLogs',
+                    'action' => 'exportUserLog',
+                    'ext' => 'csv',
+                    '?' => $urlParams);
+            $contentActions[] = $this->AclLink->generateButtonFromUrl(
+                __('Export'),
+                $exportUrl,
+                array('class' => 'ttc-button'));
+        }
+
+        echo $this->element('header_content', compact(
+            'controller', 'contentTitle', 'contentActions', 'containsDataControlNav', 'containsFilter'));
     ?>
     <div class="ttc-table-display-area">
     <div class="ttc-table-scrolling-area display-height-size">
