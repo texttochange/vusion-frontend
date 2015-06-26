@@ -99,11 +99,24 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
+       
         $conditions = $this->Filter->getConditions($this->Program);
-        if (!array_key_exists('status',$conditions)) {
-            $conditions = array_merge($conditions, array('status' => 'running'));
+        if ($conditions == array()) {
+            $this->params['url'] = array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    1 => array(
+                        1 => 'status',
+                        2 => 'is',
+                        3 => 'running'
+                        )
+                    )
+                );
+            $conditions = $this->Filter->getConditions($this->Program);
         }
+        /*if (!array_key_exists('status',$conditions)) {
+            $conditions = array_merge($conditions, array('status' => 'running'));
+        }*/
         // TODO move in the Program Paginator
         $this->Program->recursive = -1; 
         $user = $this->Auth->user();  
