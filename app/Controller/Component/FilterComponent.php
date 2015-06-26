@@ -138,7 +138,7 @@ class FilterComponent extends Component
     
     public function hasConditions()
     {
-        if (!isset($this->Controller->params['url']['filter_operator'])) {
+        if (!isset($this->Controller->params['url']['filter_param'])) {
             return true;
         }
         return false;
