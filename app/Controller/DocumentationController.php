@@ -34,7 +34,9 @@ class DocumentationController extends AppController
             $topic = $this->params['url']['topic'];
             $file = WWW_ROOT . "files/documentation/".$lang.$topic.".txt";
             if (!file_exists($file)) {
-                $documentation = "Sorry, no help available for '". $topic."'. Please leave us a comment [help@texttochange.com].";
+                $email = Configure::read('vusion.reportIssue.email');
+                $this->Session->setFlash(
+                    __("Sorry, no help available for %s Please leave us a comment %s.", $topic, $email));
             } else {
                 $documentation = $this->readfile_chunked($file);
                 $requestSuccess = true;

@@ -11,7 +11,8 @@ class Program extends AppModel
     
     public $findMethods = array(
         'authorized' => true,
-        'count' => true
+        'count' => true,
+        'listByDatabase' => true,
         );
     
     
@@ -238,6 +239,22 @@ class Program extends AppModel
             return false;
         }
     }
+
+    public function _findListByDatabase($state, $query, $results = array()) 
+    {
+        if ($state === 'before') {
+            $query['fields'] = array('name', 'database');
+            $list = array("{n}.Program.database", "{n}.Program.name", null);
+            list($query['list']['keyPath'], $query['list']['valuePath'], $query['list']['groupPath']) = $list;
+            return $query;
+        } 
+
+        if (empty($results)) {
+            return array();
+        }
+
+        return Hash::combine($results, $query['list']['keyPath'], $query['list']['valuePath'], $query['list']['groupPath']);
+    }
     
     
     protected function limitedAccessConditions($query)
@@ -253,9 +270,10 @@ class Program extends AppModel
                         )
                     )
                 );
-            if (empty($query['conditions']))
+            if (empty($query['conditions'])) {
                 # make conditions an array
-            $query['conditions'] = array();
+                $query['conditions'] = array();
+            }
             # append user_id to conditions array
             $query['conditions'] = array_merge(
                 $query['conditions'],array(

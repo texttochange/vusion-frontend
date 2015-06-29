@@ -33,7 +33,7 @@
 	            } else {
 	                $profileData = $profiles;
 	            }
-	            echo $this->Form->input('profile', array('label' => __('Profile'), 'rows'=>4, 'value'=>$profileData));
+	            echo $this->Form->input('profile', array('label' => __('Profile'), 'rows'=>4, 'value'=>$profileData, 'required' => false));
 	            $tags = $this->data['Participant']['tags'];
 	            if (is_array($tags)) {
 	                $tagsArray = explode(",",implode(",", $tags));
@@ -41,7 +41,7 @@
 	            } else {
 	                $tagsString = $tags;
 	            }
-	            echo $this->Form->input('tags', array('label' => __('Tags'), 'rows'=>4, 'value'=>$tagsString));
+	            echo $this->Form->input('tags', array('label' => __('Tags'), 'rows'=>4, 'value'=>$tagsString, 'required' => false));
 	            $options = $selectOptions;
 	            $selected = $oldEnrolls;
 	            echo $this->Form->input('enrolled', array('options'=>$options,

@@ -1,7 +1,15 @@
 <?php
 $this->Html->script("jstree.min.js", array("inline" => false));
 ?>
-<div class="credit-logs index users-index">
+<div class="admin-action">
+    <div class="actions">
+        <h3><?php echo __('Actions'); ?></h3>
+        <ul>
+            <li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+        </ul>
+    </div>
+</div>
+<div class="credit-logs admin-index">
     <ul class="ttc-actions">
         <li>
             <?php
@@ -202,11 +210,3 @@ $this->Html->script("jstree.min.js", array("inline" => false));
         </div>
 	</div>
 </div>
-<div class="admin-action">
-   <div class="actions">
-      <h3><?php echo __('Actions'); ?></h3>
-            <ul>
-                <li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-            </ul>
-   </div>
- </div>

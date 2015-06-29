@@ -1,5 +1,8 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 class ShortCode extends MongoModel
 {
@@ -12,9 +15,16 @@ class ShortCode extends MongoModel
     var $maxCharacterPerSmsOptions     = array(70, 140, 160);
     
     
+    public function __construct($collection, $settings = array())
+    {
+        parent::__construct($collection, $settings);    
+        $this->Program = ClassRegistry::init('Program');
+    }
+    
+    
     function getModelVersion()
     {
-        return '2';
+        return '3';
     }
     
     
@@ -27,7 +37,8 @@ class ShortCode extends MongoModel
             'error-template',
             'support-customized-id',
             'supported-internationally',
-            'max-character-per-sms');
+            'max-character-per-sms',
+            'status');
     }
     
     var $findMethods = array(
@@ -116,6 +127,11 @@ class ShortCode extends MongoModel
                 'message' => 'This field is read only.',
                 'on' => 'update'
                 )
+            ),
+        'status' => array(
+            'validValue' => array(
+                'rule' => array('inList', array('running', 'archived')),
+                'message' => 'The status can only be running or archived.'),
             )
         );
     
@@ -156,6 +172,11 @@ class ShortCode extends MongoModel
             $this->data['ShortCode']['max-character-per-sms'] = intval($this->data['ShortCode']['max-character-per-sms']);
         }
         $this->_setDefault('max-character-per-sms', 160);
+        
+        if (!isset($this->data['ShortCode']['status'])) {
+            $this->_setDefault('status', 'running');
+        }
+        
         return true;
     }
     
@@ -235,6 +256,45 @@ class ShortCode extends MongoModel
             $countries[] = $result['ShortCode']['country'];
         }
         return $countries;
+    }
+    
+    
+    public function archive($id) 
+    {
+        $shortCode = $this->find(
+            'first', 
+            array('conditions'=> array('_id' => $id))
+            );
+        
+        $shortCodePrefix = $shortCode['ShortCode']['international-prefix'].'-'.$shortCode['ShortCode']['shortcode'];
+        
+        $programs = $this->Program->find(
+            'all',
+            array('conditions' => array('Program.status != "archived"')));
+        
+        foreach ($programs as $program) {
+            $programDb = $program['Program']['database'];
+            $programSettingModel = ProgramSpecificMongoModel::init('ProgramSetting', $programDb, true);
+            if ($programSettingModel->find('hasProgramSetting', array('key'=>'shortcode', 'value'=> $shortCodePrefix))) {
+                return false;
+            }
+        }
+        
+        $modifier = $this->saveField('status', 'archived', array('validate' => true));
+        if ($modifier['ShortCode']['_id'] === '0') {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    public function unarchive() 
+    {  
+        $modifier = $this->saveField('status', 'running', array('validate' => true));
+        if ($modifier['ShortCode']['_id'] === '0') {
+            return false;
+        }
+        return true;
     }
     
     

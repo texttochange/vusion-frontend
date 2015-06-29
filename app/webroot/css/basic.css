@@ -340,6 +340,19 @@
         background: #EDEDED;
 }
 
+.ttc-help-box ul {
+    list-style-position: inside;
+    list-style-type: none;
+}
+
+.ttc-help-box li{
+    white-space: normal;
+    margin-bottom: 0px;
+    margin: 0 12px;
+    list-style-type: square;
+    list-style-position: inside;
+}
+
 .ttc-notification {
         border: 2px solid #d3d3d3;
         float: left;
@@ -805,6 +818,10 @@
 }
 
 .ttc-table-scrolling-area .participants .optout {
+        color: #CE3F3F;
+}
+
+.ttc-table-scrolling-area .archive {
         color: #CE3F3F;
 }
 
@@ -1571,4 +1588,8 @@
 
 .ui-dform-select {
     width: 96%;
+}
+
+.flash-message-link {
+    text-decoration: underline !important;
 }

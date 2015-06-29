@@ -1,26 +1,4 @@
 <?php
-
-function echoLine($elements) 
-{
-    $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
-    echo implode(",", $quotedElements) . "\n";
-}
-
-function echoOrderedLine($elements, $orderedKey)
-{
-    $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
-    $first = true;
-    foreach ($orderedKey as $key) {
-        if ($first) {
-            echo $quotedElements[$key];
-            $first = false;
-        } else {
-            echo "," . $quotedElements[$key];
-        }
-    }
-    echo "\n";
-}
-
 $fields = array(
     'phone',
     'session-id',
@@ -31,7 +9,7 @@ if (isset($explodeProfile)) {
 } else {
     $displayedFields = $fields;
 }
-echoLine($displayedFields);
+echo $this->Csv->arrayToLine($displayedFields);
 
 $valuesTemplate = array_fill_keys(array_keys(array_flip($displayedFields)), "");
 foreach($participants as $participant)
@@ -56,5 +34,5 @@ foreach($participants as $participant)
             $values[$field] = $participant['Participant'][$field];
         }
     }
-    echoOrderedLine($values, $displayedFields);
+    echo $this->Csv->dictToLine($values, $displayedFields);
 }
