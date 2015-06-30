@@ -39,7 +39,6 @@ foreach($dialogues as $dialogue) {
             }
             $line[] = implode(',', $answers);
         } else {
-            print_r('continue');
             continue;
         }
         echo $this->Csv->arrayToLine($line);
