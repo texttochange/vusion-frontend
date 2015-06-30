@@ -57,7 +57,7 @@
  </target>
 
  <target name="phploc" description="Measure project size using PHPLOC">
-  <exec executable="phploc">
+  <exec executable="${basedir}/composer/vendor/bin/phploc">
    <arg value="--log-csv" />
    <arg value="${basedir}/build/logs/phploc.csv" />
    <arg path="${basedir}/app" />
@@ -66,7 +66,7 @@
 
  <target name="pdepend"
          description="Calculate software metrics using PHP_Depend">
-  <exec executable="pdepend">
+  <exec executable="{$basedir}/composer/vendor/bin/pdepend">
    <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
    <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
    <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
@@ -160,9 +160,9 @@
  </target>
  
  <target name="caketest" description="Run cake tests with PHPUnit" depends='clear-cache'>
- <exec executable="./app/Console/cake" failonerror="true">
+ <exec executable="${basedir}/app/Console/cake" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
-  	 <arg value="testsuite" />
+  	 <arg value="test" />
      <arg value="--configuration" />
   	 <arg value="phpunit-caketest.xml" />
   	 <arg value="app" />
