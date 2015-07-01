@@ -418,4 +418,32 @@ class ProgramTestCase extends CakeTestCase
     }
     
     
+    public function testfromFilterToQueryCondition_programStatus()
+    {
+        $filterParam = array(
+            1 => 'status', 
+            2 => 'is', 
+            3 => 'running'); 
+        $this->assertEqual(
+            $this->Program->fromFilterToQueryCondition($filterParam),
+            array('status' => 'running'));
+        
+        $filterParam = array(
+            1 => 'status', 
+            2 => 'is', 
+            3 => 'archived'); 
+        $this->assertEqual(
+            $this->Program->fromFilterToQueryCondition($filterParam),
+            array('status' => 'archived'));
+        
+        $filterParam = array(
+            1 => 'status', 
+            2 => 'is', 
+            3 => 'any'); 
+        $this->assertEqual(
+            $this->Program->fromFilterToQueryCondition($filterParam),
+            array('status' => ''));
+    }
+    
+    
 }

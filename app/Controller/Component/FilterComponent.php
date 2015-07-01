@@ -138,6 +138,7 @@ class FilterComponent extends Component
     
     public function hasConditions()
     {
+       //We test using filter param cause incase user doesn't add any filter param filter box is removed
         if (!isset($this->Controller->params['url']['filter_param'])) {
             return true;
         }
@@ -159,7 +160,6 @@ class FilterComponent extends Component
                     )
                 );
         }
-        
     }
     
     
