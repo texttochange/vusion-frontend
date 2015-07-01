@@ -442,7 +442,7 @@ class ProgramTestCase extends CakeTestCase
             3 => 'any'); 
         $this->assertEqual(
             $this->Program->fromFilterToQueryCondition($filterParam),
-            array('status' => ''));
+            array());
     }
     
     

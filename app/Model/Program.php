@@ -198,7 +198,7 @@ class Program extends AppModel
                     $condition['status'] = $filterParam[3];
                 }
                 if ($filterParam[3] == 'any') {
-                    $condition['status'] = ''; 
+                    $condition = array(); 
                 }
             }
         }
