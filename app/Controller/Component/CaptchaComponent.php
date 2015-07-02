@@ -3,12 +3,15 @@ App::uses('Component', 'Controller');
 
 class CaptchaComponent extends Component
 {
-    public function __construct(ComponentCollection $collection, $settings = array())
+
+    var $components = array('Session');
+
+    /*public function __construct(ComponentCollection $collection, $settings = array())
     {
         $settings         = array_merge($this->settings, (array)$settings);
         $this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
-    }
+    }*/
     
     
     public function generateCaptchaCode($characters)
@@ -98,13 +101,13 @@ class CaptchaComponent extends Component
     
     public function setCaptchaCode($captchaCode)
     {          
-        return $this->Controller->Session->write('captchaCode', $captchaCode);
+        return $this->Session->write('captchaCode', $captchaCode);
     }
     
     
     public function getCaptchaCode()
     {
-        return $this->Controller->Session->read('captchaCode');
+        return $this->Session->read('captchaCode');
     }
     
     
