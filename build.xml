@@ -192,6 +192,12 @@
     <fileset dir="/var/log/supervisord" includes="*"/>
  </delete>
 <!-- updating code  -->
+ <exec executable="sudo">
+    <arg value="chown" />
+    <arg value="-R" />
+    <arg value="jenkins" />
+    <arg value="${vusiondir}" />
+ </exec>
  <exec dir="${vusiondir}" executable="git">  
     <arg value="fetch" />
     <arg value="--all" />
