@@ -230,12 +230,11 @@
  </target>
 
  <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,init-db,init-oldprogram'>
- <exec executable="${basedir}/composer/vendor/bin/phpunit" failonerror="true">
- <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
-  	 <arg value="-c" />
+ <!-- <exec executable="${basedir}/composer/vendor/bin/phpunit" failonerror="true">
+  	 <arg value="-c" /> 
   	 <arg value="phpunit-webtest.xml" />
   	 <arg value="webTest/" />
-  </exec>
+  </exec> -->
  </target>
 
 
