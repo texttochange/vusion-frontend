@@ -4,8 +4,16 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 	    <li>
+		<?php echo $this->AclLink->generateButton(
+		    __('Invite User'),
+		    null,
+		    'users',
+		    'inviteUser'
+		    ); ?>
+		</li>
+	    <li>
 		<?php
-		if ($isAdmin) {
+		if ($isAdmin || $this->AclLink->_allow('controllers/Users/inviteUser')) {
 		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
 		}
 		?> 
@@ -66,13 +74,13 @@
 			&nbsp;
 		</dd>		
 	</dl>
-  <div class="related">
+  <div style="margin-top:30px;overflow-y:auto">
 	<h3><?php echo __('Accessible Programs');?></h3>
 	<?php if (!empty($user['Program'])):?>
 	<table cellpadding = "0" cellspacing = "0">
-	<tr>l
-		<th><?php echo __('Name'); ?></th>
-		<th class="actions"><?php
+	<tr>
+		<th style="padding:4px"><?php echo __('Name'); ?></th>
+		<th class="actions" style="padding:4px"><?php
 		if ($isAdmin) {
 		    echo __('Actions');
 		}
@@ -82,15 +90,14 @@
 		$i = 0;
 		foreach ($user['Program'] as $program): ?>
 		<tr>
-		<td><?php echo $program['name'];?></td>			 
-			<td class="actions">
-			<?php
-			if ($isAdmin) {
-				echo $this->Html->link(__('View'), array('controller' => 'programs', 'action' => 'view', $program['id']));				
-				echo $this->Html->link(__('Edit'), array('controller' => 'programs', 'action' => 'edit', $program['id'])); 
-			}
-			?>
-			</td> 		
+		<td style="padding:4px"><?php echo $program['name'];?></td>			 
+		<td class="actions" style="padding:4px">
+		<?php
+		if ($isAdmin) {
+			echo $this->Html->link(__('Edit'), array('controller' => 'programs', 'action' => 'edit', $program['id'])); 
+		}
+		?>
+		</td>
 		</tr>
 	<?php endforeach; ?>
 	</table>
