@@ -1529,6 +1529,10 @@
     padding-right: 20px;
 }
 
+.archived .fix-program-header {
+    background: lightgray;
+}
+
 .fix-content-header {
     position: fixed;
     top: 50px;
