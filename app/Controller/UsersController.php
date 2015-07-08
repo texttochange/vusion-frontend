@@ -45,15 +45,17 @@ class UsersController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
-        $paginate = array('all');
+        $paginate          = array('all');
         $defaultConditions = array();        
-        
+        $order             = null;
+
         if ($this->Auth->user('group_id') != 1) {
             $defaultConditions = array('invited_by' => $this->Auth->user('id'));
         }
 
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+            $order = $paginate['order'];
         }
         
         $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
@@ -72,7 +74,7 @@ class UsersController extends AppController
                 ));
             $user['User']['invited_by'] = ($username ? $username['User']['username']: __("admin"));
         }
-        $this->set(compact('users'));
+        $this->set(compact('users', 'order'));
     }
     
 
@@ -576,9 +578,7 @@ class UsersController extends AppController
 
 
     public function inviteUser()
-    {
-        //$this->layout = 'default2';
-        
+    {        
         $user = $this->Auth->user();
         $andCondition = ($user['group_id'] != 5) ? array(array('id !=' => 1), array('id !=' => 2)) : array(array('id !=' => 1), array('id !=' => 2), array('id !=' => 3));
 
@@ -735,6 +735,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
             $this->Acl->allow($Group, 'controllers/Templates');
             $this->Acl->allow($Group, 'controllers/CreditViewer');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
@@ -755,8 +756,6 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers/Programs');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            //$this->Acl->allow($Group, 'controllers/Users/login');
-            //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramDialogues');
@@ -764,16 +763,14 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramSettings');
             $this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->deny($Group, 'controllers/ProgramSettings/edit');            
-            //$this->Acl->allow($Group, 'controllers/ProgramSettings/index');
-            //$this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
-            //$this->Acl->allow($Group, 'controllers/ShortCodes');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
@@ -793,10 +790,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            //$this->Acl->allow($Group, 'controllers/Users/login');
-            //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
-            //$this->Acl->deny($Group, 'controllers/ProgramParticipants');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/edit');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/add');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/index');
@@ -811,6 +805,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
             $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
@@ -840,6 +835,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
