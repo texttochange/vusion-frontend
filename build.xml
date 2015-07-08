@@ -11,7 +11,7 @@
  </condition>
 
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,run-composer,caketest,webtest,phpcb"/>
+   depends="prepare,run-composer,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,caketest,webtest,phpcb"/>
 
  <target name="tools-parallel"
          description="Run tools in parallel">
@@ -57,7 +57,7 @@
  </target>
 
  <target name="phploc" description="Measure project size using PHPLOC">
-  <exec executable="phploc">
+  <exec executable="${basedir}/composer/vendor/bin/phploc">
    <arg value="--log-csv" />
    <arg value="${basedir}/build/logs/phploc.csv" />
    <arg path="${basedir}/app" />
@@ -66,7 +66,7 @@
 
  <target name="pdepend"
          description="Calculate software metrics using PHP_Depend">
-  <exec executable="pdepend">
+  <exec executable="${basedir}/composer/vendor/bin/pdepend">
    <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
    <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
    <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
@@ -76,7 +76,7 @@
  
  <target name="phpmd"
          description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
-  <exec executable="phpmd">
+  <exec executable="${basedir}/composer/vendor/bin/phpmd">
    <arg path="${basedir}/app" />
    <arg value="text" />
    <!--<arg value="${basedir}/build/phpmd.xml" />-->
@@ -86,7 +86,7 @@
 
  <target name="phpmd-ci"
          description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
-  <exec executable="phpmd">
+  <exec executable="${basedir}/composer/vendor/bin/phpmd">
    <arg path="${basedir}/app" />
    <arg value="xml" />
    <!--<arg value="${basedir}/build/phpmd.xml" />-->
@@ -100,7 +100,7 @@
 
  <target name="phpcs"
          description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-  <exec executable="phpcs">
+  <exec executable="${basedir}/composer/vendor/bin/phpcs">
    <arg value="--standard=${basedir}/build/ruleset.xml" />
    <arg path="${basedir}/app" />
   </exec>
@@ -108,7 +108,7 @@
 
  <target name="phpcs-ci"
          description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-  <exec executable="phpcs">
+  <exec executable="${basedir}/composer/vendor/bin/phpcs">
    <arg value="-v" />
    <arg value="--report=checkstyle" />
    <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
@@ -122,7 +122,7 @@
  </target>
 
  <target name="phpcpd" description="Find duplicate code using PHPCPD">
-  <exec executable="phpcpd">
+  <exec executable="${basedir}/composer/vendor/bin/phpcpd">
    <arg value="--log-pmd" />
    <arg value="${basedir}/build/logs/pmd-cpd.xml" />
    <arg path="${basedir}/app" />
@@ -131,7 +131,7 @@
 
  <target name="phpdoc"
          description="Generate API documentation using PHPDocumentor">
-  <exec executable="phpdoc">
+  <exec executable="${basedir}/composer/vendor/bin/phpdoc">
    <arg value="--directory" />
    <arg path="${basedir}/app" />
    <arg value="--ignore" />
@@ -160,9 +160,9 @@
  </target>
  
  <target name="caketest" description="Run cake tests with PHPUnit" depends='clear-cache'>
- <exec executable="./app/Console/cake" failonerror="true">
+ <exec executable="${basedir}/app/Console/cake" failonerror="true">
  <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
-  	 <arg value="testsuite" />
+  	 <arg value="test" />
      <arg value="--configuration" />
   	 <arg value="phpunit-caketest.xml" />
   	 <arg value="app" />
@@ -192,6 +192,12 @@
     <fileset dir="/var/log/supervisord" includes="*"/>
  </delete>
 <!-- updating code  -->
+ <exec executable="sudo">
+    <arg value="chown" />
+    <arg value="-R" />
+    <arg value="jenkins" />
+    <arg value="${vusiondir}" />
+ </exec>
  <exec dir="${vusiondir}" executable="git">  
     <arg value="fetch" />
     <arg value="--all" />
@@ -230,12 +236,11 @@
  </target>
 
  <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,init-db,init-oldprogram'>
- <exec executable="phpunit" failonerror="true">
- <!-- <exec executable="./app/Console/cake" failonerror="true"> -->
-  	 <arg value="-c" />
+ <!-- <exec executable="${basedir}/composer/vendor/bin/phpunit" failonerror="true">
+  	 <arg value="-c" /> 
   	 <arg value="phpunit-webtest.xml" />
   	 <arg value="webTest/" />
-  </exec>
+  </exec> -->
  </target>
 
 
@@ -248,7 +253,7 @@
 
  <target name="phpcb"
          description="Aggregate tool output with PHP_CodeBrowser">
-  <exec executable="phpcb">
+  <exec executable="${basedir}/composer/vendor/bin/phpcb">
    <arg value="--log" />
    <arg path="${basedir}/build/logs" />
    <arg value="--source" />

@@ -76,7 +76,7 @@ class CachingCountBehaviorTest extends CakeTestCase
             'message-status' => 'pending',
             'unattach-id' =>'5'
             );
-        $this->Model->create('unattach-history');
+        $this->Model->create($history);
         $saveHistory = $this->Model->save($history);  
 
         $result = $this->Model->count();

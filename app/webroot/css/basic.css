@@ -340,6 +340,19 @@
         background: #EDEDED;
 }
 
+.ttc-help-box ul {
+    list-style-position: inside;
+    list-style-type: none;
+}
+
+.ttc-help-box li{
+    white-space: normal;
+    margin-bottom: 0px;
+    margin: 0 12px;
+    list-style-type: square;
+    list-style-position: inside;
+}
+
 .ttc-notification {
         border: 2px solid #d3d3d3;
         float: left;
