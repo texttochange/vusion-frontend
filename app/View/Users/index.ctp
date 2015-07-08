@@ -57,10 +57,6 @@
                 'action' => 'export',
                 'ext' => 'csv',
                 '?' => $urlParams);
-        if ($order != null) {
-            $exportUrl['sort'] = key($order);
-            $exportUrl['direction'] = $order[key($order)];
-        }
         $contentActions[] = $this->AclLink->generateButtonFromUrl(
             __('Export'),
             $exportUrl,

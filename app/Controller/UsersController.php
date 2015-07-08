@@ -45,15 +45,17 @@ class UsersController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
-        $paginate = array('all');
+        $paginate          = array('all');
         $defaultConditions = array();        
-        
+        $order             = null;
+
         if ($this->Auth->user('group_id') != 1) {
             $defaultConditions = array('invited_by' => $this->Auth->user('id'));
         }
 
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+            $order = $paginate['order'];
         }
         
         $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
@@ -72,7 +74,7 @@ class UsersController extends AppController
                 ));
             $user['User']['invited_by'] = ($username ? $username['User']['username']: __("admin"));
         }
-        $this->set(compact('users'));
+        $this->set(compact('users', 'order'));
     }
     
 
