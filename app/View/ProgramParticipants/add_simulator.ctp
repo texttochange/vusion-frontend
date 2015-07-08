@@ -1,8 +1,8 @@
 <div class="participants form width-size">
     <?php
-        $contentTitle       = __('Add Participant'); 
+        $contentTitle       = __('Add Simulator Participant'); 
         $contentActions     = array();
-        $addParticipantSpan = 'add';
+        $addParticipantSpan = 'simulate';
         $controller         = 'programParticipants';
         
         $contentActions[] = $this->Html->link( __('Cancel'), 
@@ -17,18 +17,6 @@
                 'id' => 'button-save'));
         $this->Js->get('#button-save')->event('click',
             '$("#ParticipantAddForm").submit()' , true);
-        
-        $contentActions[] = $this->Html->link(__('Import Participant(s)'),
-		    array('program' => $programDetails['url'],
-		        'controller' => $controller,
-		        'action' => 'import'), 
-		    array('class'=>'ttc-button'));
-		
-		$contentActions[] = $this->Html->link(__('View Participant(s)'),
-		    array('program' => $programDetails['url'],
-		        'controller' => $controller,
-		        'action' => 'index'),
-		    array('class'=>'ttc-button'));
 		
 		echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller', 'addParticipantSpan'));
     ?>
@@ -36,8 +24,28 @@
 	    <?php echo $this->Form->create('Participant');?>
 	        <fieldset>		
 	            <?php
-	                echo $this->Form->input('phone', array('label' => __('Phone')));
+	                echo $this->Form->input('phone', array(
+	                    'label' => __('Phone'),
+	                    'value' => $sumilutorPhone,
+	                    'readonly' => 'true'));
 	            ?>
+	            <?php
+	            echo $this->Html->tag('div', __('Program Join Type '), array('style'=>'margin-bottom:0px'));
+	            $options = array(
+	                'none' => __('Import'),
+	                'optin-keyword' => __('Optin from Keyword'));
+	            $attributes = array(
+	                'legend' => false,
+	                'style' => 'margin-left:5px',
+	                );
+	            echo "<div>";
+	            echo $this->Form->radio(
+	                'join-type',
+	                $options,
+	                $attributes);
+                echo '</div>';
+	            ?>
+	            
 	        </fieldset>
 	    <?php echo $this->Form->end(__('Save'));?>
 	</div>

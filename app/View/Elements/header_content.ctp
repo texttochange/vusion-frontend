@@ -22,6 +22,28 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
             </div>
         </div>
     </div>
+    <?php if (isset($addParticipantSpan)):?>
+    <div class="table" style="width:100%">
+        <div class="row">
+            <div class="ttc-data-control">
+            <div class="cell tabs">
+                <ul>
+                    <li <?php echo ($addParticipantSpan === 'add'? 'class="selected"' : ""); ?>>
+                        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'add')); ?>" >
+                        <label><?php echo __("Normal"); ?></label>
+                        </a>
+                    </li>
+                    <li <?php echo ($addParticipantSpan === 'simulate'? 'class="selected"' : ""); ?>>
+                        <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'addSimulator')); ?>" >
+                        <label><?php echo __("Simulator"); ?></label>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            </div>   
+        </div>
+    </div>   
+    <?php endif;?>
     <?php if ($containsDataControlNav): ?>
     <div class="table" style="width:100%">
         <div class="row">

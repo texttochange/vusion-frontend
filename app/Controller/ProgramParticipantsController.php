@@ -413,6 +413,45 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
+    public function addSimulator() 
+    {
+        $programUrl     = $this->params['program'];
+        $requestSuccess = false;
+        $data           = $this->_ajaxDataPatch();
+        
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            return;
+        }
+        
+        $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
+        $sumilutorPhone = $programInternationalPrefix . 1;
+        $this->set(compact('sumilutorPhone'));
+        
+        if ($this->request->is('post')) {
+            $savedParticipant = null;
+            $this->Participant->create();
+            if ($savedParticipant = $this->Participant->save($data)) {
+                $this->_notifyUpdateBackendWorker(
+                    $programUrl,
+                    $savedParticipant['Participant']['phone']);
+                $requestSuccess = true;
+                $this->Session->setFlash(__('The participant has been saved.'),
+                    'default', array('class'=>'message success'));
+                if (!$this->_isAjax()) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'index'));
+                }
+            } else {
+                $this->Session->setFlash(__('The participant could not be saved.'));
+            }
+            $this->set(compact('requestSuccess', 'savedParticipant'));
+        }    
+    }
+    
+    
     protected function _getSelectOptions()
     {
         $selectOptions = array();
@@ -889,6 +928,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $this->set('validationErrors', $valid);
         }
         $this->set(compact('requestSuccess'));
+    }
+    
+    
+    public function simulator()
+    {
+    
     }
     
     
