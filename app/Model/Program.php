@@ -128,6 +128,7 @@ class Program extends AppModel
     
     
     public $filterProgramStatusOptions = array(
+        'any' => 'any',
         'running' => 'running',
         'archived' => 'archived'
         );
@@ -197,8 +198,11 @@ class Program extends AppModel
                 if ($filterParam[2] == 'is') {
                     $condition['status'] = $filterParam[3];
                 }
+                if ($filterParam[3] == 'any') {
+                    $condition = array(); 
+                }
             }
-        }         
+        }
         return $condition;
     }
     
