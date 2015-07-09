@@ -99,7 +99,8 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
+       
+        $this->Filter->addDefaultCondition('status', 'is', 'running');
         $conditions = $this->Filter->getConditions($this->Program);
         
         // TODO move in the Program Paginator
