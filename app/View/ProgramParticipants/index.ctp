@@ -181,6 +181,9 @@
 	                           null,
 	                           __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
 	                   <?php } ?>
+	                   <?php 
+	                   echo $this->Html->link(__('View'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'view', $participant['Participant']['_id'])); 
+	                   ?>
 	              </td>
 	      </tr>
 	          <?php endforeach; ?>

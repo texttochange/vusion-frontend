@@ -66,9 +66,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $order          = null;
         $conditions     = array();
         
-        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('created' => 'desc');
+        } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
+        
         $conditions = $this->Filter->getConditions(
             $this->Participant,
             array(),
@@ -430,6 +433,13 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         
         if ($this->request->is('post')) {
             $savedParticipant = null;
+            
+            if ($data['Participant']['join-type'] == 'import') {
+                $data['Participant']['tags'] = array('simulated', 'import');
+            } else if ($data['Participant']['join-type'] == 'optin-keyword') {
+                $data['Participant']['tags'] = array('simulated', 'keyword optin');
+            }
+            
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data)) {
                 $this->_notifyUpdateBackendWorker(
@@ -445,7 +455,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                         'action' => 'index'));
                 }
             } else {
-                $this->Session->setFlash(__('The participant could not be saved.'));
+                $this->Session->setFlash(__('The sumilate participant could not be saved.'));
             }
             $this->set(compact('requestSuccess', 'savedParticipant'));
         }    

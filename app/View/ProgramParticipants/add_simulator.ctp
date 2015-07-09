@@ -32,7 +32,7 @@
 	            <?php
 	            echo $this->Html->tag('div', __('Program Join Type '), array('style'=>'margin-bottom:0px'));
 	            $options = array(
-	                'none' => __('Import'),
+	                'import' => __('Import'),
 	                'optin-keyword' => __('Optin from Keyword'));
 	            $attributes = array(
 	                'legend' => false,

@@ -101,6 +101,12 @@ class Participant extends ProgramSpecificMongoModel
                 'rule' => 'validateTags',
                 'message' => 'noMessage'
                 ),
+            ),
+        'join-type' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please select one option'
+                ),
             )
         );
     
