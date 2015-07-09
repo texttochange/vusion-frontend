@@ -455,7 +455,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                         'action' => 'index'));
                 }
             } else {
-                $this->Session->setFlash(__('The sumilate participant could not be saved.'));
+                $this->Session->setFlash(__('The simulate participant could not be saved.'));
             }
             $this->set(compact('requestSuccess', 'savedParticipant'));
         }    
