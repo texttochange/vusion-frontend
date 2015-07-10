@@ -433,15 +433,17 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         
         if ($this->request->is('post')) {
             $savedParticipant = null;
-            
+            $this->Participant->create();
             if ($data['Participant']['join-type'] == 'import') {
                 $data['Participant']['tags'] = array('simulated', 'import');
             } else if ($data['Participant']['join-type'] == 'optin-keyword') {
-                $data['Participant']['tags'] = array('simulated', 'keyword optin');
+                $data['Participant']['tags']       = array('simulated', 'keyword optin');
             }
-            
+            //print_r($data['Participant']);
+            //print_r('*************');
             $this->Participant->create();
-            if ($savedParticipant = $this->Participant->save($data)) {
+            if ($savedParticipant = $this->Participant->save($data['Participant'])) {
+                print_r($savedParticipant);
                 $this->_notifyUpdateBackendWorker(
                     $programUrl,
                     $savedParticipant['Participant']['phone']);
@@ -941,7 +943,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    public function simulator()
+    public function simulateParticipantMo()
     {
     
     }

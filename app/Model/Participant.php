@@ -15,7 +15,7 @@ class Participant extends ProgramSpecificMongoModel
     
     function getModelVersion()
     {
-        return '3';
+        return '4';
     }
     
     
