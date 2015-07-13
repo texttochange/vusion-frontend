@@ -428,22 +428,19 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         
         $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
-        $sumilutorPhone = $programInternationalPrefix . 1;
+        $sumilutorPhone = $programInternationalPrefix . mt_rand(1,5);
         $this->set(compact('sumilutorPhone'));
         
         if ($this->request->is('post')) {
             $savedParticipant = null;
-            $this->Participant->create();
             if ($data['Participant']['join-type'] == 'import') {
                 $data['Participant']['tags'] = array('simulated', 'import');
             } else if ($data['Participant']['join-type'] == 'optin-keyword') {
                 $data['Participant']['tags']       = array('simulated', 'keyword optin');
             }
-            //print_r($data['Participant']);
-            //print_r('*************');
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
-                print_r($savedParticipant);
+                $savedParticipant['Participant']['simulate'] = true;
                 $this->_notifyUpdateBackendWorker(
                     $programUrl,
                     $savedParticipant['Participant']['phone']);
@@ -945,7 +942,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateParticipantMo()
     {
-    
+        
     }
     
     

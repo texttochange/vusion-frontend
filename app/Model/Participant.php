@@ -331,7 +331,11 @@ class Participant extends ProgramSpecificMongoModel
         if (!$this->data['Participant']['_id']) {
             $this->_setDefault('last-optin-date', $programNow->format("Y-m-d\TH:i:s"));
             $this->_setDefault('last-optout-date', null);
-            $this->_setDefault('session-id', $this->gen_uuid());
+            if (in_array('keyword optin', $this->data['Participant']['tags'])) {
+                $this->_setDefault('session-id', null);
+            } else {
+                $this->_setDefault('session-id', $this->gen_uuid());
+            }
             $this->_setDefault('enrolled', array());            
         } else {
             $this->_editEnrolls();
