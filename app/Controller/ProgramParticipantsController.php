@@ -942,6 +942,13 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateParticipantMo()
     {
+        $id = $this->params['id'];
+        $this->Participant->id = $id;
+        if (!$this->Participant->exists()) {
+            throw new NotFoundException(__('Invalid participant'));
+        }
+        $participant = $this->Participant->read(null, $id);
+        $this->set(compact('participant'));
         
     }
     
