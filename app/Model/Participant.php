@@ -29,6 +29,7 @@ class Participant extends ProgramSpecificMongoModel
             'enrolled',
             'tags',
             'profile',
+            'simulate'
             );
     }
     

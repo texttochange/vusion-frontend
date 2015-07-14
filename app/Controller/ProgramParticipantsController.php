@@ -438,9 +438,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             } else if ($data['Participant']['join-type'] == 'optin-keyword') {
                 $data['Participant']['tags']       = array('simulated', 'keyword optin');
             }
+            $data['Participant']['simulate'] = true;
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
-                $savedParticipant['Participant']['simulate'] = true;
                 $this->_notifyUpdateBackendWorker(
                     $programUrl,
                     $savedParticipant['Participant']['phone']);
