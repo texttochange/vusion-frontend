@@ -143,7 +143,7 @@ class ContentVariableTable extends ProgramSpecificMongoModel
         for($i = 0; $i < count($check['columns']); $i++) {
             $valueValidationErrors[$i] = $this->ValidationHelper->runValidationRules($check['columns'][$i], $this->validateColumn);
         }
-        $valueValidationErrors = $this->arrayDelete($valueValidationErrors, true);
+        $valueValidationErrors = $this->arrayDelete($valueValidationErrors);
         if ($valueValidationErrors != array()) {
             return $valueValidationErrors;
         }
@@ -161,8 +161,13 @@ class ContentVariableTable extends ProgramSpecificMongoModel
     }
 
     
-    function arrayDelete($array, $element) {
-        return array_diff($array, array($element));
+    function arrayDelete($array) {
+        foreach($array as $key => $value) {
+            if ($value == 'true') {
+                unset($array[$key]);
+            }
+        }
+        return $array;
     }
     
     

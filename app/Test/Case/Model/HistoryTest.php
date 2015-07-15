@@ -44,6 +44,7 @@ class HistoryTestCase extends CakeTestCase
     public function testFindScriptFilter()
     {
         $participantsState = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
@@ -52,7 +53,7 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         
@@ -73,7 +74,7 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         $result   = $this->History->find('participant',array(
@@ -93,7 +94,7 @@ class HistoryTestCase extends CakeTestCase
             'message-direction' => 'incoming' 
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         $result   = $this->History->find(
@@ -115,7 +116,7 @@ class HistoryTestCase extends CakeTestCase
             'interaction-id'=>'script.dialogues[0].interactions[0]'
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         $state = 'before';
@@ -398,7 +399,7 @@ class HistoryTestCase extends CakeTestCase
             'unattach-id' =>'5'
             );        
         
-        $this->History->create('unattach-history');
+        $this->History->create($history);
         $saveHistoryStatus = $this->History->save($history); 
         
         
@@ -410,7 +411,7 @@ class HistoryTestCase extends CakeTestCase
             'unattach-id' =>'9'
             );        
         
-        $this->History->create('unattach-history');
+        $this->History->create($history_01);
         $saveHistoryStatus = $this->History->save($history_01);     
         
         $output = $this->History->countUnattachedMessages('5');       
@@ -451,7 +452,7 @@ class HistoryTestCase extends CakeTestCase
             'message-direction' => 'outgoing',
             'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id']
             );        
-        $this->History->create('unattach-history');
+        $this->History->create($history_01);
         $saveHistoryStatus = $this->History->save($history_01);
         
         $output = $this->History->getParticipantHistory('7886014620', '');
