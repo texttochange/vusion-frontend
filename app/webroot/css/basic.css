@@ -1593,3 +1593,11 @@
 .flash-message-link {
     text-decoration: underline !important;
 }
+
+.simulator-outgoing {
+    background-color: #74B8E6 !important;
+}
+
+.simulator-incoming {
+    background-color: #CDEBFF !important;
+}

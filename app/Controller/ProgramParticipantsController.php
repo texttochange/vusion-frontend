@@ -948,7 +948,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read(null, $id);
-        $this->set(compact('participant'));
+        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $histories                    = $this->History->getParticipantHistory(
+            $participant['Participant']['phone'],
+            $dialoguesInteractionsContent
+            );
+        $this->set(compact('participant', 'histories'));
         
     }
     
