@@ -134,7 +134,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();
-    	print_r($Programs);
         $Programs->Session
         ->expects($this->any())
         ->method('read')
