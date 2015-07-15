@@ -1596,8 +1596,10 @@
 
 .simulator-outgoing {
     background-color: #74B8E6 !important;
+    border-radius: 8px;
 }
 
 .simulator-incoming {
     background-color: #CDEBFF !important;
+    border-radius: 8px;
 }
