@@ -78,6 +78,7 @@ class FilterComponent extends Component
         $filter = $this->getFilters();
   
         if ($filter == array()) {
+            $this->Controller->set('urlParams', array()); 
             return $defaultConditions;
         }
 

@@ -1466,6 +1466,10 @@
         margin-bottom: 10px;
 }
 
+.timeframe-form {
+    clear: none;
+}
+
 .timeframe-form .timeframe{
         margin: 4px;
         padding: 4px;
@@ -1527,6 +1531,10 @@
     right: 0px;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+.archived .fix-program-header {
+    background: lightgray;
 }
 
 .fix-content-header {
