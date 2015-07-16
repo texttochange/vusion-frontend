@@ -12,7 +12,9 @@ Vagrant::configure("2") do |config|
     #to run the tests in your host env
     config.vm.network "forwarded_port", guest:27017, host:27017
     config.vm.network "forwarded_port", guest:6379, host:6379
+    config.vm.network "forwarded_port", guest:3306, host:3306
     
+
     #to allow pushing messages to the default transports
     config.vm.network "forwarded_port", guest:2221, host:2221
     config.vm.network "forwarded_port", guest:2222, host:2223
