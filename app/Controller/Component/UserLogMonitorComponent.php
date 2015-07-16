@@ -123,10 +123,10 @@ class UserLogMonitorComponent extends Component
     {
         $programDatabaseName = null;
         $programName         = null;
-        $parametereventData  = null;
+        $parameterEventData  = null;
         
         $now = new DateTime('now');        
-        if ($programDatabaseName == null){
+        if (isset($this->eventData['programDatabaseName'])){
             $programDatabaseName = $this->eventData['programDatabaseName'];
         }
         
@@ -134,7 +134,7 @@ class UserLogMonitorComponent extends Component
             $programDatabaseName = $this->Controller->programDetails['database'];
         } 
                 
-        if ($programName == null) {
+        if (isset($this->eventData['programName'])) {
             $programName = $this->eventData['programName'];
         }
         

@@ -468,10 +468,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participantDB = $this->Participant->save($participant);
         
         $historyToBeDeleted = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+6',
             'message-direction' => 'incoming');
         
-        $this->History->create('dialogue-history');
+        $this->History->create($historyToBeDeleted);
         $this->History->save($historyToBeDeleted);
         
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']."?include=history");

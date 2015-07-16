@@ -135,22 +135,25 @@ class StatsComponentTest extends CakeTestCase
                 'dialogue-id' => 'def456')
             )
             ); 
-        $this->History->create('unattach-history');
-        $savedHistory = $this->History->save(array(
+        $history_1 = array(
+            'object-type' => 'unattach-history',
             'participant-phone' => '256712747841',
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered')
-            );
-        $this->History->create('unattach-history');
-        $savedHistory2 = $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_1);
+        $savedHistory = $this->History->save($history_1);
+
+        $history_2 = array(
+            'object-type' => 'unattach-history',
             'participant-phone' => '256712747842',
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-03-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered')
-            );
+            'message-status' => 'delivered');
+        $this->History->create($history_2);
+        $savedHistory2 = $this->History->save($history_2);
         
         $key = "unittest:testdbprogram:stats";
         

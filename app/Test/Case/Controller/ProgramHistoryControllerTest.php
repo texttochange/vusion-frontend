@@ -125,22 +125,25 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     public function testIndex_order() 
     {
-        $this->History->create('unattach-history');
-        $this->History->save(array(
+        $history_1 = array(
+            'object-type' => 'unattach-history',
             'participant-phone' => '256712747841',
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered',
-            ));
-        $this->History->create('unattach-history');
-        $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_1);
+        $this->History->save($history_1);
+
+        $history_2 = array(
+            'object-type' => 'unattach-history',
             'participant-phone' => '356774527841',
             'message-content' => 'Hello there!',
             'timestamp' => '2013-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered',
-            ));
+            'message-status' => 'delivered');
+        $this->History->create($history_2);
+        $this->History->save($history_2);
         
         $this->mockProgramAccess();        
         $this->testAction("/testurl/history/index/sort:participant-phone/direction:desc");
@@ -155,57 +158,65 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     public function testIndex_filter()
     {   
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+        $history_1 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_1);
+        $this->History->save($history_1);
+
+        $history_2 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527842',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_2);
+        $this->History->save($history_2);
+
+        $history_3 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527841',
             'message-content' => 'feel good',
             'timestamp' => '2013-02-08T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'incoming',
-            'matching-answer' => 'good'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'matching-answer' => 'good');
+        $this->History->create($history_3);
+        $this->History->save($history_3);
+
+        $history_4 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527841',
             'message-content' => 'what is your name? send NAME <your name>',
             'timestamp' => '2013-02-09T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'outgoing',
-            'message-status' => 'pending' 
-            ));
+            'message-status' => 'pending');
+        $this->History->create($history_4);
+        $this->History->save($history_4);
         
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+        $history_5 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527841',
             'message-content' => 'name',
             'timestamp' => '2013-02-10T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'incoming',
-            'matching-answer' => null
-            ));
+            'matching-answer' => null);
+        $this->History->create($history_5);
+        $this->History->save($history_5);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/index?filter_operator=all&filter_param[1][1]=interaction-source&filter_param[1][2]=is&filter_param[1][3]=11&filter_param[2][1]=date&filter_param[2][2]=from&filter_param[2][3]=01/01/2012");
@@ -237,26 +248,29 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     public function testListHistory()
     {
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+        $history_1 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_1);
+        $this->History->save($history_1);
+
+        $history_2 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+356774527842',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
+            'message-status' => 'delivered');
+        $this->History->create($history_2);
+        $this->History->save($history_2);
 
         $this->mockProgramAccess();
         $this->testAction("/testurl/history/listHistory.json?filter_operator=all&filter_param[1][1]=participant-phone&filter_param[1][2]=equal-to&filter_param[1][3]=%2B356774527841");
@@ -267,63 +281,73 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
     public function testMassDelete() 
     {    
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+        $history_1 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_1);
+        $this->History->save($history_1);
+
+        $history_2 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527842',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_2);
+        $this->History->save($history_2);
+
+        $history_3 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527841',
             'message-content' => 'feel good',
             'timestamp' => '2013-02-08T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'incoming',
-            'matching-answer' => 'good'
-            ));
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+            'matching-answer' => 'good');
+        $this->History->create($history_3);
+        $this->History->save($history_3);
+
+        $history_4 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527841',
             'message-content' => 'what is your name? send NAME <your name>',
             'timestamp' => '2013-02-09T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'outgoing',
-            'message-status' => 'pending' 
-            ));
+            'message-status' => 'pending');
+        $this->History->create($history_4);
+        $this->History->save($history_4);
         
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+        $history_5 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527841',
             'message-content' => 'name',
             'timestamp' => '2013-02-10T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'incoming',
-            'matching-answer' => null
-            ));
-        $this->History->create('oneway-marker-history');
-        $this->History->save(array(
+            'matching-answer' => null);
+        $this->History->create($history_5);
+        $this->History->save($history_5);
+
+        $history_6 = array(
+            'object-type' => 'oneway-marker-history',
             'participant-phone' => '356774527841',
             'dialogue-id' => '1',
-            'interaction-id' => '12',
-            ));
+            'interaction-id' => '12');
+        $this->History->create($history_6);
+        $this->History->save($history_6);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=outgoing");
@@ -333,16 +357,17 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programHistory/delete?filter_operator=all&filter_param[1][1]=message-direction&filter_param[1][2]=is&filter_param[1][3]=incoming");
         $this->assertEquals(1, $this->History->find('count'));
         
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+        $history_7 = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527841',
             'message-content' => 'name',
             'timestamp' => '2013-02-10T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '12',
             'message-direction' => 'incoming',
-            'matching-answer' => null
-            ));
+            'matching-answer' => null);
+        $this->History->create($history_7);
+        $this->History->save($history_7);
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programHistory/delete");
@@ -351,17 +376,18 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
     
     
     public function testMassDelete_failMissingFilterOperator() 
-    {       
-        $this->History->create('dialogue-history');
-        $this->History->save(array(
+    {
+        $history = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '356774527841',
             'message-content' => 'How are you? send FEEL GOOD or FEEL BAD',
             'timestamp' => '2013-02-07T12:20:43',
             'dialogue-id' => '1',
             'interaction-id' => '11',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered'
-            ));
+            'message-status' => 'delivered');
+        $this->History->create($history);
+        $this->History->save($history);
         
         $this->mockProgramAccess();
         try {

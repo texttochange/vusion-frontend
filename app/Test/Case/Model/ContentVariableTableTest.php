@@ -516,7 +516,6 @@ class ContentVariableTableTestCase extends CakeTestCase
 
         $this->ContentVariableTable->create();
         $this->assertFalse($this->ContentVariableTable->save($contentVariableTable));
-
         $this->assertEqual(
             'Another table already exist with this name.',
             $this->ContentVariableTable->validationErrors['name'][0]

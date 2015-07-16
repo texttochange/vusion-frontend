@@ -134,7 +134,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();
-    	
         $Programs->Session
         ->expects($this->any())
         ->method('read')
@@ -143,7 +142,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         $this->testAction("/programs/index");
-        $this->assertEquals(4, count($this->vars['programs']));
+        $this->assertEquals(3, count($this->vars['programs']));
     }
     
     
