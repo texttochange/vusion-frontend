@@ -1,6 +1,6 @@
 <div class="participant view width-size">
     <?php
-        $contentTitle   = __('Simulator'); 
+        $contentTitle   = __('Simulate Participant'); 
         $contentActions = array();
         
         echo $this->element('header_content', compact('contentTitle', 'contentActions'));

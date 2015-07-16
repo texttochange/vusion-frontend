@@ -416,7 +416,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    public function addSimulator() 
+    public function addSimulated() 
     {
         $programUrl     = $this->params['program'];
         $requestSuccess = false;

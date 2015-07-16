@@ -102,7 +102,7 @@
 	              <td colspan=7><?php echo __("No results found.") ?></td>
 	          </tr>
 	      <?php } else {?>   
-	      <?php foreach ($participants as $participant): ?>
+	      <?php foreach ($participants as $participant):?>
 	      <tr class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>"
 	      title="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>"
 	      >
@@ -182,7 +182,7 @@
 	                           __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
 	                   <?php } ?>
 	                   <?php
-	                   echo ((in_array( 'simulated', $participant['Participant']['tags'])) ? $this->Html->link(__('Simulator'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'simulateParticipantMo', $participant['Participant']['_id'])) : '');
+	                   echo ((isset($participant['Participant']['simulate'])) ? $this->Html->link(__('Simulate'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'simulateParticipantMo', $participant['Participant']['_id'])) : '');
 	                   ?>
 	              </td>
 	      </tr>
