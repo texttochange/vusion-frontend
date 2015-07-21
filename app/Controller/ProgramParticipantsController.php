@@ -963,6 +963,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function send()
     {
+        $requestSuccess = true;
         print_r($this->request->data);
         print_r('*********************************');
        if ($this->request->is('post')) {
@@ -970,6 +971,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $from    = $this->request->data['phone'];
             $this->VumiRabbitMQ->sendMessageToWorker('simulator', $from, $message);
         }
+        $this->set(compact('requestSuccess'));
     }
     
     
