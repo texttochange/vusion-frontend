@@ -948,13 +948,37 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read(null, $id);
-        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-        $histories                    = $this->History->getParticipantHistory(
-            $participant['Participant']['phone'],
-            $dialoguesInteractionsContent
-            );
-        $this->set(compact('participant', 'histories'));
         
+        $this->set(compact('participant'));
+        
+        $this->VumiRabbitMQ->sendMessageToRemoveWorker('simulator', 'simulator');
+        
+        /**Clearning the receiving queue*/
+        while($this->VumiRabbitMQ->getMessageFrom('simulator.outbound'))
+            continue;
+        $this->VumiRabbitMQ->sendMessageToCreateWorker('simulator', 'simulator', 'simulator.disptacher', '10');
+        
+    }
+    
+    
+    public function send()
+    {
+        print_r($this->request->data);
+        print_r('*********************************');
+       if ($this->request->is('post')) {
+            $message = $this->request->data['message'];
+            $from    = $this->request->data['phone'];
+            $this->VumiRabbitMQ->sendMessageToWorker('simulator', $from, $message);
+        }
+    }
+    
+    
+    public function receive()
+    {
+        $message = $this->VumiRabbitMQ->getMessageFrom('simulator.outbound');
+        //print_r($message);
+        //print_r('*********************************');
+        $this->set(compact('message'));
     }
     
     

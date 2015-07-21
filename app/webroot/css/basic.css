@@ -1602,6 +1602,10 @@
     text-decoration: underline !important;
 }
 
+.simulator {
+    width: 100% !important;
+}
+
 .simulator-outgoing {
     background-color: #74B8E6 !important;
     border-radius: 8px;
@@ -1610,4 +1614,12 @@
 .simulator-incoming {
     background-color: #CDEBFF !important;
     border-radius: 8px;
+}
+
+.simulator-message {
+    width: 50%
+}
+
+.simulator-profile {
+    width: 50%
 }
