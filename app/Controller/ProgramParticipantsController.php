@@ -942,46 +942,31 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateParticipantMo()
     {
-        $id = $this->params['id'];
+        $id             = $this->params['id'];
+        $program        = $this->params['program'];
+        $requestSuccess = false;
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
         }
         $participant = $this->Participant->read(null, $id);
         
-        $this->set(compact('participant'));
+        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
+        $histories                    = $this->History->getParticipantHistory(
+            $participant['Participant']['phone'],
+            $dialoguesInteractionsContent
+            );
+        $this->set(compact('participant', 'histories'));
         
-        $this->VumiRabbitMQ->sendMessageToRemoveWorker('simulator', 'simulator');
-        
-        /**Clearning the receiving queue*/
-        while($this->VumiRabbitMQ->getMessageFrom('simulator.outbound'))
-            continue;
-        $this->VumiRabbitMQ->sendMessageToCreateWorker('simulator', 'simulator', 'simulator.disptacher', '10');
-        
-    }
-    
-    
-    public function send()
-    {
-        $requestSuccess = true;
-        print_r($this->request->data);
-        print_r('*********************************');
-       if ($this->request->is('post')) {
+        if ($this->request->is('post')) {
+            $requestSuccess = true;
             $message = $this->request->data['message'];
             $from    = $this->request->data['phone'];
-            $this->VumiRabbitMQ->sendMessageToWorker('simulator', $from, $message);
+            $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
+            $this->set(compact('requestSuccess'));
+            
         }
-        $this->set(compact('requestSuccess'));
+        
     }
-    
-    
-    public function receive()
-    {
-        $message = $this->VumiRabbitMQ->getMessageFrom('simulator.outbound');
-        //print_r($message);
-        //print_r('*********************************');
-        $this->set(compact('message'));
-    }
-    
     
 }

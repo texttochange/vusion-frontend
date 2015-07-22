@@ -9,7 +9,7 @@
         <table class="simulator">
          <tr>
              <td class="simulator-message">
-                 <?php echo $this->Form->create(null, array('id'=>'simulator-input','default'=>false));?>
+                 <?php echo $this->Form->create(null, array('id'=>'simulator-input'));?>
                  <fieldset>		
                  <?php
                  echo $this->Form->input('from', array(
@@ -17,21 +17,7 @@
                      'name'=>'phone',
                      'type' => 'hidden'));
                  echo $this->Form->input('message', array('rows'=>4, 'label' => __('Message'), 'name' => 'message'));
-                 echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
-                 
-                 $this->Js->get('#send-button')->event(
-                     'click',
-                     $this->Js->request(
-                         array('program'=>$programDetails['url'], 'action'=>'send.json'),
-                         array('method' => 'POST',
-                             'async' => true, 
-                             'dataExpression' => true,
-                             'data' => '$("#simulator-input").serialize()',
-                             'success' => 'logMessageSent()')));
-                 $this->Js->get('document')->event(
-                     'ready',
-                     'setInterval(function(){pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],'action'=>'receive.json')).'")}, 3000);');
-                 
+                 echo $this->Form->end( __('Send'));
                  ?>
                  </fieldset>
              </td>
@@ -48,5 +34,4 @@
     </div>
 
 </div>
-<?php echo $this->Js->writeBuffer(); ?>        
-
+<?php echo $this->Js->writeBuffer(); ?> 
