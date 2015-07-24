@@ -182,7 +182,7 @@
 	                           __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
 	                   <?php } ?>
 	                   <?php
-	                   echo ((isset($participant['Participant']['simulate'])) ? $this->Html->link(__('Simulate'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'simulateParticipantMo', $participant['Participant']['_id'])) : '');
+	                   echo (($participant['Participant']['simulate']) ? $this->Html->link(__('Simulate'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'simulateParticipantMo', $participant['Participant']['_id'])) : '');
 	                   ?>
 	              </td>
 	      </tr>

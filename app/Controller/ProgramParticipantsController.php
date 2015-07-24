@@ -942,13 +942,14 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateParticipantMo()
     {
-        $id             = $this->params['id'];
-        $program        = $this->params['program'];
-        $requestSuccess = false;
+        $id                    = $this->params['id'];
+        $program               = $this->params['program'];
         $this->Participant->id = $id;
+        
         if (!$this->Participant->exists()) {
             throw new NotFoundException(__('Invalid participant'));
         }
+        
         $participant = $this->Participant->read(null, $id);
         
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
@@ -963,10 +964,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $message = $this->request->data['message'];
             $from    = $this->request->data['phone'];
             $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
-            $this->set(compact('requestSuccess'));
-            
         }
-        
+         $this->set(compact('requestSuccess'));
     }
+    
     
 }

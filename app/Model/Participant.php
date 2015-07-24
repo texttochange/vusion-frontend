@@ -15,7 +15,7 @@ class Participant extends ProgramSpecificMongoModel
     
     function getModelVersion()
     {
-        return '4';
+        return '5';
     }
     
     
@@ -29,6 +29,7 @@ class Participant extends ProgramSpecificMongoModel
             'enrolled',
             'tags',
             'profile',
+            'transport_metadata',
             'simulate'
             );
     }
@@ -328,6 +329,12 @@ class Participant extends ProgramSpecificMongoModel
         
         $this->_setDefault('profile', array());
         $this->data['Participant']['profile'] = Participant::cleanProfile($this->data['Participant']['profile']);
+        
+        $this->_setDefault('transport_metadata', array());
+        
+        if (!$this->data['Participant']['simulate']) {
+            $this->_setDefault('simulate', false);
+        }
         
         if (!$this->data['Participant']['_id']) {
             $this->_setDefault('last-optin-date', $programNow->format("Y-m-d\TH:i:s"));
