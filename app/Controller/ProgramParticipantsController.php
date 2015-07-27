@@ -428,8 +428,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         
         $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
-        $sumilutorPhone = $programInternationalPrefix . mt_rand(1,5);
-        $this->set(compact('sumilutorPhone'));
+        $sumilutorPhone = $programInternationalPrefix . mt_rand(1,3);
+        $this->set(compact('sumilutorPhone'));        
         
         if ($this->request->is('post')) {
             $savedParticipant = null;
@@ -439,6 +439,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $data['Participant']['tags']       = array('simulated', 'keyword optin');
             }
             $data['Participant']['simulate'] = true;
+            print_r($data);
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
                 $this->_notifyUpdateBackendWorker(
@@ -447,12 +448,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $requestSuccess = true;
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
-                if (!$this->_isAjax()) {
+                /*if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'index'));
-                }
+                }*/
             } else {
                 $this->Session->setFlash(__('The simulate participant could not be saved.'));
             }
@@ -940,15 +941,14 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    public function simulateParticipantMo()
+    public function simulateMo()
     {
         $id                    = $this->params['id'];
         $program               = $this->params['program'];
         $this->Participant->id = $id;
         
-        if (!$this->Participant->exists()) {
-            throw new NotFoundException(__('Invalid participant'));
-        }
+        $data        = $this->_ajaxDataPatch();
+        $participant = $this->_loadParticipantId($data);
         
         $participant = $this->Participant->read(null, $id);
         
@@ -964,9 +964,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $message = $this->request->data['message'];
             $from    = $this->request->data['phone'];
             $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
+            $this->set(compact('requestSuccess'));
         }
-         $this->set(compact('requestSuccess'));
     }
+         
     
     
 }

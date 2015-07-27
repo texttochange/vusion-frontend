@@ -30,7 +30,7 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
                 <ul>
                     <li <?php echo ($addParticipantSpan === 'add'? 'class="selected"' : ""); ?>>
                         <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'add')); ?>" >
-                        <label><?php echo __("Real"); ?></label>
+                        <label><?php echo __("Normal"); ?></label>
                         </a>
                     </li>
                     <li <?php echo ($addParticipantSpan === 'simulate'? 'class="selected"' : ""); ?>>

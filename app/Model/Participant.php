@@ -109,6 +109,12 @@ class Participant extends ProgramSpecificMongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please select one option'
                 ),
+            ),
+        'simulate' => array(
+            'boolean' => array(
+                'rule' => array('boolean'),
+                'message' => 'Please enter simulate a boolean option'
+                ),
             )
         );
     
@@ -314,7 +320,7 @@ class Participant extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-
+print_r('hello 23');
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set
