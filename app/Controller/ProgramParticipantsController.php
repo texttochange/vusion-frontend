@@ -448,12 +448,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $requestSuccess = true;
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
-                /*if (!$this->_isAjax()) {
+                if (!$this->_isAjax()) {
                     $this->redirect(array(
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'index'));
-                }*/
+                }
             } else {
                 $this->Session->setFlash(__('The simulate participant could not be saved.'));
             }
@@ -947,27 +947,35 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $program               = $this->params['program'];
         $this->Participant->id = $id;
         
-        $data        = $this->_ajaxDataPatch();
-        $participant = $this->_loadParticipantId($data);
+        $data           = $this->_ajaxDataPatch();
+        $participant    = $this->_loadParticipantId($data);
+        $requestSuccess = true;
         
-        $participant = $this->Participant->read(null, $id);
+        if ($this->request->is('post')) {            
+            $message = $this->request->data['message'];
+            $from    = $this->request->data['phone'];
+            $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
+        }
+        $this->set(compact('requestSuccess', 'participant'));
+    }
+    
+    
+    public function pullSimulateUpdate()
+    {
         
+        $id                    = $this->params['id'];
+        $this->Participant->id = $id;
+        $requestSuccess = true;
+        
+        $data           = $this->_ajaxDataPatch();
+        $participant    = $this->_loadParticipantId($data);
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         $histories                    = $this->History->getParticipantHistory(
             $participant['Participant']['phone'],
             $dialoguesInteractionsContent
             );
-        $this->set(compact('participant', 'histories'));
-        
-        if ($this->request->is('post')) {
-            $requestSuccess = true;
-            $message = $this->request->data['message'];
-            $from    = $this->request->data['phone'];
-            $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
-            $this->set(compact('requestSuccess'));
-        }
+        $this->set(compact('participant', 'histories', 'requestSuccess'));
     }
-         
     
     
 }
