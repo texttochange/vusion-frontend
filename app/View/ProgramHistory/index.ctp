@@ -54,11 +54,28 @@
     <table  class="histories" cellpadding="0" cellspacing="0">
         <thead >
             <tr>
-                <th class="phone"><?php echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
-                <th class="direction"><?php echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
-                <th class="status"><?php echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
-                <th class="details2"><?php echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
-                <th class="date-time"><?php echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                <?php
+                $userGroupId = $this->Session->read('Auth.User.Group.id');
+                if ($userGroupId == 6)
+                    {?>
+                    <th class="profile"><?php 
+                        echo $this->Paginator->sort('profile',__('Labels'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                    <th class="details2"><?php 
+                        echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+              <?php } else {?>
+                     <th class="phone"><?php
+                        echo $this->Paginator->sort('participant-phone', __('Phone'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                    <th class="direction"><?php 
+                        echo $this->Paginator->sort('message-direction', __('Direction'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                    <th class="status"><?php 
+                        echo $this->Paginator->sort('message-status', __('Status'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                    <th class="details2"><?php 
+                        echo $this->Paginator->sort('message-content', __('Details'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                   
+                <?php } ?>
+                <th class="date-time"><?php 
+                        echo $this->Paginator->sort('timestamp', __('Time'), array('url'=> array('program' => $programDetails['url'], '?'=>$this->params['url'])));?></th>
+                
             </tr>
         </thead>
         <tbody>
@@ -68,47 +85,60 @@
             </tr>
                 <?php } else {?>
                     <?php
-                    foreach ($histories as $history): ?>
+                    foreach ($histories as $history): 
+                    
+                    print_r($history);
+                    print_r("**************");
+                    ?>
             <tr>
-                <td class="phone"><?php echo $history['History']['participant-phone']; ?></td>
-                <td class="direction"><?php echo ucfirst($history['History']['message-direction']); ?></td>
-                <?php
-                $status = "&nbsp;";
-                $title = null;
-                if (isset($history['History']['message-status'])) {
-                    $status = $history['History']['message-status'];
-                    switch ($status) {
-                    case 'failed':
-                        $title = $history['History']['failure-reason'];
-                        break;
-                    case 'nack':
-                        $title = $history['History']['failure-reason'];
-                        break;    
-                    case 'forwarded':
-                        $tmp=array();
-                        foreach ($history['History']['forwards'] as $forward) {
-                            $timestamp = $this->Time->format('d/m/Y H:i:s', $forward['timestamp']);
-                            if ($forward['status'] == 'failed') {
-                                $reason = str_replace('"',"'",$forward['failure-reason']);
-                                $tmp[] = __("forward is %s reason %s at %s by %s", $forward['status'], $reason, $timestamp, $forward['to-addr']);
-                            } else {
-                                $tmp[] = __("forward is %s at %s by %s", $forward['status'], $timestamp, $forward['to-addr']);
+                <?php if ($userGroupId == 6)
+                        {?>
+                           <?php if (ucfirst($history['History']['message-direction']) == 'Incoming') {?>  
+                                <td class="phone"><?php echo "";?></td>
+                                <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
+                                <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+                           <?php }?>
+                  <?php } else {?>
+                         <td class="phone"><?php echo $history['History']['participant-phone'];?></td>
+                         <td class="direction"><?php echo ucfirst($history['History']['message-direction']); ?></td>
+                        <?php
+                        $status = "&nbsp;";
+                        $title = null;
+                        if (isset($history['History']['message-status'])) {
+                            $status = $history['History']['message-status'];
+                            switch ($status) {
+                            case 'failed':
+                                $title = $history['History']['failure-reason'];
+                                break;
+                            case 'nack':
+                                $title = $history['History']['failure-reason'];
+                                break;    
+                            case 'forwarded':
+                                $tmp=array();
+                                foreach ($history['History']['forwards'] as $forward) {
+                                    $timestamp = $this->Time->format('d/m/Y H:i:s', $forward['timestamp']);
+                                    if ($forward['status'] == 'failed') {
+                                        $reason = str_replace('"',"'",$forward['failure-reason']);
+                                        $tmp[] = __("forward is %s reason %s at %s by %s", $forward['status'], $reason, $timestamp, $forward['to-addr']);
+                                    } else {
+                                        $tmp[] = __("forward is %s at %s by %s", $forward['status'], $timestamp, $forward['to-addr']);
+                                    }
+                                }
+                                $title = implode("&#013;", $tmp);
+                                break;
+                            case 'received':
+                                $status = "&nbsp;";
+                                break;
+                            case 'missing-data':
+                                $title = $history['History']['missing-data'][0];
+                                break;
                             }
                         }
-                        $title = implode("&#013;", $tmp);
-                        break;
-                    case 'received':
-                        $status = "&nbsp;";
-                        break;
-                    case 'missing-data':
-                        $title = $history['History']['missing-data'][0];
-                        break;
-                    }
-                }
-                echo '<td class="status" '. (isset($title)? 'title="' . htmlspecialchars($title) . '"' : '') . '>'. $status.'</td>';
-                ?>
-                <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
-                <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+                        echo '<td class="status" '. (isset($title)? 'title="' . htmlspecialchars($title) . '"' : '') . '>'. $status.'</td>';
+                        ?>
+                        <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
+                        <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+                <?php } ?>
             </tr>
             <?php endforeach; ?>
                 <?php } ?>
