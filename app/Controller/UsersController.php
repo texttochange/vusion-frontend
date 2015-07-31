@@ -820,8 +820,7 @@ class UsersController extends AppController
         $group = $Group->find('first', array('conditions' => array('name' => 'partner manager')));
         if ($group == null) {
             echo "Acl ERROR: cannot find the group partner manager</br>";
-        } else {
-            
+        } else {            
             $Group->id = $group['Group']['id'];
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
@@ -845,6 +844,43 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
+        
+        //allow sub-partner to 
+        $group = $Group->find('first', array('conditions' => array('name' => 'sub partner')));
+        if ($group == null) {
+            echo "Acl ERROR: cannot find the sub partner</br>";
+        } else {
+            $Group->id = $group['Group']['id']."</br";
+            $this->Acl->deny($Group, 'controllers');
+            $this->Acl->allow($Group, 'controllers/Programs/index');
+            $this->Acl->allow($Group, 'controllers/Programs/view');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
+            $this->Acl->allow($Group, 'controllers/ProgramHome');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/edit');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/add');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/index');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/view');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/export');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/download');
+            $this->Acl->allow($Group, 'controllers/ProgramParticipants/getFilterParameterOptions');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/reset');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/optin');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/optout');
+            $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
+            $this->Acl->deny($Group, 'controllers/ProgramHistory/export');
+            $this->Acl->deny($Group, 'controllers/ProgramHistory/download');
+            $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
+            $this->Acl->deny($Group, 'controllers/Users/add');
+            $this->Acl->allow($Group, 'controllers/Users/view');
+            $this->Acl->allow($Group, 'controllers/Users/changePassword');
+            $this->Acl->allow($Group, 'controllers/Users/edit');
+            $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
+            echo "Acl Done: ". $group['Group']['name']."</br>";
+        }
+
         
         echo 'AllDone';
         exit;

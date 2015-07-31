@@ -21,6 +21,8 @@ class HistoryTestCase extends CakeTestCase
             'UnattachedMessage', $dbName);
         $this->ProgramSetting = ProgramSpecificMongoModel::init(
             'ProgramSetting', $dbName);
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $dbName);
         $this->dropData();
     }
     
@@ -38,6 +40,7 @@ class HistoryTestCase extends CakeTestCase
         $this->History->deleteAll(true, false);
         $this->UnattachedMessage->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
+        $this->Participant->deleteAll(true, false);
     }
     
     
@@ -460,4 +463,57 @@ class HistoryTestCase extends CakeTestCase
         
     } 
     
+
+    public function test_getParticipantLabels()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $participant = array(
+            'phone' => '+788601461',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'profile' => 'email:someone@gmail.com, town: kampala, accent: áéíóúüñ',
+            );
+        $this->Participant->create($participant);
+        $savedParticipant = $this->Participant->save($participant);
+
+        $participant_01 = array(
+            'phone' => '+78866788',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            );
+        $this->Participant->create($participant_01);
+        $savedParticipant = $this->Participant->save($participant_01);
+
+
+        $participant = $this->Participant->find('first', array(
+            'conditions' => array('phone' => '+788601461')));
+        $history_01 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_01);
+        $this->History->save($history_01);
+
+        $history_02 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866788',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_02);
+        $this->History->save($history_02);
+
+        $histories = $this->History->find('all');
+        $output = $this->History->getParticipantLabels($histories);
+        $this->assertEquals('email', $output[0]['History']['participant-labels'][0]['label']);
+    }
+
+
 }

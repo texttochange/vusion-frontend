@@ -6,6 +6,7 @@ App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
 App::uses('Export', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('Participant','Model');
 
 
 class ProgramHistoryController extends BaseProgramSpecificController
@@ -76,12 +77,19 @@ class ProgramHistoryController extends BaseProgramSpecificController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         $conditions = $this->Filter->getConditions($this->History, $conditions);
+        $userGroupId = $this->Session->read('Auth.User.Group.id');
+
         $this->paginate = array(
-            'all',
-            'conditions' => $conditions,
-            'order'=> $order);
+                'all',
+                'conditions' => $conditions,
+                'order'=> $order);
         $histories = $this->paginate('History');
-        $this->set(compact('histories', 'requestSuccess', 'order'));
+        if ($userGroupId == 6) {
+            $histories = $this->History->getParticipantLabels($histories);
+            $this->set(compact('histories', 'requestSuccess', 'order'));
+        } else {
+            $this->set(compact('histories', 'requestSuccess', 'order'));
+        }
     }
 
 
