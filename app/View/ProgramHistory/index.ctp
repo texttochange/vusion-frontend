@@ -83,24 +83,28 @@
             <tr>
                 <td colspan=6><?php echo __("No results found.") ?></td>
             </tr>
-                <?php } else {?>
-                    <?php
-                    foreach ($histories as $history): 
-                    
-                    print_r($history);
-                    print_r("**************");
-                    ?>
-            <tr>
-                <?php if ($userGroupId == 6)
-                        {?>
-                           <?php if (ucfirst($history['History']['message-direction']) == 'Incoming') {?>  
-                                <td class="phone"><?php echo "";?></td>
-                                <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
-                                <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
-                           <?php }?>
-                  <?php } else {?>
-                         <td class="phone"><?php echo $history['History']['participant-phone'];?></td>
-                         <td class="direction"><?php echo ucfirst($history['History']['message-direction']); ?></td>
+            <?php } else {
+                foreach ($histories as $history):?>
+                <tr>
+                    <?php if ($userGroupId == 6) {
+                        if (ucfirst($history['History']['message-direction']) == 'Incoming') {?>  
+                            <td class="phone"><?php 
+                            if (count($history['History']['participant-labels'] > 0)) {
+                                foreach ($history['History']['participant-labels'] as $profileItem) {
+                                    $profileItemsLabel = $profileItem['label'];
+                                    $profileItemsValue = $profileItem['value'];
+                                    $participantProfile = $profileItemsLabel . ': ' . $profileItemsValue;	              		  		 
+                                    echo $this->Html->tag('div', $participantProfile, array('class'=> 'participant-tuncated-profile', 'title' => $participantProfile)); 
+                                }
+                            } else {
+                                echo $this->Html->tag('div', ''); 
+                            }?></td>
+                            <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
+                            <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
+                        <?php }
+                    } else { ?>
+                        <td class="phone"><?php echo $history['History']['participant-phone'];?></td>
+                        <td class="direction"><?php echo ucfirst($history['History']['message-direction']); ?></td>
                         <?php
                         $status = "&nbsp;";
                         $title = null;
@@ -138,10 +142,10 @@
                         ?>
                         <td class="details"><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td>
                         <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i:s', $history['History']['timestamp']); ?>&nbsp;</td>
-                <?php } ?>
-            </tr>
-            <?php endforeach; ?>
-                <?php } ?>
+                    <?php } ?>
+                </tr>
+                <?php endforeach;
+            } ?>
          </tbody>
     </table>
     </div>
