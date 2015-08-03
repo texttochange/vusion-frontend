@@ -141,10 +141,14 @@ function pullSimulatorUpdate(url){
             success: function(data){
                 $('#connectionState').hide();
                 if (data['histories']) {
-                    //var message = $.parseJSON(data['history']);
+                    //var message = $.parseJSON(data['histories']);
                     //$("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
-                    $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+data['histories']['participant-phone']+"'</div>")
-                
+                    var message = [];
+                    for (var i = 0; i< data['histories'].length; i++) {
+                        message = data['histories'][i];
+                        $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+message['History']['message-content']+"'</div>")
+                    }
+                    //$("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+message['History']['message-content']+"'</div>")
                 }
             },
             timeout: 1000,

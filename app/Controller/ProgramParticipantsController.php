@@ -968,8 +968,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         
         $histories = $this->History->getParticipantHistory($participantPhone, $dialoguesInteractionsContent);
-        print_r($histories);
-        print_r('**********');
+        //print_r($histories);
+        //print_r('**********');
         $this->set(compact('participant', 'histories', 'requestSuccess'));
     }
     
