@@ -31,12 +31,10 @@
                             'success' => 'logMessageSent()'
                             )));
                  
-                 $this->Js->set('participant', $participant['Participant']);
                  $this->Js->get('document')->event(
                      'ready',
                      'setInterval(function()
                      {
-                     $("[name=phone]").val();
                      pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],'action'=>'pullSimulateUpdate.json')).'")
                      },
                      3000);');

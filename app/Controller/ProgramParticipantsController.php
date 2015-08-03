@@ -943,13 +943,14 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateMo()
     {
+        $requestSuccess = true;
         $id                    = $this->params['id'];
         $program               = $this->params['program'];
         $this->Participant->id = $id;
         
         $data           = $this->_ajaxDataPatch();
         $participant    = $this->_loadParticipantId($data);
-        $requestSuccess = true;
+        $this->Session->write('participantPhone', $participant['Participant']['phone']);
         
         if ($this->request->is('post')) {            
             $message = $this->request->data['message'];
@@ -962,18 +963,13 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function pullSimulateUpdate()
     {
-        
-        $id                    = $this->params['id'];
-        $this->Participant->id = $id;
         $requestSuccess = true;
-        
-        $data           = $this->_ajaxDataPatch();
-        $participant    = $this->_loadParticipantId($data);
+        $participantPhone = $this->Session->read('participantPhone');
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-        $histories                    = $this->History->getParticipantHistory(
-            $participant['Participant']['phone'],
-            $dialoguesInteractionsContent
-            );
+        
+        $histories = $this->History->getParticipantHistory($participantPhone, $dialoguesInteractionsContent);
+        print_r($histories);
+        print_r('**********');
         $this->set(compact('participant', 'histories', 'requestSuccess'));
     }
     

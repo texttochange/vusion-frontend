@@ -1,4 +1,4 @@
 <?php
-if ($participant) {
-	echo ',"phone":'. json_encode($participant['Participant']['phone']);
-} 
+if ($histories) {
+	echo ',"histories":'. json_encode($histories);
+}

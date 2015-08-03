@@ -140,10 +140,10 @@ function pullSimulatorUpdate(url){
             url: url,
             success: function(data){
                 $('#connectionState').hide();
-                if (data['message']) {
-                    var message = $.parseJSON(data['message']);
+                if (data['histories']) {
+                    //var message = $.parseJSON(data['history']);
                     //$("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
-                    $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+message['content']+"'</div>")
+                    $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+data['histories']['participant-phone']+"'</div>")
                 
                 }
             },
@@ -154,10 +154,10 @@ function pullSimulatorUpdate(url){
 
 
 function logMessageSent(){
-    var log = "> "+Date.now().toString('yy/MM/dd HH:mm')+" '"+$('[name="message"]').val()+"'";
+    //var log = "> "+Date.now().toString('yy/MM/dd HH:mm')+" '"+$('[name="message"]').val()+"'";
     $('[name="participant-phone"]').val('')
     $('[name="message"]').val('')
-    $('#simulator-output').append("<div>"+log+"</div>");
+   // $('#simulator-output').append("<div>"+log+"</div>");
 }
 
 
