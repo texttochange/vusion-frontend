@@ -439,7 +439,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $data['Participant']['tags']       = array('simulated', 'keyword optin');
             }
             $data['Participant']['simulate'] = true;
-            print_r($data);
             $this->Participant->create();
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
                 $this->_notifyUpdateBackendWorker(
@@ -968,8 +967,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         
         $histories = $this->History->getParticipantHistory($participantPhone, $dialoguesInteractionsContent);
-        //print_r($histories);
-        //print_r('**********');
         $this->set(compact('participant', 'histories', 'requestSuccess'));
     }
     

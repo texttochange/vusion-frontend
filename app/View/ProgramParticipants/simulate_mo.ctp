@@ -12,12 +12,7 @@
              <?php
                  echo $this->Html->tag('div', "", array('class'=>'ttc-simulator-output', 'id' => 'simulator-output'));
                  echo $this->Form->create(null, array('id'=>'simulator-input'));
-                 echo $this->Form->input('from', array(
-                     'value' => $participant['Participant']['phone'],
-                     'name'=>'phone',
-                     'type' => 'hidden'
-                     ));
-                 echo $this->Form->input('message', array('rows'=>4, 'label' => __('Message'), 'name' => 'message'));
+                 echo $this->Form->input('message', array('rows'=>3, 'label' => __('Message'), 'name' => 'message'));
                  echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
                                 
                  $this->Js->get('#send-button')->event(
@@ -40,8 +35,9 @@
                      3000);');
                        
                  ?>
-                 </td>
+             </td>
              <td class="simulator-profile">
+             <div>
                  <dl>
                      <dt>
                      <?php 
@@ -57,27 +53,28 @@
                          echo (': ');
                          if (count($participant['Participant']['profile']) > 0) {
                              foreach ($participant['Participant']['profile'] as $profileItem) {
-                                 echo $this->Html->tag('div', __("%s: %s", $profileItem['label'], $profileItem['value']));
-                             }
-                         } else {
-                             echo "&nbsp;"; 
-                         }?>
-                     </dt>
-                  </dl>
-                  <dl>
-                     <dt>
-                     <?php
-                         echo __('Tags');
-                         echo (': ');
-                         if (count($participant['Participant']['tags']) > 0) {
-                             foreach ($participant['Participant']['tags'] as $tag) {
-                                 echo $this->Html->tag('div', __("%s", $tag));
+                                 echo $this->Html->tag('div', __("&nbsp&nbsp&nbsp&nbsp%s: %s", $profileItem['label'], $profileItem['value']));
                              }
                          } else {
                              echo "&nbsp;"; 
                          }?>
                      </dt>
                  </dl>
+                 <dl>
+                     <dt>
+                     <?php
+                         echo __('Tags');
+                         echo (': ');
+                         if (count($participant['Participant']['tags']) > 0) {
+                             foreach ($participant['Participant']['tags'] as $tag) {
+                                 echo $this->Html->tag('div', __("&nbsp&nbsp&nbsp&nbsp%s", $tag));
+                             }
+                         } else {
+                             echo "&nbsp;"; 
+                         }?>
+                     </dt>
+                 </dl>
+             </div>
              </td>    
          <tr>
         </table>

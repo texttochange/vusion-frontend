@@ -365,9 +365,9 @@
 
 .ttc-simulator-output {
         border: 1px solid black;
-        height: 200px;
+        height: 293px;
         overflow-y: scroll;
-        margin-bottom: 30px;
+        margin-bottom: 14px;
 }
 
 .ttc-simulator-input {
@@ -1606,15 +1606,53 @@
     width: 100% !important;
 }
 
+.simulator-msg {
+    margin-bottom: 9px;
+}
+
+.simulator-msg:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+
 .simulator-outgoing {
     background-color: #74B8E6 !important;
     border-radius: 8px;
+    padding: 7px 7px 7px;
+    float: left;
 }
 
 .simulator-incoming {
     background-color: #CDEBFF !important;
     border-radius: 8px;
+    padding: 7px 7px 7px;
+    float: right;
 }
+
+.simulator-outgoing:before, .simulator-incoming:before {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    width: 12px;
+    height: 19px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.simulator-outgoing:before {
+    left: -11px;
+}
+
+.simulator-datetime {
+    font-size: 11px;
+    color: rgba(0,0,0,.45);
+    bottom: 3px;
+    right: 7px;
+}
+
 
 .simulator-message {
     width: 50%

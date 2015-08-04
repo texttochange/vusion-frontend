@@ -140,15 +140,29 @@ function pullSimulatorUpdate(url){
             url: url,
             success: function(data){
                 $('#connectionState').hide();
+                $('#simulator-output').empty();
                 if (data['histories']) {
-                    //var message = $.parseJSON(data['histories']);
-                    //$("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
                     var message = [];
                     for (var i = 0; i< data['histories'].length; i++) {
                         message = data['histories'][i];
-                        $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+message['History']['message-content']+"'</div>")
+                        if (message['History']['message-direction'] == "incoming") {
+                            $("#simulator-output").append(
+                                "<div class='simulator-msg'><div class='simulator-incoming'> <div>"+
+                                message['History']['message-content']+
+                                "</div><div class='simulator-datetime'>"+
+                                message['History']['timestamp'].toString('yy/MM/dd HH:mm')+
+                                "</div></div></div>")
+                        } else if (message['History']['message-direction'] == "outgoing") {
+                            $("#simulator-output").append(
+                                "<div class='simulator-msg'><div class='simulator-outgoing'> <div>"+                                
+                                message['History']['message-content']+
+                                "</div><div class='simulator-datetime'>"+
+                                message['History']['timestamp'].toString('yy/MM/dd HH:mm')+
+                                "</div></div></div>")
+                        } else {
+                             $("#simulator-output").append("")
+                        }
                     }
-                    //$("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+message['History']['message-content']+"'</div>")
                 }
             },
             timeout: 1000,
@@ -157,11 +171,8 @@ function pullSimulatorUpdate(url){
 }
 
 
-function logMessageSent(){
-    //var log = "> "+Date.now().toString('yy/MM/dd HH:mm')+" '"+$('[name="message"]').val()+"'";
-    $('[name="participant-phone"]').val('')
-    $('[name="message"]').val('')
-   // $('#simulator-output').append("<div>"+log+"</div>");
+function logMessageSent() {
+    $('[name="message"]').val('');
 }
 
 
