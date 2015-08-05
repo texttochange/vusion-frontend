@@ -12,9 +12,14 @@
              <?php
                  echo $this->Html->tag('div', "", array('class'=>'ttc-simulator-output', 'id' => 'simulator-output'));
                  echo $this->Form->create(null, array('id'=>'simulator-input'));
+                 echo $this->Form->input('from', array(
+                     'value' => $participant['Participant']['phone'],
+                     'name'=>'phone',
+                     'type' => 'hidden'
+                     ));
                  echo $this->Form->input('message', array('rows'=>3, 'label' => __('Message'), 'name' => 'message'));
                  echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
-                                
+                 
                  $this->Js->get('#send-button')->event(
                     'click',
                     $this->Js->request(
