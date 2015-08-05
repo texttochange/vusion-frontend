@@ -320,7 +320,6 @@ class Participant extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-print_r('hello 23');
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set

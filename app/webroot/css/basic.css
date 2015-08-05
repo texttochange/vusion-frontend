@@ -363,13 +363,6 @@
         font-size: 9px;
 }
 
-.ttc-simulator-output {
-        border: 1px solid black;
-        height: 293px;
-        overflow-y: scroll;
-        margin-bottom: 14px;
-}
-
 .ttc-simulator-input {
         
 }
@@ -1606,6 +1599,19 @@
     width: 100% !important;
 }
 
+.ttc-simulator-output {
+    border: 1px solid black;
+    height: 293px;
+    overflow-y: scroll;
+    margin-bottom: 14px;
+    padding: 10px;
+}
+
+.ttc-simulator-meesage {
+    width: 100%;
+    
+}
+
 .simulator-msg {
     margin-bottom: 9px;
 }
@@ -1622,6 +1628,7 @@
     border-radius: 8px;
     padding: 7px 7px 7px;
     float: left;
+    position: relative;
 }
 
 .simulator-incoming {
@@ -1629,12 +1636,13 @@
     border-radius: 8px;
     padding: 7px 7px 7px;
     float: right;
+    position: relative;
 }
 
 .simulator-outgoing:before, .simulator-incoming:before {
     content: '';
     position: absolute;
-    bottom: 3px;
+    /*bottom: 3px;*/
     width: 12px;
     height: 19px;
     background-position: 50% 50%;
@@ -1644,6 +1652,12 @@
 
 .simulator-outgoing:before {
     left: -11px;
+    background-image: url('/img/message-out.png');
+}
+
+.simulator-incoming:before {
+    right: -10px;
+    background-image: url('/img/message-in.png');
 }
 
 .simulator-datetime {
@@ -1655,9 +1669,13 @@
 
 
 .simulator-message {
-    width: 50%
+    width: 50%;
 }
 
 .simulator-profile {
-    width: 50%
+    width: 50%;
+}
+
+.simulator-profile-div {
+    margin-left: 15px;
 }

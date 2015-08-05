@@ -9,8 +9,11 @@
         <table class="simulator">
          <tr>
              <td class="simulator-message">
+             <div class = "ttc-simulator-output" >
              <?php
-                 echo $this->Html->tag('div', "", array('class'=>'ttc-simulator-output', 'id' => 'simulator-output'));
+                 echo $this->Html->tag('div', "", array('class'=>'ttc-simulator-meesage', 'id' => 'simulator-output'));?>
+             </div>
+             <?php
                  echo $this->Form->create(null, array('id'=>'simulator-input'));
                  echo $this->Form->input('from', array(
                      'value' => $participant['Participant']['phone'],
@@ -42,7 +45,7 @@
                  ?>
              </td>
              <td class="simulator-profile">
-             <div>
+             <div class="simulator-profile-div">
                  <dl>
                      <dt>
                      <?php 
