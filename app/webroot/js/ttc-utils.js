@@ -143,6 +143,7 @@ function pullSimulatorUpdate(url){
                 $('#simulator-output').empty();
                 if (data['histories']) {
                     var message = [];
+                    var $container = $('.ttc-simulator-output');
                     for (var i = 0; i< data['histories'].length; i++) {
                         message = data['histories'][i];
                         if (message['History']['message-direction'] == "incoming") {
@@ -152,6 +153,7 @@ function pullSimulatorUpdate(url){
                                 "</div><div class='simulator-datetime'>"+
                                 message['History']['timestamp'].toString('yy/MM/dd HH:mm')+
                                 "</div></div></div>")
+                            $container[0].scrollTop = $container[0].scrollHeight;
                         } else if (message['History']['message-direction'] == "outgoing") {
                             $("#simulator-output").append(
                                 "<div class='simulator-msg'><div class='simulator-outgoing'> <div>"+                                
@@ -159,6 +161,7 @@ function pullSimulatorUpdate(url){
                                 "</div><div class='simulator-datetime'>"+
                                 message['History']['timestamp'].toString('yy/MM/dd HH:mm')+
                                 "</div></div></div>")
+                            $container[0].scrollTop = $container[0].scrollHeight;
                         } else {
                              $("#simulator-output").append("")
                         }
