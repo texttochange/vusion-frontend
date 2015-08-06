@@ -141,27 +141,27 @@ function pullSimulatorUpdate(url){
             success: function(data){
                 $('#connectionState').hide();
                 $('#simulator-output').empty();
-                if (data['histories']) {
+                if (data['data']) {
                     var message = [];
-                    var $container = $('.ttc-simulator-output');
-                    for (var i = 0; i< data['histories'].length; i++) {
-                        message = data['histories'][i];
+                    //var $container = $('.ttc-simulator-output');
+                    for (var i = 0; i< data['data'].length; i++) {
+                        message = data['data'][i];
                         if (message['History']['message-direction'] == "incoming") {
                             $("#simulator-output").append(
                                 "<div class='simulator-msg'><div class='simulator-incoming'> <div>"+
                                 message['History']['message-content']+
                                 "</div><div class='simulator-datetime'>"+
-                                message['History']['timestamp'].toString('yy/MM/dd HH:mm')+
+                                moment(message['History']['timestamp']).calendar()+
                                 "</div></div></div>")
-                            $container[0].scrollTop = $container[0].scrollHeight;
+                            //$container[0].scrollTop = $container[0].scrollHeight;
                         } else if (message['History']['message-direction'] == "outgoing") {
                             $("#simulator-output").append(
                                 "<div class='simulator-msg'><div class='simulator-outgoing'> <div>"+                                
                                 message['History']['message-content']+
                                 "</div><div class='simulator-datetime'>"+
-                                message['History']['timestamp'].toString('yy/MM/dd HH:mm')+
+                                moment(message['History']['timestamp']).calendar()+
                                 "</div></div></div>")
-                            $container[0].scrollTop = $container[0].scrollHeight;
+                            //$container[0].scrollTop = $container[0].scrollHeight;
                         } else {
                              $("#simulator-output").append("")
                         }
@@ -176,6 +176,14 @@ function pullSimulatorUpdate(url){
 
 function logMessageSent() {
     $('[name="message"]').val('');
+}
+
+
+function submitOnEnterPress(event) {
+    if (event.keyCode == 13) {
+        $("#simulator-input").serialize();
+        $('[name="message"]').val('');
+    }
 }
 
 

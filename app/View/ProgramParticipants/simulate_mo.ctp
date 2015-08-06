@@ -1,7 +1,21 @@
 <div class="participant view width-size">
     <?php
         $contentTitle   = __('Simulate Participant'); 
-        $contentActions = array();
+        $contentActions[] = $this->AclLink->generateButton(
+            __('Edit Participant'),
+            $programDetails['url'],
+            'programParticipants',
+            'edit',
+            array('class'=>'ttc-button'),
+            $participant['Participant']['_id']);
+        
+        $contentActions[] = $this->AclLink->generateButton(
+            __('View Participant'),
+            $programDetails['url'],
+            'programParticipants',
+            'view',
+            array('class'=>'ttc-button'),
+            $participant['Participant']['_id']);
         
         echo $this->element('header_content', compact('contentTitle', 'contentActions'));
     ?>
@@ -20,7 +34,7 @@
                      'name'=>'phone',
                      'type' => 'hidden'
                      ));
-                 echo $this->Form->input('message', array('rows'=>3, 'label' => __('Message'), 'name' => 'message'));
+                 echo $this->Form->input('message', array('rows'=>3, 'label' => __('Message'), 'name' => 'message', 'id' => 'smessage'));
                  echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
                  
                  $this->Js->get('#send-button')->event(
@@ -34,11 +48,20 @@
                             'success' => 'logMessageSent()'
                             )));
                  
+                 $this->Js->get('#smessage')->event(
+                     'keyup',
+                     'submitOnEnterPress(event)'
+                     );
+                 
+                     
+                 $participantPhone = urlencode($participant['Participant']['phone']);
                  $this->Js->get('document')->event(
                      'ready',
                      'setInterval(function()
                      {
-                     pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],'action'=>'pullSimulateUpdate.json')).'")
+                     pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],
+                         'controller' => 'programHistory',
+                         'action'=>'index.json?filter_operator=all&filter_param[1][1]=participant-phone&filter_param[1][2]=start-with&filter_param[1][3]='.$participantPhone)).'")
                      },
                      3000);');
                        

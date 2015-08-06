@@ -1600,7 +1600,7 @@
 }
 
 .ttc-simulator-output {
-    border: 1px solid black;
+    border: 1px solid #d3d3d3;
     height: 293px;
     overflow-y: scroll;
     margin-bottom: 14px;
@@ -1608,8 +1608,7 @@
 }
 
 .ttc-simulator-meesage {
-    width: 100%;
-    
+    width: 100%;    
 }
 
 .simulator-msg {
@@ -1621,7 +1620,6 @@
     display: table;
     clear: both;
 }
-
 
 .simulator-outgoing {
     background-color: #74B8E6 !important;
@@ -1670,10 +1668,12 @@
 
 .simulator-message {
     width: 50%;
+    border-bottom: 0px;
 }
 
 .simulator-profile {
     width: 50%;
+    border-bottom: 0px;
 }
 
 .simulator-profile-div {
