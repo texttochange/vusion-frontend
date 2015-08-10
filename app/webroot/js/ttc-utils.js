@@ -137,7 +137,7 @@ function pullBackendNotifications(url) {
 
 function pullSimulatorUpdate(url){
     $.ajax({
-            url: url,
+            url: url.replace(/&amp;/g, '&').replace(/%5B/g, '[').replace(/%5D/g, ']'),
             success: function(data){
                 $('#connectionState').hide();
                 $('#simulator-output').empty();

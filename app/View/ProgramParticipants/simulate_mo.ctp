@@ -53,18 +53,21 @@
                      'submitOnEnterPress(event)'
                      );
                  
-                     
-                 $participantPhone = urlencode($participant['Participant']['phone']);
                  $this->Js->get('document')->event(
                      'ready',
                      'setInterval(function()
                      {
                      pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],
                          'controller' => 'programHistory',
-                         'action'=>'index.json?filter_operator=all&filter_param[1][1]=participant-phone&filter_param[1][2]=start-with&filter_param[1][3]='.$participantPhone)).'")
+                         'action'=>'index.json',
+                         '?' => array(
+                             'filter_operator'=>'all',
+                             'filter_param[1][1]'=>'participant-phone',
+                             'filter_param[1][2]'=>'start-with',
+                             'filter_param[1][3]'=>$participant['Participant']['phone']))).'")
                      },
                      3000);');
-                       
+                     
                  ?>
              </td>
              <td class="simulator-profile">
