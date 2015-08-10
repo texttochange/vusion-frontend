@@ -191,6 +191,23 @@ function pullParticipantUpdate(url){
                         "Phone: "+
                         participant['participant']['phone']+
                         "</dt></dl>")
+                    $("#simulator-profile").append(
+                        "<dl> <dt>"+
+                        "Last Optin Date:  </br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+                         moment(participant['participant']['last-optin-date']).format("DD/MM/YYYY HH:mm:ss")+
+                        "</dt></dl>")
+                    $("#simulator-profile").append(
+                            "<dl> <dt>"+
+                            "Last Optout Date: </br>")
+                    if (participant['participant']['last-optout-date']) {
+                        $("#simulator-profile").append(
+                            "<dl><dt>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+                             moment(participant['participant']['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+
+                            "</dt></dl>")
+                    } else {
+                        $("#simulator-profile").append("&nbsp;  </dt></dl>")
+                    }
+                    
                     if ((participant['participant']['profile'].length) > 0) {
                         $("#simulator-profile").append(
                             "<dl><dt>"+
@@ -208,6 +225,7 @@ function pullParticipantUpdate(url){
                     } else {
                         $("#simulator-profile").append("&nbsp;  </dt></dl>")
                     }
+                    
                     if ((participant['participant']['tags'].length) > 0) {
                         $("#simulator-profile").append(
                             "<dl><dt>"+
