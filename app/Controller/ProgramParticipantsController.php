@@ -946,10 +946,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $id                    = $this->params['id'];
         $program               = $this->params['program'];
         $this->Participant->id = $id;
-        
+        $this->Session->write('participantId', $id);
         $data           = $this->_ajaxDataPatch();
         $participant    = $this->_loadParticipantId($data);
-        $this->Session->write('participantPhone', $participant['Participant']['phone']);
         
         if ($this->request->is('post')) {            
             $message = $this->request->data['message'];
@@ -960,14 +959,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    public function pullSimulateUpdate()
+    public function pullParticipantDetails()
     {
         $requestSuccess = true;
-        $participantPhone = $this->Session->read('participantPhone');
-        $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
-        
-        $histories = $this->History->getParticipantHistory($participantPhone, $dialoguesInteractionsContent);
-        $this->set(compact('participant', 'histories', 'requestSuccess'));
+        $id          = $this->Session->read('participantId');
+        $participant =  $this->Participant->read(null, $id);
+        $this->set(compact('participant', 'requestSuccess'));
     }
     
     

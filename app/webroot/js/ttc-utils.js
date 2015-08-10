@@ -179,9 +179,62 @@ function logMessageSent() {
 }
 
 
+function pullParticipantUpdate(url){
+    $.ajax({
+            url: url,
+            success: function(participant){
+                $('#connectionState').hide();
+                $('#simulator-profile').empty();
+                if (participant['participant']) {
+                    $("#simulator-profile").append(
+                        "<dl> <dt>"+
+                        "Phone: "+
+                        participant['participant']['phone']+
+                        "</dt></dl>")
+                    if ((participant['participant']['profile'].length) > 0) {
+                        $("#simulator-profile").append(
+                            "<dl><dt>"+
+                            "Labels: ")
+                        for (var i = 0; i< participant['participant']['profile'].length; i++) {
+                            $("#simulator-profile").append(
+                                "<dl><dt>"+
+                                "<div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+                                participant['participant']['profile'][i]['label']+
+                                ": "+
+                                participant['participant']['profile'][i]['value']+
+                                "</div></dt></dl>"
+                                )
+                        }
+                    } else {
+                        $("#simulator-profile").append("&nbsp;  </dt></dl>")
+                    }
+                    if ((participant['participant']['tags'].length) > 0) {
+                        $("#simulator-profile").append(
+                            "<dl><dt>"+
+                            "Tags: ")
+                        for (var i = 0; i< participant['participant']['tags'].length; i++) {
+                            $("#simulator-profile").append(
+                                "<dl><dt>"+
+                                "<div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+                                participant['participant']['tags'][i]+
+                                "</div></dt></dl>"
+                                )
+                        }
+                    } else {
+                        $("#simulator-profile").append("&nbsp;  </dt></dl>")
+                    }
+                    
+                }
+            },
+            timeout: 1000,
+            error: vusionAjaxError
+    });
+}
+
+
 function submitOnEnterPress(event) {
     if (event.keyCode == 13) {
-        $("#simulator-input").serialize();
+        $("#simulator-input").submit();
         $('[name="message"]').val('');
     }
 }

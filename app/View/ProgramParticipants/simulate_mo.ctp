@@ -68,43 +68,17 @@
                  ?>
              </td>
              <td class="simulator-profile">
-             <div class="simulator-profile-div">
-                 <dl>
-                     <dt>
-                     <?php 
-                         echo __('Phone');
-                         echo (': ');
-                         echo $participant['Participant']['phone'];?>
-                     </dt>
-                 </dl>
-                 <dl>
-                     <dt>
-                     <?php
-                         echo __('Labels');
-                         echo (': ');
-                         if (count($participant['Participant']['profile']) > 0) {
-                             foreach ($participant['Participant']['profile'] as $profileItem) {
-                                 echo $this->Html->tag('div', __("&nbsp&nbsp&nbsp&nbsp%s: %s", $profileItem['label'], $profileItem['value']));
-                             }
-                         } else {
-                             echo "&nbsp;"; 
-                         }?>
-                     </dt>
-                 </dl>
-                 <dl>
-                     <dt>
-                     <?php
-                         echo __('Tags');
-                         echo (': ');
-                         if (count($participant['Participant']['tags']) > 0) {
-                             foreach ($participant['Participant']['tags'] as $tag) {
-                                 echo $this->Html->tag('div', __("&nbsp&nbsp&nbsp&nbsp%s", $tag));
-                             }
-                         } else {
-                             echo "&nbsp;"; 
-                         }?>
-                     </dt>
-                 </dl>
+             <div class="simulator-profile-div" id = "simulator-profile">
+             <?php $this->Js->get('document')->event(
+                 'ready',
+                 'setInterval(function()
+                 {
+                 pullParticipantUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],
+                     'action'=>'pullParticipantDetails.json')).'")
+                 },
+                 3000);');
+             ?>
+                
              </div>
              </td>    
          <tr>
