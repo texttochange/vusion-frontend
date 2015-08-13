@@ -59,7 +59,9 @@
                      {
                      pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],
                          'controller' => 'programHistory',
-                         'action'=>'index.json',
+                         'action'=>'index',
+                         'sort' => 'timestamp',
+                         'direction' => 'asc.json',
                          '?' => array(
                              'filter_operator'=>'all',
                              'filter_param[1][1]'=>'participant-phone',
