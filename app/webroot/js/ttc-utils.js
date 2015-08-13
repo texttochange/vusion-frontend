@@ -135,7 +135,7 @@ function pullBackendNotifications(url) {
 }
 
 
-function pullSimulatorUpdate(url){
+function pullSimulatorUpdate(url) {
     $.ajax({
             url: url.replace(/&amp;/g, '&').replace(/%5B/g, '[').replace(/%5D/g, ']'),
             success: function(data){
@@ -143,7 +143,7 @@ function pullSimulatorUpdate(url){
                 $('#simulator-output').empty();
                 if (data['data']) {
                     var message = [];
-                    //var $container = $('.ttc-simulator-output');
+                    var $container = $('.ttc-simulator-output');
                     for (var i = 0; i< data['data'].length; i++) {
                         message = data['data'][i];
                         if (message['History']['message-direction'] == "incoming") {
@@ -153,7 +153,7 @@ function pullSimulatorUpdate(url){
                                 "</div><div class='simulator-datetime'>"+
                                 moment(message['History']['timestamp']).calendar()+
                                 "</div></div></div>")
-                            //$container[0].scrollTop = $container[0].scrollHeight;
+                            $container[0].scrollTop = $container[0].scrollHeight;
                         } else if (message['History']['message-direction'] == "outgoing") {
                             $("#simulator-output").append(
                                 "<div class='simulator-msg'><div class='simulator-outgoing'> <div>"+                                
@@ -161,9 +161,9 @@ function pullSimulatorUpdate(url){
                                 "</div><div class='simulator-datetime'>"+
                                 moment(message['History']['timestamp']).calendar()+
                                 "</div></div></div>")
-                            //$container[0].scrollTop = $container[0].scrollHeight;
+                            $container[0].scrollTop = $container[0].scrollHeight;
                         } else {
-                             $("#simulator-output").append("")
+                            $("#simulator-output").append("")
                         }
                     }
                 }
