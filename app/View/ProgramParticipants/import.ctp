@@ -32,6 +32,19 @@
 		    'type' => 'file'
 		));
 		echo $this->Form->input('tags', array('label' => __('Tag imported participants')));
+		
+		$options  = $selectOptions;
+		//$selected = $oldEnrolls;
+		echo $this->Form->input('enrolled', array(
+		    'options'=>$options,
+		    'type'=>'select',
+		    'multiple'=>true,
+		    'label'=>__('Enroll'),
+		    'selected'=>' ',
+		    'style'=>'margin-bottom:0px'
+		    ));
+		$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
+		
 		echo '<div>';
 		echo $this->Form->checkbox('replace-tags-and-labels', array(
 		    'label' => 'Update participant',
