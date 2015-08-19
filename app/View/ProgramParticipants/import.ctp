@@ -32,9 +32,10 @@
 		    'type' => 'file'
 		));
 		echo $this->Form->input('tags', array('label' => __('Tag imported participants')));
-		
-		$options  = $selectOptions;
-		//$selected = $oldEnrolls;
+		$options = array();
+		if (isset($selectOptions)) {
+		    $options  = $selectOptions;
+		}
 		echo $this->Form->input('enrolled', array(
 		    'options'=>$options,
 		    'type'=>'select',
