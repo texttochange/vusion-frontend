@@ -174,8 +174,13 @@ function pullSimulatorUpdate(url) {
 }
 
 
-function logMessageSent() {
-    $('[name="message"]').val('');
+function logMessageSent(event) {
+    if (event.keyCode == 13) {
+        $("#simulator-input").submit();
+        $('[name="message"]').val('');
+    } else if (event.type == 'click') {
+        $('[name="message"]').val('');
+    }
 }
 
 
@@ -247,14 +252,6 @@ function pullParticipantUpdate(url){
             timeout: 1000,
             error: vusionAjaxError
     });
-}
-
-
-function submitOnEnterPress(event) {
-    if (event.keyCode == 13) {
-        $("#simulator-input").submit();
-        $('[name="message"]').val('');
-    }
 }
 
 

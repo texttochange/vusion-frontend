@@ -29,28 +29,35 @@
              </div>
              <?php
                  echo $this->Form->create(null, array('id'=>'simulator-input'));
-                 echo $this->Form->input('from', array(
-                     'value' => $participant['Participant']['phone'],
-                     'name'=>'phone',
-                     'type' => 'hidden'
-                     ));
-                 echo $this->Form->input('message', array('rows'=>3, 'label' => __('Message'), 'name' => 'message', 'id' => 'smessage'));
+                 echo $this->Form->input(
+                     'from',
+                     array(
+                         'value' => $participant['Participant']['phone'],
+                         'name'=>'phone',
+                         'type' => 'hidden'));
+                 echo $this->Form->input(
+                     'message', 
+                     array(
+                         'rows'=>3,
+                         'label' => __('Message'),
+                         'name' => 'message',
+                         'id' => 'smessage'));
                  echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
                  
                  $this->Js->get('#send-button')->event(
-                    'click',
-                    $this->Js->request(
-                        array('program'=>$programDetails['url'], 'action'=>'simulateMo.json'),
-                        array('method' => 'POST',
-                            'async' => true, 
-                            'dataExpression' => true,
-                            'data' => '$("#simulator-input").serialize()',
-                            'success' => 'logMessageSent()'
-                            )));
+                     'click',
+                     $this->Js->request(
+                         array('program'=>$programDetails['url'], 'action'=>'simulateMo.json'),
+                         array('method' => 'POST',
+                             'async' => true, 
+                             'dataExpression' => true,
+                             'data' => '$("#simulator-input").serialize()',
+                             'success' => 'logMessageSent(event)'
+                             )));
                  
                  $this->Js->get('#smessage')->event(
                      'keyup',
-                     'submitOnEnterPress(event)'
+                     'logMessageSent(event)'
                      );
                  
                  $this->Js->get('document')->event(
@@ -69,7 +76,7 @@
                              'filter_param[1][3]'=>$participant['Participant']['phone']))).'")
                      },
                      3000);');
-                     
+                 
                  ?>
              </td>
              <td class="simulator-profile">
