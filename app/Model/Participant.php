@@ -484,64 +484,63 @@ class Participant extends ProgramSpecificMongoModel
     
     protected function _editEnrolls()
     {
-        $participantUpdateData = $this->data;
-        
-        $originalParticipantData  = $this->read(); 
+        $updatedParticipantData   = $this->data;
+        $originalParticipantData = $this->read(); 
         // $this->read() deletes already processed info and
         // and they must all be re-initialized.
-        
+
         // ******** re-initialize already processed information *********/////
-        $this->data['Participant'] = $participantUpdateData['Participant'];
+        $this->data['Participant'] = $updatedParticipantData['Participant'];
         // ******************************************************************////
-        
+
         $programNow                = $this->ProgramSetting->getProgramTimeNow();
-        
-        if (!isset($participantUpdateData['Participant']['enrolled']) or 
-            !is_array($participantUpdateData['Participant']['enrolled'])) {
-        $this->data['Participant']['enrolled'] = array();
-        return; 
-            }
-            
-            if (isset($participantUpdateData['Participant']['enrolled'])
-                and $participantUpdateData['Participant']['enrolled'] == array()) {
+
+        if (!isset($updatedParticipantData['Participant']['enrolled']) or 
+            !is_array($updatedParticipantData['Participant']['enrolled'])) {
             $this->data['Participant']['enrolled'] = array();
             return;
-                }
-                
-                $this->data['Participant']['enrolled'] = array();
-                foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
-                    $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
-                    $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
-                    
-                    if ($originalParticipantData['Participant']['enrolled'] == array()) {
-                        $this->data['Participant']['enrolled'][] = array(
-                            'dialogue-id' => $dialogueId,
-                            'date-time' => $enrollTime
-                            );
-                        continue;
-                    }
-                    foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
-                        if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
-                            continue;
-                        
-                        if ($dialogueId == $orignalEnroll['dialogue-id']) {
-                            $this->data['Participant']['enrolled'][] = $orignalEnroll;
-                        } else {
-                            $dateTime = $programNow->format("Y-m-d\TH:i:s");                            
-                            if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
-                                $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
-                                if ($index) {
-                                    $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
-                                }
-                            }
-                            $this->data['Participant']['enrolled'][] = array(
-                                'dialogue-id' => $dialogueId,
-                                'date-time' => $dateTime
-                                );
-                            break;
+        }
+
+        if (isset($updatedParticipantData['Participant']['enrolled']) and
+            $updatedParticipantData['Participant']['enrolled'] == array()) {
+            $this->data['Participant']['enrolled'] = array();
+            return;
+        }
+
+        $this->data['Participant']['enrolled'] = array();
+        foreach ($updatedParticipantData['Participant']['enrolled'] as $key => $value) {
+            $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
+            $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
+            
+            if ($originalParticipantData['Participant']['enrolled'] == array()) {
+                $this->data['Participant']['enrolled'][] = array(
+                    'dialogue-id' => $dialogueId,
+                    'date-time' => $enrollTime
+                    );
+                continue;
+            }
+            foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
+                if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
+                    continue;
+
+                if ($dialogueId == $orignalEnroll['dialogue-id']) {
+                    $this->data['Participant']['enrolled'][] = $orignalEnroll;
+                } else {
+                    $dateTime = $programNow->format("Y-m-d\TH:i:s");
+                    if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
+                        $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
+                        if ($index) {
+                            $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
                         }
                     }
+                    $this->data['Participant']['enrolled'][] = array(
+                        'dialogue-id' => $dialogueId,
+                        'date-time' => $dateTime
+                        );
+                    break;
                 }
+            }
+        }
     }
     
     
