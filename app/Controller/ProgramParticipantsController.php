@@ -550,7 +550,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     $oldEnrolls[] = $enrolledIn['dialogue-id'];
             }
         }
-        $this->set(compact('oldEnrolls', 'selectOptions'));
+        $this->set(compact('oldEnrolls', 'selectOptions', 'participant'));
     }
     
     
