@@ -1605,6 +1605,7 @@
     overflow-y: scroll;
     margin-bottom: 14px;
     padding: 10px;
+    
 }
 
 .ttc-simulator-meesage {
@@ -1667,15 +1668,23 @@
 
 
 .simulator-message {
+    float: left;
     width: 50%;
     border-bottom: 0px;
 }
 
 .simulator-profile {
-    width: 50%;
+    width: 47%;
     border-bottom: 0px;
+    float: right;
 }
 
 .simulator-profile-div {
     margin-left: 15px;
+}
+
+.simulator-image-load {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -16,6 +16,16 @@
        $this->Js->get('#button-save')->event('click',
            '$("#ParticipantEditForm").submit()' , true);
 		
+       if (isset($participant['Participant']['simulate'])) {
+            $contentActions[] = $this->AclLink->generateButton(
+                __('Simulate'),
+                $programDetails['url'],
+                'programParticipants',
+                'simulateMo',
+                array('class'=>'ttc-button'),
+                $participant['Participant']['_id']);
+        }
+       
 		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
     ?>
 	<div class="ttc-display-area display-height-size">
