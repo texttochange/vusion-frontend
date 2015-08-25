@@ -135,45 +135,6 @@ function pullBackendNotifications(url) {
 }
 
 
-function pullSimulatorUpdate(url) {
-    $.ajax({
-            url: url.replace(/&amp;/g, '&').replace(/%5B/g, '[').replace(/%5D/g, ']'),
-            success: function(data){
-                $('#connectionState').hide();
-                $('#simulator-output').empty();
-                if (data['data']) {
-                    var message = [];
-                    var $container = $('.ttc-simulator-output');
-                    for (var i = 0; i< data['data'].length; i++) {
-                        message = data['data'][i];
-                        if (message['History']['message-direction'] == "incoming") {
-                            $("#simulator-output").append(
-                                "<div class='simulator-msg'><div class='simulator-incoming'> <div>"+
-                                message['History']['message-content']+
-                                "</div><div class='simulator-datetime'>"+
-                                moment(message['History']['timestamp']).calendar()+
-                                "</div></div></div>")
-                            $container[0].scrollTop = $container[0].scrollHeight;
-                        } else if (message['History']['message-direction'] == "outgoing") {
-                            $("#simulator-output").append(
-                                "<div class='simulator-msg'><div class='simulator-outgoing'> <div>"+                                
-                                message['History']['message-content']+
-                                "</div><div class='simulator-datetime'>"+
-                                moment(message['History']['timestamp']).calendar()+
-                                "</div></div></div>")
-                            $container[0].scrollTop = $container[0].scrollHeight;
-                        } else {
-                            $("#simulator-output").append("")
-                        }
-                    }
-                }
-            },
-            timeout: 1000,
-            error: vusionAjaxError
-    });
-}
-
-
 function logMessageSent(event) {
     if (event.keyCode == 13) {
         $("#simulator-input").submit();
@@ -181,77 +142,6 @@ function logMessageSent(event) {
     } else if (event.type == 'click') {
         $('[name="message"]').val('');
     }
-}
-
-
-function pullParticipantUpdate(url){
-    $.ajax({
-            url: url,
-            success: function(participant){
-                $('#connectionState').hide();
-                $('#simulator-profile').empty();
-                if (participant['participant']) {
-                    $("#simulator-profile").append(
-                        "<dl> <dt>"+
-                        "Phone: "+
-                        participant['participant']['phone']+
-                        "</dt></dl>")
-                    $("#simulator-profile").append(
-                        "<dl> <dt>"+
-                        "Last Optin Date:  </br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
-                         moment(participant['participant']['last-optin-date']).format("DD/MM/YYYY HH:mm:ss")+
-                        "</dt></dl>")
-                    $("#simulator-profile").append(
-                            "<dl> <dt>"+
-                            "Last Optout Date: </br>")
-                    if (participant['participant']['last-optout-date']) {
-                        $("#simulator-profile").append(
-                            "<dl><dt>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
-                             moment(participant['participant']['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+
-                            "</dt></dl>")
-                    } else {
-                        $("#simulator-profile").append("&nbsp;  </dt></dl>")
-                    }
-                    
-                    if ((participant['participant']['profile'].length) > 0) {
-                        $("#simulator-profile").append(
-                            "<dl><dt>"+
-                            "Labels: ")
-                        for (var i = 0; i< participant['participant']['profile'].length; i++) {
-                            $("#simulator-profile").append(
-                                "<dl><dt>"+
-                                "<div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
-                                participant['participant']['profile'][i]['label']+
-                                ": "+
-                                participant['participant']['profile'][i]['value']+
-                                "</div></dt></dl>"
-                                )
-                        }
-                    } else {
-                        $("#simulator-profile").append("&nbsp;  </dt></dl>")
-                    }
-                    
-                    if ((participant['participant']['tags'].length) > 0) {
-                        $("#simulator-profile").append(
-                            "<dl><dt>"+
-                            "Tags: ")
-                        for (var i = 0; i< participant['participant']['tags'].length; i++) {
-                            $("#simulator-profile").append(
-                                "<dl><dt>"+
-                                "<div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
-                                participant['participant']['tags'][i]+
-                                "</div></dt></dl>"
-                                )
-                        }
-                    } else {
-                        $("#simulator-profile").append("&nbsp;  </dt></dl>")
-                    }
-                    
-                }
-            },
-            timeout: 1000,
-            error: vusionAjaxError
-    });
 }
 
 

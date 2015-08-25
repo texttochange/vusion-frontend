@@ -62,26 +62,14 @@
                  
                  $this->Js->get('document')->event(
                      'ready',
-                     'setInterval(function()
-                     {
-                     pullSimulatorUpdate("'.$this->Html->url(array('program'=>$programDetails['url'],
-                         'controller' => 'programHistory',
-                         'action'=>'index',
-                         'sort' => 'timestamp',
-                         'direction' => 'asc.json',
-                         '?' => array(
-                             'filter_operator'=>'all',
-                             'filter_param[1][1]'=>'participant-phone',
-                             'filter_param[1][2]'=>'start-with',
-                             'filter_param[1][3]'=>$participant['Participant']['phone']))).'")
-                     },
-                     3000);');
-                 
+                     '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
                  ?>
              </td>
              <td class="simulator-profile">
              <div class="simulator-profile-div" id = "simulator-profile">
-             <?php $this->Js->get('document')->event(
+             <?php 
+             /*
+             $this->Js->get('document')->event(
                  'ready',
                  'setInterval(function()
                  {
@@ -89,6 +77,7 @@
                      'action'=>'pullParticipantDetails.json')).'")
                  },
                  3000);');
+                 */
              ?>
                 
              </div>

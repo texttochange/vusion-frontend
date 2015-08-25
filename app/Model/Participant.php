@@ -52,7 +52,32 @@ class Participant extends ProgramSpecificMongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
     }
+
     
+    public function exists() {
+        //print_r($this->find('count', array('conditions' => array('phone' => '+'.$this->id))));
+        if (parent::exists()) {
+            return true;
+        } elseif ($this->find('count', array('conditions' => array('phone' => '+'.$this->id))) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function read($fields=null, $id=null) {
+        if ($participant = parent::read($fields, $id)) {
+            return $participant;
+        } 
+        return $this->find(
+            'first', 
+            array(
+                'conditions' => array('phone' => '+'.$id),
+                'fields' => $fields));
+    }
+
+
     public function initializeDynamicTable($forceNew=false) 
     {
         parent::initializeDynamicTable();

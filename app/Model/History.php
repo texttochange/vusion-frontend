@@ -149,7 +149,7 @@ class History extends ProgramSpecificMongoModel
     public function _findParticipant($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $query['conditions'] = array('participant-phone' => $query['phone']);
+            $query['conditions']['participant-phone'] = $query['phone'];
             $query['order']['timestamp'] = 'asc';
             return $query;
         }
@@ -221,9 +221,13 @@ class History extends ProgramSpecificMongoModel
     }
     
     
-    public function getParticipantHistory($phone, $dialoguesInteractionsContent)
+    public function getParticipantHistory($phone, $dialoguesInteractionsContent, $from=null)
     {
-        $histories   = $this->find('participant', array('phone' => $phone));
+        $conditions = array('phone' => $phone);
+        if (isset($from)) {
+            $conditions['conditions'] = array('timestamp' => array('$gt' => $from));
+        }
+        $histories = $this->find('participant', $conditions);
         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
     

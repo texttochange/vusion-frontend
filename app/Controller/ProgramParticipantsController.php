@@ -776,25 +776,28 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function view() 
     {
+        $requestSuccess = false;
         $id = $this->params['id'];
         
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
+            $this->set(compact('requestSuccess'));
             throw new NotFoundException(__('Invalid participant'));
         }
-        $participant                  = $this->Participant->read(null, $id);
+        $requestSuccess = true;
+        $participant = $this->Participant->read(null, $id);
+        $historyFrom = (isset($this->request->query['history_from'])? $this->request->query['history_from'] : null);
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         $histories                    = $this->History->getParticipantHistory(
             $participant['Participant']['phone'],
-            $dialoguesInteractionsContent
-            );
-        
+            $dialoguesInteractionsContent,
+            $historyFrom);
+
         $schedules = $this->Schedule->getParticipantSchedules(
             $participant['Participant']['phone'],
-            $dialoguesInteractionsContent
-            );
-        
-        $this->set(compact('participant','histories', 'schedules'));
+            $dialoguesInteractionsContent);
+
+        $this->set(compact('participant','histories', 'schedules','requestSuccess'));
     }
     
     
