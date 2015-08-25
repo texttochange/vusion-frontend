@@ -25,7 +25,9 @@
             <div class="simulator-message">
                 <div class = "ttc-simulator-output" >
                     <?php
-                    echo $this->Html->tag('div', "", array('class'=>'ttc-simulator-meesage', 'id' => 'simulator-output'));
+                    echo $this->Html->tag('div', '<img src="/img/ajax-loader.gif" class="simulator-image-load">', array(
+                        'class'=>'ttc-simulator-meesage',
+                        'id' => 'simulator-output'));
                     ?>
                 </div>
                 <div>
@@ -84,7 +86,9 @@
             </div>
             <div class="simulator-profile">
                 <div class="simulator-profile-div" id = "simulator-profile">
-                    <?php $this->Js->get('document')->event(
+                    <?php
+                    echo '<img src="/img/ajax-loader.gif">';
+                    $this->Js->get('document')->event(
                         'ready',
                         'setInterval(function()
                         {

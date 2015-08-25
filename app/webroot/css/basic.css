@@ -1682,3 +1682,9 @@
 .simulator-profile-div {
     margin-left: 15px;
 }
+
+.simulator-image-load {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
