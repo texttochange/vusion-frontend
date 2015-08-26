@@ -351,6 +351,10 @@ class Participant extends ProgramSpecificMongoModel
             return false;
         }
         
+        if ($this->data['Participant']['simulate']) {
+            $this->_setDefault('phone', $this->generateSimulatedPhone());
+        }
+        
         $this->_setDefault('phone', null);
         $this->data['Participant']['phone'] = $this->cleanPhone($this->data['Participant']['phone']);
         
@@ -381,6 +385,14 @@ class Participant extends ProgramSpecificMongoModel
         return true;
     }
     
+    
+    public function generateSimulatedPhone()
+    {
+        $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
+        $sumilutorPhone = $programInternationalPrefix . uniqid();
+        return $sumilutorPhone;
+    }
+        
     
     public function getDistinctTagsAndLabels()
     {

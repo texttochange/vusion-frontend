@@ -427,10 +427,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             return;
         }
         
-        $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
-        $sumilutorPhone = $programInternationalPrefix . mt_rand(1,3);
-        $this->set(compact('sumilutorPhone'));        
-        
         if ($this->request->is('post')) {
             $savedParticipant = null;
             if ($data['Participant']['join-type'] == 'import') {

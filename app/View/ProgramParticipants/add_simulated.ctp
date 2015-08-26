@@ -24,12 +24,6 @@
         <?php echo $this->Form->create('Participant');?>
         <fieldset>		
             <?php
-                echo $this->Form->input('phone', array(
-                    'label' => __('Phone'),
-                    'value' => $sumilutorPhone,
-                    'readonly' => 'true'));
-                ?>
-                <?php
                 echo $this->Html->tag('div', __('Program Join Type '), array('style'=>'margin-bottom:0px'));
                 $options = array(
                     'import' => __('Import'),
