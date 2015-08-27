@@ -1688,3 +1688,7 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.simulator-profile-value {
+    margin-left: 28px;
+}
