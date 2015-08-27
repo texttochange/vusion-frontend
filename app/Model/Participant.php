@@ -778,7 +778,7 @@ class Participant extends ProgramSpecificMongoModel
     }    
     
     
-    private function importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
+    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
     {
         require_once 'excel_reader2.php';
         
