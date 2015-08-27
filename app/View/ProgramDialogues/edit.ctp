@@ -2,7 +2,7 @@
 	<?php 
     $contentTitle = null;
     if (isset($dialogue)) {
-        $contentTitle = __('Edit Dialogue %s', $dialogue['Dialogue']['name']); 
+        $contentTitle = __('Edit Dialogue'); 
         if (!$dialogue['Dialogue']['activated'])  {
             $contentTitle = $contentTitle. " " . $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
         }
