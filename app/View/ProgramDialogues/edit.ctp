@@ -2,9 +2,9 @@
 	<?php 
     $contentTitle = null;
     if (isset($dialogue)) {
-        $contentTitle = __('Edit Dialogue'); 
+        $contentTitle = __('Edit Dialogue %s', $dialogue['Dialogue']['name']); 
         if (!$dialogue['Dialogue']['activated'])  {
-            $contentTitle = $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
+            $contentTitle = $contentTitle. " " . $this->Html->tag('span', __('(draft)', array('class'=>'ttc-dialogue-draft'))); 
         }
     } else {
         $contentTitle = __('Create Dialogue');
@@ -27,13 +27,16 @@
     $this->Js->get('.dynamic-form-save')->event('click', 'formSubmit();', true);
 
     if (isset($dialogue)) {
-        $contentActions[] = $this->Html->link(__('Activate'), 
+        if (!$dialogue['Dialogue']['activated']) {
+          $contentActions[] = $this->Html->link(
+            __('Activate'), 
             array(
-                'program' => $programDetails['url'],
-                'action' => 'activate', 
-                'id' => $dialogue['Dialogue']['_id']), 
-        array('class'=>'ttc-button'));
-        
+              'program' => $programDetails['url'],
+              'action' => 'activate', 
+              'id' => $dialogue['Dialogue']['_id']), 
+            array('class'=>'ttc-button'));
+        }
+
         $contentActions[] = $this->Html->link(__('Test send all messages'), 
         array(
             'program'=>$programDetails['url'],
