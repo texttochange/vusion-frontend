@@ -66,8 +66,8 @@
                         );
                     
                     $this->Js->get('document')->event(
-                     'ready',
-                     '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
+                        'ready',
+                        '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
 
                     ?>
                 </div>

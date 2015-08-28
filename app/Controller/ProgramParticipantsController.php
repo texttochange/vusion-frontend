@@ -945,7 +945,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $id                    = $this->params['id'];
         $program               = $this->params['program'];
         $this->Participant->id = $id;
-        $this->Session->write('participantId', $id);
         $data           = $this->_ajaxDataPatch();
         $participant    = $this->_loadParticipantId($data);
         
