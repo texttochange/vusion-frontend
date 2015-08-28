@@ -64,6 +64,9 @@
    ?>
 	</div>	
 	<?php
+  if (!isset($dialogue)) {
+    $dialogue = null;
+  }
 	$this->DynamicOptions->setOptions(
         $currentProgramData, $conditionalActionOptions, $contentVariableTableOptions, 
         $dialogue, $dynamicOptions);
