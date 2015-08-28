@@ -958,13 +958,4 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    public function pullParticipantDetails()
-    {
-        $requestSuccess = true;
-        $id          = $this->Session->read('participantId');
-        $participant =  $this->Participant->read(null, $id);
-        $this->set(compact('participant', 'requestSuccess'));
-    }
-    
-    
 }

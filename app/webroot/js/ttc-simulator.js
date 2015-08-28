@@ -144,7 +144,7 @@
                 });
             };
             
-            setInterval(el.update, 300000);
+            setInterval(el.update, 3000);
             
             return el;
         }

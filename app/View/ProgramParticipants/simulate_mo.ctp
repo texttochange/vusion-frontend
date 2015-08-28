@@ -45,7 +45,8 @@
                             'rows'=>3,
                             'label' => __('Message'),
                             'name' => 'message',
-                            'id' => 'smessage'));
+                            'id' => 'smessage',
+                            'autofocus'));
                     echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
                     
                     $this->Js->get('#send-button')->event(
