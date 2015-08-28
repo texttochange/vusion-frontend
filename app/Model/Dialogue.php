@@ -342,12 +342,9 @@ class Dialogue extends ProgramSpecificMongoModel
     }
     
     
-    public function makeActive($objectId)
-    {      
-        $this->id = $objectId;
-        if (!$this->exists())
-            return false;
-        $dialogue = $this->read(null, $objectId);
+    public function makeActive($usedKeywords = array())
+    {
+        $dialogue = $this->read();
         $dialogue['Dialogue']['activated'] = 1;
         if (isset($dialogue['Dialogue']['interactions'])) {
             $interactionIds = array();
@@ -363,25 +360,29 @@ class Dialogue extends ProgramSpecificMongoModel
                 false);
         }
         // we make sure no other version is activated
-        $result = $this->save($dialogue);
-        $this->updateAll(
-            array('activated' => 2),
-            array('activated' => 1, 
-                'dialogue-id' => $result['Dialogue']['dialogue-id'],
-                '_id' => array('$ne' => new MongoId($result['Dialogue']['_id']))));
+        $this->usedKeywords = $usedKeywords;
+        if ($result = $this->save($dialogue)) {
+            $this->updateAll(
+                array('activated' => 2),
+                array('activated' => 1, 
+                    'dialogue-id' => $result['Dialogue']['dialogue-id'],
+                    '_id' => array('$ne' => new MongoId($result['Dialogue']['_id']))));
+        }
         return $result;
     }
     
     
-    public function makeDraftActive($dialogueId)
+    public function makeDraftActive($dialogueId, $usedKeywords=array())
     {
-        $draft = $this->find('draft', array('dialogue-id'=>$dialogueId));
+        $draft = $this->find('draft', array( 'dialogue-id' => $dialogueId));
         if ($draft) {
-            return $this->makeActive($draft[0]['Dialogue']['_id'].'');
+            $this->id = $draft[0]['Dialogue']['_id'].'';
+            return $this->makeActive($usedKeywords);
         }
         return false;
     }
-    
+
+
     public function getActiveDialogue($dialogueId)
     {
         return $this->find('first', array(
@@ -491,7 +492,7 @@ class Dialogue extends ProgramSpecificMongoModel
             return $this->save($dialogue);
         }
         
-        $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
+        $draft = $this->find('draft', array('dialogue-id' => $dialogue['Dialogue']['dialogue-id']) );
         $this->create(null, false);
         if ($draft) { 
             $this->id                          = $draft[0]['Dialogue']['_id'];
@@ -637,6 +638,3 @@ class Dialogue extends ProgramSpecificMongoModel
     
     
 }
-
-
-

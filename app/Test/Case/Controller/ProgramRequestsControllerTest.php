@@ -345,7 +345,7 @@ class ProgramRequestsControllerTestCase extends ControllerTestCase
 
         $dialogue = $this->Maker->getOneDialogue();        
         $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($saveDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
         
         $this->testAction(
             "testurl/programRequests/validateKeyword.json",
