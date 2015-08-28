@@ -210,8 +210,6 @@ class ProgramDialoguesController extends BaseProgramSpecificController
     }
 
 
-
-
     public function validateName()
     {
         $dialogueName   = $this->request->data['name'];
