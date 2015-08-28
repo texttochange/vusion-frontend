@@ -111,8 +111,9 @@ class ProgramDialoguesController extends BaseProgramSpecificController
         $this->set('dynamicOptions', $this->_getDynamicOptions());
         
         $id = $this->params['id'];
-        if (!isset($id))
+        if (!isset($id)) {
             return;
+        }
         $this->Dialogue->id = $id;
         if (!$this->Dialogue->exists()) {
             $this->Session->setFlash(__("Dialogue doesn't exist."), 
@@ -148,6 +149,7 @@ class ProgramDialoguesController extends BaseProgramSpecificController
     {      
         return array();
     }
+
     
     protected function _getContentVariableTableOptions()
     {
@@ -155,30 +157,61 @@ class ProgramDialoguesController extends BaseProgramSpecificController
             'fields' => array('name', 'columns.header', 'columns.type')));
     }
     
-    //TODO need to check keyword before activate!
+
     public function activate()
     {
-        $programUrl = $this->params['program'];
-        $dialogueId = $this->params['id'];
-        
+        $programUrl     = $this->params['program'];
+        $programDb      = $this->Session->read($programUrl . "_db");
+        $objectId       = $this->params['id'];
+        $requestSuccess = false;
+
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->Session->setFlash(__('Please set the program settings then try again.'), 
-                'default',array('class' => "message failure"));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set(compact('requestSuccess'));
+            $this->redirect(array(
+                'program' => $programUrl, 
+                'controller' => 'programSettings',
+                'action' => 'edit'));
+            return;
+        }
+
+        $this->Dialogue->id = $objectId;
+        if (!$this->Dialogue->exists()) {
+            $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
+            $this->set(compact('requestSuccess'));
+            return;
+        }
+
+        $dialogue      = $this->Dialogue->read();
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Dialogue->setContactEmail($contactEmail);
+        $id            = Dialogue::getDialogueId($dialogue);
+        $keywords      = Dialogue::getDialogueKeywords($dialogue);
+        $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
+        if ($activeDialogue = $this->Dialogue->makeActive($foundKeywords)) {
+            $this->UserLogMonitor->setEventData($this->Dialogue->id);
+            $this->_notifyUpdateBackendWorker($programUrl, $activeDialogue['Dialogue']['dialogue-id']);
+            $this->Session->setFlash(__('Dialogue activated.'), 
+                'default', array('class' => "message success"));
+            $requestSuccess = true;
+            $this->redirect(array(
+                'program' => $programUrl,
+                'action' => 'index'));
         } else {
-            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
-                $this->UserLogMonitor->setEventData($dialogueId);                
-                $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
-                $this->Session->setFlash(__('Dialogue activated.'), 
-                    'default', 
-                    array('class' => "message success"));
-            } else {
-                $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
-            }
-        } 
-        $this->redirect(array('program' => $programUrl, 'action' => 'index'));
+            $this->Session->setFlash(__('This dialogue has a validation error, please correct it and save again.'));
+            $this->Dialogue->validationErrors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
+            $this->redirect(array(
+                'program' => $programUrl, 
+                'action' => 'edit',
+                'id' => $objectId));
+        }
+        $this->set(compact('requestSuccess'));
     }
-    
-    
+
+
+
+
     public function validateName()
     {
         $dialogueName   = $this->request->data['name'];
