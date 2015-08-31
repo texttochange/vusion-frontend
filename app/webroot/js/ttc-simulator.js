@@ -74,14 +74,14 @@
 		    
 		    function generateHtmlParticipant(participant) {
 		        var template =  "<dl>"+
-                                "<dt>"+localize_label("Phone")+": PARTICIPANT_PHONE </dt>"+
-                                "</dl></dl>"+
-                                "<dt>"+localize_label("Last Optin Date")+":</br> PARTICIPANT_OPTIN_DATE </dt>"+
+                                localize_label("Phone")+": PARTICIPANT_PHONE "+
                                 "</dl><dl>"+
-                                "<dt>"+localize_label("Last Optout Date")+":</br>"+
-                                ((participant['last-optout-date']) ? "<dt>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dt></dl>" :  " </dt></dl>" )+
-                                (((participant['profile'].length) > 0) ? "<dl><dt>"+localize_label("Labels")+": PARTICIPANT_LABELS </dt></dl>" : "  </dt></dl>")+
-                                (((participant['tags'].length) > 0) ? "<dl><dt>"+localize_label("Tags")+": PARTICIPANT_TAGS </dt></dl>" : " </dt></dl>")
+                                "<dt>"+localize_label("Last Optin Date")+":</dt><dt> PARTICIPANT_OPTIN_DATE </dt>"+
+                                "</dl><dl>"+                                
+                                ((participant['last-optout-date']) ? "<dt>"+
+                                    localize_label("Last Optout Date")+":</dt><dt>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dt></dl>" :  " </dt></dl>" )+
+                                (((participant['profile'].length) > 0) ? "<dl><dt>"+localize_label("Labels")+":</dt><dt>PARTICIPANT_LABELS </dt></dl>" : "  </dt></dl>")+
+                                (((participant['tags'].length) > 0) ? "<dl><dt>"+localize_label("Tags")+": </dt><dt>PARTICIPANT_TAGS </dt></dl>" : " </dt></dl>")
                 
                 
                 template = template.replace('PARTICIPANT_PHONE', participant['phone']);
