@@ -1162,6 +1162,16 @@ class ParticipantTestCase extends CakeTestCase
             );
     }
     
+    public function testFromFilterToCondition_phone_simulated() 
+    {
+        $filter = array(
+            1 => 'phone', 
+            2 => 'simulated');
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryCondition($filter),
+            array('simulate' => true));
+    }
+    
     
     public function testFromFilterToCondition_enrolled()
     {

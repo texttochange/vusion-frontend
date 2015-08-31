@@ -74,14 +74,14 @@
 		    
 		    function generateHtmlParticipant(participant) {
 		        var template =  "<dl>"+
-                                "<dt>Phone: PARTICIPANT_PHONE </dt>"+
+                                "<dt>"+localize_label("Phone")+": PARTICIPANT_PHONE </dt>"+
                                 "</dl></dl>"+
-                                "<dt>Last Optin Date:</br> PARTICIPANT_OPTIN_DATE </dt>"+
+                                "<dt>"+localize_label("Last Optin Date")+":</br> PARTICIPANT_OPTIN_DATE </dt>"+
                                 "</dl><dl>"+
-                                "<dt>Last Optout Date:</br>"+
+                                "<dt>"+localize_label("Last Optout Date")+":</br>"+
                                 ((participant['last-optout-date']) ? "<dt>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dt></dl>" :  " </dt></dl>" )+
-                                (((participant['profile'].length) > 0) ? "<dl><dt>Labels: PARTICIPANT_LABELS </dt></dl>" : "  </dt></dl>")+
-                                (((participant['tags'].length) > 0) ? "<dl><dt>Tags: PARTICIPANT_TAGS </dt></dl>" : " </dt></dl>")
+                                (((participant['profile'].length) > 0) ? "<dl><dt>"+localize_label("Labels")+": PARTICIPANT_LABELS </dt></dl>" : "  </dt></dl>")+
+                                (((participant['tags'].length) > 0) ? "<dl><dt>"+localize_label("Tags")+": PARTICIPANT_TAGS </dt></dl>" : " </dt></dl>")
                 
                 
                 template = template.replace('PARTICIPANT_PHONE', participant['phone']);

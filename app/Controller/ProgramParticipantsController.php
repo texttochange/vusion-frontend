@@ -31,7 +31,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
-        'ArchivedProgram');
+        'ArchivedProgram',
+        'Simulator');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array(

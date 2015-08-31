@@ -943,7 +943,9 @@ class Participant extends ProgramSpecificMongoModel
                 'equal-to' => array(
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'parameter-type' => 'text'))),
+                    'parameter-type' => 'text'),
+                'simulated' => array(
+                    'parameter-type' => 'none'))),
         'optin' => array(
             'label' => 'optin',
             'operators' => array(
@@ -1033,7 +1035,9 @@ class Participant extends ProgramSpecificMongoModel
                 $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
             }
         } elseif ($filterParam[1] == 'phone') {
-            if ($filterParam[3]) {
+            if ($filterParam[2] == 'simulated') {
+                $condition['simulate'] = true;
+            } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
                     if ($phoneNumbers) {
