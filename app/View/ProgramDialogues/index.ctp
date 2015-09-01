@@ -1,10 +1,16 @@
 <div class="Dialogue index width-size">
-	<ul class="ttc-actions">
-		<li><?php echo $this->Html->link(__('New Dialogue'), array('program'=>$programDetails['url'], 'action' => 'edit'), array('class' => 'ttc-button')); ?></li>
-	</ul>
-    <h3><?php echo __('Dialogue Index');?></h3>
-	<div class="ttc-display-area display-height-size">    
-
+   <?php
+       $contentTitle   = __('Dialogue Index'); 
+       $contentActions = array();
+       
+       $contentActions[] = $this->Html->link(__('+ New Dialogue'),
+           array('program'=>$programDetails['url'],
+               'action' => 'edit'), 
+           array('class' => 'ttc-button'));
+       
+       echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+   ?>
+	<div class="ttc-display-area display-height-size"> 
         <?php
         $draftOnlySeparator = false;
         uasort($dialogues, 'DialogueHelper::compareDialogueByName');

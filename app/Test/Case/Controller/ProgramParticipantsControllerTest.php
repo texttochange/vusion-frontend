@@ -2,6 +2,7 @@
 App::uses('ProgramParticipantsController', 'Controller');
 App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
+App::uses('TestHelper', 'Lib');
 App::uses('Dialogue', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
@@ -47,6 +48,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->setModel('ProgramSetting', $dbName);
         $this->setModel('History', $dbName);
         $this->setModel('Dialogue', $dbName);
+        $this->Export = ClassRegistry::init('Export');
 
         $this->dropData();
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -66,6 +68,8 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->deleteAll(true,false);
         $this->History->deleteAll(true, false);
         $this->Dialogue->deleteAll(true, false);
+        $this->Export->deleteAll(true, false);
+        TestHelper::deleteAllProgramFiles('testurl');
     }
 
 
@@ -96,6 +100,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     '_notifyBackendMassTag',
                     '_notifyBackendMassUntag',
                     '_notifyBackendRunActions',
+                    '_notifyBackendExport',
                     'render',
                     )
                 )
@@ -142,8 +147,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->method('_notifyUpdateBackendWorker')
         ->with('testurl', '+256788601462')
         ->will($this->returnValue(true));
-        
-        
+           
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
         
         $participant = $this->Maker->getParticipant();
@@ -152,6 +156,35 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             array(
                 'method' => 'post',
                 'data' => $participant
+                )
+            );   
+    }
+
+
+    public function testAdd_forceOptin()
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorker')
+        ->with('testurl', '+256788601462')
+        ->will($this->returnValue(true));
+        
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');    
+        
+        $participant = array('Participant' => array(
+            'phone' => '256788601462',
+            'last-optout-date' => '2015-01-01T10:10:00'));
+        $this->Participant->create();
+        $this->Participant->save($participant);
+        
+        //Add the force_input parameter
+        $participant['Participant']['force-optin'] = 'true';
+        $this->testAction(
+            "/testurl/participants/add", 
+            array(
+                'method' => 'post',
+                'data' => $participant,
                 )
             );
         
@@ -435,10 +468,11 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $participantDB = $this->Participant->save($participant);
         
         $historyToBeDeleted = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '+6',
             'message-direction' => 'incoming');
         
-        $this->History->create('dialogue-history');
+        $this->History->create($historyToBeDeleted);
         $this->History->save($historyToBeDeleted);
         
         $this->testAction("/testurl/programParticipants/delete/".$participantDB['Participant']['_id']."?include=history");
@@ -957,7 +991,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $participants = $this->mockProgramAccess();
         $participants
@@ -1163,7 +1197,40 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/index?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
-        $this->assertEquals(1, count($this->vars['participants']));        
+        $this->assertEquals(1, count($this->vars['participants']));
+    }
+
+
+    public function testListParticipants()
+    {
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+26',
+            'session-id' => '1',
+            'last-optin-date' => '2012-12-01T18:30:10',
+            'enrolled' => array(),
+            'tags' => array('Geek'),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'male',
+                'raw' => null))
+            ));
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+29',
+            'session-id' => '3',
+            'last-optin-date' => '2012-12-02T18:30:10',
+            'enrolled' => array(),
+            'tags' => array(),
+            'profile' => array(array(
+                'label'=> 'gender',
+                'value' => 'female',
+                'raw' => null))
+            ));
+
+        $this->mockProgramAccess();
+        $this->testAction("/testurl/programParticipants/listParticipants.json?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
+        $this->assertEquals(1, count($this->vars['participants']));
     }
     
     
@@ -1207,55 +1274,22 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testExport()
     {
-        
-        $participants = $this->mockProgramAccess_withoutSession();
-        
-        $participants->Session
-        ->expects($this->any())
-        ->method('read')
-        ->will($this->onConsecutiveCalls(
-            $this->programData[0]['Program']['name'],
-            'Africa/Kampala',
-            'testdbprogram',
-            'name1', //?
-            'name2', //?
-            $this->programData[0]['Program']['name'] //only for export test to get program name
-            ));
-        
-        
-        $participant = array(
-            'Participant' => array(
-                'phone' => '+256712747841',
-                'tags' => array('geek', 'cool'),
-                )
-            );
-        $this->Participant->create();
-        $participantDB = $this->Participant->save($participant);
-        
-        $participant = array(
-            'Participant' => array(
-                'phone' => '+256788601462',
-                'profile' => array( 
-                    array( 'label' => 'name', 
-                        'value' => 'olivier', 
-                        'raw' => null))
-                )
-            );
-        $this->Participant->create();
-        $participantDB = $this->Participant->save($participant);
-        
+        $participants = $this->mockProgramAccess();
+        $participants
+            ->expects($this->once())
+            ->method('_notifyBackendExport')
+            ->with(
+                $this->matchesRegularExpression('/^[a-f0-9]+$/'))
+            ->will($this->returnValue(true));
+
         $this->testAction("/testurl/programParticipants/export");
-        
-        $this->assertTrue(isset($this->vars['fileName']));
-        $this->assertFileEquals(
-            TESTS . 'files/exported_participants.csv',
-            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
-        
-        //Asserting that programName is added and special characters 
-        //replaced to export file
-        $this->assertEquals(
-            substr($this->vars['fileName'], 0, 43),
-            'Test_Name_good_for_testing_me_participants_');
+
+        $this->assertEqual($this->Export->find('count'), 1);
+        $export = $this->Export->find('first');
+        $this->assertTrue(isset($export['Export']));
+        $this->assertContains(
+            'Test_Name_good_for_testing_me_participants_', 
+            $export['Export']['file-full-name']);
     }
     
 
@@ -1384,7 +1418,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $dialogue['Dialogue']['auto-enrollment'] = 'all';
         
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
         
         $this->testAction(
             "/testurl/programParticipants/optin/".$savedParticipant['Participant']['_id']
@@ -1496,5 +1530,34 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertEquals($this->vars['paginationCount'], 0);
    }
 
+
+    public function testExported()
+    {
+        $this->mockProgramAccess();
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test2.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram2',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test3.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram2',
+            'collection' => 'history',
+            'file-full-name' => '/var/test3.csv'));
+
+        $this->testAction("/testurl/programHistory/exported");
+        $files = $this->vars['files'];
+        $this->assertEqual(2, count($files));
+    }
     
 }

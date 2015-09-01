@@ -1,4 +1,17 @@
-<div class="shortcodes form users-index program-body">
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+	    <li><?php echo $this->Html->link(__('Shortcodes List'), array('action'=>'index')); ?></li>
+		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+	</ul>
+</div>
+</div>
+
+<div class="shortcodes form admin-index">
+<div class="table">
+<div class="row">
+<div class="cell">
 <h3><?php echo __('Add ShortCode'); ?></h3>
 <?php echo $this->Form->create('ShortCode');?>
 	<fieldset>	
@@ -67,12 +80,7 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit'));?>
 </div>
-<div class="admin-action">
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-	    <li><?php echo $this->Html->link(__('View Shortcodes'), array('action'=>'index')); ?></li>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-	</ul>
 </div>
 </div>
+</div>
+

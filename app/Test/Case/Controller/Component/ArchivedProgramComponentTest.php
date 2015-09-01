@@ -89,7 +89,7 @@ class ArchivedProgramComponentTest extends CakeTestCase
             ->with('Restart worker is not allowed in archived program.');
         $this->assertFalse($this->ArchiveComponent->isAllowed($this->Controller));
 
-        $this->_initializeRequest("programHome", 'GET', 'restartWorker', true);
+        $this->_initializeRequest("ProGramHome", 'GET', 'restartWorker', true);
         $this->ArchiveComponent->Session = $this->getMock('Session', array('setFlash'));
         $this->ArchiveComponent->Session 
             ->expects($this->once())

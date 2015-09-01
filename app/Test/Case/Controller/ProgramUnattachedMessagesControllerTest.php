@@ -498,7 +498,7 @@ class ProgramUnattachedMessagesControllerTestCase extends ControllerTestCase
             'message-status' => 'pending',
             'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id'].''
             );       
-        $this->History->create('unattach-history');
+        $this->History->create($history);
         $saveHistoryStatus = $this->History->save($history);  
         
         $this->testAction("/testurl/programUnattachedMessages/index");        

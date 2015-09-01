@@ -1,4 +1,44 @@
-<div class="users view users-index program-body">
+<?php $isAdmin = $this->AclLink->_allow('controllers/Admin');?>
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+	    <li>
+		<?php echo $this->AclLink->generateButton(
+		    __('Invite User'),
+		    null,
+		    'users',
+		    'inviteUser'
+		    ); ?>
+		</li>
+	    <li>
+		<?php
+		if ($isAdmin || $this->AclLink->_allow('controllers/Users/inviteUser')) {
+		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
+		}
+		?> 
+		</li>
+		<li>
+		<?php
+		if ($isAdmin) {
+		    echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id']));
+		}
+		?> 
+		</li>
+		<li>
+		<?php
+		if ($isAdmin) {
+			echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
+		}else{
+			echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
+		}
+		?>
+		</li>
+	</ul>
+</div>
+</div>
+
+<div class="users view admin-index">
    <h3><?php  echo __('User');?></h3>
 	<dl>
 		<dt><?php echo __('Username'); ?></dt>
@@ -18,7 +58,7 @@
 		<dt><?php echo __('Group'); ?></dt>
 		<dd>
 			<?php
-			$isAdmin = $this->AclLink->_allow('controllers/Admin');
+			//$isAdmin = $this->AclLink->_allow('controllers/Admin');
 			if ($isAdmin) {
 			echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); 
 			}else{
@@ -34,13 +74,13 @@
 			&nbsp;
 		</dd>		
 	</dl>
-  <div class="related">
+  <div style="margin-top:30px;overflow-y:auto">
 	<h3><?php echo __('Accessible Programs');?></h3>
 	<?php if (!empty($user['Program'])):?>
 	<table cellpadding = "0" cellspacing = "0">
-	<tr>l
-		<th><?php echo __('Name'); ?></th>
-		<th class="actions"><?php
+	<tr>
+		<th style="padding:4px"><?php echo __('Name'); ?></th>
+		<th class="actions" style="padding:4px"><?php
 		if ($isAdmin) {
 		    echo __('Actions');
 		}
@@ -50,40 +90,17 @@
 		$i = 0;
 		foreach ($user['Program'] as $program): ?>
 		<tr>
-		<td><?php echo $program['name'];?></td>			 
-			<td class="actions">
-			<?php
-			if ($isAdmin) {
-				echo $this->Html->link(__('View'), array('controller' => 'programs', 'action' => 'view', $program['id']));				
-				echo $this->Html->link(__('Edit'), array('controller' => 'programs', 'action' => 'edit', $program['id'])); 
-			}
-			?>
-			</td> 		
+		<td style="padding:4px"><?php echo $program['name'];?></td>			 
+		<td class="actions" style="padding:4px">
+		<?php
+		if ($isAdmin) {
+			echo $this->Html->link(__('Edit'), array('controller' => 'programs', 'action' => 'edit', $program['id'])); 
+		}
+		?>
+		</td>
 		</tr>
 	<?php endforeach; ?>
 	</table>
 	<?php endif; ?>
   </div>
-</div>
-<div class="admin-action">
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['id'])); ?> 
-		</li>
-		<li><?php
-		if ($isAdmin) {
-		    echo $this->Html->link(__('List Users'), array('action' => 'index')); 
-		}
-		?> 
-		</li>
-		<li><?php
-		if ($isAdmin) {
-		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
-		}else{
-		echo $this->Html->link(__('Back to Programs'), array('controller' => 'programs', 'action' => 'index')); 
-		}
-		?></li>
-	</ul>
-</div>
 </div>

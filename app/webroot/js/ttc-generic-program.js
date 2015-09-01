@@ -125,10 +125,19 @@ function handleResponseValidationErrors(validationErrors){
             case 'forward-content':
                 errorClass = "ttc-textarea-validation-error";
                 break;
+            case 'invite-content':
+                errorClass = "ttc-textarea-validation-error";
+                break;
             case 'forward-message-no-participant-feedback':
                 errorClass = "ttc-textarea-validation-error";
                 break;
             case 'unmatching-feedback-content':
+                errorClass = "ttc-textarea-validation-error";
+                break;
+            case 'keep-tags':
+                errorClass = "ttc-textarea-validation-error";
+                break;
+            case 'keep-labels':
                 errorClass = "ttc-textarea-validation-error";
                 break;
             default:
@@ -486,9 +495,7 @@ function foldForm(){
         break;
     case "action":
         summary = $('[name="'+nameToFold+'.type-action"]:checked').val();
-        if (summary == null) {
-            summary = '';
-        }
+        summary = localize_label(summary)
         break;
     case "subcondition":
         summary = $('[name="'+nameToFold+'.subcondition-field"]').val();
@@ -901,7 +908,6 @@ function supplySubconditionOperatorOptions(elt) {
         if (field == "")
             return;
         var operatorOptions = window.app[item+'Options'][field]['operators'];
-        
         var operatorDropDown = $(elt).nextAll('select')[0];
         operatorValue = $(operatorDropDown).val()
         $(operatorDropDown).empty();
@@ -919,6 +925,30 @@ function supplySubconditionOperatorOptions(elt) {
         supplySubconditionOperatorOptions(fieldDropDown);
         break;
     }
+}
+
+function supplyScvRowKeyOptions(elt) {
+    var selectedValue = $(elt).val();
+    var cvt = window.app['contentVariableTableSummaryOptions'][selectedValue]
+    var action = $(elt).parent().parent();
+    var subfield = $(elt).parent();
+    //remove previous
+    $(subfield).children('fieldset').last().remove()
+    var name = $(action).attr("name");
+    var keys = [];
+    $.each(cvt, function(index, rowKeyHeader) {
+         keys.push({'scvt-row-header': rowKeyHeader, 'scvt-row-value': null})
+    });
+    var configTree = {'scvt-row-keys': keys};
+    var newContent = {
+        "type": "fieldset",
+        "caption": "",
+        "radiochildren": "radiochildren",
+        "name": name,
+        "elements": []};
+    configToForm('scvt-row-keys', newContent, name, configTree);
+    $(subfield).formElement(newContent['elements'][0]);
+    activeForm();
 }
 
 
@@ -1059,21 +1089,21 @@ function configToForm(item, elt, id_prefix, configTree){
             checkbox['checkboxchild'] = checkboxchild;
         }
         elt["elements"].push(checkbox);
-    } else if (dynamicForm[item]["type"] == "select") {
+    } else if (dynamicForm[item]['type'] == 'select') {
         options = [{
-                'value': '',
-        'html': localized_messages.select_one}];
+            'value': '',
+            'html': localized_messages.select_one}];
         switch (dynamicForm[item]["data"]) {
         case 'server-dynamic':
             for (option in window.app[item+'Options']) {
                 if ('value' in window.app[item+'Options'][option]) {
                     options.push({
-                            'value': window.app[item+'Options'][option]['value'],
-                    'html': window.app[item+'Options'][option]['html']});
+                        'value': window.app[item+'Options'][option]['value'],
+                        'html': window.app[item+'Options'][option]['html']});
                 } else {
                     options.push({
-                            'value': option,
-                    'html': localized_labels[option]})
+                        'value': option,
+                        'html': localized_labels[option]})
                 }
             }
             break;
@@ -1081,8 +1111,8 @@ function configToForm(item, elt, id_prefix, configTree){
             for (option in dynamicForm[item]["options"]) {
                 var opt = dynamicForm[item]["options"][option];
                 options.push({
-                        'value': opt,
-                'html': localized_labels[opt]})
+                    'value': opt,
+                    'html': localized_labels[opt]})
             }
             break;
         }
@@ -1093,21 +1123,21 @@ function configToForm(item, elt, id_prefix, configTree){
             }
             if (options.length == 1) {
                 options.push({
-                        'value': configTree[item],
-                        'html': localized_labels[configTree[item]],
-                'selected': true});
+                    'value': configTree[item],
+                    'html': localized_labels[configTree[item]],
+                    'selected': true});
             }
         }
         var label = null;
-        if (dynamicForm[item]!="hidden"){
+        if (dynamicForm[item] != "hidden"){
             label = localize_label(item)
         }
         select = {
-            "name": id_prefix + "." + item,
-            "caption": label,
-            "item": item,
-            "type": 'select',
-        "options": options};
+            'name': id_prefix + '.' + item,
+            'caption': label,
+            'item': item,
+            'type': 'select',
+            'options': options};
         if (dynamicForm[item]['onchange']) {
             select['onchange'] = dynamicForm[item]['onchange']; 
         }
@@ -1120,12 +1150,15 @@ function configToForm(item, elt, id_prefix, configTree){
         if (dynamicForm[item]['fieldset']==false) {
             elt["elements"].push(select);
         } else {
-            elt["elements"].push({
-                    "type":"fieldset",
-                    'class': "actions",
-                    'style': (("style" in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
-                    'elements': [select]
-            });            
+            var newContent = {
+                'type': 'fieldset',
+                'class': 'actions',
+                'style': (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
+                'elements': [select]};
+            if (configTree && item in configTree && dynamicForm[item]['subfields']) {
+                configToForm(dynamicForm[item]['subfields'], newContent, id_prefix, configTree);
+            }
+            elt["elements"].push(newContent);
         }
     } else {
         var eltValue = "";
@@ -1144,7 +1177,7 @@ function configToForm(item, elt, id_prefix, configTree){
             label = localize_label(item)
         } 
         newElt = {
-            "name":id_prefix+"."+item,
+            "name": id_prefix+"."+item,
             "caption": label,
             "type": dynamicForm[item]['type'],
             "style": (("style" in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
@@ -1152,6 +1185,16 @@ function configToForm(item, elt, id_prefix, configTree){
         if (dynamicForm[item]['style']) {
             newElt['style'] = dynamicForm[item]['style']; 
         }
+        if (dynamicForm[item]['disabled']) {
+            newElt['disabled'] = dynamicForm[item]['disabled']; 
+        }
+        if (dynamicForm[item]['fieldset']) {
+             var newElt = {
+                'type': 'fieldset',
+                'class': 'actions',
+                'style': (('style' in dynamicForm[item]) ? dynamicForm[item]['style']: ''),
+                'elements': [newElt]};
+        } 
         elt["elements"].push(newElt);
     }
 };
@@ -1424,13 +1467,7 @@ function fromBackendToFrontEnd(type, object, submitCall) {
     };
     
     configToForm(type, myform, type, object);
-    
-    /*myform["elements"].push({
-            "type": "submit",
-            "class": "hidden",
-            "value": localize_label("save")
-    })*/
-    
+     
     return myform;
 }
 

@@ -67,11 +67,18 @@ class FilterComponent extends Component
     }
     
     
-    public function getConditions($filterModel, $defaultConditions = array(), $otherModels = array())
+    public function getFilters()
+    {
+        return array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator'))); 
+    }
+
+
+    public function getConditions($filterModel, $defaultConditions = array(), $otherModels = array(), $joinCursor = true)
     {       
-        $filter = array_intersect_key($this->Controller->params['url'], array_flip(array('filter_param', 'filter_operator')));       
+        $filter = $this->getFilters();
   
         if ($filter == array()) {
+            $this->Controller->set('urlParams', array()); 
             return $defaultConditions;
         }
 
@@ -105,9 +112,13 @@ class FilterComponent extends Component
         //Run the pre-join request
         $otherModelConditions = array();
         foreach($checkedFilter['joins'] as $join) {
-            $results = call_user_func(
-                array($otherModels[$join['model']], $join['function']),
-                $join['parameters']);
+            if ($joinCursor) {
+                $results = call_user_func(
+                    array($otherModels[$join['model']], $join['function']),
+                    $join['parameters']);
+            } else {
+                $results = $join;
+            }
             $otherModelConditions = array(
                 $join['field'] => array('$join' => $results));
         }
@@ -125,5 +136,32 @@ class FilterComponent extends Component
         return __('%s', $value);
     }
 
-
+    
+    public function hasConditions()
+    {
+       //We test using filter param cause incase user doesn't add any filter param filter box is removed
+        if (!isset($this->Controller->params['url']['filter_param'])) {
+            return true;
+        }
+        return false;
+    }
+    
+    
+    public function addDefaultCondition($filterParam1, $filterParam2, $filterParam3)
+    {
+        if ($this->hasConditions()) {
+            $this->Controller->params['url'] = array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    1 => array(
+                        1 => $filterParam1,
+                        2 => $filterParam2,
+                        3 => $filterParam3
+                        )
+                    )
+                );
+        }
+    }
+    
+    
 }

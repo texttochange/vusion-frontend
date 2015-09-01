@@ -295,7 +295,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->assertFalse($this->vars['requestSuccess']);
     }
 
-
   
     public function testActivate_missingProgramSettings()
     {
@@ -338,7 +337,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Session
         ->expects($this->once())
         ->method('setFlash')
-        ->with('Dialogue activated.');  
+        ->with('Dialogue activated.');
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('keyword'))
+        ->will($this->returnValue(array()));  
         
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
@@ -354,10 +358,36 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $savedParticipant = $this->Participant->save($participant);
         
         $this->testAction('/testurl/programDialogues/activate/'.$savedDialogue['Dialogue']['_id']);
-   
     }
-    
-    
+
+
+    public function testActivate_fail_keywordValidation()
+    {
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
+        ->will($this->returnValue(array(
+            'usedkeyword' => array(
+                'program-db' => 'm6h',
+                'program-name' => 'other program', 
+                'by-type' => 'dialogue'))));
+
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        $this->Dialogue->create();
+        $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
+
+        $this->testAction(
+            '/testurl/programDialogue/activate/'.$saveDialogue['Dialogue']['_id'].'');
+
+        $this->assertFalse($this->vars['requestSuccess']);
+    }
+
+
     public function testValidateKeyword_fail_usedInOtherProgramDialogue()
     {    
         $dialogues = $this->mockProgramAccess();
@@ -387,7 +417,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->assertEquals(
             "'usedkeyword' already used by a Dialogue of program 'other program'.",
             $this->vars['foundMessage']);
-        
     }
     
     

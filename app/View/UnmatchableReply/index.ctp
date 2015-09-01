@@ -1,34 +1,57 @@
-<div class="unmatchable replies index users-index">
-    <ul class="ttc-actions">
+<div class="admin-action">
+<div class="actions">
+    <h3><?php echo __('Actions'); ?></h3>
+    <ul>
         <li>
-        <?php 
-            $exportUrl = $this->Html->url(array('controller' => 'unmatchableReply', 'action'=>'export'));
-            echo $this->Html->tag(
-                'span', 
-                __('Export'), 
-                array('class' => 'ttc-button', 'name' => 'export', 'url' => $exportUrl)); 
-            $this->Js->get('[name=export]')->event('click',
-                'generateExportDialogue(this);');
+        <?php echo $this->Html->link(__('Program List'),
+            array('controller' => 'programs', 
+                        'action' => 'index'));
         ?>
         </li>
         <li>
-        <?php 
-        echo $this->Html->tag(
-            'span', 
-            __('Filter'), 
-            array('class' => 'ttc-button', 'name' => 'add-filter')); 
-        $this->Js->get('[name=add-filter]')->event(
-            'click',
-            '$("#advanced_filter_form").show();
-            createFilter();
-            addStackFilter();');
-        ?> 
+        <?php echo $this->Html->link(__('Exported Files'),
+            array('action' => 'exported'));
+        ?>
         </li>
     </ul>
-    <h3><?php echo __('Unmatchable Replies');?></h3>
+</div>
+</div>
+
+<div class="admin-index unmatchable-replies index">
     <?php
-        echo $this->element('filter_box', array(
-            'controller' => 'unmatchableReply'));
+    $contentTitle = __('Unmatchable Replies');
+    $contentActions = array();
+    $containsDataControlNav = true;
+    $containsFilter = true;
+    $controller = 'unmatchableReply';
+    $urlParams = (isset($urlParams) ? $urlParams : "");
+
+    $contentActions[] = $this->Html->tag(
+        'span', 
+        __('Filter'), 
+        array('class' => 'ttc-button', 'name' => 'add-filter')); 
+    $this->Js->get('[name=add-filter]')->event(
+        'click',
+        '$("#advanced_filter_form").show();
+        createFilter();
+        addStackFilter();');
+
+    if ($unmatchableReplies != null) {
+        $exportUrl = array(
+            'controller' => 'unmatchableReply',
+            'action' => 'export',
+            '?' => $urlParams);
+        if ($order != null) {
+            $exportUrl['sort'] = key($order);
+            $exportUrl['direction'] = $order[key($order)];
+        }
+        $contentActions[] = $this->AclLink->generateButtonFromUrl(
+            __('Export'), $exportUrl, array('class' => 'ttc-button'));
+    }
+
+    echo $this->element('header_content', 
+        compact('contentTitle', 'contentActions', 'containsFilter','containsDataControlNav', 'controller'));
+
     ?>
     <div class="ttc-table-display-area">
     <div class="ttc-table-scrolling-area display-height-size">
@@ -42,6 +65,7 @@
              </tr>
         </thead>
         <tbody>
+
              <?php
              foreach($unmatchableReplies as $unmatchableReply):
              ?>
@@ -63,22 +87,11 @@
                  echo '<td class="direction"">'.$to.'&nbsp;</td>';
                  ?>
                  <td class="content"><?php echo $unmatchableReply['UnmatchableReply']['message-content']; ?>&nbsp;</td>
-                 <td class="date-time"><?php echo $this->Time->format('d/m/y h:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?> (UTC)</td>
+                 <td class="date-time"><?php echo $this->Time->format('d/m/y H:i', $unmatchableReply['UnmatchableReply']['timestamp']); ?> (UTC)</td>
              </tr>
              <?php endforeach; ?>
         </tbody>
     </table>
     </div>
     </div>
-</div>
-<div class="admin-action">
-<div class="actions">
-    <h3><?php echo __('Actions'); ?></h3>
-    <ul>
-        <li><?php echo $this->Html->link(__('Back To Program List'),
-            array('controller' => 'programs', 
-                        'action' => 'index'));
-            ?></li>
-    </ul>
-</div>
 </div>

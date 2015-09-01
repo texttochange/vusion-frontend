@@ -1,15 +1,27 @@
 <?php
 App::uses('ShortCode', 'Model');
 App::uses('MongodbSource', 'Mongodb.MongodbSource');
+App::uses('Program', 'Model');
+App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
 
 class ShortCodeTestCase extends CakeTestCase
 {
     
+    public $fixtures = array('app.program', 'app.user', 'app.programsUser');
+    
+    
     public function setUp()
     {
         parent::setUp();
+        $dbName = 'testdbprogram';
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
+        $this->Program = ClassRegistry::init('Program');
         $this->ShortCode = ClassRegistry::init('ShortCode');
+        $this->maker = new ScriptMaker();
     }
     
     
@@ -17,7 +29,14 @@ class ShortCodeTestCase extends CakeTestCase
     {
         $this->ShortCode->deleteAll(true, false);
         unset($this->ShortCode);
+        unset($this->Program);
+        unset($this->ProgramSetting);
         parent::tearDown();
+    }
+    
+    public function dropData()
+    {        
+        $this->ProgramSetting->deleteAll(true,false);
     }
     
     
@@ -46,12 +65,12 @@ class ShortCodeTestCase extends CakeTestCase
         $this->assertEqual(0, $savedShortCode['ShortCode']['supported-internationally']);
         $this->assertEqual(1, $savedShortCode['ShortCode']['support-customized-id']);
         
-        ## Cannot save the same couple coutry/shortcode if not supported internationally
+       // Cannot save the same couple coutry/shortcode if not supported internationally
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($wrongShortCode);
         $this->assertFalse($savedShortCode);
         
-        ## Supported Internationally
+        // Supported Internationally
         $supportedInternationally = array(
             'country' => 'netherland',
             'shortcode' => '8282',
@@ -60,12 +79,12 @@ class ShortCodeTestCase extends CakeTestCase
             'max-character-per-sms' => '160',
             );
         
-        # Cannot save an international shortcode while another local shortcode is using the code
+       // Cannot save an international shortcode while another local shortcode is using the code
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($supportedInternationally);
         $this->assertFalse($savedShortCode);
         
-        # Cannot save an internatinal shortcode while another international with same code is register
+      // Cannot save an internatinal shortcode while another international with same code is register
         $supportedInternationally['shortcode'] = '+311234546';
         $this->ShortCode->create();
         $savedShortCode = $this->ShortCode->save($supportedInternationally);
@@ -75,7 +94,7 @@ class ShortCodeTestCase extends CakeTestCase
         $savedShortCode = $this->ShortCode->save($supportedInternationally);
         $this->assertFalse($savedShortCode);
         
-        # Cannot save an national shortcode in countries that share the same international prefix
+        // Cannot save an national shortcode in countries that share the same international prefix
         $usShortCode = array(
             'country' => 'United States',
             'shortcode' => '8282',
@@ -144,5 +163,41 @@ class ShortCodeTestCase extends CakeTestCase
             $this->ShortCode->validationErrors['international-prefix'][0],
             'This field is read only.');
     }
+    
+    
+    public function testArchive()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $shortCode = array(
+            'country' => 'Cayman Islands',
+            'shortcode' => '8282',
+            'international-prefix' => '256',
+            'max-character-per-sms' => '140',
+            );
+        
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($shortCode);
+        
+        $this->assertTrue($this->ShortCode->archive($savedShortCode['ShortCode']['_id']));
+    }
+    
+    
+    public function testUnarchive()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $shortCode = array(
+            'country' => 'Cayman Islands',
+            'shortcode' => '8282',
+            'international-prefix' => '256',
+            'max-character-per-sms' => '140',
+            'status' => 'archived'
+            );
+        
+        $this->ShortCode->create();
+        $savedShortCode = $this->ShortCode->save($shortCode);
+        
+        $this->assertTrue($this->ShortCode->unarchive());
+    }
+    
     
 }

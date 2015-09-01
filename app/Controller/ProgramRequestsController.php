@@ -6,6 +6,7 @@ App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Helper');
 App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('ContentVariableTable', 'Model');
 
 
 class ProgramRequestsController extends BaseProgramSpecificController
@@ -14,7 +15,8 @@ class ProgramRequestsController extends BaseProgramSpecificController
         'Request',
         'Dialogue',
         'ProgramSetting',
-        'Participant');
+        'Participant',
+        'ContentVariableTable');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -25,6 +27,8 @@ class ProgramRequestsController extends BaseProgramSpecificController
         'DynamicForm',
         'ProgramAuth',
         'ArchivedProgram');
+    var $helpers = array(
+        'DynamicOptions');
     
     
     function constructClasses()
@@ -57,12 +61,14 @@ class ProgramRequestsController extends BaseProgramSpecificController
     public function add()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
     }
     
     
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
         
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($programUrl."_db");
@@ -96,7 +102,9 @@ class ProgramRequestsController extends BaseProgramSpecificController
             return;
         }
         
-        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Request->setContactEmail($contactEmail);
         $request       = DialogueHelper::objectToArray($this->request->data);
         $id            = Request::getRequestId($request);
         $keywords      = Request::getRequestKeyphrases($request);
@@ -119,6 +127,13 @@ class ProgramRequestsController extends BaseProgramSpecificController
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->Participant->getFilters('conditional-action'));
+    }
+
+
+    protected function _getContentVariableTableOptions()
+    {
+        return $this->ContentVariableTable->find('all', array(
+            'fields' => array('name', 'columns.header', 'columns.type')));
     }
     
     
@@ -153,7 +168,7 @@ class ProgramRequestsController extends BaseProgramSpecificController
     public function validateKeyword()
     {
         $programUrl     = $this->params['program'];
-        $programDb      = $this->Session->read($programUrl."_db");
+        $programDb      = $this->programDetails['database'];
         $usedKeywords   = $this->request->data['keyword'];
         $requestId      = $this->request->data['object-id'];
         $requestSuccess = true;
@@ -166,11 +181,12 @@ class ProgramRequestsController extends BaseProgramSpecificController
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             return;
         }
-        
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+
+        $shortCode = $this->ProgramSetting->getProgramSetting('shortcode');
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Request', $requestId); 
         if ($foundKeywords) {
-            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $contactEmail = $this->ProgramSetting->getContactEmail();
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords, $contactEmail);
             $requestSuccess = false;
             $this->set(compact('requestSuccess', 'foundMessage'));
             return;

@@ -56,7 +56,7 @@ h1 {
 h2 {
 	background:#fff;
 	color: #e32;
-	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
+	font-family:'verdana-bold','lucida grande', helvetica, arial, sans-serif;
 	font-size: 190%;
 }
 h3 {
@@ -71,7 +71,7 @@ h4 {
 	font-weight: normal;
 }
 ul, li {
-	margin: 0 12px;
+	/* margin: 0 12px;*/
 }
 p {
 	margin: 0 0 1em 0;
@@ -90,6 +90,8 @@ p {
 	height: 40px;
 	background: black;
 	min-width: 800px;
+	z-index: 2;
+	position: relative;
 }
 
 #header h1 {
@@ -121,23 +123,14 @@ p {
 	clear: both;
 	padding: 6px 10px;    
 	background: white;
-	cursor: pointer;
 }
 
 /** containers **/
 div.form,
 div.index,
 div.view {
-	/*float: right;*/
-	/*min-width: 547px;*/
-	/*border-left:1px solid #666;*/
-	padding:10px 20px 10px 0px;
-	/*height: 372px;*/
 	min-width: 719px;
-	/*width:79%;*/
-	/*padding-right: 11px;*/
-	position: absolute;
-	max-width: 1071px;
+
 }
 div.form2,
 {
@@ -178,7 +171,6 @@ th {
 }
 th a {
 	display: block;
-	padding: 2px 4px;
 	text-decoration: none;
 }
 th a.asc:after {
@@ -437,18 +429,13 @@ form .error-message {
 .message {
 	clear: both;
 	color: #fff;
-	/*	font-size: 140%; 
-	font-weight: bold; 
-	margin: 0 0 1em 0;
-	padding: 5px;*/
 	position: relative;
 	top: 5px;
-	/*left: 37%;*/
 	background: yellow;
 	padding-left: 10px;
 	padding-right: 10px;
 	margin-bottom: 0px;
-	z-index: 10;
+	z-index: 1000;
 	margin-left: auto;
 	margin-right: auto;
 	display: inline;

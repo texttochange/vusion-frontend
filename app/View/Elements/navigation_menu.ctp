@@ -1,4 +1,5 @@
-<div class='ttc-navigation-menu'>
+<div style="height:25em">
+<div id="navigation-menu" class='ttc-navigation-menu'>
 <?php
 
     echo $this->Js->get('document')->event(
@@ -19,7 +20,7 @@
         <ul>
             <li>
             <?php 
-            echo $this->AclLink->generateLink(__('New Request'),$programDetails['url'],'programRequests','add');
+            echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programRequests','add');
             ?>
             </li>
             <?php 
@@ -48,7 +49,7 @@
         <ul>
             <li>
             <?php 
-            echo $this->AclLink->generateLink(__('New Dialogue'),$programDetails['url'],'programDialogues','edit');    
+            echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programDialogues','edit');    
             ?>
             </li>
             <?php foreach ($currentProgramData['dialogues'] as $dialogue) { 
@@ -112,7 +113,7 @@
        <ul>
            <li>
            <?php
-           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programUnattachedMessages','add');
+           echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programUnattachedMessages','add');
            ?>
            </li>
            <li>
@@ -178,7 +179,7 @@
          <ul>
            <li>
            <?php
-           echo $this->AclLink->generateLink(__('New Message'),$programDetails['url'],'programPredefinedMessages','add');
+           echo $this->AclLink->generateLink(__('+ New'),$programDetails['url'],'programPredefinedMessages','add');
            ?>
            </li>
            <?php 
@@ -191,7 +192,7 @@
                        array('ellipsis' => '...',
                            'exact' => true
                            ));      
-		
+      
                    
                    echo $this->AclLink->generateLink($predefinedMessageLinkName,
                        $programDetails['url'], 'programPredefinedMessages', 'edit', $predefinedMessage['PredefinedMessage']['_id']);
@@ -225,18 +226,28 @@
         <ul>
             <li>
                 <?php 
-                     echo $this->AclLink->generateLink(__('Add Participants'),$programDetails['url'],'programParticipants','add');
+                     echo $this->AclLink->generateLink(__('+ Add'),$programDetails['url'],'programParticipants','add');
                 ?>
             </li>
-		    <li>
-		        <?php
-		             echo $this->AclLink->generateLink(__('Import Participants'),$programDetails['url'],'programParticipants','import');
-		        ?>
-		    </li>
+              <li>
+                  <?php
+                      echo $this->AclLink->generateLink(__('Import'),$programDetails['url'],'programParticipants','import');
+                  ?>
+              </li>
+            <li>
+                <?php
+                    echo $this->AclLink->generateLink(__('Exported File(s)'),$programDetails['url'],'programParticipants','exported');
+                ?>
+            </li>
         </ul>
     </li>
     <li>
         <?php echo $this->AclLink->generateLink(__('History'),$programDetails['url'],'programHistory'); ?>        
+        <ul>
+          <li>
+            <?php echo $this->AclLink->generateLink(__('Exported File(s)'),$programDetails['url'],'programHistory','exported'); ?>
+          </li>
+        </ul>
     </li>
     <li>
         <?php
@@ -255,4 +266,5 @@
     </li>
 </ul>  
 
+</div>
 </div>

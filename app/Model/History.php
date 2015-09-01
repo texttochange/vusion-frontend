@@ -4,6 +4,7 @@ App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('UnattachedMessage', 'Model');
+App::uses('Participant','Model');
 
 
 class History extends ProgramSpecificMongoModel
@@ -11,7 +12,7 @@ class History extends ProgramSpecificMongoModel
     
     var $name     = 'History';  
     var $useTable = 'history';
-
+    
     var $messageType = array(
         'dialogue-history',
         'request-history',
@@ -129,12 +130,14 @@ class History extends ProgramSpecificMongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
     }
-
+    
     public function initializeDynamicTable($forceNew=false)
     {
         parent::initializeDynamicTable();
         $this->UnattachedMessage = ProgramSpecificMongoModel::init(
             'UnattachedMessage', $this->databaseName, $forceNew);
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $this->databaseName, $forceNew);
     }
     
     
@@ -221,7 +224,8 @@ class History extends ProgramSpecificMongoModel
     }
     
     
-    public function getParticipantHistory($phone, $dialoguesInteractionsContent) {
+    public function getParticipantHistory($phone, $dialoguesInteractionsContent)
+    {
         $histories   = $this->find('participant', array('phone' => $phone));
         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
@@ -353,6 +357,7 @@ class History extends ProgramSpecificMongoModel
         'any' => 'any'
         );
     
+    
     public $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
@@ -364,6 +369,7 @@ class History extends ProgramSpecificMongoModel
         'delivered'=>'delivered',
         'pending'=>'pending',
         'ack' => 'ack',
+        'nack' => 'nack',
         'forwarded' => 'forwarded',
         'received' => 'received',
         'no-credit' => 'no-credit',
@@ -372,9 +378,10 @@ class History extends ProgramSpecificMongoModel
         'received' => 'received',
         'forwarded' => 'forward'
         );
-        
     
-    public function fromFilterToQueryCondition($filterParam) {
+    
+    public function fromFilterToQueryCondition($filterParam) 
+    {
         
         $condition = array();
         
@@ -403,10 +410,10 @@ class History extends ProgramSpecificMongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
                 } elseif ($filterParam[2] == 'start-with') {
-                    $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                    $condition['participant-phone'] = array('$regex' => "^\\".$filterParam[3]);
                 } elseif ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", '', 'i'); 
                 }
             } else {
                 $condition['participant-phone'] = '';
@@ -416,12 +423,12 @@ class History extends ProgramSpecificMongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['message-content'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'contain') {
-                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                    $condition['message-content'] = array('$regex' => $filterParam[3], '$options' => 'i');
                 } elseif ($filterParam[2] == 'has-keyword') {
-                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                    $condition['message-content'] = array('$regex' => "^".$filterParam[3]."($| )", '$options' => 'i');
                 } elseif ($filterParam[2] == 'has-keyword-any') {
                     $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, '($| )', 'i');
                 }
             } else {
                 $condition['message-content'] = '';
@@ -491,18 +498,18 @@ class History extends ProgramSpecificMongoModel
     } 
     
     
-    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null) 
+    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null, $options='') 
     {
         $query = array();
         if (count($choices) > 1) {
             $or = array();
             foreach ($choices as $choice) {
-                $regex = new MongoRegex("/^".$prefix.$choice.$suffix);
+                $regex = array( '$regex' => '^'.$prefix.$choice.$suffix, '$options' => $options);
                 $or[]  = array($field => $regex);
             }
             $query['$or'] = $or;
         } else {
-            $query[$field] = new MongoRegex("/^".$prefix.$choices[0].$suffix);
+            $query[$field] = array( '$regex' => '^'.$prefix.$choices[0].$suffix, '$options' => $options);
         }
         return $query;
     }
@@ -522,6 +529,19 @@ class History extends ProgramSpecificMongoModel
         } 
         $historyCount = $this->find('count', array('conditions' => $conditions));
         return $historyCount;
+    }
+    
+    
+    public function getParticipantLabels($histories)
+    {
+        foreach ($histories as &$history) {
+            $phone = $history['History']['participant-phone'];
+            $participant = $this->Participant->find('first', array(
+                'conditions' => array('phone' => $phone)));
+            $participantLabels = $participant['Participant']['profile'];
+            $history['History']['participant-labels'] = $participantLabels;
+        }
+        return $histories;
     }
 
     

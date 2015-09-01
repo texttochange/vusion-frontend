@@ -1,3 +1,6 @@
 <?php 
-echo $this->Js->object(array('topic'=>$topic, 'documentation'=>$documentation));
+if ($requestSuccess) {
+	echo ',"topic":"' . $topic . '"';
+	echo ',"documentation":' . $this->Js->object($documentation);
+}
 ?>	

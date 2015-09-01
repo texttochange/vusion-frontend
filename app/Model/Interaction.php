@@ -13,8 +13,10 @@ class Interaction extends VirtualModel
     var $name       = 'interaction';
     var $version    = '5'; 
     var $databaName = null;    
-
+    
     var $payload = array();
+
+    var $contactEmail = null;
     
     var $fields = array(
         'interaction-id',
@@ -28,8 +30,8 @@ class Interaction extends VirtualModel
     public function __construct($databaseName)
     {     
         parent::__construct();
-        $this->Action = new Action();
         $this->databaseName = $databaseName;
+        $this->Action = new Action($databaseName);
     }
     
     
@@ -138,7 +140,9 @@ class Interaction extends VirtualModel
             'valueRequireFields' => array(
                 'rule' => array(
                     'valueRequireFields', array(
-                        'announcement' => array('content'),
+                        'announcement' => array(
+                            'content',
+                            'announcement-actions'),
                         'question-answer' => array(
                             'content', 
                             'keyword', 
@@ -183,8 +187,8 @@ class Interaction extends VirtualModel
                 'message' => 'Question Answer required a keyword.',
                 ),
             'validValue' => array(
-                'rule' => array('regex', VusionConst::KEYWORD_REGEX),
-                'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                'rule' => array('regex', VusionConst::KEYWORDS_REGEX),
+                'message' => VusionConst::KEYWORDS_FAIL_MESSAGE
                 ),
             'notUsedKeyword' => array(
                 'rule' => 'notUsedKeyword',
@@ -359,6 +363,16 @@ class Interaction extends VirtualModel
                 'message' => null
                 ),
             ),
+        'announcement-actions' => array(
+            'requiredConditional' => array(
+                'rule' => array('requiredConditionalFieldValue', 'type-interaction', 'announcement'),
+                'message' => 'Only available for announcement type of interaction.',
+                ),
+            'validValue' => array(
+                'rule' => 'validateActions',
+                'message' => null
+                ),
+            ),
         // Reminder Schedule Subtype
         'reminder-days' => array(
             'requiredConditional' => array(
@@ -426,6 +440,7 @@ class Interaction extends VirtualModel
             )
         );
     
+    
     //TODO: need clever validation over:
     // 1) on numbering of choice
     // 2) notUsedKeyword when ticking allow no space
@@ -462,8 +477,8 @@ class Interaction extends VirtualModel
                 'message' => 'keyword field cannot be empty.'
                 ),  
             'validValue' => array(
-                'rule' => array('regex', VusionConst::KEYWORD_REGEX),
-                'message' => VusionConst::KEYWORD_FAIL_MESSAGE
+                'rule' => array('regex', VusionConst::KEYWORDS_REGEX),
+                'message' => VusionConst::KEYWORDS_FAIL_MESSAGE
                 ),
             'notUsedKeyword' => array(
                 'rule' => 'notUsedKeyword',
@@ -545,13 +560,18 @@ class Interaction extends VirtualModel
         return true;
     }
     
-
+    
     public function setUsedKeywords($usedKeywords = array())
     {
         $this->usedKeywords = $usedKeywords;
     }
+    
 
-
+    public function setContactEmail($contactEmail)
+    {
+        $this->contactEmail = $contactEmail;
+    }
+    
     public function notUsedKeyword($field, $data)
     {
         if (!isset($data[$field])) {
@@ -560,13 +580,14 @@ class Interaction extends VirtualModel
         $keywords = DialogueHelper::cleanKeywords($data[$field]);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
-                return DialogueHelper::foundKeywordsToMessage($this->databaseName, $keyword, $this->usedKeywords[$keyword]);
+                return DialogueHelper::foundKeywordsToMessage(
+                    $this->databaseName, $keyword, $this->usedKeywords[$keyword], $this->contactEmail);
             }
         }
         return true;
     }
-
-
+    
+    
     public function notUsedKeywordNoSpace($field, $data)
     {
         if (!isset($data[$field]) || !isset($data['set-answer-accept-no-space'])) {
@@ -581,15 +602,15 @@ class Interaction extends VirtualModel
         }
         return true;
     }
-
-
+    
+    
     static public function hasInteractionKeywords($interaction, $keywords)
     {
         $interactionKeywords = Interaction::getInteractionKeywords($interaction);
         return array_intersect($keywords, $interactionKeywords);
     }
-
-
+    
+    
     static public function getInteractionKeywords($interaction)
     {
         if (isset($interaction['keyword'])) {
@@ -608,8 +629,8 @@ class Interaction extends VirtualModel
         }
         return array();
     }
-
-
+    
+    
     static public function getInteractionNoSpaceKeywords($interaction, $keywords)
     {
         $usedKeywords = array();
@@ -622,7 +643,8 @@ class Interaction extends VirtualModel
         }
         return $usedKeywords;
     }
-
+    
+    
     static public function replaceLocalIds(&$interactions)
     {
         $localIds = array();
@@ -633,7 +655,7 @@ class Interaction extends VirtualModel
                 $interaction['interaction-id'] = $newId;
             }
         }
-
+        
         foreach ($interactions as &$interaction) {
             if (isset($interaction['offset-condition-interaction-id'])) {
                 if (array_key_exists($interaction['offset-condition-interaction-id'], $localIds)) {
@@ -642,7 +664,8 @@ class Interaction extends VirtualModel
             }
         }
     }
-
+    
+    
     static public function hasAnswer($interaction, $answering)
     {
         if (!in_array($interaction['type-interaction'], array('question-answer', 'question-answer-keyword' ))) {
@@ -671,18 +694,18 @@ class Interaction extends VirtualModel
             return array('answer' => __("The interaction has not such answer: %s.", $answering));
         }
     }
-
-
-    public function beforeValidate()
+    
+    
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         $this->_setDefault('interaction-id', uniqid());
         $this->_setDefault('activated', 0);
         $this->data['activated'] = intval($this->data['activated']);
         $this->_setDefault('prioritized', null);
-        
         $this->_setDefault('type-interaction', null);
         $this->_setDefault('type-schedule', null);
+        
         if ($this->data['type-schedule'] == 'offset-condition') {
             $this->_setDefault('offset-condition-delay', '0');
         }
@@ -690,9 +713,6 @@ class Interaction extends VirtualModel
         if (isset($this->data['date-time'])) {
             $this->data['date-time'] = DialogueHelper::convertDateFormat($this->data['date-time']);
         }
-        //Exit the function in case of announcement
-        if (!in_array($this->data['type-interaction'], array('question-answer', 'question-answer-keyword')))
-            return true;
         
         if ($this->data['type-interaction'] == 'question-answer') {
             $this->_setDefault('type-question', null);
@@ -702,7 +722,7 @@ class Interaction extends VirtualModel
             $this->_setDefault('set-matching-answer-actions', null);
             if ($this->data['set-matching-answer-actions'] == 'matching-answer-actions') {
                 $this->_setDefault('matching-answer-actions', array());
-                $this->_beforeValidateActions(&$this->data['matching-answer-actions']);
+                $this->_beforeValidateActions($this->data['matching-answer-actions']);
             }
             $this->_setDefault('set-max-unmatching-answers', null);
             if ($this->data['set-max-unmatching-answers'] == 'max-unmatching-answers') {
@@ -717,26 +737,26 @@ class Interaction extends VirtualModel
                 $this->_setDefault('answer-label', null);
                 $this->_setDefault('feedbacks', array());
             }
-        }
-        
-        if ($this->data['type-interaction'] == 'question-answer-keyword') {
+        } elseif ($this->data['type-interaction'] == 'announcement') {
+            $this->_setDefault('announcement-actions', array());
+            $this->_beforeValidateActions($this->data['announcement-actions']);
+        } elseif ($this->data['type-interaction'] == 'question-answer-keyword') {
             $this->_setDefault('set-reminder', null);
             $this->_setDefault('answer-keywords', array()); 
             $this->_beforeValidateAnswerKeywords();
         }
         
-        if ($this->data['set-reminder'] == 'reminder') {
+        if (isset($this->data['set-reminder']) && $this->data['set-reminder'] == 'reminder') {
             $this->_setDefault('reminder-actions', array());
             $this->_setDefault('type-schedule-reminder', null);
             $this->_setDefault('reminder-number', null);
-            $this->_beforeValidateActions(&$this->data['reminder-actions']);
+            $this->_beforeValidateActions($this->data['reminder-actions']);
         }
-        
         return true;
     }
     
     
-    protected function _beforeValidateActions($actions)
+    protected function _beforeValidateActions(&$actions)
     {
         foreach ($actions as &$action) {
             $this->Action->set($action);
@@ -753,7 +773,7 @@ class Interaction extends VirtualModel
                 $answer['feedbacks'] = array();
             if (!isset($answer['answer-actions']))
                 $answer['answer-actions'] = array();
-            $this->_beforeValidateActions(&$answer['answer-actions']);
+            $this->_beforeValidateActions($answer['answer-actions']);
         }
     }
     
@@ -765,7 +785,7 @@ class Interaction extends VirtualModel
                 $answer['feedbacks'] = array();
             if (!isset($answer['answer-actions']))
                 $answer['answer-actions'] = array();
-            $this->_beforeValidateActions(&$answer['answer-actions']);
+            $this->_beforeValidateActions($answer['answer-actions']);
         }
     }
     

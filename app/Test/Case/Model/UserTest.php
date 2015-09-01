@@ -54,7 +54,7 @@ class UserTestCase extends CakeTestCase
             3 => 'john');
         $this->assertEqual(
             $this->User->fromFilterToQueryCondition($filterParam),
-            array("username" => "john"));
+            array("User.username" => "john"));
         
         $filterParam = array(
                     1 => "username", 
@@ -62,7 +62,7 @@ class UserTestCase extends CakeTestCase
                     3 => "jo");        
         $this->assertEqual(
             $this->User->fromFilterToQueryCondition($filterParam),
-            array("username LIKE" => "jo%"));
+            array("User.username LIKE" => "jo%"));
     }
     
     
@@ -74,7 +74,7 @@ class UserTestCase extends CakeTestCase
             3 => '1');        
         $this->assertEqual(
             $this->User->fromFilterToQueryCondition($filterParam),
-            array('group_id' => '1'));
+            array('User.group_id' => '1'));
         
         $filterParam = array(
             1 => 'group_id', 
@@ -82,7 +82,7 @@ class UserTestCase extends CakeTestCase
             3 => '1');
         $this->assertEqual(
             $this->User->fromFilterToQueryCondition($filterParam),
-            array('group_id' => array('$ne' => '1')));
+            array('User.group_id' => array('$ne' => '1')));
     }
     
     

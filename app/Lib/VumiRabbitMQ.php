@@ -43,6 +43,14 @@ class VumiRabbitMQ {
     }
 
 
+    public function sendMessageToExport($export_id)
+    {
+        $msg = $this->workerMessageMaker->export($export_id);
+        return $this->sendMessageTo('export.control', $msg);
+    }
+
+
+    // Program Specific calls
     public function sendMessageToUpdateSchedule($to, $schedule_type, $object_id)
     {
         $msg = $this->workerMessageMaker->updateSchedule($schedule_type, $object_id);

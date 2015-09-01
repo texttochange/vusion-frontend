@@ -13,7 +13,7 @@ class TestKeywordComponentController extends Controller
 }
 
 
-class KewyordComponentTest extends CakeTestCase
+class KeywordComponentTest extends CakeTestCase
 {
 
     public $KeywordComponent = null;
@@ -228,11 +228,11 @@ class KewyordComponentTest extends CakeTestCase
     }
 
 
-    public function testAreUsedKeywords_withRequestKeyphrases() 
+    public function testAreUsedKeywords_withRequestKeyphrases()
     {
         $this->Request->create();
         $savedRequest = $this->Request->save($this->Maker->getOneRequest('keyword1 stuff, Keyword1 other'));
-        
+
         $expected = array(
             'keyword1 stuff' => array(
                 'program-name' => '',
@@ -243,6 +243,28 @@ class KewyordComponentTest extends CakeTestCase
 
         $valid = $this->KeywordComponent->areUsedKeywords(
             'testdbprogram', '256-8181', array('keyword1 shawdow', 'keyword1 stuff'), 'Request');
+        $this->assertEqual($valid, $expected);
+    }
+
+
+    public function testAreUsedKeywords_withUnauthorizedKeywords() 
+    {
+        $settings = array(
+            'shortcode' => '256-8181',
+            'sms-forwarding-allowed' => 'none',
+            'authorized-keywords' => array('keyword1', 'keyword2'),
+            'contact' => '1'
+            );
+        $this->ProgramSetting->saveProgramSettings($settings);
+        
+        $expected = array(
+            'keyword3' => array(
+                'program-name' => '',
+                'program-db' => 'testdbprogram',
+                'by-type' => 'ProgramSetting'));
+
+        $valid = $this->KeywordComponent->areUsedKeywords(
+            'testdbprogram', '256-8181', array('keyword3 shawdow', 'keyword1 stuff'), 'Request');
         $this->assertEqual($valid, $expected);    
     }
 
@@ -265,6 +287,7 @@ class KewyordComponentTest extends CakeTestCase
         $valid = $this->KeywordComponent->areKeywordsUsedByOtherPrograms('testdbprogram', '256-8181', array('KEYWORD'));
         $this->assertEqual($valid, $expected);    
     }
+
 
     public function testAreKeywordsUsedByOtherPrograms_keywordUsedInArchivedProgram() 
     {   

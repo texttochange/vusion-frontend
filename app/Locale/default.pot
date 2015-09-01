@@ -1,239 +1,277 @@
 # LANGUAGE translation of CakePHP Application
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2014-01-10 08:34+0000\n"
-"PO-Revision-Date: 2014-01-10 11:41+0300\n"
-"Last-Translator: Olivier Vernin <overnin@gmail.com>\n"
+"POT-Creation-Date: 2015-02-26 07:48+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: Controller/GroupsController.php:40;81;115
+#: Controller/CreditViewerController.php:95
+msgid "Please select between date or predefine timefame"
+msgstr ""
+
+#: Controller/CreditViewerController.php:265
+msgid "This file does not exist: %s"
+msgstr ""
+
+#: Controller/GroupsController.php:36;77;111
 msgid "Invalid group."
 msgstr ""
 
-#: Controller/GroupsController.php:56;85
+#: Controller/GroupsController.php:52;81
 msgid "The group has been saved."
 msgstr ""
 
-#: Controller/GroupsController.php:62;91
+#: Controller/GroupsController.php:58;87
 msgid "The group could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/GroupsController.php:118
+#: Controller/GroupsController.php:114
 msgid "Group deleted."
 msgstr ""
 
-#: Controller/GroupsController.php:124
+#: Controller/GroupsController.php:120
 msgid "Group was not deleted."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:48
+#: Controller/ProgramContentVariablesController.php:49
 msgid "The keys/values has been saved in Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:58
+#: Controller/ProgramContentVariablesController.php:59
 msgid "The keys/value could not be saved in Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:74
+#: Controller/ProgramContentVariablesController.php:75
 msgid "The keys/value cannot be found in the Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:80
+#: Controller/ProgramContentVariablesController.php:81
 msgid "The keys/value has been saved in Content Variable."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:89
+#: Controller/ProgramContentVariablesController.php:90
 msgid "The keys/value could not be saved in Content Variable. Please, try again."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:112
+#: Controller/ProgramContentVariablesController.php:113
 msgid "The keys/value cannot be found in Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:117
+#: Controller/ProgramContentVariablesController.php:118
 msgid "The keys/value has been deleted from the Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:129
+#: Controller/ProgramContentVariablesController.php:130
 msgid "The keys/calue was not deleted from the Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:168;199
+#: Controller/ProgramContentVariablesController.php:173;201
 msgid "The table cannot be found in Content Variable."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:173
+#: Controller/ProgramContentVariablesController.php:178
 msgid "Table deleted from the Content Variables."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:185
+#: Controller/ProgramContentVariablesController.php:190
 msgid "A Table was not deleted from Content Variable."
 msgstr ""
 
-#: Controller/ProgramContentVariablesController.php:221
+#: Controller/ProgramContentVariablesController.php:227
 msgid "This table value cannot be found in Content Variable."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:59
-msgid "Dialogue saved as draft."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:86
-msgid "Dialogue doesn't exist."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:102
-msgid "This is an old version of this dialogue. Click here to get the current version."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:134
-msgid "Dialogue activated."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:139
-msgid "Dialogue unknown reload the page and try again."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:144
-#: Controller/ProgramParticipantsController.php:318;678
-#: Controller/ProgramUnattachedMessagesController.php:136
+#: Controller/ProgramDialoguesController.php:79;154;207
+#: Controller/ProgramParticipantsController.php:385;758
+#: Controller/ProgramRequestsController.php:94;166
+#: Controller/ProgramUnattachedMessagesController.php:174
 msgid "Please set the program settings then try again."
 msgstr ""
 
+#: Controller/ProgramDialoguesController.php:92
+msgid "Dialogue saved as draft."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:95
+msgid "This dialogue has a validation error, please correct it and save again."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:112
+msgid "Dialogue doesn't exist."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:126
+msgid "This is an old version of this dialogue. Click here to get the current version."
+msgstr ""
+
 #: Controller/ProgramDialoguesController.php:160
-#: Controller/ProgramRequestsController.php:157
-msgid "Program shortcode has not been defined, please go to program settings."
+msgid "Dialogue activated."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:175
-msgid "'%s' already used in dialogue '%s' of the same program."
+#: Controller/ProgramDialoguesController.php:164
+msgid "Dialogue unknown reload the page and try again."
 msgstr ""
 
-#: Controller/ProgramDialoguesController.php:187
-msgid "'%s' already used by a request of the same program."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:209
-#: Controller/Component/KeywordComponent.php:46
-msgid "'%s' already used by a dialogue of program '%s'."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:220
-#: Controller/Component/KeywordComponent.php:54
-msgid "'%s' already used by a request of program '%s'."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:245
-msgid "Message(s) being sent, should arrive shortly..."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:294
-msgid "Dialogue deleted."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:304
-msgid "Delete dialogue failed."
-msgstr ""
-
-#: Controller/ProgramDialoguesController.php:326
+#: Controller/ProgramDialoguesController.php:183
 msgid "'%s' Dialogue Name already exists in the program. Please choose another."
 msgstr ""
 
+#: Controller/ProgramDialoguesController.php:238
+msgid "Message(s) being sent, should arrive shortly..."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:277
+msgid "Dialogue deleted."
+msgstr ""
+
+#: Controller/ProgramDialoguesController.php:287
+msgid "Delete dialogue failed."
+msgstr ""
+
+#: Controller/ProgramHistoryController.php:207
+#: Controller/ProgramParticipantsController.php:293
+#: Controller/UnmatchableReplyController.php:156
+msgid "Vusion failed to start the export process."
+msgstr ""
+
+#: Controller/ProgramHistoryController.php:211
+#: Controller/ProgramParticipantsController.php:297
+#: Controller/UnmatchableReplyController.php:160
+msgid "Vusion is backing the export file. Your file should appear shortly on this page."
+msgstr ""
+
 #: Controller/ProgramHistoryController.php:233
+#: Controller/ProgramParticipantsController.php:318
+#: Controller/UnmatchableReplyController.php:196
+msgid "Invalid Export: %s"
+msgstr ""
+
+#: Controller/ProgramHistoryController.php:237
+#: Controller/ProgramParticipantsController.php:322
+#: Controller/UnmatchableReplyController.php:200
+msgid "Export deleted."
+msgstr ""
+
+#: Controller/ProgramHistoryController.php:240
+#: Controller/ProgramParticipantsController.php:325
+#: Controller/UnmatchableReplyController.php:203
+msgid "Export cannot be deleted."
+msgstr ""
+
+#: Controller/ProgramHistoryController.php:263
 msgid "Histories have been deleted."
 msgstr ""
 
-#: Controller/ProgramHomeController.php:101
+#: Controller/ProgramHomeController.php:98
 msgid "Worker is starting."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:97
+#: Controller/ProgramParticipantsController.php:142
 msgid "The required filter parameter option is missing."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:111
+#: Controller/ProgramParticipantsController.php:156
 msgid "The requested parameter option %s is not supported."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:146
-msgid "The MassTag has been added successfully."
+#: Controller/ProgramParticipantsController.php:190
+msgid "The tag %s has been added successfully."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:150
-msgid "The MassTag"
+#: Controller/ProgramParticipantsController.php:193
+msgid "The tag %s could not be added."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:177
-msgid "The Tag "
+#: Controller/ProgramParticipantsController.php:219
+msgid "The tag %s has been removed successfully."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:181
-msgid "The Tag"
+#: Controller/ProgramParticipantsController.php:222
+msgid "The tag %s could not be removed."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:327;377
+#: Controller/ProgramParticipantsController.php:393;477
 msgid "The participant has been saved."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:337
+#: Controller/ProgramParticipantsController.php:402
 msgid "The participant could not be saved."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:366;530;576;616;654
+#: Controller/ProgramParticipantsController.php:426;433;439;698;732
 msgid "Invalid participant"
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:383
+#: Controller/ProgramParticipantsController.php:483
 msgid "The participant could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:430
+#: Controller/ProgramParticipantsController.php:527
 msgid "%s Participants have been deleted."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:467
+#: Controller/ProgramParticipantsController.php:564
 msgid "Invalid participant:"
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:480
+#: Controller/ProgramParticipantsController.php:576
 msgid "Participant and related schedule deleted."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:492
-msgid "Participant was not deleted"
+#: Controller/ProgramParticipantsController.php:584
+msgid "Participant was not deleted."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:550
+#: Controller/ProgramParticipantsController.php:636
 msgid "The participant has been optin."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:560;600;639
-msgid "The participant could not be reset."
+#: Controller/ProgramParticipantsController.php:645
+msgid "The participant could not be optin."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:590
+#: Controller/ProgramParticipantsController.php:674
 msgid "The participant has been optout."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:629
+#: Controller/ProgramParticipantsController.php:683
+msgid "The participant could not be optout."
+msgstr ""
+
+#: Controller/ProgramParticipantsController.php:712
 msgid "The participant has been reset."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:686
-#: Controller/ProgramUnattachedMessagesController.php:210
+#: Controller/ProgramParticipantsController.php:719
+msgid "The participant could not be reset."
+msgstr ""
+
+#: Controller/ProgramParticipantsController.php:766
+#: Controller/ProgramUnattachedMessagesController.php:255
 msgid "Please select a file."
 msgstr ""
 
-#: Controller/ProgramParticipantsController.php:688
-#: Controller/ProgramUnattachedMessagesController.php:212
+#: Controller/ProgramParticipantsController.php:768
+#: Controller/ProgramUnattachedMessagesController.php:257
+#: Controller/UsersController.php:355
 msgid "Error while uploading the file: %s."
+msgstr ""
+
+#: Controller/ProgramParticipantsController.php:861
+msgid "The runActions succeed."
+msgstr ""
+
+#: Controller/ProgramParticipantsController.php:865
+msgid "The runActions failed."
 msgstr ""
 
 #: Controller/ProgramPredefinedMessagesController.php:43;79
@@ -253,7 +291,7 @@ msgid "The predefined message could not be saved. Please, try again."
 msgstr ""
 
 #: Controller/ProgramPredefinedMessagesController.php:115
-#: Controller/ProgramUnattachedMessagesController.php:248;311
+#: Controller/ProgramUnattachedMessagesController.php:312;383
 msgid "Invalid Message."
 msgstr ""
 
@@ -265,112 +303,108 @@ msgstr ""
 msgid "Predefined Message was not deleted."
 msgstr ""
 
-#: Controller/ProgramRequestsController.php:65
-msgid "Request created, wait for redirection."
-msgstr ""
-
-#: Controller/ProgramRequestsController.php:109
+#: Controller/ProgramRequestsController.php:74
 msgid "Invalide Request"
 msgstr ""
 
-#: Controller/ProgramRequestsController.php:130
+#: Controller/ProgramRequestsController.php:108
+msgid "Request saved."
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:111
+msgid "This request has a validation error, please correct it and save again."
+msgstr ""
+
+#: Controller/ProgramRequestsController.php:132
 msgid "Invalid request"
 msgstr ""
 
-#: Controller/ProgramRequestsController.php:135
+#: Controller/ProgramRequestsController.php:137
 msgid "The request has been deleted."
 msgstr ""
 
-#: Controller/ProgramRequestsController.php:140
+#: Controller/ProgramRequestsController.php:142
 msgid "The request has not been deleted."
 msgstr ""
 
-#: Controller/ProgramRequestsController.php:172
-msgid "'%s' already used in same program in the '%s' dialogue."
+#: Controller/ProgramSettingsController.php:86
+msgid "The Program Settings cannot be edited while the program is archived."
 msgstr ""
 
-#: Controller/ProgramRequestsController.php:192
-msgid "'%s' already used in the same program by a request."
-msgstr ""
-
-#: Controller/ProgramRequestsController.php:214
-msgid "'%s' already used in a dialogue of program '%s'."
-msgstr ""
-
-#: Controller/ProgramRequestsController.php:225
-msgid "'%s' already used in a request of program '%s'."
-msgstr ""
-
-#: Controller/ProgramSettingsController.php:92
-msgid "Keyword already used on this shortcode: %s"
-msgstr ""
-
-#: Controller/ProgramSettingsController.php:99
+#: Controller/ProgramSettingsController.php:101
 msgid "Program Settings saved."
 msgstr ""
 
-#: Controller/ProgramSettingsController.php:109
+#: Controller/ProgramSettingsController.php:111
 msgid "Save settings failed."
 msgstr ""
 
-#: Controller/ProgramSimulatorController.php:47
+#: Controller/ProgramSimulatorController.php:50
 msgid "This Dialogue id is not in the database, please choose one available."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:99;104
+#: Controller/ProgramUnattachedMessagesController.php:122;127
 msgid "unknown"
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:169
+#: Controller/ProgramUnattachedMessagesController.php:220
 msgid " To be send to %s participants, %s have been imported and %s failed to be imported."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:178
+#: Controller/ProgramUnattachedMessagesController.php:229
 msgid "The message has been saved."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:189
+#: Controller/ProgramUnattachedMessagesController.php:234
 msgid " %s participant(s) have been imported and %s failed to be imported."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:198
+#: Controller/ProgramUnattachedMessagesController.php:243
 msgid "The Message could not be saved."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:261
+#: Controller/ProgramUnattachedMessagesController.php:336
 msgid "Cannot edit a passed Separate Message."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:265
-msgid "Due to internal Vusion update, please to carefuly update this Separate Message."
+#: Controller/ProgramUnattachedMessagesController.php:341
+msgid "Due to internal Vusion update, please save this Separate Message again."
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:317
+#: Controller/ProgramUnattachedMessagesController.php:388
 msgid "Message deleted"
 msgstr ""
 
-#: Controller/ProgramUnattachedMessagesController.php:329
+#: Controller/ProgramUnattachedMessagesController.php:397
 msgid "Message was not deleted."
 msgstr ""
 
-#: Controller/ProgramsController.php:246;332;357
+#: Controller/ProgramsController.php:182;276;304;331
 msgid "Invalid program."
 msgstr ""
 
-#: Controller/ProgramsController.php:257;336
+#: Controller/ProgramsController.php:201;286
 msgid "The program has been saved."
 msgstr ""
 
-#: Controller/ProgramsController.php:297;342
+#: Controller/ProgramsController.php:244;292
 msgid "The program could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/ProgramsController.php:365
-msgid "Program deleted."
+#: Controller/ProgramsController.php:318
+msgid "Program %s was deleted."
 msgstr ""
 
-#: Controller/ProgramsController.php:371
-msgid "Program was not deleted."
+#: Controller/ProgramsController.php:322
+msgid "Program %s was not deleted."
+msgstr ""
+
+#: Controller/ProgramsController.php:343
+msgid "This program has been archived. All sending and receiving of message have stopped."
+msgstr ""
+
+#: Controller/ProgramsController.php:348
+msgid "This program couldn't be archived."
 msgstr ""
 
 #: Controller/ProgramsUsersController.php:35;78;114
@@ -393,333 +427,1397 @@ msgstr ""
 msgid "Programs user was not deleted."
 msgstr ""
 
-#: Controller/ShortCodesController.php:49;80
+#: Controller/ShortCodesController.php:42;73
 msgid "The shortcode has been saved."
 msgstr ""
 
-#: Controller/ShortCodesController.php:58
+#: Controller/ShortCodesController.php:51
 msgid "The shortcode could not be saved."
 msgstr ""
 
-#: Controller/ShortCodesController.php:75;121
+#: Controller/ShortCodesController.php:68;115
 msgid "Invalid shortcode."
 msgstr ""
 
-#: Controller/ShortCodesController.php:88
+#: Controller/ShortCodesController.php:81
 msgid "The shortcode could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/ShortCodesController.php:124
+#: Controller/ShortCodesController.php:118
 msgid "ShortCode deleted."
 msgstr ""
 
-#: Controller/ShortCodesController.php:132
+#: Controller/ShortCodesController.php:126
 msgid "ShortCode was not deleted."
 msgstr ""
 
-#: Controller/TemplatesController.php:53;85
+#: Controller/TemplatesController.php:45;77
 msgid "The template has been saved."
 msgstr ""
 
-#: Controller/TemplatesController.php:62
+#: Controller/TemplatesController.php:54
 msgid "The template could not be saved."
 msgstr ""
 
-#: Controller/TemplatesController.php:79;113
+#: Controller/TemplatesController.php:71;105
 msgid "Invalid template."
 msgstr ""
 
-#: Controller/TemplatesController.php:93
+#: Controller/TemplatesController.php:85
 msgid "The template could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/TemplatesController.php:116
+#: Controller/TemplatesController.php:108
 msgid "Template deleted."
 msgstr ""
 
-#: Controller/TemplatesController.php:124
+#: Controller/TemplatesController.php:116
 msgid "Template was not deleted."
 msgstr ""
 
-#: Controller/UsersController.php:95;146;192;254
+#: Controller/UsersController.php:70
+msgid "admin"
+msgstr ""
+
+#: Controller/UsersController.php:99;135;204;297
 msgid "Invalid user."
 msgstr ""
 
-#: Controller/UsersController.php:111;151
+#: Controller/UsersController.php:111;169
 msgid "The user has been saved."
 msgstr ""
 
-#: Controller/UsersController.php:117;165
+#: Controller/UsersController.php:117;183
 msgid "The user could not be saved. Please, try again."
 msgstr ""
 
-#: Controller/UsersController.php:140;247
-msgid "Stop trying to ACCESS this user, you have been redirected to your page"
+#: Controller/UsersController.php:131;141;292
+msgid "You are not allowed to edit another user's details, your tentative has been reported to Vusion adminstrator."
 msgstr ""
 
-#: Controller/UsersController.php:195
+#: Controller/UsersController.php:207
 msgid "User deleted."
 msgstr ""
 
-#: Controller/UsersController.php:201
+#: Controller/UsersController.php:213
 msgid "User was not deleted."
 msgstr ""
 
-#: Controller/UsersController.php:213
+#: Controller/UsersController.php:222
+msgid "Already logged in..."
+msgstr ""
+
+#: Controller/UsersController.php:239
 msgid "Login successful."
 msgstr ""
 
-#: Controller/UsersController.php:223
+#: Controller/UsersController.php:267
 msgid "Invalid username or password, try again."
 msgstr ""
 
-#: Controller/UsersController.php:233
+#: Controller/UsersController.php:277
 msgid "Good Bye"
 msgstr ""
 
-#: Controller/UsersController.php:263
-msgid "old password is incorrect. Please try again."
+#: Controller/UsersController.php:306
+msgid "Old password is incorrect. Please try again."
 msgstr ""
 
-#: Controller/UsersController.php:268;387
+#: Controller/UsersController.php:308;509
 msgid "New passwords doesn't match. Please try again."
 msgstr ""
 
-#: Controller/UsersController.php:275;399
+#: Controller/UsersController.php:312;518
 msgid "Password changed successfully."
 msgstr ""
 
-#: Controller/UsersController.php:281;405
+#: Controller/UsersController.php:318;524
 msgid "Password saving failed."
 msgstr ""
 
-#: Controller/UsersController.php:316
-msgid "Please Enter Email address"
+#: Controller/UsersController.php:341
+msgid "Please describe the expect vs current behavior."
 msgstr ""
 
-#: Controller/UsersController.php:325
-msgid "Invalid Email : "
+#: Controller/UsersController.php:346
+msgid "Please explain us how to reproduce the issue on our computers."
 msgstr ""
 
-#: Controller/UsersController.php:331
-msgid "Please enter correct captcha code and try again."
-msgstr ""
-
-#: Controller/UsersController.php:347
-msgid "An Email has been sent to your email account."
+#: Controller/UsersController.php:353
+msgid "Please take one screenshot and upload it."
 msgstr ""
 
 #: Controller/UsersController.php:360
+msgid "The file format \".%s\" is not supported. Please upload an image .jpg or .png."
+msgstr ""
+
+#: Controller/UsersController.php:364
+msgid "Reporting failed due to incorrect report."
+msgstr ""
+
+#: Controller/UsersController.php:390
+msgid "Email server connection is down. Please send report to vusion-issues@texttochange.com"
+msgstr ""
+
+#: Controller/UsersController.php:396
+msgid "\"%s\". Please send report to vusion-issues@texttochange.com"
+msgstr ""
+
+#: Controller/UsersController.php:402
+msgid "The tech team will contact you in the next 2 days by Email. Thank you."
+msgstr ""
+
+#: Controller/UsersController.php:436
+msgid "Please Enter Email address"
+msgstr ""
+
+#: Controller/UsersController.php:445
+msgid "Invalid Email : "
+msgstr ""
+
+#: Controller/UsersController.php:451
+msgid "Please enter correct captcha code and try again."
+msgstr ""
+
+#: Controller/UsersController.php:465
+msgid "An Email has been sent to your email account."
+msgstr ""
+
+#: Controller/UsersController.php:477
+msgid "Enter your username and password below"
+msgstr ""
+
+#: Controller/UsersController.php:483
 msgid "Enter your new password below"
 msgstr ""
 
-#: Controller/UsersController.php:367
+#: Controller/UsersController.php:489
 msgid "Your ticket is lost or expired."
 msgstr ""
 
-#: Lib/ValidationHelper.php:97
-#: Model/VirtualModel.php:92
+#: Controller/UsersController.php:570
+msgid "Please select at least one program."
+msgstr ""
+
+#: Controller/UsersController.php:580
+msgid "Inite user failed."
+msgstr ""
+
+#: Controller/UsersController.php:586
+msgid "Please tick the disclaimer"
+msgstr ""
+
+#: Controller/UsersController.php:605
+msgid "An Email has been sent to the invited email account."
+msgstr ""
+
+#: Controller/UsersController.php:620
+msgid "This username already exists. Please choose another"
+msgstr ""
+
+#: Controller/UsersController.php:625
+msgid "This email already exists. Please choose another"
+msgstr ""
+
+#: Controller/UsersController.php:637
+msgid "Your account has been created."
+msgstr ""
+
+#: Controller/UsersController.php:643
+msgid "Account creation failed."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:13
+msgid "Adding this is not allowed within an archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:14
+msgid "Editing this is not allowed within archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:15;32
+msgid "Deleting this is not allowed within archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:19
+msgid "Restart worker is not allowed in archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:23
+msgid "Saving a Dialogue is not allowed within archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:24
+msgid "Deleting a Dialogue is not allowed within archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:25
+msgid "Sending all dialogue messages is not allowed withing a archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:26
+msgid "Activation of Dialogue is not allowed within an archived program"
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:27;33
+msgid "The validation of keyword is not allowed within archived program."
+msgstr ""
+
+#: Controller/Component/ArchivedProgramComponent.php:31
+msgid "Saving this is not allowed within archived program."
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:13
+#: Controller/Component/MessageComponent.php:13
+#: View/Groups/add.ctp:7
+#: View/Groups/edit.ctp:8
+#: View/Groups/view.ctp:9
+#: View/ProgramContentVariables/add_table.ctp:42
+#: View/ProgramContentVariables/edit_table.ctp:43
+#: View/ProgramContentVariables/index_table.ctp:45
+#: View/ProgramUnattachedMessages/add.ctp:42
+#: View/Programs/add.ctp:7
+#: View/Programs/edit.ctp:11
+#: View/Programs/view.ctp:9
+#: View/Templates/add.ctp:5
+#: View/Templates/edit.ctp:4
+#: View/Users/view.ctp:42
+msgid "Name"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:14
+msgid "Automatic enrollment"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:15
+#: View/ProgramHome/index.ctp:38
+#: View/ProgramParticipants/view.ctp:130
+msgid "Dialogue"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:16
+msgid "Interactions"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:17
+msgid "Interaction"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:18
+msgid "Keyword"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:19
+#: Controller/Component/MessageComponent.php:14
+msgid "characters"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:20
+msgid "Choice"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:21;81;83;84;110
+#: Controller/Component/MessageComponent.php:15
+#: View/ProgramHome/index.ctp:25
+#: View/ProgramUnattachedMessages/add.ctp:129
+msgid "Content"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:22
+#: View/ProgramHistory/index.ctp:60
+#: View/ProgramParticipants/view.ctp:120;147
+#: View/ProgramUnattachedMessages/index.ctp:64
+#: View/UnmatchableReply/index.ctp:47
+msgid "Time"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:23
+#: Controller/Component/MessageComponent.php:16
+#: View/ProgramUnattachedMessages/add.ctp:32
+#: View/ProgramUnattachedMessages/edit.ctp:32
+msgid "Immediately"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:24
+#: Controller/Component/MessageComponent.php:17
+msgid "Fixed time"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:25
+msgid "Offset days"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:26
+msgid "Offset time"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:27
+msgid "Minutes"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:28
+msgid "At Time"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:29
+msgid "Days"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:30
+msgid "Announcement"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:31
+msgid "Question"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:32
+msgid "Question multi-keyword"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:33
+msgid "Open question"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:34
+msgid "Closed question"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:35;37
+msgid "Answers"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:36;38
+msgid "Answer"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:39
+msgid "Profile participant's reply with label"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:40
+msgid "Answer label"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:41
+msgid "Feedbacks"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:42
+msgid "Feedback"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:43;55;63;72;76
+#: View/Admin/index.ctp:8
+#: View/CreditViewer/index.ctp:207
+#: View/Groups/add.ctp:15
+#: View/Groups/edit.ctp:16
+#: View/Groups/index.ctp:24;46
+#: View/Groups/view.ctp:33
+#: View/ProgramContentVariables/index.ctp:43
+#: View/ProgramContentVariables/index_table.ctp:47
+#: View/ProgramHistory/exported.ctp:16
+#: View/ProgramParticipants/exported.ctp:16
+#: View/ProgramParticipants/index.ctp:94
+#: View/ProgramPredefinedMessages/index.ctp:27
+#: View/ProgramRequests/index.ctp:27
+#: View/ProgramUnattachedMessages/index.ctp:66
+#: View/Programs/add.ctp:21
+#: View/Programs/edit.ctp:81
+#: View/Programs/view.ctp:38
+#: View/ProgramsUsers/add.ctp:13
+#: View/ProgramsUsers/edit.ctp:14
+#: View/ProgramsUsers/index.ctp:8;44
+#: View/ProgramsUsers/view.ctp:22
+#: View/ShortCodes/add.ctp:72
+#: View/ShortCodes/edit.ctp:69
+#: View/ShortCodes/index.ctp:28;68
+#: View/Templates/add.ctp:24
+#: View/Templates/edit.ctp:22
+#: View/Templates/index.ctp:25;47
+#: View/UnmatchableReply/exported.ctp:12;90
+#: View/UnmatchableReply/index.ctp:83
+#: View/UserLogs/index.ctp:54
+#: View/Users/add.ctp:27
+#: View/Users/edit.ctp:36
+#: View/Users/index.ctp:28;51
+#: View/Users/view.ctp:45;70
+msgid "Actions"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:44;56;64;73;77
+msgid "Action"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:45
+msgid "Opt-in"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:46
+msgid "Opt-out"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:47
+msgid "Enrolling"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:48
+msgid "Delayed Enrolling"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:49
+msgid "Tagging"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:50
+msgid "Reseting"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:51
+#: View/Elements/navigation_menu.ctp:228
+#: View/ProgramParticipants/index.ctp:39
+msgid "Add"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:52
+msgid "Remove"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:53
+msgid "Responses"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:54
+msgid "Response"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:57
+#: Controller/Component/MessageComponent.php:18
+#: View/ProgramContentVariables/add.ctp:20;40
+#: View/ProgramContentVariables/add_table.ctp:24;68
+#: View/ProgramContentVariables/edit.ctp:20;54
+#: View/ProgramContentVariables/edit_table.ctp:24;68
+#: View/ProgramDialogues/edit.ctp:4;52
+#: View/ProgramParticipants/add.ctp:4;28
+#: View/ProgramParticipants/edit.ctp:4;55
+#: View/ProgramPredefinedMessages/add.ctp:4;29
+#: View/ProgramPredefinedMessages/edit.ctp:4;29
+#: View/ProgramRequests/add.ctp:5;43
+#: View/ProgramRequests/edit.ctp:4;42
+#: View/ProgramSettings/edit.ctp:4;212
+#: View/ProgramUnattachedMessages/add.ctp:4;192
+#: View/ProgramUnattachedMessages/edit.ctp:4;203
+#: View/Programs/edit.ctp:25
+#: View/Users/change_password.ctp:8
+msgid "Save"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:58
+msgid "Set Reminder"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:59
+msgid "Number of Reminder(s)"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:60
+msgid "Reminder every x minutes"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:61
+msgid "Reminder every x days"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:62
+msgid "At the time"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:65
+msgid "Answer Required"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:66
+msgid "Participant has to answer"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:67
+msgid "Delaying for (in minute)"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:68;95
+msgid "Accept no space between the keyword and the choice"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:69
+msgid "Use template from program settings"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:70
+msgid "In case no matching on other requests, try to match only the message first word."
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:71
+msgid "Set actions for any matching answer"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:74
+msgid "Set maximum number of accepted unmatching answers"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:75
+msgid "Maximum number of accepted unmatching answers"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:78
+msgid "No unmatching feedback"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:79
+msgid "Default program umatching feedback"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:80
+msgid "Custom umatching message"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:82
+msgid "Has priority"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:85
+msgid "Set Condition on Participant"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:86
+msgid "Match All Subcondition"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:87
+msgid "Match Any Subcondition"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:88
+msgid "Subconditions"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:89
+msgid "Subcondition"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:90
+msgid "Prioritize"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:91
+msgid "Remind at offset time"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:92
+msgid "Remind at offset days"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:93
+msgid "All subcondition have to be true"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:94
+msgid "Only one subcondition has to be true"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:96
+msgid "none"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:97
+msgid "all participants"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:98
+#: Controller/Component/FilterComponent.php:60
+msgid "tagged"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:99
+#: Controller/Component/FilterComponent.php:61
+msgid "labelled"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:100
+msgid "Proportional Tagging"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:101
+msgid "Proportional Tags"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:102
+msgid "Proportional Tag"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:103
+msgid "Proportional Labelling"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:104
+msgid "Proportional Labels"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:105
+msgid "Proportional Label"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:106
+msgid "URL Forward"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:107
+msgid "Forward URL"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:108
+msgid "SMS Forward"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:109
+msgid "Receiver Tag(s) and/or Label(s)"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:111
+#: View/ProgramParticipants/index.ctp:33
+msgid "Tag"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:112
+msgid "Weight"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:113
+msgid "Label name"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:114
+msgid "Label value"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:115
+#: Controller/Component/FilterComponent.php:29
+msgid "equal to"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:116
+#: Controller/Component/FilterComponent.php:23
+msgid "start with any"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:117
+#: Controller/Component/FilterComponent.php:44
+msgid "matching"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:118
+#: Controller/Component/FilterComponent.php:45;51
+msgid "not matching"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:119
+#: Controller/Component/FilterComponent.php:53
+msgid "many"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:120
+#: Controller/Component/FilterComponent.php:54
+#: Controller/Component/MessageComponent.php:19
+#: View/Elements/localization.ctp:53
+#: View/ProgramUnattachedMessages/add.ctp:26
+#: View/ProgramUnattachedMessages/edit.ctp:26
+msgid "any"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:121
+#: Controller/Component/FilterComponent.php:55
+#: Controller/Component/MessageComponent.php:20
+#: View/Elements/localization.ctp:54
+#: View/ProgramUnattachedMessages/add.ctp:25
+#: View/ProgramUnattachedMessages/edit.ctp:25
+msgid "all"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:122
+msgid "match the following conditions"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:123
+msgid "Auto enrollment"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:124
+msgid "Phone number"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:125
+#: Controller/Component/FilterComponent.php:56
+msgid "with"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:126
+#: Controller/Component/FilterComponent.php:17
+msgid "not with"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:127
+msgid "Retrive a condition in the message"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:128
+msgid "Feedback in case no participant is matching"
+msgstr ""
+
+#: Controller/Component/DynamicFormComponent.php:129
+msgid "Set count only optin participant"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:18
+msgid "not is any"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:19
+msgid "not is"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:20
+msgid "now"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:21
+msgid "program name"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:22
+msgid "start with"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:24
+msgid "is not"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:25
+msgid "is"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:26
+msgid "is any"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:27
+msgid "in"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:28
+msgid "not in"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:30
+msgid "enrolled"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:31
+msgid "date from"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:32
+msgid "date to"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:33
+msgid "dialogue source"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:34
+msgid "interaction source"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:35
+msgid "request source"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:36
+#: View/CreditViewer/index.ctp:75
+msgid "from"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:37
+msgid "from number"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:38
+msgid "to number"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:39
+#: View/CreditViewer/index.ctp:84
+msgid "to"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:40
+msgid "contain"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:41
+msgid "country"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:42
+msgid "has keyword"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:43
+msgid "has keyword any"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:46
+msgid "message direction"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:47
+msgid "message status"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:48
+msgid "message content"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:49
+msgid "separate message"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:50
+msgid "shortcode"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:52
+msgid "date"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:57
+msgid "phone"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:58
+msgid "participant phone"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:59
+msgid "participant"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:62
+msgid "optin"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:63
+msgid "optout"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:64
+msgid "are present"
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:99
+msgid "%s filter(s) ignored due to missing information: \"%s\""
+msgstr ""
+
+#: Controller/Component/FilterComponent.php:135
+#: View/ProgramParticipants/index.ctp:140
+#: View/ProgramParticipants/view.ctp:99
+msgid "%s"
+msgstr ""
+
+#: Controller/Component/ProgramAuthComponent.php:16
+msgid "Program url is missing."
+msgstr ""
+
+#: Controller/Component/ProgramAuthComponent.php:27
+msgid "Program url not found: %s"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:18
+msgid "scheduled"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:19
+msgid "sent"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:20
+msgid "received"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:21
+msgid "message(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:22
+msgid "participant(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:23
+msgid "Participant(s) Optin/Total"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:24
+msgid "Message(s) Total(Current Month)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:25
+msgid "Received Total(Current Month)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:26
+msgid "Sent Total(Current Month)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:27
+msgid "Schedule Total(Today)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:28
+msgid "total message(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:29
+msgid "sent message(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:30
+msgid "schedule(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:31
+msgid "Optin/Total participant(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:32
+msgid "Total(total current month) message(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:33
+msgid "Total(current month) received"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:34
+msgid "Total(current month) sent"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:35
+msgid "Total(today) schedule(s)"
+msgstr ""
+
+#: Controller/Component/StatsComponent.php:36
+msgid "Stats Not Available"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:36
+msgid "Deleted participant(s)"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:37
+msgid "Added a new participant"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:38
+msgid "Edited participant"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:39
+msgid "Imported  participant(s)"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:40
+msgid "Deleted filtered participant(s)"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:41
+msgid "RunAction for participant: "
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:44
+msgid "Tagged participant(s)"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:45
+msgid "Untagged participant(s)"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:50
+msgid "Added a new program "
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:51
+msgid "Edited a program"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:52
+msgid "Deleted a program"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:53
+msgid "Archived a program"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:58
+msgid "Added a new draft dialogue ID: "
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:59
+msgid "Deleted a dialogue"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:62
+msgid "Activated a dialogue ID "
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:67
+msgid "Added a new separate message"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:68
+msgid "Edited a separate message"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:69
+msgid "Deleted a separate message"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:74
+msgid "Saved a new request"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:75
+msgid "Deleted a request"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:80
+msgid "Deleted program history"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:85
+msgid "Edited a program setting"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:90
+msgid "Added new a user"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:91
+msgid "Edited a user"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:92
+msgid "Deleted a user"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:93
+msgid "Changed password"
+msgstr ""
+
+#: Controller/Component/UserLogMonitorComponent.php:94
+msgid "Invited a new user "
+msgstr ""
+
+#: Lib/DialogueHelper.php:197
+msgid "'%s' already used in Dialogue '%s' of the same program."
+msgstr ""
+
+#: Lib/DialogueHelper.php:199
+msgid "'%s' already used in Request '%s' of the same program."
+msgstr ""
+
+#: Lib/DialogueHelper.php:202
+msgid "'%s' already used by a %s of program '%s'."
+msgstr ""
+
+#: Lib/DialogueHelper.php:228
+msgid "Cannot find valid country prefix from %s."
+msgstr ""
+
+#: Lib/ValidationHelper.php:101
+#: Model/Dialogue.php:193
+#: Model/VirtualModel.php:98
 msgid "The %s field with value %s require the field %s."
 msgstr ""
 
-#: Model/Action.php:387
-msgid "The field value '%s' is not valid."
-msgstr ""
-
-#: Model/Action.php:393
-msgid "The operator value '%s' is not valid."
-msgstr ""
-
-#: Model/Action.php:415
-#: Model/Interaction.php:427
-#: Model/Request.php:187
-#: Model/UnattachedMessage.php:295
+#: Lib/VusionValidation.php:32
 msgid "To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s)."
 msgstr ""
 
-#: Model/Action.php:419
-#: Model/Interaction.php:431
-msgid "To be used as customized content, '%s' can only be either 'participant', 'contentVariable', 'context' or 'time'."
+#: Lib/VusionValidation.php:37
+msgid "To be used as customized content, '%s' can only be either: %s or %s."
 msgstr ""
 
-#: Model/ContentVariable.php:60
+#: Lib/VusionValidation.php:64
+msgid "To be used in message, context only accept maximum of 3 keys. %s not allowed."
+msgstr ""
+
+#: Lib/VusionValidation.php:72;79
+msgid "On [context.message.x], x has to be a number."
+msgstr ""
+
+#: Lib/VusionValidation.php:74;86
+msgid "On [context.message.x.y], x has to be a number."
+msgstr ""
+
+#: Lib/VusionValidation.php:82
+msgid "On [context.message.x], x has to be greater or equal to 1."
+msgstr ""
+
+#: Lib/VusionValidation.php:89
+msgid "On [context.message.x.y], y has to be a number or 'end'."
+msgstr ""
+
+#: Lib/VusionValidation.php:92
+msgid "On [context.message.x.y], x has to be greater or equal to 1."
+msgstr ""
+
+#: Lib/VusionValidation.php:95
+msgid "On [context.message.x.y], y cannot be lower than x."
+msgstr ""
+
+#: Model/Action.php:485
+#: Model/Dialogue.php:230
+msgid "The field value '%s' is not valid."
+msgstr ""
+
+#: Model/Action.php:491
+#: Model/Dialogue.php:236
+msgid "The operator value '%s' is not valid."
+msgstr ""
+
+#: Model/Action.php:537
+msgid "The selector %s should be a tags or a labels. For labels, their value could be matching the sender by using content variable notation."
+msgstr ""
+
+#: Model/ContentVariable.php:59
 msgid "The content variable has no keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example \\\"key1.key2\\\"."
 msgstr ""
 
-#: Model/ContentVariable.php:62
+#: Model/ContentVariable.php:61
 msgid "The content variable \"%s\" has %s keys. A minimum of 1 key and a maximum of 3 keys is allowed. A valid keys set is for example \\\"key1.key2\\\"."
 msgstr ""
 
-#: Model/ContentVariableTable.php:131
+#: Model/ContentVariableTable.php:132
 msgid "A table must have at least 2 columns."
 msgstr ""
 
-#: Model/ContentVariableTable.php:153
+#: Model/ContentVariableTable.php:154
 msgid "The header %s can only be made of letter, digit and space."
 msgstr ""
 
-#: Model/ContentVariableTable.php:168
+#: Model/ContentVariableTable.php:169
 msgid "The key %s can only be made of letter, digit and space."
 msgstr ""
 
-#: Model/ContentVariableTable.php:170
+#: Model/ContentVariableTable.php:171
 msgid "The variable %s can only be made of letter, digit, space, dot and comma."
 msgstr ""
 
-#: Model/ContentVariableTable.php:193
+#: Model/ContentVariableTable.php:195
 msgid "The value %s is not matchin validation %s."
 msgstr ""
 
-#: Model/ContentVariableTable.php:205
+#: Model/ContentVariableTable.php:207
 msgid "The table cannot have duplicate headers \"%s\"."
 msgstr ""
 
-#: Model/ContentVariableTable.php:226
+#: Model/ContentVariableTable.php:228
 msgid "A maximum of 2 column can be keys, this table needs %s keys."
 msgstr ""
 
-#: Model/ContentVariableTable.php:260
+#: Model/ContentVariableTable.php:262
 msgid "The keys %s is already used by a keys/value."
 msgstr ""
 
-#: Model/ContentVariableTable.php:263
+#: Model/ContentVariableTable.php:265
 msgid "The keys %s is already used by the table %s."
 msgstr ""
 
-#: Model/History.php:312
-msgid "The filter's field is missing."
+#: Model/CreditLog.php:286
+msgid "Predefined timeframe %s not supported"
 msgstr ""
 
-#: Model/History.php:316
-msgid "The filter's field '%s' is not supported."
+#: Model/Dialogue.php:617
+msgid "No dialogue with id: %s."
 msgstr ""
 
-#: Model/History.php:320
-msgid "The filter's operator is missing for field '%s'."
+#: Model/Dialogue.php:628
+msgid "The dialogue with id %s doesn't have an interaction with id %s"
 msgstr ""
 
-#: Model/History.php:324
-msgid "The filter's operator '%s' not supported for field '%s'."
+#: Model/Interaction.php:652
+msgid "This interaction is not a question."
 msgstr ""
 
-#: Model/History.php:330
-msgid "The filter's parameter is missing for field '%s'."
+#: Model/Interaction.php:657
+msgid "The interaction doesn't accept empty answer."
 msgstr ""
 
-#: Model/History.php:335
-msgid "The filter's parameter value '%s' is not valid."
+#: Model/Interaction.php:666;674
+msgid "The interaction has not such answer: %s."
 msgstr ""
 
-#: Model/Participant.php:570
-msgid "Error a tag is not valide: %s."
+#: Model/Participant.php:604
+msgid "Error a tag is not valid: %s."
 msgstr ""
 
-#: Model/Participant.php:581
+#: Model/Participant.php:615
 msgid "The file format %s is not supported."
 msgstr ""
 
-#: Model/Participant.php:653
+#: Model/Participant.php:687
 msgid "The csv file cannot be open."
 msgstr ""
 
-#: Model/Participant.php:674;753
-msgid "The file cannot be imported. The first line should be label names, the first label must be \"phone\"."
+#: Model/Participant.php:708;787
+msgid "The file cannot be imported. The first line should be label names, the first label must be 'phone'."
 msgstr ""
 
-#: Model/ProgramSetting.php:233
+#: Model/Participant.php:842
+msgid "No participant with phone: %s."
+msgstr ""
+
+#: Model/ProgramSetting.php:294
 msgid "The program settings are incomplete. Please specificy the Timezone."
 msgstr ""
 
-#: Model/Request.php:191
-msgid "To be used as customized content, '%s' can only be either 'participant' or 'contentVariable'."
-msgstr ""
-
-#: Model/Schedule.php:91
+#: Model/Schedule.php:127
 msgid "Error: dialogue not found"
 msgstr ""
 
-#: Model/Template.php:106
+#: Model/Template.php:104
 msgid "Please use 'QUESTION' in the template."
 msgstr ""
 
-#: Model/Template.php:109
+#: Model/Template.php:107
 msgid "Please use 'SHORTCODE' in the template."
 msgstr ""
 
-#: Model/Template.php:112
+#: Model/Template.php:110
 msgid "Please use 'KEYWORD' in the template."
 msgstr ""
 
-#: Model/Template.php:116
+#: Model/Template.php:114
 msgid "Please use 'ANSWER' in the template."
 msgstr ""
 
-#: Model/Template.php:119
+#: Model/Template.php:117
 msgid "Please use 'ANSWERS' in the template."
 msgstr ""
 
-#: Model/UnattachedMessage.php:299
-msgid "To be used as customized content, '%s' can only be either 'participant', 'contentVariable' or 'time'."
+#: Model/UnattachedMessage.php:161
+msgid "FindType not supported: %s"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:111
-msgid "<success>Aco Update Complete</success>"
+#: Model/Behavior/FilterBehavior.php:89
+msgid "Filter operator is missing."
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:156
-msgid "Deleted %s and all children"
+#: Model/Behavior/FilterBehavior.php:92
+msgid "Filter operator is not allowed."
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:197
-msgid "Created Aco node: %s"
+#: Model/Behavior/FilterBehavior.php:101
+msgid "only one join is allowed"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:232
-msgid "Deleted Aco node %s"
+#: Model/Behavior/FilterBehavior.php:123;130
+msgid "not supported"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:242
+#: Model/Behavior/FilterBehavior.php:126
+msgid "operator not defined"
+msgstr ""
+
+#: Model/Behavior/FilterBehavior.php:134
+msgid "missing parameter"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:80
+msgid "Plugin to process"
+msgstr ""
+
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:83
 msgid "Better manage, and easily synchronize you application's ACO tree"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:244
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:88
 msgid "Add new ACOs for new controllers and actions. Does not remove nodes from the ACO table."
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:246
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:93
 msgid "Perform a full sync on the ACO table.Will create new ACOs or missing controllers and actions.Will also remove orphaned entries that no longer have a matching controller/action"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:250
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:97
 msgid "Verify the tree structure of either your Aco or Aro Trees"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:255
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:102
 msgid "The type of tree to verify"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:261
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:108
 msgid "Recover a corrupted Tree"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:266
+#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:113
 msgid "The type of tree to recover"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:285
-msgid "Tree is valid and strong"
+#: Plugin/AclExtras/Lib/AclExtras.php:123
+msgid "<error>Plugin %s not found or not activated</error>"
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:302
+#: Plugin/AclExtras/Lib/AclExtras.php:136
+msgid "<success>Aco Update Complete</success>"
+msgstr ""
+
+#: Plugin/AclExtras/Lib/AclExtras.php:181
+msgid "Deleted %s and all children"
+msgstr ""
+
+#: Plugin/AclExtras/Lib/AclExtras.php:222
+msgid "Created Aco node: <success>%s</success>"
+msgstr ""
+
+#: Plugin/AclExtras/Lib/AclExtras.php:275
+msgid "Unable to get methods for \"%s\""
+msgstr ""
+
+#: Plugin/AclExtras/Lib/AclExtras.php:296
+msgid "Deleted Aco node: <warning>%s</warning>"
+msgstr ""
+
+#: Plugin/AclExtras/Lib/AclExtras.php:315
+msgid "<success>Tree is valid and strong</success>"
+msgstr ""
+
+#: Plugin/AclExtras/Lib/AclExtras.php:333
 msgid "Tree has been recovered, or tree did not need recovery."
 msgstr ""
 
-#: Plugin/AclExtras/Console/Command/AclExtrasShell.php:304
+#: Plugin/AclExtras/Lib/AclExtras.php:335
 msgid "<error>Tree recovery failed.</error>"
 msgstr ""
 
 #: Plugin/Mongodb/Model/Datasource/MongodbSource.php:516
 msgid "Invalid schema object"
+msgstr ""
+
+#: Test/Case/Controller/Component/FilterComponentTest.php:147
+msgid "1 filter(s) ignored due to missing information: \"first field is missing\""
+msgstr ""
+
+#: Test/Case/Controller/Component/FilterComponentTest.php:215
+msgid "2 filter(s) ignored due to missing information: \"phone start with, optin\""
 msgstr ""
 
 #: Test/Case/View/Helper/CreditManagerHelperTest.php:139
@@ -728,42 +1826,10 @@ msgid "The program cannot send any messages before %s."
 msgstr ""
 
 #: View/Admin/index.ctp:2
-#: View/Layouts/default.ctp:104
-#: View/Programs/index.ctp:65
+#: View/Layouts/default.ctp:119
+#: View/Programs/edit.ctp:2
+#: View/Programs/index.ctp:70
 msgid "Admin"
-msgstr ""
-
-#: View/Admin/index.ctp:8
-#: View/Elements/localization.ctp:87;99;107;115
-#: View/Groups/add.ctp:15
-#: View/Groups/edit.ctp:16
-#: View/Groups/index.ctp:24;46
-#: View/Groups/view.ctp:33
-#: View/ProgramContentVariables/index.ctp:43
-#: View/ProgramContentVariables/index_table.ctp:47
-#: View/ProgramParticipants/index.ctp:91
-#: View/ProgramPredefinedMessages/index.ctp:27
-#: View/ProgramRequests/index.ctp:28
-#: View/ProgramUnattachedMessages/index.ctp:33
-#: View/Programs/add.ctp:21
-#: View/Programs/edit.ctp:17
-#: View/Programs/view.ctp:38
-#: View/ProgramsUsers/add.ctp:13
-#: View/ProgramsUsers/edit.ctp:14
-#: View/ProgramsUsers/index.ctp:8;44
-#: View/ProgramsUsers/view.ctp:22
-#: View/ShortCodes/add.ctp:72
-#: View/ShortCodes/edit.ctp:72
-#: View/ShortCodes/index.ctp:28;68
-#: View/Templates/add.ctp:24
-#: View/Templates/edit.ctp:22
-#: View/Templates/index.ctp:25;47
-#: View/UnmatchableReply/index.ctp:65
-#: View/Users/add.ctp:27
-#: View/Users/edit.ctp:31
-#: View/Users/index.ctp:27;49
-#: View/Users/view.ctp:45;70
-msgid "Actions"
 msgstr ""
 
 #: View/Admin/index.ctp:10
@@ -786,8 +1852,144 @@ msgstr ""
 msgid "Templates Management"
 msgstr ""
 
+#: View/Admin/index.ctp:15
+msgid "User Logs"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:11
+#: View/Elements/localization.ctp:49
+#: View/ProgramHistory/exported.ctp:13
+#: View/ProgramHistory/index.ctp:24
+#: View/ProgramParticipants/exported.ctp:13
+#: View/ProgramParticipants/index.ctp:49
+#: View/UnmatchableReply/exported.ctp:9
+#: View/UnmatchableReply/index.ctp:10
+msgid "Export"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:19
+#: View/Layouts/default.ctp:117
+msgid "Credit Viewer"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:23
+msgid "today"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:24
+msgid "yesterday"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:25
+msgid "current month"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:26
+msgid "last month"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:38
+msgid "Showing credits of %s"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:40
+msgid "Showing all credits"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:42
+msgid "Showing credits from %s to now"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:44
+msgid "Showing credits from the begining of times to %s"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:46
+msgid "Showing credits from %s to %s"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:49
+#: View/ProgramUnattachedMessages/edit.ctp:87
+msgid "Change"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:57
+msgid "Calculate credits of"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:69
+msgid "or"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:93
+msgid "Calculate"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:136;170;188
+msgid "Received"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:139;171;189
+#: View/Elements/navigation_menu.ctp:169
+#: View/ProgramUnattachedMessages/index.ctp:23
+msgid "Sent"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:160
+msgid "Deleted program"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:163
+msgid "Running program"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:173
+msgid "Pending"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:174
+msgid "Acked"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:175
+msgid "NAcked"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:176
+msgid "Delivered"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:177
+msgid "Failed"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:183
+#: View/UnmatchableReply/index.ctp:34
+msgid "Unmatchable Replies"
+msgstr ""
+
+#: View/CreditViewer/index.ctp:209
+#: View/Groups/add.ctp:18
+#: View/Groups/edit.ctp:20
+#: View/Groups/index.ctp:49
+#: View/Programs/add.ctp:24
+#: View/Programs/edit.ctp:87
+#: View/ShortCodes/add.ctp:75
+#: View/ShortCodes/edit.ctp:72
+#: View/ShortCodes/index.ctp:71
+#: View/Templates/add.ctp:27
+#: View/Templates/edit.ctp:25
+#: View/Templates/index.ctp:50
+#: View/UserLogs/index.ctp:56
+#: View/Users/add.ctp:30
+#: View/Users/edit.ctp:53
+#: View/Users/index.ctp:66
+#: View/Users/view.ctp:82
+msgid "Back to Admin menu"
+msgstr ""
+
 #: View/Elements/filter_box.ctp:7
-msgid "{:start} - {:end} of "
+msgid "Loading..."
 msgstr ""
 
 #: View/Elements/localization.ctp:4
@@ -899,8 +2101,7 @@ msgid "The choice is ambigious when answering by index, please Enter a different
 msgstr ""
 
 #: View/Elements/localization.ctp:31
-#: Model/Dialogue.php:validation
-#: for field name
+#: Model/Dialogue.php:validation for field name
 msgid "This Dialogue Name already exists. Please choose another."
 msgstr ""
 
@@ -921,7 +2122,7 @@ msgid "The export file has been generated. The download should start shortly."
 msgstr ""
 
 #: View/Elements/localization.ctp:39
-#: View/ProgramUnattachedMessages/add.ctp:124
+#: View/ProgramUnattachedMessages/add.ctp:125
 msgid "Select one..."
 msgstr ""
 
@@ -933,479 +2134,49 @@ msgstr ""
 msgid "This value is editable and can be used in message with: "
 msgstr ""
 
-#: View/Elements/localization.ctp:45
-msgid "save dialogue"
+#: View/Elements/localization.ctp:42
+msgid "Sending the report by email, it might take a few minutes...."
 msgstr ""
 
-#: View/Elements/localization.ctp:46
-msgid "save request"
+#: View/Elements/localization.ctp:43
+msgid "Sending the invite by email, it might take a few minutes...."
 msgstr ""
 
 #: View/Elements/localization.ctp:47
-#: View/ProgramHistory/index.ctp:25
-#: View/ProgramParticipants/index.ctp:51
-msgid "Export"
+msgid "save dialogue"
 msgstr ""
 
 #: View/Elements/localization.ctp:48
-#: View/ProgramHistory/index.ctp:34
-#: View/ProgramParticipants/index.ctp:66
+msgid "save request"
+msgstr ""
+
+#: View/Elements/localization.ctp:50
+#: View/ProgramHistory/index.ctp:37
+#: View/ProgramParticipants/index.ctp:69
 #: View/Programs/index.ctp:10
-#: View/UnmatchableReply/index.ctp:7
+#: View/UnmatchableReply/index.ctp:24
 #: View/Users/index.ctp:6
 msgid "Filter"
 msgstr ""
 
-#: View/Elements/localization.ctp:49
+#: View/Elements/localization.ctp:51
 msgid "Match"
 msgstr ""
 
-#: View/Elements/localization.ctp:50
+#: View/Elements/localization.ctp:52
 msgid "of the following rules:"
 msgstr ""
 
-#: View/Elements/localization.ctp:51
-#: View/ProgramUnattachedMessages/add.ctp:26
-#: View/ProgramUnattachedMessages/edit.ctp:26
-msgid "any"
-msgstr ""
-
-#: View/Elements/localization.ctp:52
-#: View/ProgramUnattachedMessages/add.ctp:25
-#: View/ProgramUnattachedMessages/edit.ctp:25
-msgid "all"
-msgstr ""
-
-#: View/Elements/localization.ctp:53
+#: View/Elements/localization.ctp:55
 msgid "Tag participants"
 msgstr ""
 
-#: View/Elements/localization.ctp:54
+#: View/Elements/localization.ctp:56
 msgid "Untag participants"
 msgstr ""
 
-#: View/Elements/localization.ctp:58
-#: View/Groups/add.ctp:7
-#: View/Groups/edit.ctp:8
-#: View/Groups/view.ctp:9
-#: View/ProgramContentVariables/add_table.ctp:42
-#: View/ProgramContentVariables/edit_table.ctp:43
-#: View/ProgramContentVariables/index_table.ctp:45
-#: View/Programs/view.ctp:9
-#: View/Templates/add.ctp:5
-#: View/Templates/edit.ctp:4
-#: View/Users/view.ctp:42
-msgid "Name"
-msgstr ""
-
-#: View/Elements/localization.ctp:59
-msgid "Automatic enrollment"
-msgstr ""
-
-#: View/Elements/localization.ctp:60
-#: View/ProgramHome/index.ctp:37
-#: View/ProgramParticipants/view.ctp:130
-msgid "Dialogue"
-msgstr ""
-
-#: View/Elements/localization.ctp:61
-msgid "Interactions"
-msgstr ""
-
-#: View/Elements/localization.ctp:62
-msgid "Interaction"
-msgstr ""
-
-#: View/Elements/localization.ctp:63
-msgid "Keyword"
-msgstr ""
-
-#: View/Elements/localization.ctp:64
-msgid "Choice"
-msgstr ""
-
-#: View/Elements/localization.ctp:65;120;122;123;148
-#: View/ProgramHome/index.ctp:24
-msgid "Content"
-msgstr ""
-
-#: View/Elements/localization.ctp:66
-#: View/ProgramHistory/index.ctp:57
-#: View/ProgramParticipants/view.ctp:120;147
-#: View/ProgramUnattachedMessages/index.ctp:31
-#: View/UnmatchableReply/index.ctp:30
-msgid "Time"
-msgstr ""
-
-#: View/Elements/localization.ctp:67
-#: View/ProgramUnattachedMessages/add.ctp:31
-#: View/ProgramUnattachedMessages/edit.ctp:31
-msgid "Immediately"
-msgstr ""
-
-#: View/Elements/localization.ctp:68
-msgid "Fixed time"
-msgstr ""
-
-#: View/Elements/localization.ctp:69
-msgid "Offset days"
-msgstr ""
-
-#: View/Elements/localization.ctp:70
-msgid "Offset time"
-msgstr ""
-
-#: View/Elements/localization.ctp:71
-msgid "Minutes"
-msgstr ""
-
-#: View/Elements/localization.ctp:72
-msgid "At Time"
-msgstr ""
-
-#: View/Elements/localization.ctp:73
-msgid "Days"
-msgstr ""
-
-#: View/Elements/localization.ctp:74
-msgid "Announcement"
-msgstr ""
-
-#: View/Elements/localization.ctp:75
-msgid "Question"
-msgstr ""
-
 #: View/Elements/localization.ctp:76
-msgid "Question multi-keyword"
-msgstr ""
-
-#: View/Elements/localization.ctp:77
-msgid "Open question"
-msgstr ""
-
-#: View/Elements/localization.ctp:78
-msgid "Closed question"
-msgstr ""
-
-#: View/Elements/localization.ctp:79;81
-msgid "Answers"
-msgstr ""
-
-#: View/Elements/localization.ctp:80;82
-msgid "Answer"
-msgstr ""
-
-#: View/Elements/localization.ctp:83
-msgid "Profile participant's reply with label"
-msgstr ""
-
-#: View/Elements/localization.ctp:84
-msgid "Answer label"
-msgstr ""
-
-#: View/Elements/localization.ctp:85
-msgid "Feedbacks"
-msgstr ""
-
-#: View/Elements/localization.ctp:86
-msgid "Feedback"
-msgstr ""
-
-#: View/Elements/localization.ctp:88;100;108;116
-msgid "Action"
-msgstr ""
-
-#: View/Elements/localization.ctp:89
-msgid "Opt-in"
-msgstr ""
-
-#: View/Elements/localization.ctp:90
-msgid "Opt-out"
-msgstr ""
-
-#: View/Elements/localization.ctp:91
-msgid "Enrolling"
-msgstr ""
-
-#: View/Elements/localization.ctp:92
-msgid "Delayed Enrolling"
-msgstr ""
-
-#: View/Elements/localization.ctp:93
-msgid "Tagging"
-msgstr ""
-
-#: View/Elements/localization.ctp:94
-msgid "Reseting"
-msgstr ""
-
-#: View/Elements/localization.ctp:95
-#: View/ProgramParticipants/index.ctp:41
-msgid "Add"
-msgstr ""
-
-#: View/Elements/localization.ctp:96
-msgid "Remove"
-msgstr ""
-
-#: View/Elements/localization.ctp:97
-msgid "Responses"
-msgstr ""
-
-#: View/Elements/localization.ctp:98
-msgid "Response"
-msgstr ""
-
-#: View/Elements/localization.ctp:101
-#: View/ProgramContentVariables/add.ctp:20;40
-#: View/ProgramContentVariables/add_table.ctp:24;68
-#: View/ProgramContentVariables/edit.ctp:20;54
-#: View/ProgramContentVariables/edit_table.ctp:24;68
-#: View/ProgramDialogues/edit.ctp:4
-#: View/ProgramParticipants/add.ctp:4;28
-#: View/ProgramParticipants/edit.ctp:4;55
-#: View/ProgramPredefinedMessages/add.ctp:4;29
-#: View/ProgramPredefinedMessages/edit.ctp:4;29
-#: View/ProgramRequests/add.ctp:5
-#: View/ProgramRequests/edit.ctp:4
-#: View/ProgramSettings/edit.ctp:4;204
-#: View/ProgramUnattachedMessages/add.ctp:4;191
-#: View/ProgramUnattachedMessages/edit.ctp:4;202
-#: View/Users/change_password.ctp:8
-msgid "Save"
-msgstr ""
-
-#: View/Elements/localization.ctp:102
-msgid "Set Reminder"
-msgstr ""
-
-#: View/Elements/localization.ctp:103
-msgid "Number of Reminder(s)"
-msgstr ""
-
-#: View/Elements/localization.ctp:104
-msgid "Reminder every x minutes"
-msgstr ""
-
-#: View/Elements/localization.ctp:105
-msgid "Reminder every x days"
-msgstr ""
-
-#: View/Elements/localization.ctp:106
-msgid "At the time"
-msgstr ""
-
-#: View/Elements/localization.ctp:109
-msgid "Answer Required"
-msgstr ""
-
-#: View/Elements/localization.ctp:110;134
-msgid "Accept no space between the keyword and the choice"
-msgstr ""
-
-#: View/Elements/localization.ctp:111
-msgid "Use template from program settings"
-msgstr ""
-
-#: View/Elements/localization.ctp:112
-msgid "In case no matching on other requests, try to match only the message first word."
-msgstr ""
-
-#: View/Elements/localization.ctp:113
-msgid "Set maximum number of accepted unmatching answers"
-msgstr ""
-
-#: View/Elements/localization.ctp:114
-msgid "Maximum number of accepted unmatching answers"
-msgstr ""
-
-#: View/Elements/localization.ctp:117
-msgid "No unmatching feedback"
-msgstr ""
-
-#: View/Elements/localization.ctp:118
-msgid "Default program umatching feedback"
-msgstr ""
-
-#: View/Elements/localization.ctp:119
-msgid "Custom umatching message"
-msgstr ""
-
-#: View/Elements/localization.ctp:121
-msgid "Has priority"
-msgstr ""
-
-#: View/Elements/localization.ctp:124
-msgid "Set Condition on Participant"
-msgstr ""
-
-#: View/Elements/localization.ctp:125
-msgid "Match All Subcondition"
-msgstr ""
-
-#: View/Elements/localization.ctp:126
-msgid "Match Any Subcondition"
-msgstr ""
-
-#: View/Elements/localization.ctp:127
-msgid "Subconditions"
-msgstr ""
-
-#: View/Elements/localization.ctp:128
-msgid "Subcondition"
-msgstr ""
-
-#: View/Elements/localization.ctp:129
-msgid "Prioritize"
-msgstr ""
-
-#: View/Elements/localization.ctp:130
-msgid "Remind at offset time"
-msgstr ""
-
-#: View/Elements/localization.ctp:131
-msgid "Remind at offset days"
-msgstr ""
-
-#: View/Elements/localization.ctp:132
-msgid "All subcondition have to be true"
-msgstr ""
-
-#: View/Elements/localization.ctp:133
-msgid "Only one subcondition has to be true"
-msgstr ""
-
-#: View/Elements/localization.ctp:135
-msgid "with"
-msgstr ""
-
-#: View/Elements/localization.ctp:136
-msgid "not with"
-msgstr ""
-
-#: View/Elements/localization.ctp:137
-msgid "none"
-msgstr ""
-
-#: View/Elements/localization.ctp:138
-msgid "all participants"
-msgstr ""
-
-#: View/Elements/localization.ctp:139
-msgid "tagged"
-msgstr ""
-
-#: View/Elements/localization.ctp:140
-msgid "labelled"
-msgstr ""
-
-#: View/Elements/localization.ctp:141
-msgid "Proportional Tagging"
-msgstr ""
-
-#: View/Elements/localization.ctp:142
-msgid "Proportional Tags"
-msgstr ""
-
-#: View/Elements/localization.ctp:143
-msgid "Proportional Tag"
-msgstr ""
-
-#: View/Elements/localization.ctp:144
-msgid "URL Forward"
-msgstr ""
-
-#: View/Elements/localization.ctp:145
-msgid "Forward URL"
-msgstr ""
-
-#: View/Elements/localization.ctp:146
-msgid "SMS Forward"
-msgstr ""
-
-#: View/Elements/localization.ctp:147
-msgid "Receiver Tag"
-msgstr ""
-
-#: View/Elements/localization.ctp:149
-#: View/ProgramParticipants/index.ctp:35
-msgid "Tag"
-msgstr ""
-
-#: View/Elements/localization.ctp:150
-msgid "Weight"
-msgstr ""
-
-#: View/Elements/localization.ctp:151
-msgid "is not"
-msgstr ""
-
-#: View/Elements/localization.ctp:152
-msgid "start with"
-msgstr ""
-
-#: View/Elements/localization.ctp:153
-msgid "equal to"
-msgstr ""
-
-#: View/Elements/localization.ctp:154
-msgid "start with any"
-msgstr ""
-
-#: View/Elements/localization.ctp:155
-msgid "now"
-msgstr ""
-
-#: View/Elements/localization.ctp:156
-msgid "date from"
-msgstr ""
-
-#: View/Elements/localization.ctp:157
-msgid "date to"
-msgstr ""
-
-#: View/Elements/localization.ctp:158
-msgid "in"
-msgstr ""
-
-#: View/Elements/localization.ctp:159
-msgid "not in"
-msgstr ""
-
-#: View/Elements/localization.ctp:160
-msgid "is"
-msgstr ""
-
-#: View/Elements/localization.ctp:161
-msgid "not is"
-msgstr ""
-
-#: View/Elements/localization.ctp:162
-msgid "from"
-msgstr ""
-
-#: View/Elements/localization.ctp:163
-msgid "to"
-msgstr ""
-
-#: View/Elements/localization.ctp:164
-msgid "contain"
-msgstr ""
-
-#: View/Elements/localization.ctp:165
-msgid "has keyword"
-msgstr ""
-
-#: View/Elements/localization.ctp:166
-msgid "has keyword any"
-msgstr ""
-
-#: View/Elements/localization.ctp:167
-msgid "matching"
-msgstr ""
-
-#: View/Elements/localization.ctp:168
-msgid "not matching"
+msgid "\"%s\":\"%s\","
 msgstr ""
 
 #: View/Elements/navigation_menu.ctp:17
@@ -1432,36 +2203,48 @@ msgid "Active"
 msgstr ""
 
 #: View/Elements/navigation_menu.ctp:88
+#: View/ProgramUnattachedMessages/add.ctp:31
+#: View/ProgramUnattachedMessages/edit.ctp:31
 msgid "Draft"
 msgstr ""
 
 #: View/Elements/navigation_menu.ctp:94
-#: View/ProgramDialogues/edit.ctp:26
+#: View/ProgramDialogues/edit.ctp:23
 #: View/ProgramDialogues/index.ctp:50
 msgid "Activate"
 msgstr ""
 
 #: View/Elements/navigation_menu.ctp:110
-#: View/ProgramUnattachedMessages/index.ctp:6
+#: View/ProgramUnattachedMessages/index.ctp:3
 msgid "Separate Messages"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:115;145
+#: View/Elements/navigation_menu.ctp:115;181
 msgid "New Message"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:140
+#: View/Elements/navigation_menu.ctp:120
+#: View/ProgramUnattachedMessages/index.ctp:13
+msgid "Scheduled"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:144
+#: View/ProgramUnattachedMessages/index.ctp:18
+msgid "Drafted"
+msgstr ""
+
+#: View/Elements/navigation_menu.ctp:176
 #: View/ProgramPredefinedMessages/index.ctp:5
 msgid "Predefined Messages"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:170
+#: View/Elements/navigation_menu.ctp:206
 #: View/ProgramContentVariables/index.ctp:3
 #: View/ProgramContentVariables/index_table.ctp:7
 msgid "Content Variables"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:175
+#: View/Elements/navigation_menu.ctp:211
 #: View/ProgramContentVariables/add.ctp:8
 #: View/ProgramContentVariables/add_table.ctp:12
 #: View/ProgramContentVariables/edit.ctp:8
@@ -1469,39 +2252,46 @@ msgstr ""
 msgid "Keys/Value"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:180
+#: View/Elements/navigation_menu.ctp:216
 #: View/ProgramContentVariables/index.ctp:13
 #: View/ProgramContentVariables/index_table.ctp:17
 msgid "Tables"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:187
-#: View/ProgramParticipants/index.ctp:75
+#: View/Elements/navigation_menu.ctp:223
+#: View/ProgramParticipants/index.ctp:78
 msgid "Participants"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:192
-msgid "Add Participants"
+#: View/Elements/navigation_menu.ctp:233
+#: View/ProgramParticipants/index.ctp:60
+msgid "Import"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:197
-msgid "Import Participants"
+#: View/Elements/navigation_menu.ctp:238;247
+msgid "Exported File(s)"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:203
+#: View/Elements/navigation_menu.ctp:244
 msgid "History"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:207
+#: View/Elements/navigation_menu.ctp:253
 msgid "Settings"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:212
+#: View/Elements/navigation_menu.ctp:258
 msgid "Logs"
 msgstr ""
 
-#: View/Elements/navigation_menu.ctp:217
+#: View/Elements/navigation_menu.ctp:263
+#: View/UnmatchableReply/exported.ctp:93
+#: View/UnmatchableReply/index.ctp:86
 msgid "Program List"
+msgstr ""
+
+#: View/Elements/program_specific_header.ctp:40
+msgid "configure Shortcode"
 msgstr ""
 
 #: View/Groups/add.ctp:2
@@ -1517,15 +2307,15 @@ msgstr ""
 #: View/Groups/add.ctp:11
 #: View/Groups/edit.ctp:12
 #: View/Programs/add.ctp:17
-#: View/Programs/edit.ctp:13
 #: View/ProgramsUsers/add.ctp:10
 #: View/ProgramsUsers/edit.ctp:11
 #: View/ShortCodes/add.ctp:68
-#: View/ShortCodes/edit.ctp:68
+#: View/ShortCodes/edit.ctp:65
 #: View/Templates/add.ctp:20
 #: View/Templates/edit.ctp:18
 #: View/Users/add.ctp:23
-#: View/Users/edit.ctp:27
+#: View/Users/add_invitee.ctp:8
+#: View/Users/edit.ctp:32
 #: View/Users/new_password.ctp:7
 msgid "Submit"
 msgstr ""
@@ -1534,24 +2324,6 @@ msgstr ""
 #: View/Groups/edit.ctp:19
 #: View/Groups/view.ctp:37
 msgid "List Groups"
-msgstr ""
-
-#: View/Groups/add.ctp:18
-#: View/Groups/edit.ctp:20
-#: View/Groups/index.ctp:49
-#: View/Programs/add.ctp:24
-#: View/Programs/edit.ctp:21
-#: View/ShortCodes/add.ctp:75
-#: View/ShortCodes/edit.ctp:75
-#: View/ShortCodes/index.ctp:71
-#: View/Templates/add.ctp:27
-#: View/Templates/edit.ctp:25
-#: View/Templates/index.ctp:50
-#: View/Users/add.ctp:30
-#: View/Users/edit.ctp:48
-#: View/Users/index.ctp:52
-#: View/Users/view.ctp:82
-msgid "Back to Admin menu"
 msgstr ""
 
 #: View/Groups/edit.ctp:2
@@ -1579,16 +2351,17 @@ msgstr ""
 #: View/ProgramContentVariables/index_table.ctp:32
 #: View/ProgramPredefinedMessages/index.ctp:11
 #: View/ProgramRequests/index.ctp:11
-#: View/ProgramUnattachedMessages/index.ctp:12
+#: View/ProgramUnattachedMessages/index.ctp:38
 #: View/ShortCodes/index.ctp:8
 #: View/Templates/index.ctp:8
+#: View/UserLogs/index.ctp:8
 msgid "{:start} - {:end} of {:count}"
 msgstr ""
 
 #: View/Groups/index.ctp:33
-#: View/ProgramParticipants/index.ctp:157
+#: View/ProgramParticipants/index.ctp:160
 #: View/ProgramsUsers/index.ctp:21
-#: View/Users/index.ctp:36
+#: View/Users/index.ctp:38
 #: View/Users/view.ctp:57
 msgid "View"
 msgstr ""
@@ -1596,14 +2369,14 @@ msgstr ""
 #: View/Groups/index.ctp:34
 #: View/ProgramContentVariables/index.ctp:63
 #: View/ProgramContentVariables/index_table.ctp:118
-#: View/ProgramParticipants/index.ctp:159
+#: View/ProgramParticipants/index.ctp:162
 #: View/ProgramPredefinedMessages/index.ctp:36
-#: View/ProgramRequests/index.ctp:61
-#: View/ProgramUnattachedMessages/index.ctp:98
+#: View/ProgramRequests/index.ctp:60
+#: View/ProgramUnattachedMessages/index.ctp:164
 #: View/ProgramsUsers/index.ctp:22
 #: View/ShortCodes/index.ctp:43
 #: View/Templates/index.ctp:35
-#: View/Users/index.ctp:37
+#: View/Users/index.ctp:39
 #: View/Users/view.ctp:58
 msgid "Edit"
 msgstr ""
@@ -1612,17 +2385,20 @@ msgstr ""
 #: View/ProgramContentVariables/index.ctp:65
 #: View/ProgramContentVariables/index_table.ctp:120
 #: View/ProgramDialogues/index.ctp:52
+#: View/ProgramHistory/exported.ctp:77
 #: View/ProgramHistory/index.ctp:9
-#: View/ProgramParticipants/index.ctp:10;163
+#: View/ProgramParticipants/exported.ctp:78
+#: View/ProgramParticipants/index.ctp:9;166
 #: View/ProgramPredefinedMessages/index.ctp:38
-#: View/ProgramRequests/index.ctp:62
-#: View/ProgramUnattachedMessages/index.ctp:101
-#: View/Programs/index.ctp:67
+#: View/ProgramRequests/index.ctp:61
+#: View/ProgramUnattachedMessages/index.ctp:168
+#: View/Programs/edit.ctp:61
 #: View/ProgramsUsers/edit.ctp:17
 #: View/ProgramsUsers/index.ctp:23
 #: View/ShortCodes/index.ctp:44
 #: View/Templates/index.ctp:36
-#: View/Users/index.ctp:38
+#: View/UnmatchableReply/exported.ctp:70
+#: View/Users/index.ctp:40
 msgid "Delete"
 msgstr ""
 
@@ -1643,7 +2419,10 @@ msgid "Id"
 msgstr ""
 
 #: View/Groups/view.ctp:19
+#: View/ProgramHistory/exported.ctp:15
+#: View/ProgramParticipants/exported.ctp:15
 #: View/Programs/view.ctp:24
+#: View/UnmatchableReply/exported.ctp:11
 #: View/Users/view.ctp:31
 msgid "Created"
 msgstr ""
@@ -1677,20 +2456,34 @@ msgstr ""
 msgid "The program cannot send any messages after %s."
 msgstr ""
 
+#: View/Helper/DocumentationHelper.php:23
+msgid "Help"
+msgstr ""
+
 #: View/Helper/PhoneNumberHelper.php:15
 msgid "Unknown"
 msgstr ""
 
-#: View/Layouts/default.ctp:86
+#: View/Layouts/default.ctp:85
 msgid "log as %s"
 msgstr ""
 
-#: View/Layouts/default.ctp:95
+#: View/Layouts/default.ctp:94
 msgid "Logout"
 msgstr ""
 
-#: View/Layouts/default.ctp:99
+#: View/Layouts/default.ctp:100
+#: View/Users/report_issue.ctp:2
+msgid "Report Issue"
+msgstr ""
+
+#: View/Layouts/default.ctp:107
 msgid "My Account"
+msgstr ""
+
+#: View/Layouts/default.ctp:114
+#: View/Users/index.ctp:15
+msgid "Users"
 msgstr ""
 
 #: View/ProgramContentVariables/add.ctp:3
@@ -1719,7 +2512,7 @@ msgstr ""
 #: View/ProgramRequests/edit.ctp:7
 #: View/ProgramSettings/edit.ctp:7
 #: View/ProgramUnattachedMessages/add.ctp:7
-#: View/ProgramUnattachedMessages/edit.ctp:7;104
+#: View/ProgramUnattachedMessages/edit.ctp:7;105
 #: View/Users/change_password.ctp:13
 msgid "Cancel"
 msgstr ""
@@ -1761,21 +2554,19 @@ msgstr ""
 msgid "Are you sure you want to delete \"%s\"?"
 msgstr ""
 
-#: View/ProgramDialogues/edit.ctp:34
-#: View/ProgramScripts/active.ctp:5
-#: View/ProgramScripts/draft.ctp:5
+#: View/ProgramDialogues/edit.ctp:31
 msgid "Test send all messages"
 msgstr ""
 
-#: View/ProgramDialogues/edit.ctp:41
+#: View/ProgramDialogues/edit.ctp:38
 msgid "Edit Dialogue"
 msgstr ""
 
-#: View/ProgramDialogues/edit.ctp:43
+#: View/ProgramDialogues/edit.ctp:40
 msgid "Create Dialogue"
 msgstr ""
 
-#: View/ProgramDialogues/edit.ctp:47
+#: View/ProgramDialogues/edit.ctp:44
 msgid "(draft)"
 msgstr ""
 
@@ -1792,8 +2583,7 @@ msgid "Only draft"
 msgstr ""
 
 #: View/ProgramDialogues/index.ctp:52
-#: View/ProgramRequests/index.ctp:63
-#: View/Programs/index.ctp:67
+#: View/ProgramRequests/index.ctp:62
 msgid "Are you sure you want to delete %s?"
 msgstr ""
 
@@ -1802,9 +2592,48 @@ msgid "Send All Messages Of"
 msgstr ""
 
 #: View/ProgramDialogues/test_send_all_messages.ctp:17
-#: View/ProgramScripts/test_send_all_messages.ctp:12
+#: View/Users/invite_user.ctp:23
 #: View/Users/request_password_reset.ctp:31
 msgid "Send"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:3
+msgid "History Exports"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:14
+#: View/ProgramParticipants/exported.ctp:14
+#: View/UnmatchableReply/exported.ctp:10
+msgid "Size"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:22
+#: View/ProgramParticipants/exported.ctp:23
+msgid "No export found."
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:30
+msgid "All History"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:34
+msgid "All history with:"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:36
+msgid "Histories with either:"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:69
+#: View/ProgramParticipants/exported.ctp:70
+#: View/UnmatchableReply/exported.ctp:62
+msgid "Download"
+msgstr ""
+
+#: View/ProgramHistory/exported.ctp:81
+#: View/ProgramParticipants/exported.ctp:82
+#: View/UnmatchableReply/exported.ctp:74
+msgid "Are you sure you want to delete this export?"
 msgstr ""
 
 #: View/ProgramHistory/index.ctp:13
@@ -1815,41 +2644,41 @@ msgstr ""
 msgid "{:count}"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:43
+#: View/ProgramHistory/index.ctp:46
 msgid "Program History"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:53
+#: View/ProgramHistory/index.ctp:56
 #: View/ProgramParticipants/add.ctp:25
 #: View/ProgramParticipants/edit.ctp:23
 #: View/ProgramParticipants/view.ctp:62
 msgid "Phone"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:54
+#: View/ProgramHistory/index.ctp:57
 msgid "Direction"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:55
+#: View/ProgramHistory/index.ctp:58
 #: View/ProgramParticipants/view.ctp:149
 msgid "Status"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:56
+#: View/ProgramHistory/index.ctp:59
 #: View/ProgramParticipants/view.ctp:123;150
 msgid "Details"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:63
-#: View/ProgramParticipants/index.ctp:97
+#: View/ProgramHistory/index.ctp:66
+#: View/ProgramParticipants/index.ctp:100
 msgid "No results found."
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:86
+#: View/ProgramHistory/index.ctp:92
 msgid "forward is %s reason %s at %s by %s"
 msgstr ""
 
-#: View/ProgramHistory/index.ctp:88
+#: View/ProgramHistory/index.ctp:94
 msgid "forward is %s at %s by %s"
 msgstr ""
 
@@ -1857,29 +2686,29 @@ msgstr ""
 msgid "Restart Worker"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:15
+#: View/ProgramHome/index.ctp:16
 msgid "Sending Next"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:22
+#: View/ProgramHome/index.ctp:23
 msgid "At"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:23
-#: View/UnmatchableReply/index.ctp:28
+#: View/ProgramHome/index.ctp:24
+#: View/UnmatchableReply/index.ctp:45
 msgid "To"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:25
+#: View/ProgramHome/index.ctp:26
 #: View/ProgramParticipants/view.ctp:121
 msgid "Source"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:34
+#: View/ProgramHome/index.ctp:35
 msgid " participant(s)"
 msgstr ""
 
-#: View/ProgramHome/index.ctp:39
+#: View/ProgramHome/index.ctp:40
 #: View/ProgramParticipants/view.ctp:132
 msgid "Separate Msg"
 msgstr ""
@@ -1912,13 +2741,32 @@ msgid "Profile"
 msgstr ""
 
 #: View/ProgramParticipants/edit.ctp:42
-#: View/ProgramParticipants/index.ctp:89
+#: View/ProgramParticipants/index.ctp:92
 #: View/ProgramParticipants/view.ctp:95
 msgid "Tags"
 msgstr ""
 
 #: View/ProgramParticipants/edit.ctp:48
 msgid "Enrolled In"
+msgstr ""
+
+#: View/ProgramParticipants/exported.ctp:3
+msgid "Participant Exports"
+msgstr ""
+
+#: View/ProgramParticipants/exported.ctp:31
+#: View/ProgramUnattachedMessages/add.ctp:22
+#: View/ProgramUnattachedMessages/edit.ctp:22
+#: View/ProgramUnattachedMessages/index.ctp:84
+msgid "All participants"
+msgstr ""
+
+#: View/ProgramParticipants/exported.ctp:35
+msgid "All participants with:"
+msgstr ""
+
+#: View/ProgramParticipants/exported.ctp:37
+msgid "Participants with either:"
 msgstr ""
 
 #: View/ProgramParticipants/import.ctp:15
@@ -1945,44 +2793,35 @@ msgstr ""
 msgid " %s of the successfull import(s) were only updated."
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:14
+#: View/ProgramParticipants/index.ctp:13
 msgid "Are you sure you want to delete %s participants?"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:26
+#: View/ProgramParticipants/index.ctp:24
 msgid "Untag"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:57
-msgid "Import"
-msgstr ""
-
-#: View/ProgramParticipants/index.ctp:86
+#: View/ProgramParticipants/index.ctp:89
 #: View/ProgramParticipants/view.ctp:65
 msgid "Last Optin Date"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:87
+#: View/ProgramParticipants/index.ctp:90
 #: View/ProgramParticipants/view.ctp:73
 msgid "Last Optout Date"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:88
+#: View/ProgramParticipants/index.ctp:91
 #: View/ProgramParticipants/view.ctp:81
 msgid "Enrolled"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:90
+#: View/ProgramParticipants/index.ctp:93
 #: View/ProgramParticipants/view.ctp:105
 msgid "Labels"
 msgstr ""
 
-#: View/ProgramParticipants/index.ctp:137
-#: View/ProgramParticipants/view.ctp:99
-msgid "%s"
-msgstr ""
-
-#: View/ProgramParticipants/index.ctp:170
+#: View/ProgramParticipants/index.ctp:173
 msgid "Are you sure you want to delete participant %s ?"
 msgstr ""
 
@@ -2050,15 +2889,19 @@ msgstr ""
 msgid "One way marker on interaction <i>%s</i>"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:179
+#: View/ProgramParticipants/view.ctp:180
+msgid "Date passed marker on separate message <i>%s</i>"
+msgstr ""
+
+#: View/ProgramParticipants/view.ctp:182
 msgid "Date passed marker on interaction <i>%s</i>"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:181
+#: View/ProgramParticipants/view.ctp:185
 msgid "Date passed marker on action <i>%s</i> scheduled at %s"
 msgstr ""
 
-#: View/ProgramParticipants/view.ctp:187
+#: View/ProgramParticipants/view.ctp:191
 msgid "Error cannot display %s"
 msgstr ""
 
@@ -2086,136 +2929,114 @@ msgstr ""
 msgid "New Predefined Message"
 msgstr ""
 
-#: View/ProgramRequests/add.ctp:23
+#: View/ProgramRequests/add.ctp:22
 msgid "Add Request"
 msgstr ""
 
-#: View/ProgramRequests/edit.ctp:18
+#: View/ProgramRequests/edit.ctp:21
 msgid "Edit Request"
 msgstr ""
 
-#: View/ProgramRequests/index.ctp:52
+#: View/ProgramRequests/index.ctp:51
 msgid "Enrolling dialogue %s"
-msgstr ""
-
-#: View/ProgramScripts/activate_draft.ctp:2
-#: View/ProgramScripts/active.ctp:8
-#: View/ProgramScripts/draft.ctp:7
-msgid "Script"
-msgstr ""
-
-#: View/ProgramScripts/active.ctp:3
-#: View/ProgramScripts/draft.ctp:3
-msgid "Save as draft"
-msgstr ""
-
-#: View/ProgramScripts/index.ctp:4
-msgid "Scripts Index"
-msgstr ""
-
-#: View/ProgramScripts/index.ctp:100
-msgid "Script Simulator"
-msgstr ""
-
-#: View/ProgramScripts/test_send_all_messages.ctp:4
-msgid "Send All Messages To"
 msgstr ""
 
 #: View/ProgramSettings/edit.ctp:18
 msgid "Edit Program Settings"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:29
+#: View/ProgramSettings/edit.ctp:33
 #: View/ProgramSettings/view.ctp:4
 #: View/ShortCodes/add.ctp:19
-#: View/ShortCodes/edit.ctp:19
+#: View/ShortCodes/edit.ctp:13
 #: View/ShortCodes/index.ctp:22
 msgid "Shortcode"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:66
+#: View/ProgramSettings/edit.ctp:74
 msgid "Supported International Prefix(es)"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:73
+#: View/ProgramSettings/edit.ctp:81
 #: View/ProgramSettings/view.ctp:14
+#: View/UserLogs/index.ctp:22
 msgid "Timezone"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:85
+#: View/ProgramSettings/edit.ctp:93
 #: View/ProgramSettings/view.ctp:19
 msgid "Default template for open questions"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:88;95;102
+#: View/ProgramSettings/edit.ctp:96;103;110
 #: View/ShortCodes/add.ctp:34
 msgid "Template..."
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:92
+#: View/ProgramSettings/edit.ctp:100
 #: View/ProgramSettings/view.ctp:24
 msgid "Default template for closed questions"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:99
+#: View/ProgramSettings/edit.ctp:107
 #: View/ProgramSettings/view.ctp:29
 msgid "Default template for unmatching answers"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:113
+#: View/ProgramSettings/edit.ctp:121
 #: View/ProgramSettings/view.ctp:34
 msgid "Customized Id"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:120
+#: View/ProgramSettings/edit.ctp:128
 #: View/ProgramSettings/view.ctp:39
 msgid "Prioritize request responses and feedback messages."
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:126
+#: View/ProgramSettings/edit.ctp:134
 #: View/ProgramSettings/view.ctp:44
 msgid "Unmacthing answer remove reminders."
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:134
+#: View/ProgramSettings/edit.ctp:142
 #: View/ProgramSettings/view.ctp:49
 msgid "Double matching answer feedback"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:139
+#: View/ProgramSettings/edit.ctp:147
 #: View/ProgramSettings/view.ctp:54
 msgid "Double optin error feedback"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:140
+#: View/ProgramSettings/edit.ctp:148
 msgid "Set SMS Limit"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:142
+#: View/ProgramSettings/edit.ctp:150
 msgid "No limit"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:143
+#: View/ProgramSettings/edit.ctp:151
 msgid "Count only outgoing"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:144
+#: View/ProgramSettings/edit.ctp:152
 msgid "Count outgoing and incoming"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:164
+#: View/ProgramSettings/edit.ctp:172
 msgid "Total limit"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:167
+#: View/ProgramSettings/edit.ctp:175
 msgid "Limit Count From"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:170
+#: View/ProgramSettings/edit.ctp:178
 msgid "Limit Count To"
 msgstr ""
 
-#: View/ProgramSettings/edit.ctp:199
+#: View/ProgramSettings/edit.ctp:207
 msgid "Allow SMS Forwarding."
 msgstr ""
 
@@ -2236,6 +3057,7 @@ msgid "Set SMS lmit"
 msgstr ""
 
 #: View/ProgramSettings/view.ctp:62;64
+#: View/ProgramUnattachedMessages/index.ctp:146
 msgid "None"
 msgstr ""
 
@@ -2259,59 +3081,53 @@ msgstr ""
 msgid "Add Separate Message"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:22
-#: View/ProgramUnattachedMessages/edit.ctp:22
-#: View/ProgramUnattachedMessages/index.ctp:51
-msgid "All participants"
-msgstr ""
-
 #: View/ProgramUnattachedMessages/add.ctp:23
 #: View/ProgramUnattachedMessages/edit.ctp:23
 msgid "Participant matching"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:32
-#: View/ProgramUnattachedMessages/edit.ctp:32
+#: View/ProgramUnattachedMessages/add.ctp:33
+#: View/ProgramUnattachedMessages/edit.ctp:33
 msgid "Fixed Time:"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:50
-#: View/ProgramUnattachedMessages/edit.ctp:46
-#: View/ProgramUnattachedMessages/index.ctp:27
+#: View/ProgramUnattachedMessages/add.ctp:51
+#: View/ProgramUnattachedMessages/edit.ctp:47
+#: View/ProgramUnattachedMessages/index.ctp:61
 msgid "Send To"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:67
-#: View/ProgramUnattachedMessages/edit.ctp:60
+#: View/ProgramUnattachedMessages/add.ctp:68
+#: View/ProgramUnattachedMessages/edit.ctp:61
 msgid "of the following tag(s)/label(s):"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:77
-#: View/ProgramUnattachedMessages/edit.ctp:70
+#: View/ProgramUnattachedMessages/add.ctp:78
+#: View/ProgramUnattachedMessages/edit.ctp:71
 msgid "Choose from available tag(s)/label(s)..."
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:85
+#: View/ProgramUnattachedMessages/add.ctp:86
 msgid "List of participant(s)"
-msgstr ""
-
-#: View/ProgramUnattachedMessages/add.ctp:114
-#: View/ProgramUnattachedMessages/edit.ctp:117
-msgid "There are no predefined messages. "
 msgstr ""
 
 #: View/ProgramUnattachedMessages/add.ctp:115
 #: View/ProgramUnattachedMessages/edit.ctp:118
+msgid "There are no predefined messages. "
+msgstr ""
+
+#: View/ProgramUnattachedMessages/add.ctp:116
+#: View/ProgramUnattachedMessages/edit.ctp:119
 msgid "To create a predefined message click here."
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:120
-#: View/ProgramUnattachedMessages/edit.ctp:123
+#: View/ProgramUnattachedMessages/add.ctp:121
+#: View/ProgramUnattachedMessages/edit.ctp:124
 msgid "Use predefined message from list:"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/add.ctp:135
-#: View/ProgramUnattachedMessages/edit.ctp:137
+#: View/ProgramUnattachedMessages/add.ctp:136
+#: View/ProgramUnattachedMessages/edit.ctp:138
 msgid "Schedule"
 msgstr ""
 
@@ -2319,51 +3135,59 @@ msgstr ""
 msgid "Edit Separate Message"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/edit.ctp:78
+#: View/ProgramUnattachedMessages/edit.ctp:79
 msgid "List of Participant(s)"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/edit.ctp:85
+#: View/ProgramUnattachedMessages/edit.ctp:86
 msgid "Message will be send to %s participants."
 msgstr ""
 
-#: View/ProgramUnattachedMessages/edit.ctp:86
-msgid "Change"
+#: View/ProgramUnattachedMessages/index.ctp:8
+msgid "All"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:4
+#: View/ProgramUnattachedMessages/index.ctp:30
 msgid "New Separate Message"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:29
-msgid "AllSent(Delivered/Pending/Failed - Ack/Nack)"
-msgstr ""
-
-#: View/ProgramUnattachedMessages/index.ctp:32
+#: View/ProgramUnattachedMessages/index.ctp:65
 msgid "Creator"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:54
+#: View/ProgramUnattachedMessages/index.ctp:87
 msgid "Participant(s) matching %s of the following tag(s)/label(s): "
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:59
+#: View/ProgramUnattachedMessages/index.ctp:92
 msgid "%s Participant(s)"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:71
+#: View/ProgramUnattachedMessages/index.ctp:103
+msgid "drafted"
+msgstr ""
+
+#: View/ProgramUnattachedMessages/index.ctp:105
 msgid "%s scheduled"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:73
+#: View/ProgramUnattachedMessages/index.ctp:107
 msgid "no credit"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:73
+#: View/ProgramUnattachedMessages/index.ctp:107
 msgid "none sent"
 msgstr ""
 
-#: View/ProgramUnattachedMessages/index.ctp:102
+#: View/ProgramUnattachedMessages/index.ctp:113
+msgid "AllSent(Delivered/Pending/Failed)"
+msgstr ""
+
+#: View/ProgramUnattachedMessages/index.ctp:124
+msgid "AllSent(Delivered/Pending/Failed - Ack/Nack)"
+msgstr ""
+
+#: View/ProgramUnattachedMessages/index.ctp:171
 msgid "Are you sure you want to delete the separate message \"%s\" ?"
 msgstr ""
 
@@ -2371,12 +3195,18 @@ msgstr ""
 msgid "Add Program"
 msgstr ""
 
+#: View/Programs/add.ctp:9
+#: View/Programs/edit.ctp:21
+#: View/Programs/view.ctp:19
+msgid "Database"
+msgstr ""
+
 #: View/Programs/add.ctp:11
 msgid "Import Dialogues and Request From"
 msgstr ""
 
 #: View/Programs/add.ctp:23
-#: View/Programs/edit.ctp:20
+#: View/Programs/edit.ctp:84
 #: View/Programs/view.ctp:42
 #: View/ProgramsUsers/add.ctp:17
 #: View/ProgramsUsers/edit.ctp:19
@@ -2385,19 +3215,57 @@ msgstr ""
 msgid "List Programs"
 msgstr ""
 
-#: View/Programs/edit.ctp:2
-#: View/Programs/view.ctp:40
-msgid "Edit Program"
+#: View/Programs/edit.ctp:6
+msgid "Admin Settings"
 msgstr ""
 
-#: View/Programs/edit.ctp:19
-#: View/Programs/view.ctp:41
-msgid "Delete Program"
+#: View/Programs/edit.ctp:15
+#: View/Programs/view.ctp:14
+msgid "Url"
 msgstr ""
 
-#: View/Programs/edit.ctp:19
-#: View/Programs/view.ctp:41
-msgid "Are you sure you want to delete program \"%s\" ?"
+#: View/Programs/edit.ctp:29
+msgid "Danger Zone"
+msgstr ""
+
+#: View/Programs/edit.ctp:32
+msgid "Archive this program"
+msgstr ""
+
+#: View/Programs/edit.ctp:35
+msgid "Archive"
+msgstr ""
+
+#: View/Programs/edit.ctp:42
+msgid "Are you sure you want to Archive %s? This is NOT a reversible action."
+msgstr ""
+
+#: View/Programs/edit.ctp:45
+msgid "Archiving a program will stop any sending and receiving of SMS and will free the keywords on the shortcode. Still you will be able to access this program pages and most of the data. The only deleted data are the messages/actions scheduled in the future."
+msgstr ""
+
+#: View/Programs/edit.ctp:49
+msgid "Archiving is NOT a reversible action."
+msgstr ""
+
+#: View/Programs/edit.ctp:52
+msgid "This program has been archived."
+msgstr ""
+
+#: View/Programs/edit.ctp:53
+msgid "Vusion is not yet able to un-archive automatically a program. In case you wish to run the same program again, rather create a new program and import Dialogues, Requests and Participants."
+msgstr ""
+
+#: View/Programs/edit.ctp:58
+msgid "Delete this program"
+msgstr ""
+
+#: View/Programs/edit.ctp:68
+msgid "Are you sure you want to delete %s? Deleting this program will stop all sending or receiving of SMS, will release any keyword(s) used and will delete ALL DATA. Still the credit consumed will be the only data left"
+msgstr ""
+
+#: View/Programs/edit.ctp:73
+msgid "Delete this program stop the program and delete all data. except the credit consumed data."
 msgstr ""
 
 #: View/Programs/index.ctp:3
@@ -2408,27 +3276,37 @@ msgstr ""
 msgid "Programs"
 msgstr ""
 
-#: View/Programs/index.ctp:85
+#: View/Programs/index.ctp:49
+msgid "Archived"
+msgstr ""
+
+#: View/Programs/index.ctp:88
 msgid "Recent Issues"
 msgstr ""
 
-#: View/Programs/index.ctp:92
+#: View/Programs/index.ctp:98
 msgid "unmatchable reply"
 msgstr ""
 
 #: View/Programs/view.ctp:2
 #: View/ProgramsUsers/view.ctp:9
+#: View/UserLogs/index.ctp:24
 #: View/Users/add.ctp:17
 #: View/Users/edit.ctp:20
+#: View/Users/invite_user.ctp:17
 msgid "Program"
 msgstr ""
 
-#: View/Programs/view.ctp:14
-msgid "Url"
+#: View/Programs/view.ctp:40
+msgid "Edit Program"
 msgstr ""
 
-#: View/Programs/view.ctp:19
-msgid "Database"
+#: View/Programs/view.ctp:41
+msgid "Delete Program"
+msgstr ""
+
+#: View/Programs/view.ctp:41
+msgid "Are you sure you want to delete program \"%s\" ?"
 msgstr ""
 
 #: View/Programs/view.ctp:43
@@ -2454,7 +3332,7 @@ msgstr ""
 #: View/ProgramsUsers/index.ctp:49
 #: View/ProgramsUsers/view.ctp:30
 #: View/Users/add.ctp:29
-#: View/Users/edit.ctp:42
+#: View/Users/edit.ctp:47
 #: View/Users/view.ctp:76
 msgid "List Users"
 msgstr ""
@@ -2463,7 +3341,7 @@ msgstr ""
 #: View/ProgramsUsers/edit.ctp:22
 #: View/ProgramsUsers/index.ctp:50
 #: View/ProgramsUsers/view.ctp:31
-#: View/Users/index.ctp:51
+#: View/Users/index.ctp:54
 msgid "New User"
 msgstr ""
 
@@ -2507,6 +3385,7 @@ msgid "Programs User"
 msgstr ""
 
 #: View/ProgramsUsers/view.ctp:14
+#: View/UserLogs/index.ctp:23
 #: View/Users/view.ctp:2
 msgid "User"
 msgstr ""
@@ -2520,41 +3399,40 @@ msgid "Add ShortCode"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:7
-#: View/ShortCodes/edit.ctp:7
 #: View/ShortCodes/index.ctp:23
 msgid "Country"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:23
-#: View/ShortCodes/edit.ctp:22
+#: View/ShortCodes/edit.ctp:18
 #: View/ShortCodes/index.ctp:24
 msgid "International Prefix"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:30
-#: View/ShortCodes/edit.ctp:28
+#: View/ShortCodes/edit.ctp:25
 msgid "Error Template"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:42
-#: View/ShortCodes/edit.ctp:42
+#: View/ShortCodes/edit.ctp:39
 #: View/ShortCodes/index.ctp:25
 msgid "Support Customized Id"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:48
-#: View/ShortCodes/edit.ctp:48
+#: View/ShortCodes/edit.ctp:45
 #: View/ShortCodes/index.ctp:26
 msgid "Supported Internationally"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:57
-#: View/ShortCodes/edit.ctp:57
+#: View/ShortCodes/edit.ctp:54
 msgid "Maximun number of character per SMS"
 msgstr ""
 
 #: View/ShortCodes/add.ctp:62
-#: View/ShortCodes/edit.ctp:35;62
+#: View/ShortCodes/edit.ctp:32;59
 msgid "Choose one..."
 msgstr ""
 
@@ -2566,7 +3444,7 @@ msgstr ""
 msgid "Edit ShortCode"
 msgstr ""
 
-#: View/ShortCodes/edit.ctp:74
+#: View/ShortCodes/edit.ctp:71
 msgid "View ShortCodes"
 msgstr ""
 
@@ -2634,45 +3512,83 @@ msgstr ""
 msgid "New Template"
 msgstr ""
 
-#: View/UnmatchableReply/index.ctp:17
-msgid "Unmatchable Replies"
+#: View/UnmatchableReply/exported.ctp:3
+msgid "Unmatchabel Reply Exports"
 msgstr ""
 
-#: View/UnmatchableReply/index.ctp:27
+#: View/UnmatchableReply/exported.ctp:18
+msgid "No export file found."
+msgstr ""
+
+#: View/UnmatchableReply/exported.ctp:26
+msgid "All Unmatchable Replies"
+msgstr ""
+
+#: View/UnmatchableReply/exported.ctp:30
+msgid "All unmatchable replies with:"
+msgstr ""
+
+#: View/UnmatchableReply/exported.ctp:32
+msgid "Unmatchable replies with either:"
+msgstr ""
+
+#: View/UnmatchableReply/exported.ctp:98
+msgid "Unmatchable Reply"
+msgstr ""
+
+#: View/UnmatchableReply/index.ctp:44
 msgid "From"
 msgstr ""
 
-#: View/UnmatchableReply/index.ctp:29
+#: View/UnmatchableReply/index.ctp:46
 msgid "Message"
 msgstr ""
 
-#: View/UnmatchableReply/index.ctp:67
-msgid "Back To Program List"
+#: View/UnmatchableReply/index.ctp:92
+msgid "Exported Files"
+msgstr ""
+
+#: View/UserLogs/index.ctp:2
+msgid "Users Logs"
+msgstr ""
+
+#: View/UserLogs/index.ctp:21
+msgid "Timestamp"
+msgstr ""
+
+#: View/UserLogs/index.ctp:25
+msgid "Event"
 msgstr ""
 
 #: View/Users/add.ctp:2
+#: View/Users/add_invitee.ctp:3
 msgid "Add User"
 msgstr ""
 
 #: View/Users/add.ctp:7
+#: View/Users/add_invitee.ctp:5
 #: View/Users/edit.ctp:8
 #: View/Users/view.ctp:4
 msgid "Username"
 msgstr ""
 
 #: View/Users/add.ctp:8
+#: View/Users/add_invitee.ctp:6
 #: View/Users/view.ctp:9
 msgid "Password"
 msgstr ""
 
 #: View/Users/add.ctp:9
+#: View/Users/add_invitee.ctp:7
 #: View/Users/edit.ctp:12
+#: View/Users/invite_user.ctp:9
 #: View/Users/view.ctp:13
 msgid "Email"
 msgstr ""
 
 #: View/Users/add.ctp:10
 #: View/Users/edit.ctp:15
+#: View/Users/invite_user.ctp:10
 msgid "Group id"
 msgstr ""
 
@@ -2700,22 +3616,36 @@ msgstr ""
 msgid "Edit User"
 msgstr ""
 
-#: View/Users/edit.ctp:36
+#: View/Users/edit.ctp:25
+msgid "Access Unmatchable Replies"
+msgstr ""
+
+#: View/Users/edit.ctp:28
+msgid "Invite new users"
+msgstr ""
+
+#: View/Users/edit.ctp:41
 msgid "Delete User"
 msgstr ""
 
-#: View/Users/edit.ctp:36
-#: View/Users/index.ctp:38
+#: View/Users/edit.ctp:41
+#: View/Users/index.ctp:40
 msgid "Are you sure you want to delete the user \"%s\" ?"
 msgstr ""
 
-#: View/Users/edit.ctp:50
+#: View/Users/edit.ctp:55
+#: View/Users/index.ctp:72
 #: View/Users/view.ctp:84
 msgid "Back to Programs"
 msgstr ""
 
-#: View/Users/index.ctp:15
-msgid "Users"
+#: View/Users/index.ctp:60
+#: View/Users/invite_user.ctp:3
+msgid "Invite User"
+msgstr ""
+
+#: View/Users/invite_user.ctp:22
+msgid " I agree that TTC will not be held accountable for misuse of this feature."
 msgstr ""
 
 #: View/Users/login.ctp:3;7
@@ -2730,6 +3660,38 @@ msgstr ""
 msgid "Confirm Password"
 msgstr ""
 
+#: View/Users/report_issue.ctp:3
+msgid "When reporting an issue add as much details as possible so that the tech team can <b>reproduce the issue</b>. Also keep in mind that a uploading a good screenshot is worth a thousand words."
+msgstr ""
+
+#: View/Users/report_issue.ctp:13
+msgid "Expected and current behavior"
+msgstr ""
+
+#: View/Users/report_issue.ctp:14
+msgid "Describe the issue"
+msgstr ""
+
+#: View/Users/report_issue.ctp:15
+msgid "Expected vs current behavior"
+msgstr ""
+
+#: View/Users/report_issue.ctp:24
+msgid "How to reproduce the issue"
+msgstr ""
+
+#: View/Users/report_issue.ctp:25;26
+msgid "How to reproduce step by step, copy/past the program url and occurence"
+msgstr ""
+
+#: View/Users/report_issue.ctp:28
+msgid "Report"
+msgstr ""
+
+#: View/Users/report_issue.ctp:29
+msgid "Close"
+msgstr ""
+
 #: View/Users/request_password_reset.ctp:3
 msgid "Request Password Reset"
 msgstr ""
@@ -2738,356 +3700,736 @@ msgstr ""
 msgid "Accessible Programs"
 msgstr ""
 
-#: Model/ContentVariable.php:validation
-#: for field keys
-#: Model/ContentVariableTable.php:validation
-#: for field columns
-#: Model/Dialogue.php:validation
-#: for field interactions
-#: Model/Participant.php:validation
-#: for field profile;validation for field tags
-#: Model/Request.php:validation
-#: for field responses;validation for field actions
-#: Model/UnattachedMessage.php:validation
-#: for field content
+#: Model/Action.php:validation for field set-condition
+msgid "The field set-condition is missing."
+msgstr ""
+
+#: Model/Action.php:validation for field set-condition
+msgid "The value of set-condition is not valid."
+msgstr ""
+
+#: Model/Action.php:validation for field set-condition
+msgid "valueRequireField"
+msgstr ""
+
+#: Model/Action.php:validation for field condition-operator;validation for field subconditions
+msgid "The set-condition field has not the valid value."
+msgstr ""
+
+#: Model/Action.php:validation for field condition-operator
+msgid "The condition-operator value is not valid."
+msgstr ""
+
+#: Model/Action.php:validation for field subconditions
+#: Model/Dialogue.php:validation for field subconditions
+msgid "At least one subconditions has to be set."
+msgstr ""
+
+#: Model/Action.php:validation for field subconditions;validation for field offset-days;validation for field content;validation for field proportional-tags;validation for field proportional-labels;validation for field forward-url;validation for field forward-to;validation for field forward-content;validation for field forward-message-no-participant-feedback
+#: Model/ContentVariable.php:validation for field keys
+#: Model/ContentVariableTable.php:validation for field columns
+#: Model/Dialogue.php:validation for field subconditions;validation for field interactions
+#: Model/Interaction.php:validation for field content;validation for field feedbacks;validation for field unmatching-feedback-content
+#: Model/Participant.php:validation for field profile;validation for field tags
+#: Model/PredefinedMessage.php:validation for field content
+#: Model/Request.php:validation for field keyword;validation for field responses;validation for field actions
+#: Model/UnattachedMessage.php:validation for field content
 msgid "noMessage"
 msgstr ""
 
-#: Model/ContentVariable.php:validation
-#: for field keys
-msgid "A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example \"key1.key2\"."
+#: Model/Action.php:validation for field type-action
+msgid "The type-action field is missing."
 msgstr ""
 
-#: Model/ContentVariable.php:validation
-#: for field keys
+#: Model/Action.php:validation for field type-action
+msgid "The field-action cannot be empty."
+msgstr ""
+
+#: Model/Action.php:validation for field type-action
+msgid "The type-action value is not valid."
+msgstr ""
+
+#: Model/Action.php:validation for field type-action
+msgid "The action-type required field are not present."
+msgstr ""
+
+#: Model/Action.php:validation for field enroll;validation for field offset-days
+msgid "The enroll field require an enrolling or delayed-enrolling action."
+msgstr ""
+
+#: Model/Action.php:validation for field tag
+msgid "The content field require an tagging action."
+msgstr ""
+
+#: Model/Action.php:validation for field tag
+msgid "Use only space, letters and numbers for tag, e.g 'group 1'."
+msgstr ""
+
+#: Model/Action.php:validation for field content
+msgid "The content field require an feedback action."
+msgstr ""
+
+#: Model/Action.php:validation for field content;validation for field forward-content;validation for field forward-message-no-participant-feedback
+#: Model/Interaction.php:validation for field content;validation for field unmatching-feedback-content
+#: Model/PredefinedMessage.php:validation for field content
+msgid "The apostrophe used is not allowed."
+msgstr ""
+
+#: Model/Action.php:validation for field proportional-tags
+msgid "The proportional-tags field require an proportional-tagging action."
+msgstr ""
+
+#: Model/Action.php:validation for field proportional-labels
+msgid "The proportional-labels field require an proportional-labelling action."
+msgstr ""
+
+#: Model/Action.php:validation for field set-only-optin-count
+msgid "The field set-only-optin-count doesn't have a valide value."
+msgstr ""
+
+#: Model/Action.php:validation for field label-name
+msgid "The label-name is require in proportional-labelling action."
+msgstr ""
+
+#: Model/Action.php:validation for field label-name
+msgid "Use only space, letters and numbers for the label name."
+msgstr ""
+
+#: Model/Action.php:validation for field forward-url
+msgid "The forwarding field require an url field."
+msgstr ""
+
+#: Model/Action.php:validation for field forward-url
+msgid "The forward url is not valid."
+msgstr ""
+
+#: Model/Action.php:validation for field forward-to
+msgid "The Receiver Tagged or Labelled Conditions field is required."
+msgstr ""
+
+#: Model/Action.php:validation for field forward-content;validation for field forward-message-no-participant-feedback
+msgid "The content field require an SMS Forward action."
+msgstr ""
+
+#: Model/Action.php:validation for field set-forward-message-condition
+msgid "The field is required."
+msgstr ""
+
+#: Model/Action.php:validation for field set-forward-message-condition
+msgid "This choice is not valide."
+msgstr ""
+
+#: Model/Action.php:validation for field forward-message-condition-type
+msgid "The set-forward-message-condition field has not the valid value."
+msgstr ""
+
+#: Model/Action.php:validation for field forward-message-condition-type
+msgid "The field value is not valid."
+msgstr ""
+
+#: Model/ContentVariable.php:validation for field keys
+msgid "A content variable can a minimum of 1 key and a maximum of 3 keys, the format is for example \\\"key1.key2\\\"."
+msgstr ""
+
+#: Model/ContentVariable.php:validation for field keys
 msgid "This keys pair already exists. Please choose another."
 msgstr ""
 
-#: Model/ContentVariable.php:validation
-#: for field table
+#: Model/ContentVariable.php:validation for field table
+#: Model/Export.php:validation for field file-full-name
 msgid "Editing table is not allowed."
 msgstr ""
 
-#: Model/ContentVariable.php:validation
-#: for field value
+#: Model/ContentVariable.php:validation for field value
 msgid "Use only DOT, space, letters and numbers for a value, e.g 'new value1'."
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field name
+#: Model/ContentVariableTable.php:validation for field name
 msgid "The table name cannot be empty."
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field name
+#: Model/ContentVariableTable.php:validation for field name
 msgid "Another table already exist with this name."
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field columns
+#: Model/ContentVariableTable.php:validation for field columns
 msgid "noDuplicateHeader"
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field columns
+#: Model/ContentVariableTable.php:validation for field columns
 msgid "All column should have the same number of values"
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field columns
+#: Model/ContentVariableTable.php:validation for field columns
 msgid "Not able to identify unique set of keys."
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field columns
+#: Model/ContentVariableTable.php:validation for field columns
 msgid "uniqueKeys"
 msgstr ""
 
-#: Model/ContentVariableTable.php:validation
-#: for field columns
+#: Model/ContentVariableTable.php:validation for field columns
 msgid "There are too many keys."
 msgstr ""
 
-#: Model/Dialogue.php:validation
-#: for field dialogue-id
+#: Model/Dialogue.php:validation for field dialogue-id
 msgid "A dialogue-id field cannot be empty."
 msgstr ""
 
-#: Model/Dialogue.php:validation
-#: for field auto-enrollment
+#: Model/Dialogue.php:validation for field auto-enrollment
 msgid "A auto-enrollment field cannot be empty."
 msgstr ""
 
-#: Model/Dialogue.php:validation
-#: for field auto-enrollment
+#: Model/Dialogue.php:validation for field auto-enrollment
 msgid "The auto-enrollment value is not valid."
 msgstr ""
 
-#: Model/Dialogue.php:validation
-#: for field activated
+#: Model/Dialogue.php:validation for field auto-enrollment
+#: Model/Interaction.php:validation for field type-interaction
+msgid "valueRequireFields"
+msgstr ""
+
+#: Model/Dialogue.php:validation for field condition-operator
+msgid "An operator between conditions has to be selected."
+msgstr ""
+
+#: Model/Dialogue.php:validation for field activated
 msgid "The activated field value can only be 0 or 1."
 msgstr ""
 
-#: Model/Dialogue.php:validation
-#: for field set-prioritized
+#: Model/Dialogue.php:validation for field set-prioritized
 msgid "The prioritized field value can only be null or prioritized."
 msgstr ""
 
-#: Model/Group.php:validation
-#: for field name
-#: Model/ProgramsUser.php:validation
-#: for field program_id
-#: Model/User.php:validation
-#: for field username;validation for field password
+#: Model/Export.php:validation for field timestamp
+msgid "The timestamp has to be set."
+msgstr ""
+
+#: Model/Export.php:validation for field timestamp
+#: Model/Interaction.php:validation for field date-time
+#: Model/UserLog.php:validation for field timestamp
+msgid "The date time is not in an ISO format."
+msgstr ""
+
+#: Model/Export.php:validation for field database
+msgid "Database has to be a string of at least 3 characters."
+msgstr ""
+
+#: Model/Export.php:validation for field collection
+msgid "Export of this collection is not supported."
+msgstr ""
+
+#: Model/Export.php:validation for field status
+msgid "The status is not valid."
+msgstr ""
+
+#: Model/Export.php:validation for field size
+msgid "Size field has to be a integer."
+msgstr ""
+
+#: Model/Export.php:validation for field file-full-name
+msgid "The database has to be set."
+msgstr ""
+
+#: Model/Group.php:validation for field name
+#: Model/ProgramsUser.php:validation for field program_id
+#: Model/User.php:validation for field username;validation for field password
 msgid "notempty"
 msgstr ""
 
-#: Model/Participant.php:validation
-#: for field phone
+#: Model/Interaction.php:validation for field interaction-id
+msgid "Interaction Id field is missing."
+msgstr ""
+
+#: Model/Interaction.php:validation for field interaction-id
+msgid "Interaction Id field cannot be empty."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule
+msgid "Type Schedule field is missing."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule
+msgid "Type Schedule field cannot be empty."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule
+msgid "Type Schedule has not a valid value."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule
+msgid "Type schedule required field are not present."
+msgstr ""
+
+#: Model/Interaction.php:validation for field date-time
+msgid "Fixed time required a date-time."
+msgstr ""
+
+#: Model/Interaction.php:validation for field date-time
+msgid "The date time has to be set."
+msgstr ""
+
+#: Model/Interaction.php:validation for field days
+msgid "Offset-day required a day."
+msgstr ""
+
+#: Model/Interaction.php:validation for field at-time
+msgid "Offset-day required a at-time field."
+msgstr ""
+
+#: Model/Interaction.php:validation for field minutes
+msgid "Minutes required a offset-time."
+msgstr ""
+
+#: Model/Interaction.php:validation for field offset-condition-interaction-id
+msgid "Schedule Condition required a offset-condition-interaction-id."
+msgstr ""
+
+#: Model/Interaction.php:validation for field offset-condition-delay
+msgid "The delay only accept full minutes."
+msgstr ""
+
+#: Model/Interaction.php:validation for field offset-condition-delay
+msgid "Schedule Condition required a offset-condition-delay."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-interaction
+msgid "Type Interaction field is missing."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-interaction
+msgid "Type Interaction value cannot be empty."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-interaction
+msgid "Type Interaction value is not valid."
+msgstr ""
+
+#: Model/Interaction.php:validation for field content
+msgid "The interaction required a content."
+msgstr ""
+
+#: Model/Interaction.php:validation for field content
+msgid "Content field cannot be empty."
+msgstr ""
+
+#: Model/Interaction.php:validation for field keyword
+msgid "Question Answer required a keyword."
+msgstr ""
+
+#: Model/Interaction.php:validation for field keyword
+msgid "The keyword/alias is(are) not valid."
+msgstr ""
+
+#: Model/Interaction.php:validation for field keyword
+msgid "notUsedKeyword"
+msgstr ""
+
+#: Model/Interaction.php:validation for field keyword
+msgid "notUsedKeywordNoSpace"
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-use-template
+msgid "A set-use-template field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-matching-answer-actions
+msgid "A set-matching-answer-action field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-matching-answer-actions;validation for field type-unmatching-feedback
+msgid "Type unmatching feedback is not valid."
+msgstr ""
+
+#: Model/Interaction.php:validation for field matching-answer-actions
+msgid "validateActions"
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-max-unmatching-answers
+msgid "A set-max-unmatching-answer field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-reminder
+msgid "A set-reminder field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-reminder
+msgid "A reminder required field."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-unmatching-feedback
+msgid "A type-unmatching-feedback field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-question
+msgid "Question Answer required a type-question."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-question
+msgid "Please select a valid type of Question."
+msgstr ""
+
+#: Model/Interaction.php:validation for field answer-keywords
+msgid "A answer-keywords is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field answer-keywords
+msgid "One of the Answer Keyword is not valide."
+msgstr ""
+
+#: Model/Interaction.php:validation for field label-for-participant-profiling
+msgid "A label-for-participant-profiling is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-answer-accept-no-space
+msgid "A set-answer-accept-no-space field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field set-answer-accept-no-space
+msgid "Unvalid choice."
+msgstr ""
+
+#: Model/Interaction.php:validation for field answers
+msgid "A answers field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field answers
+msgid "One of the Answers is not valide."
+msgstr ""
+
+#: Model/Interaction.php:validation for field answer-label
+msgid "A answer-label field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field feedbacks
+msgid "A feedbacks field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field max-unmatching-answer-number
+msgid "A max-unmatching-answer-number field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field max-unmatching-answer-actions
+msgid "A max-unmatching-answer-actions field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule-reminder
+msgid "This field has to be set."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule-reminder
+msgid "The value of type-schedule-reminder is not valid."
+msgstr ""
+
+#: Model/Interaction.php:validation for field type-schedule-reminder
+msgid "A type-schedule-reminder field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field reminder-number
+msgid "A reminder-number field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field reminder-actions
+msgid "A reminder-actions field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field reminder-actions
+msgid "validValue"
+msgstr ""
+
+#: Model/Interaction.php:validation for field reminder-days
+msgid "A reminder-days field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field reminder-at-time
+msgid "A reminder-at-time field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field reminder-minutes
+msgid "A reminder-minutes field is required."
+msgstr ""
+
+#: Model/Interaction.php:validation for field unmatching-feedback-content
+msgid "Custom unmatching feedback must have content."
+msgstr ""
+
+#: Model/Interaction.php:validation for field activated
+msgid "Activated field is missing."
+msgstr ""
+
+#: Model/Interaction.php:validation for field activated
+msgid "Actived field value is not valid."
+msgstr ""
+
+#: Model/Interaction.php:validation for field prioritized
+msgid "Prioritized field is missing."
+msgstr ""
+
+#: Model/Interaction.php:validation for field prioritized
+msgid "Prioritized field value is not valid."
+msgstr ""
+
+#: Model/Participant.php:validation for field phone
 msgid "Please enter a phone number."
 msgstr ""
 
-#: Model/Participant.php:validation
-#: for field phone
+#: Model/Participant.php:validation for field phone
 msgid "A phone number must begin with a '+' sign and end with a serie of digits such as +3345678733."
 msgstr ""
 
-#: Model/Participant.php:validation
-#: for field phone
+#: Model/Participant.php:validation for field phone
 msgid "A phone number must only contain digits such as +3345678733."
 msgstr ""
 
-#: Model/Participant.php:validation
-#: for field phone
+#: Model/Participant.php:validation for field phone
 msgid "This phone number already exists in the participant list."
 msgstr ""
 
-#: Model/PredefinedMessage.php:validation
-#: for field name
+#: Model/PredefinedMessage.php:validation for field name
 msgid "A predefined message must have a name."
 msgstr ""
 
-#: Model/PredefinedMessage.php:validation
-#: for field name
-#: Model/UnattachedMessage.php:validation
+#: Model/PredefinedMessage.php:validation for field name
+#: Model/UnattachedMessage.php:validation for field name
 msgid "This name already exists. Please choose another."
 msgstr ""
 
-#: Model/PredefinedMessage.php:validation
-#: for field content
-#: Model/UnattachedMessage.php:validation
+#: Model/PredefinedMessage.php:validation for field content
+#: Model/UnattachedMessage.php:validation for field content
 msgid "Please enter some content for this message."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field name
+#: Model/Program.php:validation for field name
 msgid "Please give a name to the program."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field name
+#: Model/Program.php:validation for field name
 msgid "Another program is currently using this name, please choose another one."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field url
+#: Model/Program.php:validation for field url
 msgid "Please give a url to the program."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field url
+#: Model/Program.php:validation for field url
 msgid "Another program is currently using this url, please choose another one."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field url;validation for field database
+#: Model/Program.php:validation for field url;validation for field database
 msgid "Minimum of 3 characters, can only be composed of lowercase letters and digits."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field url
+#: Model/Program.php:validation for field url
 msgid "This url is not allowed to avoid overwriting a static Vusion url, please choose a different one."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field database
+#: Model/Program.php:validation for field url;validation for field database
+#: Model/ShortCode.php:validation for field shortcode;validation for field country;validation for field international-prefix
+msgid "This field is read only."
+msgstr ""
+
+#: Model/Program.php:validation for field database
 msgid "Please give a database to the program."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field database
+#: Model/Program.php:validation for field database
 msgid "Another program is currently using this database, please choose another one."
 msgstr ""
 
-#: Model/Program.php:validation
-#: for field database
+#: Model/Program.php:validation for field database
 msgid "This database name is not allowed to avoid overwriting a static Vusion database, please choose a different one."
 msgstr ""
 
-#: Model/ProgramsUser.php:validation
-#: for field user_id
-#: Model/User.php:validation
-#: for field group_id
+#: Model/Program.php:validation for field status
+msgid "The status can only be running or archived."
+msgstr ""
+
+#: Model/ProgramsUser.php:validation for field user_id
+#: Model/User.php:validation for field group_id
 msgid "numeric"
 msgstr ""
 
-#: Model/Request.php:validation
-#: for field keyword
+#: Model/Request.php:validation for field keyword
 msgid "Please enter a keyword for this request."
 msgstr ""
 
-#: Model/Request.php:validation
-#: for field keyword
-msgid "This keyword format is not valid."
+#: Model/Request.php:validation for field keyword
+msgid "This keyword/keyphrase is not valid."
 msgstr ""
 
-#: Model/Request.php:validation
-#: for field set-no-request-matching-try-keyword-only
+#: Model/Request.php:validation for field set-no-request-matching-try-keyword-only
 msgid "The field set-no-request-matching-try-keyword-only is not set."
 msgstr ""
 
-#: Model/Request.php:validation
-#: for field set-no-request-matching-try-keyword-only
+#: Model/Request.php:validation for field set-no-request-matching-try-keyword-only
 msgid "The field no-request-matching-try-keyword-only value is not valid."
 msgstr ""
 
-#: Model/Request.php:validation
-#: for field responses
+#: Model/Request.php:validation for field responses
 msgid "The responses has to be an array."
 msgstr ""
 
-#: Model/Request.php:validation
-#: for field actions
+#: Model/Request.php:validation for field actions
 msgid "The actions has to be an array."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field shortcode
+#: Model/ShortCode.php:validation for field shortcode
 msgid "Please enter a shortcode."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field shortcode;validation for field country
+#: Model/ShortCode.php:validation for field shortcode;validation for field country
 msgid "There is already the same shortcode for this country."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field shortcode
+#: Model/ShortCode.php:validation for field shortcode
 msgid "An supported internationally shortcode should include the international prefix."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field shortcode
+#: Model/ShortCode.php:validation for field shortcode
 msgid "Same national shortcode number is used in a country with matching international prefix, the system cannot handle this."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field country
+#: Model/ShortCode.php:validation for field country
 msgid "Please choose a country."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field max-character-per-sms
+#: Model/ShortCode.php:validation for field max-character-per-sms
 msgid "Please choose a maximum number of characters per sms."
 msgstr ""
 
-#: Model/ShortCode.php:validation
-#: for field max-character-per-sms
+#: Model/ShortCode.php:validation for field max-character-per-sms
 msgid "The valid value are only 70, 140 and 160."
 msgstr ""
 
-#: Model/Template.php:validation
-#: for field name
+#: Model/Template.php:validation for field name
 msgid "Please give a name to the template."
 msgstr ""
 
-#: Model/Template.php:validation
-#: for field name
+#: Model/Template.php:validation for field name
 msgid "This name is already used by another template, choose another one."
 msgstr ""
 
-#: Model/Template.php:validation
-#: for field type-template
+#: Model/Template.php:validation for field type-template
 msgid "Please select a template type."
 msgstr ""
 
-#: Model/Template.php:validation
-#: for field template
+#: Model/Template.php:validation for field template
 msgid "Please write a template."
 msgstr ""
 
-#: Model/Template.php:validation
-#: for field template
+#: Model/Template.php:validation for field template
 msgid "hasAllTemplateKeyword"
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field name
+#: Model/UnattachedMessage.php:validation for field name
 msgid "Please enter a name for this separate message."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field send-to-type
+#: Model/UnattachedMessage.php:validation for field send-to-type
 msgid "Please select a Send To option."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field send-to-type
+#: Model/UnattachedMessage.php:validation for field send-to-type
 msgid "Send To option not allowed."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field send-to-match-operator
+#: Model/UnattachedMessage.php:validation for field send-to-match-operator
 msgid "Please select a condition."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field send-to-match-operator
+#: Model/UnattachedMessage.php:validation for field send-to-match-operator
 msgid "Match operator not allowed."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field send-to-match-conditions
+#: Model/UnattachedMessage.php:validation for field send-to-match-conditions
 msgid "allowChoice"
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field send-to-phone
+#: Model/UnattachedMessage.php:validation for field send-to-phone
 msgid "Please enter a list of participant phone."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field content
+#: Model/UnattachedMessage.php:validation for field content
 msgid "The apostrophe used in this message is not valid."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field type-schedule
+#: Model/UnattachedMessage.php:validation for field type-schedule
 msgid "Please choose a type of schedule for this message."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field fixed-time
+#: Model/UnattachedMessage.php:validation for field type-schedule
+msgid "This type of schedule is not allowed."
+msgstr ""
+
+#: Model/UnattachedMessage.php:validation for field fixed-time
 msgid "Please enter a fixed time for this message."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field fixed-time
+#: Model/UnattachedMessage.php:validation for field fixed-time
 msgid "Fixed time cannot be in the past."
 msgstr ""
 
-#: Model/UnattachedMessage.php:validation
-#: for field created-by
+#: Model/UnattachedMessage.php:validation for field created-by
 msgid "Message must be created by a user."
 msgstr ""
 
-#: Model/User.php:validation
-#: for field email
+#: Model/User.php:validation for field password
+msgid "Password must be at least 8 characters long"
+msgstr ""
+
+#: Model/User.php:validation for field password
+msgid "Password must be letters and numbers, and contain atleast one number"
+msgstr ""
+
+#: Model/User.php:validation for field email
 msgid "Invalid email address"
 msgstr ""
 
-#: Model/User.php:validation
-#: for field limited_program_access
+#: Model/User.php:validation for field limited_program_access
 msgid "boolean"
+msgstr ""
+
+#: Model/UserLog.php:validation for field timestamp
+msgid "The timestamp cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field timezone
+msgid "The timezone cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field user-name
+msgid "The user name cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field user-id
+msgid "The user id cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field object-type
+msgid "The Object type cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field object-type
+msgid "Object type is invalid."
+msgstr ""
+
+#: Model/UserLog.php:validation for field controller
+msgid "The controller cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field action
+msgid "The action cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field parameters
+msgid "The parameters cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field program-name
+msgid "The program name cannot be empty."
+msgstr ""
+
+#: Model/UserLog.php:validation for field program-database-name
+msgid "The program database name cannot be empty."
 msgstr ""
 

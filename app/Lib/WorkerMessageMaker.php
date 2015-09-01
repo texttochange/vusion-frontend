@@ -34,6 +34,14 @@ class WorkerMessageMaker
     }
 
 
+    public function export($export_id)
+    {
+        return array(
+            'message_type' => 'export',
+            'export_id' => $export_id . "");
+    }
+
+
     public function updateSchedule($schedule_type, $object_id)
     {
         if (!in_array($schedule_type, array('dialogue', 'unattach', 'participant'))) {

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2014-01-06 13:55+0000\n"
+"POT-Creation-Date: 2015-02-26 07:49+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -14,7 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: webroot/test.php:87
+#: Model/Validator/CakeValidationRule.php:297
+msgid "Could not find validation handler %s for %s"
+msgstr ""
+
+#: webroot/test.php:88
 msgid "Debug setting does not allow access to this url."
 msgstr ""
 

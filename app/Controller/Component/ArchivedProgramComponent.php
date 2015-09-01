@@ -14,11 +14,11 @@ class ArchivedProgramComponent extends Component
 					'edit' => __('Editing this is not allowed within archived program.'),
 					'delete' => __('Deleting this is not allowed within archived program.'))
 				),
-			'programHome' => array(
+			'programhome' => array(
 				'GET' => array(
 					'restartWorker' => __('Restart worker is not allowed in archived program.'))
 				),
-			'programDialogues' => array(
+			'programdialogues' => array(
 				'POST' => array(
 					'save' => __('Saving a Dialogue is not allowed within archived program.'),
 					'delete' => __('Deleting a Dialogue is not allowed within archived program.'),
@@ -26,7 +26,7 @@ class ArchivedProgramComponent extends Component
 					'activate' => __('Activation of Dialogue is not allowed within an archived program'),
 					'validateKeyword' => __('The validation of keyword is not allowed within archived program.'))
 				), 
-			'programRequests' => array(
+			'programrequests' => array(
 				'POST' => array(
 					'save' => __('Saving this is not allowed within archived program.'),
 					'delete' => __('Deleting this is not allowed within archived program.'),
@@ -52,9 +52,10 @@ class ArchivedProgramComponent extends Component
 		if ($controller->programDetails['status'] != 'archived'){
 			return true;
 		}
-		$controllerName = 'default';
-		if (isset($this->archivedAuthorization[$controller->request->params['controller']])){
-			$controllerName = $controller->request->params['controller'];
+		$controllerName    = 'default';
+		$requestController = strtolower($controller->request->params['controller']);
+		if (isset($this->archivedAuthorization[$requestController])){
+			$controllerName = $requestController;
 		} 
 		$method = $controller->request->method();
 

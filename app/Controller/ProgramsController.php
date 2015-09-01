@@ -99,7 +99,8 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
+       
+        $this->Filter->addDefaultCondition('status', 'is', 'running');
         $conditions = $this->Filter->getConditions($this->Program);
         
         // TODO move in the Program Paginator
@@ -181,10 +182,22 @@ class ProgramsController extends AppController
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        $this->set('program', $this->Program->read(null, $id));
+        $program = $this->Program->read(null, $id);
+        $this->set('program', $program);
     }
     
-    
+
+    public function _ensureProgramDir($programDirPath)
+    {
+        if (!file_exists($programDirPath)) {
+            mkdir($programDirPath); 
+            chgrp($programDirPath, Configure::read('vusion.backendUser'));
+            chmod($programDirPath, 0774);
+        }
+        return true;
+    }
+
+
     public function add()
     {
         if ($this->request->is('post')) {
@@ -192,7 +205,10 @@ class ProgramsController extends AppController
             if ($this->Program->save($this->request->data)) {
                 $program = $this->request->data['Program'];
                 $requestSuccess = true;
-                $this->UserLogMonitor->initUserAction($program['database'], $program['name']);
+                $eventData = array(            
+                    'programDatabaseName' => $program['database'],
+                    'programName' => $program['name']);
+                $this->UserLogMonitor->setEventData($eventData);
                 
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
@@ -205,10 +221,7 @@ class ProgramsController extends AppController
                     );
                 //Create necessary folders
                 $programDirPath = WWW_ROOT . "files/programs/". $this->request->data['Program']['url'];
-                if (!file_exists($programDirPath)) {
-                    mkdir($programDirPath);
-                    chmod($programDirPath, 0764);
-                }
+                $this->_ensureProgramDir($programDirPath);
                 if (!empty($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);
@@ -274,7 +287,10 @@ class ProgramsController extends AppController
         if ($this->request->is('post')) {
             if ($this->Program->save($this->request->data)) {
                 $program = $this->request->data['Program'];
-                $this->UserLogMonitor->initUserAction($program['database'], $program['name']);
+                $eventData = array(            
+                    'programDatabaseName' => $program['database'],
+                    'programName' => $program['name']);
+                $this->UserLogMonitor->setEventData($eventData);
                 
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
@@ -303,8 +319,11 @@ class ProgramsController extends AppController
                 $program['Program']['database']);
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
             rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
-            $this->UserLogMonitor->initUserAction($program['Program']['database'], $program['Program']['name']);
-                
+             $eventData = array(            
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+                $this->UserLogMonitor->setEventData($eventData);   
+            
             $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
                 'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
@@ -325,8 +344,11 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
-            $this->UserLogMonitor->initUserAction($program['Program']['database'], $program['Program']['name']);
-            
+            $eventData = array(            
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+                $this->UserLogMonitor->setEventData($eventData);
+                
             $this->Session->setFlash(__('This program has been archived. All sending and receiving of message have stopped.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(

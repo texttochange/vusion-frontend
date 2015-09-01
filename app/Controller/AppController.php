@@ -61,9 +61,11 @@ class AppController extends Controller
         'CreditManager',
         'Documentation');
     var $redis              = null;
-    var $redisProgramPrefix = "vusion:programs"; 
-    
-    
+    var $redisProgramPrefix = "vusion:programs";
+    var $redisTicketPrefix  = "vusion:tickets"; 
+    var $redisExportPrefix  = "vusion:exports"; 
+
+
     function beforeFilter()
     {
         if ($this->_isAjax() || $this->_isCsv()) {

@@ -24,6 +24,7 @@ if (function_exists('ini_set')) {
 
 	// the following line differs from its sibling
 	// /app/Console/cake.php
+	ini_set('include_path', $root . PATH_SEPARATOR  . 'composer'. $ds . 'vendor' . $ds . 'phpunit' . $ds . 'phpunit' . PATH_SEPARATOR . ini_get('include_path'));
 	ini_set('include_path', $root . PATH_SEPARATOR  . 'composer'. $ds . 'vendor' . $ds . 'cakephp' . $ds . 'cakephp' . $ds . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
 	ini_set('include_path', $root . PATH_SEPARATOR  . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
 }

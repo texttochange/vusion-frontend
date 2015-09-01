@@ -1,6 +1,11 @@
 <div class="Program Logs index">
-	<h3><?php echo __('Program Logs'); ?></h3>	
-	
+
+    <?php
+        $contentTitle   = __('Program Logs');
+        $contentActions = array();
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
     <div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">

@@ -1,33 +1,38 @@
 <?php
-
-function echoLine($elements) 
-{
-    $quotedElements = array_map(function($val) { return '"'.$val.'"'; }, $elements);
-    echo implode(",", $quotedElements) . "\n";
-}
-
 $fields = array(
     'phone',
     'session-id',
     'tags',
-    'profile');        
-echoLine($fields);
+    'profile');
+if (isset($explodeProfile)) {
+    $displayedFields = array_merge($fields, $explodeProfile);
+} else {
+    $displayedFields = $fields;
+}
+echo $this->Csv->arrayToLine($displayedFields);
 
+$valuesTemplate = array_fill_keys(array_keys(array_flip($displayedFields)), "");
 foreach($participants as $participant)
 {
-    $values = array();
+    $values = $valuesTemplate;
     foreach ($fields as $field)
     {
         if ($field == 'tags') {
-            $values[] = implode(",", $participant['Participant'][$field]);
+            $values['tags'] = implode(",", $participant['Participant'][$field]);
         } else if ($field == 'profile') {
-            $labels = array_map(
-                function($label) { return $label['label'].":".$label['value']; },
-                $participant['Participant'][$field]);
-            $values[] = implode(",", $labels);
+            $profileLabels = array();
+            $explodedValues = array();
+            foreach ($participant['Participant']['profile'] as $label) {
+                if (isset($values[$label['label']])) {
+                    $values[$label['label']] = $label['value'];
+                } else {
+                    $profileLabels[] = $label['label'] . ":" . $label['value'];
+                }
+            }
+            $values['profile'] = implode(",", $profileLabels);
         } else {
-            $values[] = $participant['Participant'][$field];
+            $values[$field] = $participant['Participant'][$field];
         }
     }
-    echoLine($values);
+    echo $this->Csv->dictToLine($values, $displayedFields);
 }

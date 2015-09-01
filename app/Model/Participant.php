@@ -216,6 +216,7 @@ class Participant extends ProgramSpecificMongoModel
         return $result < 1;            
     }
     
+
     
     public static function cleanPhone($phone) 
     {
@@ -305,7 +306,7 @@ class Participant extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-        
+
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set
@@ -564,21 +565,38 @@ class Participant extends ProgramSpecificMongoModel
         return false;
     }
     
-    
-    public function reset($check)
+
+    public function save($data)
     {
-        $check['enrolled'] = null;
-        $this->save($check);
-        
-        $programNow = $this->ProgramSetting->getProgramTimeNow();
-        
-        $check['session-id']       = $this->gen_uuid();
-        $check['last-optin-date']  = $programNow->format("Y-m-d\TH:i:s");
-        $check['last-optout-date'] = null;
-        $check['tags']             = array();
-        $check['profile']          = array();
-        
-        return $check;
+        if (isset($data['Participant']['force-optin'])) { 
+            $forceOptin = $data['Participant']['force-optin'];
+            unset($data['Participant']['force-optin']);
+            if ($forceOptin === 'true' && isset($data['Participant']['phone'])) {
+                $participant = $this->find('first', array(
+                    'conditions' => array('phone' => $this->cleanPhone($data['Participant']['phone']))));
+                if (isset($participant['Participant'])) {
+                    ## if optout, force optin by changing the create in an update
+                    if ($participant['Participant']['last-optout-date'] != null) {
+                        $this->id = $participant['Participant']['_id'];
+                    }
+                }
+            }
+        }
+        return parent::save($data);
+    }
+
+    
+    public function reset()
+    {
+        if (empty($this->id)) {
+            throw new Exception("Reset needs id to be set.");
+        }
+        $participant = $this->read(null, $this->id);
+        $resetedParticipant = array('Participant' => array(
+            'phone' => $participant['Participant']['phone']));
+        $this->create(); ##reinitialize the model
+        $this->id = $participant['Participant']['_id'];
+        return $this->save($resetedParticipant);
     }
     
     
@@ -701,7 +719,7 @@ class Participant extends ProgramSpecificMongoModel
                 if (isset($headers['phone'])) {
                     $hasHeaders = true;
                     $count++;
-                    $labels = $this->array_filter_out_not_label($headers);
+                    $labels = $this->arrayFilterOutNotLabel($headers);
                     continue;
                 } else {
                     if (count($headers) > 1) {
@@ -748,7 +766,7 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    private function array_filter_out_not_label($input) 
+    private function arrayFilterOutNotLabel($input) 
     {
         $tmp = array_filter(
             array_keys($input), 
@@ -781,7 +799,7 @@ class Participant extends ProgramSpecificMongoModel
                     'name' => $header, 
                     'index' => $j);
             }
-            $labels = $this->array_filter_out_not_label($headers);
+            $labels = $this->arrayFilterOutNotLabel($headers);
         } else {
             if ($data->val(1, 'B')!=null) {
                 array_push($this->importErrors, __("The file cannot be imported. The first line should be label names, the first label must be 'phone'."));
@@ -962,16 +980,16 @@ class Participant extends ProgramSpecificMongoModel
                         if (count($phoneNumbers) > 1) {
                             $or = array();
                             foreach ($phoneNumbers as $phoneNumber) {
-                                $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                                $regex = array('$regex' => "^\\".$phoneNumber);
                                 $or[] = array('phone' => $regex);
                             }
                             $condition['$or'] = $or;
                         } else {
-                            $condition['phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                            $condition['phone'] = array('$regex' => "^\\".$phoneNumbers[0]);
                         }
                     } 
                 } elseif ($filterParam[2] == 'start-with') {
-                    $condition['phone'] = new MongoRegex("/^\\".$filterParam[3]."/"); 
+                    $condition['phone'] = array('$regex' => "^\\".$filterParam[3]); 
                 } elseif ($filterParam[2] == 'equal-to') {
                     $condition['phone'] = $filterParam[3];        
                 }

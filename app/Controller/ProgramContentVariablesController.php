@@ -9,13 +9,17 @@ class ProgramContentVariablesController extends BaseProgramSpecificController
 {
     var $uses = array(
         'ContentVariable', 
-        'ContentVariableTable');
+        'ContentVariableTable',
+        'ProgramSetting');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
                 'json' => 'View')),
         'ProgramAuth',
         'ArchivedProgram');
+    var $helpers = array(
+        'Js' => array('Jquery'), 
+        'Time');
 
     
     function constructClasses()
@@ -238,6 +242,68 @@ class ProgramContentVariablesController extends BaseProgramSpecificController
             }
             $this->set(compact('requestSuccess'));
         }
+    }
+    
+    
+    public function export()
+    { 
+        $requestSuccess = false;
+        $programUrl     = $this->params['program'];
+        $id             = $this->params['id'];
+        
+        try {
+            
+            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
+            
+            if (!file_exists($filePath)) {
+                mkdir($filePath);
+                chmod($filePath, 0764);
+            }
+            
+            $programNow  = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $timestamp = $programNow->format("Y-m-d_H-i-s");
+            } else {
+                $timestamp = '';
+            }
+            
+            $contentVariableTable = $this->ContentVariableTable->read('name', $id);
+            
+            $tableName   = inflector::slug($contentVariableTable['ContentVariableTable']['name'], '_');
+            $programName = $this->Session->read($programUrl.'_name');
+            
+            $programNameUnderscore = inflector::slug($programName, '_');
+            
+            $fileName     = $programNameUnderscore . "_" .$tableName. "_table_".$timestamp.".csv";            
+            $fileFullPath = $filePath . "/" . $fileName;
+            
+            $this->ContentVariableTable->exportFileGenerator($id, $fileFullPath);
+            
+            $requestSuccess = true;
+            $this->set(compact('requestSuccess', 'fileName'));    
+        } catch (Exception $e) {
+            $this->Session->setFlash($e->getMessage());
+            $this->set(compact('requestSuccess'));
+        }  
+        
+        
+    }
+    
+    
+    public function download()
+    {
+        $programUrl   = $this->params['program'];
+        $fileName     = $this->params['url']['file'];        
+        $fileFullPath = WWW_ROOT . "files/programs/" . $programUrl . "/" . $fileName; 
+        
+        if (!file_exists($fileFullPath)) {
+            throw new NotFoundException(__("This file does not exist: %s", $fileFullPath));
+        }
+        
+        $this->response->header("X-Sendfile: $fileFullPath");
+        $this->response->header("Content-type: application/octet-stream");
+        $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
+        $this->response->send();
     }
     
     

@@ -27,15 +27,19 @@ class Request extends ProgramSpecificMongoModel
             'responses'
             );
     }
-
-
+    
+    
     // Construtor
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        $this->Action = new Action();
     }
     
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->Action = new Action($this->databaseName);
+    }
     
     // Validate
     public $validate = array(
@@ -101,7 +105,7 @@ class Request extends ProgramSpecificMongoModel
                 ),
             )
         );
-
+    
     
     public function notUsedKeyword($check)
     {
@@ -109,20 +113,20 @@ class Request extends ProgramSpecificMongoModel
         foreach($keyphrases as $keyphrase) {
             if (isset($this->usedKeywords[$keyphrase])) {
                 return DialogueHelper::foundKeywordsToMessage(
-                    $this->databaseName, $keyphrase, $this->usedKeywords[$keyphrase]);
+                    $this->databaseName, $keyphrase, $this->usedKeywords[$keyphrase], $this->contactEmail);
             }
         }
         $keywords = DialogueHelper::cleanKeywords($check['keyword']);
         foreach($keywords as $keyword) {
             if (isset($this->usedKeywords[$keyword])) {
                 return DialogueHelper::foundKeywordsToMessage(
-                    $this->databaseName, $keyword, $this->usedKeywords[$keyword]);                
+                    $this->databaseName, $keyword, $this->usedKeywords[$keyword], $this->contactEmail);
             }
         }
         return true;
     }
     
-
+    
     public function validateArray($check)
     {
         if (!is_array(reset($check))) {
@@ -226,13 +230,13 @@ class Request extends ProgramSpecificMongoModel
                 $element['content'] = trim($element['content']); 
             return $element; }, 
             $this->data['Request']['responses']
-        );
+            );
         $this->data['Request']['responses'] = array_filter(
             $this->data['Request']['responses'], 
             function ($element) {
                 return ($element['content'] != '');
             }
-        );
+            );
         $this->data['Request']['responses'] = array_values($this->data['Request']['responses']);
     }
     
@@ -245,7 +249,7 @@ class Request extends ProgramSpecificMongoModel
             $action = $this->Action->getCurrent();
         }
     }
-
+    
     
     static public function hasRequestKeywords($request, $keywords)
     {
@@ -259,8 +263,8 @@ class Request extends ProgramSpecificMongoModel
         $usedKeywords = array_intersect($keywords, $foundKeywords);
         return $usedKeywords;
     }
-
-
+    
+    
     static public function hasRequestKeyphrases($request, $keyphrases)
     {
         if (isset($request['Request'])) {
@@ -273,8 +277,8 @@ class Request extends ProgramSpecificMongoModel
         $usedKeyphrases = array_intersect($keyphrases, $foundKeyphrases);
         return $usedKeyphrases;
     }
-
-
+    
+    
     static public function getRequestKeywords($request)
     {
         if (isset($request['Request'])) {
@@ -285,8 +289,8 @@ class Request extends ProgramSpecificMongoModel
         }
         return DialogueHelper::fromKeyphrasesToKeywords($request['keyword']);
     }
-
-
+    
+    
     static public function getRequestKeyphrases($request)
     {
         if (isset($request['Request'])) {
@@ -297,8 +301,8 @@ class Request extends ProgramSpecificMongoModel
         }
         return DialogueHelper::cleanKeyphrases($request['keyword']);
     }
-
-
+    
+    
     static public function getRequestId($request)
     {
         if (isset($request['Request'])) {
@@ -309,8 +313,8 @@ class Request extends ProgramSpecificMongoModel
         }
         return $request['_id']."";
     }
-
-
+    
+    
     public function getKeywords()
     {
         $requests = $this->find('all');
@@ -321,7 +325,7 @@ class Request extends ProgramSpecificMongoModel
         }
         return array_values(array_unique($keywords));
     }
-
+    
     
     public function useKeyword($keywords, $excludeRequest=null)
     {
@@ -346,8 +350,8 @@ class Request extends ProgramSpecificMongoModel
         }
         return $usedKeywords;
     }
-
-
+    
+    
     public function useKeyphrase($keyphrases, $excludeRequest=null)
     {
         $params = array();
@@ -371,7 +375,7 @@ class Request extends ProgramSpecificMongoModel
         }
         return $usedKeyphrases;
     }
-
+    
     
     public function getRequestFilterOptions()
     {
@@ -383,7 +387,7 @@ class Request extends ProgramSpecificMongoModel
         return $requestFilterOptions;
     }
     
-
+    
     public function saveRequest($request, $usedKeywords = array())
     {
         $this->create();

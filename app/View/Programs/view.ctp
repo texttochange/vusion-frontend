@@ -1,3 +1,14 @@
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('Edit Program'), array('action' => 'edit', $program['Program']['id'])); ?> </li>
+		<li><?php echo $this->Form->postLink(__('Delete Program'), array('action' => 'delete', $program['Program']['id']), null, __('Are you sure you want to delete program "%s" ?', $program['Program']['name'])); ?> </li>
+		<li><?php echo $this->Html->link(__('List Programs'), array('action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Program'), array('action' => 'add')); ?> </li>
+	</ul>
+</div>
+</div>
 <div class="programs view users-index program-body">
 <h2><?php  echo __('Program');?></h2>
 	<dl>
@@ -33,14 +44,4 @@
 		</dd>
 	</dl>
 </div>
-<div class="admin-action">
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Edit Program'), array('action' => 'edit', $program['Program']['id'])); ?> </li>
-		<li><?php echo $this->Form->postLink(__('Delete Program'), array('action' => 'delete', $program['Program']['id']), null, __('Are you sure you want to delete program "%s" ?', $program['Program']['name'])); ?> </li>
-		<li><?php echo $this->Html->link(__('List Programs'), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Program'), array('action' => 'add')); ?> </li>
-	</ul>
-</div>
-</div>
+

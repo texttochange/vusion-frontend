@@ -122,9 +122,11 @@ class DialogueTestCase extends CakeTestCase
         $this->assertEqual(2, $saveActiveOtherDialogue['Dialogue']['activated']);        
         
         //reactivate the olderone
-        $this->Dialogue->makeActive($saveActiveOtherDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
-        $this->assertEquals($saveActiveOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']);
+        $this->assertEquals(
+            $saveActiveOtherDialogue['Dialogue']['_id'],
+            $activeAndDraft[1]['Active']['_id']);
         
     }
     
@@ -647,7 +649,7 @@ class DialogueTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $result = $this->Dialogue->isInteractionAnswerExists(
             $savedDialogue['Dialogue']['dialogue-id'],
@@ -672,6 +674,26 @@ class DialogueTestCase extends CakeTestCase
         $this->assertEqual(
             array('dialogue-id' => "No dialogue with id: SomeRandomId."),
             $result);
+    }
+
+    public function testMakeActive_fail_keyword() {
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $dialogue['Dialogue']['name'] = 'another name';  //change name to avoid validation error
+        $dialogue['Dialogue']['dialogue-id'] = '3456';   //change dialogue id
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue, array('keyword'));
+        $usedKeywords = array(
+            'keyword'=> array(
+                'program-db' => 'otherdb',
+                'program-name' => 'otherprogram',
+                'by-type' => 'Dialogue',
+                'dialogue-id' => '01',
+                'dialogue-name' => 'my dialogue'));
+        $this->Dialogue->id = $savedDialogue['Dialogue']['_id'].'';
+        $this->assertFalse($this->Dialogue->makeActive($usedKeywords));
+        $this->assertEqual(
+            $this->Dialogue->validationErrors['interactions'][1],
+            array('keyword' => array("'keyword' already used by a Dialogue of program 'otherprogram'.")));
     }
 
 }

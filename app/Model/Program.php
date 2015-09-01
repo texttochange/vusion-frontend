@@ -11,7 +11,8 @@ class Program extends AppModel
     
     public $findMethods = array(
         'authorized' => true,
-        'count' => true
+        'count' => true,
+        'listByDatabase' => true,
         );
     
     
@@ -101,6 +102,9 @@ class Program extends AppModel
                     'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
+                    'parameter-type' => 'text'),
+                'contain' => array(
+                    'label' => 'contain',
                     'parameter-type' => 'text'))),
         'country' => array(
             'label' => 'country',
@@ -124,6 +128,7 @@ class Program extends AppModel
     
     
     public $filterProgramStatusOptions = array(
+        'any' => 'any',
         'running' => 'running',
         'archived' => 'archived'
         );
@@ -184,6 +189,8 @@ class Program extends AppModel
                     $condition['name'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'start-with') {
                     $condition['name LIKE'] = $filterParam[3]."%"; 
+                } elseif ($filterParam[2] == 'contain') {
+                    $condition['name LIKE'] = "%".$filterParam[3]."%";
                 }
             }
         } elseif ($filterParam[1] == 'status') {
@@ -191,8 +198,11 @@ class Program extends AppModel
                 if ($filterParam[2] == 'is') {
                     $condition['status'] = $filterParam[3];
                 }
+                if ($filterParam[3] == 'any') {
+                    $condition = array(); 
+                }
             }
-        }         
+        }
         return $condition;
     }
     
@@ -233,6 +243,22 @@ class Program extends AppModel
             return false;
         }
     }
+
+    public function _findListByDatabase($state, $query, $results = array()) 
+    {
+        if ($state === 'before') {
+            $query['fields'] = array('name', 'database');
+            $list = array("{n}.Program.database", "{n}.Program.name", null);
+            list($query['list']['keyPath'], $query['list']['valuePath'], $query['list']['groupPath']) = $list;
+            return $query;
+        } 
+
+        if (empty($results)) {
+            return array();
+        }
+
+        return Hash::combine($results, $query['list']['keyPath'], $query['list']['valuePath'], $query['list']['groupPath']);
+    }
     
     
     protected function limitedAccessConditions($query)
@@ -248,9 +274,10 @@ class Program extends AppModel
                         )
                     )
                 );
-            if (empty($query['conditions']))
+            if (empty($query['conditions'])) {
                 # make conditions an array
-            $query['conditions'] = array();
+                $query['conditions'] = array();
+            }
             # append user_id to conditions array
             $query['conditions'] = array_merge(
                 $query['conditions'],array(
@@ -344,16 +371,23 @@ class Program extends AppModel
     
     
     public static function startsWith($haystack, $needle)
-    {
+    { 
         $length = strlen($needle);
         return (substr(strtolower($haystack), 0, $length) === strtolower($needle));
     }
     
     
-    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue) {
+    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue)
+    {
         switch ($conditionKey) {
         case 'name LIKE':
-            return Program::startsWith($programDetails['Program']['name'],rtrim($conditionValue, '%'));        
+            if (preg_match("/^%.*%$/i", $conditionValue)) {
+                return true;
+            } 
+            
+            if (preg_match("/%+$/i", $conditionValue)) {
+                return Program::startsWith($programDetails['Program']['name'],trim($conditionValue, '%'));        
+            }
         default:
             if (!isset($programDetails['Program'][$conditionKey])) {
                 return false;

@@ -3,6 +3,7 @@ App::uses('AppController', 'Controller');
 App::uses('UnmatchableReply', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('User', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
 
 
 class UnmatchableReplyController extends AppController
@@ -10,7 +11,8 @@ class UnmatchableReplyController extends AppController
 
     var $uses = array(
         'UnmatchableReply', 
-        'User');
+        'User',
+        'Export');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -25,17 +27,31 @@ class UnmatchableReplyController extends AppController
         'Js' => array('Jquery'), 
         'Time', 
         'PhoneNumber',
-        'Paginator' => array('className' => 'BigCountPaginator'));
+        'Paginator' => array(
+            'className' => 'BigCountPaginator'));
     
     
     function constructClasses()
     {
         parent::constructClasses();
+        $this->_instanciateVumiRabbitMQ();
     }
-    
-    
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+    }
+
+
+    protected function _notifyBackendExport($exportId)
+    {
+        $this->VumiRabbitMQ->sendMessageToExport($exportId);
+    }
+
+
     public function index()
     {
+        $order          = null;
         $requestSuccess = true;
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
@@ -57,9 +73,9 @@ class UnmatchableReplyController extends AppController
             );
         $countriesIndexes   = $this->Country->getNamesByPrefixes();
         $unmatchableReplies = $this->paginate('UnmatchableReply');
-        $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes'));
+        $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes', 'order'));
     }
-    
+
     
     protected function _getFilterFieldOptions()
     {   
@@ -108,79 +124,89 @@ class UnmatchableReplyController extends AppController
     
     public function export()
     {
+        $order          = null;
         $url            = $this->params['controller'];
         $requestSuccess = false;
         
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
-        $paginate = array(
-            'all',
-            'limit' => 500,
-            'maxLimit' => 500);
-        
-        if (!isset($this->params['named']['sort'])) {
-            $paginate['order'] = array('timestamp' => 'desc');
-        } else if (isset($this->params['named']['direction'])) {
-            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+
+        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
-        
-        $countryPrefixes = $this->Country->getPrefixesByNames();
         
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();
-        
+        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
         $conditions = $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes);
-        if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
+
+        $filePath = WWW_ROOT . "files/programs/unmatchableReply" ;
+        if (!file_exists($filePath)) {
+            mkdir($filePath);
         }
+        $now      = new DateTime('now');
+        $fileName = 'Unmatchable_Reply_' . $now->format("Y-m-d_H-i-s") . ".csv";
+        $fileFullName = $filePath . DS . $fileName;
+
+        $export = array(
+            'database' => 'vusion',
+            'collection' => $this->UnmatchableReply->table,
+            'conditions' => $conditions,
+            'filters' => $this->Filter->getFilters(),
+            'order' => $order,
+            'file-full-name' => $fileFullName);
+        if (!$saved_export = $this->Export->save($export)) {
+            $this->Session->setFlash(__("Vusion failed to start the export process."));
+        } else {
+            $this->_notifyBackendExport($saved_export['Export']['_id']);
+            $this->Session->setFlash(
+                __("Vusion is backing the export file. Your file should appear shortly on this page."),
+                'default', array('class'=>'message success'));
+            $requestSuccess = True;
+        }
+        $this->set(compact('requestSuccess'));
         
-        try {
-            ##First a tmp file is created
-            $filePath = WWW_ROOT . "files/programs/" . $url; 
-            
-            if (!file_exists($filePath)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
-            
-            $now      = new DateTime('now');
-            $fileName = $url . "_history_" . $now->format("Y-m-d_H-i-s") . ".csv";
-            
-            $fileFullPath = $filePath . "/" . $fileName;
-            
-            $handle = fopen($fileFullPath, "w");
-            
-            $headers = array('participant-phone','to','message-content','timestamp');
-            ##write the headers
-            fputcsv($handle, $headers,',','"');
-            
-            ##Now extract the data and copy it into the file
-            
-            $unmatchableReplyCount = $this->UnmatchableReply->find('count', array('conditions'=> $conditions));
-            $pageCount = intval(ceil($unmatchableReplyCount / $paginate['limit']));
-            for($count = 1; $count <= $pageCount; $count++) {
-                $paginate['page'] = $count;
-                $this->paginate = $paginate;
-                $unmatchableReplies = $this->paginate();
-                foreach($unmatchableReplies as $unmatchableReply) {
-                    $line = array();
-                    foreach($headers as $header) {
-                        if (isset($unmatchableReply['UnmatchableReply'][$header])) {
-                            $line[] = $unmatchableReply['UnmatchableReply'][$header];
-                        } else {
-                            $line[] = "";
-                        }
-                    }
-                    fputcsv($handle, $line,',' , '"' );
-                }
-            }
-            $requestSuccess = true;
-            $this->set(compact('requestSuccess', 'fileName'));
-        } catch (Exception $e) {
-            $this->Session->setFlash($e->getMessage());
-            $this->set(compact('requestSuccess'));
+        $this->redirect(array('action' => 'exported'));
+    }
+
+
+    public function exported()
+    {
+        $programUrl  = $this->programDetails['url'];
+        $paginate = array(
+            'all',
+            'limit' => 100,
+            'conditions' => array(
+                'database' => 'vusion',
+                'collection' => 'unmatchable_reply'),
+            'order' => array('timestamp' => '-1'));
+        $this->paginate = $paginate;
+        $files = $this->paginate('Export');
+        $this->set(compact('files'));
+    }
+
+
+    public function deleteExport() 
+    {
+        $id = $this->params['named']['id'];
+        $requestSuccess = false;
+
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
         }
+        $this->Export->id = $id;
+        if (!$this->Export->exists()) {
+            throw new NotFoundException(__('Invalid Export: %s', $id));
+        }
+
+        if ($this->Export->delete()) {
+            $this->Session->setFlash(__('Export deleted.'),
+                'default', array('class'=>'message success'));
+        } else {
+            $this->Session->setFlash(__('Export cannot be deleted.'));
+        }
+
+        $this->redirect(array('action' => 'exported'));
     }
     
     

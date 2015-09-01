@@ -27,9 +27,9 @@ class ValidationHelper
                 $required = (isset($rule['required'])? $rule['required']: true);
                 $result = false;
                 if ($func == 'required') {
-                     if (array_key_exists($field, $data)) {
-                         $result = true;        
-                     }
+                    if (array_key_exists($field, $data)) {
+                        $result = true;
+                    }
                 } else {
                     if (!array_key_exists($field, $data) && !$required) {
                         $result = true;
@@ -133,6 +133,7 @@ class ValidationHelper
 
     public function notEmpty($check)
     {
+        #print_r($this->data);
         $value = array_values($check);
         if ($value[0]==null) {
             return false;

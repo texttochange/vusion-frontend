@@ -27,11 +27,6 @@ class VusionValidation extends Validation {
             $allowed = array("domain", "key1", "key2", "key3", "otherkey");
             foreach ($matches as $match) {
                 $match = array_intersect_key($match, array_flip($allowed));
-                foreach ($match as $key=>$value) {
-                    if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
-                        return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
-                    }
-                }
                 $allowedDomainsRegex = '/^('.$allowedDomains.')$/';
                 if (!preg_match($allowedDomainsRegex, $match['domain'])) {
                     return __("To be used as customized content, '%s' can only be either: %s or %s.", 
@@ -43,20 +38,56 @@ class VusionValidation extends Validation {
                     if (isset($match['key2'])) {
                         return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_PARTICIPANT_FAIL;
                     }
+                    $participantValidation = VusionValidation::validCustomizeContentParticipant($match);
+                    if (is_string($participantValidation)) {
+                        return $participantValidation;
+                    }
                 } else if ($match['domain'] == 'contentVariable') {
                     if (isset($match['otherkey'])) {
                         return VusionConst::CUSTOMIZE_CONTENT_DOMAIN_CONTENTVARIABLE_FAIL;
+                    }
+                    $defaultValidation = VusionValidation::validCustomizeContentDefault($match);
+                    if (is_string($defaultValidation)) {
+                        return $defaultValidation;
                     }
                 } else if ($match['domain'] == 'context') {
                     $contextValidation = VusionValidation::validCustomizeContentContext($match);
                     if (is_string($contextValidation)) {
                         return $contextValidation;
                     }
-                } 
+                } else {
+                    $defaultValidation = VusionValidation::validCustomizeContentDefault($match);
+                    if (is_string($defaultValidation)) {
+                        return $defaultValidation;
+                    }
+                }
             }
         }
         return true;
     }
+
+
+    private static function validCustomizeContentParticipant($match)
+    {
+        foreach ($match as $key=>$value) {
+            if (!preg_match(VusionConst::PARTICIPANT_CUSTOMIZED_CONTENT_KEY_REGEX, $value)) {
+                return __("To be used as participant customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s). The '_raw' suffix is allowed.", $value);
+            }
+        }
+        return true;
+    }
+
+
+    public static function validCustomizeContentDefault($match)
+    {
+        foreach ($match as $key=>$value) {
+            if (!preg_match(VusionConst::CONTENT_VARIABLE_KEY_REGEX, $value)) {
+                return __("To be used as customized content, '%s' can only be composed of letter(s), digit(s) and/or space(s).", $value);
+            }
+        }
+        return true;
+    }
+
 
     private static function validCustomizeContentContext($match) 
     {

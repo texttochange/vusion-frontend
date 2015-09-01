@@ -1193,7 +1193,7 @@ class MongodbSource extends DboSource {
  * @return void
  * @access public
  */
-	public function execute($query, $params = array()) {
+	public function execute($query, $options = array(), $params = array()) {
 		if (!$this->isConnected()) {
 			return false;
 		}

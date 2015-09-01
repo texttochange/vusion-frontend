@@ -4,6 +4,9 @@ App::uses('History','Model');
 App::uses('Dialogue', 'Model');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
+App::uses('Export', 'Model');
+App::uses('VumiRabbitMQ', 'Lib');
+App::uses('Participant','Model');
 
 
 class ProgramHistoryController extends BaseProgramSpecificController
@@ -14,7 +17,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
         'Dialogue',
         'UnattachedMessage',
         'ProgramSetting',
-        'Request');
+        'Request',
+        'Export');
     var $components = array(
         'RequestHandler' => array(
             'viewClassMap' => array(
@@ -28,53 +32,89 @@ class ProgramHistoryController extends BaseProgramSpecificController
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time',
-        'Paginator' => array('className' => 'BigCountPaginator'));
+        'Paginator' => array('className' => 'BigCountPaginator'),
+        'Csv');
     
     
     function constructClasses()
     {
         parent::constructClasses();
+        $this->_instanciateVumiRabbitMQ();
     }
-    
-    
+
+
+    protected function _instanciateVumiRabbitMQ(){
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+    }
+
+
+    protected function _notifyBackendExport($exportId)
+    {
+        $this->VumiRabbitMQ->sendMessageToExport($exportId);
+    }
+
+
     public function beforeFilter()
     {
         parent::beforeFilter();
     }
-    
+
     
     public function index()
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         $this->set('programTimezone', $this->Session->read($this->params['program'].'_timezone'));
-        
+
         $requestSuccess = true;
-        
+        $order          = null;
+        $conditions     = array(
+            'object-type' => array('$in' => $this->History->messageType));
+
         if (!isset($this->params['named']['sort'])) {
             $order = array('timestamp' => 'desc');
         } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
-        } else {
-            $order = null;
         }
-        
-        // Only get messages and avoid other stuff like markers
-        $defaultConditions = array('object-type' => array('$in' => $this->History->messageType));
-        
-        if ($this->params['ext'] === 'csv' || $this->_isAjax()) {
-            $histories = $this->History->find(
-                'all', 
-                array('conditions' => $this->Filter->getConditions($this->History, $defaultConditions)),
-                array('order' => $order));
-        } else {   
-            $this->paginate = array(
+        $conditions = $this->Filter->getConditions($this->History, $conditions);
+        $userGroupId = $this->Session->read('Auth.User.Group.id');
+
+        $this->paginate = array(
                 'all',
-                'conditions' => $this->Filter->getConditions($this->History, $defaultConditions),
-                'order'=> $order);            
-            $histories = $this->paginate('History');
+                'conditions' => $conditions,
+                'order'=> $order);
+        $histories = $this->paginate('History');
+        if ($userGroupId == 6) {
+            $histories = $this->History->getParticipantLabels($histories);
+            $this->set(compact('histories', 'requestSuccess', 'order'));
+        } else {
+            $this->set(compact('histories', 'requestSuccess', 'order'));
         }
+    }
+
+
+    public function listHistory()
+    {
+        $requestSuccess = true;
+        $order          = null;
+        $conditions     = array(
+            'object-type' => array('$in' => $this->History->messageType));
+
+        if (!$this->_isCsv() && !$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
+        
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        }
+
+        $conditions = $this->Filter->getConditions($this->History, $conditions);
+        $histories = $this->History->find(
+            'all',
+            array('conditions' => $conditions,
+            array('order' => $order)));
         $this->set(compact('histories', 'requestSuccess'));
+        $this->render('index');
     }
     
     
@@ -117,8 +157,24 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $this->response->header('Content-Disposition: attachment; filename="' . basename($fileFullPath) . '"');
         $this->response->send();
     }
-    
-    
+
+
+    public function exported()
+    {
+        $programUrl  = $this->programDetails['url'];
+        $paginate = array(
+            'all',
+            'limit' => 100,
+            'conditions' => array(
+                'database' => $this->programDetails['database'],
+                'collection' => 'history'),
+            'order' => array('timestamp' => '-1'));
+        $this->paginate = $paginate;
+        $files = $this->paginate('Export');
+        $this->set(compact('files'));
+    }
+
+
     public function export()
     {
         $programUrl = $this->params['program'];
@@ -126,76 +182,83 @@ class ProgramHistoryController extends BaseProgramSpecificController
         
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-        
-        $paginate = array(
-            'all',
-            'limit' => 500,
-            'maxLimit' => 500);
-        
-        if (!isset($this->params['named']['sort'])) {
-            $paginate['order'] = array('timestamp' => 'desc');
-        } else if (isset($this->params['named']['direction'])) {
-            $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
-        }
-        
+
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
             array('object-type' => array('$exists' => false))));
-        
         $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
-        if ($conditions != null) {
-            $paginate['conditions'] = $conditions;
+
+        $order = array();
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('timestamp' => 'desc');
+        } else if (isset($this->params['named']['direction'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
+
+        $filePath = WWW_ROOT . "files/programs/" . $programUrl;
+        if (!file_exists($filePath)) {
+            mkdir($filePath);
+        }
+        $programNow = $this->ProgramSetting->getProgramTimeNow();
+        if ($programNow) {
+            $timestamp = $programNow->format("Y-m-d_H-i-s");
+        } else {
+            $timestamp = '';
+        }
+        $programName  = $this->programDetails['name'];
+        $programNameUnderscore = inflector::slug($programName, '_');
         
-        try {
-            //First a tmp file is created
-            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
-            
-            if (!file_exists($filePath)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
-            
-            $programNow  = $this->ProgramSetting->getProgramTimeNow();
-            $programName = $this->Session->read($programUrl.'_name');
-            
-            $programNameUnderscore = inflector::slug($programName, '_');
-            
-            $fileName     = $programNameUnderscore . "_history_" . $programNow->format("Y-m-d_H-i-s") . ".csv";            
-            $fileFullPath = $filePath . "/" . $fileName;
-            $handle       = fopen($fileFullPath, "w");
-            
-            $headers = array('participant-phone','message-direction','message-status','message-content','timestamp');
-            //write the headers
-            fputcsv($handle, $headers,',','"');
-            
-            //Now extract the data and copy it into the file
-            
-            $historyCount = $this->History->find('count', array('conditions'=> $conditions));
-            $pageCount    = intval(ceil($historyCount / $paginate['limit']));
-            for($count = 1; $count <= $pageCount; $count++) {
-                $paginate['page'] = $count;
-                $this->paginate = $paginate;
-                $statuses = $this->paginate('History');
-                foreach($statuses as $status) {
-                    $line = array();
-                    foreach($headers as $header) {
-                        if (isset($status['History'][$header])) {
-                            $line[] = $status['History'][$header];
-                        } else {
-                            $line[] = "";
-                        }
-                    }
-                    fputcsv($handle, $line,',' , '"' );
-                }
-            }
-            $requestSuccess = true;
-            $this->set(compact('requestSuccess', 'fileName'));
-        } catch (Exception $e) {
-            $this->Session->setFlash($e->getMessage());
-            $this->set(compact('requestSuccess'));
+        $fileName     = $programNameUnderscore . "_history_" . $timestamp . ".csv";
+        $fileFullName = $filePath . DS . $fileName;
+
+        $export = array(
+            'database' => $this->programDetails['database'],
+            'collection' => $this->History->table,
+            'conditions' => $conditions,
+            'filters' => $this->Filter->getFilters(),
+            'order' => $order,
+            'file-full-name' => $fileFullName);
+        if (!$saved_export = $this->Export->save($export)) {
+            $this->Session->setFlash(__("Vusion failed to start the export process."));
+        } else {
+            $this->_notifyBackendExport($saved_export['Export']['_id']);
+            $this->Session->setFlash(
+                __("Vusion is backing the export file. Your file should appear shortly on this page."),
+                'default', array('class'=>'message success'));
+            $requestSuccess = True;
         }
+        $this->set(compact('requestSuccess'));
+
+        $this->redirect(array(
+            'program' => $programUrl,
+            'action' => 'exported'));
+    }
+
+
+    public function deleteExport() 
+    {
+        $id = $this->params['id'];
+        $requestSuccess = false;
+
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        $this->Export->id = $id;
+        if (!$this->Export->exists()) {
+            throw new NotFoundException(__('Invalid Export: %s', $id));
+        }
+
+        if ($this->Export->delete()) {
+            $this->Session->setFlash(__('Export deleted.'),
+                'default', array('class'=>'message success'));
+        } else {
+            $this->Session->setFlash(__('Export cannot be deleted.'));
+        }
+
+        $this->redirect(array(
+            'program' => $this->programDetails['url'],
+            'action' => 'exported'));
     }
     
     

@@ -6,7 +6,7 @@ App::uses('VusionConst', 'Lib');
 class ContentVariable extends ProgramSpecificMongoModel
 {
     var $name = 'ContentVariable';
- 
+    
     
     function getModelVersion()
     {
@@ -62,13 +62,13 @@ class ContentVariable extends ProgramSpecificMongoModel
         }
         return true;
     }
-
+    
     
     public function validateKeys($check)
     {
         foreach ($check['keys'] as $keyItem) {
             if (is_string($validationError = $this->validateKey($keyItem))) {
-               if (!isset($this->validationErrors['keys'])) {
+                if (!isset($this->validationErrors['keys'])) {
                     $this->validationErrors['keys'] = array();
                 }
                 $this->validationErrors['keys'][$index] = $validationError;
@@ -81,7 +81,8 @@ class ContentVariable extends ProgramSpecificMongoModel
     }
     
     
-    public function validateKey($check) {
+    public function validateKey($check) 
+    {
         $regex = VusionConst::CONTENT_VARIABLE_KEY_REGEX;
         if (!preg_match($regex, $check['key'])) {
             return VusionConst::CONTENT_VARIABLE_KEY_FAIL_MESSAGE;
@@ -113,22 +114,25 @@ class ContentVariable extends ProgramSpecificMongoModel
             return true;
         }
         $conditions = array(
-                'id' => $this->id,
-                'table' => array('$ne' => $check['table']));
+            'id' => $this->id,
+            'table' => array('$ne' => $check['table']));
         $result = $this->find('count', array('conditions' => $conditions));
         return $result == 0;
     }
-
-
-    public function getListKeys($keys) {
+    
+    
+    public function getListKeys($keys)
+    {
         $result = array();
         foreach($keys as $key) {
             $result[] = $key['key'];
         }
         return $result;
     } 
-
-    public function setListKeys($keys) {
+    
+    
+    public function setListKeys($keys) 
+    {
         foreach($keys as &$key) {
             if (!is_array($key)) {
                 $key = array('key' => $key);
@@ -136,11 +140,11 @@ class ContentVariable extends ProgramSpecificMongoModel
         }
         return $keys;
     }
-
-
-    public function beforeValidate()
+    
+    
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
+        parent::beforeValidate($options);
         
         if (isset($this->data['ContentVariable']['keys']) and !is_array($this->data['ContentVariable']['keys'])) {
             $this->data['ContentVariable']['keys'] = $this->fromKeysStringToKeysArray($this->data['ContentVariable']['keys']);
@@ -149,8 +153,8 @@ class ContentVariable extends ProgramSpecificMongoModel
         }
         return true;
     }
-
-
+    
+    
     protected function fromKeysStringToKeysArray($keysString)
     {
         $keys = trim(stripcslashes($keysString));
@@ -162,7 +166,7 @@ class ContentVariable extends ProgramSpecificMongoModel
         return $keysArray;
     }
     
-
+    
     public  $findMethods = array(
         'count' => true,
         'first' => true,
@@ -170,8 +174,8 @@ class ContentVariable extends ProgramSpecificMongoModel
         'fromKeys' => true,
         'fromKeysValue' => true
         );
-
-
+    
+    
     public function _findFromKeys($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -187,8 +191,8 @@ class ContentVariable extends ProgramSpecificMongoModel
         } 
         return $results;
     }
-
-
+    
+    
     public function _findFromKeysValue($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -200,6 +204,6 @@ class ContentVariable extends ProgramSpecificMongoModel
             return null;
         }
     }
-
-
+    
+    
 }

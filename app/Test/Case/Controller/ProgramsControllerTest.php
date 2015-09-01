@@ -74,6 +74,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
+                    '_ensureProgramDir'
                     )
                 )
             );
@@ -133,7 +134,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();
-    	
         $Programs->Session
         ->expects($this->any())
         ->method('read')
@@ -142,7 +142,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         $this->testAction("/programs/index");
-        $this->assertEquals(4, count($this->vars['programs']));
+        $this->assertEquals(3, count($this->vars['programs']));
     }
     
     
@@ -266,15 +266,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
             ),
             'User'=> array(
                 0 => array(
-                    'id' => 1,
+                    'id' => '1',
+                    'invited_by' => '0',
                     'username' => 'gerald',
                     'password' => 'geraldpassword',
                     'email' => 'gerald@here.com',
-                    'group_id' => 1,
+                    'group_id' => '1',
                     'created' => '2012-01-24 15:34:07',
                     'modified' => '2012-01-24 15:34:07',
                     'ProgramsUser' => array(
-                        'id' => 1,
+                        'id' => '1',
                         'program_id' => '1',
                         'user_id' => '1',
                         ),
@@ -294,7 +295,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    '_startBackendWorker'
+                    '_startBackendWorker',
+                    '_ensureProgramDir'
                     ),
                 'components' => array(
                     'Auth' => array('user'),
@@ -314,6 +316,12 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->method('_startBackendWorker')
         ->will($this->returnValue(true));
         
+        $Programs
+        ->expects($this->once())
+        ->method('_ensureProgramDir')
+        ->with(WWW_ROOT . 'files/programs/programurl')
+        ->will($this->returnValue(true));
+
         $data = array(
             'Program' => array(
                 'name' => 'programName',
@@ -323,11 +331,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
             );
         
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
-        
-        $this->assertFileExists(
-            WWW_ROOT . 'files/programs/programurl/');
-        ////clean up
-        rmdir(WWW_ROOT . 'files/programs/programurl');
     }
     
 
@@ -337,7 +340,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    '_startBackendWorker'
+                    '_startBackendWorker',
+                    '_ensureProgramDir'
                     ),
                 'components' => array(
                     'Auth' => array('user'),
@@ -357,6 +361,12 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->method('_startBackendWorker')
         ->will($this->returnValue(true));
 
+        $Programs
+        ->expects($this->once())
+        ->method('_ensureProgramDir')
+        ->with(WWW_ROOT . 'files/programs/programurl')
+        ->will($this->returnValue(true));
+
         $data = array(
             'Program' => array(
                 'name' => 'programName',
@@ -367,10 +377,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
             );
 
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
-
-        $this->assertFileExists(
-            WWW_ROOT . 'files/programs/programurl/');
-        rmdir(WWW_ROOT . 'files/programs/programurl');
     }
 
 
