@@ -641,7 +641,7 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    public function saveParticipantWithReport($participant, $enrolled=null, $replaceTagsAndLabels, $fileLine=null)
+    public function saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $fileLine=null)
     {
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
