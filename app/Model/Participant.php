@@ -689,6 +689,33 @@ class Participant extends ProgramSpecificMongoModel
         return $report;
     }
     
+    public function importJsonDecoded($programUrl, $jsonParticipants, $tags=array(), $replaceTagsAndLabels=false)
+    {
+        $count  = 0;
+        $report = array();
+        $defaultTags = array('imported');
+        $tags = array_merge($defaultTags, $this->tagsFromStringToArray($tags));
+
+        foreach($jsonParticipants as $jsonParticipant) {
+            $participant          = array();
+            $participant['phone'] = $this->cleanPhone($jsonParticipant->phone_number);
+            $participant['tags']  = $tags;
+            foreach ($jsonParticipant->profile as $key => $value) {
+                $participant['profile'][] = array(
+                    'label' => $key, 
+                    'value' => $value->value,
+                    'raw' => null);
+            }
+            //Save if not a duplicate
+            $report[] = $this->saveParticipantWithReport(
+                $participant,
+                $replaceTagsAndLabels,
+                $count + 1);
+            $count++; 
+        }
+        return $report;
+    }
+
     
     public function importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
     {

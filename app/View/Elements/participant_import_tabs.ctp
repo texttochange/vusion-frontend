@@ -1,17 +1,21 @@
-<span class="tabs">
+<div class='table tabs' style='width:100%; margin-top:10px'>
+<div class='row' style='width:100%'>
+<span class='cell'>
 <ul>
 <li <?php echo ($type === 'file' ? 'class="selected"' : ''); ?> >
     <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'importFile')) ?>" >
-        <label><?php echo __("from File") ?></label>
+        <label><?php echo __("From File") ?></label>
     </a>
 </li>
 <li <?php echo ($type === 'mash' ? 'class="selected"' : ''); ?> >
     <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'importMash')) ?>" >
-        <label><?php echo __("from Mash") ?></label>
+        <label><?php echo __("From Mash") ?></label>
     </a>
 </li>
 </ul>
 </span>
+</div>
+</div>
 <?php
 switch ($type) {
 case 'file': 
@@ -39,10 +43,16 @@ case 'mash':
 		array('style' => 'margin-bottom:0px'));
 	echo '<div style="margin-left:10px">';
 	echo $this->Html->tag('label', _('from'));
-	echo $this->Form->select('country', 
-		array('bolivia' => 'Bolivia'),
-		array('disabled' => true,
-			'value' => 'bolivia'));
+  if (count($importCountries) == 1) {
+  	echo $this->Form->select('country', 
+  		$importCountries,
+  		array('value' => key($importCountries)));
+  } else {
+    $importCountries['none'] = __('select');
+    echo $this->Form->select('country', 
+      $importCountries,
+      array('value' => 'none'));
+  }
 	echo '</div>';
 	break;
 }

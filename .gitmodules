@@ -1,3 +1,9 @@
 [submodule "backend"]
 	path = backend
 	url = https://github.com/texttochange/vusion-backend.git
+[submodule "lib/mash-api"]
+	path = lib/mash-api
+	url = https://github.com/texttochange/mash-api-php
+[submodule "app/webroot/files/countries"]
+	path = app/webroot/files/countries
+	url = https://github.com/texttochange/country_internationalprefix_iso

@@ -137,7 +137,7 @@ class UnmatchableReplyController extends AppController
         
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByNames();
         $conditions = $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes);
 
         $filePath = WWW_ROOT . "files/programs/unmatchableReply" ;

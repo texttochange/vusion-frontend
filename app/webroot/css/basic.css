@@ -1368,12 +1368,12 @@
         display: inline-block;
 }
 
-.ttc-data-control .tabs ul {
+.tabs ul {
         list-style-type: none;
         margin: 0px 0px 0px 10px;
 }
 
-.ttc-data-control .tabs li {
+.tabs li {
         float: left;
         margin: 0px 10px 0px 0px;
         color: #81CDFF;
@@ -1384,7 +1384,7 @@
         color: #19C1FF;
 }
 
-.ttc-data-control .tabs label {
+.tabs label {
         display: block;
         cursor: pointer;
         font-weight: bold;
@@ -1424,18 +1424,19 @@
 
 .ttc-display-area .tabs li {
     background-color: white;
-    margin-right: 5px;
+    border: solid 1px lightgrey;
 }
 
 .ttc-display-area .tabs li.selected {
-    margin: 0px;
-    background-color: #73D7FD;
     border-radius: 2px 2px 0px 0px;
+    border-bottom: solid 1px white;
 }
 
 .ttc-display-area .tab-content {
-    background-color: #73D7FD;
+    margin-left: 10px;
+    border: solid 1px lightgrey;
     border-radius: 2px;
+    margin-top: -1px;
 }
 
 .ttc-display-area .tabs label {

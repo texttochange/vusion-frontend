@@ -89,6 +89,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
                     'Auth' => array('loggedIn', 'startup'),
+                    'Mash' => array('importParticipants'),
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -417,8 +418,116 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.xls');
         $this->assertEquals(2, count($this->vars['report']));
     }
-    
-    
+
+
+    public function testImportMash_ok() 
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorker')
+        ->with('testurl', '+256788601462')
+        ->will($this->returnValue(true));
+
+        $participantJson = '[{"phone_number":"256788601462","profile":{"location":{"value":"Mombasa"}}},{"phone_number":"256712747841","profile":{}}]';
+        $participantJsonDecoded = json_decode($participantJson);
+        $participants->Mash
+        ->expects($this->once())
+        ->method('importParticipants')
+        ->with('UGA')
+        ->will($this->returnValue($participantJsonDecoded));
+
+        $this->ProgramSetting->saveProgramSetting('shortcode', '256-8282');
+        $this->ProgramSetting->saveProgramSetting('international-prefix', '256');    
+        
+        $this->Participant->create();
+        $this->Participant->save(
+            array(
+                'phone' => '+256712747841',
+                'name' => 'Gerald'
+                )
+            );
+        
+        $this->testAction(
+            "/testurl/participants/importMash", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'country' => 'UGA',
+                        'tags' => 'mytag, anothertag')
+                    )
+                )
+            );
+        
+        $this->assertEquals(
+            'Insert ok',
+            $this->vars['report'][0]['message'][0]
+            );
+        $this->assertEquals(
+            'This phone number already exists in the participant list.',
+            $this->vars['report'][1]['message'][0]
+            );
+    }
+
+
+    public function testImportMash_fail_mash() 
+    {
+        $participants = $this->mockProgramAccess();
+        $participants->Mash
+        ->expects($this->once())
+        ->method('importParticipants')
+        ->with('UGA')
+        ->will($this->returnValue(null));
+         $participants->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('The import failed because the Mash server is not responding, please report the issue.');
+     
+        $this->ProgramSetting->saveProgramSetting('shortcode', '256-8282');
+        $this->ProgramSetting->saveProgramSetting('international-prefix', '256');    
+        
+        $this->testAction(
+            "/testurl/participants/importMash", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'country' => 'UGA')
+                    )
+                )
+            );
+        
+        $this->assertFalse($this->vars['requestSuccess']);
+    }
+
+
+    public function testImportMash_fail_countryNotAllowed() 
+    {
+        $participants = $this->mockProgramAccess();
+        $participants->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('Import not allowed of participant from France.');
+     
+        $this->ProgramSetting->saveProgramSetting('shortcode', '256-8282');
+        $this->ProgramSetting->saveProgramSetting('international-prefix', '256');    
+        
+        $this->testAction(
+            "/testurl/participants/importMash", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'country' => 'FRA')
+                    )
+                )
+            );
+        
+        $this->assertFalse($this->vars['requestSuccess']);
+    }
+
+
     public function testDeleteParticipant()
     {
         $this->mockProgramAccess();

@@ -1,5 +1,4 @@
-
-<div class="participants index width-size">
+<div class="participants index">
 	<div class="ttc-page-title">
 		<h3><?php echo __("Import Participants"); ?></h3>
 	   
@@ -8,7 +7,7 @@
 			<li><?php echo $this->Html->link(__('View Participant(s)'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'index'), array('class'=>'ttc-button'));?></li>
 		</ul>
     </div>
-    <div class="ttc-display-area display-height-size">
+    <div class="ttc-display-area">
     <?php echo $this->element('participant_import_tabs', array('type' => 'file')); ?>
 	</div>
 </div>

@@ -1083,7 +1083,7 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testImport_csv_manyEmptyRows()
+    public function testImportCsv_manyEmptyRows()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1099,7 +1099,7 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testImport_xls_manyEmptyRows()
+    public function testImportXls_manyEmptyRows()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -1113,7 +1113,46 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(6, count($participants));
         $this->assertEquals(6, count($report));
     }
-    
+
+
+    public function testImportJsonDecoded()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $this->Participant->create();
+        $this->Participant->save(array(
+            'phone' => '+256712747841',
+            'name' => 'Gerald'));
+
+        $participantJson = '[{"phone_number":"256788601462","profile":{"location":{"value":"Mombasa"}}},{"phone_number":"256712747841","profile":{}}]';
+        $participantJsonDecoded = json_decode($participantJson);
+
+        $report = $this->Participant->importJsonDecoded(
+            'testUrl',
+            $participantJsonDecoded,
+            'mytag');
+
+        $this->assertEquals(2, $this->Participant->find('count'));
+        $this->assertEquals(
+            array(
+                'phone' => '+256788601462',
+                'saved' => true,
+                'exist-before' => false,
+                'message' => array('Insert ok'),
+                'line' => 1),
+            $report[0]);
+        $this->assertEquals(
+            array(
+                'phone' => '256712747841',
+                'saved' => false,
+                'exist-before' => true,
+                'message' => array('This phone number already exists in the participant list.'),
+                'line' => 2),
+            $report[1]);
+        $this->assertEqual(1, $this->Participant->find('count', array('conditions' => array('tags' => 'imported'))));
+    }
+
     
     public function testImport_taging_fail()
     {

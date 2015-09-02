@@ -55,6 +55,9 @@ class CountryComponent extends Component {
 
     public function getNamesByIso($prefix=null)
     {
+        if ($prefix == 'all') {
+            $prefix = null;
+        }
         $namesByIso = array();
         foreach($this->countries as $country) {
             if ($country['Iso'] === '') {
@@ -114,5 +117,11 @@ class CountryComponent extends Component {
         return $isoByPrefix[$prefix];
     }
 
+
+    public function fromIsoToName($Iso)
+    {
+        $namesByIso = $this->getNamesByIso();
+        return $namesByIso[$Iso];
+    }
     
 }
