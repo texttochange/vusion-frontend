@@ -14,7 +14,8 @@ class SimulatorComponent extends Component
             "Last Optin Date" => __('Last Optin Date'),
             "Last Optout Date" => __('Last Optout Date'),
             "Labels" => __('Labels'),
-            "Tags" => __('Tags')
+            "Tags" => __('Tags'),
+            "Enrolled" => __('Enrolled')
             );
         $controller->set('simulatorLabels', $this->localizedValueLabels);
     }

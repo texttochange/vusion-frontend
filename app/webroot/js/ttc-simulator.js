@@ -77,15 +77,17 @@
                                 localize_label("Phone")+": PARTICIPANT_PHONE "+
                                 "</dl><dl>"+
                                 "<dt>"+localize_label("Last Optin Date")+":</dt><dt> PARTICIPANT_OPTIN_DATE </dt>"+
-                                "</dl><dl>"+                                
+                                "</dl><dl>"+
                                 ((participant['last-optout-date']) ? "<dt>"+
                                     localize_label("Last Optout Date")+":</dt><dt>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dt></dl>" :  " </dt></dl>" )+
-                                (((participant['profile'].length) > 0) ? "<dl><dt>"+localize_label("Labels")+":</dt><dt>PARTICIPANT_LABELS </dt></dl>" : "  </dt></dl>")+
-                                (((participant['tags'].length) > 0) ? "<dl><dt>"+localize_label("Tags")+": </dt><dt>PARTICIPANT_TAGS </dt></dl>" : " </dt></dl>")
+                                (((participant['enrolled'].length) > 0) ? "<dl><dt>"+localize_label("Enrolled")+": </dt><dt>PARTICIPANT_ENROLLED</dt></dl>" : " </dt></dl>")+
+                                (((participant['profile'].length) > 0) ? "<dl><dt>"+localize_label("Labels")+":</dt><dt>PARTICIPANT_LABELS</dt></dl>" : "  </dt></dl>")+
+                                (((participant['tags'].length) > 0) ? "<dl><dt>"+localize_label("Tags")+": </dt><dt>PARTICIPANT_TAGS</dt></dl>" : " </dt></dl>")
                 
                 
                 template = template.replace('PARTICIPANT_PHONE', participant['phone']);
                 template = template.replace('PARTICIPANT_OPTIN_DATE', moment(participant['last-optin-date']).format("DD/MM/YYYY HH:mm:ss"));
+                template = template.replace('PARTICIPANT_ENROLLED', generateHtmlParticipantEnrolled(participant));
                 template = template.replace('PARTICIPANT_LABELS', generateHtmlParticipantLabels(participant));
                 template = template.replace('PARTICIPANT_TAGS', generateHtmlParticipantTags(participant));
                 return  template;
@@ -110,6 +112,16 @@
                                 "</div>"
                     }
                     return tags;
+                }
+                
+                function generateHtmlParticipantEnrolled(participant) {
+                    var enrolled = '';
+                    for (var i = 0; i < participant['enrolled'].length; i++) {
+                        enrolled += "<div class='simulator-profile-value'>"+
+                                participant['enrolled'][i]['dialogue-id']+
+                                "</div>"
+                    }
+                    return enrolled;
                 }
                 
             }
