@@ -991,7 +991,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $participants = $this->mockProgramAccess();
         $participants
@@ -1418,7 +1418,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $dialogue['Dialogue']['auto-enrollment'] = 'all';
         
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
         
         $this->testAction(
             "/testurl/programParticipants/optin/".$savedParticipant['Participant']['_id']

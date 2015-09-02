@@ -339,7 +339,7 @@ class ParticipantTestCase extends CakeTestCase
 
         $dialogue      = $this->Maker->getOneDialogue();
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $participant = array(
             'phone' => '+7',
@@ -370,11 +370,11 @@ class ParticipantTestCase extends CakeTestCase
 
         $dialogue      = $this->Maker->getOneDialogue();
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $otherDialogue      = $this->Maker->getOneDialogue();
         $otherSavedDialogue = $this->Dialogue->saveDialogue($otherDialogue);
-        $this->Dialogue->makeActive($otherSavedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $programNow = $this->ProgramSetting->getProgramTimeNow();
 
@@ -1678,7 +1678,7 @@ class ParticipantTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $runActions = array(
             'phone'=> '+06',
@@ -1698,7 +1698,7 @@ class ParticipantTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $runActions = array(
             'phone'=> '+06',
@@ -1743,7 +1743,7 @@ class ParticipantTestCase extends CakeTestCase
         $dialogue = $this->Maker->getOneDialogueWithKeyword();
         $this->Dialogue->create();
         $savedDialogue = $this->Dialogue->save($dialogue);
-        $this->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
 
         $runActions = array(
             'phone'=> '+06',

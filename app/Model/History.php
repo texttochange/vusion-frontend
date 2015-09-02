@@ -4,6 +4,7 @@ App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('UnattachedMessage', 'Model');
+App::uses('Participant','Model');
 
 
 class History extends ProgramSpecificMongoModel
@@ -135,6 +136,8 @@ class History extends ProgramSpecificMongoModel
         parent::initializeDynamicTable();
         $this->UnattachedMessage = ProgramSpecificMongoModel::init(
             'UnattachedMessage', $this->databaseName, $forceNew);
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $this->databaseName, $forceNew);
     }
     
     
@@ -532,5 +535,18 @@ class History extends ProgramSpecificMongoModel
         return $historyCount;
     }
     
+    
+    public function getParticipantLabels($histories)
+    {
+        foreach ($histories as &$history) {
+            $phone = $history['History']['participant-phone'];
+            $participant = $this->Participant->find('first', array(
+                'conditions' => array('phone' => $phone)));
+            $participantLabels = $participant['Participant']['profile'];
+            $history['History']['participant-labels'] = $participantLabels;
+        }
+        return $histories;
+    }
+
     
 }

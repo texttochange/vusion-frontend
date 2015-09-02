@@ -33,6 +33,21 @@
     $this->Js->get('[name=unTag]')->event('click',
         'generateMassUntagDialogue(this);');
 
+    $massTagUrl = $this->Html->url(array(
+        'program' => $programDetails['url'],
+        'controller' => 'programParticipants',
+        'action' => 'massTag'));
+    $contentActions[] = $this->AclLink->generateButton(
+        __('Tag'),
+        $programDetails['url'],
+        'programParticipants',
+        '',
+        array('class' => 'ttc-button',
+            'name' => 'massTag',
+            'url' => $massTagUrl));
+    $this->Js->get('[name=massTag]')->event('click',
+        'generateMassTagDialogue(this);');
+
     $contentActions[] = $this->AclLink->generateButton(
         __('+ Add'), 
         $programDetails['url'],
