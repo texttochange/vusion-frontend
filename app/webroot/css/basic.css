@@ -1691,4 +1691,6 @@
 
 .simulator-profile-value {
     margin-left: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
