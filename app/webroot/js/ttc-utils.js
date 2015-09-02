@@ -137,7 +137,7 @@ function pullBackendNotifications(url) {
 
 function logMessageSent(event) {
     if (event.keyCode == 13) {
-        $("#simulator-input").submit();
+        $('#send-button').click();
         $('[name="message"]').val('');
     } else if (event.type == 'click') {
         $('[name="message"]').val('');
