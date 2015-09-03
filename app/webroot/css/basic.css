@@ -1628,6 +1628,7 @@
     padding: 7px 7px 7px;
     float: left;
     position: relative;
+    max-width: 350px;
 }
 
 .simulator-incoming {
@@ -1636,6 +1637,7 @@
     padding: 7px 7px 7px;
     float: right;
     position: relative;
+    max-width: 350px;
 }
 
 .simulator-outgoing:before, .simulator-incoming:before {
@@ -1693,4 +1695,8 @@
     margin-left: 28px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.simulator-message-text {
+    word-wrap: break-word;
 }

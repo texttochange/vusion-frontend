@@ -58,7 +58,7 @@
 		    function generateHtmlHistoryMessage(message) {
 		        var template =  "<div class='simulator-msg'>"+
                                 "<div" +((message['message-direction'] == 'incoming') ? " class='simulator-incoming'" : " class='simulator-outgoing'" )+">"+
-                                "<div>"+
+                                "<div class='simulator-message-text'>"+
                                 "MESSAGE_CONTENT"+
                                 "</div>"+
                                 "<div class='simulator-datetime'>"+
