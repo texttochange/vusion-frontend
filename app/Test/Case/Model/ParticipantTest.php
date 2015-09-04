@@ -715,7 +715,7 @@ class ParticipantTestCase extends CakeTestCase
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
         $this->assertEquals(
             $participant['Participant']['tags'], 
-            array('imported', 'another tag'));
+            array('imported', 'another tag', 'a first tag', 'a second tag'));
         $this->assertEquals(
             $participant['Participant']['profile'], 
             array(

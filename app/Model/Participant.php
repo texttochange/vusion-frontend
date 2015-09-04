@@ -112,7 +112,7 @@ class Participant extends ProgramSpecificMongoModel
                 'message' => VusionConst::LABEL_FAIL_MESSAGE,
                 ),
             ),
-        'value' => array(
+        /*'value' => array(
             'notempty' => array(
                 'rule' => 'notempty',
                 'message' => 'The label value cannot be empty.',
@@ -121,7 +121,7 @@ class Participant extends ProgramSpecificMongoModel
                 'rule' => array('custom', VusionConst::LABEL_VALUE_REGEX),
                 'message' => VusionConst::LABEL_VALUE_FAIL_MESSAGE,
                 ),            
-            ),
+            ),*/
         'raw' => array(
             'required' => array(
                 'rule' => 'required',
@@ -642,8 +642,47 @@ class Participant extends ProgramSpecificMongoModel
         
     }
     
+    public function addTags($participant, $savedTags) 
+    {
+        $tags = array();
+        if (isset($participant['tags'])) {
+            $tags = Participant::cleanTags($participant['tags']);
+        }
+        $savedTags = (is_array($savedTags) ? $savedTags : array());
+        return array_unique(array_merge($tags, $savedTags));
+    }
+
+    public function addLabels($participant, $savedLabels)
+    {
+        $labels = array();
+        if (isset($participant['profile'])) {
+            $labels = Participant::cleanProfile($participant['profile']);
+        }
+        //$savedLabels = (is_array($savedLabels) ? $savedLabels : array());
+        $merged = array_merge($labels, $savedLabels);
+        $result = $this->unique_multidim_array($merged, 'label');
+        return $result;
+    }
+
+
+    public function unique_multidim_array($array, $key){
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+        
+        foreach($array as $val){
+            if(!in_array($val[$key],$key_array)){
+                $key_array[$i] = $val[$key];
+                $temp_array[$i] = $val;
+            }
+            $i++;
+        }
+        return $temp_array;
+    }
+
     
-    public function saveParticipantWithReport($participant, $replaceTagsAndLabels, $fileLine=null)
+    public function saveParticipantWithReport($participant, $replaceTagsAndLabels
+        , $fileLine=null)
     {
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
@@ -660,8 +699,8 @@ class Participant extends ProgramSpecificMongoModel
             
             $savedParticipant       = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
             $this->id               = $savedParticipant['Participant']['_id']."";
-            $tags                   = (isset($participant['tags']) ? $participant['tags'] : array());
-            $labels                 = (isset($participant['profile']) ? $participant['profile'] : array());
+            $tags                   = $this->addTags($participant, $savedParticipant['Participant']['tags']);
+            $labels                 = $this->addLabels($participant, $savedParticipant['Participant']['profile']);
             $participant            = $savedParticipant['Participant'];
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
