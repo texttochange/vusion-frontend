@@ -1671,7 +1671,8 @@
 
 .simulator-messages {
     border-bottom: 0px;
-    width: 500px;
+    min-width: 400px;
+    max-width: 600px;
 }
 
 .simulator-profile {

@@ -783,6 +783,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         $requestSuccess = true;
         $participant = $this->Participant->read(null, $id);
+        $participant = $this->Dialogue->fromDialogueIdToName($participant);
         $historyFrom = (isset($this->request->query['history_from'])? $this->request->query['history_from'] : null);
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         $histories                    = $this->History->getParticipantHistory(

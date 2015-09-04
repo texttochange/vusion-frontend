@@ -56,7 +56,7 @@
                         ?>
                     </div>
                 </div>
-                <div class='cell' style='min-width:200px'>
+                <div class='cell'>
                     <div class="simulator-profile" id="simulator-profile">
                         <?php
                         echo '<img src="/img/ajax-loader.gif">';

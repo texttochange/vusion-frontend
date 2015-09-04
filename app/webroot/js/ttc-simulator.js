@@ -87,17 +87,18 @@
                                 "<dt>"+localize_label("Phone")+": </dt><dd>PARTICIPANT_PHONE</dd>"+
                                 "<dt>"+localize_label("Last Optin Date")+":</dt><dd> PARTICIPANT_OPTIN_DATE </dd>"+
                                 ((participant['last-optout-date']) ?
-                                    "<dt>"+localize_label("Last Optout Date")+":</dt><dd>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dd>" :  "" )+
+                                    "<dt>"+localize_label("Last Optout Date")+":</dt><dd>"+moment(participant['last-optout-date']).calendar()+"</dd>" :  "" )+
                                 (((participant['enrolled'].length) > 0) ? 
                                     "<dt>"+localize_label("Enrolled")+": </dt><dd>PARTICIPANT_ENROLLED</dd>" : "")+
-                                (((participant['profile'].length) > 0) ? 
-                                    "<dt>"+localize_label("Labels")+":</dt><dd>PARTICIPANT_LABELS</dd>" : "")+
                                 (((participant['tags'].length) > 0) ? 
-                                    "<dt>"+localize_label("Tags")+": </dt><dd>PARTICIPANT_TAGS</dd>" : "")
+                                    "<dt>"+localize_label("Tags")+": </dt><dd>PARTICIPANT_TAGS</dd>" : "")+
+                                (((participant['profile'].length) > 0) ? 
+                                    "<dt>"+localize_label("Labels")+":</dt><dd>PARTICIPANT_LABELS</dd>" : "")
+                               
                 
                 
                 template = template.replace('PARTICIPANT_PHONE', participant['phone']);
-                template = template.replace('PARTICIPANT_OPTIN_DATE', moment(participant['last-optin-date']).format("DD/MM/YYYY HH:mm:ss"));
+                template = template.replace('PARTICIPANT_OPTIN_DATE', moment(participant['last-optin-date']).calendar());
                 template = template.replace('PARTICIPANT_ENROLLED', generateHtmlParticipantEnrolled(participant));
                 template = template.replace('PARTICIPANT_LABELS', generateHtmlParticipantLabels(participant));
                 template = template.replace('PARTICIPANT_TAGS', generateHtmlParticipantTags(participant));
@@ -129,7 +130,9 @@
                     var enrolled = '';
                     for (var i = 0; i < participant['enrolled'].length; i++) {
                         enrolled += "<div>"+
-                                participant['enrolled'][i]['dialogue-id']+
+                                participant['enrolled'][i]['dialogue-name']+
+                                " - "+
+                                moment(participant['enrolled'][i]['date-time']).calendar()
                                 "</div>"
                     }
                     return enrolled;

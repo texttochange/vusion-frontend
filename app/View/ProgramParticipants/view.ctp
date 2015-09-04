@@ -90,12 +90,7 @@
 		<dd><?php 
 		if (count($participant['Participant']['enrolled']) > 0) {
 		    foreach ($participant['Participant']['enrolled'] as $enrolled) {
-		        foreach ($currentProgramData['dialogues'] as $dialogue) {
-		            if ($dialogue['dialogue-id'] == $enrolled['dialogue-id']) {
-  	                    echo $this->Html->tag('div', __("%s at %s", $dialogue['Active']['name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
-  	                    break;
-  	                }
-		        }
+  	            echo $this->Html->tag('div', __("%s at %s", $enrolled['dialogue-name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
 		    }
 		} else {
 		    echo "&nbsp;"; 
