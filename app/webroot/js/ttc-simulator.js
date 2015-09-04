@@ -15,7 +15,7 @@
             // private variables
             var phone = options.phone.replace(/\D/g,''),
 		    url = '../../programParticipants/view/' + phone,
-		    timeLastPulled = null;
+		    timeLastHistoryPulled = null;
 		    
 		    
 		    // private functions
@@ -25,19 +25,27 @@
 		            return;
 		        }
 		        // success
-		        if (timeLastPulled == null) {
+		        if (timeLastHistoryPulled == null) {
 		            $('#simulator-output').empty();	
 		        }
-		        timeLastPulled = data['program-time'];
 		        processHistory(data['histories']);
 		        processParticipant(data['participant']);
+                setTimeout(el.update, 3000);
 		    }
+
+            function processError(jqXHR, textStatus, errorThrown) {
+                setTimeout(el.update, 6000);
+                vusionAjaxError(jqXHR, textStatus, errorThrown);
+            }
 		    
 		    
 		    function processHistory(history) {
 		        var container = $('.ttc-simulator-output');
 		        for (var i = 0; i< history.length; i++) {
 		            message = history[i]['History'];
+                    if ($('#' + message['_id']).length) {
+                        continue;
+                    }
 		            if (message['message-direction'] == "incoming") {
 		                el.append(generateHtmlHistoryMessage(message))
 		                container[0].scrollTop = container[0].scrollHeight;
@@ -56,7 +64,7 @@
 		    }
 		    
 		    function generateHtmlHistoryMessage(message) {
-		        var template =  "<div class='simulator-msg'>"+
+		        var template =  "<div id='MESSAGE_ID' class='simulator-msg'>"+
                                 "<div" +((message['message-direction'] == 'incoming') ? " class='simulator-incoming'" : " class='simulator-outgoing'" )+">"+
                                 "<div class='simulator-message-text'>"+
                                 "MESSAGE_CONTENT"+
@@ -66,9 +74,11 @@
                                 "</div>"+
                                 "</div>"+
                                 "</div>"
-		        
+		        template = template.replace('MESSAGE_ID', message['_id']);
 		        template = template.replace('MESSAGE_CONTENT', message['message-content']);
 		        template = template.replace('MESSAGE_TIMESTAMP', moment(message['timestamp']).calendar());
+                //last history processed
+                timeLastHistoryPulled = message['timestamp'];
 		        return  template;
 		    }
 		    
@@ -133,7 +143,7 @@
                     dataType: 'json',
                     success: processResponse,
                     error: vusionAjaxError,
-                    timeout: 1000
+                    timeout: 2000
             });
             
             
@@ -145,7 +155,7 @@
                         url: url,
                         type: 'GET',
                         data: {
-                            'history_from': timeLastPulled,
+                            'history_from': timeLastHistoryPulled,
                         },
                         dataType: 'json',
                         success: processResponse,
@@ -154,7 +164,6 @@
                 });
             };
             
-            setInterval(el.update, 3000);
             
             // Initialize user control mechanisms
             // Action when clicking on the Send button
@@ -173,7 +182,7 @@
                         return;
                     }
                     $('[name="message"]').val('');
-                    //logMessageSent(event)
+                    el.update();
                 }
 
                 $.ajax({

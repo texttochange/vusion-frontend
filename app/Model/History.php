@@ -228,7 +228,7 @@ class History extends ProgramSpecificMongoModel
     {
         $conditions = array('phone' => $phone);
         if (isset($from)) {
-            $conditions['conditions'] = array('timestamp' => array('$gt' => $from));
+            $conditions['conditions'] = array('timestamp' => array('$gte' => $from));
         }
         $histories = $this->find('participant', $conditions);
         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
