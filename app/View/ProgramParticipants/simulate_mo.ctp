@@ -21,49 +21,49 @@
     ?>
     <div>
         <div class="simulator">
-            <div>
-            <div class="simulator-message">
-                <div class = "ttc-simulator-output" >
-                    <?php
-                    echo $this->Html->tag('div', '<img src="/img/ajax-loader.gif" class="simulator-image-load">', array(
-                        'class'=>'ttc-simulator-meesage',
-                        'id' => 'simulator-output'));
-                    ?>
-                </div>
-                <div>
-                    <?php
-                    echo $this->Form->create(null, array('id'=>'simulator-input'));
-                    echo $this->Form->input(
-                        'from',
-                        array(
-                            'value' => $participant['Participant']['phone'],
-                            'name'=>'phone',
-                            'type' => 'hidden'));
-                    echo $this->Form->input(
-                        'message', 
-                        array(
-                            'rows'=>3,
-                            'label' => __('Message'),
-                            'name' => 'message',
-                            'id' => 'smessage',
-                            'autofocus'));
-                    echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
+            <div class="table" style="width:100%">
+                <div class="cell simulator-messages">
+                    <div class = "simulator-output" >
+                        <?php
+                        echo $this->Html->tag('div', '<img src="/img/ajax-loader.gif" class="simulator-image-load">', array(
+                            'class'=>'simulator-message',
+                            'id' => 'simulator-output'));
+                        ?>
+                    </div>
+                    <div>
+                        <?php
+                        echo $this->Form->create(null, array('id'=>'simulator-input'));
+                        echo $this->Form->input(
+                            'from',
+                            array(
+                                'value' => $participant['Participant']['phone'],
+                                'name'=>'phone',
+                                'type' => 'hidden'));
+                        echo $this->Form->input(
+                            'message', 
+                            array(
+                                'rows'=>3,
+                                'label' => __('Message'),
+                                'name' => 'message',
+                                'id' => 'smessage',
+                                'autofocus'));
+                        echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
 
-                    $this->Js->get('document')->event(
-                        'ready',
-                        '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
+                        $this->Js->get('document')->event(
+                            'ready',
+                            '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
 
-                    ?>
+                        ?>
+                    </div>
                 </div>
+                <div class='cell' style='min-width:200px'>
+                    <div class="simulator-profile" id="simulator-profile">
+                        <?php
+                        echo '<img src="/img/ajax-loader.gif">';
+                        ?>
+                    </div>
+                </div> 
             </div>
-            <div class="simulator-profile">
-                <div class="simulator-profile-div" id = "simulator-profile">
-                    <?php
-                    echo '<img src="/img/ajax-loader.gif">';
-                    ?>
-                </div>
-            </div> 
-            <div>
         </div>
     </div>
 </div>

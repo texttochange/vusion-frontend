@@ -1599,7 +1599,7 @@
     width: 100% !important;
 }
 
-.ttc-simulator-output {
+.simulator-output {
     border: 1px solid #d3d3d3;
     height: 293px;
     overflow-y: scroll;
@@ -1608,7 +1608,7 @@
     
 }
 
-.ttc-simulator-meesage {
+.simulator-message {
     width: 100%;    
 }
 
@@ -1669,20 +1669,28 @@
 }
 
 
-.simulator-message {
-    float: left;
-    width: 50%;
+.simulator-messages {
     border-bottom: 0px;
+    width: 500px;
 }
 
 .simulator-profile {
-    width: 47%;
     border-bottom: 0px;
-    float: right;
+    margin-left: 20px;
 }
 
-.simulator-profile-div {
-    margin-left: 15px;
+.simulator-profile dl {
+    width: 100%;
+    min-width: 300px;
+}
+
+.simulator-profile dt {
+    width: 170px;
+}
+
+.simulator-profile dd {
+    margin-left: 180px;
+    padding-left: 4px;
 }
 
 .simulator-image-load {

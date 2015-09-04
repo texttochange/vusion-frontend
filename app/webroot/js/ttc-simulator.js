@@ -40,7 +40,7 @@
 		    
 		    
 		    function processHistory(history) {
-		        var container = $('.ttc-simulator-output');
+		        var container = $('.simulator-output');
 		        for (var i = 0; i< history.length; i++) {
 		            message = history[i]['History'];
                     if ($('#' + message['_id']).length) {
@@ -84,15 +84,16 @@
 		    
 		    function generateHtmlParticipant(participant) {
 		        var template =  "<dl>"+
-                                localize_label("Phone")+": PARTICIPANT_PHONE "+
-                                "</dl><dl>"+
-                                "<dt>"+localize_label("Last Optin Date")+":</dt><dt> PARTICIPANT_OPTIN_DATE </dt>"+
-                                "</dl><dl>"+
-                                ((participant['last-optout-date']) ? "<dt>"+
-                                    localize_label("Last Optout Date")+":</dt><dt>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dt></dl>" :  " </dt></dl>" )+
-                                (((participant['enrolled'].length) > 0) ? "<dl><dt>"+localize_label("Enrolled")+": </dt><dt>PARTICIPANT_ENROLLED</dt></dl>" : " </dt></dl>")+
-                                (((participant['profile'].length) > 0) ? "<dl><dt>"+localize_label("Labels")+":</dt><dt>PARTICIPANT_LABELS</dt></dl>" : "  </dt></dl>")+
-                                (((participant['tags'].length) > 0) ? "<dl><dt>"+localize_label("Tags")+": </dt><dt>PARTICIPANT_TAGS</dt></dl>" : " </dt></dl>")
+                                "<dt>"+localize_label("Phone")+": </dt><dd>PARTICIPANT_PHONE</dd>"+
+                                "<dt>"+localize_label("Last Optin Date")+":</dt><dd> PARTICIPANT_OPTIN_DATE </dd>"+
+                                ((participant['last-optout-date']) ?
+                                    "<dt>"+localize_label("Last Optout Date")+":</dt><dd>"+moment(participant['last-optout-date']).format("DD/MM/YYYY HH:mm:ss")+"</dd>" :  "" )+
+                                (((participant['enrolled'].length) > 0) ? 
+                                    "<dt>"+localize_label("Enrolled")+": </dt><dd>PARTICIPANT_ENROLLED</dd>" : "")+
+                                (((participant['profile'].length) > 0) ? 
+                                    "<dt>"+localize_label("Labels")+":</dt><dd>PARTICIPANT_LABELS</dd>" : "")+
+                                (((participant['tags'].length) > 0) ? 
+                                    "<dt>"+localize_label("Tags")+": </dt><dd>PARTICIPANT_TAGS</dd>" : "")
                 
                 
                 template = template.replace('PARTICIPANT_PHONE', participant['phone']);
@@ -105,7 +106,7 @@
                 function generateHtmlParticipantLabels(participant) {
                     var labels = '';
                     for (var i = 0; i < participant['profile'].length; i++) {
-                        labels += "<div class='simulator-profile-value'>"+
+                        labels += "<div>"+
                                     participant['profile'][i]['label']+
                                     ": "+
                                     participant['profile'][i]['value']+
@@ -117,7 +118,7 @@
                 function generateHtmlParticipantTags(participant) {
                     var tags = '';
                     for (var i = 0; i < participant['tags'].length; i++) {
-                        tags += "<div class='simulator-profile-value'>"+
+                        tags += "<div>"+
                                 participant['tags'][i]+
                                 "</div>"
                     }
@@ -127,7 +128,7 @@
                 function generateHtmlParticipantEnrolled(participant) {
                     var enrolled = '';
                     for (var i = 0; i < participant['enrolled'].length; i++) {
-                        enrolled += "<div class='simulator-profile-value'>"+
+                        enrolled += "<div>"+
                                 participant['enrolled'][i]['dialogue-id']+
                                 "</div>"
                     }
