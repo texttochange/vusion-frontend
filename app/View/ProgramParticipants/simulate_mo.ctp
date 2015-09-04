@@ -48,23 +48,7 @@
                             'id' => 'smessage',
                             'autofocus'));
                     echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
-                    
-                    $this->Js->get('#send-button')->event(
-                        'click',
-                        $this->Js->request(
-                            array('program'=>$programDetails['url'], 'action'=>'simulateMo.json'),
-                            array('method' => 'POST',
-                                'async' => true, 
-                                'dataExpression' => true,
-                                'data' => '$("#simulator-input").serialize()',
-                                'success' => 'logMessageSent(event)'
-                                )));
-                    
-                    $this->Js->get('#smessage')->event(
-                        'keyup',
-                        'logMessageSent(event)'
-                        );
-                    
+
                     $this->Js->get('document')->event(
                         'ready',
                         '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');

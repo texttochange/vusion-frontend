@@ -8,7 +8,7 @@
                     }
                 }
         });
-        
+
         // Simulator class
         function Simulator(el, options) {
             
@@ -126,8 +126,6 @@
                 
             }
             
-            
-            
             // initial pull
             $.ajax({
                     url: url,
@@ -158,6 +156,43 @@
             
             setInterval(el.update, 3000);
             
+            // Initialize user control mechanisms
+            // Action when clicking on the Send button
+            function enterEventTriggerClick(event) {
+                if (event.keyCode == 13) {
+                    $('#send-button').click();
+                }
+            }
+
+            // The action of posting
+            function sendMo(event) {
+                event.preventDefault();
+                function processResponseSendMo(data, textStatus) {
+                    $('#connectionState').hide();
+                    if (data['status'] == 'fail') {
+                        return;
+                    }
+                    $('[name="message"]').val('');
+                    //logMessageSent(event)
+                }
+
+                $.ajax({
+                        url: '../../programParticipants/simulateMo.json',
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        dataExpression: true,
+                        data: $("#simulator-input").serialize(),
+                        success: processResponseSendMo,
+                        error: vusionAjaxError,
+                        timeout: 1000
+                });
+            }
+
+            $('#send-button').click(sendMo);
+            $('#smessage').keyup(enterEventTriggerClick);
+
+
             return el;
         }
     })(jQuery);

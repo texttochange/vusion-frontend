@@ -135,16 +135,6 @@ function pullBackendNotifications(url) {
 }
 
 
-function logMessageSent(event) {
-    if (event.keyCode == 13) {
-        $('#send-button').click();
-        $('[name="message"]').val('');
-    } else if (event.type == 'click') {
-        $('[name="message"]').val('');
-    }
-}
-
-
 function updateClock(){
     var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
     $("#local-date-time").text(newTime);    
