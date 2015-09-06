@@ -448,7 +448,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     $this->redirect(array(
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
-                        'action' => 'index'));
+                        'action' => 'simulateMo',
+                         $savedParticipant['Participant']['_id']));
                 }
             } else {
                 $this->Session->setFlash(__('The simulate participant could not be saved.'));
