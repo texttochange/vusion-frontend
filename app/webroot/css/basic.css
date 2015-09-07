@@ -1709,3 +1709,7 @@
 .simulator-message-text {
     word-wrap: break-word;
 }
+
+.simulator-add-participant {
+    width: 363px;
+}

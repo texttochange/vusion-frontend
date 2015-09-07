@@ -430,32 +430,35 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         
         if ($this->request->is('post')) {
             $savedParticipant = null;
-            if ($data['Participant']['join-type'] == 'import') {
-                $data['Participant']['tags'] = array('simulated', 'import');
-            } else if ($data['Participant']['join-type'] == 'optin-keyword') {
-                $data['Participant']['tags']       = array('simulated', 'keyword optin');
-            }
+            
             $data['Participant']['simulate'] = true;
             $this->Participant->create();
+           
+            if ($data['Participant']['join-type'] == 'optin-keyword') {
+                $this->simulateMo();
+                return;
+            }
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
                 $this->_notifyUpdateBackendWorker(
                     $programUrl,
                     $savedParticipant['Participant']['phone']);
                 $requestSuccess = true;
+                
+                
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
-                    $this->redirect(array(
+                   $this->redirect(array(
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'simulateMo',
-                         $savedParticipant['Participant']['_id']));
+                        $savedParticipant['Participant']['_id']));
                 }
             } else {
                 $this->Session->setFlash(__('The simulate participant could not be saved.'));
             }
             $this->set(compact('requestSuccess', 'savedParticipant'));
-        }    
+        } 
     }
     
     
@@ -950,8 +953,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $this->Participant->id = $id;
         $data           = $this->_ajaxDataPatch();
         $participant    = $this->_loadParticipantId($data);
-        
-        if ($this->request->is('post')) {            
+       
+        if ($this->request->is('post')) {
             $message = $this->request->data['message'];
             $from    = $this->request->data['phone'];
             $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
