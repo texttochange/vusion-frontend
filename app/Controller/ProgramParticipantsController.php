@@ -429,13 +429,14 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         }
         
         if ($this->request->is('post')) {
-            $savedParticipant = null;
-            
+            $savedParticipant                = null;
             $data['Participant']['simulate'] = true;
             $this->Participant->create();
-           
+            
             if ($data['Participant']['join-type'] == 'optin-keyword') {
-                $this->simulateMo();
+                $optinMessage = $data['message'];
+                $form         = $this->Participant->generateSimulatedPhone();
+                $this->_sendSimulateMo($programUrl, $form,  $optinMessage);
                 return;
             }
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
@@ -443,12 +444,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     $programUrl,
                     $savedParticipant['Participant']['phone']);
                 $requestSuccess = true;
-                
-                
                 $this->Session->setFlash(__('The participant has been saved.'),
                     'default', array('class'=>'message success'));
                 if (!$this->_isAjax()) {
-                   $this->redirect(array(
+                    $this->redirect(array(
                         'program' => $programUrl,  
                         'controller' => 'programParticipants',
                         'action' => 'simulateMo',
@@ -461,6 +460,21 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         } 
     }
     
+    
+    protected function _sendSimulateMo($programUrl, $form,  $optinMessage) 
+    {
+        if ($optinMessage) {
+            $this->VumiRabbitMQ->sendMessageToSimulateMO($programUrl, $form,  $optinMessage);
+            $this->Session->setFlash(__('Optin message has been sent, this will create a participant if you used the right Optin keyword'),
+                'default', array('class'=>'message success'));
+            $this->redirect(array(
+                'program' => $programUrl,  
+                'controller' => 'programParticipants',
+                'action' => 'index'));
+        } else {
+            $this->Session->setFlash(__('The simulate participant could not be saved. Enter Optin message'));
+        }
+    }
     
     protected function _getSelectOptions()
     {

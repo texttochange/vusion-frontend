@@ -389,7 +389,7 @@ class Participant extends ProgramSpecificMongoModel
     public function generateSimulatedPhone()
     {
         $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
-        $sumilutorPhone = $programInternationalPrefix . uniqid();
+        $sumilutorPhone = $this->cleanPhone($programInternationalPrefix . uniqid());
         return $sumilutorPhone;
     }
         
