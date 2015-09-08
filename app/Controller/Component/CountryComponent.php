@@ -121,6 +121,9 @@ class CountryComponent extends Component {
     public function fromIsoToName($Iso)
     {
         $namesByIso = $this->getNamesByIso();
+        if (!isset($namesByIso[$Iso])) {
+            return '';
+        }
         return $namesByIso[$Iso];
     }
     
