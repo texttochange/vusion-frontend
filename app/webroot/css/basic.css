@@ -357,7 +357,7 @@
         border: 2px solid #d3d3d3;
         float: left;
         padding: 2px 2px;
-        min-width: 190px;
+        width: 192px;
         height: 95px;
         overflow-y: auto;
         font-size: 9px;
