@@ -1360,12 +1360,12 @@
         display: inline-block;
 }
 
-.ttc-data-control .tabs ul {
+.tabs ul {
         list-style-type: none;
         margin: 0px 0px 0px 10px;
 }
 
-.ttc-data-control .tabs li {
+.tabs li {
         float: left;
         margin: 0px 10px 0px 0px;
         color: #81CDFF;
@@ -1376,7 +1376,7 @@
         color: #19C1FF;
 }
 
-.ttc-data-control .tabs label {
+.tabs label {
         display: block;
         cursor: pointer;
         font-weight: bold;
@@ -1399,6 +1399,43 @@
 
 .ttc-page-title .ttc-action {
         display: inline-block;
+}
+
+.ttc-display-area .tabs li a {
+    text-decoration: none;
+    color: gray;
+}
+
+.ttc-display-area .tabs li.selected a {
+    color: #444;
+}
+
+.ttc-display-area .tab-content div {
+    padding: 5px;
+}
+
+.ttc-display-area .tabs li {
+    background-color: white;
+    border: solid 1px lightgrey;
+}
+
+.ttc-display-area .tabs li.selected {
+    border-radius: 2px 2px 0px 0px;
+    border-bottom: solid 1px white;
+}
+
+.ttc-display-area .tab-content {
+    margin-left: 10px;
+    border: solid 1px lightgrey;
+    border-radius: 2px;
+    margin-top: -1px;
+}
+
+.ttc-display-area .tabs label {
+    display: block;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 2px 4px;
 }
 
 /** content Variable table **/

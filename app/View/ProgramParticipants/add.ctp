@@ -33,13 +33,7 @@
 		echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller', 'addParticipantSpan'));
     ?>
 	<div class="ttc-display-area display-height-size">
-	    <?php echo $this->Form->create('Participant');?>
-	        <fieldset>		
-	            <?php
-	                echo $this->Form->input('phone', array('label' => __('Phone')));
-	            ?>
-	        </fieldset>
-	    <?php echo $this->Form->end(__('Save'));?>
+	    <?php echo $this->element('participant_add_tabs', array('type' => 'add')); ?>
 	</div>
 </div>
 
