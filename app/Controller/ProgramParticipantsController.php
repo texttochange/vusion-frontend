@@ -68,7 +68,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $conditions     = array();
         
         if (!isset($this->params['named']['sort'])) {
-            $order = array('created' => 'desc');
+            $order = array('last-optin-date' => 'desc');
         } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
