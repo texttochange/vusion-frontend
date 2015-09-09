@@ -1,4 +1,6 @@
-<span class="tabs">
+<div class='table tabs' style='width:100%; margin-top:10px'>
+<div class='row' style='width:100%'>
+<span class='cell'>
 <ul>
 <li <?php echo ($type === 'add' ? 'class="selected"' : ''); ?> >
     <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'add')); ?>" >
@@ -12,6 +14,8 @@
 </li>
 </ul>
 </span>
+</div>
+</div>
 <?php
 switch ($type) {
 case 'add': 
