@@ -33,6 +33,7 @@ case 'add':
     echo $this->Form->input('phone', array('label' => __('Phone')));
 	break;
 case 'simulate':
+    $joinTypeSelect = true;
     echo $this->Html->tag('div', __('Program Join Type '), array('style'=>'margin-bottom:0px'));
     $options = array(
         'import' => __('Import'),
@@ -46,11 +47,14 @@ case 'simulate':
         'join-type',
         $options,
         $attributes);
-    
+    if (isset($this->Form->data['Participant']['join-type']) &&
+        $this->Form->data['Participant']['join-type'] == 'optin-keyword') {
+        $joinTypeSelect = false;
+    }
     echo $this->Form->input(
         'message',
         array(
-            'disabled' => true,
+            'disabled' => $joinTypeSelect,
             'rows' =>2,
             'label' => __('Message'),
             'name'=>'message',
