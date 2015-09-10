@@ -267,7 +267,9 @@ class History extends ProgramSpecificMongoModel
                 'equal-to' => array(
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'parameter-type' => 'text'))),
+                    'parameter-type' => 'text'),
+                'simulated' => array(
+                    'parameter-type' => 'none'))),
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
@@ -410,7 +412,10 @@ class History extends ProgramSpecificMongoModel
                 $condition['timestamp'] = '';
             }
         } elseif ($filterParam[1] == 'participant-phone') {
-            if ($filterParam[3]) {
+            if ($filterParam[2] == 'simulated') {
+                $simulatedParticipantPhoneNumbers = $this->getSimulatedParticipant();
+                $condition = $this->_createOrRegexQuery('participant-phone', $simulatedParticipantPhoneNumbers, "\\", '', 'i'); 
+            } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
                 } elseif ($filterParam[2] == 'start-with') {
@@ -542,11 +547,30 @@ class History extends ProgramSpecificMongoModel
             $phone = $history['History']['participant-phone'];
             $participant = $this->Participant->find('first', array(
                 'conditions' => array('phone' => $phone)));
-            $participantLabels = $participant['Participant']['profile'];
-            $history['History']['participant-labels'] = $participantLabels;
+            if ($participant) {
+                $participantLabels = $participant['Participant']['profile'];
+                $history['History']['participant-labels'] = $participantLabels;
+            }
         }
         return $histories;
     }
+    
 
+    public function getSimulatedParticipant()
+    {
+        $participantPhones = array();
+        $histories = $this->find('all');
+        foreach ($histories as &$history) {
+            $phone = $history['History']['participant-phone'];
+            $participant = $this->Participant->find('first', array(
+                'conditions' => array('phone' => $phone, 'simulate' => true)));
+            if ($participant) {
+                if (!in_array($participant['Participant']['phone'], $participantPhones)) {
+                    $participantPhones[] = $participant['Participant']['phone'];
+                }
+            }
+        }
+        return $participantPhones;
+    }
     
 }
