@@ -58,7 +58,7 @@ class Participant extends ProgramSpecificMongoModel
         //print_r($this->find('count', array('conditions' => array('phone' => '+'.$this->id))));
         if (parent::exists()) {
             return true;
-        } elseif ($this->find('count', array('conditions' => array('phone' => '+'.$this->id))) > 0) {
+        } elseif ($this->find('count', array('conditions' => array('phone' => $this->id))) > 0) {
             return true;
         } else {
             return false;
@@ -73,7 +73,7 @@ class Participant extends ProgramSpecificMongoModel
         return $this->find(
             'first', 
             array(
-                'conditions' => array('phone' => '+'.$id),
+                'conditions' => array('phone' => $id),
                 'fields' => $fields));
     }
 

@@ -13,7 +13,7 @@
         function Simulator(el, options) {
             
             // private variables
-            var phone = options.phone.replace(/\D/g,''),
+            var phone = options.phone.replace(/\#/g,'%23'),
 		    url = '../../programParticipants/view/' + phone,
 		    timeLastHistoryPulled = null;
 		    
