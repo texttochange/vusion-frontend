@@ -33,7 +33,7 @@ case 'add':
     echo $this->Form->input('phone', array('label' => __('Phone')));
 	break;
 case 'simulate':
-    $joinTypeSelect = true;
+    $joinTypeSelect = 'visibility:hidden';
     echo $this->Html->tag('div', __('Program Join Type '), array('style'=>'margin-bottom:0px'));
     $options = array(
         'import' => __('Import'),
@@ -49,23 +49,24 @@ case 'simulate':
         $attributes);
     if (isset($this->Form->data['Participant']['join-type']) &&
         $this->Form->data['Participant']['join-type'] == 'optin-keyword') {
-        $joinTypeSelect = false;
+        $joinTypeSelect = "visibility:visible";
     }
     echo $this->Form->input(
         'message',
         array(
-            'disabled' => $joinTypeSelect,
-            'rows' =>2,
-            'label' => __('Message'),
+            'placeholder' => 'Enter message here: Adding with message might fail if the corresponding Request doesn\'t exist.',
+            'rows' =>3,
+            'label' => '',
             'name'=>'message',
-            'id' => 'smessage'));
+            'id' => 'smessage',
+            'style' =>  $joinTypeSelect));
     echo '</div>';
     
     $this->Js->get("input[name*='join-type']")->event('change','
         if($(this).val() == "optin-keyword") {
-        $("#smessage").attr("disabled", false);
+        $("#smessage").attr("style", "visibility:visible");
         } else {
-        $("#smessage").attr("disabled", "disabled");
+        $("#smessage").attr("style", "visibility:hidden");
         $("#smessage").val("");
         }');
 	break;
