@@ -1555,6 +1555,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual("+254700866920", Participant::cleanPhone("00254700866920"));
         $this->assertEqual("+254700866920", Participant::cleanPhone("+254700866920�"));
         $this->assertEqual("+254700866920", Participant::cleanPhone(" +2547OO866920 "));
+        $this->assertEqual("#254700866920", Participant::cleanPhone(" #2547OO866920 "));
     }
     
     

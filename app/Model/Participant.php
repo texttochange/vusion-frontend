@@ -102,12 +102,12 @@ class Participant extends ProgramSpecificMongoModel
                 'message' => 'Please enter a phone number.'
                 ),
             'hasPlus'=>array(
-                'rule' => array('custom', '/^\+/'),
-                'message' => "A phone number must begin with a '+' sign and end with a serie of digits such as +3345678733.",
+                'rule' => array('custom', '/^[+#]/'),
+                'message' => "A phone number must begin with a '+ or #' sign and end with a serie of digits such as +3345678733.",
                 'required' => true
                 ),
             'validMSISDN'=>array(
-                'rule' => array('custom', '/^\+[0-9]+$/'),
+                'rule' => array('custom', '/^[+#]+[0-9]+$/'),
                 'message' => 'A phone number must only contain digits such as +3345678733.',
                 'required' => true
                 ),
@@ -261,11 +261,11 @@ class Participant extends ProgramSpecificMongoModel
     {
         if (isset($phone) and !empty($phone)) {
             $phone = trim($phone);           
-            $phone = preg_replace("/[^+\dO]/", "", $phone);
+            $phone = preg_replace("/[^+#\dO]/", "", $phone);
             //Replace letter O by zero
             $phone = preg_replace("/O/", "0", $phone);
             $phone = preg_replace("/^(00|0)/", "+", $phone);    
-            if (!preg_match('/^\+[0-9]+/', $phone)) { 
+            if (!preg_match('/^[+#]+[0-9]+/', $phone)) { 
                 $phone = "+" . $phone; 
             }
             return (string) $phone;
@@ -387,10 +387,9 @@ class Participant extends ProgramSpecificMongoModel
     
     
     public function generateSimulatedPhone()
-    {  
-        $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
+    { 
         for ($i=1,  $j=1; $i<$j+1; $i++) {
-            $sumilutorPhone = $this->cleanPhone($programInternationalPrefix . $i );
+            $sumilutorPhone = ("#" . $i );
             $result = $this->find('count', array(
                 'conditions' => array('phone' => $sumilutorPhone)));
             if ($result < 1) {
