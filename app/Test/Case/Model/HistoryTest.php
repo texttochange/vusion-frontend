@@ -43,7 +43,7 @@ class HistoryTestCase extends CakeTestCase
         $this->Participant->deleteAll(true, false);
     }
     
-    
+   
     public function testFindScriptFilter()
     {
         $participantsState = array(
@@ -220,7 +220,100 @@ class HistoryTestCase extends CakeTestCase
                 array('participant-phone' => array('$regex' => '^\\+255', '$options' => 'i')),
                 array('participant-phone' => array('$regex' => '^\\+256', '$options' => 'i')))));
     }
+  
     
+    public function testfromFilterToQueryCondition_simulatedParticipantPhone()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $participant = array(
+            'phone' => '+788601461',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'profile' => 'email:someone@gmail.com, town: kampala, accent: áéíóúüñ',
+            'simulate' => true
+            );
+        $this->Participant->create($participant);
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $participant_01 = array(
+            'phone' => '+78866788',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'simulate' => false
+            );
+        $this->Participant->create($participant_01);
+        $savedParticipant = $this->Participant->save($participant_01);
+        
+        $participant_01 = array(
+            'phone' => '+78866799',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'simulate' => true
+            );
+        $this->Participant->create($participant_01);
+        $savedParticipant = $this->Participant->save($participant_01);
+        
+        
+        $participant = $this->Participant->find('first', array(
+            'conditions' => array('phone' => '+788601461', 'simulate' => true)));
+        $history_01 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_01);
+        $this->History->save($history_01);
+        
+        $history_02 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866788',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_02);
+        $this->History->save($history_02);
+        
+        $history_03 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'All good carol',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_03);
+        $this->History->save($history_03);
+        
+        $history_04 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866799',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'All good tom',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_04);
+        $this->History->save($history_04);
+        
+        $filterParam = array(
+            1 => 'participant-phone', 
+            2 => 'simulated');
+        
+       $this->assertEqual(
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('$or' => array(
+                array('participant-phone' => array('$regex' => '^\\+788601461', '$options' => 'i')),
+                array('participant-phone' => array('$regex' => '^\\+78866799', '$options' => 'i')))));
+        
+       
+    }
     
     public function testfromFilterToQueryCondition_messageContent()
     {
