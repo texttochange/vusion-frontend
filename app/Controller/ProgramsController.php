@@ -185,43 +185,28 @@ class ProgramsController extends AppController
         $program = $this->Program->read(null, $id);
         $this->set('program', $program);
     }
-    
-
-    public function _ensureProgramDir($programDirPath)
-    {
-        if (!file_exists($programDirPath)) {
-            mkdir($programDirPath); 
-            chgrp($programDirPath, Configure::read('vusion.backendUser'));
-            chmod($programDirPath, 0774);
-        }
-        return true;
-    }
 
 
     public function add()
     {
         if ($this->request->is('post')) {
             $this->Program->create();
-            if ($this->Program->save($this->request->data)) {
-                $program = $this->request->data['Program'];
+            if ($program = $this->Program->save($this->request->data)) {
+                #$program = $this->request->data['Program'];
                 $requestSuccess = true;
-                $eventData = array(            
-                    'programDatabaseName' => $program['database'],
-                    'programName' => $program['name']);
+                $eventData = array(
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
                 $this->UserLogMonitor->setEventData($eventData);
-                
+        
                 $this->Session->setFlash(__('The program has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
+                    'default', array('class'=>'message success'));
                 //Start the backend
                 $this->_startBackendWorker(
-                    $this->request->data['Program']['url'],
-                    $this->request->data['Program']['database']
-                    );
+                    $program['Program']['url'],
+                    $program['Program']['database']);
                 //Create necessary folders
-                $programDirPath = WWW_ROOT . "files/programs/". $this->request->data['Program']['url'];
-                $this->_ensureProgramDir($programDirPath);
+                $this->Program->ensureProgramDir($program);
                 if (!empty($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);
@@ -318,11 +303,11 @@ class ProgramsController extends AppController
                 $program['Program']['url'],
                 $program['Program']['database']);
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
-            rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
-             $eventData = array(            
+            $this->Program->deleteProgramDir($program);
+            $eventData = array(            
                     'programDatabaseName' => $program['Program']['database'],
                     'programName' => $program['Program']['name']);
-                $this->UserLogMonitor->setEventData($eventData);   
+            $this->UserLogMonitor->setEventData($eventData);   
             
             $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
                 'default', array('class'=>'message success'));

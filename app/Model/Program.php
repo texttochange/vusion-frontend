@@ -334,7 +334,59 @@ class Program extends AppModel
         $db->drop();
         return true;
     }
-    
+
+
+    public static function getProgramDir($program) {
+        if (isset($program['Program']['url'])) {
+            $programUrl = $program['Program']['url'];
+        } else if (is_string($program)) {
+            $programUrl = $program;       
+        } else {
+            throw new Exception("Cannot generate program dir path.");
+        }
+        return WWW_ROOT . "files/programs/". $programUrl;
+    }
+
+    public static function getProgramDirImport($program) {
+        $programDir = Program::getProgramDir($program);
+        return $programDir . "/imported";
+    }
+
+
+    public static function ensureProgramDir($program) {
+        $programDirPath = Program::getProgramDir($program);
+        Program::ensureDir($programDirPath, True);
+        $programDirPathImported = Program::getProgramDirImport($program);
+        Program::ensureDir($programDirPathImported);
+        return $programDirPath;
+    }
+
+
+    public static function ensureProgramDirImported($program) {
+        $programDirPath = Program::getProgramDir($program);
+        Program::ensureDir($programDirPath, True);
+        $programDirPathImported = Program::getProgramDirImport($program);
+        Program::ensureDir($programDirPathImported);
+        return $programDirPathImported;
+    }
+
+
+    public static function deleteProgramDir($program) {
+        rmdir(Program::getProgramDir($program));
+    }
+
+
+    public static function ensureDir($dirPath, $backendAccess=False)
+    {
+        if (!file_exists($dirPath)) {
+            mkdir($dirPath); 
+            if (!$backendAccess) {
+                chgrp($dirPath, Configure::read('vusion.backendUser'));
+                chmod($dirPath, 0774);
+            }
+        }
+        return true;
+    }
     
     public static function matchProgramConditions($programDetails, $conditions=array())
     {
