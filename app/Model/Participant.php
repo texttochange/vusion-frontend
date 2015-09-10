@@ -387,10 +387,17 @@ class Participant extends ProgramSpecificMongoModel
     
     
     public function generateSimulatedPhone()
-    {
+    {  
         $programInternationalPrefix = $this->ProgramSetting->find('getProgramSetting', array('key' => 'international-prefix'));
-        $sumilutorPhone = $this->cleanPhone($programInternationalPrefix . uniqid());
-        return $sumilutorPhone;
+        for ($i=1,  $j=1; $i<$j+1; $i++) {
+            $sumilutorPhone = $this->cleanPhone($programInternationalPrefix . $i );
+            $result = $this->find('count', array(
+                'conditions' => array('phone' => $sumilutorPhone)));
+            if ($result < 1) {
+                return $sumilutorPhone;
+            }
+            $j++;
+        }
     }
         
     
