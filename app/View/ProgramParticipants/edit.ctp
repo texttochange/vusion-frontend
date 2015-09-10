@@ -16,7 +16,7 @@
        $this->Js->get('#button-save')->event('click',
            '$("#ParticipantEditForm").submit()' , true);
 		
-       if (isset($participant['Participant']['simulate'])) {
+       if (isset($participant['Participant']['simulate']) && ($participant['Participant']['simulate'])) {
             $contentActions[] = $this->AclLink->generateButton(
                 __('Simulate'),
                 $programDetails['url'],

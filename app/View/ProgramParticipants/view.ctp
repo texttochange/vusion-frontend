@@ -55,7 +55,7 @@
                 array('class'=>'ttc-button'),
                 $participant['Participant']['_id']);
         }
-        if (isset($participant['Participant']['simulate'])) {
+        if (isset($participant['Participant']['simulate']) && ($participant['Participant']['simulate'])) {
             $contentActions[] = $this->AclLink->generateButton(
                 __('Simulate'),
                 $programDetails['url'],
