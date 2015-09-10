@@ -413,8 +413,7 @@ class History extends ProgramSpecificMongoModel
             }
         } elseif ($filterParam[1] == 'participant-phone') {
             if ($filterParam[2] == 'simulated') {
-                $simulatedParticipantPhoneNumbers = $this->getSimulatedParticipant();
-                $condition = $this->_createOrRegexQuery('participant-phone', $simulatedParticipantPhoneNumbers, "\\", '', 'i'); 
+                $condition['participant-phone'] = array('$regex' => "^#"); 
             } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
@@ -554,23 +553,6 @@ class History extends ProgramSpecificMongoModel
         }
         return $histories;
     }
-    
 
-    public function getSimulatedParticipant()
-    {
-        $participantPhones = array();
-        $histories = $this->find('all');
-        foreach ($histories as &$history) {
-            $phone = $history['History']['participant-phone'];
-            $participant = $this->Participant->find('first', array(
-                'conditions' => array('phone' => $phone, 'simulate' => true)));
-            if ($participant) {
-                if (!in_array($participant['Participant']['phone'], $participantPhones)) {
-                    $participantPhones[] = $participant['Participant']['phone'];
-                }
-            }
-        }
-        return $participantPhones;
-    }
     
 }
