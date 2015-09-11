@@ -271,10 +271,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         } 
         
-        $filePath = WWW_ROOT . "files/programs/" . $programUrl;
-        if (!file_exists($filePath)) {
-            mkdir($filePath);
-        }
+        $filePath = Program::ensureProgramDir($programUrl);
+
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow) {
             $timestamp = $programNow->format("Y-m-d_H-i-s");
@@ -773,9 +771,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 } else { 
                     $message = __('Error while uploading the file: %s.', $this->request->data['Import']['file']['error']);
                 }
-                $this->Session->setFlash($message, 
-                    'default', array('class' => "message failure")
-                    );
+                $this->Session->setFlash($message);
                 return;
             }
             
@@ -785,16 +781,15 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             while(!feof($handle)){
                 $line = fgets($handle);
                 $linecount++;
+                // Stop iterating when limit is reached
+                if ($linecount >= $importMaxParticipants) {
+                    $this->Session->setFlash(__('Max limit of 10,000 participants exceeded, please break file into smaller parts'));
+                    fclose($handle);
+                    return;
+                }
             }
             fclose($handle);
-            
-            if ($linecount >= $importMaxParticipants) {
-                $this->Session->setFlash(__('Max limit of 10,000 participants exceeded, please break file into smaller parts'), 
-                    'default', array('class' => "message failure")
-                    );
-                return;
-            }
-            
+
             $tags = null;
             if (isset($this->request->data['Import']['tags'])) {
                 $tags = $this->request->data['Import']['tags'];
@@ -807,12 +802,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             
             $fileName = $this->request->data['Import']['file']['name'];
             
-            $filePath = WWW_ROOT . "files/programs/" . $programUrl; 
-            
-            if (!file_exists(WWW_ROOT . "files/programs/".$programUrl)) {
-                mkdir($filePath);
-                chmod($filePath, 0764);
-            }
+            $filePath = Program::ensureProgramDirImported($programUrl);
             
             /** in case the file has already been created, 
             * the chmod function should not be called.
@@ -843,10 +833,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 }
                 $requestSuccess = true;
             } else {
-                $this->Session->setFlash(
-                    $this->Participant->importErrors[0], 
-                    'default', array('class' => "message failure")
-                    );
+                $this->Session->setFlash($this->Participant->importErrors[0]);
             }
             // throw new Exception();
             //Remove file at the end of the import
