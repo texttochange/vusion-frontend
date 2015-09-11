@@ -322,14 +322,13 @@ class Participant extends ProgramSpecificMongoModel
         $this->_setDefault('profile', array());
         $this->data['Participant']['profile'] = Participant::cleanProfile($this->data['Participant']['profile']);
         
+        $this->_setDefault('enrolled', array());    
+        $this->_editEnrolls();
         if (!$this->data['Participant']['_id']) {
             $this->_setDefault('last-optin-date', $programNow->format("Y-m-d\TH:i:s"));
             $this->_setDefault('last-optout-date', null);
             $this->_setDefault('session-id', $this->gen_uuid());
-            $this->_setDefault('enrolled', array());            
-        } else {
-            $this->_editEnrolls();
-        }
+        } 
         return true;
     }
     
@@ -485,64 +484,63 @@ class Participant extends ProgramSpecificMongoModel
     
     protected function _editEnrolls()
     {
-        $participantUpdateData = $this->data;
-        
-        $originalParticipantData  = $this->read(); 
+        $updatedParticipantData   = $this->data;
+        $originalParticipantData = $this->read(); 
         // $this->read() deletes already processed info and
         // and they must all be re-initialized.
-        
+
         // ******** re-initialize already processed information *********/////
-        $this->data['Participant'] = $participantUpdateData['Participant'];
+        $this->data['Participant'] = $updatedParticipantData['Participant'];
         // ******************************************************************////
-        
+
         $programNow                = $this->ProgramSetting->getProgramTimeNow();
-        
-        if (!isset($participantUpdateData['Participant']['enrolled']) or 
-            !is_array($participantUpdateData['Participant']['enrolled'])) {
-        $this->data['Participant']['enrolled'] = array();
-        return; 
-            }
-            
-            if (isset($participantUpdateData['Participant']['enrolled'])
-                and $participantUpdateData['Participant']['enrolled'] == array()) {
+
+        if (!isset($updatedParticipantData['Participant']['enrolled']) or 
+            !is_array($updatedParticipantData['Participant']['enrolled'])) {
             $this->data['Participant']['enrolled'] = array();
             return;
-                }
-                
-                $this->data['Participant']['enrolled'] = array();
-                foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
-                    $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
-                    $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
-                    
-                    if ($originalParticipantData['Participant']['enrolled'] == array()) {
-                        $this->data['Participant']['enrolled'][] = array(
-                            'dialogue-id' => $dialogueId,
-                            'date-time' => $enrollTime
-                            );
-                        continue;
-                    }
-                    foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
-                        if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
-                            continue;
-                        
-                        if ($dialogueId == $orignalEnroll['dialogue-id']) {
-                            $this->data['Participant']['enrolled'][] = $orignalEnroll;
-                        } else {
-                            $dateTime = $programNow->format("Y-m-d\TH:i:s");                            
-                            if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
-                                $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
-                                if ($index) {
-                                    $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
-                                }
-                            }
-                            $this->data['Participant']['enrolled'][] = array(
-                                'dialogue-id' => $dialogueId,
-                                'date-time' => $dateTime
-                                );
-                            break;
+        }
+
+        if (isset($updatedParticipantData['Participant']['enrolled']) and
+            $updatedParticipantData['Participant']['enrolled'] == array()) {
+            $this->data['Participant']['enrolled'] = array();
+            return;
+        }
+
+        $this->data['Participant']['enrolled'] = array();
+        foreach ($updatedParticipantData['Participant']['enrolled'] as $key => $value) {
+            $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
+            $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
+            
+            if ($originalParticipantData['Participant']['enrolled'] == array()) {
+                $this->data['Participant']['enrolled'][] = array(
+                    'dialogue-id' => $dialogueId,
+                    'date-time' => $enrollTime
+                    );
+                continue;
+            }
+            foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
+                if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
+                    continue;
+
+                if ($dialogueId == $orignalEnroll['dialogue-id']) {
+                    $this->data['Participant']['enrolled'][] = $orignalEnroll;
+                } else {
+                    $dateTime = $programNow->format("Y-m-d\TH:i:s");
+                    if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
+                        $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
+                        if ($index) {
+                            $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
                         }
                     }
+                    $this->data['Participant']['enrolled'][] = array(
+                        'dialogue-id' => $dialogueId,
+                        'date-time' => $dateTime
+                        );
+                    break;
                 }
+            }
+        }
     }
     
     
@@ -607,7 +605,7 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    public function import($programUrl, $fileFullPath, $tags=null, $replaceTagsAndLabels=false)
+    public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $replaceTagsAndLabels=false)
     {
         $defaultTags = array('imported');
         if (isset($tags)) {
@@ -635,15 +633,15 @@ class Participant extends ProgramSpecificMongoModel
         }
         
         if ($ext == 'csv') {
-            return $this->importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
+            return $this->importCsv($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels);
         } else if ($ext == 'xls') {
-            return $this->importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
+            return $this->importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels);
         }
         
     }
     
     
-    public function saveParticipantWithReport($participant, $replaceTagsAndLabels, $fileLine=null)
+    public function saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $fileLine=null)
     {
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
@@ -665,7 +663,8 @@ class Participant extends ProgramSpecificMongoModel
             $participant            = $savedParticipant['Participant'];
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
-        } 
+        }
+        $participant['enrolled'] = $enrolled;
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
@@ -690,8 +689,9 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    public function importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
+    public function importCsv($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
     {
+      
         $count        = 0;
         $entry        = array();
         $hasHeaders   = false;
@@ -758,7 +758,7 @@ class Participant extends ProgramSpecificMongoModel
             //Save if not a duplicate
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[]                            = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
+                $report[]                            = $this->saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $count + 1);
             }
             $count++; 
         }
@@ -778,7 +778,7 @@ class Participant extends ProgramSpecificMongoModel
     }    
     
     
-    private function importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
+    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
     {
         require_once 'excel_reader2.php';
         
@@ -830,7 +830,7 @@ class Participant extends ProgramSpecificMongoModel
             }
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant,  $replaceTagsAndLabels, $i);
+                $report[] = $this->saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $i);
             }
         }
         return $report;
