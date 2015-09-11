@@ -305,7 +305,7 @@ class HistoryTestCase extends CakeTestCase
         
        $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('participant-phone' => array('$regex' => '^#')));
+            array('participant-phone' => array('$regex' => '^\#')));
         
        
     }

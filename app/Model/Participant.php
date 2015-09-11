@@ -55,7 +55,6 @@ class Participant extends ProgramSpecificMongoModel
 
     
     public function exists() {
-        //print_r($this->find('count', array('conditions' => array('phone' => '+'.$this->id))));
         if (parent::exists()) {
             return true;
         } elseif ($this->find('count', array('conditions' => array('phone' => $this->id))) > 0) {
@@ -101,21 +100,16 @@ class Participant extends ProgramSpecificMongoModel
                 'rule' => array('notempty'),
                 'message' => 'Please enter a phone number.'
                 ),
-            'hasPlus'=>array(
-                'rule' => array('custom', '/^[+#]/'),
-                'message' => "A phone number must begin with a '+ or #' sign and end with a serie of digits such as +3345678733.",
-                'required' => true
-                ),
-            'validMSISDN'=>array(
-                'rule' => array('custom', '/^[+#]+[0-9]+$/'),
-                'message' => 'A phone number must only contain digits such as +3345678733.',
-                'required' => true
-                ),
             'isReallyUnique' => array(
                 'rule' => 'isReallyUnique',
                 'message' => 'This phone number already exists in the participant list.',
                 'required' => true
-                )
+                ),
+            'validPhone'=>array(
+                'rule' => 'validPhone',
+                'message' => 'noMessage',
+                'required' => true
+                ),            
             ),
         'profile' => array(
             'validateLabels' => array(
@@ -256,16 +250,29 @@ class Participant extends ProgramSpecificMongoModel
     }
     
 
+    public function validPhone($check)
+    {
+        if ($this->data['Participant']['simulate']) {
+            if (!preg_match(VusionConst::PHONE_SIMULATED_REGEX, $check['phone'])) {
+                return VusionConst::PHONE_SIMULATED_REGEX_FAIL_MESSAGE;
+            }
+        } else {
+            if (!preg_match(VusionConst::PHONE_NORMAL_REGEX, $check['phone'])) {
+                return VusionConst::PHONE_NORMAL_REGEX_FAIL_MESSAGE;
+            }
+        }
+    }
+
     
     public static function cleanPhone($phone) 
     {
         if (isset($phone) and !empty($phone)) {
             $phone = trim($phone);           
-            $phone = preg_replace("/[^+#\dO]/", "", $phone);
+            $phone = preg_replace("/[^\+\#\dO]/", "", $phone);
             //Replace letter O by zero
             $phone = preg_replace("/O/", "0", $phone);
             $phone = preg_replace("/^(00|0)/", "+", $phone);    
-            if (!preg_match('/^[+#]+[0-9]+/', $phone)) { 
+            if (!preg_match('/^[+\#]+[0-9]+/', $phone)) { 
                 $phone = "+" . $phone; 
             }
             return (string) $phone;

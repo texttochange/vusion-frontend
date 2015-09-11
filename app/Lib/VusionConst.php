@@ -56,6 +56,10 @@ class VusionConst
     const CONTENT_VARIABLE_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\.\,\+\/-\:]*$/u';
     const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only space, letters, numbers or the characters ,.+/-: for a value, e.g 'new value1'.";
 
+    const PHONE_NORMAL_REGEX = '/^\+[0-9]+$/';
+    const PHONE_NORMAL_REGEX_FAIL_MESSAGE = "A phone number must begin with a '+' sign and end with a serie of digits such as +335666555.";
+    const PHONE_SIMULATED_REGEX = '/^\#[0-9]+$/';
+    const PHONE_SIMULATED_REGEX_FAIL_MESSAGE = "A phone number must begin with a '#' sign and end with a serie of digits such as #33.";
     # group of regex to hepl at different stage of the validation of dynamic content => (content variables)
     const PARTICIPANT_CUSTOMIZED_CONTENT_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]*(_raw)?$/u';
 

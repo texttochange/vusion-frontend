@@ -413,7 +413,7 @@ class History extends ProgramSpecificMongoModel
             }
         } elseif ($filterParam[1] == 'participant-phone') {
             if ($filterParam[2] == 'simulated') {
-                $condition['participant-phone'] = array('$regex' => "^#"); 
+                $condition['participant-phone'] = array('$regex' => "^\#"); 
             } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
