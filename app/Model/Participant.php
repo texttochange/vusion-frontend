@@ -99,17 +99,17 @@ class Participant extends ProgramSpecificMongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter a phone number.'
+                ),            
+            'validPhone'=>array(
+                'rule' => 'validPhone',
+                'message' => 'noMessage',
+                'required' => true
                 ),
             'isReallyUnique' => array(
                 'rule' => 'isReallyUnique',
                 'message' => 'This phone number already exists in the participant list.',
                 'required' => true
                 ),
-            'validPhone'=>array(
-                'rule' => 'validPhone',
-                'message' => 'noMessage',
-                'required' => true
-                ),            
             ),
         'profile' => array(
             'validateLabels' => array(
@@ -261,6 +261,7 @@ class Participant extends ProgramSpecificMongoModel
                 return VusionConst::PHONE_NORMAL_REGEX_FAIL_MESSAGE;
             }
         }
+        return true;
     }
 
     
