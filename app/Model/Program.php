@@ -336,7 +336,23 @@ class Program extends AppModel
     }
 
 
-    public static function getProgramDir($program) {
+    public function afterSave($created, $options) 
+    {
+        if ($created) {
+            $this->ensureProgramDir($this->data);
+        }
+        return true;
+    }
+
+
+    public function afterDelete()
+    {
+        $this->deleteProgramDir($this->data);
+        return true;
+    }   
+
+    public static function getProgramDir($program)
+    {
         if (isset($program['Program']['url'])) {
             $programUrl = $program['Program']['url'];
         } else if (is_string($program)) {
@@ -347,13 +363,15 @@ class Program extends AppModel
         return WWW_ROOT . "files/programs/". $programUrl;
     }
 
-    public static function getProgramDirImport($program) {
+    public static function getProgramDirImport($program)
+    {
         $programDir = Program::getProgramDir($program);
         return $programDir . "/imported";
     }
 
 
-    public static function ensureProgramDir($program) {
+    public static function ensureProgramDir($program)
+    {
         $programDirPath = Program::getProgramDir($program);
         Program::ensureDir($programDirPath, True);
         $programDirPathImported = Program::getProgramDirImport($program);
@@ -362,7 +380,8 @@ class Program extends AppModel
     }
 
 
-    public static function ensureProgramDirImported($program) {
+    public static function ensureProgramDirImported($program)
+    {
         $programDirPath = Program::getProgramDir($program);
         Program::ensureDir($programDirPath, True);
         $programDirPathImported = Program::getProgramDirImport($program);
@@ -371,8 +390,22 @@ class Program extends AppModel
     }
 
 
-    public static function deleteProgramDir($program) {
-        rmdir(Program::getProgramDir($program));
+    public static function deleteProgramDir($program)
+    {
+        Program::deleteDir(Program::getProgramDirImport($program));
+        Program::deleteDir(Program::getProgramDir($program));
+    }
+
+    public static function deleteDir($dir)
+    {
+        if (file_exists($dir)) {
+            $files = glob($dir . '/*'); // get all file names
+            foreach($files as $file){ // iterate files
+              if(is_file($file))
+                unlink($file); // delete file
+            }
+            rmdir($dir);
+        }
     }
 
 

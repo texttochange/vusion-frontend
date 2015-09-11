@@ -206,7 +206,6 @@ class ProgramsController extends AppController
                     $program['Program']['url'],
                     $program['Program']['database']);
                 //Create necessary folders
-                $this->Program->ensureProgramDir($program);
                 if (!empty($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);
