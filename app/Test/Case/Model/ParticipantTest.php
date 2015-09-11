@@ -55,10 +55,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual($savedParticipant['Participant']['model-version'], '5');  
         $this->assertRegExp('/^[0-9a-fA-F]{32}/', $savedParticipant['Participant']['session-id']);
         $this->assertRegExp('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $savedParticipant['Participant']['last-optin-date']);
-        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null);    
-        $this->assertTrue(is_array( $savedParticipant['Participant']['tags']));
-        $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
-        $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
+        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null);
     }
     
     
@@ -66,19 +63,16 @@ class ParticipantTestCase extends CakeTestCase
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $participant2 = array(
-            'phone' => '#8788',
             'simulate' => true
             );
         $this->Participant->create();
         
         $savedParticipant = $this->Participant->save($participant2);
-        $this->assertEqual($savedParticipant['Participant']['model-version'], '5');  
+        $this->assertEqual($savedParticipant['Participant']['model-version'], '5');
+        $this->assertEqual($savedParticipant['Participant']['phone'], '#1');
         $this->assertRegExp('/^[0-9a-fA-F]{32}/', $savedParticipant['Participant']['session-id']);
         $this->assertRegExp('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $savedParticipant['Participant']['last-optin-date']);
-        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null);    
-        $this->assertTrue(is_array( $savedParticipant['Participant']['tags']));
-        $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
-        $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
+        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null); 
     }
     
     
