@@ -286,7 +286,7 @@ class ProgramUnattachedMessagesController extends BaseProgramSpecificController
         foreach ($data['UnattachedMessage']['send-to-phone'] as $participantPhone) {
             $phone = $this->Participant->cleanPhone($participantPhone);
             $report[] = $this->Participant->saveParticipantWithReport(
-                array('phone' => $phone), false);
+                array('phone' => $phone), null, false);
         }
         if ($report) {
             foreach($report as $participantReport) {

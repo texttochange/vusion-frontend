@@ -738,6 +738,7 @@ class ParticipantTestCase extends CakeTestCase
             'testUrl',
             TESTS.'files/well_formatted_participants_with_tags_2.csv',
             null,
+            null,
             true);
 
         $this->assertEquals(2, $this->Participant->find('count'));
@@ -774,6 +775,7 @@ class ParticipantTestCase extends CakeTestCase
         $report = $this->Participant->import(
             'testUrl',
             TESTS.'files/no_label_one_column_2.csv',
+            null,
             null,
             true);
 
@@ -995,6 +997,7 @@ class ParticipantTestCase extends CakeTestCase
             'testUrl',
             TESTS.'files/well_formatted_participants_with_tags_2.xls',
             null,
+            null,
             true);
         $this->assertEquals(2, $this->Participant->find('count'));
         $participant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
@@ -1030,6 +1033,7 @@ class ParticipantTestCase extends CakeTestCase
         $report = $this->Participant->import(
             'testUrl',
             TESTS.'files/no_label_one_column_2.xls',
+            null,
             null,
             true);
         $this->assertEquals(2, $this->Participant->find('count'));

@@ -84,7 +84,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             'order' => $order);
         $this->paginate = $paginate;
         $participants   = $this->paginate('Participant');
-        
         $this->set(compact('participants', 'requestSuccess', 'order'));
     }
     
@@ -867,6 +866,11 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $tags = $this->request->data['Import']['tags'];
             }
             
+            $enrolled = null;
+            if (isset($this->request->data['Import']['enrolled'])) {
+                $enrolled = $this->request->data['Import']['enrolled'];
+            }
+            
             $replaceTagsAndLabels = false;
             if (isset($this->request->data['Import']['replace-tags-and-labels'])) {
                 $replaceTagsAndLabels = true;
@@ -900,8 +904,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $programUrl, 
                 $filePath . DS . $fileName, 
                 $tags,
+                $enrolled,
                 $replaceTagsAndLabels
                 );
+            
             if ($report) {
                 foreach ($report as $participantReport) {
                     if ($participantReport['saved']) {
@@ -919,7 +925,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             //Remove file at the end of the import
             unlink($filePath . DS . $fileName);
         }
-        $this->set(compact('report', 'requestSuccess'));
+        $selectOptions = $this->_getSelectOptions();
+        $this->set(compact('report', 'requestSuccess', 'selectOptions'));
     }
     
     
