@@ -76,6 +76,24 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
+    public function testGenerate_simulatedParticipantPhone()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $participant2 = array(
+            'simulate' => true
+            );
+        $this->Participant->create();
+        
+        $savedParticipant = $this->Participant->save($participant2);       
+        $this->assertEqual($savedParticipant['Participant']['model-version'], '5');
+        //first generated simulated phone #1
+        $this->assertEqual($savedParticipant['Participant']['phone'], '#1');
+        //second generated simulated phone #2 if #1 is saved
+        $secondSimulatedPhone =$this->Participant->generateSimulatedPhone();
+        $this->assertEqual( $secondSimulatedPhone, '#2');
+    }
+    
+    
     public function testSave_normalParticipant_fail()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');

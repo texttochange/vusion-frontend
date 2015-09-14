@@ -1,6 +1,6 @@
 <div class="participants form width-size">
     <?php
-        $contentTitle       = __('Add Simulator Participant'); 
+        $contentTitle       = __('Add Participant'); 
         $contentActions     = array();
         $addParticipantSpan = 'simulate';
         $controller         = 'programParticipants';
@@ -17,6 +17,18 @@
                 'id' => 'button-save'));
         $this->Js->get('#button-save')->event('click',
             '$("#ParticipantAddForm").submit()' , true);
+        
+        $contentActions[] = $this->Html->link(__('Import Participant(s)'),
+		    array('program' => $programDetails['url'],
+		        'controller' => $controller,
+		        'action' => 'import'), 
+		    array('class'=>'ttc-button'));
+		
+		$contentActions[] = $this->Html->link(__('View Participant(s)'),
+		    array('program' => $programDetails['url'],
+		        'controller' => $controller,
+		        'action' => 'index'),
+		    array('class'=>'ttc-button'));
         
         echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller', 'addParticipantSpan'));
     ?>

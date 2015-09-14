@@ -4,7 +4,7 @@
 <ul>
 <li <?php echo ($type === 'add' ? 'class="selected"' : ''); ?> >
     <a href="<?php echo $this->Html->url(array('program' => $programDetails['url'], 'action' => 'add')); ?>" >
-    <label><?php echo __("Normal"); ?></label>
+    <label><?php echo __("Real"); ?></label>
     </a>
 </li>
 <li <?php echo ($type === 'simulate' ? 'class="selected"' : ''); ?> >
@@ -34,7 +34,7 @@ case 'add':
 	break;
 case 'simulate':
     $joinTypeSelect = 'visibility:hidden';
-    echo $this->Html->tag('div', __('Program Join Type '), array('style'=>'margin-bottom:0px'));
+    echo $this->Html->tag('div', __('Optin ways '), array('style'=>'margin-bottom:0px'));
     $options = array(
         'import' => __('Import'),
         'optin-keyword' => __('Optin from Keyword'));
@@ -54,7 +54,7 @@ case 'simulate':
     echo $this->Form->input(
         'message',
         array(
-            'placeholder' => 'Enter message here: Adding with message might fail if the corresponding Request doesn\'t exist.',
+            'placeholder' => 'Enter message here. Simulated incoming message will fail, if no corresponding Request with an optin action exist.',
             'rows' =>3,
             'label' => '',
             'name'=>'message',

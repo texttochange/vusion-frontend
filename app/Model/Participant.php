@@ -395,11 +395,11 @@ class Participant extends ProgramSpecificMongoModel
     public function generateSimulatedPhone()
     { 
         for ($i=1; $i<$i+1; $i++) {
-            $sumilutorPhone = ("#" . $i );
+            $simulatedPhone = ("#" . $i );
             $result = $this->find('count', array(
-                'conditions' => array('phone' => $sumilutorPhone)));
+                'conditions' => array('phone' => $simulatedPhone)));
             if ($result < 1) {
-                return $sumilutorPhone;
+                return $simulatedPhone;
             }
         }
     }
