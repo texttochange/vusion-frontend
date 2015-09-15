@@ -78,11 +78,9 @@
         'import',
         array('class' => 'ttc-button'));
 
-    $contentActions[] = $this->AclLink->generateButton(
-        __('Filter'), 
-        $programDetails['url'],
-        'programParticipants',
-        '',
+    $contentActions[] = $this->Html->tag(
+        'span',
+        __('Filter'),
         array('class' => 'ttc-button', 'name' => 'add-filter'));
     $this->Js->get('[name=add-filter]')->event(
         'click',
