@@ -31,7 +31,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         'Paginator' => array(
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
-        'ArchivedProgram');
+        'ArchivedProgram',
+        'Simulator');
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Paginator' => array(
@@ -66,9 +67,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $order          = null;
         $conditions     = array();
         
-        if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
+        if (!isset($this->params['named']['sort'])) {
+            $order = array('last-optin-date' => 'desc');
+        } else if (isset($this->params['named']['direction'])) {
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
+        
         $conditions = $this->Filter->getConditions(
             $this->Participant,
             array(),
@@ -410,6 +414,66 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
+    public function addSimulated() 
+    {
+        $programUrl     = $this->params['program'];
+        $requestSuccess = false;
+        $data           = $this->_ajaxDataPatch();
+        
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            return;
+        }
+        
+        if ($this->request->is('post')) {
+            $savedParticipant                = null;
+            $data['Participant']['simulate'] = true;
+            $this->Participant->create();
+            
+            if ($data['Participant']['join-type'] == 'optin-keyword') {
+                $optinMessage = $data['message'];
+                $form         = $this->Participant->generateSimulatedPhone();
+                $this->_sendSimulateMo($programUrl, $form,  $optinMessage);
+                return;
+            }
+            $data['Participant']['tags'] = Participant::getDefaultImportedTag();
+            if ($savedParticipant = $this->Participant->save($data['Participant'])) {
+                $this->_notifyUpdateBackendWorker(
+                    $programUrl,
+                    $savedParticipant['Participant']['phone']);
+                $requestSuccess = true;
+                $this->Session->setFlash(__('The participant has been saved.'),
+                    'default', array('class'=>'message success'));
+                if (!$this->_isAjax()) {
+                    $this->redirect(array(
+                        'program' => $programUrl,  
+                        'controller' => 'programParticipants',
+                        'action' => 'simulateMo',
+                        $savedParticipant['Participant']['_id']));
+                }
+            } else {
+                $this->Session->setFlash(__('The simulate participant could not be saved.'));
+            }
+            $this->set(compact('requestSuccess', 'savedParticipant'));
+        } 
+    }
+    
+    
+    protected function _sendSimulateMo($programUrl, $form,  $optinMessage) 
+    {
+        if ($optinMessage) {
+            $this->VumiRabbitMQ->sendMessageToSimulateMO($programUrl, $form,  $optinMessage);
+            $this->Session->setFlash(__('Optin message has been sent, this will create a participant if you used the right Optin keyword'),
+                'default', array('class'=>'message success'));
+            $this->redirect(array(
+                'program' => $programUrl,  
+                'controller' => 'programParticipants',
+                'action' => 'index'));
+        } else {
+            $this->Session->setFlash(__('The simulate participant could not be saved. Enter Optin message'));
+        }
+    }
+    
     protected function _getSelectOptions()
     {
         $selectOptions = array();
@@ -499,7 +563,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                     $oldEnrolls[] = $enrolledIn['dialogue-id'];
             }
         }
-        $this->set(compact('oldEnrolls', 'selectOptions'));
+        $this->set(compact('oldEnrolls', 'selectOptions', 'participant'));
     }
     
     
@@ -572,7 +636,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
-            if (isset($include) && $include=="history") {
+            if (isset($participant['Participant']['simulate']) || (isset($include) && $include=="history")) {
                 $this->History->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);
@@ -725,25 +789,29 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function view() 
     {
+        $requestSuccess = false;
         $id = $this->params['id'];
         
         $this->Participant->id = $id;
         if (!$this->Participant->exists()) {
+            $this->set(compact('requestSuccess'));
             throw new NotFoundException(__('Invalid participant'));
         }
-        $participant                  = $this->Participant->read(null, $id);
+        $requestSuccess = true;
+        $participant = $this->Participant->read(null, $id);
+        $participant = $this->Dialogue->fromDialogueIdToName($participant);
+        $historyFrom = (isset($this->request->query['history_from'])? $this->request->query['history_from'] : null);
         $dialoguesInteractionsContent = $this->Dialogue->getDialoguesInteractionsContent();
         $histories                    = $this->History->getParticipantHistory(
             $participant['Participant']['phone'],
-            $dialoguesInteractionsContent
-            );
-        
+            $dialoguesInteractionsContent,
+            $historyFrom);
+
         $schedules = $this->Schedule->getParticipantSchedules(
             $participant['Participant']['phone'],
-            $dialoguesInteractionsContent
-            );
-        
-        $this->set(compact('participant','histories', 'schedules'));
+            $dialoguesInteractionsContent);
+
+        $this->set(compact('participant','histories', 'schedules','requestSuccess'));
     }
     
     
@@ -883,6 +951,24 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $this->set('validationErrors', $valid);
         }
         $this->set(compact('requestSuccess'));
+    }
+    
+    
+    public function simulateMo()
+    {
+        $requestSuccess = true;
+        $id                    = $this->params['id'];
+        $program               = $this->params['program'];
+        $this->Participant->id = $id;
+        $data           = $this->_ajaxDataPatch();
+        $participant    = $this->_loadParticipantId($data);
+       
+        if ($this->request->is('post')) {
+            $message = $this->request->data['message'];
+            $from    = $this->request->data['phone'];
+            $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
+        }
+        $this->set(compact('requestSuccess', 'participant'));
     }
     
     

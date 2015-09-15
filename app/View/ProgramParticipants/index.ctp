@@ -115,7 +115,7 @@
 	              <td colspan=7><?php echo __("No results found.") ?></td>
 	          </tr>
 	      <?php } else {?>   
-	      <?php foreach ($participants as $participant): ?>
+	      <?php foreach ($participants as $participant):?>
 	      <tr class="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>"
 	      title="<?php echo ((!isset($participant['Participant']['session-id'])) ? 'optout' : '');?>"
 	      >
@@ -194,6 +194,11 @@
 	                           null,
 	                           __('Are you sure you want to delete participant %s ?', $participant['Participant']['phone'])); ?>
 	                   <?php } ?>
+	                   <?php
+	                   if (isset($participant['Participant']['simulate']) && ($participant['Participant']['simulate']) ) {
+	                       echo $this->Html->link(__('Simulate'), array('program' => $programDetails['url'], 'controller' => 'programParticipants', 'action' => 'simulateMo', $participant['Participant']['_id']));
+	                   }
+	                   ?>
 	              </td>
 	      </tr>
 	          <?php endforeach; ?>

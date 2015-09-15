@@ -9,6 +9,7 @@ class ScriptMaker
         $dialogue['Dialogue'] = array(
             'activated' => 0,
             'auto-enrollment' => 'none',
+            'name' => 'my dialogue',
             'interactions'=> array(
                 array(
                     'type-schedule' => 'fixed-time',

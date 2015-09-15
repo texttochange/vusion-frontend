@@ -107,7 +107,7 @@ class WorkerMessageMakerTest extends CakeTestCase
             'session_event'=> null,
             'transport_name' =>'',
             'transport_type' => '',
-            'transport_metadata' => '',
+            'transport_metadata' => array('simulated' => true),
             'helper_metadata' => ''
             );
         $msg = $this->workerMessageMaker->transportUserMessage('256000', 'Hello');
