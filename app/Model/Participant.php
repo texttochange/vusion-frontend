@@ -401,7 +401,7 @@ class Participant extends ProgramSpecificMongoModel
     public function generateSimulatedPhone()
     {  
         $i=1;
-        while ($i<$i+1) {
+        while (true) {
             $simulatedPhone = ("#" . $i );
             $result = $this->find('count', array(
                 'conditions' => array('phone' => $simulatedPhone)));
