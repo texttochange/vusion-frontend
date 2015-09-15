@@ -436,6 +436,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $this->_sendSimulateMo($programUrl, $form,  $optinMessage);
                 return;
             }
+            $data['Participant']['tags'] = Participant::getDefaultImportedTag();
             if ($savedParticipant = $this->Participant->save($data['Participant'])) {
                 $this->_notifyUpdateBackendWorker(
                     $programUrl,
@@ -635,7 +636,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             $this->Schedule->deleteAll(
                 array('participant-phone' => $participant['Participant']['phone']),
                 false);
-            if (isset($include) && $include=="history") {
+            if (isset($participant['Participant']['simulate']) || (isset($include) && $include=="history")) {
                 $this->History->deleteAll(
                     array('participant-phone' => $participant['Participant']['phone']),
                     false);

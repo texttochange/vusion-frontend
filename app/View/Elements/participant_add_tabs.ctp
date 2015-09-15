@@ -34,13 +34,12 @@ case 'add':
 	break;
 case 'simulate':
     $joinTypeSelect = 'visibility:hidden';
-    echo $this->Html->tag('div', __('Optin ways '), array('style'=>'margin-bottom:0px'));
+    echo $this->Html->tag('div', __('Add the participant ...'), array('style'=>'margin-bottom:0px'));
     $options = array(
-        'import' => __('Import'),
-        'optin-keyword' => __('Optin from Keyword'));
+        'import' => __('as an import'),
+        'optin-keyword' => __('with an incoming message'));
     $attributes = array(
         'legend' => false,
-        'style' => 'margin-left:5px',
         'id' => 'join-type');
     echo "<div class='simulator-add-participant'>";
     echo $this->Form->radio(
@@ -54,9 +53,9 @@ case 'simulate':
     echo $this->Form->input(
         'message',
         array(
-            'placeholder' => 'Enter message here. Simulated incoming message will fail, if no corresponding Request with an optin action exist.',
+            'placeholder' => 'Type the incoming message here. Simulated incoming message will fail, in case no corresponding Request with an optin action exists.',
             'rows' =>3,
-            'label' => '',
+            'label' => false,
             'name'=>'message',
             'id' => 'smessage',
             'style' =>  $joinTypeSelect));

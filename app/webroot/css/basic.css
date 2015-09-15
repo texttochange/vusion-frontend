@@ -1750,3 +1750,12 @@
 .simulator-add-participant {
     width: 500px;
 }
+
+.simulator-add-participant label {
+    padding-left: 4px;
+    padding-right: 8px;
+}
+
+.simulator-add-participant textarea {
+    width: 600px;
+}

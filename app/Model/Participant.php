@@ -53,6 +53,12 @@ class Participant extends ProgramSpecificMongoModel
         $this->Behaviors->load('FilterMongo');
     }
 
+
+    public static function getDefaultImportedTag() 
+    {
+        return array('imported');
+    }
+
     
     public function exists() {
         if (parent::exists()) {
@@ -679,7 +685,7 @@ class Participant extends ProgramSpecificMongoModel
     
     public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $replaceTagsAndLabels=false)
     {
-        $defaultTags = array('imported');
+        $defaultTags = $this->getDefaultImportedTag();
         if (isset($tags)) {
             $tags = $this->tagsFromStringToArray($tags);
             $tags = array_filter($tags);

@@ -484,6 +484,33 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             0,
             $this->History->find('count'));
     }
+
+
+    public function testDelete_simulatedParticipant_alwaysWithHistory()
+    {
+        $this->mockProgramAccess();
+        
+        $participant = array('simulate' => true);
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+       
+        $historyToBeDeleted = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => $savedParticipant['Participant']['phone'],
+            'message-direction' => 'incoming');
+        
+        $this->History->create($historyToBeDeleted);
+        $this->History->save($historyToBeDeleted);
+        
+        $this->testAction("/testurl/programParticipants/delete/".$savedParticipant['Participant']['_id']);
+        
+        $this->assertEquals(
+            0,
+            $this->Participant->find('count'));
+        $this->assertEquals(
+            0,
+            $this->History->find('count'));
+    }
     
     
     public function testMassDeleteFilteredParticipant()
