@@ -136,7 +136,14 @@
 			<td><?php
 			    $objectType = str_replace("-schedule", "", $schedule['Schedule']['object-type']);
 			    echo str_replace("dialogue", "message", $objectType); ?></td>
-			<td><?php echo $schedule['Schedule']['content']; ?></td>
+			<?php
+			$scheduleContent = $this->Text->truncate($schedule['Schedule']['content'],
+			    53,
+			    array(
+			        'ellipsis' => '....',
+			        'exact' => true));
+			echo  $this->Html->tag('td', $scheduleContent, array('title' => $schedule['Schedule']['content']));
+			?>&nbsp;
 			</tr>
 			<?php endforeach; ?>
 			</table>
@@ -166,8 +173,14 @@
 			             ?>&nbsp;</td>
 	 		             <?php if (isset($history['History']['content'])) { ?>
 	 		                 <td><?php echo $history['History']['content']; ?>&nbsp;</td>
-	 		             <?php } else { ?>
-	 		                 <td><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+	 		             <?php } else { 
+	 		                 $historyMessageContent = $this->Text->truncate($history['History']['message-content'],
+	 		                     53,
+	 		                     array(
+	 		                         'ellipsis' => '....',
+	 		                         'exact' => true));
+	 		                 echo  $this->Html->tag('td', $historyMessageContent, array('title' => $history['History']['message-content']));
+	 		                 ?>&nbsp;
 	 		             <?php }; ?>
 	 		        <?php } elseif (in_array($history['History']['object-type'], $markerType)) { ?>
 	 		             <td><?php echo __("Marker"); ?>&nbsp;</td>
