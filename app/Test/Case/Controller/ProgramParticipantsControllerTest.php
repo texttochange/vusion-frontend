@@ -1590,24 +1590,30 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     public function testTrim_simulateMo()
     {
-       $participant_01 = array(
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->any())
+        ->method('_instanciateVumiRabbitMQ')
+        ->with()
+        ->will($this->returnValue(true));
+        
+        $participant_01 = array(
             'phone' => '#6',
             'simulate' => true
             );
         $this->Participant->create();
         $savedSimulatedParticipant = $this->Participant->save($participant_01); 
-
+        
         $this->testAction(
             "/testurl/programParticipants/simulateMo/".$savedSimulatedParticipant['Participant']['_id'],
             array(
                 'method' => 'post',
                 'data' => array(
-                    'Participant' => array('phone' => '#6'),
+                    'phone' => '#6',
                     'message' => "testin wm ",
                     )
                 )
             );
-        //$this->assertTrue($this->vars['requestSuccess']);
     }
     
 }

@@ -47,7 +47,8 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    protected function _instanciateVumiRabbitMQ(){
+    protected function _instanciateVumiRabbitMQ()
+    {
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
     
@@ -956,15 +957,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateMo()
     {
-        print_r('in');
         $requestSuccess = true;
         $id                    = $this->params['id'];
         $program               = $this->params['program'];
         $this->Participant->id = $id;
         $data           = $this->_ajaxDataPatch();
         $participant    = $this->_loadParticipantId($data);
-        
-        print_r($program);
        
         if ($this->request->is('post')) {
             $message = trim($this->request->data['message']);
