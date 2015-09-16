@@ -973,7 +973,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
-    protected function _sendSimulateMoVumiRabbitMQ($workerName, $participantPhone)
+    protected function _sendSimulateMoVumiRabbitMQ($program, $from, $message)
     {
         $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
     }
