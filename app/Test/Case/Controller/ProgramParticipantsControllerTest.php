@@ -1611,8 +1611,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 'method' => 'post',
                 'data' => array(
                     'phone' => '#6',
-                    'message' => "  testing send
-                      ",
+                    'message' => "  testing send\r ",
                     )
                 )
             );
