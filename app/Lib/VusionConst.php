@@ -51,10 +51,10 @@ class VusionConst
     const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
     const FORWARD_URL_REPLACEMENT_REGEX = '/\[[-\+&;%@.\w_]*\]/';
 
-    const CONTENT_VARIABLE_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\,\+\/-\:]+$/u';
-    const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters, numbers or the characters ,+/-: for a key, e.g 'uganda 1'.";
-    const CONTENT_VARIABLE_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\.\,\+\/-\:]*$/u';
-    const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only space, letters, numbers or the characters ,.+/-: for a value, e.g 'new value1'.";
+    const CONTENT_VARIABLE_KEY_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\,\+\/-\:\#]+$/u';
+    const CONTENT_VARIABLE_KEY_FAIL_MESSAGE = "Use only space, letters, numbers or the characters ,+/-:# for a key, e.g 'uganda 1'.";
+    const CONTENT_VARIABLE_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}\.\,\+\/-\:\#]*$/u';
+    const CONTENT_VARIABLE_VALUE_FAIL_MESSAGE = "Use only space, letters, numbers or the characters ,.+/-:# for a value, e.g 'new value1'.";
 
     const PHONE_NORMAL_REGEX = '/^\+[0-9]+$/';
     const PHONE_NORMAL_REGEX_FAIL_MESSAGE = "A phone number must begin with a '+' sign and end with a serie of digits such as +335666555.";
