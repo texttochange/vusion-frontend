@@ -2,10 +2,14 @@ function createTable(selector, options) {
     $(selector).handsontable(options);
 }
 
+function hasClass(element, cls) {
+    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+}
+
 function getKeysFromCellPosition(handsontable, row, col) {
     var i = 0,
         keys = [];
-    while (handsontable.getCell(row, i).className === "key") {
+    while (hasClass(handsontable.getCell(row, i), "key")) {
         keys.push(handsontable.getDataAtCell(row, i));
         i++;
     }

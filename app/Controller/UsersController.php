@@ -797,6 +797,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/view');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/export');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/download');
+            $this->Acl->allow($Group, 'controllers/ProgramParticipants/exported');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/getFilterParameterOptions');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/reset');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/optin');
@@ -804,6 +805,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
+            $this->Acl->allow($Group, 'controllers/ProgramHistory/exported');
             $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
             $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
@@ -831,6 +833,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
+            $this->Acl->allow($Group, 'controllers/ProgramHistory/exported');
             $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
