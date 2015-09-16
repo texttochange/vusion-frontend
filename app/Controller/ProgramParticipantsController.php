@@ -967,9 +967,15 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         if ($this->request->is('post')) {
             $message = trim($this->request->data['message']);
             $from    = $this->request->data['phone'];
-            $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
+            $this->_sendSimulateMoVumiRabbitMQ($program, $from, $message);
         }
         $this->set(compact('requestSuccess', 'participant'));
+    }
+    
+    
+    protected function _sendSimulateMoVumiRabbitMQ($workerName, $participantPhone)
+    {
+        $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
     }
     
     
