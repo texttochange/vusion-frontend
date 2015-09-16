@@ -30,11 +30,15 @@
 		        }
 		        processHistory(data['histories']);
 		        processParticipant(data['participant']);
-                setTimeout(el.update, 3000);
+                if (this.reschedule) {
+                    setTimeout(function(){el.update(true);}, 3000);
+                }
 		    }
 
             function processError(jqXHR, textStatus, errorThrown) {
-                setTimeout(el.update, 6000);
+                if (this.reschedule) {
+                    setTimeout(function(){el.update(true);}, 6000);
+                }
                 vusionAjaxError(jqXHR, textStatus, errorThrown);
             }
 		    
@@ -145,8 +149,9 @@
                     url: url,
                     type: 'GET',
                     dataType: 'json',
+                    reschedule: true,
                     success: processResponse,
-                    error: vusionAjaxError,
+                    error: processError,
                     timeout: 2000
             });
             
@@ -154,7 +159,7 @@
             // public functions 
             
             // Get history since last pull
-            el.update = function() {
+            el.update = function(reschedule) {
                 $.ajax({
                         url: url,
                         type: 'GET',
@@ -163,7 +168,8 @@
                         },
                         dataType: 'json',
                         success: processResponse,
-                        error: vusionAjaxError,
+                        error: processError,
+                        reschedule: reschedule,
                         timeout: 1000
                 });
             };
@@ -186,7 +192,7 @@
                         return;
                     }
                     $('[name="message"]').val('');
-                    el.update();
+                    el.update(false);
                 }
 
                 $.ajax({
