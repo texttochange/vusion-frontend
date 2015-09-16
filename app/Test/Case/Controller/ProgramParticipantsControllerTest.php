@@ -138,7 +138,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
     
-    
+    /*
     public function testAdd()
     {
         $participants = $this->mockProgramAccess();
@@ -1585,6 +1585,29 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programHistory/exported");
         $files = $this->vars['files'];
         $this->assertEqual(2, count($files));
+    }*/
+    
+    
+    public function testTrim_simulateMo()
+    {
+       $participant_01 = array(
+            'phone' => '#6',
+            'simulate' => true
+            );
+        $this->Participant->create();
+        $savedSimulatedParticipant = $this->Participant->save($participant_01); 
+
+        $this->testAction(
+            "/testurl/programParticipants/simulateMo/".$savedSimulatedParticipant['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Participant' => array('phone' => '#6'),
+                    'message' => "testin wm ",
+                    )
+                )
+            );
+        //$this->assertTrue($this->vars['requestSuccess']);
     }
     
 }

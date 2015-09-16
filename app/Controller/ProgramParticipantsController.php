@@ -956,15 +956,18 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     public function simulateMo()
     {
+        print_r('in');
         $requestSuccess = true;
         $id                    = $this->params['id'];
         $program               = $this->params['program'];
         $this->Participant->id = $id;
         $data           = $this->_ajaxDataPatch();
         $participant    = $this->_loadParticipantId($data);
+        
+        print_r($program);
        
         if ($this->request->is('post')) {
-            $message = $this->request->data['message'];
+            $message = trim($this->request->data['message']);
             $from    = $this->request->data['phone'];
             $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
         }
