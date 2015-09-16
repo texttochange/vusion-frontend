@@ -101,6 +101,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     '_notifyBackendMassUntag',
                     '_notifyBackendRunActions',
                     '_notifyBackendExport',
+                    '_sendSimulateMoVumiRabbitMQ',
                     'render',
                     )
                 )
@@ -1585,6 +1586,35 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->testAction("/testurl/programHistory/exported");
         $files = $this->vars['files'];
         $this->assertEqual(2, count($files));
+    }
+    
+    
+    public function testTrim_simulateMo()
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->any())
+        ->method('_sendSimulateMoVumiRabbitMQ')
+        ->with('testurl', '#6', 'testing send')
+        ->will($this->returnValue(true));
+        
+        $participant_01 = array(
+            'phone' => '#6',
+            'simulate' => true
+            );
+        $this->Participant->create();
+        $savedSimulatedParticipant = $this->Participant->save($participant_01); 
+        
+        $this->testAction(
+            "/testurl/programParticipants/simulateMo/".$savedSimulatedParticipant['Participant']['_id'],
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'phone' => '#6',
+                    'message' => "  testing send\r\n ",
+                    )
+                )
+            );
     }
     
 }

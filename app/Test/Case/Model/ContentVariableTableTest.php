@@ -155,7 +155,7 @@ class ContentVariableTableTestCase extends CakeTestCase
         $result = $this->ContentVariableTable->save($contentVariableTable);
         $this->assertFalse($result);
         $this->assertEqual(
-            "Use only space, letters, numbers or the characters ,+/-: for a key, e.g 'uganda 1'.",
+            "Use only space, letters, numbers or the characters ,+/-:# for a key, e.g 'uganda 1'.",
             $this->ContentVariableTable->validationErrors['columns'][0][0]['values'][0][1]
             );
     }
@@ -181,11 +181,11 @@ class ContentVariableTableTestCase extends CakeTestCase
         $result = $this->ContentVariableTable->save($contentVariableTable);
         $this->assertFalse($result);
         $this->assertEqual(
-            "Use only space, letters, numbers or the characters ,.+/-: for a value, e.g 'new value1'.",
+            "Use only space, letters, numbers or the characters ,.+/-:# for a value, e.g 'new value1'.",
             $this->ContentVariableTable->validationErrors['columns'][0][1]['values'][0][0]
             );
         $this->assertEqual(
-            "Use only space, letters, numbers or the characters ,.+/-: for a value, e.g 'new value1'.",
+            "Use only space, letters, numbers or the characters ,.+/-:# for a value, e.g 'new value1'.",
             $this->ContentVariableTable->validationErrors['columns'][0][1]['values'][0][1]
             );
     }

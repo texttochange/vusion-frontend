@@ -1638,11 +1638,10 @@
 
 .simulator-output {
     border: 1px solid #d3d3d3;
-    height: 293px;
+    height: 381px;
     overflow-y: scroll;
     margin-bottom: 14px;
     padding: 10px;
-    
 }
 
 .simulator-message {

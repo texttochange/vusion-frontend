@@ -87,7 +87,8 @@ $this->Html->script("ttc-table.js", array("inline" => false))
     		                        data: data,
     		                        callbackData: { "table": "'.$elementId.'",
                                                     "change": change[index]},
-                                    success: saveValueCallback
+                                    success: saveValueCallback,
+                                    error: vusionAjaxError
                                 });
                             }
                         }
