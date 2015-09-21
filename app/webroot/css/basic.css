@@ -1420,6 +1420,11 @@
 
 .ttc-display-area .tab-content div {
     padding: 5px;
+    margin-bottom: 0px;
+}
+
+.ttc-display-area .tab-content label {
+    padding-right: 5px;
 }
 
 .ttc-display-area .tabs li {

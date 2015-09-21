@@ -31,7 +31,6 @@ case 'mash':
 switch ($type) {
 case 'file':
 	echo $this->Form->input('Import.file', array(
-	    'between' => '<br />',
 	    'type' => 'file',
 	    'label' => false
 	));
@@ -39,7 +38,7 @@ case 'file':
 case 'mash':
 	echo $this->Html->tag(
 		'div', 
-		__('Import all participants who are matching the following filters:'),
+		__('Import all participants who are matching the following filter:'),
 		array('style' => 'margin-bottom:0px'));
 	echo '<div style="margin-left:10px">';
 	echo $this->Html->tag('label', _('from'));
