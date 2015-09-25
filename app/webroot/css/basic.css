@@ -357,17 +357,10 @@
         border: 2px solid #d3d3d3;
         float: left;
         padding: 2px 2px;
-        min-width: 190px;
+        width: 192px;
         height: 95px;
         overflow-y: auto;
         font-size: 9px;
-}
-
-.ttc-simulator-output {
-        border: 1px solid black;
-        height: 200px;
-        overflow-y: scroll;
-        margin-bottom: 30px;
 }
 
 .ttc-simulator-input {
@@ -1367,14 +1360,14 @@
         display: inline-block;
 }
 
-.ttc-data-control .tabs ul {
+.tabs ul {
         list-style-type: none;
         margin: 0px 0px 0px 10px;
 }
 
-.ttc-data-control .tabs li {
+.tabs li {
         float: left;
-        margin: 0px 10px 0px 0px;
+        margin: 0px 5px 0px 0px;
         color: #81CDFF;
 }
 
@@ -1383,7 +1376,7 @@
         color: #19C1FF;
 }
 
-.ttc-data-control .tabs label {
+.tabs label {
         display: block;
         cursor: pointer;
         font-weight: bold;
@@ -1406,6 +1399,43 @@
 
 .ttc-page-title .ttc-action {
         display: inline-block;
+}
+
+.ttc-display-area .tabs li a {
+    text-decoration: none;
+    color: gray;
+}
+
+.ttc-display-area .tabs li.selected a {
+    color: #444;
+}
+
+.ttc-display-area .tab-content div {
+    padding: 5px;
+}
+
+.ttc-display-area .tabs li {
+    background-color: white;
+    border: solid 1px lightgrey;
+}
+
+.ttc-display-area .tabs li.selected {
+    border-radius: 2px 2px 0px 0px;
+    border-bottom: solid 1px white;
+}
+
+.ttc-display-area .tab-content {
+    margin-left: 10px;
+    border: solid 1px lightgrey;
+    border-radius: 2px;
+    margin-top: -1px;
+}
+
+.ttc-display-area .tabs label {
+    display: block;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 2px 4px;
 }
 
 /** content Variable table **/
@@ -1600,4 +1630,131 @@
 
 .flash-message-link {
     text-decoration: underline !important;
+}
+
+.simulator {
+    width: 100% !important;
+}
+
+.simulator-output {
+    border: 1px solid #d3d3d3;
+    height: 381px;
+    overflow-y: scroll;
+    margin-bottom: 14px;
+    padding: 10px;
+}
+
+.simulator-message {
+    width: 100%;    
+}
+
+.simulator-msg {
+    margin-bottom: 9px;
+}
+
+.simulator-msg:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.simulator-outgoing {
+    background-color: #74B8E6 !important;
+    border-radius: 8px;
+    padding: 7px 7px 7px;
+    float: left;
+    position: relative;
+    max-width: 350px;
+}
+
+.simulator-incoming {
+    background-color: #CDEBFF !important;
+    border-radius: 8px;
+    padding: 7px 7px 7px;
+    float: right;
+    position: relative;
+    max-width: 350px;
+}
+
+.simulator-outgoing:before, .simulator-incoming:before {
+    content: '';
+    position: absolute;
+    /*bottom: 3px;*/
+    width: 12px;
+    height: 19px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.simulator-outgoing:before {
+    left: -11px;
+    background-image: url('/img/message-out.png');
+}
+
+.simulator-incoming:before {
+    right: -10px;
+    background-image: url('/img/message-in.png');
+}
+
+.simulator-datetime {
+    font-size: 11px;
+    color: rgba(0,0,0,.45);
+    bottom: 3px;
+    right: 7px;
+}
+
+
+.simulator-messages {
+    border-bottom: 0px;
+    min-width: 400px;
+    max-width: 600px;
+}
+
+.simulator-profile {
+    border-bottom: 0px;
+    margin-left: 20px;
+}
+
+.simulator-profile dl {
+    width: 100%;
+    min-width: 300px;
+}
+
+.simulator-profile dt {
+    width: 170px;
+}
+
+.simulator-profile dd {
+    margin-left: 180px;
+    padding-left: 4px;
+}
+
+.simulator-image-load {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.simulator-profile-value {
+    margin-left: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.simulator-message-text {
+    word-wrap: break-word;
+}
+
+.simulator-add-participant {
+    width: 500px;
+}
+
+.simulator-add-participant label {
+    padding-left: 4px;
+    padding-right: 8px;
+}
+
+.simulator-add-participant textarea {
+    width: 600px;
 }

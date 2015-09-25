@@ -2,14 +2,14 @@
     <?php
         $contentTitle       = __('Add Participant'); 
         $contentActions     = array();
-        $addParticipantSpan = 'add';
+        $addParticipantSpan = 'simulate';
         $controller         = 'programParticipants';
         
         $contentActions[] = $this->Html->link( __('Cancel'), 
-        array(
-          'program' => $programDetails['url'],
-          'action' => 'index'),
-        array('class' => 'ttc-button'));
+            array(
+                'program' => $programDetails['url'],
+                'action' => 'index'),
+            array('class' => 'ttc-button'));
         
         $contentActions[] = $this->Html->link(__('Save'),
             array(),
@@ -29,11 +29,11 @@
 		        'controller' => $controller,
 		        'action' => 'index'),
 		    array('class'=>'ttc-button'));
-		
-		echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller', 'addParticipantSpan'));
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller', 'addParticipantSpan'));
     ?>
 	<div class="ttc-display-area display-height-size">
-	    <?php echo $this->element('participant_add_tabs', array('type' => 'add')); ?>
+       <?php echo $this->element('participant_add_tabs', array('type' => 'simulate')); ?>
 	</div>
 </div>
 

@@ -48,6 +48,7 @@
 		echo $this->Html->script('ttc-utils.js');
 		echo $this->Html->script('counter.js');
 		echo $this->Html->script('screen.js');
+		echo $this->Html->script('ttc-simulator.js');
 		echo $scripts_for_layout;
     ?><script>
     <?php echo $this->element('localization');?>

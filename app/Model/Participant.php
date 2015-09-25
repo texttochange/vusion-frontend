@@ -15,7 +15,7 @@ class Participant extends ProgramSpecificMongoModel
     
     function getModelVersion()
     {
-        return '3';
+        return '5';
     }
     
     
@@ -29,6 +29,8 @@ class Participant extends ProgramSpecificMongoModel
             'enrolled',
             'tags',
             'profile',
+            'transport_metadata',
+            'simulate'
             );
     }
     
@@ -50,7 +52,37 @@ class Participant extends ProgramSpecificMongoModel
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
     }
+
+
+    public static function getDefaultImportedTag() 
+    {
+        return array('imported');
+    }
+
     
+    public function exists() {
+        if (parent::exists()) {
+            return true;
+        } elseif ($this->find('count', array('conditions' => array('phone' => $this->id))) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function read($fields=null, $id=null) {
+        if ($participant = parent::read($fields, $id)) {
+            return $participant;
+        } 
+        return $this->find(
+            'first', 
+            array(
+                'conditions' => array('phone' => $id),
+                'fields' => $fields));
+    }
+
+
     public function initializeDynamicTable($forceNew=false) 
     {
         parent::initializeDynamicTable();
@@ -73,22 +105,17 @@ class Participant extends ProgramSpecificMongoModel
             'notempty' => array(
                 'rule' => array('notempty'),
                 'message' => 'Please enter a phone number.'
-                ),
-            'hasPlus'=>array(
-                'rule' => array('custom', '/^\+/'),
-                'message' => "A phone number must begin with a '+' sign and end with a serie of digits such as +3345678733.",
-                'required' => true
-                ),
-            'validMSISDN'=>array(
-                'rule' => array('custom', '/^\+[0-9]+$/'),
-                'message' => 'A phone number must only contain digits such as +3345678733.',
+                ),            
+            'validPhone'=>array(
+                'rule' => 'validPhone',
+                'message' => 'noMessage',
                 'required' => true
                 ),
             'isReallyUnique' => array(
                 'rule' => 'isReallyUnique',
                 'message' => 'This phone number already exists in the participant list.',
                 'required' => true
-                )
+                ),
             ),
         'profile' => array(
             'validateLabels' => array(
@@ -100,6 +127,18 @@ class Participant extends ProgramSpecificMongoModel
             'validateTags' => array(
                 'rule' => 'validateTags',
                 'message' => 'noMessage'
+                ),
+            ),
+        'join-type' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please select one option'
+                ),
+            ),
+        'simulate' => array(
+            'boolean' => array(
+                'rule' => array('boolean'),
+                'message' => 'Please enter simulate a boolean option'
                 ),
             )
         );
@@ -217,16 +256,30 @@ class Participant extends ProgramSpecificMongoModel
     }
     
 
+    public function validPhone($check)
+    {
+        if ($this->data['Participant']['simulate']) {
+            if (!preg_match(VusionConst::PHONE_SIMULATED_REGEX, $check['phone'])) {
+                return VusionConst::PHONE_SIMULATED_REGEX_FAIL_MESSAGE;
+            }
+        } else {
+            if (!preg_match(VusionConst::PHONE_NORMAL_REGEX, $check['phone'])) {
+                return VusionConst::PHONE_NORMAL_REGEX_FAIL_MESSAGE;
+            }
+        }
+        return true;
+    }
+
     
     public static function cleanPhone($phone) 
     {
         if (isset($phone) and !empty($phone)) {
             $phone = trim($phone);           
-            $phone = preg_replace("/[^+\dO]/", "", $phone);
+            $phone = preg_replace("/[^\+\#\dO]/", "", $phone);
             //Replace letter O by zero
             $phone = preg_replace("/O/", "0", $phone);
             $phone = preg_replace("/^(00|0)/", "+", $phone);    
-            if (!preg_match('/^\+[0-9]+/', $phone)) { 
+            if (!preg_match('/^[+\#]+[0-9]+/', $phone)) { 
                 $phone = "+" . $phone; 
             }
             return (string) $phone;
@@ -306,11 +359,14 @@ class Participant extends ProgramSpecificMongoModel
     public function beforeValidate()
     {
         parent::beforeValidate();
-
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow == null) {
             //The program time MUST be set
             return false;
+        }
+        
+        if ($this->data['Participant']['simulate']) {
+            $this->_setDefault('phone', $this->generateSimulatedPhone());
         }
         
         $this->_setDefault('phone', null);
@@ -322,6 +378,13 @@ class Participant extends ProgramSpecificMongoModel
         $this->_setDefault('profile', array());
         $this->data['Participant']['profile'] = Participant::cleanProfile($this->data['Participant']['profile']);
         
+
+        $this->_setDefault('transport_metadata', array());
+        
+        if (!$this->data['Participant']['simulate']) {
+            $this->_setDefault('simulate', false);
+        }
+        
         if (!$this->data['Participant']['_id']) {
             $this->_setDefault('last-optin-date', $programNow->format("Y-m-d\TH:i:s"));
             $this->_setDefault('last-optout-date', null);
@@ -330,9 +393,25 @@ class Participant extends ProgramSpecificMongoModel
         } else {
             $this->_editEnrolls();
         }
+        
         return true;
     }
     
+    
+    public function generateSimulatedPhone()
+    {  
+        $i=1;
+        while (true) {
+            $simulatedPhone = ("#" . $i );
+            $result = $this->find('count', array(
+                'conditions' => array('phone' => $simulatedPhone)));
+            if ($result < 1) {
+                return $simulatedPhone;
+            }
+            $i++;
+        }
+    }
+        
     
     public function getDistinctTagsAndLabels()
     {
@@ -485,64 +564,63 @@ class Participant extends ProgramSpecificMongoModel
     
     protected function _editEnrolls()
     {
-        $participantUpdateData = $this->data;
-        
-        $originalParticipantData  = $this->read(); 
+        $updatedParticipantData   = $this->data;
+        $originalParticipantData = $this->read(); 
         // $this->read() deletes already processed info and
         // and they must all be re-initialized.
-        
+
         // ******** re-initialize already processed information *********/////
-        $this->data['Participant'] = $participantUpdateData['Participant'];
+        $this->data['Participant'] = $updatedParticipantData['Participant'];
         // ******************************************************************////
-        
+
         $programNow                = $this->ProgramSetting->getProgramTimeNow();
-        
-        if (!isset($participantUpdateData['Participant']['enrolled']) or 
-            !is_array($participantUpdateData['Participant']['enrolled'])) {
-        $this->data['Participant']['enrolled'] = array();
-        return; 
-            }
-            
-            if (isset($participantUpdateData['Participant']['enrolled'])
-                and $participantUpdateData['Participant']['enrolled'] == array()) {
+
+        if (!isset($updatedParticipantData['Participant']['enrolled']) or 
+            !is_array($updatedParticipantData['Participant']['enrolled'])) {
             $this->data['Participant']['enrolled'] = array();
             return;
-                }
-                
-                $this->data['Participant']['enrolled'] = array();
-                foreach ($participantUpdateData['Participant']['enrolled'] as $key => $value) {
-                    $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
-                    $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
-                    
-                    if ($originalParticipantData['Participant']['enrolled'] == array()) {
-                        $this->data['Participant']['enrolled'][] = array(
-                            'dialogue-id' => $dialogueId,
-                            'date-time' => $enrollTime
-                            );
-                        continue;
-                    }
-                    foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
-                        if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
-                            continue;
-                        
-                        if ($dialogueId == $orignalEnroll['dialogue-id']) {
-                            $this->data['Participant']['enrolled'][] = $orignalEnroll;
-                        } else {
-                            $dateTime = $programNow->format("Y-m-d\TH:i:s");                            
-                            if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
-                                $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
-                                if ($index) {
-                                    $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
-                                }
-                            }
-                            $this->data['Participant']['enrolled'][] = array(
-                                'dialogue-id' => $dialogueId,
-                                'date-time' => $dateTime
-                                );
-                            break;
+        }
+
+        if (isset($updatedParticipantData['Participant']['enrolled']) and
+            $updatedParticipantData['Participant']['enrolled'] == array()) {
+            $this->data['Participant']['enrolled'] = array();
+            return;
+        }
+
+        $this->data['Participant']['enrolled'] = array();
+        foreach ($updatedParticipantData['Participant']['enrolled'] as $key => $value) {
+            $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
+            $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
+            
+            if ($originalParticipantData['Participant']['enrolled'] == array()) {
+                $this->data['Participant']['enrolled'][] = array(
+                    'dialogue-id' => $dialogueId,
+                    'date-time' => $enrollTime
+                    );
+                continue;
+            }
+            foreach ($originalParticipantData['Participant']['enrolled'] as $orignalEnroll) {
+                if ($this->_alreadyInArray($dialogueId, $this->data['Participant']['enrolled']))
+                    continue;
+
+                if ($dialogueId == $orignalEnroll['dialogue-id']) {
+                    $this->data['Participant']['enrolled'][] = $orignalEnroll;
+                } else {
+                    $dateTime = $programNow->format("Y-m-d\TH:i:s");
+                    if ($this->_alreadyInArray($dialogueId, $originalParticipantData['Participant']['enrolled'])) {
+                        $index = $this->_getDialogueIndex($dialogueId,$originalParticipantData['Participant']['enrolled']);
+                        if ($index) {
+                            $dateTime = $originalParticipantData['Participant']['enrolled'][$index]['date-time'];
                         }
                     }
+                    $this->data['Participant']['enrolled'][] = array(
+                        'dialogue-id' => $dialogueId,
+                        'date-time' => $dateTime
+                        );
+                    break;
                 }
+            }
+        }
     }
     
     
@@ -607,9 +685,9 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    public function import($programUrl, $fileFullPath, $tags=null, $replaceTagsAndLabels=false)
+    public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $replaceTagsAndLabels=false)
     {
-        $defaultTags = array('imported');
+        $defaultTags = $this->getDefaultImportedTag();
         if (isset($tags)) {
             $tags = $this->tagsFromStringToArray($tags);
             $tags = array_filter($tags);
@@ -635,9 +713,9 @@ class Participant extends ProgramSpecificMongoModel
         }
         
         if ($ext == 'csv') {
-            return $this->importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
+            return $this->importCsv($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels);
         } else if ($ext == 'xls') {
-            return $this->importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels);
+            return $this->importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels);
         }
         
     }
@@ -681,8 +759,12 @@ class Participant extends ProgramSpecificMongoModel
     }
 
     
+<<<<<<< HEAD
     public function saveParticipantWithReport($participant, $replaceTagsAndLabels
         , $fileLine=null)
+=======
+    public function saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $fileLine=null)
+>>>>>>> develop
     {
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
@@ -704,7 +786,8 @@ class Participant extends ProgramSpecificMongoModel
             $participant            = $savedParticipant['Participant'];
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
-        } 
+        }
+        $participant['enrolled'] = $enrolled;
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
@@ -729,8 +812,9 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    public function importCsv($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
+    public function importCsv($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
     {
+      
         $count        = 0;
         $entry        = array();
         $hasHeaders   = false;
@@ -797,7 +881,7 @@ class Participant extends ProgramSpecificMongoModel
             //Save if not a duplicate
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[]                            = $this->saveParticipantWithReport($participant, $replaceTagsAndLabels, $count + 1);
+                $report[]                            = $this->saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $count + 1);
             }
             $count++; 
         }
@@ -817,7 +901,7 @@ class Participant extends ProgramSpecificMongoModel
     }    
     
     
-    private function importXls($programUrl, $fileFullPath, $tags, $replaceTagsAndLabels)
+    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
     {
         require_once 'excel_reader2.php';
         
@@ -869,7 +953,7 @@ class Participant extends ProgramSpecificMongoModel
             }
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant,  $replaceTagsAndLabels, $i);
+                $report[] = $this->saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $i);
             }
         }
         return $report;
@@ -922,7 +1006,9 @@ class Participant extends ProgramSpecificMongoModel
                 'equal-to' => array(
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'parameter-type' => 'text'))),
+                    'parameter-type' => 'text'),
+                'simulated' => array(
+                    'parameter-type' => 'none'))),
         'optin' => array(
             'label' => 'optin',
             'operators' => array(
@@ -1012,7 +1098,9 @@ class Participant extends ProgramSpecificMongoModel
                 $condition['last-optout-date']['$lt'] = DialogueHelper::ConvertDateFormat($filterParam[3]);
             }
         } elseif ($filterParam[1] == 'phone') {
-            if ($filterParam[3]) {
+            if ($filterParam[2] == 'simulated') {
+                $condition['simulate'] = true;
+            } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
                     if ($phoneNumbers) {

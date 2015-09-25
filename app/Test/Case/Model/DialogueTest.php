@@ -696,4 +696,37 @@ class DialogueTestCase extends CakeTestCase
             array('keyword' => array("'keyword' already used by a Dialogue of program 'otherprogram'.")));
     }
 
+
+    public function testFromDialogueIdToName(){
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive();
+
+        $participant = array('phone' => '+7');
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+
+        $savedParticipant['Participant']['enrolled'][0]['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
+        $savedParticipant['Participant']['enrolled'][0]['date-time'] = '2012-12-12T18:30:00';
+        $savedParticipant['Participant']['enrolled'][1]['dialogue-id'] = '34556';
+        $savedParticipant['Participant']['enrolled'][1]['date-time'] = '2012-12-12T18:30:00';
+        
+        $savedAgainParticipant = $this->Participant->save($savedParticipant);
+
+        $participant = $this->Dialogue->fromDialogueIdToName($savedAgainParticipant);
+        $this->assertTrue(isset($participant['Participant']['enrolled'][0]['dialogue-name']));
+        $this->assertEqual(
+            'my dialogue',
+            $participant['Participant']['enrolled'][0]['dialogue-name']);
+        $this->assertTrue(isset($participant['Participant']['enrolled'][1]['dialogue-name']));
+        $this->assertEqual(
+            'Dialogue not found',
+            $participant['Participant']['enrolled'][1]['dialogue-name']);
+        
+
+    }
+
 }
