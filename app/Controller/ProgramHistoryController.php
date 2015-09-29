@@ -186,7 +186,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
-            array('object-type' => array('$exists' => false))));
+            array('object-type' => array('$exists' => false))),
+            'participant-phone' => array('$regex' => "^\+"));
         $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
 
         $order = array();

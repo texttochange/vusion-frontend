@@ -1303,21 +1303,25 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testExport()
     {
         $participants = $this->mockProgramAccess();
+        $expectedCondition = array('simulate' => false);
         $participants
-            ->expects($this->once())
-            ->method('_notifyBackendExport')
-            ->with(
-                $this->matchesRegularExpression('/^[a-f0-9]+$/'))
-            ->will($this->returnValue(true));
-
+        ->expects($this->once())
+        ->method('_notifyBackendExport')
+        ->with(
+            $this->matchesRegularExpression('/^[a-f0-9]+$/'))
+        ->will($this->returnValue(true));
+        
         $this->testAction("/testurl/programParticipants/export");
-
+        
         $this->assertEqual($this->Export->find('count'), 1);
         $export = $this->Export->find('first');
         $this->assertTrue(isset($export['Export']));
         $this->assertContains(
             'Test_Name_good_for_testing_me_participants_', 
             $export['Export']['file-full-name']);
+        $this->assertEquals(
+            $expectedCondition,
+            $export['Export']['conditions']);
     }
     
 
