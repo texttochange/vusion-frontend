@@ -51,19 +51,14 @@
 		    'update' => __('update'));
 		$attributes = array(
 		    'legend' => false,
-		    'id' => 'import-type');		
-		echo $this->Html->tag('div', __('If participant already in ..... their tags and labels.'), array('style'=>'margin-bottom:0px'));
-		echo '<div class="simulator-add-participant">';		
-		echo $this->Form->radio(
+		    'id' => 'import-type');
+		
+		$importTypeSelectOptions =  $this->Form->select(
 		    'import-type',
 		    $options,
-		    $attributes);		
-		/*echo $this->Form->checkbox('replace-tags-and-labels', array(
-		    'label' => 'Update participant',
-		    'value' => 'update',
-		    'hiddenField' => false));
-		echo $this->Html->tag('label',  _("If participant already in replace their tags and labels."));*/
-		echo '</div>';
+		    $attributes);	
+		echo $this->Html->tag('div', __('If participant already exists '.$importTypeSelectOptions.' their tags and labels.'), array('style'=>'margin-bottom:0px'));
+		
 		echo $this->Form->end(__('Upload'));
 	?>
 

@@ -788,8 +788,8 @@ class Participant extends ProgramSpecificMongoModel
             $participant            = $savedParticipant['Participant'];
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
-        }
-        $participant['enrolled'] = $enrolled;
+            $participant['enrolled'] = $enrolled;
+        }        
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
