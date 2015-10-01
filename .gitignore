@@ -19,3 +19,5 @@
 #empty
 /lib/Cake
 .vagrant
+.DS_Store
+/app/webroot/files/programs/
