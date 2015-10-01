@@ -408,7 +408,8 @@ class ProgramHistoryControllerTestCase extends ControllerTestCase
 
         $expectedConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
-            array('object-type' => array('$exists' => false))));
+            array('object-type' => array('$exists' => false))),
+            'participant-phone' => array('$regex' => "^\+"));
         $historys
             ->expects($this->once())
             ->method('_notifyBackendExport')
