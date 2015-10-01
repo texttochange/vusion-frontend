@@ -1,3 +1,6 @@
+<?php
+  $this->RequireJs->script("nav-menu");
+?>
 <div class='ttc-navigation-menu'>
 <ul class="sf-menu sf-vertical"> 
 <li>

@@ -4,7 +4,7 @@ require.config({
         'jquery': 'jquery-1.10.2.min',
         'jquery-ui': 'jqueryui/js/jquery-ui-1.10.3.custom.min',
         'jquery-ui-timepicker': 'jqueryui/js/jquery-ui-timepicker-addon',
-        //'jqueryvalidate': 'jquery.validate-1.9.0',
+        'jquery-validate': 'jquery.validate-1.9.0',
         'superfish': 'superfish-1.7.4/superfish.min',
         'supersubs': 'superfish-1.7.4/supersubs',
         'hoverintent': 'superfish-1.7.4/hoverIntent',
@@ -21,21 +21,21 @@ require.config({
         'unattached-message': 'ttc-unattached-message',
         'responsive-utils': 'ttc-responsive-utils',
         'nav-menu': 'ttc-nav-menu',
-        'vusion': 'ttc-vusion'
+        'vusion': 'ttc-vusion',
+        'ttc-utils': 'ttc-utils',
+        'dynamic-form-structure': 'ttc-dynamic-form-structure',
+        'generic-program': 'ttc-generic-program',
+        'counter': 'counter',
     },
     shim: {
     	'jquery-ui': {
 	        deps: [ 'jquery' ],
-	    //    exports: 'jQuery.ui'
 	    },
-	    //'chosen': ['jquery'],
 	    'chosen': {
 	        deps: [ 'jquery' ],
-	    //    exports: 'jQuery.fn.chosen'
 	    },
 	    'jquery-ui-timepicker': {
 	        deps: [ 'jquery-ui'],
-//	        exports: 'jQuery.ui.fn.datetimepicker'
 	    },
         'superfish': {
             deps: ['jquery'],
@@ -45,6 +45,37 @@ require.config({
         },
         'hoverintent': {
             deps: ['jquery'],
+        },
+        'vusion': {
+            deps: ['jquery', 'ttc-utils'],
+        },
+        'ttc-utils': {
+            deps: ['jquery']
+        },
+        'generic-program': {
+            deps: [
+            'dynamic-form-structure',
+            'jquery',
+            'jquery-validate',
+            'dform-ext',
+            'dform-sub',
+            'dform-conv', 
+            'form2js',
+            'form2js-utils',
+            'ttc-utils',
+            'counter'],
+        },
+        'dform-ext': {
+            deps: ['dform', 'jquery']
+        },
+        'dform-sub': {
+            deps: ['dform', 'jquery']
+        },
+        'dform-conv': {
+            deps: ['dform', 'jquery']
+        },
+        'jquery-validate': {
+            deps: ['jquery']
         }
     }
 });
