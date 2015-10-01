@@ -5,7 +5,10 @@ App::uses('AppController', 'Controller');
 class DocumentationController extends AppController
 {
     
-    var $components = array('RequestHandler');
+    var $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')));
     var $helpers    = array(
         'Js' => array('Jquery')
         );
@@ -19,6 +22,8 @@ class DocumentationController extends AppController
     
     public function view()
     {
+        $requestSuccess = false;
+
         if (isset($this->params['url']['topic'])) {
             $lang = Configure::read('Config.language');
             if ($lang and !is_numeric($lang)) {
@@ -29,12 +34,15 @@ class DocumentationController extends AppController
             $topic = $this->params['url']['topic'];
             $file = WWW_ROOT . "files/documentation/".$lang.$topic.".txt";
             if (!file_exists($file)) {
-                $documentation = "Sorry, no help available for '". $topic."'. Please leave us a comment [help@texttochange.com].";
+                $email = Configure::read('vusion.reportIssue.email');
+                $this->Session->setFlash(
+                    __("Sorry, no help available for %s Please leave us a comment %s.", $topic, $email));
             } else {
                 $documentation = $this->readfile_chunked($file);
+                $requestSuccess = true;
             }
         }
-        $this->set(compact('topic','documentation'));
+        $this->set(compact('topic', 'documentation', 'requestSuccess'));
     }
     
     

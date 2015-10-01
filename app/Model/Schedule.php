@@ -1,17 +1,14 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('UnattachedMessage', 'Model');
 App::uses('DialogueHelper', 'Lib');
-/**
-* Program Model
-*
-*/
-class Schedule extends MongoModel
+
+
+class Schedule extends ProgramSpecificMongoModel
 {
     
-    var $specific = true;
-    var $useDbConfig = 'mongo';
+    var $name = 'Schedule';
     
     
     function getModelVersion()
@@ -53,6 +50,7 @@ class Schedule extends MongoModel
         
     }
     
+    
     public $findMethods = array(
         'soon' => true,
         'summary' => true,
@@ -68,19 +66,23 @@ class Schedule extends MongoModel
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
             'cacheCountExpire' => Configure::read('vusion.cacheCountExpire')));
         $this->Behaviors->load('FilterMongo');
-
-        $options                 = array('database' => $id['database']);
-        $this->UnattachedMessage = new UnattachedMessage($options);
     }
     
-
+    public function initializeDynamicTable($forceNew=false) 
+    {
+        parent::initializeDynamicTable();
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $this->databaseName, $forceNew);
+    }
+    
+    
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
     {
         parent::deleteAll($conditions, $cascade, $callback);
         $this->flushCached();
     }
-
+    
     
     protected function _findSoon($state, $query, $results = array())
     {
@@ -91,8 +93,8 @@ class Schedule extends MongoModel
         }
         return $results;
     }
-
-
+    
+    
     public function getUniqueParticipantPhone($options=array())
     {
         $cursor = $this->getUniqueParticipantPhoneCursor();
@@ -105,16 +107,16 @@ class Schedule extends MongoModel
         }
         return $results;
     }
-
-
+    
+    
     public function getUniqueParticipantPhoneCursor()
     {
         $pipeline = array(array('$group' => array('_id' => '$participant-phone')));
         $mongo = $this->getDataSource();
         return $mongo->aggregateCursor($this, $pipeline);
     }
-
-
+    
+    
     protected function getDialogueName($dialogueId, $activeDialogues)
     {
         foreach($activeDialogues as $activeDialogue) {
@@ -264,7 +266,7 @@ class Schedule extends MongoModel
         
         return $scheduleCount; 
     }
-
+    
     public $filterFields = array();
     
 }

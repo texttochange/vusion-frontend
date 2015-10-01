@@ -43,6 +43,14 @@ class VumiRabbitMQ {
     }
 
 
+    public function sendMessageToExport($export_id)
+    {
+        $msg = $this->workerMessageMaker->export($export_id);
+        return $this->sendMessageTo('export.control', $msg);
+    }
+
+
+    // Program Specific calls
     public function sendMessageToUpdateSchedule($to, $schedule_type, $object_id)
     {
         $msg = $this->workerMessageMaker->updateSchedule($schedule_type, $object_id);
@@ -77,11 +85,13 @@ class VumiRabbitMQ {
         return $this->sendMessageTo($to.'.control', $msg);
     }
 
+
     public function sendMessageMassTag($to, $tag, $query)
     {
         $msg = $this->workerMessageMaker->massTag($tag, $query);
         return $this->sendMessageTo($to.'.control', $msg);
     }
+
 
     public function sendMessageMassUntag($to, $tag)
     {
@@ -90,7 +100,25 @@ class VumiRabbitMQ {
     }
 
 
+    public function sendMessageRunActions($to, $runActions)
+    {
+        $msg = $this->workerMessageMaker->runActions(
+            $runActions['phone'],
+            $runActions['dialogue-id'],
+            $runActions['interaction-id'],
+            $runActions['answer']);
+        return $this->sendMessageTo($to.'.control', $msg);
+    }
+
+
     public function sendMessageToWorker($to, $from, $content)
+    {
+        $msg = $this->workerMessageMaker->transportUserMessage($from, $content);
+        return $this->sendMessageTo($to.'.inbound', $msg);
+    }
+    
+    
+    public function sendMessageToSimulateMO($to, $from, $content)
     {
         $msg = $this->workerMessageMaker->transportUserMessage($from, $content);
         return $this->sendMessageTo($to.'.inbound', $msg);

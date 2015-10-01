@@ -1,13 +1,17 @@
 <?php
+App::uses('BaseProgramSpecificController','Controller');
 
-App::uses('AppController','Controller');
 
-class ProgramLogsController extends AppController
-{
-	
+class ProgramLogsController extends BaseProgramSpecificController
+{    
     var $components = array(
-        'RequestHandler', 
-        'LogManager');
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
+        'BackendLog',
+        'ProgramAuth',
+        'ArchivedProgram');
+    
     var $helpers    = array(
         'Js' => array('Jquery'),
         'Time');
@@ -29,7 +33,7 @@ class ProgramLogsController extends AppController
     {
         $programUrl = $this->params['program'];
         $databaseName = $this->Session->read($programUrl."_db");
-        $programLogs = $this->LogManager->getLogs($databaseName, 200);
+        $programLogs = $this->BackendLog->getLogs($databaseName, 200);
         $this->set(compact('programLogs'));
     } 
     
@@ -41,10 +45,10 @@ class ProgramLogsController extends AppController
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $programUrl = $this->params['program'];
         $databaseName = $this->Session->read($programUrl."_db");
-        $programLogs = $this->LogManager->getLogs($databaseName, 5);
+        $programLogs = $this->BackendLog->getLogs($databaseName, 5);
         $this->set(compact('requestSuccess', 'programLogs'));
     }
     

@@ -2,28 +2,24 @@
 App::uses('ProgramContentVariablesController', 'Controller');
 App::uses('ContentVariable', 'Model');
 App::uses('ContentVariableTable', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramContentVariablesController extends ProgramContentVariablesController
 {
     
     public $autoRender = false;
     
-    
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
     
 }
 
 
 class ProgramContentVariablesControllerTestCase extends ControllerTestCase
 {
-    /**
-    * Data
-    *
-    */
     
     var $programData = array(
         0 => array( 
@@ -41,24 +37,21 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         $this->ProgramContentVariables = new TestProgramContentVariablesController();
+        
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->ContentVariable = ProgramSpecificMongoModel::init(
+            'ContentVariable', $dbName, true);
+        $this->ContentVariableTable = ProgramSpecificMongoModel::init(
+            'ContentVariableTable', $dbName, true);
+        
         $this->dropData();
     }
     
     
     protected function dropData()
     {
-        $this->instanciateContentVariableModel();
         $this->ContentVariable->deleteAll(true, false);
         $this->ContentVariableTable->deleteAll(true, false);
-    }
-    
-    
-    protected function instanciateContentVariableModel() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->ContentVariable = new ContentVariable($options);
-        $this->ContentVariableTable = new ContentVariableTable($options);
     }
     
     
@@ -66,18 +59,19 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     {
         $this->dropData();
         unset($this->ContentVariable);
+        unset($this->ContentVariableTable);
         parent::tearDown();
     }
     
     
-    public function mock_program_access()
+    public function mockProgramAccess()
     {
         $contentVariables = $this->generate(
             'ProgramContentVariables', array(
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array('loggedIn')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -89,6 +83,11 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $contentVariables->Acl
         ->expects($this->any())
         ->method('check')
+        ->will($this->returnValue('true'));
+        
+        $contentVariables->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
         ->will($this->returnValue('true'));
         
         $contentVariables->Program
@@ -107,11 +106,12 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         
     }
     
+    
+    
     /**
     * Test methods
     *
-    */    
-    
+    */ 
     public function testIndex_keysValue_table()
     {
         $contentVariable =  array(
@@ -141,7 +141,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $this->ContentVariableTable->create();
         $savedTable = $this->ContentVariableTable->save($contentVariableTable);
         
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         $this->testAction("/testurl/programContentVariables/index");
         $indexedContentVariables = $this->vars['contentVariables'];
         $this->assertEquals(1, count($indexedContentVariables));
@@ -149,7 +149,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
             $savedKeysValue['ContentVariable']['_id'], 
             $indexedContentVariables[0]['ContentVariable']['_id']);
         
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         $this->testAction("/testurl/programContentVariables/indexTable");
         $indexedContentVariables = $this->vars['contentVariableTables'];
         $this->assertEquals(1, count($indexedContentVariables));
@@ -162,7 +162,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testAdd()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariable =  array(
             'ContentVariable' => array(
@@ -183,7 +183,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testAddTable()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariableTable =  array(
             'ContentVariableTable' => array(
@@ -223,7 +223,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testEdit()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariable =  array(
             'ContentVariable' => array(
@@ -257,7 +257,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testEdit_belongToTable()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariableTable =  array(
             'ContentVariableTable' => array(
@@ -306,7 +306,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testEdit_fail_editKeys()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariableTable =  array(
             'ContentVariableTable' => array(
@@ -346,7 +346,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testEditTableValue()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariableTable =  array(
             'ContentVariableTable' => array(
@@ -396,7 +396,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testEditTable()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariableTable =  array(
             'ContentVariableTable' => array(
@@ -441,7 +441,7 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
     
     public function testDelete()
     {
-        $contentVariables = $this->mock_program_access();  
+        $contentVariables = $this->mockProgramAccess();  
         
         $contentVariable =  array(
             'ContentVariable' => array(
@@ -455,6 +455,39 @@ class ProgramContentVariablesControllerTestCase extends ControllerTestCase
         $this->testAction(
             "/testurl/programContentVariables/delete/".$savedMessage['ContentVariable']['_id']);
         $this->assertEquals(0, $this->ContentVariable->find('count'));        
+    }
+    
+    
+    public function testExport()
+    {
+        $contentVariables = $this->mockProgramAccess();
+        
+        $contentVariableTable =  array(
+            'ContentVariableTable' => array(
+                'name' => 'my table',
+                'columns' => array(
+                    array(
+                        'header' => 'Town',
+                        'values' => array('mombasa', 'nairobi','kla','Jinja')
+                        ),
+                    array(
+                        'header' => 'Chicken price',
+                        'values' => array('300 Ksh', '400 Ksh', ' ', '500 Ugx')
+                        )
+                    )
+                )
+            );
+        $this->ContentVariableTable->create();
+        $savedcontentVariableTable = $this->ContentVariableTable->save($contentVariableTable);
+        
+        $this->testAction("/testurl/programContentVariables/export/".$savedcontentVariableTable['ContentVariableTable']['_id']);
+        
+        $this->assertTrue(isset($this->vars['fileName']));
+        
+        $this->assertFileEquals(
+            TESTS . 'files/testdbprogram_my_table_table.csv',
+            WWW_ROOT . 'files/programs/testurl/' . $this->vars['fileName']);
+        
     }
     
     

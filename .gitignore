@@ -13,6 +13,8 @@
 /app/tmp/session
 /app/tmp/tests/views
 /app/tmp/cache/models
+/app/webroot/files/credit-viewer/
+/app/webroot/files/programs/
 /app/tmp/cache/persistent
 /app/webroot/files/testurl/
 /things to note
@@ -20,4 +22,8 @@
 /lib/Cake
 .vagrant
 .DS_Store
+<<<<<<< HEAD
 /app/webroot/files/programs/
+=======
+/vendor/
+>>>>>>> develop

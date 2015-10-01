@@ -1,25 +1,23 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('FilterException', 'Lib');
 App::uses('VusionConst', 'Lib');
+App::uses('UnattachedMessage', 'Model');
+App::uses('Participant','Model');
 
 
-class History extends MongoModel
+class History extends ProgramSpecificMongoModel
 {
     
-    var $specific = true;
-    
-    //var $name = 'ParticipantStat';
-    var $useDbConfig = 'mongo';    
-    var $useTable    = 'history';
+    var $name     = 'History';  
+    var $useTable = 'history';
     
     var $messageType = array(
         'dialogue-history',
         'request-history',
         'unattach-history',
         'unmatching-history');
-    
     var $markerType = array(
         'datepassed-marker-history',
         'datepassed-action-marker-history',
@@ -54,7 +52,7 @@ class History extends MongoModel
             'pending' => array(),
             'delivered' => array(),
             'ack' => array(),
-            'nack' => array(),
+            'nack' => array('failure-reason'),
             'no-credit' => array(),
             'no-credit-timeframe' => array(),
             'missing-data' => array('missing-data'),
@@ -133,6 +131,15 @@ class History extends MongoModel
         $this->Behaviors->load('FilterMongo');
     }
     
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $this->databaseName, $forceNew);
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $this->databaseName, $forceNew);
+    }
+    
     
     //Patch the missing callback for deleteAll in Behavior
     public function deleteAll($conditions, $cascade = true, $callback = false)
@@ -145,7 +152,7 @@ class History extends MongoModel
     public function _findParticipant($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $query['conditions'] = array('participant-phone' => $query['phone']);
+            $query['conditions']['participant-phone'] = $query['phone'];
             $query['order']['timestamp'] = 'asc';
             return $query;
         }
@@ -217,8 +224,13 @@ class History extends MongoModel
     }
     
     
-    public function getParticipantHistory($phone, $dialoguesInteractionsContent) {
-        $histories   = $this->find('participant', array('phone' => $phone));
+    public function getParticipantHistory($phone, $dialoguesInteractionsContent, $from=null)
+    {
+        $conditions = array('phone' => $phone);
+        if (isset($from)) {
+            $conditions['conditions'] = array('timestamp' => array('$gte' => $from));
+        }
+        $histories = $this->find('participant', $conditions);
         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
     
@@ -231,7 +243,10 @@ class History extends MongoModel
                 continue;
             }   
             if (in_array($history['History']['object-type'], array('oneway-marker-history', 'datepassed-marker-history'))) {
-                if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
+                if (isset($history['History']['unattach-id'])) {
+                    $separateMessageName = $this->UnattachedMessage->getNameById($history['History']['unattach-id']);
+                    $history['History']['details'] = $separateMessageName;
+                } else if (isset($dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']])) {
                     $history['History']['details'] = $dialoguesInteractionsContent[$history['History']['dialogue-id']]['interactions'][$history['History']['interaction-id']];
                 } else {
                     $history['History']['details'] = 'unknown interaction';
@@ -252,7 +267,9 @@ class History extends MongoModel
                 'equal-to' => array(
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'parameter-type' => 'text'))),
+                    'parameter-type' => 'text'),
+                'simulated' => array(
+                    'parameter-type' => 'none'))),
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
@@ -346,6 +363,7 @@ class History extends MongoModel
         'any' => 'any'
         );
     
+    
     public $filterMessageDirectionOptions = array(
         'incoming'=>'incoming',
         'outgoing'=>'outgoing',
@@ -357,6 +375,7 @@ class History extends MongoModel
         'delivered'=>'delivered',
         'pending'=>'pending',
         'ack' => 'ack',
+        'nack' => 'nack',
         'forwarded' => 'forwarded',
         'received' => 'received',
         'no-credit' => 'no-credit',
@@ -365,9 +384,10 @@ class History extends MongoModel
         'received' => 'received',
         'forwarded' => 'forward'
         );
-        
     
-    public function fromFilterToQueryCondition($filterParam) {
+    
+    public function fromFilterToQueryCondition($filterParam) 
+    {
         
         $condition = array();
         
@@ -392,14 +412,16 @@ class History extends MongoModel
                 $condition['timestamp'] = '';
             }
         } elseif ($filterParam[1] == 'participant-phone') {
-            if ($filterParam[3]) {
+            if ($filterParam[2] == 'simulated') {
+                $condition['participant-phone'] = array('$regex' => "^\#"); 
+            } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
                 } elseif ($filterParam[2] == 'start-with') {
-                    $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                    $condition['participant-phone'] = array('$regex' => "^\\".$filterParam[3]);
                 } elseif ($filterParam[2] == 'start-with-any') {
                     $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", "/"); 
+                    $condition = $this->_createOrRegexQuery('participant-phone', $phoneNumbers, "\\", '', 'i'); 
                 }
             } else {
                 $condition['participant-phone'] = '';
@@ -409,12 +431,12 @@ class History extends MongoModel
                 if ($filterParam[2] == 'equal-to') {
                     $condition['message-content'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'contain') {
-                    $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                    $condition['message-content'] = array('$regex' => $filterParam[3], '$options' => 'i');
                 } elseif ($filterParam[2] == 'has-keyword') {
-                    $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                    $condition['message-content'] = array('$regex' => "^".$filterParam[3]."($| )", '$options' => 'i');
                 } elseif ($filterParam[2] == 'has-keyword-any') {
                     $keywords  = explode(",", str_replace(" ", "", $filterParam[3]));
-                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, "($| )/i");
+                    $condition = $this->_createOrRegexQuery('message-content', $keywords, null, '($| )', 'i');
                 }
             } else {
                 $condition['message-content'] = '';
@@ -484,18 +506,18 @@ class History extends MongoModel
     } 
     
     
-    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null) 
+    protected function _createOrRegexQuery($field, $choices, $prefix=null, $suffix=null, $options='') 
     {
         $query = array();
         if (count($choices) > 1) {
             $or = array();
             foreach ($choices as $choice) {
-                $regex = new MongoRegex("/^".$prefix.$choice.$suffix);
+                $regex = array( '$regex' => '^'.$prefix.$choice.$suffix, '$options' => $options);
                 $or[]  = array($field => $regex);
             }
             $query['$or'] = $or;
         } else {
-            $query[$field] = new MongoRegex("/^".$prefix.$choices[0].$suffix);
+            $query[$field] = array( '$regex' => '^'.$prefix.$choices[0].$suffix, '$options' => $options);
         }
         return $query;
     }
@@ -515,6 +537,21 @@ class History extends MongoModel
         } 
         $historyCount = $this->find('count', array('conditions' => $conditions));
         return $historyCount;
+    }
+    
+    
+    public function getParticipantLabels($histories)
+    {
+        foreach ($histories as &$history) {
+            $phone = $history['History']['participant-phone'];
+            $participant = $this->Participant->find('first', array(
+                'conditions' => array('phone' => $phone)));
+            if ($participant) {
+                $participantLabels = $participant['Participant']['profile'];
+                $history['History']['participant-labels'] = $participantLabels;
+            }
+        }
+        return $histories;
     }
 
     

@@ -1,16 +1,28 @@
 <?php
-
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('ProgramSetting', 'Model');
 App::uses('ShortCode', 'Model');
 App::uses('Template', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
-class ProgramSettingsController extends AppController
+
+class ProgramSettingsController extends BaseProgramSpecificController
 {
-    
-    var $helpers = array('Js' => array('Jquery'), 'Time');
-    var $components = array('Keyword');
+
+    var $uses = array(
+        'ProgramSetting',
+        'ShortCode',
+        'Template',
+        'User',
+        'Group');
+    var $components = array(
+        'Keyword',
+        'ProgramAuth',
+        'ArchivedProgram');
+    var $helpers = array(
+        'Js' => array(
+            'Jquery'),
+        'Time');
     
     
     public function beforeFilter()
@@ -22,16 +34,6 @@ class ProgramSettingsController extends AppController
     public function constructClasses()
     {
         parent::constructClasses();
-        
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-        
-        $this->ProgramSetting = new ProgramSetting($options);
-        
-        $optionVisionDb     = array('database' => 'vusion');
-        $this->ShortCode    = new ShortCode($optionVisionDb);
-        $this->Template     = new Template($optionVisionDb);
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -60,7 +62,6 @@ class ProgramSettingsController extends AppController
     
     public function view()
     {
-        
         $programSettings = $this->ProgramSetting->getProgramSettings();
         if (isset($programSettings['default-template-open-question'])) {
             $template = $this->Template->read(null, $programSettings['default-template-open-question']);
@@ -74,6 +75,11 @@ class ProgramSettingsController extends AppController
             $template = $this->Template->read(null, $programSettings['default-template-unmatching-answer']);
             $programSettings['default-template-unmatching-answer'] = $template['Template']['name'];
         }
+        if (isset($programSettings['contact'])) {
+            $user = $this->User->find('first', array('conditions' => array('User.id' => $programSettings['contact'])));
+            $programSettings['contact'] = $user;
+        }
+
         $this->set(compact('programSettings'));
     }
     
@@ -93,7 +99,7 @@ class ProgramSettingsController extends AppController
         if ($this->request->is('post')) {
             
             $keywordValidation = $this->Keyword->areProgramKeywordsUsedByOtherPrograms(
-                $this->Session->read($programUrl.'_db'), 
+                $this->programDetails['database'],
                 $this->request->data['ProgramSetting']['shortcode']);
             
             if ($this->ProgramSetting->saveProgramSettings($this->request->data['ProgramSetting'], $keywordValidation)) {
@@ -114,15 +120,24 @@ class ProgramSettingsController extends AppController
         }
         
         ## Set all the form options
-        $shortcodes = $this->ShortCode->find('all');
+        $shortcodes = $this->ShortCode->find(
+            'all', 
+            array('conditions'=> array('status' => array( '$ne'=> 'archived'))));
+        
         $openQuestionTemplateOptions     = $this->Template->getTemplateOptions('open-question');
         $closedQuestionTemplateOptions   = $this->Template->getTemplateOptions('closed-question');
         $unmatchingAnswerTemplateOptions = $this->Template->getTemplateOptions('unmatching-answer');
+        $contactUsers = $this->User->find('all', array(
+            'conditions' => array('Group.name' => array('administrator', 'manager', 'program manager')),
+            'fields' => array('id', 'username', 'group_id')));
+        $currentKeywords = $this->Keyword->getCurrentKeywords($this->programDetails['database']);
         $this->set(compact(
             'openQuestionTemplateOptions',
             'closedQuestionTemplateOptions',
             'unmatchingAnswerTemplateOptions',
-            'shortcodes'));
+            'shortcodes',
+            'contactUsers',
+            'currentKeywords'));
         
         ## in case it's not an edit, the setting need to be retrieved from the database
         if (!isset($this->request->data['ProgramSetting'])) {
@@ -134,6 +149,7 @@ class ProgramSettingsController extends AppController
                 }
                 $this->request->data = $programSettings;
             }
+            ## formating the data, should he done in the view one cannot edit the $this->data fields
             ## set a user friendly format
             if (isset($this->request->data['ProgramSetting']['credit-from-date'])) {
                 $fromDate = new DateTime($this->request->data['ProgramSetting']['credit-from-date']);
@@ -142,6 +158,11 @@ class ProgramSettingsController extends AppController
             if (isset($this->request->data['ProgramSetting']['credit-to-date'])) {
                 $toDate = new DateTime($this->request->data['ProgramSetting']['credit-to-date']);
                 $this->request->data['ProgramSetting']['credit-to-date'] = $toDate->format('d/m/Y');
+            }
+            if (isset($this->request->data['ProgramSetting']['authorized-keywords'])) {
+                if (is_array($this->request->data['ProgramSetting']['authorized-keywords'])) {
+                    $this->request->data['ProgramSetting']['authorized-keywords'] = implode(', ', $this->request->data['ProgramSetting']['authorized-keywords']);
+                }
             }
         }
     }

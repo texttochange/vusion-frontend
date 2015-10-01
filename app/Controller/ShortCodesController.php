@@ -6,25 +6,18 @@ App::uses('Template', 'Model');
 
 class ShortCodesController extends AppController
 {
-    var $helpers    = array('Js' => array('Jquery'));
-    var $components = array('PhoneNumber'); 
+    var $uses = array(
+        'ShortCode',
+        'Template');
+    var $components = array(
+        'PhoneNumber'); 
+    var $helpers = array(
+        'Js' => array('Jquery'));
     
     
     public function constructClasses()
     {
         parent::constructClasses();
-        
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->ShortCode = new ShortCode($options);
-        $this->Template = new Template($options);
     }
     
     
@@ -99,9 +92,10 @@ class ShortCodesController extends AppController
     
     protected function setOptions()
     {
-        $countries = $this->PhoneNumber->getCountries();
+        $countries                  = $this->PhoneNumber->getCountries();
         $prefixesByCountriesOptions = $this->PhoneNumber->getPrefixesByCountries();
-        $errorTemplateOptions   = $this->Template->getTemplateOptions('unmatching-keyword');
+        $errorTemplateOptions       = $this->Template->getTemplateOptions('unmatching-keyword');
+        
         $maxCharacterPerSmsOptions = array_combine(
             $this->ShortCode->maxCharacterPerSmsOptions, 
             $this->ShortCode->maxCharacterPerSmsOptions);
@@ -129,14 +123,83 @@ class ShortCodesController extends AppController
                 'action' => 'index'
                 ));
         }
-        $this->Session->setFlash(__('ShortCode was not deleted.'), 
-            'default',
-            array('class' => "message failure")
-            );
+         $this->Session->setFlash(__('ShortCode deleted.'),
+                'default',
+                array('class'=>'message success')
+                );
         $this->redirect(array('controller' => 'shortCodes',
             'action' => 'index'
             ));
         
+    }
+    
+    
+    public function archive()
+    {
+        $id = $this->params['id'];
+        
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        $this->ShortCode->id = $id;
+        if (!$this->ShortCode->exists()) {
+            throw new NotFoundException(__('Invalid shortcode.') . $id);
+        }
+        
+        if ($this->ShortCode->archive($id)) {
+            $this->Session->setFlash(__('This ShortCode has been disabled.'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        } else {
+            $linkdomain = Configure::read('vusion.domain');
+            
+            $shortCode = $this->ShortCode->find(
+                'first', 
+                array('conditions'=> array('_id' => $id), 'fields' => array('shortcode', 'country'))
+                );
+            $url = $linkdomain.'/programs/index?filter_operator=all&filter_param[1][1]=status&filter_param[1][2]=is&filter_param[1][3]=running&filter_param[2][1]=shortcode&filter_param[2][2]=is&filter_param[2][3]='.
+                    $shortCode['ShortCode']['shortcode'].'&filter_param[3][1]=country&filter_param[3][2]=is&filter_param[3][3]='.$shortCode['ShortCode']['country'];
+            
+            $this->Session->setFlash(__("ShortCode couldn't be disabled. First archive or change the shortcode of <a href=".$url." class = 'flash-message-link'>the programs which are using it</a>."));
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        }
+    }
+    
+    
+    public function unarchive()
+    {
+        $id = $this->params['id'];
+        
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        $this->ShortCode->id = $id;
+        if (!$this->ShortCode->exists()) {
+            throw new NotFoundException(__('Invalid shortcode.') . $id);
+        }
+        
+        if ($this->ShortCode->unarchive()) {
+            $this->Session->setFlash(__('This ShortCode has been enabled.'),
+                'default',
+                array('class'=>'message success')
+                );
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        } else {
+            $this->Session->setFlash(__("ShortCode couldn't be enabled."));
+            $this->redirect(array('controller' => 'shortCodes',
+                'action' => 'index'
+                ));
+        }
     }
     
     

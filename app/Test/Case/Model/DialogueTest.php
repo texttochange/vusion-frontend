@@ -5,6 +5,7 @@ App::uses('Schedule', 'Model');
 App::uses('ScriptMaker', 'Lib');
 App::uses('Participant', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class DialogueTestCase extends CakeTestCase
@@ -14,11 +15,15 @@ class DialogueTestCase extends CakeTestCase
     {
         parent::setUp();
         
-        $option               = array('database'=>'testdbprogram');
-        $this->Dialogue       = new Dialogue($option);
-        $this->Schedule       = new Schedule($option);
-        $this->Participant    = new Participant($option);
-        $this->ProgramSetting = new ProgramSetting($option);
+        $dbName = 'testdbprogram';
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName);
+        $this->Schedule = ProgramSpecificMongoModel::init(
+            'Schedule', $dbName);
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
         
         $this->Maker = new ScriptMaker();
         $this->dropData();
@@ -117,9 +122,11 @@ class DialogueTestCase extends CakeTestCase
         $this->assertEqual(2, $saveActiveOtherDialogue['Dialogue']['activated']);        
         
         //reactivate the olderone
-        $this->Dialogue->makeActive($saveActiveOtherDialogue['Dialogue']['_id']);
+        $this->Dialogue->makeActive();
         $activeAndDraft = $this->Dialogue->getActiveAndDraft();
-        $this->assertEquals($saveActiveOtherDialogue['Dialogue']['_id'], $activeAndDraft[1]['Active']['_id']);
+        $this->assertEquals(
+            $saveActiveOtherDialogue['Dialogue']['_id'],
+            $activeAndDraft[1]['Active']['_id']);
         
     }
     
@@ -206,7 +213,7 @@ class DialogueTestCase extends CakeTestCase
         $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
         
         $this->assertFalse($savedDialogue);
-        $this->assertEqual(
+        $this->assertEquals(
             $this->Dialogue->validationErrors['auto-enrollment'][0],
             'The auto-enrollment value is not valid.');
     }
@@ -235,8 +242,8 @@ class DialogueTestCase extends CakeTestCase
                 'subcondition-parameter' => 'geek'));
         $savedDialogue                           = $this->Dialogue->saveDialogue($dialogue);
 
-        $this->assertFalse($savedDialogue);
-        $this->assertEqual(
+       $this->assertFalse($savedDialogue);
+        $this->assertEquals(
             $this->Dialogue->validationErrors['condition-operator'][0],
             'An operator between conditions has to be selected.');
         $this->assertEqual(
@@ -508,81 +515,82 @@ class DialogueTestCase extends CakeTestCase
     }
     
     
-    public function testSaveDialogue_prioritized()
+    public function testSaveDialogue_prioritized_default()
     {
         $dialogue = $this->Maker->getOneDialogue();        
         $this->Dialogue->saveDialogue($dialogue);
         
-        $dialog = $this->Dialogue->find('first');        
-        $this->assertTrue(array_key_exists('set-prioritized', $dialog['Dialogue']));
-        $this->assertEqual($dialog['Dialogue']['set-prioritized'], null);
-        
-        $dialogue2                                = $this->Maker->getOneDialogue();
-        $dialogue2['Dialogue']['set-prioritized'] = 'prioritized';        
-        $this->Dialogue->saveDialogue($dialogue2);
-        
-        $dialog2 = $this->Dialogue->find('first', array(
-            'conditions'=>array('set-prioritized'=>'prioritized')));
-        
-        $this->assertEqual(count($dialog2), 1);
+        $savedDialogue = $this->Dialogue->find('first');
+        $this->assertEqual($savedDialogue['Dialogue']['set-prioritized'], null);   
     }
+
+    public function testSaveDialogue_prioritized() 
+    {
+        $dialogue = $this->Maker->getOneDialogue();
+        $dialogue['Dialogue']['set-prioritized'] = 'prioritized';        
+        $this->Dialogue->saveDialogue($dialogue);
+        
+        $savedDialogue = $this->Dialogue->find('first');
+        $this->assertEqual($savedDialogue['Dialogue']['set-prioritized'], 'prioritized');
+    }
+    
     
     public function testUniqueDialogueName_dialogueIdSame_pass()
     {
-    	$dialogue                             = $this->Maker->getOneDialogue();
-    	$savedDialogueOne                     = $this->Dialogue->saveDialogue($dialogue);    	
-    	
-    	$dialogue2                            = $this->Maker->getOneDialogue();
-    	$dialogue2['Dialogue']['dialogue-id'] = $savedDialogueOne['Dialogue']['dialogue-id'];
-    	$savedDialogueTwo                     = $this->Dialogue->saveDialogue($dialogue2);
-    	
-    	$this->assertEquals($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']); 
-    	$this->assertTrue(isset($savedDialogueTwo));
+        $dialogue                             = $this->Maker->getOneDialogue();
+        $savedDialogueOne                     = $this->Dialogue->saveDialogue($dialogue);        
+        
+        $dialogue2                            = $this->Maker->getOneDialogue();
+        $dialogue2['Dialogue']['dialogue-id'] = $savedDialogueOne['Dialogue']['dialogue-id'];
+        $savedDialogueTwo                     = $this->Dialogue->saveDialogue($dialogue2);
+        
+        $this->assertEquals($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']); 
+        $this->assertTrue(isset($savedDialogueTwo));
     }
     
     public function testUniqueDialogueName_dialogueIdDifferent_fail()
     {
-    	$dialogue         = $this->Maker->getOneDialogue();
-    	$savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);
-    	
-    	$dialogue2        = $this->Maker->getOneDialogue();
-    	$savedDialogueTwo = $this->Dialogue->saveDialogue($dialogue2);
-    	
-    	$this->assertEquals(1,$this->Dialogue->find('count'));
-    	$this->assertEquals($savedDialogueTwo['Dialogue'],null);
-    	$this->assertEquals($this->Dialogue->validationErrors['name'][0], 'This Dialogue Name already exists. Please choose another.');
-    	
+        $dialogue         = $this->Maker->getOneDialogue();
+        $savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);
+        
+        $dialogue2        = $this->Maker->getOneDialogue();
+        $savedDialogueTwo = $this->Dialogue->saveDialogue($dialogue2);
+        
+        $this->assertEquals(1,$this->Dialogue->find('count'));
+        $this->assertEquals($savedDialogueTwo['Dialogue'],null);
+        $this->assertEquals($this->Dialogue->validationErrors['name'][0], 'This Dialogue Name already exists. Please choose another.');
+        
     }
     
     
     public function testUniqueDialogueName_dialogueIdDifferent_pass()
     {
-    	$dialogue         = $this->Maker->getOneDialogue();
-    	$savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);    	
-    	
-    	$dialogue2                     = $this->Maker->getOneDialogue();
-    	$dialogue2['Dialogue']['name'] = 'tom';
-    	$savedDialogueTwo              = $this->Dialogue->saveDialogue($dialogue2);
-    	
-    	$this->assertNotEqual($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']);
-    	$this->assertEqual(2,$this->Dialogue->find('count'));
-    	$this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
+        $dialogue         = $this->Maker->getOneDialogue();
+        $savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);        
+        
+        $dialogue2                     = $this->Maker->getOneDialogue();
+        $dialogue2['Dialogue']['name'] = 'tom';
+        $savedDialogueTwo              = $this->Dialogue->saveDialogue($dialogue2);
+        
+        $this->assertNotEqual($savedDialogueOne['Dialogue']['name'],$savedDialogueTwo['Dialogue']['name']);
+        $this->assertEqual(2,$this->Dialogue->find('count'));
+        $this->assertNotEqual($savedDialogueOne['Dialogue']['dialogue-id'],$savedDialogueTwo['Dialogue']['dialogue-id']);
     }
     
     
     public function testisValidDialogueName()
     {
-    	$dialogue         = $this->Maker->getOneDialogue();
-    	$savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);
-    	
-    	$dialogue2                            = $this->Maker->getOneDialogue();
-    	$dialogue2['Dialogue']['name']        = 'tom';
-    	$dialogue2['Dialogue']['dialogue-id'] = '08';
-    	$savedDialogueTwo                     = $this->Dialogue->saveDialogue($dialogue2);
-    	
-    	$output = $this->Dialogue->isValidDialogueName('tom','08');
-    	$this->assertEqual(1,$output);
-		$this->assertTrue($output);    	
+        $dialogue         = $this->Maker->getOneDialogue();
+        $savedDialogueOne = $this->Dialogue->saveDialogue($dialogue);
+        
+        $dialogue2                            = $this->Maker->getOneDialogue();
+        $dialogue2['Dialogue']['name']        = 'tom';
+        $dialogue2['Dialogue']['dialogue-id'] = '08';
+        $savedDialogueTwo                     = $this->Dialogue->saveDialogue($dialogue2);
+        
+        $output = $this->Dialogue->isValidDialogueName('tom','08');
+        $this->assertEqual(1,$output);
+        $this->assertTrue($output);        
     }
     
     
@@ -592,11 +600,6 @@ class DialogueTestCase extends CakeTestCase
         $this->assertEquals(
             array('keyword'),
             Dialogue::hasDialogueKeywords($dialogue, array('keyword')));
-        
-        $dialogue = $this->Maker->getOneDialogueWithKeyword();
-        $this->assertEquals(
-            array('feel', 'keyword'),
-            Dialogue::hasDialogueKeywords($dialogue, array('feel', 'keyword')));
         
         $dialogue = $this->Maker->getOneDialogueWithKeyword('keyword');
         $this->assertEquals(
@@ -641,4 +644,89 @@ class DialogueTestCase extends CakeTestCase
             Dialogue::getDialogueKeywords($dialogue));
     }
     
+    public function testIsInteractionAnswerExists(){
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive();
+
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            $savedDialogue['Dialogue']['dialogue-id'],
+            $savedDialogue['Dialogue']['interactions'][1]['interaction-id'],
+            'Good');
+        $this->assertTrue($result);
+
+        //Interaction not existing
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            $savedDialogue['Dialogue']['dialogue-id'],
+            'SomeOtherId',
+            'good');
+        $this->assertEqual(
+            array('interaction-id' => "The dialogue with id ".$savedDialogue['Dialogue']['dialogue-id']." doesn't have an interaction with id SomeOtherId"),
+            $result);
+
+        //Dialogue not existing
+        $result = $this->Dialogue->isInteractionAnswerExists(
+            'SomeRandomId',
+            'SomeOtherId',
+            'good');
+        $this->assertEqual(
+            array('dialogue-id' => "No dialogue with id: SomeRandomId."),
+            $result);
+    }
+
+    public function testMakeActive_fail_keyword() {
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $dialogue['Dialogue']['name'] = 'another name';  //change name to avoid validation error
+        $dialogue['Dialogue']['dialogue-id'] = '3456';   //change dialogue id
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue, array('keyword'));
+        $usedKeywords = array(
+            'keyword'=> array(
+                'program-db' => 'otherdb',
+                'program-name' => 'otherprogram',
+                'by-type' => 'Dialogue',
+                'dialogue-id' => '01',
+                'dialogue-name' => 'my dialogue'));
+        $this->Dialogue->id = $savedDialogue['Dialogue']['_id'].'';
+        $this->assertFalse($this->Dialogue->makeActive($usedKeywords));
+        $this->assertEqual(
+            $this->Dialogue->validationErrors['interactions'][1],
+            array('keyword' => array("'keyword' already used by a Dialogue of program 'otherprogram'.")));
+    }
+
+
+    public function testFromDialogueIdToName(){
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogueWithKeyword();
+        $this->Dialogue->create();
+        $savedDialogue = $this->Dialogue->save($dialogue);
+        $this->Dialogue->makeActive();
+
+        $participant = array('phone' => '+7');
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+
+        $savedParticipant['Participant']['enrolled'][0]['dialogue-id'] = $savedDialogue['Dialogue']['dialogue-id'];
+        $savedParticipant['Participant']['enrolled'][0]['date-time'] = '2012-12-12T18:30:00';
+        $savedParticipant['Participant']['enrolled'][1]['dialogue-id'] = '34556';
+        $savedParticipant['Participant']['enrolled'][1]['date-time'] = '2012-12-12T18:30:00';
+        
+        $savedAgainParticipant = $this->Participant->save($savedParticipant);
+
+        $participant = $this->Dialogue->fromDialogueIdToName($savedAgainParticipant);
+        $this->assertTrue(isset($participant['Participant']['enrolled'][0]['dialogue-name']));
+        $this->assertEqual(
+            'my dialogue',
+            $participant['Participant']['enrolled'][0]['dialogue-name']);
+        $this->assertTrue(isset($participant['Participant']['enrolled'][1]['dialogue-name']));
+        $this->assertEqual(
+            'Dialogue not found',
+            $participant['Participant']['enrolled'][1]['dialogue-name']);
+        
+
+    }
+
 }

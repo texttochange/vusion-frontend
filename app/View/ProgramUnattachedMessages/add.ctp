@@ -1,24 +1,27 @@
 <?php
-  $this->RequireJs->scripts(array("nav-menu", "unattached-message", "responsive-utils"));
+  $this->RequireJs->scripts(array("unattached-message"));
 ?>
 <div class="unattached_messages form width-size">
-<ul class="ttc-actions">		
-    <li>
-    <?php echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button', 'id' => 'button-save')); ?>
-    <span class="actions">
     <?php
-    echo $this->Html->link(__('Cancel'), 
+        $contentTitle   = __('Add Separate Message'); 
+        $contentActions = array();
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
         array(
-            'program' => $programDetails['url'],
-            'controller' => 'programHome',
-            'action' => 'index'	           
-            ));
+          'program' => $programDetails['url'],
+          'controller' => 'programHome',
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->Html->link(__('Save'),
+            array(),
+            array('class'=>'ttc-button',
+                'id' => 'button-save'));
+        $this->Js->get('#button-save')->event('click',
+            '$("#UnattachedMessageAddForm").submit()' , true);
+		
+		echo $this->element('header_content', compact('contentTitle', 'contentActions'));
     ?>
-    </span>
-    </li>
-    <?php $this->Js->get('#button-save')->event('click', '$("#UnattachedMessageAddForm").submit()' , true);?>
-</ul>
-<h3><?php echo __('Add Separate Message'); ?></h3>
     <div class="ttc-display-area display-height-size">
     <?php 
     $sendToOptions = array(
@@ -169,7 +172,6 @@
         addContentFormHelp();
         addCounter();
         $("#UnattachedMessageSend-to-match-conditions").chosen();');
-        
     $this->Js->get("input[name*='send-to-type']")->event('change','
         switch ($(this).val()) {
         case "match":

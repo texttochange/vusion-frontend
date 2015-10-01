@@ -29,6 +29,11 @@ function addContentFormHelp(baseUrl) {
     addFormHelp(baseUrl, 'forward-url', $("[name*='\.forward-url']").prev("label").not(":has(img)"));
     addFormHelp(baseUrl, 'proportional-labelling', $("[value='proportional-labelling']:checked").parent().next().children('legend').not(":has(img)"));
     addFormHelp(baseUrl, 'proportional-tagging', $("[value='proportional-tagging']:checked").parent().next().children('legend').not(":has(img)"));
+    addFormHelp(baseUrl, 'content', $("[name*='.invite-content']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'feedback-inviter', $("[name*='.feedback-inviter']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'keep-tags', $("[name*='.keep-tags']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'keep-labels', $("[name*='.keep-labels']").prev(":not(:has(img)):not(div):not(span)"));
+    addFormHelp(baseUrl, 'dynamic-content', $("[name*='scvt-row-value'],[name*='scvt-col-extra-value']").prev(":not(:has(img)):not(div):not(span)"));
 }   
 
 
@@ -45,8 +50,20 @@ function requestHelp(elt, baseUrl, topic) {
         $(elt).parent().next().remove();
         return;
     }
-    $("<div class='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent()).load('/documentation', 
-        'topic='+topic);
+    $("<div class='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
+    $.ajax({
+        url: '/documentation.json', 
+        type: 'GET',
+        data: 'topic='+topic,
+        dataType: 'json',
+        success: function(response) {
+            if (response['status'] == 'fail') {
+                $(".ttc-help-box").html(response['message']);
+            } else {
+                $(".ttc-help-box").html(response['documentation']);
+            }
+        }
+    }); 
 }
 
 
@@ -115,30 +132,6 @@ function pullBackendNotifications(url) {
             timeout: 500,
             error: vusionAjaxError,
     });
-}
-
-
-function pullSimulatorUpdate(url){
-    $.ajax({
-            url: url,
-            success: function(data){
-                $('#connectionState').hide();
-                if (data['message']) {
-                    var message = $.parseJSON(data['message']);
-                    $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
-                }
-            },
-            timeout: 1000,
-            error: vusionAjaxError
-    });
-}
-
-
-function logMessageSent(){
-    var log = "> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+$('[name="participant-phone"]').val()+" '"+$('[name="message"]').val()+"'";
-    $('[name="participant-phone"]').val('')
-    $('[name="message"]').val('')
-    $('#simulator-output').append("<div>"+log+"</div>");
 }
 
 
@@ -221,6 +214,9 @@ function createFilter(minimize, selectedStackOperator, stackRules){
 function minimizeFilter() {
     $(this).parent().children(":not(img):not([class='ttc-filter-title'])").slideUp('fast');
     $(this).attr('src','/img/expand-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', expandFilter);
+    setTimeout(function() {
+        $('#header-content').trigger('heightChange')},
+        190);
 }
 
 
@@ -229,14 +225,19 @@ function expandFilter() {
             if ($(this).attr('type')=='text')
                 $(this).show();      //workaround for webkit bug that doesnt display sometimes the text input element       
     $(this).slideDown('fast')});
-    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', minimizeFilter);    
+    $(this).attr('src','/img/minimize-icon-16.png').attr('class', 'ttc-add-icon').off().on('click', minimizeFilter);
+    setTimeout(function() {
+        $('#header-content').trigger('heightChange')},
+        190);
 }
 
 
 function removeFilter() {
     $(this).parent().hide().children(':not(.submit)').remove();
-    if (window.location.search != "")
+    if (window.location.search != "") {
         window.location.replace(window.location.href.split("?")[0])
+    }
+    $('#header-content').trigger('heightChange');
 }
 
 
@@ -269,6 +270,7 @@ function addStackFilter(){
      
     $(stackFilter).append(filterFieldDropDown);
     $(filterFieldDropDown).change();
+    $('#header-content').trigger('heightChange');
 }
 
 
@@ -280,6 +282,7 @@ function removeStackFilter(){
         if (window.search != "")
             window.location.replace("index")
     }
+    $('#header-content').trigger('heightChange');
 }
 
 
@@ -569,18 +572,26 @@ function loadFilterParameterOptions(parameter, url) {
 
 
 function loadPaginationCount(url) {
+    $('#data-control-nav .next a').addClass('disabled');
     //Dirty: passing of the rule require rencoding the & in the url parameters 
     url = url.replace(/&amp;/g, "&");
     $.ajax({
         url: url,
         success: function(data){
             if (data['status'] == 'ok') {
+                $('#data-control-nav .next a').removeClass('disabled');
                 $('.ttc-page-count').attr('title', data['pagination-count']);
                 $('#paging-count').text(data['rounded-count']);
+                var paging_end = parseInt($('#paging-end').text());
+                var paging_count = parseInt(data['pagination-count']);
+                if (paging_end >= paging_count) {
+                    $('#data-control-nav .next').addClass('disabled').empty().text('>');
+                }
             }
         },
         timeout: 45000,  //45 sec
         error: function(jqXHR, textStatus, errorthrown) {
+            $('#data-control-nav .next a').removeClass('disabled');
             $('#paging-count').text(localized_labels['many']);
         }
     });
@@ -779,4 +790,9 @@ function disableSubmit() {
     $('#close-report').attr('style', 'visibility:hidden');
     $('#submit-report').attr('style', 'visibility:hidden');
     $('#sending-email').append(localized_messages['sending_report']);
+}
+
+function disableSend() {
+    $('#send-invite').attr('style', 'visibility:hidden');
+    $('#sending-email').append(localized_messages['sending_invite']);
 }

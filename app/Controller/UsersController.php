@@ -5,29 +5,38 @@ App::uses('User', 'Model');
 App::uses('Group', 'Model');
 App::uses('BasicAuthenticate', 'Controller/Component/Auth/');
 App::uses('CakeEmail', 'Network/Email');
+App::uses('VusionConst', 'Lib');
 
 class UsersController extends AppController
 {
     public $CakeEmail = null;
     
-    
-    var $components = array(
-        'LocalizeUtils', 
-        'ResetPasswordTicket',
-        'Captcha',
-        'Email',
-        'Filter');
-    
     var $uses = array(
         'User',
         'Group');
+    var $components = array(
+        'LocalizeUtils', 
+        'Captcha',
+        'Email',
+        'Filter',
+        'Ticket',
+        'RequestHandler');
+    var $helpers = array(
+        'Csv');
     
     
     public function beforeFilter()
     {
         parent::beforeFilter();
         //For initial creation of the admin users uncomment the line below
-        $this->Auth->allow('login', 'logout', 'requestPasswordReset', 'captcha', 'useTicket', 'newPassword');
+        $this->Auth->allow(
+            'login',
+            'logout',
+            'requestPasswordReset',
+            'captcha',
+            'useTicket',
+            'newPassword',
+            'addInvitee');
     }
     
     
@@ -36,21 +45,69 @@ class UsersController extends AppController
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
         
-        $paginate = array('all');
-        
+        $paginate          = array('all');
+        $defaultConditions = array();        
+        $order             = null;
+
+        if ($this->Auth->user('group_id') != 1) {
+            $defaultConditions = array('invited_by' => $this->Auth->user('id'));
+        }
+
         if (isset($this->params['named']['sort'])) {
             $paginate['order'] = array($this->params['named']['sort'] => $this->params['named']['direction']);
+            $order = $paginate['order'];
         }
         
-        $conditions = $this->Filter->getConditions($this->User);
+        $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
         if ($conditions != null) {
             $paginate['conditions'] = $conditions;
         }
+        
         $this->paginate        = $paginate;
         $this->User->recursive = 0;
-        $this->set('users', $this->paginate("User"));
+        $users = $this->paginate("User");
+        # TODO: refactor using a join
+        foreach($users as &$user) {
+            $username = $this->User->find('first', array(
+                'fields' => array('User.username'),
+                'conditions' =>array('User.id' => $user['User']['invited_by'])
+                ));
+            $user['User']['invited_by'] = ($username ? $username['User']['username']: __("admin"));
+        }
+        $this->set(compact('users', 'order'));
     }
     
+
+    public function export()
+    {
+        $defaultConditions = array();
+        $order = array();
+
+        if ($this->Auth->user('group_id') != 1) {
+            $defaultConditions = array('User.invited_by' => $this->Auth->user('id'));
+        }
+
+        if (isset($this->params['named']['sort'])) {
+            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+        }
+
+        $conditions = $this->Filter->getConditions($this->User, $defaultConditions);
+
+        $this->User->recursive = 0;
+        $users = $this->User->find('all', array(
+            'conditions' => $conditions,
+            'order' => $order,
+            'fields' => array('username', 'email', 'Group.name', 'InvitedBy.username'),
+            'joins' => array(
+                array(
+                    'table' => 'users',
+                    'alias' => 'InvitedBy',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'InvitedBy.id = User.invited_by'))
+                    )));
+        $this->set(compact('users'));
+    }
     
     protected function _getFilterFieldOptions()
     {   
@@ -86,7 +143,8 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved.'),
+                $this->Session->setFlash(
+                    __('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
                     );
@@ -122,13 +180,28 @@ class UsersController extends AppController
             
             $umatchableReplyAccess = $this->request->data['User']['unmatchable_reply_access'];
             unset($this->request->data['User']['unmatchable_reply_access']);
+            $canInviteUsers = $this->request->data['User']['can_invite_users'];
+            unset($this->request->data['User']['can_invite_users']);
             if ($user = $this->User->save($this->request->data)) {
-                ##checkbox is checked => we store it in the ACL
+                ##### To Refactor ###############
+                #checkbox is checked => we store it in the ACL
                 if ($umatchableReplyAccess == true) {
                     $this->Acl->allow($user, 'controllers/UnmatchableReply');
                 } else {
                     $this->Acl->deny($user, 'controllers/UnmatchableReply');
                 }
+
+                if ($canInviteUsers == true) {
+                    $this->Acl->allow($user, 'controllers/Users/inviteUser');
+                    $this->Acl->allow($user, 'controllers/Users/index');
+                    $this->Acl->allow($user, 'controllers/Users/delete');
+                } else {
+                    $this->Acl->deny($user, 'controllers/Users/index');
+                    $this->Acl->deny($user, 'controllers/Users/delete');
+                    $this->Acl->deny($user, 'controllers/Users/inviteUser');
+                }
+                ########################################################
+
                 $this->Session->setFlash(__('The user has been saved.'),
                     'default',
                     array('class'=>'message success')
@@ -149,6 +222,7 @@ class UsersController extends AppController
             $this->request->data = $this->User->read(null, $id);
             ##As the information is stored in the ACL we need to retrieve it form the ACL component
             $this->request->data['User']['unmatchable_reply_access'] = $this->Acl->check($this->User, 'controllers/UnmatchableReply');
+            $this->request->data['User']['can_invite_users'] = $this->Acl->check($this->User, 'controllers/Users/inviteUser');
         }
         $groups   = $this->User->Group->find('list');
         $programs = $this->User->Program->find('list');
@@ -179,6 +253,8 @@ class UsersController extends AppController
     
     public function login()
     {
+        //$this->layout = 'default2';
+        
         if ($this->Auth->user()) {
             $this->Session->setFlash(
                 __('Already logged in...'),
@@ -187,7 +263,7 @@ class UsersController extends AppController
             $this->redirect($this->Auth->redirect());
         }
         
-        if ($this->request->is('ajax')) {
+        if ($this->_isAjax()) {
             if ($this->Auth->login()) {
                 return;
             } else {
@@ -201,6 +277,11 @@ class UsersController extends AppController
                 $this->Session->setFlash(__('Login successful.'),
                     'default',
                     array('class'=>'message success'));
+                
+                if ($this->Session->read('Auth.redirect')) {
+                    $this->redirect($this->Session->read('Auth.redirect'));     
+                }
+                
                 if ($this->Session->read('Auth.User.group_id') == 1) {
                     $this->redirect(array('controller' => 'admin'));
                 }
@@ -294,6 +375,11 @@ class UsersController extends AppController
         $filePath                 = WWW_ROOT . 'files/report-issues';        
         $validationErrors         = array();
         
+        if (!isset($this->request->data['ReportIssue']['issueurl']) || ($this->request->data['ReportIssue']['issueurl'] == "")) {
+            $validationErrors['issueurl'] = array(__('Please copy and paste page url form your Bowser.'));
+        } else {
+            $issueUrl = $this->request->data['ReportIssue']['issueurl'];
+        } 
         if (!isset($this->request->data['ReportIssue']['subject']) || ($this->request->data['ReportIssue']['subject'] == "")) {
             $validationErrors['subject'] = array(__('Please describe the expect vs current behavior.'));
         } else {
@@ -304,11 +390,10 @@ class UsersController extends AppController
         } else {
             $message = $this->request->data['ReportIssue']['message'];
         }
-        $attachment               = $this->request->data['ReportIssue']['screenshot'];
+        
+        $attachment = $this->request->data['ReportIssue']['screenshot'];
         if ($attachment['error'] != 0) {
-            if ($attachment['error'] == 4) { 
-                $validationErrors['screenshot'] = array(__("Please take one screenshot and upload it."));
-            } else { 
+            if ($attachment['error'] != 4) {
                 $validationErrors['screenshot'] = array(__('Error while uploading the file: %s.', $attachment['error']));
             }
         } else {
@@ -323,44 +408,52 @@ class UsersController extends AppController
             return;
         }
         
-        copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
-        
+        if ($attachment['name']) {
+            copy($attachment['tmp_name'], $filePath . DS . $attachment['name']);
+        }
+       
         if (!$this->CakeEmail) {
             $this->CakeEmail = new CakeEmail();
         }
         $this->CakeEmail->config('default');
         $this->CakeEmail->from($userEmail);
-        $this->CakeEmail->to($reportIssueToEmail);
+        $this->CakeEmail->to(array($reportIssueToEmail, $userEmail));
         $this->CakeEmail->subject($reportIssueSubjectPrefix . " " . $subject);
         $this->CakeEmail->template('reportissue_template');
         $this->CakeEmail->emailFormat('html');
         $this->CakeEmail->viewVars(array(
+            'issueUrl' => $issueUrl,
             'subject' => $subject,
             'message' => $message,
             'userName' => $userName));
-        $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
-        
+        if ($attachment['name']) {
+            $this->CakeEmail->attachments($filePath . DS .$attachment['name']);
+        }
         try {
             $this->CakeEmail->send();
         } catch (SocketException $e) {
             $this->Session->setFlash(
                 __('Email server connection is down. Please send report to vusion-issues@texttochange.com'));
-            unlink($filePath . DS . $attachment['name']);
+            if ($attachment['name']) {
+                unlink($filePath . DS . $attachment['name']);
+            }
             return;  
         } catch (Exception $e) {
             $exceptionMessage = $e->getMessage();
             $this->Session->setFlash(
                 __('"%s". Please send report to vusion-issues@texttochange.com', $exceptionMessage));
-            unlink($filePath . DS . $attachment['name']);
+            if ($attachment['name']) {
+                unlink($filePath . DS . $attachment['name']);
+            }
             return;
         }
         
         $this->Session->setFlash(
             __('The tech team will contact you in the next 2 days by Email. Thank you.'),
             'default', array('class'=>'message success'));
-        
-        unlink($filePath . DS . $attachment['name']);
-        
+        if ($attachment['name']) {
+            unlink($filePath . DS . $attachment['name']);
+        }
         return $this->redirect(array('controller' => 'users', 'action' => 'reportIssue'));
     }
     
@@ -411,30 +504,36 @@ class UsersController extends AppController
         $userName = $account[0]['User']['username'];
         $userId   = $account[0]['User']['id'];
         $this->Session->write('user_id',$userId);
-        
+
         $token = md5 (date('mdy').rand(4000000, 4999999));
-        $this->ResetPasswordTicket->saveToken($token);
+        $this->Ticket->saveTicket($token);
         
-        $this->ResetPasswordTicket->sendEmail($email, $userName, $token);
+        $subject = 'Password Reset';
+        $template = 'reset_password_template';
+        $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
         $this->Session->setFlash(
             __('An Email has been sent to your email account.'),
-            'default',
-            array('class'=>'message success')
-            );
+            'default', array('class'=>'message success'));
         $this->redirect('/');
     }
     
     
     public function useTicket($ticketHash)
     {
-        $results = $this->ResetPasswordTicket->checkTicket($ticketHash);
+        $results = $this->Ticket->checkTicket($ticketHash);
         if (isset($results)) {
-            $this->Session->setFlash(
-                __('Enter your new password below'),
-                'default',
-                array('class'=>'message success')
-                );
-            $this->render('new_password');
+            if (is_array($results)) {
+                $this->Session->setFlash(
+                    __('Enter your username and password below'),
+                    'default', array('class'=>'message success'));
+                $this->Session->write('invite',$results);
+                $this->render('add_invitee');
+            } else {
+                $this->Session->setFlash(
+                    __('Enter your new password below'),
+                    'default', array('class'=>'message success'));
+                $this->render('new_password');
+            }
             return;
         }
         $this->Session->setFlash(__('Your ticket is lost or expired.'));
@@ -476,6 +575,128 @@ class UsersController extends AppController
             $this->render('new_password');          
         }
     }
+
+
+    public function inviteUser()
+    {        
+        $user = $this->Auth->user();
+        $andCondition = ($user['group_id'] != 5) ? array(array('id !=' => 1), array('id !=' => 2)) : array(array('id !=' => 1), array('id !=' => 2), array('id !=' => 3));
+
+        $groups   = $this->User->Group->find('list',
+            array('conditions' => array('AND' => $andCondition)
+            ));
+        
+        if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
+           $rawPrograms = $this->User->Program->find(
+                'authorized',
+                array(
+                'specific_program_access' => 'true',
+                'user_id' => $user['id'],
+                ));
+           foreach ($rawPrograms as $program) {
+             $programs[$program['Program']['id']] = $program['Program']['name'];
+           }
+        } else {
+            $programs = $this->User->Program->find('list');
+        }
+
+        $this->set(compact('groups', 'programs'));
+
+        if (!$this->request->is('post')) {
+            return;
+        }
+        # to help in form validation
+        $validationErrors = array('User' => array(), 'Program' => array());
+
+        if (!isset($this->request->data['User']['email']) or
+            $this->request->data['User']['email'] == "" or
+            !preg_match(VusionConst::EMAIL_REGEX, $this->request->data['User']['email'])) {
+            $validationErrors['User']['email'] = "Invalid email.";
+        } else {
+            $email = $this->request->data['User']['email'];
+        }
+
+        if ($this->request->data['Program']['Program'] == "") {
+            $validationErrors['Program']['Program'] = __("Please select at least one program.");
+        } else {
+            $programs = $this->request->data['Program'];
+        }
+        
+        $group_id = $this->request->data['User']['group_id'];
+        $disclaimer = $this->request->data['User']['invite_disclaimer'];
+        
+        #to help in form validation
+        if ($validationErrors['User'] != array() or $validationErrors['Program'] != array()) {
+            $this->Session->setFlash(__("Inite user failed."));
+            $this->set(compact('validationErrors'));
+            return;
+        }
+
+        if (!$disclaimer) {
+            $this->Session->setFlash(__('Please tick the disclaimer'));
+            return;
+        }
+
+        $invite = array(
+            'programs'=> $programs,
+            'group_id' => $group_id,
+            'invited_by' => $user['id']
+            );
+        
+        $token = md5 (date('mdy').rand(4000000, 4999999));
+        $this->Ticket->saveTicket($token, $email, $invite);
+
+        $userName = $this->Session->read('Auth.User.username');
+        
+        $subject = 'Invitation';
+        $template = 'invite_user_template';
+        $this->Ticket->sendEmail($email, $userName, $subject, $template, $token);
+        $this->Session->setFlash(
+            __('An Email has been sent to the invited email account.'),
+            'default', array('class'=>'message success'));
+        $this->redirect('/');
+    }
+
+    public function addInvitee()
+    {
+        $invite = $this->Session->read('invite');
+
+        $usernameExists = $this->User->find('first', 
+            array('conditions' => array('username' => $this->request->data['User']['username'])));
+        $emailExists    = $this->User->find('first', 
+            array('conditions' => array('email' => $this->request->data['User']['email'])));
+
+        if ($usernameExists) {
+            $this->Session->setFlash(__('This username already exists. Please choose another'));
+            return;
+        }
+
+        if ($emailExists) {
+            $this->Session->setFlash(__('This email already exists. Please choose another'));
+            return;
+        }
+
+        if ($this->request->is('post')) {
+            $this->User->create();
+            $invite = $this->Session->read('invite');
+            $this->request->data['User']['group_id'] = $invite['group_id'];
+            $this->request->data['User']['invited_by'] = $invite['invited_by'];
+            $this->request->data['Program'] = $invite['programs'];
+            if ($this->User->save($this->request->data)) {
+                $this->Session->delete('invite');
+                $this->Session->setFlash(__('Your account has been created.'),
+                    'default',
+                    array('class'=>'message success')
+                    );
+                $this->redirect('/');
+            } else {
+                $this->Session->setFlash(__('Account creation failed.'), 
+                    'default',
+                    array('class' => "message failure")
+                    );
+            }
+        }
+    }
     
     
     public function initDB()
@@ -514,12 +735,14 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
             $this->Acl->allow($Group, 'controllers/Templates');
             $this->Acl->allow($Group, 'controllers/CreditViewer');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -533,8 +756,6 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers/Programs');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            //$this->Acl->allow($Group, 'controllers/Users/login');
-            //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramDialogues');
@@ -542,21 +763,20 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramSettings');
             $this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->deny($Group, 'controllers/ProgramSettings/edit');            
-            //$this->Acl->allow($Group, 'controllers/ProgramSettings/index');
-            //$this->Acl->allow($Group, 'controllers/ProgramSettings/view');
             $this->Acl->allow($Group, 'controllers/ProgramSimulator');        
             $this->Acl->allow($Group, 'controllers/ProgramRequests');
             $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
-            //$this->Acl->allow($Group, 'controllers/ShortCodes');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramLogs');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -570,10 +790,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            //$this->Acl->allow($Group, 'controllers/Users/login');
-            //$this->Acl->allow($Group, 'controllers/Users/logout');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
-            //$this->Acl->deny($Group, 'controllers/ProgramParticipants');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/edit');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/add');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants/index');
@@ -588,12 +805,14 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/download');
             $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
         
@@ -601,8 +820,7 @@ class UsersController extends AppController
         $group = $Group->find('first', array('conditions' => array('name' => 'partner manager')));
         if ($group == null) {
             echo "Acl ERROR: cannot find the group partner manager</br>";
-        } else {
-            
+        } else {            
             $Group->id = $group['Group']['id'];
             $this->Acl->deny($Group, 'controllers');
             $this->Acl->allow($Group, 'controllers/Programs/index');
@@ -616,14 +834,53 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
             $this->Acl->allow($Group, 'controllers/ProgramUnattachedMessages');
             $this->Acl->allow($Group, 'controllers/ProgramPredefinedMessages');
+            $this->Acl->deny($Group, 'controllers/Users/add');
             $this->Acl->allow($Group, 'controllers/Users/view');
             $this->Acl->allow($Group, 'controllers/Users/changePassword');
             $this->Acl->allow($Group, 'controllers/Users/edit');
             $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
             $this->Acl->deny($Group, 'controllers/UnmatchableReply');
             $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
             echo "Acl Done: ". $group['Group']['name']."</br>";
         }
+        
+        //allow sub-partner to 
+        $group = $Group->find('first', array('conditions' => array('name' => 'sub partner')));
+        if ($group == null) {
+            echo "Acl ERROR: cannot find the sub partner</br>";
+        } else {
+            $Group->id = $group['Group']['id']."</br";
+            $this->Acl->deny($Group, 'controllers');
+            $this->Acl->allow($Group, 'controllers/Programs/index');
+            $this->Acl->allow($Group, 'controllers/Programs/view');
+            $this->Acl->allow($Group, 'controllers/ProgramAjax');
+            $this->Acl->allow($Group, 'controllers/ProgramHome');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/edit');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/add');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/index');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/view');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/export');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/download');
+            $this->Acl->allow($Group, 'controllers/ProgramParticipants/getFilterParameterOptions');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/reset');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/optin');
+            $this->Acl->deny($Group, 'controllers/ProgramParticipants/optout');
+            $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
+            $this->Acl->deny($Group, 'controllers/ProgramHistory/export');
+            $this->Acl->deny($Group, 'controllers/ProgramHistory/download');
+            $this->Acl->deny($Group, 'controllers/ProgramHistory/delete');
+            $this->Acl->deny($Group, 'controllers/Users/add');
+            $this->Acl->allow($Group, 'controllers/Users/view');
+            $this->Acl->allow($Group, 'controllers/Users/changePassword');
+            $this->Acl->allow($Group, 'controllers/Users/edit');
+            $this->Acl->allow($Group, 'controllers/Users/requestPasswordReset');
+            $this->Acl->deny($Group, 'controllers/UnmatchableReply');
+            $this->Acl->allow($Group, 'controllers/Users/reportIssue');
+            $this->Acl->deny($Group, 'controllers/Users/inviteUser');
+            echo "Acl Done: ". $group['Group']['name']."</br>";
+        }
+
         
         echo 'AllDone';
         exit;

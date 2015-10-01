@@ -1,18 +1,15 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
 App::uses('VusionValidation', 'Lib');
 
 
-class ProgramSetting extends MongoModel
+class ProgramSetting extends ProgramSpecificMongoModel
 {
     
-    
-    var $specific    = true;
-    var $name        = 'ProgramSetting';
-    var $useDbConfig = 'mongo';
+    var $name = 'ProgramSetting';
     
     
     function getModelVersion()
@@ -25,8 +22,7 @@ class ProgramSetting extends MongoModel
     {
         return array(
             'key',
-            'value'
-            );
+            'value');
     }
     
     
@@ -47,6 +43,8 @@ class ProgramSetting extends MongoModel
         'credit-from-date',
         'credit-to-date',
         'sms-forwarding-allowed',
+        'authorized-keywords',
+        'contact',
         );
     
     public $validateSettings = array(
@@ -138,6 +136,18 @@ class ProgramSetting extends MongoModel
                 'required' => false
                 )
             
+            ),
+        'authorized-keywords' => array(
+            'validValue' => array(
+                'rule' => 'validKeywords',
+                'message' => 'noMessage',
+                'required' => false)
+            ),
+        'contact' => array(
+            'validValue' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select a Vusion user to be contact person for this program.',
+                'required' => true)
             )
         );
     
@@ -171,6 +181,21 @@ class ProgramSetting extends MongoModel
         return VusionValidation::customNot($check[$key], $regex[0]);
     }
     
+
+    public function validKeywords($check)
+    {
+        $key = key($check);
+        if (!is_array($check[$key])) {
+            return false;
+        }
+        foreach ($check[$key] as $keyword) {
+            if (!preg_match(VusionConst::KEYWORD_REGEX, $keyword)) {
+                return __('The keyword "%s" is not valid.', $keyword);
+            }
+        }
+        return true;
+    }
+
     
     public function validContentVariable($check)
     {
@@ -198,8 +223,8 @@ class ProgramSetting extends MongoModel
         }
         if ($this->data['ProgramSetting']['key'] == 'request-and-feedback-prioritized'
             and $this->data['ProgramSetting']['value'] == '1') {
-        $this->data['ProgramSetting']['value'] = 'prioritized';
-            }
+            $this->data['ProgramSetting']['value'] = 'prioritized';
+        }
     }
     
     
@@ -279,8 +304,23 @@ class ProgramSetting extends MongoModel
         }
         return $settings;
     }
+    
 
-    public function getProgramSetting($settingKey) {
+    public function getContactEmail()
+    {
+        $User = ClassRegistry::init('User');
+        $contactId = $this->getProgramSetting('contact');
+        $contact = $User->find('first', array(
+            'conditions' => array('User.id' => $contactId),
+            'fields' => array('email')));
+        if ($contact == null) {
+            return null;
+        }
+        return $contact['User']['email'];
+    }
+    
+    public function getProgramSetting($settingKey)
+    {
         $setting = $this->find('programSetting', array('key' => $settingKey));
         if (isset($setting[0])) {
             return $setting[0]['ProgramSetting']['value'];
@@ -322,7 +362,7 @@ class ProgramSetting extends MongoModel
             return null;
         
         date_timezone_set($now, timezone_open($programTimezone));        
-        return $now;       
+        return $now;
     }
     
     
@@ -336,6 +376,21 @@ class ProgramSetting extends MongoModel
         return false;
     }
     
+
+    public function authorizedKeywords($keywords)
+    {
+        $authorizedKeywords = $this->getProgramSetting('authorized-keywords');
+        if ($authorizedKeywords == array()) {
+            return array();
+        }
+        $authorizedKeywords = DialogueHelper::cleanKeywords($authorizedKeywords);
+        $nonAuthorizedKeywords = array_flip(array_diff($keywords, $authorizedKeywords));
+        foreach ($nonAuthorizedKeywords as $key => $value) {
+            $nonAuthorizedKeywords[$key] = array();
+        }
+        return $nonAuthorizedKeywords;
+    }
+
     
     ## function required because the Setting model has a bad design: key/value
     ## This key/value design to be replace in the future but in the mean time
@@ -351,7 +406,6 @@ class ProgramSetting extends MongoModel
         if (!isset($settings['credit-type']) || $settings['credit-type'] == null) {
             $settings['credit-type'] = 'none';
         }
-        
         if (isset($settings['credit-from-date'])) {
             $settings['credit-from-date'] = DialogueHelper::ConvertDateFormat($settings['credit-from-date']);
         }
@@ -362,6 +416,13 @@ class ProgramSetting extends MongoModel
             $settings['sms-forwarding-allowed'] = 'full';
         } else if ($settings['sms-forwarding-allowed'] == '0') {
             $settings['sms-forwarding-allowed'] = 'none';   
+        }
+        if (!isset($settings['authorized-keywords'])) {
+            $settings['authorized-keywords'] = array();
+        } else if ($settings['authorized-keywords'] == "") {
+            $settings['authorized-keywords'] = array();
+        } else if (is_string($settings['authorized-keywords'])) {
+            $settings['authorized-keywords'] = array_map('trim', explode(",", $settings['authorized-keywords']));
         }
         return $settings;
     }

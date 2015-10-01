@@ -7,26 +7,27 @@ class ScriptMaker
     public function getOneDialogueWithKeyword($keyword="keyword")
     {
         $dialogue['Dialogue'] = array(
-            'dialogue-id'=> 'script.dialogues[0]',
-            'activated' => 1,
+            'activated' => 0,
             'auto-enrollment' => 'none',
+            'name' => 'my dialogue',
             'interactions'=> array(
                 array(
-                    'type-interaction' => 'annoucement', 
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '20/10/2013 20:20',
+                    'type-interaction' => 'announcement',
                     'content' => 'hello',
-                    'keyword' => 'feel',
-                    'interaction-id' => 'script.dialogues[0].interactions[0]'
                     ),	
                 array(
-                    'type-interaction' => 'question-answer', 
+                    'type-interaction' => 'question-answer',
+                    'type-schedule' => 'fixed-time',
+                    'date-time' => '20/10/2013 20:20',
                     'content' => 'how are you', 
                     'keyword' => $keyword,
-                    'type-question'=>'close-question',
+                    'type-question'=>'closed-question',
                     'answers'=> array(
                         0 => array('choice'=>'Good'),
                         1 => array('choice'=>'Bad')
                         ),
-                    'interaction-id' => 'script.dialogues[0].interactions[1]'
                     )
                 )
             );
@@ -38,6 +39,12 @@ class ScriptMaker
     public function getOneDialogueAnwerNoSpaceSupported($keyword="keyword")
     {
         $dialogue = $this->getOneDialogueWithKeyword($keyword);
+        $dialogue['Dialogue']['interactions'][0] = array(
+            'type-schedule' => 'fixed-time',
+            'date-time' => '20/10/2013 20:20',
+            'type-interaction' => 'question-answer',
+            'content' => 'hello this is a question',
+            'keyword' => 'feel');
         $dialogue['Dialogue']['interactions'][1]['set-answer-accept-no-space'] =  'answer-accept-no-space';
         return $dialogue;
 
@@ -225,17 +232,24 @@ class ScriptMaker
 
     static public function mkCreditLog($objectType='program-credit-log', $date='2014-04-10',
                                 $programDatabase='mydatabase', $code='256-8181', $incoming=2,
-                                $outgoing=1)
+                                $outgoing=1, $outgoingAcked=0, $outgoingNAcked=0)
     {
         switch($objectType) {
         case 'program-credit-log':
-            return array(
+            $creditLog = array(
                 'object-type' => $objectType,
                 'date' => $date,
                 'code' => $code,
                 'program-database' => $programDatabase,
                 'incoming' => $incoming,
                 'outgoing' => $outgoing);
+            if ($outgoingAcked != 0) {
+                $creditLog['outgoing-acked'] = $outgoingAcked;
+            }
+            if ($outgoingNAcked != 0) {
+                $creditLog['outgoing-nacked'] = $outgoingNAcked;
+            } 
+            return $creditLog;
             break;
         case 'garbage-credit-log':
             return array(

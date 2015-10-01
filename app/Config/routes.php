@@ -236,6 +236,22 @@
 			'action' => 'index'
 			)
 		);
+	
+	Router::connect(
+		'/userLogs/:action/*',
+		array(
+			'controller' => 'userLogs',
+			'action' => 'index'
+			)
+		);
+	
+	Router::connect(
+		'/userLogs',
+		array(
+			'controller' => 'userLogs',
+			'action' => 'index'
+			)
+		);
 
 	
 /**
@@ -249,7 +265,7 @@
 			),
 		array(
 			'program' => '[a-zA-Z0-9]+',
-			'id' => '[a-zA-Z0-9]+'
+			'id' => '[a-zA-Z0-9\+\#]+'
 			)
 		);
 

@@ -1,19 +1,23 @@
-<div class="users-index">
-	<h3><?php echo __('Templates');?></h3>
-	<div class="ttc-data-control">
-	<div id="data-control-nav" class="ttc-paging paging">
-	<?php
-	echo "<span class='ttc-page-count'>";
-	echo $this->Paginator->counter(array(
-	    'format' => __('{:start} - {:end} of {:count}')
-	    ));
-	echo "</span>";
-	echo $this->Paginator->prev('<', array(), null, array('class' => 'prev disabled'));
-	//echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-	</div>
+<div class="admin-action">
+<div class="actions">
+    <h3><?php echo __('Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('New Template'), array('action' => 'add')); ?></li>
+        <li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
+    </ul>
+</div>
+</div>
+<div class="admin-index index">
+<div class="table" style="width:100%">
+<div class="row">
+<div class="cell">
+    <?php
+        $contentTitle           = __('Templates'); 
+        $contentActions         = array();
+        $containsDataControlNav = true;
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav'));
+    ?>
 	<div class="ttc-table-display-area">
 	<div class="ttc-table-scrolling-area display-height-size">
 	<table cellpadding="0" cellspacing="0">
@@ -41,13 +45,7 @@
 	</table>
 	</div>
 	</div>	
-	</div>
-	<div class="admin-action">
-	<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Template'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index')); ?></li>
-	</ul>
+</div>
+</div>
 </div>
 </div>

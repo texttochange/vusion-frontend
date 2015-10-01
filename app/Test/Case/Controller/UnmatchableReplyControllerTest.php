@@ -1,6 +1,8 @@
 <?php
-
+App::Uses('MongoModel', 'Model');
 App::uses('UnmatchableReplyController', 'Controller');
+App::uses('UnmatchableReply', 'Model');
+App::uses('Export', 'Model');
 
 
 class TestUnmatchableReplyController extends UnmatchableReplyController
@@ -10,48 +12,75 @@ class TestUnmatchableReplyController extends UnmatchableReplyController
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
-    }
-    
-    
+    }   
+
 }
+
 
 Class UnmatchableReplyControllerTestCase extends ControllerTestCase
 {
-    var $databaseName = "testdbmongo";
-    
+
     public function setup()
     {
-        Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->UnmatchableReplies = new TestUnmatchableReplyController();
         $this->instanciateUnmatchableReplyModel();
-        $this->dropData();
     }
     
     
     protected function instanciateUnmatchableReplyModel()
     {
-        $options = array('database'=>$this->databaseName);
-        $this->UnmatchableReply = new UnmatchableReply($options);
+        $this->UnmatchableReply = ClassRegistry::init('UnmatchableReply');
+        $this->Export = ClassRegistry::init('Export');
     }
     
     
     protected function dropData()
     {
         $this->UnmatchableReply->deleteAll(true,false);
+        $this->Export->deleteAll(true, false);
     }
     
     
     public function tearDown()
     {
         $this->dropData();
-        
         unset($this->UnmatchableReplies);
-        
         parent::tearDown();
     }
     
+    
+    protected function mockProgramAccess()
+    {
+        $unmatchableReplys = $this->generate('UnmatchableReply', array(
+            'components' => array(
+                'Acl' => array('check'),
+                'Session' => array('read'),
+                'Auth' => array('loggedIn')
+                ),
+            'models' => array(
+                'Program' => array('find', 'count'),
+                'Group' => array('hasSpecificProgramAccess')
+                ),
+            'methods' => array(
+                '_instanciateVumiRabbitMQ',
+                '_notifyBackendExport'
+                ),
+            ));
+        
+        $unmatchableReplys->Acl
+        ->expects($this->any())
+        ->method('check')
+        ->will($this->returnValue(true));
+
+        $unmatchableReplys->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue(true));
+
+        return $unmatchableReplys;
+    }
     
     public function testFilter()
     {        
@@ -94,7 +123,7 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
         $this->assertEquals(2, count($this->vars['unmatchableReplies']));
     }
     
-
+    
     public function testPaginationCount()
     {
         $this->mockProgramAccess();
@@ -105,35 +134,53 @@ Class UnmatchableReplyControllerTestCase extends ControllerTestCase
     
     public function testExport()
     {
-        $this->UnmatchableReply->create();
-        $this->UnmatchableReply->save(array(
-            'participant-phone'=>'1234567890',
-            'to'=>'8181',
-            'message-content'=>'FEE bad',
-            'timestamp'=>'2012-12-07T15:20:23'
-            ));
-        $this->UnmatchableReply->create();
-        $this->UnmatchableReply->save(array(
-            'participant-phone'=>'9876543210',
-            'to'=>'8181',
-            'message-content'=>'FEE gd',
-            'timestamp'=>'2012-10-20T10:30:43'
-            ));
-        $this->UnmatchableReply->create();
-        $this->UnmatchableReply->save(array(
-            'participant-phone'=>'1234567890',
-            'to'=>'8181',
-            'message-content'=>'FEL weak',
-            'timestamp'=>'2012-09-07T12:20:43'
-            ));
-        
+        $unmatchableReplys = $this->mockProgramAccess();
+        $unmatchableReplys
+            ->expects($this->once())
+            ->method('_notifyBackendExport')
+            ->with(
+                  $this->matchesRegularExpression('/^[a-f0-9]+$/'))
+            ->will($this->returnValue(true));
+
         $this->testAction("/unmatchableReply/export");
-        
-        $this->assertTrue(isset($this->vars['fileName']));
-        $this->assertFileEquals(
-            TESTS . 'files/exported_unmatchableReply_history.csv',
-            WWW_ROOT . 'files/programs/unmatchableReply/' . $this->vars['fileName']);
+
+        $this->assertEqual($this->Export->find('count'), 1);
+        $export = $this->Export->find('first');
+        $this->assertTrue(isset($export['Export']));
+        $this->assertContains(
+            'Unmatchable_Reply_', 
+            $export['Export']['file-full-name']);
     }
 
+
+    public function testExported()
+    {
+        $this->mockProgramAccess();
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'vusion',
+            'collection' => 'unmatchable_reply',
+            'file-full-name' => '/var/test.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram',
+            'collection' => 'participants',
+            'file-full-name' => '/var/test2.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'vusion',
+            'collection' => 'unmatchable_reply',
+            'file-full-name' => '/var/test3.csv'));
+        $this->Export->create();
+        $this->Export->save(array(
+            'database' => 'testdbprogram2',
+            'collection' => 'history',
+            'file-full-name' => '/var/test3.csv'));
+
+        $this->testAction("/testurl/programHistory/exported");
+        $files = $this->vars['files'];
+        $this->assertEqual(2, count($files));
+    }
+    
     
 }

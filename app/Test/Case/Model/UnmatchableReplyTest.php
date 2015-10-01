@@ -10,12 +10,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $option         = array('database'=>'test');
-        $this->UnmatchableReply = new UnmatchableReply($option);
-        
-        $this->UnmatchableReply->setDataSource('mongo_test');
-        $this->UnmatchableReply->deleteAll(true, false);
+        $this->UnmatchableReply = ClassRegistry::init('UnmatchableReply');
     }
     
     
@@ -35,7 +30,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             3 => '+255'); 
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
-            array('participant-phone' => new MongoRegex('/^\\+255/')));
+            array('participant-phone' => array('$regex' => '^\\+255')));
         
         $filterParam = array(
             1 => 'from-phone', 
@@ -53,8 +48,8 @@ class UnmatchableReplyTestCase extends CakeTestCase
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
             array('$or' => array(
-                array('participant-phone' => new MongoRegex('/^\\+255/')),
-                array('participant-phone' => new MongoRegex('/^\\+256/'))
+                array('participant-phone' => array('$regex' => '^\\+255')),
+                array('participant-phone' => array('$regex' => '^\\+256'))
                 ))
             );
         
@@ -69,7 +64,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             3 => '+255'); 
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
-            array('to' => new MongoRegex('/^\\+255/')));
+            array('to' => array('$regex' => '^\\+255')));
         
         $filterParam = array(
             1 => 'to-phone', 
@@ -89,7 +84,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             3 => 'Uganda');
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
-            array('participant-phone' => new MongoRegex('/^(\\+)?256/')));
+            array('participant-phone' => array('$regex' => '^(\\+)?256')));
     }
     
     public function testfromFilterToQueryCondition_shortcode()
@@ -101,7 +96,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
             array('$or' => array(
-                array('participant-phone' => new MongoRegex('/\\d*-8181$/')),
+                array('participant-phone' => array('$regex' => '\\d*-8181$')),
                 array('to' => '8181')))
             );
     }
@@ -142,7 +137,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             3 => 'content'); 
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
-            array('message-content' => new MongoRegex('/content/i')));
+            array('message-content' => array('$regex' => 'content', '$options' => 'i')));
         
         $filterParam = array(
             1 => 'message-content', 
@@ -150,7 +145,7 @@ class UnmatchableReplyTestCase extends CakeTestCase
             3 => 'keyword'); 
         $this->assertEqual(
             $this->UnmatchableReply->fromFilterToQueryCondition($filterParam),
-            array('message-content' => new MongoRegex('/^keyword($| )/i')));
+            array('message-content' => array('$regex' => '^keyword($| )', '$options' => 'i')));
     }
     
     

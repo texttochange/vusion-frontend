@@ -11,14 +11,12 @@ class TestProgramDialoguesController extends ProgramDialoguesController
 {
     
     public $autoRender = false;
-    
-    
+     
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
 
@@ -57,7 +55,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         parent::setUp();
         
         $this->Dialogues = new TestProgramDialoguesController();
-        ClassRegistry::config(array('ds' => 'test'));
         
         $this->externalModels = array();
         
@@ -83,12 +80,16 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
     
     protected function instanciateModels()
     {
-        $options = array('database' => $this->programData[0]['Program']['database']);
+        $dbName = $this->programData[0]['Program']['database'];
         
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Request        = new Request($options);
-        $this->Participant    = new Participant($options);
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        $this->Request = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
+        $this->Participant    = ProgramSpecificMongoModel::init(
+            'Participant', $dbName, true);
     }
     
     protected function setupProgramSettings($shortcode, $timezone)
@@ -109,21 +110,21 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
             );
     }
     
-    protected function instanciateExternalModels($databaseName)
+    protected function instanciateExternalModels($dbName)
     {
-        $this->externalModels['dialogue']       = new Dialogue(array('database' => $databaseName));
-        $this->externalModels['programSetting'] = new ProgramSetting(array('database' => $databaseName));
-        $this->externalModels['request'] = new Request(array('database' => $databaseName));
+        $this->externalModels['dialogue'] = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->externalModels['programSetting'] = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+        $this->externalModels['request'] = ProgramSpecificMongoModel::init(
+            'Request', $dbName, true);
     }
     
     
     public function tearDown()
     {
-        
         $this->dropData();
-        
-        unset($this->Dialogues);
-        
+        unset($this->Dialogues);        
         parent::tearDown();
     }
     
@@ -135,7 +136,7 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array(),
+                    'Auth' => array('loggedIn', 'startup'),
                     'RequestHandler' => array(),
                     'Keyword' => array('areKeywordsUsedByOtherPrograms')
                     ),
@@ -158,6 +159,11 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $dialogues->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue(true));
+
         $dialogues->Session
         ->expects($this->any())
         ->method('read')
@@ -289,7 +295,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->assertFalse($this->vars['requestSuccess']);
     }
 
-
   
     public function testActivate_missingProgramSettings()
     {
@@ -332,7 +337,12 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $dialogues->Session
         ->expects($this->once())
         ->method('setFlash')
-        ->with('Dialogue activated.');  
+        ->with('Dialogue activated.');
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('keyword'))
+        ->will($this->returnValue(array()));  
         
         $this->instanciateModels();
         $this->setupProgramSettings('256-8282', 'Africa/Kampala');        
@@ -348,10 +358,36 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $savedParticipant = $this->Participant->save($participant);
         
         $this->testAction('/testurl/programDialogues/activate/'.$savedDialogue['Dialogue']['_id']);
-   
     }
-    
-    
+
+
+    public function testActivate_fail_keywordValidation()
+    {
+        $dialogues = $this->mockProgramAccess();
+        $dialogues->Keyword
+        ->expects($this->once())
+        ->method('areKeywordsUsedByOtherPrograms')
+        ->with('testdbprogram', '256-8282', array('usedkeyword'))
+        ->will($this->returnValue(array(
+            'usedkeyword' => array(
+                'program-db' => 'm6h',
+                'program-name' => 'other program', 
+                'by-type' => 'dialogue'))));
+
+        $this->instanciateModels();
+        $this->setupProgramSettings('256-8282', 'Africa/Kampala');
+
+        $dialogue = $this->Maker->getOneDialogue('usedKeyword');
+        $this->Dialogue->create();
+        $saveDialogue = $this->Dialogue->saveDialogue($dialogue);
+
+        $this->testAction(
+            '/testurl/programDialogue/activate/'.$saveDialogue['Dialogue']['_id'].'');
+
+        $this->assertFalse($this->vars['requestSuccess']);
+    }
+
+
     public function testValidateKeyword_fail_usedInOtherProgramDialogue()
     {    
         $dialogues = $this->mockProgramAccess();
@@ -381,7 +417,6 @@ class ProgramDialoguesControllerTestCase extends ControllerTestCase
         $this->assertEquals(
             "'usedkeyword' already used by a Dialogue of program 'other program'.",
             $this->vars['foundMessage']);
-        
     }
     
     

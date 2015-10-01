@@ -38,7 +38,7 @@ class RequireJsHelper extends AppHelper
 		        require(["vusion"], function(vusion){
 					vusion.setData('.json_encode($this->_variables).');
 		               require('.json_encode($this->_scripts).', function(){
-                           '. implode("\n", $this->Js->getBuffer($options['clear'])).'
+                           '. implode("\n", $this->Js->getBuffer()).'
                        });
         		});
 			});';

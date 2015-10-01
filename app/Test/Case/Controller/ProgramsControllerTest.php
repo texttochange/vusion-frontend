@@ -9,18 +9,16 @@ App::uses('CreditLog', 'Model');
 
 class TestProgramsController extends ProgramsController 
 {
-    
+
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
     
-    protected function _instanciateVumiRabbitMQ() {
-    }
-    
+    protected function _instanciateVumiRabbitMQ() 
+    {}
     
 }
 
@@ -32,16 +30,15 @@ class ProgramsControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        Configure::write("mongo_db", "testdbmongo");
         parent::setUp();
         
         $this->Programs = new TestProgramsController();
-        $this->Programs->constructClasses();
+        $this->ShortCode = ClassRegistry::init('ShortCode');
+        $this->CreditLog = ClassRegistry::init('CreditLog');
         
-        $options = array('database' => "testdbmongo");
-        $this->ShortCode = new ShortCode($options);
-        $this->CreditLog = new CreditLog($options);
-        $this->dropData();
+        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'testdbprogram', true);
+        $this->ProgramSettingM6H = ProgramSpecificMongoModel::init('ProgramSetting', 'm6h', true);
+        $this->ProgramSettingTrial = ProgramSpecificMongoModel::init('ProgramSetting', 'trial', true);
 
         $this->maker = new ScriptMaker();
     }
@@ -51,19 +48,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
     {
         $this->ShortCode->deleteAll(true, false);
         $this->CreditLog->deleteAll(true, false);
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->deleteAll(true, false);  
-        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->deleteAll(true, false);
-        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->deleteAll(true, false);
     }
     
     
     public function tearDown()
     {
+        $this->dropData();
         unset($this->Programs);
-        
         parent::tearDown();
     }
     
@@ -74,6 +68,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'components' => array(
                     'Acl' => array('check'),
+                    'Auth' => array('user', 'loggedIn'),
                     'Session' => array('read'),
                     'Stats',
                     ),
@@ -87,6 +82,18 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
+        
+        $programs->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
+        $programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
         
         return $programs;
     }
@@ -126,7 +133,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
     public function testIndex()
     {
     	$Programs = $this->mockProgramAccess();
-    	
         $Programs->Session
         ->expects($this->any())
         ->method('read')
@@ -135,9 +141,9 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         $this->testAction("/programs/index");
-        $this->assertEquals(4, count($this->vars['programs']));
+        $this->assertEquals(3, count($this->vars['programs']));
     }
-  
+    
     
     public function testIndex_hasSpecificProgramAccess_True()
     {
@@ -173,8 +179,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $this->testAction("/programs/index");
         $this->assertEquals(1, count($this->vars['programs']));
     }
-
-
+    
+    
     #TODO move some case to the ProgramPaginatorComponentTest
     public function testIndex_filter()
     {
@@ -243,7 +249,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         
     }
     
-
+    
     public function testView() 
     {
         $this->mockProgramAccess();
@@ -259,15 +265,16 @@ class ProgramsControllerTestCase extends ControllerTestCase
             ),
             'User'=> array(
                 0 => array(
-                    'id' => 1,
+                    'id' => '1',
+                    'invited_by' => '0',
                     'username' => 'gerald',
                     'password' => 'geraldpassword',
                     'email' => 'gerald@here.com',
-                    'group_id' => 1,
+                    'group_id' => '1',
                     'created' => '2012-01-24 15:34:07',
                     'modified' => '2012-01-24 15:34:07',
                     'ProgramsUser' => array(
-                        'id' => 1,
+                        'id' => '1',
                         'program_id' => '1',
                         'user_id' => '1',
                         ),
@@ -287,16 +294,26 @@ class ProgramsControllerTestCase extends ControllerTestCase
             'Programs', array(
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    '_startBackendWorker'
+                    '_startBackendWorker',
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
                     )
                 )
             );
+        
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
         
         $Programs
         ->expects($this->once())
         ->method('_startBackendWorker')
         ->will($this->returnValue(true));
-        
+      
         $data = array(
             'Program' => array(
                 'name' => 'programName',
@@ -306,13 +323,48 @@ class ProgramsControllerTestCase extends ControllerTestCase
             );
         
         $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
-        
-        $this->assertFileExist(
-            WWW_ROOT . 'files/programs/programurl/');
-        ////clean up
-        rmdir(WWW_ROOT . 'files/programs/programurl');
     }
     
+
+    public function testAdd_emptyField()
+    {
+        $Programs = $this->generate(
+            'Programs', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker',
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
+                   )
+                )
+            );
+
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
+
+        $Programs
+        ->expects($this->once())
+        ->method('_startBackendWorker')
+        ->will($this->returnValue(true));
+
+        $data = array(
+            'Program' => array(
+                'name' => 'programName',
+                'url' => 'programurl',
+                'database'=> 'programdatabase',
+                'import-dialogues-requests-from' => false
+                )
+            );
+
+        $this->testAction('/programs/add', array('data' => $data, 'method' => 'post'));
+    }
+
+
     public function testAdd_import() 
     {
         $Programs = $this->generate(
@@ -320,9 +372,19 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_startBackendWorker',
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
                     )
                 )
             );
+        
+        $Programs->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
         
         $Programs
         ->expects($this->once())
@@ -330,21 +392,25 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->will($this->returnValue(true));
         
         $maker = new ScriptMaker();
-        $importFromDialogue = new Dialogue(array('database' => 'testdbprogram'));
+        $importFromDialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', 'testdbprogram', true);
         $importFromDialogue->deleteAll(true, false);
         $importFromDialogue->create();
         $dialogue = $maker->getOneDialogue();
         $dialogue['Dialogue']['activated'] = 1;
         $savedDialogue = $importFromDialogue->save($dialogue['Dialogue']);
         
-        $importFromRequest = new Request(array('database' => 'testdbprogram'));
+        $importFromRequest = ProgramSpecificMongoModel::init(
+            'Request', 'testdbprogram', true);
         $importFromRequest->deleteAll(true, false);
         $importFromRequest->create();
         $importFromRequest->save($maker->getOneRequest());
         
-        $programDialogue = new Dialogue(array('database' => 'programdatabase'));
+        $programDialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', 'programdatabase', true);
         $programDialogue->deleteAll(true, false);
-        $programRequest = new Request(array('database' => 'programdatabase'));
+        $programRequest = ProgramSpecificMongoModel::init(
+            'Request', 'programdatabase', true);
         $programRequest->deleteAll(true, false);
         
         $data = array(
@@ -377,17 +443,18 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('_stopBackendWorker')
         ->will($this->returnValue(true));
-
-        mkdir(WWW_ROOT . 'files/programs/test/');
         
+        if (!is_dir(WWW_ROOT . 'files/programs/test/')) {
+            mkdir(WWW_ROOT . 'files/programs/test/');
+        }
         $creditLog = ScriptMaker::mkCreditLog(
             'program-credit-log', '2014-04-10', 'testdbprogram');
         $this->CreditLog->create();
         $this->CreditLog->save($creditLog);
-
+        
         $this->testAction('/programs/delete/1');
         
-        $this->assertFileNotExist(
+        $this->assertFileNotExists(
             WWW_ROOT . 'files/programs/test/');
         $this->assertEqual(
             1, 
@@ -396,8 +463,8 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     'object-type' => 'deleted-program-credit-log', 
                     'program-name' => 'test'))));
     }
-
-
+    
+    
     public function testArchive()
     {
         $Programs = $this->generate(
@@ -414,14 +481,14 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('_stopBackendWorker')
         ->will($this->returnValue(true));
-
+        
         $Programs->Program
         ->expects($this->once())
         ->method('archive')
         ->will($this->returnValue(true));
-
+        
         $this->testAction('/programs/archive/1');
     }
-
+    
     
 }

@@ -1,13 +1,16 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('Participant', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('History', 'Model');
 
-class ProgramAjaxController extends AppController
+class ProgramAjaxController extends BaseProgramSpecificController
 {
     var $components = array(
-        'RequestHandler',
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
+        'ProgramAuth',
         'Stats');
     
     
@@ -17,12 +20,10 @@ class ProgramAjaxController extends AppController
         if (!$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
-        $programUrl      = $this->params['program'];
-        $programDatabase = $this->Session->read($programUrl."_db");        
-        $programStats    = $this->Stats->getProgramStats($programDatabase);
+        $dbName = $this->programDetails['database'];
+        $programStats = $this->Stats->getProgramStats($dbName);
         $this->set(compact('requestSuccess', 'programStats'));
     }
-
-
+    
+    
 }

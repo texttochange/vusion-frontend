@@ -1,8 +1,6 @@
 <?php
-
-App::uses('AppController','Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('UnattachedMessage', 'Model');
-App::uses('DialogueHelper', 'Helper');
 App::uses('Dialogue', 'Model');
 App::uses('Participant', 'Model');
 App::uses('History', 'Model');
@@ -11,11 +9,21 @@ App::uses('ProgramSetting', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 
 
-class ProgramHomeController extends AppController
+class ProgramHomeController extends BaseProgramSpecificController
 {
-    
+    var $uses = array(
+        'Participant',
+        'History',
+        'Schedule',
+        'Dialogue',
+        'UnattachedMessage',
+        'ProgramSetting');
     var $components = array(
-        'RequestHandler');
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
+        'ProgramAuth',
+        'ArchivedProgram');
     
     var $helpers    = array(
         'Js' => array('Jquery'),
@@ -31,18 +39,6 @@ class ProgramHomeController extends AppController
     function beforeFilter()
     {
         parent::beforeFilter();
-        
-        $options = array('database' => ($this->Session->read($this->params['program']."_db")));
-        
-        $this->Participant       = new Participant($options);
-        $this->History           = new History($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Dialogue          = new Dialogue($options);
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting   = new ProgramSetting($options);
-        
-        $this->DialogueHelper = new DialogueHelper();
-        
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -63,7 +59,6 @@ class ProgramHomeController extends AppController
             ), 'controllers/ProgramParticipants/add');
         $participantCount = $this->Participant->find('count');
         $statusCount      = $this->History->find('count');
-        //$schedules        = $this->Schedule->find('soon');
         
         $activeInteractions = $this->Dialogue->getActiveInteractions();
         
@@ -93,7 +88,7 @@ class ProgramHomeController extends AppController
         if (!$this->request->is('get') || !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         $programUrl   = $this->params['program'];
         $databaseName = $this->Session->read($programUrl.'_db');
         
@@ -107,7 +102,7 @@ class ProgramHomeController extends AppController
     
     protected function _startBackendWorker($workerName, $databaseName)
     {
-        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);    	 
+        $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);         
     }
     
     

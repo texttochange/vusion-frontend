@@ -22,7 +22,7 @@ class InteractionTestCase extends CakeTestCase
         parent::tearDown();
     }
     
-    
+  
     public function testBeforeValidate()
     {
         $dialogue = $this->Maker->getOneDialogue();
@@ -49,8 +49,23 @@ class InteractionTestCase extends CakeTestCase
         $this->assertEqual($interaction['model-version'], '5');
         $this->assertTrue(isset($interaction['reminder-actions'][0]['model-version']));
     }
+
+
+    public function testvalidate_openQuestion_fail()
+    {
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        unset($interaction['type-schedule-reminder']);
+        $this->Interaction->set($interaction);
+        $this->Interaction->beforeValidate();
+        $interaction = $this->Interaction->validates();
+        $this->assertEqual(
+            array(
+                'type-schedule-reminder' => array('This field has to be set.'),
+                'reminder-minutes' => array('A reminder-minutes field is required.')), 
+            $this->Interaction->validationErrors);
+    }
     
-    
+  
     public function testBeforeValidate_closedQuestion() 
     {
         $interaction = $this->Maker->getInteractionClosedQuestion();
@@ -126,7 +141,7 @@ class InteractionTestCase extends CakeTestCase
         
         $this->assertEqual(
             $this->Interaction->validationErrors['content'][0], 
-            "To be used as customized content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s)."
+            "To be used as participant customized content, 'first %name' can only be composed of letter(s), digit(s) and/or space(s). The '_raw' suffix is allowed."
             );
         
         $interaction = $this->Maker->getInteractionOpenQuestion();
@@ -372,5 +387,31 @@ class InteractionTestCase extends CakeTestCase
             Interaction::getInteractionKeywords($interaction));
     }
 
-  
+
+    public function testHasAnswer()
+    {
+        //Open question are always matching except empty string
+        $interaction = $this->Maker->getInteractionOpenQuestion();
+        $this->assertTrue(
+            Interaction::hasAnswer($interaction, 'Olivier'));
+        $this->assertEqual(
+            Interaction::hasAnswer($interaction, ''),
+            array('answer' => "The interaction doesn't accept empty answer."));
+
+        //Close question are case and accent insensitive
+        $interaction = $this->Maker->getInteractionClosedQuestion();
+        $this->assertTrue(
+            Interaction::hasAnswer($interaction, 'fine'));
+        $this->assertEqual(
+            Interaction::hasAnswer($interaction, 'fin'),
+            array('answer' => 'The interaction has not such answer: fin.'));
+
+        //Answer Multi keywords are case and accent insensitive
+        $interaction = $this->Maker->getInteractionMultiKeywordQuestion();
+        $this->assertTrue(
+            Interaction::hasAnswer($interaction, 'Male'));
+        $this->assertEqual(
+            Interaction::hasAnswer($interaction, 'Mall'),
+            array('answer' => 'The interaction has not such answer: Mall.'));
+    }
 }

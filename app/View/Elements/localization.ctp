@@ -40,6 +40,7 @@ var localized_messages = {
     table_saved: "<?php echo __('Table saved.')?>",
     content_variable_table_value: "<?php echo __('This value is editable and can be used in message with: ')?>",
     sending_report: "<?php echo __('Sending the report by email, it might take a few minutes....')?>",
+    sending_invite: "<?php echo __('Sending the invite by email, it might take a few minutes....')?>",
 };
 
 var localized_actions= {
@@ -69,6 +70,9 @@ var localized_labels = {
     }
     if (isset($statsLabels)) {
         $localizedLabels = array_merge($localizedLabels, $statsLabels);
+    }
+    if (isset($simulatorLabels)) {
+        $localizedLabels = array_merge($localizedLabels, $simulatorLabels);
     }
 
     foreach ($localizedLabels as $value => $label) {

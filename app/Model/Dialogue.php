@@ -1,5 +1,5 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('Schedule', 'Model');
 App::uses('MissingField', 'Lib');
@@ -9,12 +9,13 @@ App::uses('Interaction', 'Model');
 App::uses('VusionConst', 'Lib');
 App::uses('ValidationHelper', 'Lib');
 
-class Dialogue extends MongoModel
+
+class Dialogue extends ProgramSpecificMongoModel
 {
     
-    var $specific     = true;
     var $name         = 'Dialogue';
     var $usedKeywords = array();
+    
     
     function getModelVersion()
     {
@@ -24,7 +25,7 @@ class Dialogue extends MongoModel
     
     function getRequiredFields($objectType=null)
     {
-
+        
         return array(
             'name',
             'dialogue-id',
@@ -98,11 +99,11 @@ class Dialogue extends MongoModel
                 ), 
             ),
         'name' => array(
-        'uniqueDialogueName' => array(
-            'rule' => 'uniqueDialogueName',
-            'message' => 'This Dialogue Name already exists. Please choose another.'
+            'uniqueDialogueName' => array(
+                'rule' => 'uniqueDialogueName',
+                'message' => 'This Dialogue Name already exists. Please choose another.'
+                ),
             ),
-        ),
         );
     
     
@@ -150,8 +151,8 @@ class Dialogue extends MongoModel
                 ),
             )
         );
-
-
+    
+    
     public function validateInteractions($check) 
     {
         $index = 0;
@@ -175,6 +176,7 @@ class Dialogue extends MongoModel
         return true;
     }
     
+    
     public function valueRequireFields($check, $requiredFieldsPerValue) 
     {   
         $field = key($check);
@@ -193,7 +195,8 @@ class Dialogue extends MongoModel
         }
         return true;
     }
-
+    
+    
     public function validSubconditions($check)
     {
         $field = key($check);
@@ -217,7 +220,8 @@ class Dialogue extends MongoModel
         }
         return true;
     }
-
+    
+    
     public function validSubconditionValue($subcondition)
     {
         if (!isset($this->validateSubconditionValues[$subcondition['subcondition-field']])) {
@@ -240,8 +244,10 @@ class Dialogue extends MongoModel
         }
         return true;
     }
-
-    public function notEmptyArray($check) {
+    
+    
+    public function notEmptyArray($check)
+    {
         $field = key($check);
         if (!is_array($check[$field]) || count($check[$field]) < 1) {
             return false;
@@ -259,12 +265,24 @@ class Dialogue extends MongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
-        $this->Schedule    = new Schedule($id, $table, $ds);
-        $this->Interaction = new Interaction($id['database']);
-        $this->ValidationHelper = new ValidationHelper($this);
     }
     
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->Schedule = ProgramSpecificMongoModel::init(
+            'Schedule', $this->databaseName, $forceNew);
+        $this->Interaction = new Interaction($this->databaseName);
+        $this->ValidationHelper = new ValidationHelper($this);   
+    }
+    
+
+    public function setContactEmail($contactEmail)
+    {
+        parent::setContactEmail($contactEmail);
+        $this->Interaction->setContactEmail($contactEmail);
+    }
+
     
     protected function _findDraft($state, $query, $results = array())
     {
@@ -277,10 +295,10 @@ class Dialogue extends MongoModel
     }
     
     
-    public function beforeValidate()
+    public function beforeValidate($options = array())
     {
-        parent::beforeValidate();
-                
+        parent::beforeValidate($options);
+        
         //Need to convert all dates
         $this->data['Dialogue'] = DialogueHelper::objectToArray($this->data['Dialogue']);
         DialogueHelper::recurseScriptDateConverter($this->data['Dialogue']);
@@ -291,14 +309,14 @@ class Dialogue extends MongoModel
         $this->_setDefault('interactions', array());
         $this->_setDefault('set-prioritized', null);
         $this->_setDefault('auto-enrollment', 'none');
-
+        
         //cleaning necessary due to the beforeValidate of the MongoModel
         if ($this->data['Dialogue']['auto-enrollment'] != 'match') {
             unset($this->data['Dialogue']['condition-operator']);
             unset($this->data['Dialogue']['subconditions']);
         }
         
-       //Need to make sure the value is an int
+        //Need to make sure the value is an int
         $this->data['Dialogue']['activated'] = intval($this->data['Dialogue']['activated']);
         
         //Run before validate for all interactions
@@ -311,7 +329,7 @@ class Dialogue extends MongoModel
     public function _beforeValidateInteractions()
     {
         Interaction::replaceLocalIds($this->data['Dialogue']['interactions']);
-
+        
         foreach ($this->data['Dialogue']['interactions'] as &$interaction) {
             if (isset($this->data['Dialogue']['set-prioritized']) && $this->data['Dialogue']['set-prioritized']) {
                 $interaction['prioritized'] = $this->data['Dialogue']['set-prioritized'];
@@ -324,12 +342,9 @@ class Dialogue extends MongoModel
     }
     
     
-    public function makeActive($objectId)
-    {      
-        $this->id = $objectId;
-        if (!$this->exists())
-            return false;
-        $dialogue = $this->read(null, $objectId);
+    public function makeActive($usedKeywords = array())
+    {
+        $dialogue = $this->read();
         $dialogue['Dialogue']['activated'] = 1;
         if (isset($dialogue['Dialogue']['interactions'])) {
             $interactionIds = array();
@@ -345,26 +360,31 @@ class Dialogue extends MongoModel
                 false);
         }
         // we make sure no other version is activated
-        $result = $this->save($dialogue);
-        $this->updateAll(
-            array('activated' => 2),
-            array('activated' => 1, 
-                'dialogue-id' => $result['Dialogue']['dialogue-id'],
-                '_id' => array('$ne' => new MongoId($result['Dialogue']['_id']))));
+        $this->usedKeywords = $usedKeywords;
+        if ($result = $this->save($dialogue)) {
+            $this->updateAll(
+                array('activated' => 2),
+                array('activated' => 1, 
+                    'dialogue-id' => $result['Dialogue']['dialogue-id'],
+                    '_id' => array('$ne' => new MongoId($result['Dialogue']['_id']))));
+        }
         return $result;
     }
     
     
-    public function makeDraftActive($dialogueId)
+    public function makeDraftActive($dialogueId, $usedKeywords=array())
     {
-        $draft = $this->find('draft', array('dialogue-id'=>$dialogueId));
+        $draft = $this->find('draft', array( 'dialogue-id' => $dialogueId));
         if ($draft) {
-            return $this->makeActive($draft[0]['Dialogue']['_id'].'');
+            $this->id = $draft[0]['Dialogue']['_id'].'';
+            return $this->makeActive($usedKeywords);
         }
         return false;
     }
-    
-    public function getActiveDialogue($dialogueId) {
+
+
+    public function getActiveDialogue($dialogueId)
+    {
         return $this->find('first', array(
             'conditions'=>array(
                 'activated' => 1,
@@ -452,13 +472,16 @@ class Dialogue extends MongoModel
         return ($dialogue['Dialogue']!=0);
     }
     
-    public function save($dialogue){
+    
+    public function save($dialogue)
+    {
         $result = parent::save($dialogue);
         if (!$result && isset($this->validationErrors['subconditions'][0])) {
             $this->validationErrors['subconditions'] = $this->validationErrors['subconditions'][0];
         }
         return $result;
     }
+    
     
     public function saveDialogue($dialogue, $usedKeywords = array())
     {
@@ -469,7 +492,7 @@ class Dialogue extends MongoModel
             return $this->save($dialogue);
         }
         
-        $draft = $this->find('draft', array('dialogue-id'=>$dialogue['Dialogue']['dialogue-id']) );
+        $draft = $this->find('draft', array('dialogue-id' => $dialogue['Dialogue']['dialogue-id']) );
         $this->create(null, false);
         if ($draft) { 
             $this->id                          = $draft[0]['Dialogue']['_id'];
@@ -593,8 +616,43 @@ class Dialogue extends MongoModel
         $result     = $this->find('count', array('conditions' => $conditions));
         return $result == 0;        
     }
+    
+    public function fromDialogueIdToName($participant)
+    {
+        if (count($participant['Participant']['enrolled']) > 0) {
+            $dialogues = $this->find('all', array(
+                'conditions' => array('activated' => 1),
+                'fields' => array('dialogue-id', 'name')
+            ));
+            $nameByDialogueId = Set::combine($dialogues, '{n}.Dialogue.dialogue-id', '{n}.Dialogue.name');
+            foreach ($participant['Participant']['enrolled'] as &$enrolled) {
+                if (isset($nameByDialogueId[$enrolled['dialogue-id']])) {
+                    $enrolled['dialogue-name'] = $nameByDialogueId[$enrolled['dialogue-id']];
+                } else {
+                    $enrolled['dialogue-name'] = __('Dialogue not found');
+                }
+            }
+        }
+        return $participant;
+    }
 
+    public function isInteractionAnswerExists($dialogue_id, $interaction_id, $answer)
+    {
+        $dialogue = $this->getActiveDialogue($dialogue_id);
+        if ($dialogue === array()) {
+            return array('dialogue-id' => __("No dialogue with id: %s.", $dialogue_id));
+        }
+        foreach ($dialogue['Dialogue']['interactions'] as $interaction) {
+            if ($interaction['interaction-id'] === $interaction_id) {
+                if ($hasAnswer = Interaction::hasAnswer($interaction, $answer)) {
+                    return true;
+                } else {
+                    return $hasAnswer;
+                }
+            }
+        }
+        return array('interaction-id' => __("The dialogue with id %s doesn't have an interaction with id %s", $dialogue_id, $interaction_id));
+    }
+    
+    
 }
-
-
-

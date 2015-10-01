@@ -1,6 +1,7 @@
 <?php
-
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('ContentVariable', 'Model');
+
 
 class ContentVariableTestCase extends CakeTestCase
 {
@@ -9,10 +10,8 @@ class ContentVariableTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $options               = array('database' => 'testdbprogram');
-        $this->ContentVariable = new ContentVariable($options);
-        
+        $this->ContentVariable      = ProgramSpecificMongoModel::init(
+            'ContentVariable', 'testdbprogram');
         $this->dropData();
         
     }
@@ -20,10 +19,8 @@ class ContentVariableTestCase extends CakeTestCase
     
     public function tearDown()
     {
-        $this->dropData();
-        
+        $this->dropData();        
         unset($this->ContentVariable);
-        
         parent::tearDown();
     }
     
@@ -118,7 +115,7 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals(
-            "Use only DOT, space, letters and numbers for a value, e.g 'new value1'.",
+            "Use only space, letters, numbers or the characters ,.+/-: for a value, e.g 'new value1'.",
             $this->ContentVariable->validationErrors['value'][0]
         );
     }

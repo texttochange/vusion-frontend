@@ -1,3 +1,16 @@
+<div class="admin-action">
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul> 
+		<li><?php 
+		echo $this->Html->link(__('List Programs'), array('action' => 'index'));
+		?></li>
+		<li><?php 
+		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
+		?></li>
+	</ul>
+</div>
+</div>
 <div class="programs form program-edit width-size">
 <h3><?php echo __('Admin', $this->data['Program']['name']); ?></h3>
 
@@ -9,13 +22,18 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('name', array('label' => __('Name')));		
-		echo $this->Form->input('url', array('label' => __('Url')));
+		echo $this->Form->input(
+		    'url',
+		    array(
+		        'label' => __('Url'),
+		        'readonly' => 'true',
+		        'class' => 'readonly-field'));
 		echo $this->Form->input(
 			'database',
 		    array(
 		    	'label' => __('Database'),
 		        'readonly' => 'true',
-		        'style' => 'color:#AAAAAA'));
+		        'class' => 'readonly-field'));
 	?>
 <?php echo $this->Form->end(__('Save'));?>
 </div>
@@ -71,16 +89,4 @@
 </div>
 </fieldset>
 </div>
-<div class="admin-action">
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul> 
-		<li><?php 
-		echo $this->Html->link(__('List Programs'), array('action' => 'index'));
-		?></li>
-		<li><?php 
-		echo $this->Html->link(__('Back to Admin menu'), array('controller' => 'admin', 'action' => 'index'));
-		?></li>
-	</ul>
-</div>
-</div>
+

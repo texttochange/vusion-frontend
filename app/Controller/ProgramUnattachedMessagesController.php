@@ -1,29 +1,39 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('UnattachedMessage', 'Model');
 App::uses('Schedule', 'Model');
 App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
-App::uses('DialogueHelper', 'Lib');
 App::uses('ProgramSetting', 'Model');
 App::uses('History', 'Model');
 App::uses('User', 'Model');
 App::uses('PredefinedMessage', 'Model');
 
-class ProgramUnattachedMessagesController extends AppController
+
+class ProgramUnattachedMessagesController extends BaseProgramSpecificController
 {
     
-    var $uses       = array(
-        'User');
+    var $uses = array(
+        'UnattachedMessage',
+        'User',
+        'Schedule',
+        'Participant',
+        'ProgramSetting',
+        'History',
+        'PredefinedMessage');
     var $components = array(
         'Message',
-        'RequestHandler');
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
+        'ProgramAuth',
+        'ArchivedProgram');
     var $helpers    = array(
         //'Js' => array('Jquery'),
         'Time',
         'Session');
     
-
+    
     public function constructClasses()
     {
         parent::constructClasses();
@@ -33,18 +43,6 @@ class ProgramUnattachedMessagesController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        $options = array(
-            'database' => ($this->Session->read($this->params['program'].'_db'))
-            );
-
-        $this->loadModel('UnattachedMessage', $options);
-        //$this->UnattachedMessage = new UnattachedMessage($options);
-        $this->Schedule          = new Schedule($options);
-        $this->Participant       = new Participant($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        $this->History           = new History($options);
-        $this->PredefinedMessage = new PredefinedMessage($options);
-        $this->DialogueHelper    = new DialogueHelper();
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -89,7 +87,7 @@ class ProgramUnattachedMessagesController extends AppController
         $paginate['conditions'] = $this->UnattachedMessage->addFindTypeCondition($findType);
         $this->set(compact('findType'));
         $paginate = $paginate;
-
+        
         $this->paginate = $paginate;
         $unattachedMessages = $this->paginate('UnattachedMessage');
         
@@ -137,7 +135,7 @@ class ProgramUnattachedMessagesController extends AppController
     {
         $programUrl = $this->params['program'];
         $requestSuccess = false;
-
+        
         if ($this->request->is('post')) {
             if ($savedUnattachedMessage = $this->saveUnattachedMessage()) {
                 $requestSuccess = true;
@@ -170,7 +168,7 @@ class ProgramUnattachedMessagesController extends AppController
         if (!isset($data['UnattachedMessage'])) {
             $data = array('UnattachedMessage' => $data);
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(
                 __('Please set the program settings then try again.'), 
@@ -181,70 +179,70 @@ class ProgramUnattachedMessagesController extends AppController
         $importReport = null;
         if (isset($data['UnattachedMessage']['send-to-type'])
             &&  $data['UnattachedMessage']['send-to-type'] == 'phone') {
-            $importReport = null;
-            if (isset($data['UnattachedMessage']['file'])) {
-                $importReport = $this->importParticipants();    
-            } else if (isset($data['UnattachedMessage']['send-to-phone'])) {
-                if (!is_array($data['UnattachedMessage']['send-to-phone'])) {
-                    $data['UnattachedMessage']['send-to-phone'] = array($data['UnattachedMessage']['send-to-phone']);
-                }
-                $importReport = $this->importParticipantsFromList($data);
-                $data['UnattachedMessage']['send-to-phone'] = array();
+        $importReport = null;
+        if (isset($data['UnattachedMessage']['file'])) {
+            $importReport = $this->importParticipants();    
+        } else if (isset($data['UnattachedMessage']['send-to-phone'])) {
+            if (!is_array($data['UnattachedMessage']['send-to-phone'])) {
+                $data['UnattachedMessage']['send-to-phone'] = array($data['UnattachedMessage']['send-to-phone']);
             }
-            if ($importReport) {
-                $importFailed = array_filter($importReport, function($participantReport) { 
-                        return (!$participantReport['saved'] && !$participantReport['exist-before']);
-                });
-                $imported = array_filter($importReport, function($participantReport) { 
-                        return ($participantReport['saved']);
-                });
-                $participants = array_filter($importReport, function($participantReport) { 
-                        return ($participantReport['saved'] || $participantReport['exist-before']);
-                });
-                foreach($participants as $participantReport) {
-                    $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
-                }
-            }
-        } 
-        if ($this->UnattachedMessage->id == null) {
-            $this->UnattachedMessage->create();
-            $user = $this->Auth->user();
-            $data['UnattachedMessage']['created-by'] = $user['id'];
+            $importReport = $this->importParticipantsFromList($data);
+            $data['UnattachedMessage']['send-to-phone'] = array();
         }
-        if ($savedUnattached = $this->UnattachedMessage->save($data)) {
-            if ($savedUnattached['UnattachedMessage']['type-schedule'] != 'none') {
-                $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
-            } else if (isset($this->UnattachedMessage->id)) {
-                $this->Schedule->deleteAll(array('unattach-id'=> $this->UnattachedMessage->id), false);
+        if ($importReport) {
+            $importFailed = array_filter($importReport, function($participantReport) { 
+                    return (!$participantReport['saved'] && !$participantReport['exist-before']);
+            });
+            $imported = array_filter($importReport, function($participantReport) { 
+                    return ($participantReport['saved']);
+            });
+            $participants = array_filter($importReport, function($participantReport) { 
+                    return ($participantReport['saved'] || $participantReport['exist-before']);
+            });
+            foreach($participants as $participantReport) {
+                $data['UnattachedMessage']['send-to-phone'][] = $participantReport['phone'];
             }
-            if (isset($importReport)) {
-                if ($importReport) {
-                    $importMessage = __(' To be send to %s participants, %s have been imported and %s failed to be imported.',
-                        count($participants),
-                        count($imported),
-                        count($importFailed));
-                } else {
-                    $importMessage = $this->Participant->importErrors[0];
+        }
+            } 
+            if ($this->UnattachedMessage->id == null) {
+                $this->UnattachedMessage->create();
+                $user = $this->Auth->user();
+                $data['UnattachedMessage']['created-by'] = $user['id'];
+            }
+            if ($savedUnattached = $this->UnattachedMessage->save($data)) {
+                if ($savedUnattached['UnattachedMessage']['type-schedule'] != 'none') {
+                    $this->_notifyUpdateBackendWorkerUnattachedMessage($programUrl, $this->UnattachedMessage->id);
+                } else if (isset($this->UnattachedMessage->id)) {
+                    $this->Schedule->deleteAll(array('unattach-id'=> $this->UnattachedMessage->id), false);
                 }
-            }
-            
-            $this->Session->setFlash(__('The message has been saved.' . $importMessage),
-                'default', array('class'=>'message success'));
-        } else {
-            if (isset($importReport)) {
-                if ($importReport) {
-                    $importMessage = __(' %s participant(s) have been imported and %s failed to be imported.',
-                        count($imported),
-                        count($importFailed));
-                } else {
-                    if (isset($this->Participant->importError[0])) {
-                        $importMessage = $this->Participant->importErrors;
+                if (isset($importReport)) {
+                    if ($importReport) {
+                        $importMessage = __(' To be send to %s participants, %s have been imported and %s failed to be imported.',
+                            count($participants),
+                            count($imported),
+                            count($importFailed));
+                    } else {
+                        $importMessage = $this->Participant->importErrors[0];
                     }
                 }
+                
+                $this->Session->setFlash(__('The message has been saved.' . $importMessage),
+                    'default', array('class'=>'message success'));
+            } else {
+                if (isset($importReport)) {
+                    if ($importReport) {
+                        $importMessage = __(' %s participant(s) have been imported and %s failed to be imported.',
+                            count($imported),
+                            count($importFailed));
+                    } else {
+                        if (isset($this->Participant->importError[0])) {
+                            $importMessage = $this->Participant->importErrors;
+                        }
+                    }
+                }
+                $this->Session->setFlash(__('The Message could not be saved.' . $importMessage));
             }
-            $this->Session->setFlash(__('The Message could not be saved.' . $importMessage));
-        }
-        return $savedUnattached;
+            return $savedUnattached;
     }
     
     
@@ -286,8 +284,9 @@ class ProgramUnattachedMessagesController extends AppController
         $programUrl = $this->params['program'];
         $report = array();
         foreach ($data['UnattachedMessage']['send-to-phone'] as $participantPhone) {
+            $phone = $this->Participant->cleanPhone($participantPhone);
             $report[] = $this->Participant->saveParticipantWithReport(
-                array('phone' => $participantPhone), false);
+                array('phone' => $phone), null, false);
         }
         if ($report) {
             foreach($report as $participantReport) {
@@ -300,14 +299,14 @@ class ProgramUnattachedMessagesController extends AppController
         }
         return $report;
     }
-
+    
     
     public function edit()
     {
         $programUrl     = $this->params['program'];
         $id             = $this->params['id'];
         $requestSuccess = false;
-
+        
         $this->UnattachedMessage->id = $id;
         
         if (!$this->UnattachedMessage->exists()) {
@@ -388,7 +387,9 @@ class ProgramUnattachedMessagesController extends AppController
         if ($this->UnattachedMessage->delete()) {
             $this->Schedule->deleteAll(array('unattach-id'=> $id), false);
             $this->Session->setFlash(__('Message deleted'),
-                'default', array('class'=>'message success'));
+                'default',
+                array('class'=>'message success')
+                );
             $this->redirect(array(
                 'program' => $programUrl,
                 'controller' => 'programUnattachedMessages',

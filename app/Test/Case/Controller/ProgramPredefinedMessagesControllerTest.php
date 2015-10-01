@@ -1,27 +1,23 @@
 <?php
 App::uses('ProgramPredefinedMessagesController', 'Controller');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class TestProgramPredefinedMessagesController extends ProgramPredefinedMessagesController
 {
-    
+
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
 
 class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
 {
-    /**
-    * Data
-    *
-    */
     
     var $programData = array(
         0 => array( 
@@ -39,22 +35,17 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         $this->ProgramPredefinedMessages = new ProgramPredefinedMessagesController();
+        
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->PredefinedMessage = ProgramSpecificMongoModel::init(
+            'PredefinedMessage', $dbName, true);
         $this->dropData();
     }
     
     
     protected function dropData()
     {
-        $this->instanciatePredefinedMessageModel();
         $this->PredefinedMessage->deleteAll(true, false);
-    }
-    
-    
-    protected function instanciatePredefinedMessageModel() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->PredefinedMessage = new PredefinedMessage($options);
     }
     
     
@@ -73,7 +64,7 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
-                    'Auth' => array()
+                    'Auth' => array('loggedIn')
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -87,6 +78,11 @@ class ProgramPredefinedMessagesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $predefinedMessages->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $predefinedMessages->Program
         ->expects($this->any())
         ->method('find')

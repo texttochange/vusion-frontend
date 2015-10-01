@@ -1,63 +1,59 @@
 <?php
-/* ShortCodes Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ShortCodesController', 'Controller');
+App::uses('Program', 'Model');
+App::uses('ScriptMaker', 'Lib');
 
-/**
-* TestShortCodesController *
-*/
+
+
 class TestShortCodesController extends ShortCodesController
 {
-    
+
     public $autoRender = false;
     
     
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
-    }
-    
+    }    
     
 }
 
-/**
-* ShortCodesController Test Case
-*
-*/
+
 class ShortCodesControllerTestCase extends ControllerTestCase
 {
-    var $databaseName = "testdbmongo";
+    public $fixtures = array('app.program', 'app.user', 'app.programsUser');
     
+    
+    var $databaseName = "testdbmongo";
     
     public function setUp() 
     {
-        Configure::write("mongo_db",$this->databaseName);
         parent::setUp();
         
         $this->ShortCodes = new TestShortCodesController();
-        $this->instanciateShortCodesModel();
+        $this->ShortCode = ClassRegistry::init('ShortCode');
+        $this->Program = ClassRegistry::init('Program');
+        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'testdbprogram', true);
+        $this->ProgramSettingM6H = ProgramSpecificMongoModel::init('ProgramSetting', 'm6h', true);
+        $this->maker = new ScriptMaker();
         $this->dropData();
     }
-    
-    
-    protected function instanciateShortCodesModel() 
-    {
-        $options         = array('database' => $this->databaseName);
-        $this->ShortCode = new ShortCode($options);
-    }	
     
     
     protected function dropData()
     {
         $this->ShortCode->deleteAll(true, false);
+        $this->ProgramSettingTest->deleteAll(true, false);  
+        $this->ProgramSettingM6H->deleteAll(true, false);
     }
     
     
     public function tearDown() 
     {
-        $this->dropData();
-        
+        $this->dropData(); 
+        unset($this->Program);
+        unset($this->ProgramSetting);
         unset($this->ShortCodes);
-        
         parent::tearDown();
     }
     
@@ -68,7 +64,7 @@ class ShortCodesControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'Auth' => array(),
+                'Auth' => array('loggedIn'),
                 ),
             'models' => array(
                 'Group' => array()
@@ -80,6 +76,11 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $shortCodes->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $shortCodes->Session
         ->expects($this->any())
         ->method('read')
@@ -91,10 +92,8 @@ class ShortCodesControllerTestCase extends ControllerTestCase
     
     public function testIndex()
     {
-        
         $this->mockProgramAccess();
         
-        $this->instanciateShortCodesModel();
         $this->ShortCode->create();
         $this->ShortCode->save(array(
             'country' => 'uganda',
@@ -171,6 +170,73 @@ class ShortCodesControllerTestCase extends ControllerTestCase
         $this->testAction("/shortCodes/delete/".$data['ShortCode']['_id']);
         
         $this->assertEquals(0, $this->ShortCode->find('count'));
+    }
+    
+    
+    public function testArchive()
+    {
+        $this->mockProgramAccess();
+        $this->ProgramSettingTest->saveProgramSetting('shortcode', '343');
+        $this->ProgramSettingM6H->saveProgramSetting('shortcode', '8282');
+        $shortcodes = array(
+            'ShortCode' => array(
+                'country' => 'uganda',
+                'shortcode' =>343,
+                'international-prefix' => 256
+                )
+            );
+        $this->ShortCode->create();
+        $data = $this->ShortCode->save($shortcodes);
+        
+        $shortcodeRun = array(
+            'ShortCode' => array(
+                'country' => 'uganda',
+                'shortcode' =>8282,
+                'international-prefix' => 256
+                )
+            );
+        $this->ShortCode->create();
+        $this->ShortCode->save($shortcodeRun);
+        
+        $this->testAction("/shortCodes/archive/".$data['ShortCode']['_id']);
+        
+        $this->assertEquals(2, $this->ShortCode->find('count'));
+        $this->assertEquals(1, $this->ShortCode->find('count', array('conditions'=> array('status'=>'archived'))));
+    }
+    
+    
+    public function testUnarchive()
+    {
+        $this->mockProgramAccess();
+        $this->ProgramSettingTest->saveProgramSetting('shortcode', '343');
+        $this->ProgramSettingM6H->saveProgramSetting('shortcode', '8282');
+        $shortcodes = array(
+            'ShortCode' => array(
+                'country' => 'uganda',
+                'shortcode' =>343,
+                'international-prefix' => 256,
+                'status' => 'archived'
+                )
+            );
+        $this->ShortCode->create();
+        $data = $this->ShortCode->save($shortcodes);
+        
+        $shortcodeRun = array(
+            'ShortCode' => array(
+                'country' => 'uganda',
+                'shortcode' =>8282,
+                'international-prefix' => 256,
+                'status' => 'running'
+                )
+            );
+        $this->ShortCode->create();
+        $this->ShortCode->save($shortcodeRun);
+        
+        $this->testAction("/shortCodes/unarchive/".$data['ShortCode']['_id']);
+        
+        $this->assertEquals(2, $this->ShortCode->find('count'));
+        $this->assertEquals(0, $this->ShortCode->find('count', array('conditions'=> array('status'=>'archived'))));
+        $this->assertEquals(2, $this->ShortCode->find('count', array('conditions'=> array('status'=>'running'))));
     }
     
     

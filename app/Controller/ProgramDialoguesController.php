@@ -1,5 +1,5 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController','Controller');
 App::uses('Dialogue', 'Model');
 App::uses('Program', 'Model');
 App::uses('Request', 'Model');
@@ -9,29 +9,34 @@ App::uses('VumiRabbitMQ', 'Lib');
 App::uses('DialogueHelper', 'Lib');
 
 
-class ProgramDialoguesController extends AppController
+class ProgramDialoguesController extends BaseProgramSpecificController
 {
-
+    var $uses = array(
+        'Dialogue',
+        'ProgramSetting',
+        'Participant',
+        'Request', 
+        'ContentVariableTable');
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler'=> array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils', 
         'Utils',
         'Keyword',
-        'DynamicForm');
-
+        'DynamicForm',
+        'ProgramAuth',
+        'ArchivedProgram');
+    var $helpers = array(
+        'Csv');
+    
     
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
         $this->RequestHandler->accepts('json');
         $this->RequestHandler->addInputType('json', array('json_decode'));
         
-        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Participant    = new Participant($options);
-        $this->Request        = new Request($options);
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -53,30 +58,42 @@ class ProgramDialoguesController extends AppController
         $this->set('dialogues', $this->Dialogue->getActiveAndDraft());
     }
     
+
+    public function listQuestions()
+    {
+        $requestSuccess = true;
+        $dialogues = $this->Dialogue->getActiveDialogues();
+        $this->set(compact('dialogues', 'requestSuccess'));
+        $this->render('index');
+    }
+
     
     public function save()
     {
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($this->params['program']."_db");
         $requestSuccess = false;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             $this->set(compact('requestSuccess'));
             return;
         }
-
-        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Dialogue->setContactEmail($contactEmail);
         $dialogue      = DialogueHelper::objectToArray($this->request->data);
         $id            = Dialogue::getDialogueId($dialogue);
         $keywords      = Dialogue::getDialogueKeywords($dialogue);
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
         if ($this->Dialogue->saveDialogue($dialogue, $foundKeywords)) {
             $requestSuccess = true;
+            $this->UserLogMonitor->setEventData($this->Dialogue->id); 
             $this->Session->setFlash(__('Dialogue saved as draft.'));
             $this->set('dialogueObjectId', $this->Dialogue->id);
         } else {
@@ -90,11 +107,13 @@ class ProgramDialoguesController extends AppController
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
         $this->set('dynamicOptions', $this->_getDynamicOptions());
         
         $id = $this->params['id'];
-        if (!isset($id))
+        if (!isset($id)) {
             return;
+        }
         $this->Dialogue->id = $id;
         if (!$this->Dialogue->exists()) {
             $this->Session->setFlash(__("Dialogue doesn't exist."), 
@@ -131,26 +150,63 @@ class ProgramDialoguesController extends AppController
         return array();
     }
 
+    
+    protected function _getContentVariableTableOptions()
+    {
+        return $this->ContentVariableTable->find('all', array(
+            'fields' => array('name', 'columns.header', 'columns.type')));
+    }
+    
 
-    //TODO need to check keyword before activate!
     public function activate()
     {
-        $programUrl = $this->params['program'];
-        $dialogueId = $this->params['id'];
-        
+        $programUrl     = $this->params['program'];
+        $programDb      = $this->Session->read($programUrl . "_db");
+        $objectId       = $this->params['id'];
+        $requestSuccess = false;
+
         if (!$this->ProgramSetting->hasRequired()) {
-            $this->Session->setFlash(__('Please set the program settings then try again.'), 
-                'default',array('class' => "message failure"));
+            $this->Session->setFlash(__('Please set the program settings then try again.'));
+            $this->set(compact('requestSuccess'));
+            $this->redirect(array(
+                'program' => $programUrl, 
+                'controller' => 'programSettings',
+                'action' => 'edit'));
+            return;
+        }
+
+        $this->Dialogue->id = $objectId;
+        if (!$this->Dialogue->exists()) {
+            $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
+            $this->set(compact('requestSuccess'));
+            return;
+        }
+
+        $dialogue      = $this->Dialogue->read();
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Dialogue->setContactEmail($contactEmail);
+        $id            = Dialogue::getDialogueId($dialogue);
+        $keywords      = Dialogue::getDialogueKeywords($dialogue);
+        $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $keywords, 'Dialogue', $id);
+        if ($activeDialogue = $this->Dialogue->makeActive($foundKeywords)) {
+            $this->UserLogMonitor->setEventData($this->Dialogue->id);
+            $this->_notifyUpdateBackendWorker($programUrl, $activeDialogue['Dialogue']['dialogue-id']);
+            $this->Session->setFlash(__('Dialogue activated.'), 
+                'default', array('class' => "message success"));
+            $requestSuccess = true;
+            $this->redirect(array(
+                'program' => $programUrl,
+                'action' => 'index'));
         } else {
-            if ($savedDialogue = $this->Dialogue->makeActive($dialogueId)) {
-                $this->_notifyUpdateBackendWorker($programUrl, $savedDialogue['Dialogue']['dialogue-id']);
-                $this->Session->setFlash(__('Dialogue activated.'), 
-                    'default', array('class' => "message success"));
-            } else {
-                $this->Session->setFlash(__('Dialogue unknown reload the page and try again.'));
-            }
-        } 
-        $this->redirect(array('program' => $programUrl, 'action' => 'index'));
+            $this->Session->setFlash(__('This dialogue has a validation error, please correct it and save again.'));
+            $this->Dialogue->validationErrors = $this->Utils->fillNonAssociativeArray($this->Dialogue->validationErrors);
+            $this->redirect(array(
+                'program' => $programUrl, 
+                'action' => 'edit',
+                'id' => $objectId));
+        }
+        $this->set(compact('requestSuccess'));
     }
 
 
@@ -160,11 +216,11 @@ class ProgramDialoguesController extends AppController
         $dialogueId     = $this->request->data['dialogue-id'];
         $requestSuccess = false;
         $foundMessage   = null;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             throw new BadRequestException();
         }
-
+        
         if (!$this->Dialogue->isValidDialogueName($dialogueName,  $dialogueId)) {
             $foundMessage = __("'%s' Dialogue Name already exists in the program. Please choose another.", $dialogueName);
         } else {
@@ -173,7 +229,7 @@ class ProgramDialoguesController extends AppController
         
         $this->set(compact('requestSuccess', 'foundMessage'));        
     }
-
+    
     
     public function validateKeyword()
     {   
@@ -184,22 +240,23 @@ class ProgramDialoguesController extends AppController
         
         $requestSuccess = false;
         $foundMessage   = null;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             return;
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             $this->set(compact('requestSuccess'));
             return;
         }
-       
+        
         /**Is the keyword used by another program*/
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        $shortCode    = $this->ProgramSetting->getProgramSetting('shortcode');
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Dialogue', $dialogueId);
         if ($foundKeywords) {
-            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $contactEmail = $this->ProgramSetting->getContactEmail();
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords, $contactEmail);
         } else {
             $requestSuccess = true;
         } 
@@ -211,7 +268,7 @@ class ProgramDialoguesController extends AppController
     public function testSendAllMessages()
     {
         $programUrl = $this->params['program'];
-
+        
         if (isset($this->params['id'])) {
             $objectId = $this->params['id'];
             $this->set(compact('objectId'));
@@ -224,7 +281,7 @@ class ProgramDialoguesController extends AppController
             $this->Session->setFlash(__('Message(s) being sent, should arrive shortly...'), 
                 'default', array('class' => "message success"));
         }
-
+        
         $dialogues = $this->Dialogue->getActiveAndDraft();    
         $this->set(compact('dialogues'));         
     }
@@ -252,11 +309,11 @@ class ProgramDialoguesController extends AppController
     {
         $programUrl = $this->params['program'];
         $dialogueId = $this->params['id'];
-
+        
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
-
+        
         if ($this->Dialogue->deleteDialogue($dialogueId)) {
             $result = $this->_notifyUpdateRegisteredKeywords($programUrl);
             $this->Session->setFlash(
@@ -270,10 +327,7 @@ class ProgramDialoguesController extends AppController
                 ));
         }  
         $this->Session->setFlash(
-            __('Delete dialogue failed.'), 
-            'default',
-            array('class' => "message failure")
-            );
+            __('Delete dialogue failed.'));
         $this->redirect(
             array(
                 'program' => $programUrl,

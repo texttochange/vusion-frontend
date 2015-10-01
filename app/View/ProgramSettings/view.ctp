@@ -1,5 +1,10 @@
 <div class="programsettings form width-size">
-<H3><?php echo __('View Program Settings'); ?></H3>
+    <?php
+        $contentTitle   = __('View Program Settings');
+        $contentActions = array();
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
     <dl>
         <?php echo $this->Html->tag('dt',__('Shortcode')); ?>
         <dd><b><?php
@@ -14,6 +19,15 @@
         <?php echo $this->Html->tag('dt',__('Timezone'));?>
         <dd><b><?php
             echo (isset($programSettings['timezone'])) ? $programSettings['timezone'] : '&nbsp;';
+            ?>
+        </b></dd>
+        <?php echo $this->Html->tag('dt',__('Contact Person'));?>
+        <dd><b><?php echo (isset($programSettings['contact'])) ? $programSettings['contact']['User']['email']: __('Nobody');
+            ?>
+        </b></dd>
+        <dt><?php echo __('Authorized Keywords');?></dt>
+        <dd><b><?php
+            echo (isset($programSettings['authorized-keywords'])) ? implode(", ", $programSettings['authorized-keywords']): __('All');
             ?>
         </b></dd>
         <?php echo $this->Html->tag('dt',__('Default template for open questions'));?>

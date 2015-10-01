@@ -20,6 +20,7 @@ var dialogue = {
     },
     "auto-enrollment-box": {
         'type': 'container',
+        'class': 'ttc-foldable',
         'contains': ['auto-enrollment'],
         'skip': false,
         'item': "auto-enrollment-box",
@@ -78,7 +79,9 @@ var dialogue = {
         "type": "spanradiobuttons",
         "options": [
             {"value": "announcement",
-            "subfields": ["content"]},
+            "subfields": [
+                "content",
+                "announcement-actions"]},
             {"value": "question-answer",
             'subfields': [
                 "content",
@@ -112,7 +115,7 @@ var dialogue = {
         'value': 'use-template'
     },
     "set-matching-answer-actions": {
-        "type": "checkboxes",
+        "type": "spancheckboxes",
         "value": "matching-answer-actions",
         "subfields": [
             "matching-answer-actions"
@@ -124,7 +127,7 @@ var dialogue = {
         "adds": "action"
     },
     "set-max-unmatching-answers": {
-        'type': "checkboxes",
+        'type': "spancheckboxes",
         "value": "max-unmatching-answers",
         "subfields": [
             "max-unmatching-answer-number",
@@ -178,6 +181,17 @@ var dialogue = {
         'skip': true
     },
     "answer-actions": {
+        "type": "list",
+        "add-button": true,
+        "adds": "action"
+    },
+    /*
+    "announcement-actions-container": {
+        'type': 'container',
+        'contains': ['announcement-actions'],
+        'skip': true,
+    },*/
+    "announcement-actions": {
         "type": "list",
         "add-button": true,
         "adds": "action"
@@ -253,7 +267,7 @@ $.extend(dynamicForm, basic);
 
 var reminder = {
     "set-reminder": {
-        'type': 'checkboxes',
+        'type': 'spancheckboxes',
         'value': 'reminder',
         'subfields': [
             "reminder-number",
@@ -289,7 +303,7 @@ var action = {
         'skip': true,
     },
     "set-condition": {
-        'type': 'checkboxes',
+        'type': 'spancheckboxes',
         'value': 'condition',
         'subfields': [
             "condition-operator", 
@@ -340,7 +354,9 @@ var action = {
             'subfields': ['enroll', 'offset-days']}, 
             {'value': "tagging",
             'subfields': ['tag']},
-            {'value': "reset"},
+            {'value': "reset",
+            'subfields': ['keep-tags',
+                          'keep-labels']},
             {'value': "feedback",
             'subfields': ['content']},
             {'value': 'proportional-tagging',
@@ -352,7 +368,15 @@ var action = {
             {'value': 'sms-forwarding',
             'subfields': ['forward-to', 
                            'set-forward-message-condition',
-                           'forward-content']}
+                           'forward-content']},
+            {'value': 'sms-invite',
+            'subfields': ['invite-content',
+                          'invitee-tag',
+                          'feedback-inviter']},
+            {'value': 'save-content-variable-table',
+            'subfields': ['scvt-attached-table', 
+                          'scvt-col-key-header',
+                          'scvt-col-extras']}
         ]
     },
     "tag": {'type': 'text'},
@@ -390,7 +414,7 @@ var action = {
     "label-name": {'type': 'text'},
     "label-value": {'type': 'text'},
     "set-forward-message-condition": {
-        'type': 'checkboxes',
+        'type': 'spancheckboxes',
         'value': 'forward-message-condition',
         'subfields': [
             "forward-message-condition-type",
@@ -403,13 +427,57 @@ var action = {
             {'value': "phone-number"}],
         'style': 'padding-top:0px',
     },
-    "forward-message-no-participant-feedback": {
+    'forward-message-no-participant-feedback': {
         'type': 'textarea',
     },
-    "weight": {'type': 'text'},
+    'weight': {'type': 'text'},
     'forward-url': {'type': 'text'},
     'forward-to': {'type': 'text'},
-    'forward-content': {'type': 'textarea'}
-    
+    'forward-content': {'type': 'textarea'},
+    'invite-content': {'type': 'textarea'},
+    'invitee-tag': {'type': 'text'},
+    'feedback-inviter': {'type': 'textarea'},
+    'keep-tags': {'type': 'text'},
+    'keep-labels': {'type': 'text'},
 }
 $.extend(dynamicForm, action);
+
+var saveContentVariableTableAction = {
+    'scvt-attached-table': {
+        'type': 'select',
+        'data': 'server-dynamic',
+        'fieldset': true, 
+        'subfields': 'scvt-row-keys',
+        'onchange': 'supplyScvRowKeyOptions(this)'
+    },
+    'scvt-row-keys': {
+        'type': 'list',
+        'adds': 'scvt-row-key'
+    },
+    'scvt-row-key': {
+        'type': 'container', 
+        'contains': ['scvt-row-header', 'scvt-row-value'],
+        'skip': true,
+    },
+    'scvt-row-header': {
+        'type': 'text', 
+        'style': 'background-color:lightgrey',
+        'disabled': true},
+    'scvt-row-value': {'type': 'text'},
+    'scvt-col-key-header': {
+        'type': 'text',
+        'fieldset': true},
+    'scvt-col-extras': {
+        'type': 'list',
+        'add-button': true,
+        'adds': 'scvt-col-extra'
+    },
+    'scvt-col-extra': {
+        'type': 'container', 
+        'contains': ['scvt-col-extra-header', 'scvt-col-extra-value'],
+        'skip': true,
+    },
+    'scvt-col-extra-header': {'type': 'text'},
+    'scvt-col-extra-value': {'type': 'text'},
+}
+$.extend(dynamicForm, saveContentVariableTableAction);

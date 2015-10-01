@@ -8,8 +8,9 @@ class User extends AppModel
 {
     
     public $name = 'User';
+    
     public $displayField = 'username';
-
+    
     public $validate = array(
         'username' => array(
             'notempty' => array(
@@ -19,6 +20,14 @@ class User extends AppModel
         'password' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
+                ),
+            'minLength' => array(
+                'rule' => array('minLength', 8),
+                'message' => 'Password must be at least 8 characters long'
+                ),
+            'alphaNumeric' => array(
+                'rule' => '/^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z\d]+$/',
+                'message' => 'Password must be letters and numbers, and contain atleast one number'
                 ),
             ),
         'email' => array(
@@ -39,7 +48,7 @@ class User extends AppModel
             ),
         );
     
-
+    
     public $belongsTo = array(
         'Group' => array(
             'className' => 'Group',
@@ -49,6 +58,7 @@ class User extends AppModel
             'order' => ''
             )
         );
+    
     
     public $hasAndBelongsToMany = array(
         'Program' => array(
@@ -67,14 +77,15 @@ class User extends AppModel
             'insertQuery' => ''
             )
         );
-    
 
-    public function __construct($id = false, $table = null, $ds = null) {
-         parent::__construct($id, $table, $ds);
-         $this->Behaviors->load('Filter');
+    public function __construct($id = false, $table = null, $ds = null)
+    {
+        parent::__construct($id, $table, $ds);
+        $this->Behaviors->load('Filter');
     }
 	
-    public function beforeSave()
+    
+    public function beforeSave($options = array())
     {
         if (isset($this->data[$this->alias]['password'])) {
             $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
@@ -122,12 +133,15 @@ class User extends AppModel
                     'parameter-type' => 'group'))),
         );
     
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );  
     
-    public function fromFilterToQueryCondition($filterParam) {
+    
+    public function fromFilterToQueryCondition($filterParam) 
+    {
         $condition = array();
         if ($filterParam[1] == 'group_id') {
             if ($filterParam[2] == 'is') {
@@ -142,8 +156,13 @@ class User extends AppModel
                 $condition['username LIKE'] = $filterParam[3]."%"; 
             }            
         }
+        $key = key($condition);
+        if (isset($key)) {
+            $newKey = "User.".$key;
+            $condition = array($newKey => $condition[$key]);
+        }
         return $condition;
     }
-    
+
     
 }

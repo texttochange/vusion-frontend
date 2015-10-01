@@ -1,7 +1,8 @@
 <?php
-
 App::uses('UnattachedMessage', 'Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
+
 
 class UnattachedMessageTestCase extends CakeTestCase
 {
@@ -10,11 +11,11 @@ class UnattachedMessageTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $options                 = array('database' => 'testdbprogram');
-        $this->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting    = new ProgramSetting($options);
-        
+        $dbName = 'testdbprogram';
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
         $this->dropData();
         
     }
@@ -22,10 +23,8 @@ class UnattachedMessageTestCase extends CakeTestCase
     
     public function tearDown()
     {
-        $this->dropData();
-        
+        $this->dropData(); 
         unset($this->UnattachedMessage);
-        
         parent::tearDown();
     }
     
@@ -35,7 +34,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
     }
-
+    
     
     public function testSave_ok_minimu()
     {
@@ -48,12 +47,12 @@ class UnattachedMessageTestCase extends CakeTestCase
             'created-by' => 1);
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
-       
+        
         $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $this->assertRegExp('/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2} \w* \w*$/', $savedUnattachedMessage['UnattachedMessage']['name']);
     }
-
-
+    
+    
     public function testSave_ok_allParticipants()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -344,8 +343,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'Please enter a fixed time for this message.',
             $this->UnattachedMessage->validationErrors['fixed-time'][0]);
     }
-
-
+    
+    
     public function testSave_fail_notAccepted_typeSchedule()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -362,8 +361,8 @@ class UnattachedMessageTestCase extends CakeTestCase
             'This type of schedule is not allowed.',
             $this->UnattachedMessage->validationErrors['type-schedule'][0]);
     }
-
-
+    
+    
     public function testSave_ok_typeSchedule_none()
     {
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
@@ -378,7 +377,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $unattached = $this->UnattachedMessage->save($otherUnattachedMessage);
         $this->assertTrue(isset($unattached['UnattachedMessage']));
     }
-
+    
     
     public function testSave_ok_scheduleImmediatly()
     {
@@ -394,7 +393,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->UnattachedMessage->create("unattached-message");
         $savedUnattachedMessage = $this->UnattachedMessage->save($otherUnattachedMessage);
         
-        $this->assertEquals(1,$this->UnattachedMessage->find('count'));
+        $this->assertEquals(1, $this->UnattachedMessage->find('count'));
         $this->assertEquals('immediately', $savedUnattachedMessage['UnattachedMessage']['type-schedule']);
     }
     
@@ -426,14 +425,14 @@ class UnattachedMessageTestCase extends CakeTestCase
     
     public function testGetNameIdForFilter()
     {
-    	$this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-    	
-    	$output = $this->UnattachedMessage->getNameIdForFilter();        
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $output = $this->UnattachedMessage->getNameIdForFilter();        
         $this->assertEquals(
-        	null,
-        	$output);
-    	
-    	
+            null,
+            $output);
+        
+        
         $unattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -456,9 +455,9 @@ class UnattachedMessageTestCase extends CakeTestCase
         
         $output = $this->UnattachedMessage->getNameIdForFilter();        
         $this->assertEquals(
-        	array($savedUnattachedMessage1['UnattachedMessage']['_id'] => 'hello',
-        		$savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),
-        	$output);
+            array($savedUnattachedMessage1['UnattachedMessage']['_id'] => 'hello',
+                $savedUnattachedMessage2['UnattachedMessage']['_id'] => 'hello2'),
+            $output);
     }
     
     
@@ -467,7 +466,7 @@ class UnattachedMessageTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
         $now = new DateTime('now', timezone_open('Africa/Kampala'));   
         $past = $now->modify('-30 minutes')->format("Y-m-d\TH:i:s");
-       
+        
         $unattachedMessage = array(
             'name'=>'hello',
             'send-to-type'=> 'all',
@@ -566,6 +565,36 @@ class UnattachedMessageTestCase extends CakeTestCase
         
         $this->assertEquals(1,$this->UnattachedMessage->find('count'));
     }
-
+    
+    
+    public function testGet_unattachedMessageNmae_By_ID()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $unattachedMessage = array(
+            'name'=>'hello',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            'created-by' => 1,
+            '_id' => 02
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage_01 = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $unattachedMessage = array(
+            'name'=>'hello2',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            'created-by' => 1,
+            '_id' => 04
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage_02 = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $output = $this->UnattachedMessage->getNameById(02);
+        $this->assertEquals('hello', $output);
+    }
     
 }

@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('UnmatchableReply', 'Model');
 App::uses('Dialogue', 'Model');
@@ -7,23 +8,31 @@ App::uses('Request', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
 App::uses('ShortCode', 'Model');
 App::uses('CreditLog', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class ProgramsController extends AppController
 {
-    
+
+    var $uses = array(
+        'Program', 
+        'Group',
+        'ShortCode',
+        'CreditLog');
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils', 
         'PhoneNumber', 
-        'ProgramPaginator', 
+        'Paginator' => array(
+            'className' => 'ProgramPaginator'), 
         'Stats',
         'UserAccess',
         'Filter');
     var $helpers = array('Time',
         'Js' => array('Jquery'), 
         'PhoneNumber');    
-    var $uses     = array('Program', 'Group');
     var $paginate = array(
         'limit' => 10,
         'order' => array(
@@ -34,20 +43,8 @@ class ProgramsController extends AppController
     
     function constructClasses()
     {
-        parent::constructClasses();
-        
+        parent::constructClasses();        
         $this->_instanciateVumiRabbitMQ();
-        if (!Configure::read("mongo_db")) {
-            $options = array(
-                'database' => 'vusion'
-                );
-        } else {
-            $options = array(
-                'database' => Configure::read("mongo_db")
-                );
-        }
-        $this->ShortCode  = new ShortCode($options);
-        $this->CreditLog  = new CreditLog($options);
     }
     
     
@@ -81,15 +78,20 @@ class ProgramsController extends AppController
     protected function _getProgram($programId)
     {
         $this->Program->recursive = -1;
-        $user                     = $this->Auth->user();
+        $user = $this->Auth->user();
+        $conditions = array('conditions' => array('id' => $programId));
         if ($this->Group->hasSpecificProgramAccess($user['group_id'])) {
-            return  $this->Program->find('authorized', array(
+            $program = $this->Program->find('authorized', array(
                 'specific_program_access' => 'true',
-                'user_id' => $user['id'],
-                'conditions' => array('id' => $programId)));
+                'user_id' => $user['id']),
+                $conditions);
+        } else {
+            $program = $this->Program->find('first', $conditions);
         }
-        $this->Program->id = $programId;
-        return $this->Program->read();
+        if ($program == array()) {
+            return null;
+        }
+        return $program;
     }
     
     
@@ -97,9 +99,10 @@ class ProgramsController extends AppController
     {
         $this->set('filterFieldOptions', $this->_getFilterFieldOptions());
         $this->set('filterParameterOptions', $this->_getFilterParameterOptions());
-                
+       
+        $this->Filter->addDefaultCondition('status', 'is', 'running');
         $conditions = $this->Filter->getConditions($this->Program);
-
+        
         // TODO move in the Program Paginator
         $this->Program->recursive = -1; 
         $user = $this->Auth->user();  
@@ -116,7 +119,7 @@ class ProgramsController extends AppController
                 'conditions' => $conditions,
                 'order' => array('created' => 'desc'));
         }
-
+        
         if ($this->Session->read('Auth.User.id') != null) {
             $isProgramEdit = $this->Acl->check(array(
                 'User' => array(
@@ -138,7 +141,8 @@ class ProgramsController extends AppController
         
         // paginate using ProgramPaginator
         $this->paginate = $paginate;
-        $programs = $this->ProgramPaginator->paginate();
+        $programs       = $this->paginate();
+        
         $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
         $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
     }
@@ -178,46 +182,49 @@ class ProgramsController extends AppController
         if (!$this->Program->exists()) {
             throw new NotFoundException(__('Invalid program.'));
         }
-        $this->set('program', $this->Program->read(null, $id));
+        $program = $this->Program->read(null, $id);
+        $this->set('program', $program);
     }
-    
-    
+
+
     public function add()
     {
         if ($this->request->is('post')) {
             $this->Program->create();
-            if ($this->Program->save($this->request->data)) {
+            if ($program = $this->Program->save($this->request->data)) {
+                #$program = $this->request->data['Program'];
+                $requestSuccess = true;
+                $eventData = array(
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+                $this->UserLogMonitor->setEventData($eventData);
+        
                 $this->Session->setFlash(__('The program has been saved.'),
-                    'default',
-                    array('class'=>'message success')
-                    );
+                    'default', array('class'=>'message success'));
                 //Start the backend
                 $this->_startBackendWorker(
-                    $this->request->data['Program']['url'],
-                    $this->request->data['Program']['database']
-                    );
+                    $program['Program']['url'],
+                    $program['Program']['database']);
                 //Create necessary folders
-                $programDirPath = WWW_ROOT . "files/programs/". $this->request->data['Program']['url'];
-                if (!file_exists($programDirPath)) {
-                    mkdir($programDirPath);
-                    chmod($programDirPath, 0764);
-                }
-                //Importing Dialogue and Request from another Program
-                if (isset($this->request->data['Program']['import-dialogues-requests-from'])) {
+                if (!empty($this->request->data['Program']['import-dialogues-requests-from'])) {
                     $importFromProgramId = $this->request->data['Program']['import-dialogues-requests-from'];
                     $importFromProgram   = $this->_getProgram($importFromProgramId);
                     if (isset($importFromProgram)) {
-                        $importFromDialogueModel = new Dialogue(array('database' => $importFromProgram['Program']['database']));
-                        $dialogues               = $importFromDialogueModel->getActiveDialogues();
-                        $importToDialogueModel   = new Dialogue(array('database' => $this->request->data['Program']['database']));
+                        $importFromDialogueModel = ProgramSpecificMongoModel::init(
+                            'Dialogue', $importFromProgram['Program']['database'], true);
+                        $dialogues = $importFromDialogueModel->getActiveDialogues();
+                        $importToDialogueModel = ProgramSpecificMongoModel::init(
+                            'Dialogue', $this->request->data['Program']['database'], true);
                         foreach($dialogues as $dialogue){
                             $importToDialogueModel->create();
                             unset($dialogue['Dialogue']['_id']);
                             $importToDialogueModel->save($dialogue['Dialogue']);
                         }
-                        $importFromRequestModel = new Request(array('database' => $importFromProgram['Program']['database']));
-                        $requests               = $importFromRequestModel->find('all');
-                        $importToRequestModel   = new Request(array('database' => $this->request->data['Program']['database']));
+                        $importFromRequestModel = ProgramSpecificMongoModel::init(
+                            'Request', $importFromProgram['Program']['database'], true);
+                        $requests = $importFromRequestModel->find('all');
+                        $importToRequestModel = ProgramSpecificMongoModel::init(
+                            'Request', $this->request->data['Program']['database'], true);
                         foreach($requests as $request){
                             $importToRequestModel->create();
                             unset($request['Request']['_id']);
@@ -227,10 +234,7 @@ class ProgramsController extends AppController
                 }
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The program could not be saved. Please, try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
             }
         }
         
@@ -238,7 +242,7 @@ class ProgramsController extends AppController
         $programOptions = array();
         foreach($programs as $program) 
             $programOptions[$program['Program']['id']] = $program['Program']['name']; 
-        $this->set(compact('programOptions'));
+        $this->set(compact('programOptions', 'requestSuccess'));
         
     }
     
@@ -266,20 +270,23 @@ class ProgramsController extends AppController
         }
         if ($this->request->is('post')) {
             if ($this->Program->save($this->request->data)) {
+                $program = $this->request->data['Program'];
+                $eventData = array(            
+                    'programDatabaseName' => $program['database'],
+                    'programName' => $program['name']);
+                $this->UserLogMonitor->setEventData($eventData);
+                
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default',
                     array('class'=>'message success')
                     );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The program could not be saved. Please, try again.'), 
-                    'default',
-                    array('class' => "message failure")
-                    );
+                $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
             }
-        } else {
-            $this->request->data = $this->Program->read(null, $id);
         }
+        $this->request->data = $this->Program->read(null, $id);
+        
     }
     
     
@@ -295,17 +302,21 @@ class ProgramsController extends AppController
                 $program['Program']['url'],
                 $program['Program']['database']);
             $this->CreditLog->deletingProgram($program['Program']['name'], $program['Program']['database']);
-            rmdir(WWW_ROOT . "files/programs/". $program['Program']['url']);
+            $this->Program->deleteProgramDir($program);
+            $eventData = array(            
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+            $this->UserLogMonitor->setEventData($eventData);   
+            
             $this->Session->setFlash(__('Program %s was deleted.', $program['Program']['name']),
                 'default', array('class'=>'message success'));
             $this->redirect(array('action' => 'index'));
         }
-        $this->Session->setFlash(__('Program %s was not deleted.', $program['Program']['name']), 
-            'default', array('class' => "message failure"));
+        $this->Session->setFlash(__('Program %s was not deleted.', $program['Program']['name']));
         $this->redirect(array('action' => 'index'));
     }
-
-
+    
+    
     public function archive($id = null)
     {
         $this->Program->id = $id;
@@ -317,6 +328,11 @@ class ProgramsController extends AppController
             $this->_stopBackendWorker(
                 $program['Program']['url'],
                 $program['Program']['database']);
+            $eventData = array(            
+                    'programDatabaseName' => $program['Program']['database'],
+                    'programName' => $program['Program']['name']);
+                $this->UserLogMonitor->setEventData($eventData);
+                
             $this->Session->setFlash(__('This program has been archived. All sending and receiving of message have stopped.'),
                 'default', array('class'=>'message success'));
             $this->redirect(array(
@@ -327,5 +343,5 @@ class ProgramsController extends AppController
         }
     }
     
-
+    
 }

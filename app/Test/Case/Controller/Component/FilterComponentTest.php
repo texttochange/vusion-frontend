@@ -18,7 +18,6 @@ class TestFilterComponentController extends Controller
 class FirstDummyModel extends MongoModel 
 {
     public $name = "FirstDummy";
-    public $specific = true;
     public function getModelVersion() {}
     public function getRequiredFields($objectType) {}
 
@@ -49,7 +48,6 @@ class FirstDummyModel extends MongoModel
 class SecondDummyModel extends MongoModel 
 {
     var $name = "SecondDummy";
-    var $specific = true;
     public function getModelVersion() {}
     public function getRequiredFields($objectType) {}
 
@@ -88,7 +86,7 @@ class FilterComponentTest extends CakeTestCase
             'SecondDummyModel',
             array(
                 'getUniqueParticipantPhone'));
-        $this->FilterComponent->initialize($this->Controller);
+        $this->FilterComponent->startup($this->Controller);
     }
     
     
@@ -376,6 +374,51 @@ class FilterComponentTest extends CakeTestCase
             array('$and' => array(
                 array('session-id' => array('$ne' => null)),
                 array('phone' => '+06'))));
+    }
+    
+    
+    public function testHasCondition_false() 
+    {
+        $filters = array(
+            'filter_operator' => 'any',
+            'filter_param' => array(
+                1 => array(
+                    1 => "phone", 
+                    2 => "is",
+                    3 => "+06")));
+        $this->Controller->params['url'] = $filters;
+        
+        $this->assertFalse($this->FilterComponent->hasConditions());
+    }
+    
+    
+    public function testHasCondition_true() 
+    {
+        $filters = array();
+        $this->Controller->params['url'] = $filters;
+        
+        $this->assertTrue($this->FilterComponent->hasConditions());
+    }
+    
+    
+    public function testAddDefaultCondition() 
+    {
+        $filters = array();
+        $this->Controller->params['url'] = $filters;
+        $this->FilterComponent->addDefaultCondition('status', 'is', 'running');
+        $this->assertEqual(
+            $this->Controller->params['url'],
+            array(
+                'filter_operator' => 'all',
+                'filter_param' => array(
+                    1 => array(
+                        1 => 'status',
+                        2 => 'is',
+                        3 => 'running'
+                        )
+                    )
+                )
+            );
     }
 
 

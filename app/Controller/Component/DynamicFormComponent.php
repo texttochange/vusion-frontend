@@ -7,7 +7,7 @@ class DynamicFormComponent extends Component
     
     var $localizedValueLabels = array();
     
-    public function __construct(ComponentCollection $collection, $settings = array())
+    public function startup($controller)
     {
         $this->localizedValueLabels = array(
             "name" => __('Name'),
@@ -108,6 +108,10 @@ class DynamicFormComponent extends Component
             "sms-forwarding"=> __('SMS Forward'),
             "forward-to"=> __('Receiver Tag(s) and/or Label(s)'),
             "forward-content"=> __('Content'),
+            "sms-invite"=> __('SMS Invite'),
+            "invite-content"=> __('Content'),
+            "invitee-tag"=> __('Invitee Tag'),
+            "feedback-inviter"=> __('Feedback inviter'),
             "tag"=> __('Tag'),
             "weight"=> __('Weight'),
             "label-name" => __("Label name"),
@@ -127,9 +131,21 @@ class DynamicFormComponent extends Component
             "set-forward-message-condition" => __("Retrive a condition in the message"),
             "forward-message-no-participant-feedback" => __("Feedback in case no participant is matching"),
             "set-only-optin-count" => __("Set count only optin participant"),
+            'keep-tags' => __('Keep these tags'),
+            'keep-labels' => __('Keep these labels'),
+            "announcement-actions" => __("Action at sending time"),
+            'save-content-variable-table' => __("Save Content Variable Table"),
+            'scvt-row-keys' => __("Row Keys"),
+            'scvt-row-key' => __("Row Key"),
+            'scvt-row-header' => __('Header'),
+            'scvt-row-value' => __('Row Value'),
+            'scvt-col-key-header' => __("Column Key Header"),
+            'scvt-col-extras' => __("Extra Columns"),
+            'scvt-col-extra' => __("Extra Column"),
+            'scvt-attached-table' => __("Attached Table"),
+            'scvt-col-extra-header' => __('Header'),
+            'scvt-col-extra-value' => __('Row Value'),
             );
-        $this->Controller = $collection->getController();
-        parent::__construct($collection, $settings);
-        $this->Controller->set('dynamicFormLabels', $this->localizedValueLabels);
+        $controller->set('dynamicFormLabels', $this->localizedValueLabels);
     }
 }

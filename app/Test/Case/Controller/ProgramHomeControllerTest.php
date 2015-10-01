@@ -1,33 +1,27 @@
 <?php
-/* Programs Test cases generated on: 2012-01-24 15:39:09 : 1327408749*/
 App::uses('ProgramHomeController', 'Controller');
 App::uses('ScriptMaker', 'Lib');
 App::uses('UnattachedMessage','Model');
 App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
-/**
-* TestProgramHomeControllerController *
-*/
+
 class TestProgramHomeController extends ProgramHomeController
 {
-    
-    
+
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
 
 class ProgramHomeControllerTestCase extends ControllerTestCase
 {
-    
-    
+
     var $programData = array(
         0 => array( 
             'Program' => array(
@@ -43,9 +37,18 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
     {
         parent::setUp();
         
-        $this->Home = new TestProgramHomeController();
-        $this->instanciateModels(); 
+        $this->ProgramHome = new TestProgramHomeController();
         
+        $dbName = $this->programData[0]['Program']['database'];
+        $this->Dialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', $dbName, true);
+        $this->Schedule = ProgramSpecificMongoModel::init(
+            'Schedule', $dbName, true);
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $dbName, true);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName, true);
+
         $this->ScriptMaker = new ScriptMaker();
         
     }
@@ -53,31 +56,17 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
     
     protected function dropData()
     {
-        $this->Home->Dialogue->deleteAll(true, false);
-        $this->Home->Schedule->deleteAll(true, false);
-        $this->Home->UnattachedMessage->deleteAll(true, false);
+        $this->Dialogue->deleteAll(true, false);
+        $this->Schedule->deleteAll(true, false);
+        $this->UnattachedMessage->deleteAll(true, false);
         $this->ProgramSetting->deleteAll(true, false);
-    }
-    
-    
-    protected function instanciateModels() 
-    {
-        $options = array('database' => $this->programData[0]['Program']['database']);
-        
-        $this->Home->Dialogue          = new Dialogue($options);
-        $this->Home->Schedule          = new Schedule($options);
-        $this->Home->UnattachedMessage = new UnattachedMessage($options);
-        $this->ProgramSetting          = new ProgramSetting($options);
     }
     
     
     public function tearDown()
     {
-        
         $this->dropData();
-        
-        unset($this->Scripts);
-        
+        unset($this->Scripts);        
         parent::tearDown();
     }
     
@@ -88,7 +77,8 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
             'components' => array(
                 'Acl' => array('check'),
                 'Session' => array('read'),
-                'LocalizeUtils' => array('localizeLabelInArray')
+                'LocalizeUtils' => array('localizeLabelInArray'),
+                'Auth' => array('loggedIn')
                 ),
             'models' => array(
                 'Program' => array('find', 'count'),
@@ -102,7 +92,13 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         ->expects($this->any())
         ->method('check')
         ->will($this->returnValue('true'));
-        
+
+        $home->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+               
+
         $home->Program
         ->expects($this->once())
         ->method('find')

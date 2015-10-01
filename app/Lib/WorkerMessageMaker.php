@@ -34,6 +34,14 @@ class WorkerMessageMaker
     }
 
 
+    public function export($export_id)
+    {
+        return array(
+            'message_type' => 'export',
+            'export_id' => $export_id . "");
+    }
+
+
     public function updateSchedule($schedule_type, $object_id)
     {
         if (!in_array($schedule_type, array('dialogue', 'unattach', 'participant'))) {
@@ -95,13 +103,17 @@ class WorkerMessageMaker
             'session_event'=> null,
             'transport_name' =>'',
             'transport_type' => '',
-            'transport_metadata' => '',
+            'transport_metadata' => array('simulated' => true),
             'helper_metadata' => ''
             );
     }
 
+
     public function massTag($tag, $query)
     {
+        if ($query === array()) {
+            $query = null;
+        }
         return array(
             'action' => 'mass_tag',
             'tag' => $tag,
@@ -118,5 +130,15 @@ class WorkerMessageMaker
             );
     }
     
+
+    public function runActions($participant_phone, $dialogue_id, $interaction_id, $answer)
+    {
+        return array(
+            'action' => 'run_actions',
+            'participant_phone' => $participant_phone,
+            'dialogue_id' => $dialogue_id,
+            'interaction_id' => $interaction_id,
+            'answer' => $answer);
+    }
     
 }

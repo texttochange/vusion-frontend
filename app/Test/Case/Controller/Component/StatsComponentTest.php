@@ -11,20 +11,17 @@ App::uses('History', 'Model');
 App::uses('ProgramSetting', 'Model');
 
 
-
 class TestStatsComponentController extends Controller
 {
 
     var $components = array('Stats');
-    
-    
+
     function constructClasses()
     {
         $this->redis = new Redis();
         $this->redis->connect('127.0.0.1');
         $this->redisProgramPrefix = 'unittest';
     }
-
     
 }
 
@@ -47,12 +44,16 @@ class StatsComponentTest extends CakeTestCase
         $this->Controller = new TestStatsComponentController($CakeRequest, $CakeResponse);
         $this->Controller->constructClasses();
         $this->StatsComponent->initialize($this->Controller);
+        $this->StatsComponent->startup($this->Controller);
+  
         $this->redis = $this->Controller->redis;
         
-        $this->Maker = new ScriptMaker();
-        $options = array('database' => 'testdbprogram');
-        $this->instanciateModels($options);
+        $this->instanciateModels(
+            array('Participant', 'Schedule', 'History', 'ProgramSetting'), 
+            'testdbprogram');
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $this->Maker = new ScriptMaker();
     }
     
     
@@ -65,12 +66,11 @@ class StatsComponentTest extends CakeTestCase
     }
     
     
-    protected function instanciateModels($options)
+    protected function instanciateModels($modelNames, $options)
     {
-        $this->Participant = new Participant($options);
-        $this->Schedule = new Schedule($options);
-        $this->History = new History($options);
-        $this->ProgramSetting = new ProgramSetting($options); 
+       foreach ($modelNames as $modelName) {
+            $this->{$modelName} = ProgramSpecificMongoModel::init($modelName, $options, true);
+        }
     }
     
     
@@ -135,22 +135,25 @@ class StatsComponentTest extends CakeTestCase
                 'dialogue-id' => 'def456')
             )
             ); 
-        $this->History->create('unattach-history');
-        $savedHistory = $this->History->save(array(
+        $history_1 = array(
+            'object-type' => 'unattach-history',
             'participant-phone' => '256712747841',
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-02-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered')
-            );
-        $this->History->create('unattach-history');
-        $savedHistory2 = $this->History->save(array(
+            'message-status' => 'delivered');
+        $this->History->create($history_1);
+        $savedHistory = $this->History->save($history_1);
+
+        $history_2 = array(
+            'object-type' => 'unattach-history',
             'participant-phone' => '256712747842',
             'message-content' => 'Hello everyone!',
             'timestamp' => '2012-03-08T12:20:43.882854',
             'message-direction' => 'outgoing',
-            'message-status' => 'delivered')
-            );
+            'message-status' => 'delivered');
+        $this->History->create($history_2);
+        $savedHistory2 = $this->History->save($history_2);
         
         $key = "unittest:testdbprogram:stats";
         

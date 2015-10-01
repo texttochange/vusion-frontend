@@ -1,63 +1,71 @@
 <div class="participant view width-size">
-    <ul class="ttc-actions">
-        <li>
-        <?php 
-		    echo $this->AclLink->generatePostLink(
-		        __('Delete Participant and Clear History'),
-		        $programDetails['url'],
-		        'programParticipants',
-		        'delete',
-		         __('Are you sure you want to delete the participant %s and all his histories?', $participant['Participant']['phone']),
-		        array('class'=>'ttc-button'),
-		        $participant['Participant']['_id'],
-		        array('include'=>'history'));
-	    ?>
-        </li>
-		<li><?php 
-		    echo $this->AclLink->generateButton(
-		        __('Edit Participant'),
-		        $programDetails['url'],
-		        'programParticipants',
-		        'edit',
-		        array('class'=>'ttc-button'),
-		        $participant['Participant']['_id']);
-		    ?> 
-		</li>		
-		<li><?php 
-		    echo $this->AclLink->generatePostLink(
-		        __('Reset'),
-		        $programDetails['url'],
-		        'programParticipants',
-		        'reset',
-		         __('Are you sure you want to reset the participant %s?', $participant['Participant']['phone']),
-		        array('class'=>'ttc-button'),
-		        $participant['Participant']['_id']);
-		    ?> 
-		</li>
-		<li><?php
-		    if ($participant['Participant']['session-id'] != null) {
-		        echo $this->AclLink->generatePostLink(
-		            __('Optout'),
-		            $programDetails['url'],
-		            'programParticipants',
-		            'optout',
-		            __('Are you sure you want to optout the participant %s?', $participant['Participant']['phone']),
-		            array('class'=>'ttc-button'),
-		            $participant['Participant']['_id']);
-		    } else {
-		        echo $this->AclLink->generatePostLink(
-		            __('Optin'),
-		            $programDetails['url'],
-		            'programParticipants',
-		            'optin',
-		            __('Are you sure you want to optin the participant %s?', $participant['Participant']['phone']),
-		            array('class'=>'ttc-button'),
-		            $participant['Participant']['_id']);
-		    }
-		    ?> 
-		</li>
-	</ul>
-    <h3><?php echo __('Participant'); ?></h3>
+    <?php
+        $contentTitle   = __('Participant'); 
+        $contentActions = array();
+        
+        $contentActions[] = $this->Html->link( __('Cancel'), 
+        array(
+          'program' => $programDetails['url'],
+          'action' => 'index'),
+        array('class' => 'ttc-button'));
+        
+        $contentActions[] = $this->AclLink->generatePostLink(
+            __('Delete Participant and Clear History'),
+            $programDetails['url'],
+            'programParticipants',
+            'delete',
+            __('Are you sure you want to delete the participant %s and all his histories?', $participant['Participant']['phone']),
+            array('class'=>'ttc-button'),
+            $participant['Participant']['_id'],
+            array('include'=>'history'));
+        
+        $contentActions[] = $this->AclLink->generateButton(
+            __('Edit Participant'),
+            $programDetails['url'],
+            'programParticipants',
+            'edit',
+            array('class'=>'ttc-button'),
+            $participant['Participant']['_id']);
+        
+        $contentActions[] = $this->AclLink->generatePostLink(
+            __('Reset'),
+            $programDetails['url'],
+            'programParticipants',
+            'reset',
+            __('Are you sure you want to reset the participant %s?', $participant['Participant']['phone']),
+            array('class'=>'ttc-button'),
+            $participant['Participant']['_id']);
+        
+        if ($participant['Participant']['session-id'] != null) {
+            $contentActions[] = $this->AclLink->generatePostLink(
+                __('Optout'),
+                $programDetails['url'],
+                'programParticipants',
+                'optout',
+                __('Are you sure you want to optout the participant %s?', $participant['Participant']['phone']),
+                array('class'=>'ttc-button'),
+                $participant['Participant']['_id']);
+        } else {
+            $contentActions[] = $this->AclLink->generatePostLink(
+                __('Optin'),
+                $programDetails['url'],
+                'programParticipants',
+                'optin',
+                __('Are you sure you want to optin the participant %s?', $participant['Participant']['phone']),
+                array('class'=>'ttc-button'),
+                $participant['Participant']['_id']);
+        }
+        if (isset($participant['Participant']['simulate']) && ($participant['Participant']['simulate'])) {
+            $contentActions[] = $this->AclLink->generateButton(
+                __('Simulate'),
+                $programDetails['url'],
+                'programParticipants',
+                'simulateMo',
+                array('class'=>'ttc-button'),
+                $participant['Participant']['_id']);
+        }
+        echo $this->element('header_content', compact('contentTitle', 'contentActions'));
+    ?>
 	<dl>
 		<dt><?php echo __('Phone'); ?></dt>
 		<dd><?php echo $participant['Participant']['phone']; ?>
@@ -82,12 +90,7 @@
 		<dd><?php 
 		if (count($participant['Participant']['enrolled']) > 0) {
 		    foreach ($participant['Participant']['enrolled'] as $enrolled) {
-		        foreach ($currentProgramData['dialogues'] as $dialogue) {
-		            if ($dialogue['dialogue-id'] == $enrolled['dialogue-id']) {
-  	                    echo $this->Html->tag('div', __("%s at %s", $dialogue['Active']['name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
-  	                    break;
-  	                }
-		        }
+  	            echo $this->Html->tag('div', __("%s at %s", $enrolled['dialogue-name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
 		    }
 		} else {
 		    echo "&nbsp;"; 
@@ -176,7 +179,11 @@
 			             <?php if ($history['History']['object-type'] == 'oneway-marker-history') {
 			                 echo __("One way marker on interaction <i>%s</i>", $history['History']['details']);
 			             } elseif ($history['History']['object-type'] == 'datepassed-marker-history') {
-			                 echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']); 
+			                 if (isset($history['History']['unattach-id'])) {
+			                     echo __("Date passed marker on separate message <i>%s</i>", $history['History']['details']);
+			                 } else {
+			                     echo __("Date passed marker on interaction <i>%s</i>", $history['History']['details']);
+			                 }
 			             } elseif ($history['History']['object-type'] == 'datepassed-action-marker-history') {
 			                 echo __("Date passed marker on action <i>%s</i> scheduled at %s", 
 			                         $history['History']['action-type'], 

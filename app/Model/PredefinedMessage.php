@@ -1,14 +1,13 @@
 <?php
-
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('VusionValidation', 'Lib');
 App::uses('VusionConst', 'Lib');
 
-class PredefinedMessage extends MongoModel
+
+class PredefinedMessage extends ProgramSpecificMongoModel
 {
-    var $specific = true;
     var $name = 'PredefinedMessage';
-    var $useDbConfig = 'mongo';
+    
     
     function getModelVersion()
     {
@@ -20,8 +19,7 @@ class PredefinedMessage extends MongoModel
     {
         return array(
             'name',
-            'content'
-            );
+            'content');
     }
     
     

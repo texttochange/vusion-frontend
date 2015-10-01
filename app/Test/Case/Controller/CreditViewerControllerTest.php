@@ -1,5 +1,5 @@
 <?php
-
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('CreditViewerController', 'Controller');
 App::uses('History', 'Model');
 App::uses('ScriptMaker', 'Lib');
@@ -15,31 +15,35 @@ class TestCreditViewerController extends CreditViewerController
     {
         $this->redirectUrl = $url;
     }
-    
-    
+
 }
 
 
 class CreditViewerControllerTestCase extends ControllerTestCase
 {
+
     public $fixtures = array('app.program', 'app.user', 'app.programsUser', 'app.group');
     
     
     public function setUp()
     {
-        Configure::write("mongo_db", "testdbmongo");
         parent::setUp();
         
         $this->Viewer = new TestCreditViewerController();
         $this->Viewer->constructClasses();
         
-        $this->ShortCode           = new ShortCode(array('database' => "testdbmongo"));
-        $this->CreditLog           = new CreditLog(array('database' => "testdbmongo"));
-        $this->ProgramSettingTest  = new ProgramSetting(array('database' => 'testdbprogram'));
-        $this->ProgramSettingM6H   = new ProgramSetting(array('database' => 'm6h'));
-        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
-        $this->ProgramSettingM9h   = new ProgramSetting(array('database' => 'm9h'));
-        
+
+        $this->ShortCode = ClassRegistry::init('ShortCode');
+        $this->CreditLog = ClassRegistry::init('CreditLog');
+        $this->ProgramSettingTest = ProgramSpecificMongoModel::init(
+            'ProgramSetting', 'testdbprogram', true);
+        $this->ProgramSettingM6H = ProgramSpecificMongoModel::init(
+            'ProgramSetting', 'm6h', true);
+        $this->ProgramSettingTrial = ProgramSpecificMongoModel::init(
+            'ProgramSetting', 'trial', true);
+        $this->ProgramSettingM9h = ProgramSpecificMongoModel::init(
+            'ProgramSetting', 'm9h', true);
+
         $this->dropData();
     }
     
@@ -97,7 +101,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     {
         $this->_saveShortcodesInMongoDatabase();
         
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
@@ -113,7 +116,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
         
-        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Daresalaam');
         $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8181');
         
@@ -133,7 +135,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
     {
         $this->_saveShortcodesInMongoDatabase();
         
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
@@ -149,7 +150,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog);
         
-        $this->ProgramSettingM6H = new ProgramSetting(array('database' => 'm6h'));
         $this->ProgramSettingM6H->saveProgramSetting('timezone','Africa/Daresalaam');
         $this->ProgramSettingM6H->saveProgramSetting('shortcode','256-8181');
         
@@ -184,7 +184,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->_saveShortcodesInMongoDatabase();
         
         #One recent creditlog
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         
@@ -203,7 +202,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($garbageCreditLog);
         
-        $this->ProgramSettingTrial = new ProgramSetting(array('database' => 'trial'));
         $this->ProgramSettingTrial->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTrial->saveProgramSetting('shortcode','256-8181');
         $creditLog = ScriptMaker::mkCreditLog(
@@ -211,7 +209,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->create();        
         $this->CreditLog->save($creditLog); 
         
-        $this->ProgramSettingM9h = new ProgramSetting(array('database' => 'm9h'));
         $this->ProgramSettingM9h->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingM9h->saveProgramSetting('shortcode','254-21222');
         $creditLog = ScriptMaker::mkCreditLog(
@@ -220,7 +217,6 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->CreditLog->save($creditLog);
         
         #One old creditLog
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'testdbprogram'));
         $this->ProgramSettingTest->saveProgramSetting('timezone','Africa/Kampala');
         $this->ProgramSettingTest->saveProgramSetting('shortcode','256-8282');
         $creditLog = ScriptMaker::mkCreditLog(
@@ -233,14 +229,13 @@ class CreditViewerControllerTestCase extends ControllerTestCase
         $this->assertTrue(isset($this->vars['fileName']));
         $this->assertFileEquals(
             TESTS . 'files/exported_creditViewer.csv',
-            WWW_ROOT . 'files/programs/creditViewer/' . $this->vars['fileName']);
+            WWW_ROOT . 'files/credit-viewer/' . $this->vars['fileName']);
         
         //Asserting that programName "creditViewer" is adding to export file
         $this->assertEquals(
-            substr($this->vars['fileName'], 0, -14),
-            'creditViewer_');
+            substr($this->vars['fileName'], 0, 14),
+            'Credit_Viewer_');
     }
     
     
 }
-

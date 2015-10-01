@@ -1,23 +1,34 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('BaseProgramSpecificController', 'Controller');
 App::uses('Request', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Helper');
 App::uses('Participant', 'Model');
 App::uses('VumiRabbitMQ', 'Lib');
+App::uses('ContentVariableTable', 'Model');
 
 
-class ProgramRequestsController extends AppController
+class ProgramRequestsController extends BaseProgramSpecificController
 {
-    
+    var $uses = array(
+        'Request',
+        'Dialogue',
+        'ProgramSetting',
+        'Participant',
+        'ContentVariableTable');
     var $components = array(
-        'RequestHandler', 
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')), 
         'LocalizeUtils', 
         'Utils',
         'Keyword',
-        'DynamicForm');
-    var $uses = array('Request');
+        'DynamicForm',
+        'ProgramAuth',
+        'ArchivedProgram');
+    var $helpers = array(
+        'DynamicOptions');
     
     
     function constructClasses()
@@ -29,14 +40,9 @@ class ProgramRequestsController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //$this->Auth->allow('*');
         $this->RequestHandler->accepts('json');
         $this->RequestHandler->addInputType('json', array('json_decode'));
-        $options              = array('database' => ($this->Session->read($this->params['program']."_db")));
-        $this->Request        = new Request($options);
-        $this->Dialogue       = new Dialogue($options);
-        $this->ProgramSetting = new ProgramSetting($options);
-        $this->Participant    = new Participant($options);
+
         $this->_instanciateVumiRabbitMQ();
     }
     
@@ -44,8 +50,8 @@ class ProgramRequestsController extends AppController
     protected function _instanciateVumiRabbitMQ(){
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
     }
-
-
+    
+    
     public function index()
     {
         $this->set('requests', $this->paginate());
@@ -55,12 +61,14 @@ class ProgramRequestsController extends AppController
     public function add()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
     }
     
-
+    
     public function edit()
     {
         $this->set('conditionalActionOptions', $this->_getConditionalActionOptions());
+        $this->set('contentVariableTableOptions', $this->_getContentVariableTableOptions());
         
         $programUrl = $this->params['program'];
         $programDb  = $this->Session->read($programUrl."_db");
@@ -71,28 +79,32 @@ class ProgramRequestsController extends AppController
             if (!$this->Request->exists()) {
                 throw new NotFoundException(__('Invalide Request') . $id);
             }
+            
             $this->set('request', $this->Request->read(null, $id));
         }
     }
-
-
+    
+    
     public function save()
     {
         $programUrl     = $this->params['program'];
         $programDb      = $this->Session->read($programUrl."_db");
+        $programName    = $this->Session->read($programUrl."_name");
         $requestSuccess = false;
         
         if (!$this->request->is('post') || !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
- 
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             $this->set(compact('requestSuccess')); 
             return;
         }
-
-        $shortCode     = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+        
+        $shortCode     = $this->ProgramSetting->getProgramSetting('shortcode');
+        $contactEmail  = $this->ProgramSetting->getContactEmail();
+        $this->Request->setContactEmail($contactEmail);
         $request       = DialogueHelper::objectToArray($this->request->data);
         $id            = Request::getRequestId($request);
         $keywords      = Request::getRequestKeyphrases($request);
@@ -100,6 +112,7 @@ class ProgramRequestsController extends AppController
         if ($savedRequest = $this->Request->saveRequest($request,  $foundKeywords)) {
             $this->_notifyReloadRequest($programUrl, $savedRequest['Request']['_id']."");
             $requestSuccess = true;
+            
             $this->Session->setFlash(__('Request saved.'));
             $this->set(compact('savedRequest'));
         } else {
@@ -114,6 +127,13 @@ class ProgramRequestsController extends AppController
     {   
         return $this->LocalizeUtils->localizeLabelInArray(
             $this->Participant->getFilters('conditional-action'));
+    }
+
+
+    protected function _getContentVariableTableOptions()
+    {
+        return $this->ContentVariableTable->find('all', array(
+            'fields' => array('name', 'columns.header', 'columns.type')));
     }
     
     
@@ -148,24 +168,25 @@ class ProgramRequestsController extends AppController
     public function validateKeyword()
     {
         $programUrl     = $this->params['program'];
-        $programDb      = $this->Session->read($programUrl."_db");
+        $programDb      = $this->programDetails['database'];
         $usedKeywords   = $this->request->data['keyword'];
         $requestId      = $this->request->data['object-id'];
         $requestSuccess = true;
-
+        
         if (!$this->request->is('post') || !$this->_isAjax()) {
             throw new MethodNotAllowedException();
         }
-
+        
         if (!$this->ProgramSetting->hasRequired()) {
             $this->Session->setFlash(__('Please set the program settings then try again.'));
             return;
         }
-        
-        $shortCode = $this->ProgramSetting->find('getProgramSetting', array('key' => 'shortcode'));
+
+        $shortCode = $this->ProgramSetting->getProgramSetting('shortcode');
         $foundKeywords = $this->Keyword->areUsedKeywords($programDb, $shortCode, $usedKeywords, 'Request', $requestId); 
         if ($foundKeywords) {
-            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords);
+            $contactEmail = $this->ProgramSetting->getContactEmail();
+            $foundMessage = $this->Keyword->foundKeywordsToMessage($programDb, $foundKeywords, $contactEmail);
             $requestSuccess = false;
             $this->set(compact('requestSuccess', 'foundMessage'));
             return;
@@ -178,6 +199,6 @@ class ProgramRequestsController extends AppController
     {
         $this->VumiRabbitMQ->sendMessageToReloadRequest($workerName, $requestId);
     }
-
-
+    
+    
 }

@@ -6,12 +6,9 @@ App::uses('FilterException', 'Lib');
 
 class UnmatchableReply extends MongoModel
 {
+    var $name     = 'UnmatchableReply';
+    var $useTable = 'unmatchable_reply';
     
-    var $specific    = true;
-    var $name        = 'UnmatchableReply';
-    var $useDbConfig = 'mongo';
-    var $useTable    = 'unmatchable_reply';
-
     var $countriesByPrefixes = null;
     
     
@@ -19,6 +16,7 @@ class UnmatchableReply extends MongoModel
     {
         return '1';
     }
+    
     
     function getRequiredFields($objectType=null)
     {
@@ -124,11 +122,12 @@ class UnmatchableReply extends MongoModel
                     'parameter-type' => 'text'))), 
         );
     
+    
     public $filterOperatorOptions = array(
         'all' => 'all',
         'any' => 'any'
         );
-        
+    
     
     public function fromFilterToQueryCondition($filterParam)
     {
@@ -137,12 +136,12 @@ class UnmatchableReply extends MongoModel
         if ($filterParam[1] == 'country') {
             $countryPrefix = $this->countriesByPrefixes[$filterParam[3]];
             if ($filterParam[2] == 'is') {
-                $condition['participant-phone'] = new MongoRegex("/^(\\+)?".$countryPrefix."/");
+                $condition['participant-phone'] = array('$regex' => "^(\\+)?".$countryPrefix);
             }
         } elseif ($filterParam[1] == 'shortcode') {
             if ($filterParam[2] == 'is') {
                 $condition['$or'] = array(
-                    array('participant-phone' => new MongoRegex("/\\d*-".$filterParam[3]."$/")),
+                    array('participant-phone' => array('$regex' => "\\d*-".$filterParam[3]."$")),
                     array('to' => $filterParam[3]));
             }
         } elseif ($filterParam[1] == 'date') {
@@ -155,19 +154,19 @@ class UnmatchableReply extends MongoModel
             if ($filterParam[2] == 'equal-to') {
                 $condition['participant-phone'] = $filterParam[3];                   
             } elseif ($filterParam[2] == 'start-with') {
-                $condition['participant-phone'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                $condition['participant-phone'] = array('$regex' => "^\\".$filterParam[3]);
             } elseif ($filterParam[2] == 'start-with-any') {
                 $phoneNumbers = explode(",", str_replace(" ", "", $filterParam[3]));
                 if ($phoneNumbers) {
                     if (count($phoneNumbers) > 1) {
                         $or = array();
                         foreach ($phoneNumbers as $phoneNumber) {
-                            $regex = new MongoRegex("/^\\".$phoneNumber."/");
+                            $regex = array('$regex' => "^\\".$phoneNumber);
                             $or[] = array('participant-phone' => $regex);
                         }
                         $condition['$or'] = $or;
                     } else {
-                        $condition['participant-phone'] = new MongoRegex("/^\\".$phoneNumbers[0]."/");
+                        $condition['participant-phone'] = array('$regex' => "^\\".$phoneNumbers[0]);
                     }
                 }   
             }
@@ -175,18 +174,18 @@ class UnmatchableReply extends MongoModel
             if ($filterParam[2] == 'equal-to') {
                 $condition['to'] = $filterParam[3];                   
             } elseif ($filterParam[2] == 'start-with') {
-                $condition['to'] = new MongoRegex("/^\\".$filterParam[3]."/");
+                $condition['to'] = array('$regex' => "^\\".$filterParam[3]);
             } 
         } elseif ($filterParam[1] == 'message-content') {
             if ($filterParam[2] == 'equal-to') {
                 $condition['message-content'] = $filterParam[3];
             } elseif ($filterParam[2] == 'contain') {
-                $condition['message-content'] = new MongoRegex("/".$filterParam[3]."/i");
+                $condition['message-content'] = array('$regex' => $filterParam[3], '$options' => 'i');
             } elseif ($filterParam[2] == 'has-keyword') {
-                $condition['message-content'] = new MongoRegex("/^".$filterParam[3]."($| )/i");
+                $condition['message-content'] = array('$regex' => "^".$filterParam[3]."($| )", '$options' => 'i');
             }
         } 
-            
+        
         return $condition;
     }
     

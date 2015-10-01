@@ -11,8 +11,10 @@ class Program extends AppModel
     
     public $findMethods = array(
         'authorized' => true,
-        'count' => true
+        'count' => true,
+        'listByDatabase' => true,
         );
+    
     
     public $validate = array(
         'name' => array(
@@ -43,6 +45,11 @@ class Program extends AppModel
             'notInList' => array(
                 'rule' => array('notInList', array('test','groups', 'users', 'admin', 'shortcodes', 'templates',  'programs', 'files', 'js', 'css', 'img')),
                 'message' => 'This url is not allowed to avoid overwriting a static Vusion url, please choose a different one.'
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
                 )
             ),
         'database' => array(
@@ -76,11 +83,14 @@ class Program extends AppModel
             )
         );
     
+    
+    
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
         $this->Behaviors->load('FilterMongo');
     }
+    
     
     #Filter variables and functions
     public $filterFields = array(
@@ -92,6 +102,9 @@ class Program extends AppModel
                     'parameter-type' => 'text'),
                 'equal-to' => array(
                     'label' => 'equal to',
+                    'parameter-type' => 'text'),
+                'contain' => array(
+                    'label' => 'contain',
                     'parameter-type' => 'text'))),
         'country' => array(
             'label' => 'country',
@@ -113,10 +126,13 @@ class Program extends AppModel
                     'parameter-type' => 'program-status')))
         );
     
+    
     public $filterProgramStatusOptions = array(
+        'any' => 'any',
         'running' => 'running',
         'archived' => 'archived'
         );
+    
     
     public $filterOperatorOptions = array(
         'all' => 'all',
@@ -126,17 +142,18 @@ class Program extends AppModel
     
     public function isNotEditable($check) 
     {
-        $existingDatabase = $this->find(
-            'first', 
-            array('id = Program.id' ,
-                'conditions'=> array('database' => $check['database']))
-            );
-        
-        if($existingDatabase){
-            return true;
-        } else {
-            return false;
+        if ($this->id != null) {
+            $key = key($check);
+            $savedProgram = $this->find(
+                'first',
+                array('conditions' => array('id' => $this->id)));
+            if ($check[$key] != $savedProgram['Program'][$key]) {
+                return false;
+                
+            }
+            
         }
+        return true;
     }
     
     
@@ -172,6 +189,8 @@ class Program extends AppModel
                     $condition['name'] = $filterParam[3];
                 } elseif ($filterParam[2] == 'start-with') {
                     $condition['name LIKE'] = $filterParam[3]."%"; 
+                } elseif ($filterParam[2] == 'contain') {
+                    $condition['name LIKE'] = "%".$filterParam[3]."%";
                 }
             }
         } elseif ($filterParam[1] == 'status') {
@@ -179,8 +198,11 @@ class Program extends AppModel
                 if ($filterParam[2] == 'is') {
                     $condition['status'] = $filterParam[3];
                 }
+                if ($filterParam[3] == 'any') {
+                    $condition = array(); 
+                }
             }
-        }         
+        }
         return $condition;
     }
     
@@ -221,6 +243,22 @@ class Program extends AppModel
             return false;
         }
     }
+
+    public function _findListByDatabase($state, $query, $results = array()) 
+    {
+        if ($state === 'before') {
+            $query['fields'] = array('name', 'database');
+            $list = array("{n}.Program.database", "{n}.Program.name", null);
+            list($query['list']['keyPath'], $query['list']['valuePath'], $query['list']['groupPath']) = $list;
+            return $query;
+        } 
+
+        if (empty($results)) {
+            return array();
+        }
+
+        return Hash::combine($results, $query['list']['keyPath'], $query['list']['valuePath'], $query['list']['groupPath']);
+    }
     
     
     protected function limitedAccessConditions($query)
@@ -236,9 +274,10 @@ class Program extends AppModel
                         )
                     )
                 );
-            if (empty($query['conditions']))
+            if (empty($query['conditions'])) {
                 # make conditions an array
-            $query['conditions'] = array();
+                $query['conditions'] = array();
+            }
             # append user_id to conditions array
             $query['conditions'] = array_merge(
                 $query['conditions'],array(
@@ -258,7 +297,7 @@ class Program extends AppModel
         return $query;
     }
     
-
+    
     public function archive() 
     {
         $modifier = $this->saveField('status', 'archived', array('validate' => true));
@@ -272,7 +311,7 @@ class Program extends AppModel
         $schedule->deleteAll(true, false);
         return true;
     }
-
+    
     
     public function deleteProgram()
     {
@@ -280,7 +319,7 @@ class Program extends AppModel
         if (!$this->delete()) {
             return false;
         }
-        $mongoDbSource = ConnectionManager::getDataSource('mongo');
+        $mongoDbSource = ConnectionManager::getDataSource('mongo_program_specific');
         $config = $mongoDbSource->config;
         $host = "mongodb://";
         $hostname = $config['host'] . ':' . $config['port'];
@@ -290,13 +329,98 @@ class Program extends AppModel
         } else {
             $host .= $hostname;
         }
-        $con = new Mongo($host);
+        $con = new MongoClient($host);
         $db = $con->selectDB($program['Program']['database']);
         $db->drop();
         return true;
     }
 
 
+    public function afterSave($created, $options) 
+    {
+        if ($created) {
+            $this->ensureProgramDir($this->data);
+        }
+        return true;
+    }
+
+
+    public function afterDelete()
+    {
+        $this->deleteProgramDir($this->data);
+        return true;
+    }   
+
+    public static function getProgramDir($program)
+    {
+        if (isset($program['Program']['url'])) {
+            $programUrl = $program['Program']['url'];
+        } else if (is_string($program)) {
+            $programUrl = $program;       
+        } else {
+            throw new Exception("Cannot generate program dir path.");
+        }
+        return WWW_ROOT . "files/programs/". $programUrl;
+    }
+
+    public static function getProgramDirImport($program)
+    {
+        $programDir = Program::getProgramDir($program);
+        return $programDir . "/imported";
+    }
+
+
+    public static function ensureProgramDir($program)
+    {
+        $programDirPath = Program::getProgramDir($program);
+        Program::ensureDir($programDirPath, True);
+        $programDirPathImported = Program::getProgramDirImport($program);
+        Program::ensureDir($programDirPathImported);
+        return $programDirPath;
+    }
+
+
+    public static function ensureProgramDirImported($program)
+    {
+        $programDirPath = Program::getProgramDir($program);
+        Program::ensureDir($programDirPath, True);
+        $programDirPathImported = Program::getProgramDirImport($program);
+        Program::ensureDir($programDirPathImported);
+        return $programDirPathImported;
+    }
+
+
+    public static function deleteProgramDir($program)
+    {
+        Program::deleteDir(Program::getProgramDirImport($program));
+        Program::deleteDir(Program::getProgramDir($program));
+    }
+
+    public static function deleteDir($dir)
+    {
+        if (file_exists($dir)) {
+            $files = glob($dir . '/*'); // get all file names
+            foreach($files as $file){ // iterate files
+              if(is_file($file))
+                unlink($file); // delete file
+            }
+            rmdir($dir);
+        }
+    }
+
+
+    public static function ensureDir($dirPath, $backendAccess=False)
+    {
+        if (!file_exists($dirPath)) {
+            mkdir($dirPath); 
+            if (!$backendAccess) {
+                chgrp($dirPath, Configure::read('vusion.backendUser'));
+                chmod($dirPath, 0774);
+            }
+        }
+        return true;
+    }
+    
     public static function matchProgramConditions($programDetails, $conditions=array())
     {
         if ($conditions == array()) {
@@ -330,17 +454,25 @@ class Program extends AppModel
         return Program::validProgramCondition($programDetails, $key, $conditions[$key]);
     }
     
+    
     public static function startsWith($haystack, $needle)
-    {
+    { 
         $length = strlen($needle);
         return (substr(strtolower($haystack), 0, $length) === strtolower($needle));
     }
-
-
-    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue) {
+    
+    
+    public static function validProgramCondition($programDetails, $conditionKey, $conditionValue)
+    {
         switch ($conditionKey) {
         case 'name LIKE':
-            return Program::startsWith($programDetails['Program']['name'],rtrim($conditionValue, '%'));        
+            if (preg_match("/^%.*%$/i", $conditionValue)) {
+                return true;
+            } 
+            
+            if (preg_match("/%+$/i", $conditionValue)) {
+                return Program::startsWith($programDetails['Program']['name'],trim($conditionValue, '%'));        
+            }
         default:
             if (!isset($programDetails['Program'][$conditionKey])) {
                 return false;
@@ -348,6 +480,6 @@ class Program extends AppModel
             return strcasecmp($programDetails['Program'][$conditionKey], $conditionValue) == 0;
         }
     }
-
+    
     
 }

@@ -49,16 +49,15 @@ class CaptchaComponentTest extends CakeTestCase
     
     public function testGetCodeVariable_ok_securityCodeReadInSession()
     {
-        $captchaTest = $this->getMock('Session',
+        $this->CaptchaComponent->Session =  $this->getMock('Session',
             array('read'));
         
-        $captchaTest
+        $this->CaptchaComponent->Session
             ->expects($this->once())
             ->method('read')
             ->with('captchaCode')
             ->will($this->returnValue('fgd256'));
             
-        $this->CaptchaComponent->Controller->Session = $captchaTest;
         $captchaCode = $this->CaptchaComponent->getCaptchaCode();
         
         $this->assertEqual('fgd256', $captchaCode);
@@ -79,15 +78,14 @@ class CaptchaComponentTest extends CakeTestCase
     
     public function testCreate_ok_securityCodeWriteInSession()
     {
-        $captchaTest = $this->getMock('Session',
+        $this->CaptchaComponent->Session = $this->getMock('Session',
             array('write'));
         
-        $captchaTest
+        $this->CaptchaComponent->Session
             ->expects($this->once())
             ->method('write')
             ->with('captchaCode');
 
-        $this->CaptchaComponent->Controller->Session = $captchaTest;
         $captchaConfig = array(
             'settings' => array(
                 'font'            => 'BIRTH_OF_A_HERO.ttf', 

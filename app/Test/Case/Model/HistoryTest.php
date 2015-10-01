@@ -1,7 +1,8 @@
 <?php
-/* History Test cases generated on: 2012-01-24 15:57:36 : 1327409856*/
 App::uses('History', 'Model');
 App::uses('DialogueHelper', 'Lib');
+App::uses('ProgramSetting', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 
 
 class HistoryTestCase extends CakeTestCase
@@ -13,22 +14,23 @@ class HistoryTestCase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $this->History = ClassRegistry::init('History');
-        
-        $options                 = array('database' => 'testdbprogram');
-        $this->History = new History($options);
-        
+        $dbName = 'testdbprogram';
+        $this->History = ProgramSpecificMongoModel::init(
+            'History', $dbName);
+        $this->UnattachedMessage = ProgramSpecificMongoModel::init(
+            'UnattachedMessage', $dbName);
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $dbName);
+        $this->Participant = ProgramSpecificMongoModel::init(
+            'Participant', $dbName);
         $this->dropData();
     }
     
     
     public function tearDown()
     {
-        $this->dropData();
-        
-        unset($this->History);
-        
+        $this->dropData();        
+        unset($this->History);        
         parent::tearDown();
     }
     
@@ -36,12 +38,16 @@ class HistoryTestCase extends CakeTestCase
     public function dropData()
     {
         $this->History->deleteAll(true, false);
+        $this->UnattachedMessage->deleteAll(true, false);
+        $this->ProgramSetting->deleteAll(true, false);
+        $this->Participant->deleteAll(true, false);
     }
     
-    
+   
     public function testFindScriptFilter()
     {
         $participantsState = array(
+            'object-type' => 'dialogue-history',
             'participant-phone' => '788601462',
             'timestamp' => '2012-03-06T11:06:34 ',
             'message-content' => 'FEEL nothing',
@@ -50,7 +56,7 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         
@@ -71,7 +77,7 @@ class HistoryTestCase extends CakeTestCase
             'dialogue-id'=>'script.dialogues[0]'
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         $result   = $this->History->find('participant',array(
@@ -91,7 +97,7 @@ class HistoryTestCase extends CakeTestCase
             'message-direction' => 'incoming' 
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         $result   = $this->History->find(
@@ -113,7 +119,7 @@ class HistoryTestCase extends CakeTestCase
             'interaction-id'=>'script.dialogues[0].interactions[0]'
             );
         
-        $this->History->create('dialogue-history');
+        $this->History->create($participantsState);
         $history = $this->History->save($participantsState);
         
         $state = 'before';
@@ -123,14 +129,14 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-
+    
     public function testFromFilterToQueryConditions_messageDirection()
     {
         $filterParam = array(
             1 => 'message-direction', 
             2 => 'is', 
             3 => 'incoming');
-
+        
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('message-direction' => 'incoming'));
@@ -143,7 +149,7 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array('message-direction' => array('$ne' => 'incoming')));
     }
-   
+    
     
     public function testfromFilterToQueryCondition_messageStatus()
     {
@@ -165,7 +171,7 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
-
+    
     public function testFromFilterToQueryConditions_date()
     {
         $filterParam = array(
@@ -194,7 +200,7 @@ class HistoryTestCase extends CakeTestCase
             3 => '+255'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('participant-phone' => new MongoRegex('/^\\+255/')));
+            array('participant-phone' => array('$regex' => '^\\+255')));
         
         $filterParam = array(
             1 => 'participant-phone', 
@@ -211,10 +217,99 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('$or' => array(
-                array('participant-phone' => new MongoRegex('/^\\+255/')),
-                array('participant-phone' => new MongoRegex('/^\\+256/')))));
+                array('participant-phone' => array('$regex' => '^\\+255', '$options' => 'i')),
+                array('participant-phone' => array('$regex' => '^\\+256', '$options' => 'i')))));
     }
-
+  
+    
+    public function testfromFilterToQueryCondition_simulatedParticipantPhone()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $participant = array(
+            'phone' => '#788',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'profile' => 'email:someone@gmail.com, town: kampala, accent: áéíóúüñ',
+            'simulate' => true
+            );
+        $this->Participant->create($participant);
+        $savedParticipant = $this->Participant->save($participant);
+        
+        $participant_01 = array(
+            'phone' => '+78866788',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'simulate' => false
+            );
+        $this->Participant->create($participant_01);
+        $savedParticipant = $this->Participant->save($participant_01);
+        
+        $participant_01 = array(
+            'phone' => '#7843',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'simulate' => true
+            );
+        $this->Participant->create($participant_01);
+        $savedParticipant = $this->Participant->save($participant_01);
+        
+        $history_01 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '#788',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_01);
+        $this->History->save($history_01);
+        
+        $history_02 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866788',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_02);
+        $this->History->save($history_02);
+        
+        $history_03 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '#788',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'All good carol',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_03);
+        $this->History->save($history_03);
+        
+        $history_04 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '#7843',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'All good tom',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_04);
+        $this->History->save($history_04);
+        
+        $filterParam = array(
+            1 => 'participant-phone', 
+            2 => 'simulated');
+        
+       $this->assertEqual(
+            $this->History->fromFilterToQueryCondition($filterParam),
+            array('participant-phone' => array('$regex' => '^\#')));
+        
+       
+    }
+    
     
     public function testfromFilterToQueryCondition_messageContent()
     {
@@ -232,7 +327,7 @@ class HistoryTestCase extends CakeTestCase
             3 => 'content'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('message-content' => new MongoRegex('/content/i')));
+            array('message-content' => array('$regex' => 'content', '$options' => 'i')));
         
         $filterParam = array(
             1 => 'message-content', 
@@ -240,7 +335,7 @@ class HistoryTestCase extends CakeTestCase
             3 => 'keyword'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
-            array('message-content' => new MongoRegex('/^keyword($| )/i')));
+            array('message-content' => array('$regex' => '^keyword($| )', '$options' => 'i')));
         
         $filterParam = array(
             1 => 'message-content', 
@@ -250,8 +345,8 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array(
                 '$or' => array(
-                    array('message-content' => new MongoRegex('/^keyword1($| )/i')),
-                    array('message-content' => new MongoRegex('/^keyword2($| )/i'))
+                    array('message-content' => array('$regex' => '^keyword1($| )', '$options' => 'i')),
+                    array('message-content' => array('$regex' => '^keyword2($| )', '$options' => 'i'))
                     ))
             );
     }
@@ -266,7 +361,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => '1'));
-
+        
         $filterParam = array(
             1 => 'dialogue-source', 
             2 => 'not-is', 
@@ -274,14 +369,14 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => array('$ne' => '1')));
-
+        
         $filterParam = array(
             1 => 'dialogue-source', 
             2 => 'is-any');
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => array('$exists' => true)));
-
+        
         $filterParam = array(
             1 => 'dialogue-source', 
             2 => 'not-is-any'); 
@@ -289,7 +384,7 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array('dialogue-id' => array('$exists' => false)));
     }
-
+    
     
     public function testfromFilterToQueryCondition_interactionSource()
     {
@@ -300,7 +395,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => '1'));
-
+        
         $filterParam = array(
             1 => 'interaction-source', 
             2 => 'not-is', 
@@ -308,14 +403,14 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => array('$ne' => '1')));
-
+        
         $filterParam = array(
             1 => 'interaction-source', 
             2 => 'is-any'); 
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => array('$exists' => true)));
-
+        
         $filterParam = array(
             1 => 'interaction-source', 
             2 => 'not-is-any'); 
@@ -323,8 +418,8 @@ class HistoryTestCase extends CakeTestCase
             $this->History->fromFilterToQueryCondition($filterParam),
             array('interaction-id' => array('$exists' => false)));
     }
-
-
+    
+    
     public function testfromFilterToQueryCondition_requestSource()
     {
         $filterParam = array(
@@ -334,7 +429,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('request-id' => new MongoId('52cd91759fa4da0051000004')));
-
+        
         $filterParam = array(
             1 => 'request-source', 
             2 => 'not-is', 
@@ -342,7 +437,7 @@ class HistoryTestCase extends CakeTestCase
         $this->assertEqual(
             $this->History->fromFilterToQueryCondition($filterParam),
             array('request-id' => array('$ne' => new MongoId('52cd91759fa4da0051000004'))));
-
+        
         $filterParam = array(
             1 => 'request-source', 
             2 => 'is-any');
@@ -358,7 +453,7 @@ class HistoryTestCase extends CakeTestCase
             array('request-id' => array('$exists' => false)));
     }
     
-  
+    
     public function testfromFilterToQueryCondition_answer()
     {
         $filterParam = array(
@@ -381,7 +476,7 @@ class HistoryTestCase extends CakeTestCase
                 'matching-answer' => null)
             );
     }
-
+    
     
     public function testStatusOfUnattachedMessage()
     {       
@@ -396,7 +491,7 @@ class HistoryTestCase extends CakeTestCase
             'unattach-id' =>'5'
             );        
         
-        $this->History->create('unattach-history');
+        $this->History->create($history);
         $saveHistoryStatus = $this->History->save($history); 
         
         
@@ -408,7 +503,7 @@ class HistoryTestCase extends CakeTestCase
             'unattach-id' =>'9'
             );        
         
-        $this->History->create('unattach-history');
+        $this->History->create($history_01);
         $saveHistoryStatus = $this->History->save($history_01);     
         
         $output = $this->History->countUnattachedMessages('5');       
@@ -426,6 +521,88 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->countUnattachedMessages('9', 'datepassed-marker');       
         $this->assertEquals(1, $output);  
     } 
+    
+    
+    public function testDatepassed_Marker_History_on_UnattachedMessage()
+    {       
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+        
+        $unattachedMessage = array(
+            'name'=>'hello2',
+            'send-to-type'=> 'all',
+            'content'=>'hello there',
+            'type-schedule'=>'immediately',
+            'created-by' => 1,
+            );
+        $this->UnattachedMessage->create("unattached-message");
+        $savedUnattachedMessage = $this->UnattachedMessage->save($unattachedMessage);
+        
+        $history_01 = array(
+            'object-type' => 'datepassed-marker-history',
+            'participant-phone' => '7886014620',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-direction' => 'outgoing',
+            'unattach-id' => $savedUnattachedMessage['UnattachedMessage']['_id']
+            );        
+        $this->History->create($history_01);
+        $saveHistoryStatus = $this->History->save($history_01);
+        
+        $output = $this->History->getParticipantHistory('7886014620', '');
+        $this->assertEquals('hello2', $output[0]['History']['details']);
+        
+    } 
+    
+
+    public function test_getParticipantLabels()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
+
+        $participant = array(
+            'phone' => '+788601461',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            'profile' => 'email:someone@gmail.com, town: kampala, accent: áéíóúüñ',
+            );
+        $this->Participant->create($participant);
+        $savedParticipant = $this->Participant->save($participant);
+
+        $participant_01 = array(
+            'phone' => '+78866788',
+            'tags' => 'a tag, Another tag1, áéíóúüñ',
+            );
+        $this->Participant->create($participant_01);
+        $savedParticipant = $this->Participant->save($participant_01);
+
+
+        $participant = $this->Participant->find('first', array(
+            'conditions' => array('phone' => '+788601461')));
+        $history_01 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_01);
+        $this->History->save($history_01);
+
+        $history_02 = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866788',
+            'timestamp' => '2012-03-06T11:06:34 ',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history_02);
+        $this->History->save($history_02);
+
+        $histories = $this->History->find('all');
+        $output = $this->History->getParticipantLabels($histories);
+        $this->assertEquals('email', $output[0]['History']['participant-labels'][0]['label']);
+    }
     
     
 }

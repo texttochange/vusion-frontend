@@ -8,9 +8,9 @@ class FilterMongoBehavior extends FilterBehavior
     var $joinCursor = null;
     var $originalJoinQuery = null;
     
-    public function setup($model, $settings = array()) 
+    public function setup(Model $model, $config = array()) 
     {
-        parent::setup($model, $settings);
+        parent::setup($model, $config);
         $model->MAX_JOIN_PHONES = VusionConst::MAX_JOIN_PHONES;
         $model->joinCursor = null;
         $model->originalJoinQuery = null;

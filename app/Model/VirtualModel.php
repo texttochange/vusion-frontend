@@ -1,41 +1,46 @@
 <?php
+App::uses('Model', 'Model');
 
 
-abstract class VirtualModel
+abstract class VirtualModel extends Model
 {
-    var $data = null;
+    var $useTable = false;
+    var $data   = null;
     var $fields = array();
+    
     var $validationErrors = array();
     
     
     public function __construct() 
-    {
-    }
+    {}
     
     
     public function beforeValidate()
     {
         $this->data['model-version'] = $this->version;
         $this->data['object-type'] = strtolower($this->name);
-        $this->data = $this->_trim_array($this->data);
+        $this->data = $this->_trimArray($this->data);
         return true;
     }
     
     
-    protected function _setDefault($field, $default) {
+    protected function _setDefault($field, $default) 
+    {
         if (!isset($this->data[$field])) {
             $this->data[$field] = $default;
         } 
     }
     
-    protected function _setDefaultSubfield(&$data, $field, $default) {
+    
+    protected function _setDefaultSubfield(&$data, $field, $default)
+    {
         if (!isset($data[$field])) {
             $data[$field] = $default;
         }
     }
     
     
-    public function _trim_array($document)
+    public function _trimArray($document)
     {
         if (!is_array($document)) {
             if (is_string($document)) {
@@ -44,7 +49,7 @@ abstract class VirtualModel
             return $document;
         }
         foreach ($document as &$element) {
-            $element = $this->_trim_array($element);
+            $element = $this->_trimArray($element);
         }
         return $document;
     }
@@ -164,7 +169,8 @@ abstract class VirtualModel
     }
     
     
-    public function notEmptyArray($field, $data) {
+    public function notEmptyArray($field, $data)
+    {
         if (!array_key_exists($field, $data)) {
             return true;
         }

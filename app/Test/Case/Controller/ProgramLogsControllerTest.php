@@ -7,13 +7,11 @@ class TestProgramLogsController extends ProgramLogsController
 {
     
     public $autoRender = false;
-    
-    
+
     public function redirect($url, $status = null, $exit = true)
     {
         $this->redirectUrl = $url;
     }
-    
     
 }
 
@@ -35,19 +33,15 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
     
     public function setUp()
     {
-        parent::setUp();
-        
+        parent::setUp();        
         $this->Logs = new TestProgramLogsController();
-        
-        $this->dropData();
     }
     
     // we only mock the data to be used so we dont need a dropData() function;    
     
     public function tearDown()
     {
-        unset($this->Logs);
-        
+        unset($this->Logs);   
         parent::tearDown();
     }
     
@@ -59,7 +53,8 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
                 'components' => array(
                     'Acl' => array('check'),
                     'Session' => array('read'),
-                    'LogManager' => array('getLogs')
+                    'BackendLog' => array('getLogs'),
+                    'Auth' => array('loggedIn'),
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -73,6 +68,11 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
         ->method('check')
         ->will($this->returnValue('true'));
         
+        $logs->Auth
+        ->expects($this->any())
+        ->method('loggedIn')
+        ->will($this->returnValue('true'));
+
         $logs->Program
         ->expects($this->once())
         ->method('find')
@@ -98,7 +98,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
             );
         
         $logs = $this->mock_program_access();
-        $logs->LogManager
+        $logs->BackendLog
         ->expects($this->exactly(2)) //one for the notification window and once for the full page
         ->method('getLogs')
         ->will($this->returnValue($programLogs));
@@ -118,7 +118,7 @@ class ProgramLogsControllerTestCase extends ControllerTestCase
             );
         
         $logs = $this->mock_program_access();
-        $logs->LogManager
+        $logs->BackendLog
         ->expects($this->once())
         ->method('getLogs')
         ->with('testdbprogram', 5)

@@ -1,5 +1,5 @@
 <?php
-App::uses('MongoModel', 'Model');
+App::uses('ProgramSpecificMongoModel', 'Model');
 App::uses('ProgramSetting', 'Model');
 App::uses('VirtualModel', 'Model');
 App::uses('DialogueHelper', 'Lib');
@@ -7,13 +7,10 @@ App::uses('VusionConst', 'Lib');
 App::uses('Participant', 'Model');
 
 
-class UnattachedMessage extends MongoModel
+class UnattachedMessage extends ProgramSpecificMongoModel
 {
-    
-    var $specific    = true;
-    var $name        = 'UnattachedMessage';
-    var $useDbConfig = 'mongo';
-    var $useTable    = 'unattached_messages';
+    var $name     = 'UnattachedMessage';
+    var $useTable = 'unattached_messages';
     
     var $mongoNoSetOperator = true;
     
@@ -42,11 +39,12 @@ class UnattachedMessage extends MongoModel
         'send-to-match-conditions'
         );
     
+    
     var $phoneFields = array(
         'send-to-phone'
         );
     
-
+    
     public $validate = array(
         'name' => array(
             'notempty' => array(
@@ -130,6 +128,7 @@ class UnattachedMessage extends MongoModel
             )
         );
     
+    
     var $findMethods = array(
         'all' => true,
         'first' => true,
@@ -137,32 +136,33 @@ class UnattachedMessage extends MongoModel
         'scheduled' => true,
         'drafted' => true,
         'sent' => true);
-
+    
+    
     public function addFindTypeCondition($findType, $conditions=array()) {
         switch ($findType) {
-            case 'all':
-                break;
-            case 'scheduled':
-                $programNow = $this->ProgramSetting->getProgramTimeNow();
-                if ($programNow) {
-                    $conditions['fixed-time'] = array('$gt' => $programNow->format("Y-m-d\TH:i:s"));
-                }
-                break;
-            case 'sent':
-                $programNow = $this->ProgramSetting->getProgramTimeNow();
-                if ($programNow) {
-                    $conditions['fixed-time'] = array('$lt' => $programNow->format("Y-m-d\TH:i:s"));
-                }
-                break;
-            case 'drafted':
-                $conditions['type-schedule'] = 'none';
-                break;
-            default:
-                throw new Exception(__('FindType not supported: %s', $findType));
+        case 'all':
+            break;
+        case 'scheduled':
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $conditions['fixed-time'] = array('$gt' => $programNow->format("Y-m-d\TH:i:s"));
+            }
+            break;
+        case 'sent':
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            if ($programNow) {
+                $conditions['fixed-time'] = array('$lt' => $programNow->format("Y-m-d\TH:i:s"));
+            }
+            break;
+        case 'drafted':
+            $conditions['type-schedule'] = 'none';
+            break;
+        default:
+            throw new Exception(__('FindType not supported: %s', $findType));
         }
         return $conditions;
     }
-
+    
     
     protected function _findScheduled($state, $query, $results = array())
     {
@@ -172,8 +172,8 @@ class UnattachedMessage extends MongoModel
         }
         return $results;
     }
-
-
+    
+    
     protected function _findSent($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -182,8 +182,8 @@ class UnattachedMessage extends MongoModel
         }
         return $results;
     }
-
-
+    
+    
     protected function _findDrafted($state, $query, $results = array())
     {
         if ($state == 'before') {
@@ -192,19 +192,20 @@ class UnattachedMessage extends MongoModel
         }
         return $results;
     }
-
+    
     
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-     
-        //Seems to be necessary API loading Vs Web loading
-        if (isset($id['id'])) {
-            $options = array('database' => $id['id']['database']);
-        } else {
-            $options = array('database' => $id['database']);
-        }
-        $this->ProgramSetting = new ProgramSetting($options);
+        
+    }
+    
+    
+    public function initializeDynamicTable($forceNew=false)
+    {
+        parent::initializeDynamicTable();
+        $this->ProgramSetting = ProgramSpecificMongoModel::init(
+            'ProgramSetting', $this->databaseName, $forceNew);
     }
     
     
@@ -213,7 +214,7 @@ class UnattachedMessage extends MongoModel
         if (isset($object['object-type']))
             $toCheck = array_merge($this->defaultFields, $this->getRequiredFields($object['object-type']));
         else
-            $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
+        $toCheck = array_merge($this->defaultFields, $this->getRequiredFields());
         
         if (isset($object['send-to-type']) && $object['send-to-type'] == 'match') {
             $toCheck = array_merge($toCheck, $this->matchFields);
@@ -238,6 +239,7 @@ class UnattachedMessage extends MongoModel
         return $object;
     }
     
+    
     private function _generateName() 
     {
         $now = $this->ProgramSetting->getProgramTimeNow();
@@ -245,14 +247,14 @@ class UnattachedMessage extends MongoModel
         return $now->format("d/m/Y H:i:s") . ' ' . implode(' ', array_slice(explode(' ', $content), 0, 2));
     }
     
-
+    
     public function beforeValidate()
     {
         parent::beforeValidate();
-
+        
         $this->_setDefault('content', null);
         $this->_setDefault('name', $this->_generateName());
-
+        
         if (isset($this->data['UnattachedMessage']['type-schedule'])) {
             if ($this->data['UnattachedMessage']['type-schedule'] == 'none') {
                 $this->data['UnattachedMessage']['fixed-time'] = null;
@@ -265,7 +267,7 @@ class UnattachedMessage extends MongoModel
                 $this->data['UnattachedMessage']['fixed-time'] = DialogueHelper::convertDateFormat($this->data['UnattachedMessage']['fixed-time']);
             } 
         }
-
+        
         if (isset($this->data['UnattachedMessage']['send-to-phone'])) {
             foreach ($this->data['UnattachedMessage']['send-to-phone'] as &$phone) {
                 $phone = Participant::cleanPhone($phone);
@@ -273,6 +275,7 @@ class UnattachedMessage extends MongoModel
         }
         return true;           	
     }    
+    
     
     public function notEmptyIfNoSchedule($check)
     {
@@ -285,7 +288,7 @@ class UnattachedMessage extends MongoModel
         return !in_array($check['fixed-time'], array(null, ''));   
     }
     
-
+    
     public function isNotPast($check)
     {
         $programTimezone = $this->ProgramSetting->find('getProgramSetting', array('key' => 'timezone'));
@@ -293,7 +296,7 @@ class UnattachedMessage extends MongoModel
         return $this->ProgramSetting->isNotPast($fixedTimeDate);
     }
     
-
+    
     public function validateIsNotPast($check)
     {
         if ($this->data['UnattachedMessage']['type-schedule'] === 'none') {
@@ -301,6 +304,7 @@ class UnattachedMessage extends MongoModel
         }
         return $this->isNotPast($check);
     }
+    
     
     public function isVeryUnique($check)
     {
@@ -370,6 +374,7 @@ class UnattachedMessage extends MongoModel
         return true;
     }
     
+    
     public function validContentVariable($check)
     {
         return VusionValidation::validContentVariable($check);
@@ -385,6 +390,17 @@ class UnattachedMessage extends MongoModel
             $nameIds[$unattachedMessage['UnattachedMessage']['_id']] = $unattachedMessage['UnattachedMessage']['name']; 
         }     
         return  $nameIds;        
+    }
+    
+    
+    public function getNameById($id)
+    {
+        $unattachedMessage = $this->find('first', array(
+            'conditions' => array('_id' => $id), 'fields' => array('name')));
+        if ($unattachedMessage == null) {
+            return null;
+        }
+        return $unattachedMessage['UnattachedMessage']['name'];
     }
     
     
