@@ -140,7 +140,13 @@ class Participant extends ProgramSpecificMongoModel
                 'rule' => array('boolean'),
                 'message' => 'Please enter simulate a boolean option'
                 ),
-            )
+            ),
+        'enrolled' => array(
+            'validateEnroll' => array(
+                'rule' => 'validateEnroll',
+                'message' => 'noMessage'
+                ),
+            ),
         );
     
     
@@ -168,6 +174,14 @@ class Participant extends ProgramSpecificMongoModel
                 ),
             ),
         );
+    
+    
+    public function validateEnroll($check)
+    {
+       if (is_dir($check['enrolled'])) {
+       
+       }
+    }    
     
     
     public function validateTags($check)
