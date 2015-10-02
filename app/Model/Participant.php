@@ -179,9 +179,9 @@ class Participant extends ProgramSpecificMongoModel
     public function validateEnrolles($check)
     {
         if (array_key_exists('dialogue-id', $check['enrolled']) AND array_key_exists('date-time', $check['enrolled'])) {
-            return true;       
+            return false;       
         }
-        return false;
+        return true;
     }    
     
     
@@ -759,8 +759,7 @@ class Participant extends ProgramSpecificMongoModel
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
         }
-        print_r(isset($enrolled));
-        print_r('**************');
+        
         if (isset($enrolled)) {
             $programNow = $this->ProgramSetting->getProgramTimeNow();
             $dateTime   = $programNow->format("Y-m-d\TH:i:s");
@@ -768,7 +767,7 @@ class Participant extends ProgramSpecificMongoModel
                 'dialogue-id' => $enrolled,
                 'date-time' => $dateTime);
         }
-       // $participant['enrolled'] = $enrolled;
+        
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
