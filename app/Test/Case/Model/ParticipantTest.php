@@ -355,11 +355,25 @@ class ParticipantTestCase extends CakeTestCase
         $savedParticipant = $this->Participant->save($participant);
         $this->assertFalse($savedParticipant);
         $this->assertEqual(
-            $this->Participant->validationErrors['enrolled'][0][1]['dialogue-id'][0],
+            $this->Participant->validationErrors['enrolled'][1]['dialogue-id'][0],
             'The dialogue-id cannot be empty.');
         $this->assertEqual(
-            $this->Participant->validationErrors['enrolled'][0][1]['date-time'][0],
+            $this->Participant->validationErrors['enrolled'][1]['date-time'][0],
             'The date-time format is not incorrect.');
+    }
+
+
+    public function testSave_valiationEnrollement_ok()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array(
+            'phone' => '25601',
+            'enrolled' => array('123', '234'),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertTrue(isset($savedParticipant['Participant']));
     }
 
     

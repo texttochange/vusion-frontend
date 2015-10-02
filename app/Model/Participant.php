@@ -146,7 +146,7 @@ class Participant extends ProgramSpecificMongoModel
         'enrolled' => array(
             'validateEnrolleds' => array(
                 'rule' => 'validateEnrolleds',
-                'message' => 'Please enter enrolled as a dictionary.'
+                'message' => 'noMessage'
                 ),
             ),
         );
@@ -199,7 +199,12 @@ class Participant extends ProgramSpecificMongoModel
     
     public function validateEnrolleds($check)
     {
-        return $this->ValidationHelper->runValidationRulesOnList($check, $this->validateEnrolled);
+        $validationErrors = $this->ValidationHelper->runValidationRulesOnList($check, $this->validateEnrolled);
+        if (is_array($validationErrors)) {
+            $this->validationErrors['enrolled'] = $validationErrors;
+            return false;
+        }
+        return true;
     }    
     
     
@@ -423,9 +428,8 @@ class Participant extends ProgramSpecificMongoModel
             $this->_setDefault('last-optout-date', null);
             $this->_setDefault('session-id', $this->gen_uuid());
             $this->_setDefault('enrolled', array());            
-        } else {
-            $this->_editEnrolls();
-        }
+        } 
+        $this->_editEnrolls();
         
         return true;
     }
@@ -624,8 +628,9 @@ class Participant extends ProgramSpecificMongoModel
         foreach ($updatedParticipantData['Participant']['enrolled'] as $key => $value) {
             $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
             $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
-            
-            if ($originalParticipantData['Participant']['enrolled'] == array()) {
+        
+
+            if ($originalParticipantData == null || $originalParticipantData['Participant']['enrolled'] == array()) {
                 $this->data['Participant']['enrolled'][] = array(
                     'dialogue-id' => $dialogueId,
                     'date-time' => $enrollTime

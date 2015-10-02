@@ -11,7 +11,6 @@ class ValidationHelper
         $this->model = $model;
     }
 
-
     public function runValidationRulesOnList($check, $validationRules)
     {
         $field = key($check);
@@ -32,7 +31,6 @@ class ValidationHelper
         }
         return true;
     }
-
 
     public function runValidationRules($data, $validationRules)    
     {
