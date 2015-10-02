@@ -43,7 +43,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->Dialogue->deleteAll(true, false);
     }
     
-    
+    /*
     public function testSave_normalParticipantSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -719,8 +719,28 @@ class ParticipantTestCase extends CakeTestCase
             $participants[0]['Participant']['tags'], 
             array('imported', '1tag', 'other tag', 'stillAnother Tag'));
     }
+    */
     
+    public function testImport_csv_and_enrolling() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $dialogue      = $this->Maker->getOneDialogue();
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive();
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/well_formatted_participants.csv',
+            '1tag', $savedDialogue['Dialogue']['dialogue-id']);
+        
+        $participants = $this->Participant->find('all');
+        print_r($participants);
+        $this->assertEquals(2, count($participants));
+    }
     
+    /*
     public function testImport_csv_with_tag() 
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -1809,5 +1829,5 @@ class ParticipantTestCase extends CakeTestCase
             $result);
     }
 
-    
+    */
 }

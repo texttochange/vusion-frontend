@@ -142,9 +142,9 @@ class Participant extends ProgramSpecificMongoModel
                 ),
             ),
         'enrolled' => array(
-            'validateEnroll' => array(
-                'rule' => 'validateEnroll',
-                'message' => 'noMessage'
+            'validateEnrolles' => array(
+                'rule' => 'validateEnrolles',
+                'message' => 'Please select enroll'
                 ),
             ),
         );
@@ -176,11 +176,12 @@ class Participant extends ProgramSpecificMongoModel
         );
     
     
-    public function validateEnroll($check)
+    public function validateEnrolles($check)
     {
-       if (is_dir($check['enrolled'])) {
-       
-       }
+        if (array_key_exists('dialogue-id', $check['enrolled']) AND array_key_exists('date-time', $check['enrolled'])) {
+            return true;       
+        }
+        return false;
     }    
     
     
@@ -758,7 +759,16 @@ class Participant extends ProgramSpecificMongoModel
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
         }
-        $participant['enrolled'] = $enrolled;
+        print_r(isset($enrolled));
+        print_r('**************');
+        if (isset($enrolled)) {
+            $programNow = $this->ProgramSetting->getProgramTimeNow();
+            $dateTime   = $programNow->format("Y-m-d\TH:i:s");
+            $participant['enrolled'][] = array(
+                'dialogue-id' => $enrolled,
+                'date-time' => $dateTime);
+        }
+       // $participant['enrolled'] = $enrolled;
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
