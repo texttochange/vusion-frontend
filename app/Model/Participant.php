@@ -144,7 +144,7 @@ class Participant extends ProgramSpecificMongoModel
         'enrolled' => array(
             'validateEnrolles' => array(
                 'rule' => 'validateEnrolles',
-                'message' => 'Please select enroll'
+                'message' => 'Please enrolled should be a directory array'
                 ),
             ),
         );
