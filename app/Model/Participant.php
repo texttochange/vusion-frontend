@@ -5,6 +5,7 @@ App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
+App::uses('ValidationHelper', 'Lib');
 
 
 class Participant extends ProgramSpecificMongoModel
@@ -45,7 +46,7 @@ class Participant extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
+
         $this->Behaviors->load('CachingCount', array(
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
@@ -90,6 +91,7 @@ class Participant extends ProgramSpecificMongoModel
             'ProgramSetting', $this->databaseName, $forceNew);        
         $this->Dialogue = ProgramSpecificMongoModel::init(
             'Dialogue', $this->databaseName, $forceNew);
+        $this->ValidationHelper = new ValidationHelper($this);
     }
     
     //Patch the missing callback for deleteAll in Behavior
@@ -132,19 +134,19 @@ class Participant extends ProgramSpecificMongoModel
         'join-type' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please select one option'
+                'message' => 'Please select one option.'
                 ),
             ),
         'simulate' => array(
             'boolean' => array(
                 'rule' => array('boolean'),
-                'message' => 'Please enter simulate a boolean option'
+                'message' => 'Please enter simulate as a boolean option.'
                 ),
             ),
         'enrolled' => array(
-            'validateEnrolles' => array(
-                'rule' => 'validateEnrolles',
-                'message' => 'Please enrolled should be a directory array'
+            'validateEnrolleds' => array(
+                'rule' => 'validateEnrolleds',
+                'message' => 'Please enter enrolled as a dictionary.'
                 ),
             ),
         );
@@ -174,14 +176,30 @@ class Participant extends ProgramSpecificMongoModel
                 ),
             ),
         );
+
+    public $validateEnrolled = array(
+        'dialogue-id' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The dialogue-id cannot be empty.',
+                ),
+            ),
+        'date-time' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The date-time cannot be empty.',
+                ),
+            'isValid' => array(
+                'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
+                'message' => 'The date-time format is not incorrect.'
+                )
+            )
+        );
     
     
-    public function validateEnrolles($check)
+    public function validateEnrolleds($check)
     {
-        if (array_key_exists('dialogue-id', $check['enrolled']) AND array_key_exists('date-time', $check['enrolled'])) {
-            return false;       
-        }
-        return true;
+        return $this->ValidationHelper->runValidationRulesOnList($check, $this->validateEnrolled);
     }    
     
     

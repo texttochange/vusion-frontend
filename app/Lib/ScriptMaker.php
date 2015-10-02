@@ -51,10 +51,10 @@ class ScriptMaker
     }
 
 
-    public function getOneDialogue($keyword='keyword')
+    public function getOneDialogue($keyword='keyword', $name='my dialogue')
     {
         $dialogue['Dialogue'] = array(
-            'name' => 'my dialogue',
+            'name' => $name,
             'auto-enrollment' => 'none',
             'dialogue-id' => null,
             'interactions'=> array(

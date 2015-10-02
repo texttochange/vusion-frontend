@@ -333,6 +333,35 @@ class ParticipantTestCase extends CakeTestCase
             'The label value cannot be empty.');
     }
     
+
+    public function testSave_valiationEnrollement_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array(
+            'phone' => '25601',
+            'enrolled' => array(
+                array(
+                    'dialogue-id' => '123',
+                    'date-time' => '2015-04-01T10:10:10'
+                    ),
+                array(
+                    'dialogue-id' => '',
+                    'date-time' => '2015-04-01 10:10'
+                    ),
+                ),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertFalse($savedParticipant);
+        $this->assertEqual(
+            $this->Participant->validationErrors['enrolled'][0][1]['dialogue-id'][0],
+            'The dialogue-id cannot be empty.');
+        $this->assertEqual(
+            $this->Participant->validationErrors['enrolled'][0][1]['date-time'][0],
+            'The date-time format is not incorrect.');
+    }
+
     
     public function testSave_cleanPhone()
     {
@@ -419,7 +448,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive();
 
-        $otherDialogue      = $this->Maker->getOneDialogue();
+        $otherDialogue      = $this->Maker->getOneDialogue("otherKeyword", "other name");
         $otherSavedDialogue = $this->Dialogue->saveDialogue($otherDialogue);
         $this->Dialogue->makeActive();
 
@@ -442,7 +471,6 @@ class ParticipantTestCase extends CakeTestCase
 
         $this->Participant->id = $savedAgainParticipant['Participant']['_id']."";
         $resavedParticipant    = $this->Participant->save($savedAgainParticipant);
-
         $enrolledParticipant = $this->Participant->find('first', array(
             'conditions' => $participant));
 
