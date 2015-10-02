@@ -374,6 +374,9 @@ class ParticipantTestCase extends CakeTestCase
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
         $this->assertTrue(isset($savedParticipant['Participant']));
+        $this->assertEqual(
+            '123',
+            $savedParticipant['Participant']['enrolled'][0]['dialogue-id']);
     }
 
     

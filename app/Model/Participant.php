@@ -784,11 +784,7 @@ class Participant extends ProgramSpecificMongoModel
         }
         
         if (isset($enrolled)) {
-            $programNow = $this->ProgramSetting->getProgramTimeNow();
-            $dateTime   = $programNow->format("Y-m-d\TH:i:s");
-            $participant['enrolled'][] = array(
-                'dialogue-id' => $enrolled,
-                'date-time' => $dateTime);
+            $participant['enrolled'] = $enrolled;
         }
         
         $savedParticipant = $this->save($participant);
