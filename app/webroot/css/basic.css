@@ -1759,3 +1759,7 @@
 .simulator-add-participant textarea {
     width: 600px;
 }
+
+#ui-timepicker-div-fixedtime dt {
+    width: 16em;
+}

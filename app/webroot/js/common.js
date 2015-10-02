@@ -46,25 +46,6 @@ require.config({
         'hoverintent': {
             deps: ['jquery'],
         },
-        'vusion': {
-            deps: ['jquery', 'ttc-utils'],
-        },
-        'ttc-utils': {
-            deps: ['jquery']
-        },
-        'generic-program': {
-            deps: [
-            'dynamic-form-structure',
-            'jquery',
-            'jquery-validate',
-            'dform-ext',
-            'dform-sub',
-            'dform-conv', 
-            'form2js',
-            'form2js-utils',
-            'ttc-utils',
-            'counter'],
-        },
         'dform-ext': {
             deps: ['dform', 'jquery']
         },
@@ -76,6 +57,31 @@ require.config({
         },
         'jquery-validate': {
             deps: ['jquery']
+        },
+        'vusion': {       //tobe moved in source file
+            deps: ['jquery', 'ttc-utils'],
+        },
+        'ttc-utils': {     //tobe moved in source file
+            deps: [
+                'jquery', 
+                'moment',
+                'datejs',
+                'xregexp']
+        },
+        'generic-program': {      //tobe moved in source file
+            deps: [
+            'dynamic-form-structure',
+            'jquery',
+            'jquery-validate',
+            'jquery-ui-timepicker',
+            'dform-ext',
+            'dform-sub',
+            'dform-conv', 
+            'form2js',
+            'form2js-utils',
+            'ttc-utils',
+            'counter',
+            'xregexp'],
         }
     }
 });

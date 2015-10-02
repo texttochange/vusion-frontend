@@ -11,6 +11,7 @@ class RequireJsHelper extends AppHelper
 		'Js');
 	protected $_variables = array();
     protected $_scripts = array();
+    protected $_runLines = array();
 
 
 	public function variable($key, $value) 
@@ -25,9 +26,14 @@ class RequireJsHelper extends AppHelper
 	}
 
 
-	public function scripts($moduleIds) 
+	public function scripts($moduleIds)
 	{
 		$this->_scripts = array_merge($this->_scripts, $moduleIds);
+	}
+
+	public function runLine($code)
+	{
+		$this->_runLines[] = $code;
 	}
 
 
@@ -36,9 +42,10 @@ class RequireJsHelper extends AppHelper
 		$scriptBlock = '
 		    require(["/js/common"], function() {
 		        require(["vusion"], function(vusion){
-					vusion.setData('.json_encode($this->_variables).');
-		               require('.json_encode($this->_scripts).', function(){
-                           '. implode("\n", $this->Js->getBuffer()).'
+					vusion.setData('.json_encode(array_values(array_unique($this->_variables))).');
+		               require('.json_encode(array_values(array_unique($this->_scripts))) .', function(){
+                           '. implode("\n", $this->Js->getBuffer()) .'
+                           '. implode("\n", $this->_runLines) .'
                        });
         		});
 			});';

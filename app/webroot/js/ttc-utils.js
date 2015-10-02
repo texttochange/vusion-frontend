@@ -796,3 +796,16 @@ function disableSend() {
     $('#send-invite').attr('style', 'visibility:hidden');
     $('#sending-email').append(localized_messages['sending_invite']);
 }
+
+function localize_label(label) {
+    if (label in localized_labels)
+        return localized_labels[label];
+    else
+        return null;
+}
+
+function fromIsoDateToFormDate(dateString) {
+    if (dateString == null)
+        return '';
+    return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
+}

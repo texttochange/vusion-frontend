@@ -215,6 +215,26 @@ function hiddeUndisabled(key, item){
     $(item).after("<input type='hidden' name='"+$(item).attr('name')+"' value='"+$(item).val()+"'/>")
 }
 
+//required to get the index of validation error correct from server
+function reIndex(context) {
+    if (context.item === 'interaction') {
+        var res = [/^\D+/g,/\D+$/g,/^\D+|\D+$/g,/\D+/g,/\D.*/g, /.*\D/g,/^\D+|\D.*$/g,/.*\D(?=\d)|\D+$/g];
+        for(var i = 0; i < res.length; i++) {
+            var index = parseInt(context.name.replace(res[i], ''));
+        }
+        //var index = context.name.replace( /^\D+/g, '');
+        var newPrefix = context.name;
+        for (var i = index; i < $("[item='interaction']:regex(name,^Dialogue.interactions\\[\\d+\\]$)").length; i++) {
+            var currentPrefix = "Dialogue.interactions["+(i+1)+"]";
+            $('[name^="'+currentPrefix+'"]').each(function() {
+                newName = $(this).attr('name').replace(currentPrefix, newPrefix);
+                $(this).attr('name', newName);
+            });
+            newPrefix = currentPrefix;
+        }
+    }
+}
+
 function activeForm(){
     $.each($('.ui-dform-addElt:not(.activated)'),function(key,elt){
             $(elt).click(clickBasicButton).addClass("activated");    
@@ -222,7 +242,11 @@ function activeForm(){
     $.each($(".ui-dform-fieldset.ttc-removable").children(".ui-dform-legend:first-child"), function (key, elt){
             var deleteButton = document.createElement('img');
             $(deleteButton).attr('class', 'ttc-delete-icon').attr('src', '/img/delete-icon-16.png').click(function() {
+                    var context = {
+                        'item': $(this).parent().attr('item'),
+                        'name': $(this).parent().attr('name')};
                     $(this).parent().remove();
+                    reIndex(context);
             });
             var foldButton = document.createElement('img');
             $(foldButton).attr('class', 'ttc-fold-icon').attr('src', '/img/minimize-icon-16.png').on('click', foldForm);
@@ -1199,14 +1223,6 @@ function configToForm(item, elt, id_prefix, configTree){
     }
 };
 
-
-function localize_label(label) {
-    if (label in localized_labels)
-        return localized_labels[label];
-    else
-        return null;
-}
-
 function clone(obj) {
     if (null == obj || "object" != typeof obj) return obj;
     
@@ -1226,12 +1242,6 @@ function clone(obj) {
         }
         return copy;
     }
-}
-
-function fromIsoDateToFormDate(dateString) {
-    if (dateString == null)
-        return '';
-    return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
 }
 
 function wrapErrorMessage(error) {

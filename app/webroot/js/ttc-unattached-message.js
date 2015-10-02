@@ -1,6 +1,4 @@
-require(['vusion', 'chosen', 'moment', 'jquery-ui-timepicker'], function(vusion) {
-
-	data = vusion.getData();
+require(['chosen', 'jquery-ui-timepicker', 'ttc-utils', 'counter'], function(vusion) {
 
 	function changeSendToType() {
 		switch ($(this).val()) {
@@ -36,8 +34,8 @@ require(['vusion', 'chosen', 'moment', 'jquery-ui-timepicker'], function(vusion)
         timeOnly: false,
         dateFormat:"dd/mm/yy"
     });
-    //addContentFormHelp();
-	//addCounter();
+    addContentFormHelp();
+	addCounter();
 	$("#UnattachedMessageSend-to-match-conditions").chosen();
 	$("input[name*='send-to-type']").on("change", changeSendToType);
 	$("input[name*='type-schedule']").on("change", changeTypeSchedule);

@@ -25,14 +25,6 @@
     ?><script>
     <?php echo $this->element('localization');?>
     </script>
-    <?php
-	    if (isset($this->Js)) {
-		    //disappear success flash messages
-		    $this->Js->get('document')->event('ready', '
-			    $("[class*=success]").delay(5000).fadeOut(1000);
-			    ');
-	    }
-    ?>
     <?php  echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex')); ?>	
 </head>
 <body>

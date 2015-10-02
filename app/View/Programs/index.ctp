@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("ttc-utils"));
+?>
 <div class="ttc-program-index">
     <?php echo $this->AclLink->generateButton(
             __('Create Program'), 
@@ -70,18 +73,13 @@
 			echo $this->Html->link(__('Admin'), array('action' => 'edit', $program['Program']['id']));
 			?>
 		</div>
-		<?php };
-		$this->Js->get("[name='delete-program']")->event("click", "event.stopPropagation()");
-		?>
+		<?php }; ?>
 	</div>
     <?php endforeach; ?>
     <?php
+    	$this->Js->get("[name='delete-program']")->event("click", "event.stopPropagation()");
 		$this->Js->set('programs', $programStatsToCompute);
-		$this->Js->get('document')->event(
-				'ready',
-				'loadProgramStats();             
-				');
-			?>
+		$this->RequireJs->runLine('loadProgramStats();');?>
 </div>
 
 <div class="ttc-recent-issues">
