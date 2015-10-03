@@ -5,6 +5,7 @@ App::uses('Dialogue', 'Model');
 App::uses('DialogueHelper', 'Lib');
 App::uses('VusionConst', 'Lib');
 App::uses('VusionValidation', 'Lib');
+App::uses('ValidationHelper', 'Lib');
 
 
 class Participant extends ProgramSpecificMongoModel
@@ -45,7 +46,7 @@ class Participant extends ProgramSpecificMongoModel
     public function __construct($id = false, $table = null, $ds = null)
     {
         parent::__construct($id, $table, $ds);
-        
+
         $this->Behaviors->load('CachingCount', array(
             'redis' => Configure::read('vusion.redis'),
             'redisPrefix' => Configure::read('vusion.redisPrefix'),
@@ -90,6 +91,7 @@ class Participant extends ProgramSpecificMongoModel
             'ProgramSetting', $this->databaseName, $forceNew);        
         $this->Dialogue = ProgramSpecificMongoModel::init(
             'Dialogue', $this->databaseName, $forceNew);
+        $this->ValidationHelper = new ValidationHelper($this);
     }
     
     //Patch the missing callback for deleteAll in Behavior
@@ -132,15 +134,21 @@ class Participant extends ProgramSpecificMongoModel
         'join-type' => array(
             'notempty' => array(
                 'rule' => array('notempty'),
-                'message' => 'Please select one option'
+                'message' => 'Please select one option.'
                 ),
             ),
         'simulate' => array(
             'boolean' => array(
                 'rule' => array('boolean'),
-                'message' => 'Please enter simulate a boolean option'
+                'message' => 'Please enter simulate as a boolean option.'
                 ),
-            )
+            ),
+        'enrolled' => array(
+            'validateEnrolleds' => array(
+                'rule' => 'validateEnrolleds',
+                'message' => 'noMessage'
+                ),
+            ),
         );
     
     
@@ -168,6 +176,36 @@ class Participant extends ProgramSpecificMongoModel
                 ),
             ),
         );
+
+    public $validateEnrolled = array(
+        'dialogue-id' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The dialogue-id cannot be empty.',
+                ),
+            ),
+        'date-time' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'The date-time cannot be empty.',
+                ),
+            'isValid' => array(
+                'rule' => array('custom', VusionConst::DATE_TIME_REGEX),
+                'message' => 'The date-time format is not incorrect.'
+                )
+            )
+        );
+    
+    
+    public function validateEnrolleds($check)
+    {
+        $validationErrors = $this->ValidationHelper->runValidationRulesOnList($check, $this->validateEnrolled);
+        if (is_array($validationErrors)) {
+            $this->validationErrors['enrolled'] = $validationErrors;
+            return false;
+        }
+        return true;
+    }    
     
     
     public function validateTags($check)
@@ -390,9 +428,8 @@ class Participant extends ProgramSpecificMongoModel
             $this->_setDefault('last-optout-date', null);
             $this->_setDefault('session-id', $this->gen_uuid());
             $this->_setDefault('enrolled', array());            
-        } else {
-            $this->_editEnrolls();
-        }
+        } 
+        $this->_editEnrolls();
         
         return true;
     }
@@ -591,8 +628,9 @@ class Participant extends ProgramSpecificMongoModel
         foreach ($updatedParticipantData['Participant']['enrolled'] as $key => $value) {
             $dialogueId = (is_array($value)) ? $value['dialogue-id'] : $value;
             $enrollTime = (is_array($value)) ? $value['date-time'] : $programNow->format("Y-m-d\TH:i:s");
-            
-            if ($originalParticipantData['Participant']['enrolled'] == array()) {
+        
+
+            if ($originalParticipantData == null || $originalParticipantData['Participant']['enrolled'] == array()) {
                 $this->data['Participant']['enrolled'][] = array(
                     'dialogue-id' => $dialogueId,
                     'date-time' => $enrollTime
@@ -744,7 +782,11 @@ class Participant extends ProgramSpecificMongoModel
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
         }
-        $participant['enrolled'] = $enrolled;
+        
+        if (isset($enrolled)) {
+            $participant['enrolled'] = $enrolled;
+        }
+        
         $savedParticipant = $this->save($participant);
         if ($savedParticipant) {
             $report = array(
