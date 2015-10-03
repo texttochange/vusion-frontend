@@ -333,6 +333,52 @@ class ParticipantTestCase extends CakeTestCase
             'The label value cannot be empty.');
     }
     
+
+    public function testSave_valiationEnrollement_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array(
+            'phone' => '25601',
+            'enrolled' => array(
+                array(
+                    'dialogue-id' => '123',
+                    'date-time' => '2015-04-01T10:10:10'
+                    ),
+                array(
+                    'dialogue-id' => '',
+                    'date-time' => '2015-04-01 10:10'
+                    ),
+                ),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertFalse($savedParticipant);
+        $this->assertEqual(
+            $this->Participant->validationErrors['enrolled'][1]['dialogue-id'][0],
+            'The dialogue-id cannot be empty.');
+        $this->assertEqual(
+            $this->Participant->validationErrors['enrolled'][1]['date-time'][0],
+            'The date-time format is not incorrect.');
+    }
+
+
+    public function testSave_valiationEnrollement_ok()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array(
+            'phone' => '25601',
+            'enrolled' => array('123', '234'),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertTrue(isset($savedParticipant['Participant']));
+        $this->assertEqual(
+            '123',
+            $savedParticipant['Participant']['enrolled'][0]['dialogue-id']);
+    }
+
     
     public function testSave_cleanPhone()
     {
@@ -419,7 +465,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive();
 
-        $otherDialogue      = $this->Maker->getOneDialogue();
+        $otherDialogue      = $this->Maker->getOneDialogue("otherKeyword", "other name");
         $otherSavedDialogue = $this->Dialogue->saveDialogue($otherDialogue);
         $this->Dialogue->makeActive();
 
@@ -442,7 +488,6 @@ class ParticipantTestCase extends CakeTestCase
 
         $this->Participant->id = $savedAgainParticipant['Participant']['_id']."";
         $resavedParticipant    = $this->Participant->save($savedAgainParticipant);
-
         $enrolledParticipant = $this->Participant->find('first', array(
             'conditions' => $participant));
 
@@ -718,6 +763,25 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(
             $participants[0]['Participant']['tags'], 
             array('imported', '1tag', 'other tag', 'stillAnother Tag'));
+    }
+    
+    
+    public function testImport_csv_and_enrolling() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $dialogue      = $this->Maker->getOneDialogue();
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive();
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/well_formatted_participants.csv',
+            '1tag', $savedDialogue['Dialogue']['dialogue-id']);
+        
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
     }
     
     
