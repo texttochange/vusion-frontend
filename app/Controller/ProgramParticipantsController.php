@@ -899,7 +899,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $enrolled,
                 $importTagsAndLabels
                 );
-            
             if ($report) {
                 foreach ($report as $participantReport) {
                     if ($participantReport['saved']) {

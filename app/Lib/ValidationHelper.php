@@ -10,7 +10,27 @@ class ValidationHelper
     public function __construct($model=null){
         $this->model = $model;
     }
-    
+
+    public function runValidationRulesOnList($check, $validationRules)
+    {
+        $field = key($check);
+        if (!isset($check[$field])) {
+            return true;
+        }
+        $count = 0;
+        $validationErrors = array();
+        foreach ($check[$field] as $element) {
+            $result = $this->runValidationRules($element, $validationRules);
+            if (is_array($result)) {
+                $validationErrors[$count] = $result;
+            }
+            $count++;
+        }
+        if ($validationErrors != array()) {
+            return $validationErrors;
+        }
+        return true;
+    }
 
     public function runValidationRules($data, $validationRules)    
     {
