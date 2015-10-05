@@ -4,6 +4,7 @@ require.config({
         'jquery': 'jquery-1.10.2.min',
         'jquery-ui': 'jqueryui/js/jquery-ui-1.10.3.custom.min',
         'jquery-ui-timepicker': 'jqueryui/js/jquery-ui-timepicker-addon',
+        'jquery-handsontable': 'jquery.handsontable-0.9.18.full',
         'jquery-validate': 'jquery.validate-1.9.0',
         'superfish': 'superfish-1.7.4/superfish.min',
         'supersubs': 'superfish-1.7.4/supersubs',
@@ -26,6 +27,8 @@ require.config({
         'dynamic-form-structure': 'ttc-dynamic-form-structure',
         'generic-program': 'ttc-generic-program',
         'counter': 'counter',
+        'table': 'ttc-table',
+        'simulator': 'ttc-simulator'
     },
     shim: {
     	'jquery-ui': {
@@ -34,6 +37,9 @@ require.config({
 	    'chosen': {
 	        deps: [ 'jquery' ],
 	    },
+        'jquery-handsontable': {
+            deps: [ 'jquery'],
+        },
 	    'jquery-ui-timepicker': {
 	        deps: [ 'jquery-ui'],
 	    },
@@ -58,6 +64,9 @@ require.config({
         'jquery-validate': {
             deps: ['jquery']
         },
+        'form2js-utils': {
+            deps: ['form2js']
+        },
         'vusion': {       //tobe moved in source file
             deps: ['jquery', 'ttc-utils'],
         },
@@ -67,6 +76,12 @@ require.config({
                 'moment',
                 'datejs',
                 'xregexp']
+        },
+        'table': {
+            deps: ['jquery-handsontable', 'form2js-utils'],
+        },
+        'simulator': {
+            deps: ['jquery', 'ttc-utils'],
         },
         'generic-program': {      //tobe moved in source file
             deps: [

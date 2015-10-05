@@ -1,6 +1,5 @@
 <?php 
-$this->Html->script("jquery.handsontable-0.9.18.full.js", array("inline" => false));
-$this->Html->script("ttc-table.js", array("inline" => false))
+    $this->RequireJs->scripts(array('table'));
 ?>
 <div class='content_variables index'>
    <?php
@@ -48,8 +47,8 @@ $this->Html->script("ttc-table.js", array("inline" => false))
 		            $lastColKey++;
 		        }
 		        $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);
-		        $this->Js->get('document')->event('ready',
-		            'createTable(
+		        $this->RequireJs->runLine('
+		            createTable(
     		            "#'.$elementId.'", 
     		            {
     		            startRows: 5,

@@ -1,6 +1,5 @@
 <?php 
-$this->Html->script("jquery.handsontable-0.9.18.full.js", array("inline" => false));
-$this->Html->script("ttc-table.js", array("inline" => false));
+  $this->RequireJs->scripts(array('table'));
 ?>
 <div class="content_variables form">
     <div class="ttc-page-title">
@@ -61,8 +60,8 @@ $this->Html->script("ttc-table.js", array("inline" => false));
            <div id="columns" style="margin-left:2px; padding-left:0px; margin-bottom:0px"/>
            <?php 
            $numberOfRows = count($contentVariableTable['ContentVariableTable']['columns'][0]['values']);
-           $this->Js->get('document')->event('ready',
-               'createTable(
+           $this->RequireJs->runLine(
+                'createTable(
                      "#columns", 
                      {startRows: 5,
                       startCols: 10,

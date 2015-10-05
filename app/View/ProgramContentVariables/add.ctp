@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery"));
+?>
 <div class="content_variables form width-size">
     <?php
         $contentTitle   = __('Add Content Variable'); 

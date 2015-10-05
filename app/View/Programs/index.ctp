@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("ttc-utils"));
+    $this->RequireJs->scripts(array("ttc-utils", "jquery"));
 ?>
 <div class="ttc-program-index">
     <?php echo $this->AclLink->generateButton(
@@ -22,7 +22,7 @@
     <?php
 	    echo $this->element('filter_box', array(
 	        'controller' => 'programs'));
-	    $this->Js->get('document')->event('ready', '$(".ttc-paging").css("margin-right", "0px");');
+	    $this->RequireJs->runLine('$(".ttc-paging").css("margin-right", "0px");');
 	?>
     <div style="clear:both">
        <!-- Buffer zone -->

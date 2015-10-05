@@ -15,7 +15,6 @@
 		    'jquery-ui/jquery-ui-1.10.3.custom.min',
 		    'superfish/superfish-1.7.4',
 		    'superfish/superfish-vertical-1.7.4',
-		    //'superfish/superfish-navbar-1.7.4',		    
 		    'superfish/megafish-1.7.4',
 		    'chosen/chosen-1.0.min',
 		    'handsontable/jquery.handsontable-0.9.18.full',
