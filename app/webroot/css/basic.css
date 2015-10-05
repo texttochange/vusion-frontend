@@ -182,12 +182,7 @@
         background: #FFCB4B;
 }
 
-[item = subcondition-field] {
-    width:200px !important;
-    display:inline-block;
-}
-
-[item = subcondition-operator] {
+[item^="subcondition-"] {        
     width:200px !important;
     display:inline-block;
 }
