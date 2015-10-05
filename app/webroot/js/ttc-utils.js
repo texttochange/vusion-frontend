@@ -135,30 +135,6 @@ function pullBackendNotifications(url) {
 }
 
 
-function pullSimulatorUpdate(url){
-    $.ajax({
-            url: url,
-            success: function(data){
-                $('#connectionState').hide();
-                if (data['message']) {
-                    var message = $.parseJSON(data['message']);
-                    $("#simulator-output").append("<div>> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+message['from_addr']+" to "+message['to_addr']+" '"+message['content']+"'</div>")
-                }
-            },
-            timeout: 1000,
-            error: vusionAjaxError
-    });
-}
-
-
-function logMessageSent(){
-    var log = "> "+Date.now().toString('yy/MM/dd HH:mm')+" from "+$('[name="participant-phone"]').val()+" '"+$('[name="message"]').val()+"'";
-    $('[name="participant-phone"]').val('')
-    $('[name="message"]').val('')
-    $('#simulator-output').append("<div>"+log+"</div>");
-}
-
-
 function updateClock(){
     var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
     $("#local-date-time").text(newTime);    

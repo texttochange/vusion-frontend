@@ -44,7 +44,7 @@ class ParticipantTestCase extends CakeTestCase
     }
     
     
-    public function testSave()
+    public function testSave_normalParticipantSave()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
         $participant = array(
@@ -52,13 +52,60 @@ class ParticipantTestCase extends CakeTestCase
             );
         $this->Participant->create();
         $savedParticipant = $this->Participant->save($participant);
-        $this->assertEqual($savedParticipant['Participant']['model-version'], '3');  
+        $this->assertEqual($savedParticipant['Participant']['model-version'], '5');  
         $this->assertRegExp('/^[0-9a-fA-F]{32}/', $savedParticipant['Participant']['session-id']);
         $this->assertRegExp('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $savedParticipant['Participant']['last-optin-date']);
-        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null);    
-        $this->assertTrue(is_array( $savedParticipant['Participant']['tags']));
-        $this->assertTrue(is_array( $savedParticipant['Participant']['enrolled']));
-        $this->assertTrue(is_array($savedParticipant['Participant']['profile']));
+        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null);
+    }
+    
+    
+    public function testSave_simulatedParticipant()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $participant2 = array(
+            'simulate' => true
+            );
+        $this->Participant->create();
+        
+        $savedParticipant = $this->Participant->save($participant2);
+        $this->assertEqual($savedParticipant['Participant']['model-version'], '5');
+        $this->assertEqual($savedParticipant['Participant']['phone'], '#1');
+        $this->assertRegExp('/^[0-9a-fA-F]{32}/', $savedParticipant['Participant']['session-id']);
+        $this->assertRegExp('/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/', $savedParticipant['Participant']['last-optin-date']);
+        $this->assertEqual($savedParticipant['Participant']['last-optout-date'], null); 
+    }
+    
+    
+    public function testGenerate_simulatedParticipantPhone()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $participant2 = array(
+            'simulate' => true
+            );
+        $this->Participant->create();
+        
+        $savedParticipant = $this->Participant->save($participant2);       
+        $this->assertEqual($savedParticipant['Participant']['model-version'], '5');
+        //first generated simulated phone #1
+        $this->assertEqual($savedParticipant['Participant']['phone'], '#1');
+        //second generated simulated phone #2 if #1 is saved
+        $secondSimulatedPhone =$this->Participant->generateSimulatedPhone();
+        $this->assertEqual( $secondSimulatedPhone, '#2');
+    }
+    
+    
+    public function testSave_normalParticipant_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $participant2 = array(
+            'phone' => '#878845555'
+            );
+        $this->Participant->create();
+        
+        $savedParticipant = $this->Participant->save($participant2);
+        $this->assertEqual($this->Participant->validationErrors['phone'][0],
+            "A phone number must begin with a '+' sign and end with a serie of digits such as +335666555.");  
+    
     }
     
     
@@ -200,7 +247,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
 
         $participant = array(
-            'phone' => '+788601461',
+            'phone' => '+7886014612',
             );
         $this->Participant->create();
         $this->Participant->save($participant);
@@ -214,7 +261,7 @@ class ParticipantTestCase extends CakeTestCase
             $this->Participant->validationErrors['phone'][0]);
     }
     
-    
+
     public function testSave_valiationPhone_fail()
     {
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
@@ -226,8 +273,8 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertFalse($this->Participant->save($participant));
 
         $this->assertEqual(
-            'A phone number must only contain digits such as +3345678733.',
-            $this->Participant->validationErrors['phone'][0]);
+            "A phone number must begin with a '+' sign and end with a serie of digits such as +335666555.",
+        $this->Participant->validationErrors['phone'][0]);
     }
     
     
@@ -286,6 +333,52 @@ class ParticipantTestCase extends CakeTestCase
             'The label value cannot be empty.');
     }
     
+
+    public function testSave_valiationEnrollement_fail()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array(
+            'phone' => '25601',
+            'enrolled' => array(
+                array(
+                    'dialogue-id' => '123',
+                    'date-time' => '2015-04-01T10:10:10'
+                    ),
+                array(
+                    'dialogue-id' => '',
+                    'date-time' => '2015-04-01 10:10'
+                    ),
+                ),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertFalse($savedParticipant);
+        $this->assertEqual(
+            $this->Participant->validationErrors['enrolled'][1]['dialogue-id'][0],
+            'The dialogue-id cannot be empty.');
+        $this->assertEqual(
+            $this->Participant->validationErrors['enrolled'][1]['date-time'][0],
+            'The date-time format is not incorrect.');
+    }
+
+
+    public function testSave_valiationEnrollement_ok()
+    {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $participant = array(
+            'phone' => '25601',
+            'enrolled' => array('123', '234'),
+            );
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save($participant);
+        $this->assertTrue(isset($savedParticipant['Participant']));
+        $this->assertEqual(
+            '123',
+            $savedParticipant['Participant']['enrolled'][0]['dialogue-id']);
+    }
+
     
     public function testSave_cleanPhone()
     {
@@ -372,7 +465,7 @@ class ParticipantTestCase extends CakeTestCase
         $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
         $this->Dialogue->makeActive();
 
-        $otherDialogue      = $this->Maker->getOneDialogue();
+        $otherDialogue      = $this->Maker->getOneDialogue("otherKeyword", "other name");
         $otherSavedDialogue = $this->Dialogue->saveDialogue($otherDialogue);
         $this->Dialogue->makeActive();
 
@@ -395,7 +488,6 @@ class ParticipantTestCase extends CakeTestCase
 
         $this->Participant->id = $savedAgainParticipant['Participant']['_id']."";
         $resavedParticipant    = $this->Participant->save($savedAgainParticipant);
-
         $enrolledParticipant = $this->Participant->find('first', array(
             'conditions' => $participant));
 
@@ -671,6 +763,25 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(
             $participants[0]['Participant']['tags'], 
             array('imported', '1tag', 'other tag', 'stillAnother Tag'));
+    }
+    
+    
+    public function testImport_csv_and_enrolling() 
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        
+        $dialogue      = $this->Maker->getOneDialogue();
+        $savedDialogue = $this->Dialogue->saveDialogue($dialogue);
+        $this->Dialogue->makeActive();
+        
+        $report = $this->Participant->import(
+            'testUrl',
+            TESTS.'files/well_formatted_participants.csv',
+            '1tag', $savedDialogue['Dialogue']['dialogue-id']);
+        
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(2, count($participants));
     }
     
     
@@ -1166,6 +1277,16 @@ class ParticipantTestCase extends CakeTestCase
             );
     }
     
+    public function testFromFilterToCondition_phone_simulated() 
+    {
+        $filter = array(
+            1 => 'phone', 
+            2 => 'simulated');
+        $this->assertEqual(
+            $this->Participant->fromFilterToQueryCondition($filter),
+            array('simulate' => true));
+    }
+    
     
     public function testFromFilterToCondition_enrolled()
     {
@@ -1549,6 +1670,7 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEqual("+254700866920", Participant::cleanPhone("00254700866920"));
         $this->assertEqual("+254700866920", Participant::cleanPhone("+254700866920�"));
         $this->assertEqual("+254700866920", Participant::cleanPhone(" +2547OO866920 "));
+        $this->assertEqual("#254700866920", Participant::cleanPhone(" #2547OO866920 "));
     }
     
     
@@ -1750,6 +1872,6 @@ class ParticipantTestCase extends CakeTestCase
             array('interaction-id' => "The dialogue with id ".$savedDialogue['Dialogue']['dialogue-id']." doesn't have an interaction with id someOtherId"),
             $result);
     }
-    
+
     
 }

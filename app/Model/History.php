@@ -152,7 +152,7 @@ class History extends ProgramSpecificMongoModel
     public function _findParticipant($state, $query, $results = array())
     {
         if ($state == 'before') {
-            $query['conditions'] = array('participant-phone' => $query['phone']);
+            $query['conditions']['participant-phone'] = $query['phone'];
             $query['order']['timestamp'] = 'asc';
             return $query;
         }
@@ -224,9 +224,13 @@ class History extends ProgramSpecificMongoModel
     }
     
     
-    public function getParticipantHistory($phone, $dialoguesInteractionsContent)
+    public function getParticipantHistory($phone, $dialoguesInteractionsContent, $from=null)
     {
-        $histories   = $this->find('participant', array('phone' => $phone));
+        $conditions = array('phone' => $phone);
+        if (isset($from)) {
+            $conditions['conditions'] = array('timestamp' => array('$gte' => $from));
+        }
+        $histories = $this->find('participant', $conditions);
         return $this->addDialogueContent($histories, $dialoguesInteractionsContent);
     }
     
@@ -263,7 +267,9 @@ class History extends ProgramSpecificMongoModel
                 'equal-to' => array(
                     'parameter-type' => 'text'),
                 'start-with-any' => array(
-                    'parameter-type' => 'text'))),
+                    'parameter-type' => 'text'),
+                'simulated' => array(
+                    'parameter-type' => 'none'))),
         'message-direction' => array( 
             'label' => 'message direction',
             'operators' => array(
@@ -406,7 +412,9 @@ class History extends ProgramSpecificMongoModel
                 $condition['timestamp'] = '';
             }
         } elseif ($filterParam[1] == 'participant-phone') {
-            if ($filterParam[3]) {
+            if ($filterParam[2] == 'simulated') {
+                $condition['participant-phone'] = array('$regex' => "^\#"); 
+            } elseif ($filterParam[3]) {
                 if ($filterParam[2] == 'equal-to') {
                     $condition['participant-phone'] = $filterParam[3];                   
                 } elseif ($filterParam[2] == 'start-with') {
@@ -538,8 +546,10 @@ class History extends ProgramSpecificMongoModel
             $phone = $history['History']['participant-phone'];
             $participant = $this->Participant->find('first', array(
                 'conditions' => array('phone' => $phone)));
-            $participantLabels = $participant['Participant']['profile'];
-            $history['History']['participant-labels'] = $participantLabels;
+            if ($participant) {
+                $participantLabels = $participant['Participant']['profile'];
+                $history['History']['participant-labels'] = $participantLabels;
+            }
         }
         return $histories;
     }
