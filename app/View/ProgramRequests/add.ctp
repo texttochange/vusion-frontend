@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("generic-program", "ttc-utils", "counter"));
+?>
 <div class="request form width-size">
     <?php
         $contentTitle   = __('Add Request'); 
@@ -22,11 +25,10 @@
 	    <?php 
 	    echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form'));
 	    echo "</form>";
-	    $this->Js->get("#dynamic-generic-program-form");
-	    $this->Js->each('$(this).buildTtcForm("Request", null, "javascript:saveFormOnServer()")', true);
+	    $this->RequireJs->each('$("#dynamic-generic-program-form").buildTtcForm("Request", null, "javascript:saveFormOnServer()")', true);
         $this->DynamicOptions->setOptions(
             $currentProgramData, $conditionalActionOptions, $contentVariableTableOptions);
-        $this->Js->get('document')->event('ready','addCounter(); ');
+        $this->RequireJs->runLine('addCounter();');
 	    ?>
 	    <br/>
 	    <?php  echo $this->Html->tag('span', __('Save'), array('class'=>'ttc-button dynamic-form-save')); ?>

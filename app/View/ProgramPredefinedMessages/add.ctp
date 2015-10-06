@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("ttc-utils"));
+?>
 <div class="predefined_messages form width-size">
    <?php
         $contentTitle   = __('Add Predefined Message'); 
@@ -24,7 +27,7 @@
     <fieldset>
        <?php echo $this->Form->input('name', array('label' => __('name'), 'id' => 'name')); ?>
        <?php echo $this->Form->input('content', array('label' => __('content'), 'rows'=>5)); ?>
-       <?php $this->Js->get('document')->event('ready','
+       <?php $this->RequireJs->runLine('
            addContentFormHelp();
            addCounter();
            '); ?>

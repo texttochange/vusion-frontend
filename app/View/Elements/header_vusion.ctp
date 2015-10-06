@@ -1,4 +1,7 @@
-<div class="table" style="width:100%"> 
+<?php
+    $this->RequireJs->runLine('$("[class*=success]").delay(5000).fadeOut(1000);');
+?>
+<div class="table" style="width:100%">
 	<div class="status-message row"> 
 	<div class="flash-box" style='top:0px'>
     <?php

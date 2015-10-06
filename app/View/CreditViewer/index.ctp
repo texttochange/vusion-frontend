@@ -1,5 +1,5 @@
 <?php
-$this->Html->script("jstree.min.js", array("inline" => false));
+    $this->RequireJs->scripts(["jstree"]);
 ?>
 <div class="admin-action">
     <div class="actions">
@@ -202,8 +202,7 @@ $this->Html->script("jstree.min.js", array("inline" => false));
                     }
                     echo '</ul></li>';
                 }
-                $this->Js->get('document')->event('ready', '
-                    $("#countries-credits-tree").jstree();');
+                $this->RequireJs->runLine('$("#countries-credits-tree").jstree();');
                 ?>
                 </ul>
              </div>

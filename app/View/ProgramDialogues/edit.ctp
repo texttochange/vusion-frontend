@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("generic-program", "ttc-utils"));
+?>
 <div class="index width-size">
 	<?php 
   $contentTitle = null;

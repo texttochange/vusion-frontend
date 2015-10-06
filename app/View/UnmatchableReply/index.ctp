@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery", "ttc-utils"));
+?>
 <div class="admin-action">
 <div class="actions">
     <h3><?php echo __('Actions'); ?></h3>
