@@ -47,17 +47,19 @@
 		$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
 		
 		$options = array(
+		    null => __('keep'),     
 		    'replace' => __('replace'),
 		    'update' => __('update'));
 		$attributes = array(
 		    'legend' => false,
-		    'id' => 'import-type');
+		    'id' => 'import-type',
+		    'empty' => false);
 		
 		$importTypeSelectOptions =  $this->Form->select(
 		    'import-type',
 		    $options,
 		    $attributes);	
-		echo $this->Html->tag('div', __('If participant already exists '.$importTypeSelectOptions.' their tags and labels.'), array('style'=>'margin-bottom:0px'));
+		echo $this->Html->tag('div', __('If participant already exists '.$importTypeSelectOptions.' their current tags and labels.'), array('style'=>'margin-bottom:0px'));
 		
 		echo $this->Form->end(__('Upload'));
 	?>
