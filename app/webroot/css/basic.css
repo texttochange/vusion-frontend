@@ -182,6 +182,11 @@
         background: #FFCB4B;
 }
 
+[item^="subcondition-"] {        
+    width:200px !important;
+    display:inline-block;
+}
+
 .ttc-content-header {
     float: left;
     width: 100%;
