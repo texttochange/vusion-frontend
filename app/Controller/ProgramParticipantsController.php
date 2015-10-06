@@ -267,7 +267,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         
         $conditions = $this->Filter->getConditions(
             $this->Participant,
-            array(),
+            array('simulate' => false),
             array('Schedule' => $this->Schedule),
             false);
         
@@ -899,7 +899,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $enrolled,
                 $replaceTagsAndLabels
                 );
-            
             if ($report) {
                 foreach ($report as $participantReport) {
                     if ($participantReport['saved']) {
