@@ -868,7 +868,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $enrolled = $this->request->data['Import']['enrolled'];
             }
             
-            $importTagsAndLabels = false;
+            $importTagsAndLabels = 'keep';
             if (isset($this->request->data['Import']['import-type'])) {
                 $importTagsAndLabels = $this->request->data['Import']['import-type'];
             }

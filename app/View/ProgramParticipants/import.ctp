@@ -47,7 +47,7 @@
 		$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
 		
 		$options = array(
-		    null => __('keep'),     
+		    'keep' => __('keep'),     
 		    'replace' => __('replace'),
 		    'update' => __('update'));
 		$attributes = array(

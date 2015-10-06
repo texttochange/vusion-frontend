@@ -149,6 +149,16 @@ class Participant extends ProgramSpecificMongoModel
                 'message' => 'noMessage'
                 ),
             ),
+        'import-type' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please select one option.'
+                ),
+            'allowedChoice' => array(
+                'rule' => array('inList', array('keep', 'replace', 'update')),
+                'message' => 'import tags and labels option not allowed.'
+                ),
+            ),
         );
     
     
@@ -723,7 +733,7 @@ class Participant extends ProgramSpecificMongoModel
     }
     
     
-    public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $importTagsAndLabels=false)
+    public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $importTagsAndLabels='keep')
     {
         $defaultTags = $this->getDefaultImportedTag();
         if (isset($tags)) {
@@ -803,7 +813,7 @@ class Participant extends ProgramSpecificMongoModel
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
-            if (!$importTagsAndLabels) {
+            if ($importTagsAndLabels == 'keep') {
                 $report = array(
                     'phone' => $participant['phone'],
                     'saved' => false,
