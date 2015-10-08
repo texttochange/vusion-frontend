@@ -25,7 +25,7 @@
 	    <?php 
 	    echo $this->Html->tag('form', null, array(' id'=> 'dynamic-generic-program-form'));
 	    echo "</form>";
-	    $this->RequireJs->each('$("#dynamic-generic-program-form").buildTtcForm("Request", null, "javascript:saveFormOnServer()")', true);
+	    $this->RequireJs->runLine('$("#dynamic-generic-program-form").buildTtcForm("Request", null, "javascript:saveFormOnServer()")', true);
         $this->DynamicOptions->setOptions(
             $currentProgramData, $conditionalActionOptions, $contentVariableTableOptions);
         $this->RequireJs->runLine('addCounter();');
