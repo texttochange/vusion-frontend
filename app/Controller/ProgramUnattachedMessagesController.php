@@ -150,14 +150,15 @@ class ProgramUnattachedMessagesController extends BaseProgramSpecificController
             $this->set(compact('requestSuccess'));
         }
         
-        $selectorValues = $this->Participant->getDistinctTagsAndLabels();
-        if (count($selectorValues) > 0) {
-            $selectors = array_combine($selectorValues, $selectorValues);
+        if (!$this->_isAjax()) {
+            $selectorValues = $this->Participant->getDistinctTagsAndLabels();
+            if (count($selectorValues) > 0) {
+                $selectors = array_combine($selectorValues, $selectorValues);
+            }
+
+            $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
+            $this->set(compact('selectors', 'predefinedMessageOptions'));
         }
-        
-        $predefinedMessageOptions = $this->_getPredefinedMessageOptions();
-        $this->set(compact('selectors', 'predefinedMessageOptions'));
-        
     }
     
     
