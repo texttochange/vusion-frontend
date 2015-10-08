@@ -603,7 +603,7 @@ class Participant extends ProgramSpecificMongoModel
     public function tagsFromStringToArray($tags) 
     {
         $tags = trim(stripcslashes($tags));
-        return explode(", ", $tags);
+        return explode(",", $tags);
     }
     
     

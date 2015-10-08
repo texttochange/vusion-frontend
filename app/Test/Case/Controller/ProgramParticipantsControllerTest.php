@@ -462,12 +462,15 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         
         $this->assertEquals(
             'Insert ok',
-            $this->vars['report'][0]['message'][0]
-            );
+            $this->vars['report'][0]['message'][0]);
         $this->assertEquals(
             'This phone number already exists in the participant list.',
-            $this->vars['report'][1]['message'][0]
-            );
+            $this->vars['report'][1]['message'][0]);
+        $importedParticipant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
+        $this->assertEqual(
+            array('imported', 'mash',  'mytag', 'anothertag'),
+            $importedParticipant['Participant']['tags']);
+
     }
 
 

@@ -763,6 +763,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
 
         if ($this->request->is('post')) {
             $tags = (isset($this->request->data['Import']['tags']) ? $this->request->data['Import']['tags'] : null);
+            $tags = 'mash,' . $tags;
             $replaceTagsAndLabels = (isset($this->request->data['Import']['replace-tags-and-labels']) ? $this->request->data['Import']['replace-tags-and-labels'] : null);
             $countryIso = $this->request->data['Import']['country'];
             if (!isset($importCountries[$countryIso])) {
