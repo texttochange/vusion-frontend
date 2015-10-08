@@ -46,13 +46,21 @@
 		    ));
 		$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
 		
-		echo '<div>';
-		echo $this->Form->checkbox('replace-tags-and-labels', array(
-		    'label' => 'Update participant',
-		    'value' => 'update',
-		    'hiddenField' => false));
-		echo $this->Html->tag('label',  _("If participant already in replace their tags and labels."));
-		echo '</div>';
+		$options = array(
+		    'keep' => __('keep'),     
+		    'replace' => __('replace'),
+		    'update' => __('update'));
+		$attributes = array(
+		    'legend' => false,
+		    'id' => 'import-type',
+		    'empty' => false);
+		
+		$importTypeSelectOptions =  $this->Form->select(
+		    'import-type',
+		    $options,
+		    $attributes);	
+		echo $this->Html->tag('div', __('If participant already exists '.$importTypeSelectOptions.' their current tags and labels.'), array('style'=>'margin-bottom:0px'));
+		
 		echo $this->Form->end(__('Upload'));
 	?>
 

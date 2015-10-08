@@ -868,9 +868,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $enrolled = $this->request->data['Import']['enrolled'];
             }
             
-            $replaceTagsAndLabels = false;
-            if (isset($this->request->data['Import']['replace-tags-and-labels'])) {
-                $replaceTagsAndLabels = true;
+            $importTagsAndLabels = 'keep';
+            if (isset($this->request->data['Import']['import-type'])) {
+                $importTagsAndLabels = $this->request->data['Import']['import-type'];
             }
             
             $fileName = $this->request->data['Import']['file']['name'];
@@ -897,7 +897,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $filePath . DS . $fileName, 
                 $tags,
                 $enrolled,
-                $replaceTagsAndLabels
+                $importTagsAndLabels
                 );
             if ($report) {
                 foreach ($report as $participantReport) {
