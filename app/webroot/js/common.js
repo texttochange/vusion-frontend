@@ -28,7 +28,8 @@ require.config({
         'generic-program': 'ttc-generic-program',
         'counter': 'counter',
         'table': 'ttc-table',
-        'simulator': 'ttc-simulator'
+        'simulator': 'ttc-simulator',
+        'screen': 'ttc-screen',
     },
     shim: {
     	'jquery-ui': {
@@ -67,8 +68,11 @@ require.config({
         'form2js-utils': {
             deps: ['form2js']
         },
+        'screen': {
+            deps: ['jquery']
+        },
         'vusion': {       //tobe moved in source file
-            deps: ['jquery', 'ttc-utils'],
+            deps: ['jquery', 'ttc-utils', 'screen'],
         },
         'ttc-utils': {     //tobe moved in source file
             deps: [
