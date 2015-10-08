@@ -253,8 +253,6 @@ class UsersController extends AppController
     
     public function login()
     {
-        //$this->layout = 'default2';
-        
         if ($this->Auth->user()) {
             $this->Session->setFlash(
                 __('Already logged in...'),

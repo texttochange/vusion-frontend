@@ -1070,6 +1070,10 @@
         color: grey;
 }
 
+.popup-layout .flash-box {
+    z-index: 100;
+}
+
 .flash-box {
     position: fixed;
     width: 100%;
