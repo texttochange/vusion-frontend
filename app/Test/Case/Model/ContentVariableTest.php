@@ -115,7 +115,7 @@ class ContentVariableTestCase extends CakeTestCase
         $this->ContentVariable->create();
         $this->assertFalse($this->ContentVariable->save($contentVariable));
         $this->assertEquals(
-            "Use only space, letters, numbers or the characters ,.+/-: for a value, e.g 'new value1'.",
+            "Use only space, letters, numbers or the characters ,.+/-:# for a value, e.g 'new value1'.",
             $this->ContentVariable->validationErrors['value'][0]
         );
     }

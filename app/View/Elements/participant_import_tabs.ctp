@@ -58,14 +58,40 @@ case 'mash':
 ?>
 </div>
 <?php
-echo $this->Form->input('tags', array('label' => __('Tag imported participants')));
 echo '<div>';
-echo $this->Form->checkbox('replace-tags-and-labels', array(
-    'label' => 'Update participant',
-    'value' => 'update',
-    'hiddenField' => false));
-echo $this->Html->tag('label',  _("If participant already in replace their tags and labels."));
-echo '</div>';
+echo $this->Form->input('tags', array('label' => __('Tag imported participants')));
+$options = array();
+if (isset($selectOptions)) {
+    $options  = $selectOptions;
+}
+echo $this->Form->input('enrolled', array(
+    'options'=>$options,
+    'type'=>'select',
+    'multiple'=>true,
+    'label'=>__('Enroll'),
+    'selected'=>' ',
+    'style'=>'margin-bottom:0px'
+    ));
+$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
+
+$options = array(
+    'keep' => __('keep'),     
+    'replace' => __('replace'),
+    'update' => __('update'));
+$attributes = array(
+    'legend' => false,
+    'id' => 'import-type',
+    'empty' => false);
+
+$importTypeSelectOptions =  $this->Form->select(
+    'import-type',
+    $options,
+    $attributes); 
+echo $this->Html->tag(
+  'div', 
+  __('If participant already exists, %s their current tags and labels.', $importTypeSelectOptions),
+  array('style'=>'margin-bottom:0px'));
+
 echo $this->Form->end(__('Import'));
 ?>
 

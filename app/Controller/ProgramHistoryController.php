@@ -186,7 +186,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
         // Only get messages and avoid other stuff like markers
         $defaultConditions = array('$or' => array(
             array('object-type' => array('$in' => $this->History->messageType)),
-            array('object-type' => array('$exists' => false))));
+            array('object-type' => array('$exists' => false))),
+            'participant-phone' => array('$regex' => "^\+"));
         $conditions = $this->Filter->getConditions($this->History, $defaultConditions);
 
         $order = array();
@@ -196,10 +197,8 @@ class ProgramHistoryController extends BaseProgramSpecificController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
 
-        $filePath = WWW_ROOT . "files/programs/" . $programUrl;
-        if (!file_exists($filePath)) {
-            mkdir($filePath);
-        }
+        $filePath = Program::ensureProgramDir($programUrl);
+        
         $programNow = $this->ProgramSetting->getProgramTimeNow();
         if ($programNow) {
             $timestamp = $programNow->format("Y-m-d_H-i-s");

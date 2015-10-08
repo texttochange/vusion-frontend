@@ -55,7 +55,15 @@
                 array('class'=>'ttc-button'),
                 $participant['Participant']['_id']);
         }
-        
+        if (isset($participant['Participant']['simulate']) && ($participant['Participant']['simulate'])) {
+            $contentActions[] = $this->AclLink->generateButton(
+                __('Simulate'),
+                $programDetails['url'],
+                'programParticipants',
+                'simulateMo',
+                array('class'=>'ttc-button'),
+                $participant['Participant']['_id']);
+        }
         echo $this->element('header_content', compact('contentTitle', 'contentActions'));
     ?>
 	<dl>
@@ -82,12 +90,7 @@
 		<dd><?php 
 		if (count($participant['Participant']['enrolled']) > 0) {
 		    foreach ($participant['Participant']['enrolled'] as $enrolled) {
-		        foreach ($currentProgramData['dialogues'] as $dialogue) {
-		            if ($dialogue['dialogue-id'] == $enrolled['dialogue-id']) {
-  	                    echo $this->Html->tag('div', __("%s at %s", $dialogue['Active']['name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
-  	                    break;
-  	                }
-		        }
+  	            echo $this->Html->tag('div', __("%s at %s", $enrolled['dialogue-name'], $this->Time->format('d/m/Y H:i:s', $enrolled['date-time'])));
 		    }
 		} else {
 		    echo "&nbsp;"; 
@@ -136,7 +139,7 @@
 			<td><?php
 			    $objectType = str_replace("-schedule", "", $schedule['Schedule']['object-type']);
 			    echo str_replace("dialogue", "message", $objectType); ?></td>
-			<td><?php echo $schedule['Schedule']['content']; ?></td>
+			<td><?php echo htmlspecialchars($schedule['Schedule']['content']); ?>&nbsp;</td>
 			</tr>
 			<?php endforeach; ?>
 			</table>
@@ -166,8 +169,8 @@
 			             ?>&nbsp;</td>
 	 		             <?php if (isset($history['History']['content'])) { ?>
 	 		                 <td><?php echo $history['History']['content']; ?>&nbsp;</td>
-	 		             <?php } else { ?>
-	 		                 <td><?php echo $history['History']['message-content']; ?>&nbsp;</td>
+	 		              <?php } else { ?>
+	 		                 <td><?php echo htmlspecialchars($history['History']['message-content']); ?>&nbsp;</td> 		             
 	 		             <?php }; ?>
 	 		        <?php } elseif (in_array($history['History']['object-type'], $markerType)) { ?>
 	 		             <td><?php echo __("Marker"); ?>&nbsp;</td>

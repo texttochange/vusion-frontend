@@ -62,6 +62,7 @@ class FilterComponent extends Component
             'optin' => __('optin'),
             'optout' => __('optout'),
             'are-present' => __('are present'),
+            'simulated' => __('simulated'),
             );
         $this->Controller->set('filterLabels', $this->localizedValueLabel);
     }

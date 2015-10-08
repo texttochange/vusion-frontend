@@ -116,6 +116,13 @@ class VumiRabbitMQ {
         $msg = $this->workerMessageMaker->transportUserMessage($from, $content);
         return $this->sendMessageTo($to.'.inbound', $msg);
     }
+    
+    
+    public function sendMessageToSimulateMO($to, $from, $content)
+    {
+        $msg = $this->workerMessageMaker->transportUserMessage($from, $content);
+        return $this->sendMessageTo($to.'.inbound', $msg);
+    }
 
 
     public function sendMessageTo($to, $msg)

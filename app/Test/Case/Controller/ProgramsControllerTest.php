@@ -74,7 +74,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
                     ),
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
-                    '_ensureProgramDir'
                     )
                 )
             );
@@ -296,7 +295,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_startBackendWorker',
-                    '_ensureProgramDir'
                     ),
                 'components' => array(
                     'Auth' => array('user'),
@@ -315,13 +313,7 @@ class ProgramsControllerTestCase extends ControllerTestCase
         ->expects($this->once())
         ->method('_startBackendWorker')
         ->will($this->returnValue(true));
-        
-        $Programs
-        ->expects($this->once())
-        ->method('_ensureProgramDir')
-        ->with(WWW_ROOT . 'files/programs/programurl')
-        ->will($this->returnValue(true));
-
+      
         $data = array(
             'Program' => array(
                 'name' => 'programName',
@@ -341,7 +333,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
                 'methods' => array(
                     '_instanciateVumiRabbitMQ',
                     '_startBackendWorker',
-                    '_ensureProgramDir'
                     ),
                 'components' => array(
                     'Auth' => array('user'),
@@ -359,12 +350,6 @@ class ProgramsControllerTestCase extends ControllerTestCase
         $Programs
         ->expects($this->once())
         ->method('_startBackendWorker')
-        ->will($this->returnValue(true));
-
-        $Programs
-        ->expects($this->once())
-        ->method('_ensureProgramDir')
-        ->with(WWW_ROOT . 'files/programs/programurl')
         ->will($this->returnValue(true));
 
         $data = array(

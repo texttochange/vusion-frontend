@@ -9,6 +9,7 @@ class ScriptMaker
         $dialogue['Dialogue'] = array(
             'activated' => 0,
             'auto-enrollment' => 'none',
+            'name' => 'my dialogue',
             'interactions'=> array(
                 array(
                     'type-schedule' => 'fixed-time',
@@ -50,10 +51,10 @@ class ScriptMaker
     }
 
 
-    public function getOneDialogue($keyword='keyword')
+    public function getOneDialogue($keyword='keyword', $name='my dialogue')
     {
         $dialogue['Dialogue'] = array(
-            'name' => 'my dialogue',
+            'name' => $name,
             'auto-enrollment' => 'none',
             'dialogue-id' => null,
             'interactions'=> array(

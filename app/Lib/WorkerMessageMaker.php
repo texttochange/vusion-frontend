@@ -103,7 +103,7 @@ class WorkerMessageMaker
             'session_event'=> null,
             'transport_name' =>'',
             'transport_type' => '',
-            'transport_metadata' => '',
+            'transport_metadata' => array('simulated' => true),
             'helper_metadata' => ''
             );
     }
