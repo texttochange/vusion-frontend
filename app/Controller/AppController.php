@@ -59,7 +59,10 @@ class AppController extends Controller
         'Text',
         'BigNumber',
         'CreditManager',
-        'Documentation');
+        'Documentation',
+        'RequireJs',
+        );
+    
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs";
     var $redisTicketPrefix  = "vusion:tickets"; 

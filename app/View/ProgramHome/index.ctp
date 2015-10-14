@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery"));
+?>
 <div class='Program Home index'>
     <?php
         $contentTitle           = __('Sending Next'); 

@@ -1,4 +1,7 @@
 <?php
+    $this->RequireJs->scripts(array("chosen"));
+?>
+<?php
     echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
     echo $this->Html->tag('h3', __('Invite User'));
     if (isset($validationErrors)) {
@@ -17,7 +20,7 @@
             'label'=>__('Program'),                 
             'style'=>'margin-bottom:0px'
             ));
-    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');
+    $this->RequireJs->runLine('$("#ProgramProgram").chosen();');
     echo $this->Form->checkbox('invite_disclaimer', array('class' => 'ttc-checkbox'));
 	echo $this->Html->tag('label',__(' I agree that TTC will not be held accountable for misuse of this feature.'), array('class'=>'danger'));
     echo $this->Form->end(array('label' => __('Send'), 'id' => 'send-invite', 'onclick' => 'disableSend()'));   

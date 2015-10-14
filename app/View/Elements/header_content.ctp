@@ -1,6 +1,7 @@
 <?php
-$containsFilter         = (isset($containsFilter) ? $containsFilter : false);
-$containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControlNav : false);
+    $this->RequireJs->scripts(array("ttc-utils"));
+    $containsFilter         = (isset($containsFilter) ? $containsFilter : false);
+    $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControlNav : false);
 ?>
 <div id="header-content-box">
 	<div id="header-content" class="content-header">
@@ -82,10 +83,7 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
 				                'action' => 'paginationCount',
 				                'ext' => 'json',
 				                '?' => $urlParameters));
-				            $this->Js->get('document')->event(
-				                'ready',
-				                'loadPaginationCount("' . $ajaxUrl . '");'
-				            );
+				            $this->RequireJs->runLine('loadPaginationCount("' . $ajaxUrl . '");');
 				    	} else {
 				    	    $countTitle = $count;
 				    	}
@@ -142,9 +140,8 @@ $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControl
                     'id' => 'advanced_filter_form', 
                     'class' => 'ttc-advanced-filter'));
                 if (isset($filterParams)) {
-                    $this->Js->get('document')->event(
-                        'ready',
-                        '$("#advanced_filter_form").show();
+                    $this->RequireJs->runLine('
+                        $("#advanced_filter_form").show();
                         createFilter(true, "'.$filterParams['filter_operator'].'",'.$this->Js->object($filterParams['filter_param']).');
                         ');
                 }
