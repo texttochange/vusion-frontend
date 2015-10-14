@@ -1,3 +1,6 @@
+<?php
+  $this->RequireJs->scripts(array("chosen"));
+?>
 <div class='table tabs' style='width:100%; margin-top:10px'>
 <div class='row' style='width:100%'>
 <span class='cell'>
@@ -72,7 +75,7 @@ echo $this->Form->input('enrolled', array(
     'selected'=>' ',
     'style'=>'margin-bottom:0px'
     ));
-$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
+$this->RequireJs->runLine('$("#ImportEnrolled").chosen();');
 
 $options = array(
     'keep' => __('keep'),     
