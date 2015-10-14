@@ -5,6 +5,7 @@ Vagrant::configure("2") do |config|
     config.vm.box = "vusionFine5"
     #config.vm.box_url = "file:d/project/ttc/vusion-frontend/vusion_cakephp_new.box"
     config.vm.box_url = "file: project/ttc/vusion-frontend/vusion_2015_01_28.box"
+    config.vm.usable_port_range = 2200..2250
     
     config.vm.network "forwarded_port", guest:80, host:4567   
     config.vm.network "forwarded_port", guest:9010, host:4568

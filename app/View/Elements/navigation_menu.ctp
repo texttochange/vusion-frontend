@@ -222,7 +222,7 @@
             </li>
               <li>
                   <?php
-                      echo $this->AclLink->generateLink(__('Import'),$programDetails['url'],'programParticipants','import');
+                      echo $this->AclLink->generateLink(__('Import'),$programDetails['url'],'programParticipants','importFile');
                   ?>
               </li>
             <li>

@@ -22,8 +22,5 @@
 /lib/Cake
 .vagrant
 .DS_Store
-<<<<<<< HEAD
 /app/webroot/files/programs/
-=======
 /vendor/
->>>>>>> develop

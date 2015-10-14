@@ -24,7 +24,7 @@ class ProgramsController extends AppController
             'viewClassMap' => array(
                 'json' => 'View')), 
         'LocalizeUtils', 
-        'PhoneNumber', 
+        'Country', 
         'Paginator' => array(
             'className' => 'ProgramPaginator'), 
         'Stats',
@@ -143,7 +143,7 @@ class ProgramsController extends AppController
         $this->paginate = $paginate;
         $programs       = $this->paginate();
         
-        $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
+        $countryIndexedByPrefix = $this->Country->getNamesByPrefixes();
         $this->set(compact('programs', 'isProgramEdit', 'countryIndexedByPrefix'));
     }
     

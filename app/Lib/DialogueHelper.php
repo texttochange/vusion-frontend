@@ -242,26 +242,28 @@ class DialogueHelper
         return null;
     }
 
-    //Funtion that load the country name and international prefix from a file
-    public static function loadCountriesByPrefixes($filePath) {
+    //Funtion that load the country name and international prefix from a file.
+    //For usage by a model only, othewise use the CountryComponent
+    public static function loadCountries($filePath, $indexName="Prefix") {
         $importedCountries = fopen($filePath,"r");
         $countries=array();
-        $count = 0;
-        $options = array();
-        while(!feof($importedCountries)){
-           $countries[] = fgets($importedCountries);
-           if($count > 0 && $countries[$count]){
-               $countries[$count] = str_replace("\n", "", $countries[$count]);
-               $explodedLine = explode(",", $countries[$count]);
-               $options[trim($explodedLine[1])] = trim($explodedLine[0]);
-           }
-           $count++;           
+        $headers = fgetcsv($importedCountries);
+        $i = 0;
+        foreach($headers as $header){
+            if ($indexName === $header) {
+                $index = $i;
+            }
+            $i += 1;
         }
-        return $options;
+        while(!feof($importedCountries)){
+           $country = fgetcsv($importedCountries);
+           $countries[trim($country[$index])] = trim($country[0]);
+        }
+        return $countries;
     }
 
     public static function loadPrefixesByCountries($filePath) {
-        return array_flip(DialogueHelper::loadCountriesByPrefixes($filePath));
+        return array_flip(DialogueHelper::loadCountries($filePath, "Prefix"));
     }
 
 
