@@ -26,10 +26,10 @@ class VusionConst
     const LABEL_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+$/u';
     const LABEL_FAIL_MESSAGE = 'Use only space, letters and numbers for the label name.';
 
-    const LABEL_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}@\.]+$/u';
+    const LABEL_VALUE_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}@\.-]+$/u';
     const LABEL_VALUE_FAIL_MESSAGE = 'Use only DOT, space, letters and numbers for the label value.';
 
-    const LABEL_FULL_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+:[\p{L}\p{Mn}\p{N}\p{Zs}@\.]+$/u';
+    const LABEL_FULL_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+:[\p{L}\p{Mn}\p{N}\p{Zs}@\.-]+$/u';
     const LABEL_FULL_FAIL_MESSAGE = "The correct format is 'label:value'.";
 
     const LABEL_SELECTOR_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+:([\p{L}\p{Mn}\p{N}\p{Zs}@\.]+|\[(participant)\.[\p{L}\p{Mn}\p{N}\p{Zs}]+\])$/u';
