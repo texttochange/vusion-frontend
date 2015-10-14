@@ -1,17 +1,8 @@
+<?php
+  $this->RequireJs->script("nav-menu");
+?>
 <div style="height:25em">
 <div id="navigation-menu" class='ttc-navigation-menu'>
-<?php
-
-    echo $this->Js->get('document')->event(
-        'ready',
-        '$("ul.sf-menu").superfish({ 
-            animation: {height:"show"},   // slide-down effect without fade-in 
-            delay:     1200               // 1.2 second delay on mouseout 
-         });'
-        );
-    
-?>
-
 <ul class="sf-menu sf-vertical"> 
 <li>
        <?php 

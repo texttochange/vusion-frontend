@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery"));
+?>
 <div class="status index">
     <?php
     $contentTitle = __('Program History');

@@ -1,3 +1,6 @@
+<?php
+	$this->RequireJs->scripts(array("chosen"));
+?>
 <div class="participants index width-size">
     <?php
         $contentTitle   = __('Import Participants'); 
@@ -44,7 +47,7 @@
 		    'selected'=>' ',
 		    'style'=>'margin-bottom:0px'
 		    ));
-		$this->Js->get('document')->event('ready','$("#ImportEnrolled").chosen();');
+		$this->RequireJs->runLine('$("#ImportEnrolled").chosen();');
 		
 		$options = array(
 		    'keep' => __('keep'),     

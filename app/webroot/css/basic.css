@@ -1075,6 +1075,10 @@
         color: grey;
 }
 
+.popup-layout .flash-box {
+    z-index: 100;
+}
+
 .flash-box {
     position: fixed;
     width: 100%;
@@ -1762,4 +1766,8 @@
 
 .simulator-add-participant textarea {
     width: 600px;
+}
+
+#ui-timepicker-div-fixedtime dt {
+    width: 16em;
 }

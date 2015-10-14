@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("ttc-utils"));
+?>
 <div class="ttc-data-control">
     <div id="data-control-nav" class="ttc-paging paging">
     <?php
@@ -13,9 +16,7 @@
                 'action' => 'paginationCount',
                 'ext' => 'json',
                 '?' => $urlParameters));
-            $this->Js->get('document')->event(
-                'ready',
-                'loadPaginationCount("' . $ajaxUrl . '");'
+            $this->RequireJs->runLine('loadPaginationCount("' . $ajaxUrl . '");'
             );
     	} else {
     	    $countTitle = $count;
@@ -73,9 +74,8 @@
         'class' => 'ttc-advanced-filter'));
     //if (isset($this->params['url']['filter_operator']) && isset($this->params['url']['filter_param'])) {
     if (isset($filterParams)) {
-        $this->Js->get('document')->event(
-            'ready',
-            '$("#advanced_filter_form").show();
+        $this->RequireJs->runLine('
+            $("#advanced_filter_form").show();
             createFilter(true, "'.$filterParams['filter_operator'].'",'.$this->Js->object($filterParams['filter_param']).');
             ');
     }
