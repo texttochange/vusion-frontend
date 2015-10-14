@@ -29,7 +29,7 @@ class ProgramUnattachedMessagesController extends BaseProgramSpecificController
         'ProgramAuth',
         'ArchivedProgram');
     var $helpers    = array(
-        'Js' => array('Jquery'),
+        //'Js' => array('Jquery'),
         'Time',
         'Session');
     

@@ -41,12 +41,12 @@ class AppController extends Controller
                 )
             ),
         'Acl',
-        'Cookie', 
-        'PhoneNumber',
+        'Cookie',
         'BackendLog',
         'Stats',
         'CreditManager',
-        'UserLogMonitor');
+        'UserLogMonitor',
+        'Country');
     
     var $helpers = array(
         'PhoneNumber',
@@ -59,7 +59,10 @@ class AppController extends Controller
         'Text',
         'BigNumber',
         'CreditManager',
-        'Documentation');
+        'Documentation',
+        'RequireJs',
+        );
+    
     var $redis              = null;
     var $redisProgramPrefix = "vusion:programs";
     var $redisTicketPrefix  = "vusion:tickets"; 
@@ -120,7 +123,7 @@ class AppController extends Controller
             $this->layout = 'default';
         } else {
             //TODO this hase to move in the relevant contollers
-            $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
+            $countryIndexedByPrefix = $this->Country->getNamesByPrefixes();
             $this->set(compact('countryIndexedByPrefix'));
         }
     }

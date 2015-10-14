@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery", "jquery-ui-timepicker"));
+?>
 <div class="programsettings form width-size">
    <?php
         $contentTitle   = __('Edit Program Settings'); 
@@ -212,8 +215,7 @@
                     $(\"[name*='credit-']:not([type='radio'])\").prop('disabled', false);
                     $('#credit-details').show();
                 }");
-             $this->Js->get('document')->event(
-                 'ready',
+             $this->RequireJs->runLine(
                  '$("[name*=\'credit-from-date\']").datepicker({
                          dateFormat:"dd/mm/yy"
                  });

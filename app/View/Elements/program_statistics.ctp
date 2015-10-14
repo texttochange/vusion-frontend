@@ -1,15 +1,14 @@
+<?php
+    $this->RequireJs->scripts(array("ttc-utils"));
+?>
 <div  class='ttc-program-stats-inside'>
 <?php
 $this->Js->set('programs', array(array('Program' => $programDetails)));
 if (count($programStats['programStats']) <= 0) {   
-    $this->Js->get('document')->event(
-        'ready',
-        'loadProgramStats();');
+    $this->RequireJs->runLine('loadProgramStats();');
 } else {
     $programStats['programStats'] = $this->BigNumber->roundOffNumbers($programStats['programStats']);
-    $this->Js->get('document')->event(
-        'ready',
-        'renderStats("programstats",'.$this->Js->object($programStats['programStats']).')');
+    $this->RequireJs->runLine('renderStats("programstats",'.$this->Js->object($programStats['programStats']).')');
 }
 echo '<span id="programstats">';
 echo '<img src="/img/ajax-loader.gif">';

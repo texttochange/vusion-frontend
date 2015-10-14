@@ -18,7 +18,7 @@ class UnmatchableReplyController extends AppController
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
-        'PhoneNumber',
+        'Country',
         'UserAccess',
         'Filter',
         'Paginator' => array(
@@ -64,14 +64,14 @@ class UnmatchableReplyController extends AppController
             $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         }
         
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByNames();
         
         $this->paginate = array(
             'all',
             'conditions' => $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes),
             'order'=> $order,
             );
-        $countriesIndexes   = $this->PhoneNumber->getCountriesByPrefixes();
+        $countriesIndexes   = $this->Country->getNamesByPrefixes();
         $unmatchableReplies = $this->paginate('UnmatchableReply');
         $this->set(compact('requestSuccess', 'unmatchableReplies', 'countriesIndexes', 'order'));
     }
@@ -88,7 +88,7 @@ class UnmatchableReplyController extends AppController
     {
         return array(
             'operator' => $this->UnmatchableReply->filterOperatorOptions,
-            'country' => $this->PhoneNumber->getCountries()
+            'country' => $this->Country->getNamesByNames()
             );
     }
     
@@ -137,7 +137,7 @@ class UnmatchableReplyController extends AppController
         
         // Only get messages and avoid other stuff like markers
         $defaultConditions = $this->UserAccess->getUnmatchableConditions();
-        $countryPrefixes = $this->PhoneNumber->getPrefixesByCountries();
+        $countryPrefixes = $this->Country->getPrefixesByNames();
         $conditions = $this->Filter->getConditions($this->UnmatchableReply, $defaultConditions, $countryPrefixes);
 
         $filePath = WWW_ROOT . "files/programs/unmatchableReply" ;

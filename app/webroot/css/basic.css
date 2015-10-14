@@ -1075,6 +1075,10 @@
         color: grey;
 }
 
+.popup-layout .flash-box {
+    z-index: 100;
+}
+
 .flash-box {
     position: fixed;
     width: 100%;
@@ -1361,6 +1365,7 @@
 .ttc-page-title {
 }
 
+
 .ttc-data-control .tabs {
         display: inline-block;
 }
@@ -1417,6 +1422,11 @@
 
 .ttc-display-area .tab-content div {
     padding: 5px;
+    margin-bottom: 0px;
+}
+
+.ttc-display-area .tab-content label {
+    padding-right: 5px;
 }
 
 .ttc-display-area .tabs li {
@@ -1762,4 +1772,8 @@
 
 .simulator-add-participant textarea {
     width: 600px;
+}
+
+#ui-timepicker-div-fixedtime dt {
+    width: 16em;
 }

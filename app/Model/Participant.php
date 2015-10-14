@@ -729,7 +729,7 @@ class Participant extends ProgramSpecificMongoModel
     public function tagsFromStringToArray($tags) 
     {
         $tags = trim(stripcslashes($tags));
-        return explode(", ", $tags);
+        return explode(",", $tags);
     }
     
     
@@ -865,8 +865,36 @@ class Participant extends ProgramSpecificMongoModel
         return $report;
     }
     
+    public function importJsonDecoded($programUrl, $jsonParticipants,  $tags=array(), $enrolled=null, $importTagsAndLabels='keep')
+    {
+        $count  = 0;
+        $report = array();
+        $defaultTags = array('imported');
+        $tags = array_merge($defaultTags, $this->tagsFromStringToArray($tags));
+
+        foreach($jsonParticipants as $jsonParticipant) {
+            $participant          = array();
+            $participant['phone'] = $this->cleanPhone($jsonParticipant->phone_number);
+            $participant['tags']  = $tags;
+            foreach ($jsonParticipant->profile as $key => $value) {
+                $participant['profile'][] = array(
+                    'label' => $key, 
+                    'value' => $value->value,
+                    'raw' => null);
+            }
+            //Save if not a duplicate
+            $report[] = $this->saveParticipantWithReport(
+                $participant,
+                $enrolled,
+                $importTagsAndLabels,
+                $count + 1);
+            $count++; 
+        }
+        return $report;
+    }
+
     
-    public function importCsv($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels)
+    public function importCsv($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels='keep')
     {
       
         $count        = 0;
@@ -955,7 +983,7 @@ class Participant extends ProgramSpecificMongoModel
     }    
     
     
-    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels)
+    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels='keep')
     {
         require_once 'excel_reader2.php';
         

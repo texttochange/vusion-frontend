@@ -11,43 +11,19 @@
 		echo $this->Html->css(array(
 		    'cake.generic',
 		    'basic',
-		    'jquery-ui/jquery-ui-1.10.3.custom.min',		    
-		    'chosen/chosen-1.0.min',
-		    'handsontable/jquery.handsontable-0.9.18.full',
-		    'jstree/style.min'
-		    ));		
-		echo $this->Html->script('jquery-1.10.2.min.js');
-		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');
-		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');		
-		## general
-		echo $this->Html->script('datejs/date.js');
-		echo $this->Html->script('xregexp-2.0.0/xregexp-all.js');
-		echo $this->Html->script('moment.js');
-		echo $this->Html->script('chosen-1.0.jquery.min.js');
-		## home brewed javascript		
-		echo $this->Html->script('ttc-utils.js');		
-		echo $this->Html->script('screen.js');
+		    ));	
+		$this->RequireJs->scripts(array('jquery'));
 		echo $scripts_for_layout;
     ?><script>
     <?php echo $this->element('localization');?>
     </script>
     <?php
-    if (isset($this->Js)) {
-    		//disappear success flash messages
-    		$this->Js->get('document')->event('ready', '
-    				$("[class*=success]").delay(5000).fadeOut(1000);
-    				');
-    }
-	?>
-	<?php
-	echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex'));
+		echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex'));
 	?>	
 </head>
 <body class="popup-layout">
 	<div class="popup-container">
-	    <div class="status-message">
-		    <?php echo $this->element('status_message'); ?>
-		</div>
+		<?php echo $this->element('flash_message', array('asTable' => false)); ?>
 		<div class="popup-header">
 			<div class="ttc-left-header">
 		        <?php 
@@ -67,8 +43,8 @@
 		    <?php echo $this->element('footer'); ?>
     </div>
 		<?php 
-	    if (isset($this->Js)) {
-	    		echo $this->Js->writeBuffer();
+	    if (isset($this->RequireJs)) {
+	    		echo $this->RequireJs->writeBuffer();
 	    }
 	    ?>
 </body>

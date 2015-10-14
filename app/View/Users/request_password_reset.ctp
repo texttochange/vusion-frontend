@@ -1,4 +1,7 @@
 <?php
+    $this->RequireJs->scripts(array("jquery"));
+?>
+<?php
     echo $this->Html->tag('div', null, array('class'=>'ttc-login-container'));
     echo $this->Html->tag('h2', __('Request Password Reset'));
     echo $this->Form->create(
@@ -14,7 +17,7 @@
     echo $this->Html->image($this->Html->url(
         array('controller'=>'users', 'action'=>'captcha'), true),
         array('id'=>'imageCaptcha')).' <a href="#" id="captchaReload" class="captcha-reload">  can\'t read, get another word</a>';
-    $this->Js->get('document')->event('ready', '
+    $this->RequireJs->runLine('
         var captchaSource = $("#imageCaptcha").attr("src");
         window.captchaSource = captchaSource;
         ');

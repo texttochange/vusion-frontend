@@ -1,3 +1,6 @@
+<?php
+	$this->RequireJs->scripts(array("chosen"));
+?>
 <div class="participants form width-size">
     <?php
         $contentTitle   = __('Edit Participant'); 
@@ -61,7 +64,7 @@
 	                'selected'=>$selected,
                     'style'=>'margin-bottom:0px'
                     ));
-	            $this->Js->get('document')->event('ready','$("#ParticipantEnrolled").chosen();');
+	            $this->RequireJs->runLine('$("#ParticipantEnrolled").chosen();');
 	        ?>
 	    </fieldset>
 	<?php echo $this->Form->end(__('Save'));?>

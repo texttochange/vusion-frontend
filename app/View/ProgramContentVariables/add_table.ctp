@@ -1,6 +1,5 @@
 <?php 
-$this->Html->script("jquery.handsontable-0.9.18.full.js", array("inline" => false));
-$this->Html->script("ttc-table.js", array("inline" => false));
+  $this->RequireJs->scripts(array('table'));
 ?>
 <div class="content_variables form width-size">
 <?php
@@ -43,8 +42,8 @@ $this->Html->script("ttc-table.js", array("inline" => false));
            <label><?php echo __('Table'); ?></label>
            <div id="columns" style="padding-left:0px; margin-bottom:0px"/>
            <?php 
-           $this->Js->get('document')->event('ready',
-               'createTable(
+           $this->RequireJs->runLine('
+                createTable(
                      "#columns", 
                      {startRows: 5,
                       startCols: 10,
@@ -53,7 +52,7 @@ $this->Html->script("ttc-table.js", array("inline" => false));
                       strechH: \'all\',
                       contextMenu: [\'row_above\', \'row_below\', \'remove_row\', \'col_left\', \'col_right\', \'remove_col\']
                       }
-                     )');
+                )');
            ?>
         </fieldset>
       </form>

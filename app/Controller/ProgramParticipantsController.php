@@ -32,6 +32,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             'className' => 'BigCountPaginator'),
         'ProgramAuth',
         'ArchivedProgram',
+        'Mash',
         'Simulator');
     var $helpers    = array(
         'Js' => array('Jquery'),
@@ -814,9 +815,68 @@ class ProgramParticipantsController extends BaseProgramSpecificController
 
         $this->set(compact('participant','histories', 'schedules','requestSuccess'));
     }
-    
-    
-    public function import()
+
+
+    public function importMash()
+    {
+        $requestSuccess = false;
+
+        if (!$this->ProgramSetting->hasRequired()) {
+            $this->Session->setFlash(__('Please set the shortcode to import from Mash.'));
+        }
+        $importCountries = $this->Country->getNamesByIso($this->programDetails['settings']['international-prefix']);
+        $this->set(compact('importCountries'));
+
+        if ($this->request->is('post')) {
+            $tags = (isset($this->request->data['Import']['tags']) ? $this->request->data['Import']['tags'] : null);
+            $tags = 'mash,' . $tags;
+            $importTagsAndLabels = (isset($this->request->data['Import']['replace-tags-and-labels']) ? $this->request->data['Import']['import-tags-and-labels'] : 'keep');
+            $countryIso = $this->request->data['Import']['country'];
+            if (!isset($importCountries[$countryIso])) {
+                $this->Session->setFlash(__("Import not allowed of participant from %s.", $this->Country->fromIsoToName($countryIso)));
+                $this->set(compact('requestSuccess'));
+                return;
+            }
+
+            $participantJsonDecoded = $this->Mash->importParticipants($countryIso);
+            
+            if ($participantJsonDecoded == null) {
+                $this->Session->setFlash(__('The import failed because the Mash server is not responding, please report the issue.'));
+            } else {
+
+                $enrolled = null;
+                if (isset($this->request->data['Import']['enrolled'])) {
+                    $enrolled = $this->request->data['Import']['enrolled'];
+                }
+
+                $report = $this->Participant->importJsonDecoded(
+                    $this->programDetails['url'],
+                    $participantJsonDecoded,
+                    $tags,
+                    $enrolled,
+                    $importTagsAndLabels);
+                if ($report) {
+                    foreach ($report as $participantReport) {
+                        if ($participantReport['saved']) {
+                            $this->_notifyUpdateBackendWorker(
+                                $this->programDetails['url'],
+                                $participantReport['phone']);
+                        } else {
+                            $this->Session->setFlash(__("Import of some participants failed, see details below."));
+                        }
+                    }
+                    $requestSuccess = true;
+                } else{
+                    $this->Session->setFlash($this->Participant->importErrors[0]);
+                }
+            }
+        }
+        $selectOptions = $this->_getSelectOptions();
+        $this->set(compact('report', 'requestSuccess', 'selectOptions'));
+    }
+
+
+    public function importFile()
     {
         $programName           = $this->Session->read($this->params['program'].'_name');
         $programUrl            = $this->params['program'];
@@ -899,6 +959,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
                 $enrolled,
                 $importTagsAndLabels
                 );
+
             if ($report) {
                 foreach ($report as $participantReport) {
                     if ($participantReport['saved']) {

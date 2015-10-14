@@ -102,9 +102,26 @@ class DialogueHelperTestCase extends CakeTestCase
         $this->assertEqual(
             DialogueHelper::cleanKeyphrases('11 something'), 
             array('11 something'));
-
     }
 
+
+    public function testLoadCountry_byPrefix()
+    {
+        $fileName = WWW_ROOT . Configure::read('vusion.countriesPrefixesFile');
+        $countries = DialogueHelper::loadCountries($fileName, "Prefix");
+        $this->assertEqual(
+            $countries[93],
+            'Afghanistan');
+    }
+
+    public function testLoadCountry_byIso()
+    {
+        $fileName = WWW_ROOT . Configure::read('vusion.countriesPrefixesFile');
+        $countries = DialogueHelper::loadCountries($fileName, "Iso");
+        $this->assertEqual(
+            $countries['AFG'],
+            'Afghanistan');
+    }
     
 }
 

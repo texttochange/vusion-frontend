@@ -1,4 +1,7 @@
-<?php $isAdmin = $this->AclLink->_allow('controllers/Admin');?>
+<?php 
+    $this->RequireJs->scripts(array("chosen"));
+	$isAdmin = $this->AclLink->_allow('controllers/Admin');
+?>
 <div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
@@ -54,7 +57,7 @@
 		        'label'=> __('Program'),	                
 		        'style'=>'margin-bottom:0px'
 		        ));
-		    $this->Js->get('document')->event('ready','$("#ProgramProgram").chosen();');
+		    $this->RequireJs->runLine('$("#ProgramProgram").chosen();');
             echo $this->Form->checkbox('unmatchable_reply_access');
             echo $this->Html->tag('label',__('Access Unmatchable Replies'));
             echo "<br /><br />";
