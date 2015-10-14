@@ -233,9 +233,12 @@
  <chmod perm="660">
     <fileset dir="/var/log/supervisord" includes="*"/>
  </chmod>
+ <chmod perm="660">
+    <fileset dir="/var/vusion/app/tmp" includes="**"/>
+ </chmod>
  </target>
 
- <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,init-db,init-oldprogram'>
+ <target name="webtest" description="Run web test with PHPUnit" depends='clear-cache,pull4webtest,acl,init-db,init-oldprogram'>
  <!-- <exec executable="${basedir}/composer/vendor/bin/phpunit" failonerror="true">
   	 <arg value="-c" /> 
   	 <arg value="phpunit-webtest.xml" />
