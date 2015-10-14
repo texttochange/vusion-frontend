@@ -15,52 +15,15 @@
 		    'jquery-ui/jquery-ui-1.10.3.custom.min',
 		    'superfish/superfish-1.7.4',
 		    'superfish/superfish-vertical-1.7.4',
-		    //'superfish/superfish-navbar-1.7.4',		    
 		    'superfish/megafish-1.7.4',
 		    'chosen/chosen-1.0.min',
 		    'handsontable/jquery.handsontable-0.9.18.full',
 		    'jstree/style.min'
-		    ));	
-		//echo $this->Html->script('require.js', array('data-main' => '/js/main.js'));	
-		echo $this->Html->script('jquery-1.10.2.min.js');
-		echo $this->Html->script('jqueryui/js/jquery-ui-1.10.3.custom.min.js');
-		echo $this->Html->script('jqueryui/js/jquery-ui-timepicker-addon.js');
-		## dynamic form
-		echo $this->Html->script('jquery.validate-1.9.0.js');
-		echo $this->Html->script('dform/dform.js');
-		echo $this->Html->script('dform/dform.extensions.js');
-		echo $this->Html->script('dform/dform.subscribers.js');
-		echo $this->Html->script('dform/dform.converters.js');
-		echo $this->Html->script('form2js/form2js.js');
-		echo $this->Html->script('form2js/js2form.utils.js');
-		## nav menu
-		echo $this->Html->script('superfish-1.7.4/superfish.min.js');
-		echo $this->Html->script('superfish-1.7.4/hoverIntent.js');
-		echo $this->Html->script('superfish-1.7.4/supersubs.js');
-		## general
-		echo $this->Html->script('datejs/date.js');
-		echo $this->Html->script('xregexp-2.0.0/xregexp-all.js');
-		echo $this->Html->script('moment.js');
-		echo $this->Html->script('chosen-1.0.jquery.min.js');
-		## home brewed javascript
-		echo $this->Html->script('ttc-dynamic-form-structure.js');
-		echo $this->Html->script('ttc-generic-program.js');
-		echo $this->Html->script('ttc-utils.js');
-		echo $this->Html->script('counter.js');
-		echo $this->Html->script('screen.js');
-		echo $this->Html->script('ttc-simulator.js');
+		    ));
 		echo $scripts_for_layout;
     ?><script>
     <?php echo $this->element('localization');?>
     </script>
-    <?php
-	    if (isset($this->Js)) {
-		    //disappear success flash messages
-		    $this->Js->get('document')->event('ready', '
-			    $("[class*=success]").delay(5000).fadeOut(1000);
-			    ');
-	    }
-    ?>
     <?php  echo $this->Html->meta(array('name'=>'robots', 'content'=> 'noindex')); ?>	
 </head>
 <body>
@@ -112,10 +75,9 @@
 		<?php echo $this->element('footer'); ?>
 	</div>
 </div>
-
 <?php 
 if (isset($this->Js)) {
-	echo $this->Js->writeBuffer();
+	echo $this->RequireJs->writeBuffer();
 }
 ?>
 </body>

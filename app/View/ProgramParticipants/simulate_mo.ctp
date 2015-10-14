@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("simulator"));
+?>
 <div class="participant view width-size">
     <?php
         $contentTitle   = __('Simulate Participant'); 
@@ -49,9 +52,8 @@
                                 'autofocus'));
                         echo $this->Form->end(array('label' => __('Send'), 'id'=>'send-button'));
 
-                        $this->Js->get('document')->event(
-                            'ready',
-                            '$("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
+                        $this->RequireJs->runLine('
+                            $("#simulator-output").simulator({"phone": "'.$participant['Participant']['phone'].'"});');
 
                         ?>
                     </div>

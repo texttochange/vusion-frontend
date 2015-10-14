@@ -9,7 +9,7 @@ function hasClass(element, cls) {
 function getKeysFromCellPosition(handsontable, row, col) {
     var i = 0,
         keys = [];
-    while (hasClass(handsontable.getCell(row, i), "key")) {
+    while ($(handsontable.getCell(row, i)).hasClass("key")) {
         keys.push(handsontable.getDataAtCell(row, i));
         i++;
     }
@@ -180,11 +180,6 @@ function fromVusionToHandsontableColumns(table, defaultRegex) {
         }
     }
     return columns;
-}
-
-
-function saveContentVariableValue() {
-
 }
 
 function saveValueCallback(data) {

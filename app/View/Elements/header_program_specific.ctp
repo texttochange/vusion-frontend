@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("ttc-utils"));
+?>
 <div id="header-program">
 	<div class="table" style="width:100%;">
         <div class="heading">
@@ -43,9 +46,7 @@
                         $now = new DateTime('now');
                         date_timezone_set($now,timezone_open($programDetails['settings']['timezone']));
                         echo $this->Html->tag('span', $now->format('d/m/Y H:i:s'), array("id"=>"local-date-time") );
-                        $this->Js->get('document')->event(
-                            'ready',
-                            'setInterval("updateClock()", 1000);');
+                        $this->RequireJs->runLine('setInterval("updateClock()", 1000);');
                     } else {
                         echo $this->Html->link('configure Timezone', 
                             array(

@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery", "ttc-utils"));
+?>
 <div class="admin-action">
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
@@ -27,8 +30,8 @@
        ?>
        </div>
        <?php echo $this->Form->input('template', array('rows'=>3, 'label' => __('template'))); ?>
-       <?php $this->Js->get('document')->event('ready','addContentFormHelp();'); ?>
-    <?php echo $this->Form->end(__('Submit')); ?>
+       <?php $this->RequireJs->runLine('addContentFormHelp();'); ?>
+       <?php echo $this->Form->end(__('Submit')); ?>
 </div>
 </div>
 </div>

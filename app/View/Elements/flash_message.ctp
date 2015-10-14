@@ -1,5 +1,8 @@
-<div class="status-table table">
-    <div class="flash-box row">
+<?php
+    $this->RequireJs->runLine('$("[class*=success]").delay(5000).fadeOut(1000);');
+?>
+<div class="status-message <?php echo ($asTable? 'row' :'')  ?>"> 
+	<div class="flash-box" style='top:0px'>
     <?php
     echo $this->Html->tag('div', '', array(
         'id' => 'connectionState',
@@ -7,7 +10,7 @@
         'style' => 'display: none'));
     ?>
     </div>
-    <div class="flash-box row">
+    <div class="flash-box" style='top:30px'>
     <?php 
     echo $this->Session->flash(); 
     if (!$this->Session->flash()) {
@@ -18,7 +21,7 @@
     }
     ?>
     </div>
-    <div class="flash-box row">
+    <div class="flash-box" style='top:63px'>
     <?php
     ## Flash message for the credit manager's status
     if (isset($creditStatus)) {

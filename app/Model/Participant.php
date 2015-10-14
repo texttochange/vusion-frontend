@@ -149,6 +149,16 @@ class Participant extends ProgramSpecificMongoModel
                 'message' => 'noMessage'
                 ),
             ),
+        'import-type' => array(
+            'notempty' => array(
+                'rule' => array('notempty'),
+                'message' => 'Please select one option.'
+                ),
+            'allowedChoice' => array(
+                'rule' => array('inList', array('keep', 'replace', 'update')),
+                'message' => 'import tags and labels option not allowed.'
+                ),
+            ),
         );
     
     
@@ -719,11 +729,11 @@ class Participant extends ProgramSpecificMongoModel
     public function tagsFromStringToArray($tags) 
     {
         $tags = trim(stripcslashes($tags));
-        return explode(", ", $tags);
+        return explode(",", $tags);
     }
     
     
-    public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $replaceTagsAndLabels=false)
+    public function import($programUrl, $fileFullPath, $tags=null, $enrolled=null, $importTagsAndLabels='keep')
     {
         $defaultTags = $this->getDefaultImportedTag();
         if (isset($tags)) {
@@ -751,20 +761,59 @@ class Participant extends ProgramSpecificMongoModel
         }
         
         if ($ext == 'csv') {
-            return $this->importCsv($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels);
+            return $this->importCsv($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels);
         } else if ($ext == 'xls') {
-            return $this->importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels);
+            return $this->importXls($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels);
         }
         
     }
     
+    public function addTags($participant, $savedTags) 
+    {
+        $tags = array();
+        if (isset($participant['tags'])) {
+            $tags = Participant::cleanTags($participant['tags']);
+        }
+        $savedTags = (is_array($savedTags) ? $savedTags : array());
+        return array_unique(array_merge($tags, $savedTags));
+    }
+
+    public function addLabels($participant, $savedLabels)
+    {
+        $labels = array();
+        if (isset($participant['profile'])) {
+            $labels = Participant::cleanProfile($participant['profile']);
+        }
+        //$savedLabels = (is_array($savedLabels) ? $savedLabels : array());
+        $merged = array_merge($labels, $savedLabels);
+        $result = $this->_uniqueMultidimArray($merged, 'label');
+        return $result;
+    }
+
+
+    protected function _uniqueMultidimArray($array, $key){
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+        
+        foreach($array as $val){
+            if(!in_array($val[$key],$key_array)){
+                $key_array[$i] = $val[$key];
+                $temp_array[$i] = $val;
+            }
+            $i++;
+        }
+        return $temp_array;
+    }
+
     
-    public function saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $fileLine=null)
+
+    public function saveParticipantWithReport($participant, $enrolled, $importTagsAndLabels, $fileLine=null)
     {
         $this->create();
         $exist = $this->find('count', array('conditions' => array('phone' => $participant['phone'])));
         if ($exist) {
-            if (!$replaceTagsAndLabels) {
+            if ($importTagsAndLabels == 'keep') {
                 $report = array(
                     'phone' => $participant['phone'],
                     'saved' => false,
@@ -774,10 +823,16 @@ class Participant extends ProgramSpecificMongoModel
                 return $report;
             }
             
-            $savedParticipant       = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
-            $this->id               = $savedParticipant['Participant']['_id']."";
-            $tags                   = (isset($participant['tags']) ? $participant['tags'] : array());
-            $labels                 = (isset($participant['profile']) ? $participant['profile'] : array());
+            $savedParticipant = $this->find('first', array('conditions' => array('phone' => $participant['phone'])));
+            $this->id         = $savedParticipant['Participant']['_id']."";
+            
+            if ($importTagsAndLabels == 'replace') {
+                $tags   = (isset($participant['tags']) ? $participant['tags'] : array());
+                $labels = (isset($participant['profile']) ? $participant['profile'] : array());                
+            } else {
+                $tags   = $this->addTags($participant, $savedParticipant['Participant']['tags']);
+                $labels = $this->addLabels($participant, $savedParticipant['Participant']['profile']);
+            }        
             $participant            = $savedParticipant['Participant'];
             $participant['tags']    = $tags;
             $participant['profile'] = $labels;
@@ -810,8 +865,36 @@ class Participant extends ProgramSpecificMongoModel
         return $report;
     }
     
+    public function importJsonDecoded($programUrl, $jsonParticipants,  $tags=array(), $enrolled=null, $importTagsAndLabels='keep')
+    {
+        $count  = 0;
+        $report = array();
+        $defaultTags = array('imported');
+        $tags = array_merge($defaultTags, $this->tagsFromStringToArray($tags));
+
+        foreach($jsonParticipants as $jsonParticipant) {
+            $participant          = array();
+            $participant['phone'] = $this->cleanPhone($jsonParticipant->phone_number);
+            $participant['tags']  = $tags;
+            foreach ($jsonParticipant->profile as $key => $value) {
+                $participant['profile'][] = array(
+                    'label' => $key, 
+                    'value' => $value->value,
+                    'raw' => null);
+            }
+            //Save if not a duplicate
+            $report[] = $this->saveParticipantWithReport(
+                $participant,
+                $enrolled,
+                $importTagsAndLabels,
+                $count + 1);
+            $count++; 
+        }
+        return $report;
+    }
+
     
-    public function importCsv($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
+    public function importCsv($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels='keep')
     {
       
         $count        = 0;
@@ -880,7 +963,7 @@ class Participant extends ProgramSpecificMongoModel
             //Save if not a duplicate
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[]                            = $this->saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $count + 1);
+                $report[]                            = $this->saveParticipantWithReport($participant, $enrolled, $importTagsAndLabels, $count + 1);
             }
             $count++; 
         }
@@ -900,7 +983,7 @@ class Participant extends ProgramSpecificMongoModel
     }    
     
     
-    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $replaceTagsAndLabels)
+    private function importXls($programUrl, $fileFullPath, $tags, $enrolled, $importTagsAndLabels='keep')
     {
         require_once 'excel_reader2.php';
         
@@ -952,7 +1035,7 @@ class Participant extends ProgramSpecificMongoModel
             }
             if (!isset($uniqueNumber[$participant['phone']])) {
                 $uniqueNumber[$participant['phone']] = '';
-                $report[] = $this->saveParticipantWithReport($participant, $enrolled, $replaceTagsAndLabels, $i);
+                $report[] = $this->saveParticipantWithReport($participant, $enrolled, $importTagsAndLabels, $i);
             }
         }
         return $report;

@@ -25,7 +25,7 @@ class CreditViewerController extends AppController
             'viewClassMap' => array(
                 'json' => 'View')),
         'LocalizeUtils',
-        'PhoneNumber');
+        'Country');
     
     
     public function beforeFilter()
@@ -55,7 +55,7 @@ class CreditViewerController extends AppController
     
     protected function _getAllCredits($conditions)
     {
-        $countriesByPrefixes = $this->PhoneNumber->getCountriesByPrefixes();
+        $countriesByPrefixes = $this->Country->getNamesByPrefixes();
         $countriesCredits    = $this->CreditLog->calculateCreditPerCountry($conditions, $countriesByPrefixes);
         foreach ($countriesCredits as &$countryCredits) {
             foreach ($countryCredits['codes'] as &$codeCredits) {

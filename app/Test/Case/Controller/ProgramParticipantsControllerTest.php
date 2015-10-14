@@ -89,6 +89,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'Acl' => array('check'),
                     'Session' => array('read', 'setFlash'),
                     'Auth' => array('loggedIn', 'startup'),
+                    'Mash' => array('importParticipants'),
                     ),
                 'models' => array(
                     'Program' => array('find', 'count'),
@@ -192,12 +193,12 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_csv_no_settings() 
+    public function testImportFile_csv_no_settings() 
     {
         $this->mockProgramAccess();
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -217,7 +218,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_csv() 
+    public function testImportFile_csv() 
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         
@@ -231,7 +232,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -251,7 +252,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_csv_duplicate() 
+    public function testImportFile_csv_duplicate() 
     {
         $participants = $this->mockProgramAccess();
         $participants
@@ -271,7 +272,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -298,7 +299,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     }
     
     
-    public function testImport_noLabelTwoColumns_fail() 
+    public function testImportFile_noLabelTwoColumns_fail() 
     {
         $regexPhone = $this->matchesRegularExpression('/^\+[0-9]{12}$/');
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
@@ -316,7 +317,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         ->with("The file cannot be imported. The first line should be label names, the first label must be 'phone'.");
         
         $this->testAction(
-            "/testUrl/participantsController/import", 
+            "/testUrl/participantsController/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -338,7 +339,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     
     
     
-    public function testImport_xls_duplicate() 
+    public function testImportFile_xls_duplicate() 
     {
         $participants = $this->mockProgramAccess();
         $participants
@@ -358,7 +359,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
             );
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -400,7 +401,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         
         $this->testAction(
-            "/testurl/participants/import", 
+            "/testurl/participants/importFile", 
             array(
                 'method' => 'post',
                 'data' => array(
@@ -418,8 +419,119 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->assertFileNotExists(WWW_ROOT . 'files/programs/testurl/wellformattedparticipants.xls');
         $this->assertEquals(2, count($this->vars['report']));
     }
-    
-    
+
+
+    public function testImportMash_ok() 
+    {
+        $participants = $this->mockProgramAccess();
+        $participants
+        ->expects($this->once())
+        ->method('_notifyUpdateBackendWorker')
+        ->with('testurl', '+256788601462')
+        ->will($this->returnValue(true));
+
+        $participantJson = '[{"phone_number":"256788601462","profile":{"location":{"value":"Mombasa"}}},{"phone_number":"256712747841","profile":{}}]';
+        $participantJsonDecoded = json_decode($participantJson);
+        $participants->Mash
+        ->expects($this->once())
+        ->method('importParticipants')
+        ->with('UGA')
+        ->will($this->returnValue($participantJsonDecoded));
+
+        $this->ProgramSetting->saveProgramSetting('shortcode', '256-8282');
+        $this->ProgramSetting->saveProgramSetting('international-prefix', '256');    
+        
+        $this->Participant->create();
+        $this->Participant->save(
+            array(
+                'phone' => '+256712747841',
+                'name' => 'Gerald'
+                )
+            );
+        
+        $this->testAction(
+            "/testurl/participants/importMash", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'country' => 'UGA',
+                        'tags' => 'mytag, anothertag')
+                    )
+                )
+            );
+        
+        $this->assertEquals(
+            'Insert ok',
+            $this->vars['report'][0]['message'][0]);
+        $this->assertEquals(
+            'This phone number already exists in the participant list.',
+            $this->vars['report'][1]['message'][0]);
+        $importedParticipant = $this->Participant->find('first', array('conditions' => array('phone' => '+256788601462')));
+        $this->assertEqual(
+            array('imported', 'mash',  'mytag', 'anothertag'),
+            $importedParticipant['Participant']['tags']);
+
+    }
+
+
+    public function testImportMash_fail_mash() 
+    {
+        $participants = $this->mockProgramAccess();
+        $participants->Mash
+        ->expects($this->once())
+        ->method('importParticipants')
+        ->with('UGA')
+        ->will($this->returnValue(null));
+         $participants->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('The import failed because the Mash server is not responding, please report the issue.');
+     
+        $this->ProgramSetting->saveProgramSetting('shortcode', '256-8282');
+        $this->ProgramSetting->saveProgramSetting('international-prefix', '256');    
+        
+        $this->testAction(
+            "/testurl/participants/importMash", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'country' => 'UGA')
+                    )
+                )
+            );
+        
+        $this->assertFalse($this->vars['requestSuccess']);
+    }
+
+
+    public function testImportMash_fail_countryNotAllowed() 
+    {
+        $participants = $this->mockProgramAccess();
+        $participants->Session
+        ->expects($this->once())
+        ->method('setFlash')
+        ->with('Import not allowed of participant from France.');
+     
+        $this->ProgramSetting->saveProgramSetting('shortcode', '256-8282');
+        $this->ProgramSetting->saveProgramSetting('international-prefix', '256');    
+        
+        $this->testAction(
+            "/testurl/participants/importMash", 
+            array(
+                'method' => 'post',
+                'data' => array(
+                    'Import'=> array(
+                        'country' => 'FRA')
+                    )
+                )
+            );
+        
+        $this->assertFalse($this->vars['requestSuccess']);
+    }
+
+
     public function testDeleteParticipant()
     {
         $this->mockProgramAccess();
@@ -1303,21 +1415,25 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testExport()
     {
         $participants = $this->mockProgramAccess();
+        $expectedCondition = array('simulate' => false);
         $participants
-            ->expects($this->once())
-            ->method('_notifyBackendExport')
-            ->with(
-                $this->matchesRegularExpression('/^[a-f0-9]+$/'))
-            ->will($this->returnValue(true));
-
+        ->expects($this->once())
+        ->method('_notifyBackendExport')
+        ->with(
+            $this->matchesRegularExpression('/^[a-f0-9]+$/'))
+        ->will($this->returnValue(true));
+        
         $this->testAction("/testurl/programParticipants/export");
-
+        
         $this->assertEqual($this->Export->find('count'), 1);
         $export = $this->Export->find('first');
         $this->assertTrue(isset($export['Export']));
         $this->assertContains(
             'Test_Name_good_for_testing_me_participants_', 
             $export['Export']['file-full-name']);
+        $this->assertEquals(
+            $expectedCondition,
+            $export['Export']['conditions']);
     }
     
 
