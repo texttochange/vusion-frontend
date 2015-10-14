@@ -839,9 +839,12 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             }
 
             $participantJsonDecoded = $this->Mash->importParticipants($countryIso);
-            
             if ($participantJsonDecoded == null) {
-                $this->Session->setFlash(__('The import failed because the Mash server is not responding, please report the issue.'));
+                if ($participantJsonDecoded === array()) {
+                    $this->Session->setFlash(__('The import failed because no participant is available in this country for this program.'));                    
+                } else {
+                    $this->Session->setFlash(__('The import failed because the Mash server is not responding, please report the issue.'));
+                }
             } else {
 
                 $enrolled = null;

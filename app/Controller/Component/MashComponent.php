@@ -20,7 +20,6 @@ class MashComponent extends Component
             $country,
             $this->controller->programDetails['url'],
             $importMaxParticipants);
-        print_r($participants);
         return $participants;
     }
 
